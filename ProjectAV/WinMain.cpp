@@ -1,11 +1,10 @@
 #include "Window.h"
-#include "CException.h"
+
 int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	try
 	{
 	Window wnd(800, 600, "Avatar");
-	Window wnd2(800, 600, "Aang");
 
 	MSG msg;
 	BOOL gResult;
@@ -13,10 +12,6 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	{
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
-		if (wnd.kbd.KeyIsPressed(VK_MENU))
-		{
-			MessageBox(nullptr, "ALT key pressed", "ALT key", MB_OK | MB_ICONEXCLAMATION);
-		}
 	}
 	if (gResult == -1)
 	{
