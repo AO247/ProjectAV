@@ -1,6 +1,7 @@
 #include "Window.h"
 #include "WindowsMessageMap.h"
-
+#include <sstream>
+#include "resource.h"
 // Window Class Stuff
 Window::WindowClass Window::WindowClass::wndClass;
 
@@ -15,12 +16,12 @@ Window::WindowClass::WindowClass() noexcept
 	wc.cbClsExtra = 0;
 	wc.cbWndExtra = 0;
 	wc.hInstance = GetInstance();
-	wc.hIcon = nullptr;
-	wc.hCursor = nullptr;
+    wc.hIcon = static_cast<HICON>(LoadImage(hInst, MAKEINTRESOURCE(IDI_ICON1), IMAGE_ICON, 32, 32, 0));
+    wc.hCursor = nullptr;
 	wc.hbrBackground = nullptr;
 	wc.lpszMenuName = nullptr;
 	wc.lpszClassName = GetName();
-	wc.hIconSm = nullptr;
+	wc.hIconSm = static_cast<HICON>(LoadImage(hInst, MAKEINTRESOURCE(IDI_ICON1), IMAGE_ICON, 16, 16, 0));
 	RegisterClassEx( &wc );
 }
 
@@ -29,7 +30,7 @@ Window::WindowClass::~WindowClass()
 	UnregisterClass(wndClassName, GetInstance());
 }
 
-const wchar_t* Window::WindowClass::GetName() noexcept
+const char* Window::WindowClass::GetName() noexcept
 {
 	return wndClassName;
 }
@@ -41,7 +42,7 @@ HINSTANCE Window::WindowClass::GetInstance() noexcept
 
 
 // Window Stuff
-Window::Window( int width,int height,const wchar_t* name ) noexcept
+Window::Window( int width,int height,const char* name ) noexcept
 {
 	// calculate window size based on desired client region size
 	RECT wr;
@@ -97,7 +98,7 @@ LRESULT Window::HandleMsg( HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam ) noex
 {
 	static WindowsMessageMap mm;
 	OutputDebugString(mm(msg, lParam, wParam).c_str());
-	static std::wstring title;
+	static std::string title;
 	
 	switch (msg)
 	{
@@ -107,7 +108,7 @@ LRESULT Window::HandleMsg( HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam ) noex
 	case WM_KEYDOWN:
 		if (wParam == 'F')
 		{
-			SetWindowText(hWnd, L"Respects");
+			SetWindowText(hWnd, "Respects");
 		}
 		if (wParam == VK_BACK)
 		{
@@ -118,7 +119,7 @@ LRESULT Window::HandleMsg( HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam ) noex
 	case WM_KEYUP:
 		if (wParam == 'F')
 		{
-			SetWindowText(hWnd, L"Happy World");
+			SetWindowText(hWnd, "Happy World");
 		}
 		break;
 	case WM_CHAR:
@@ -130,11 +131,60 @@ LRESULT Window::HandleMsg( HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam ) noex
 	case WM_LBUTTONDOWN:
 	{
 		POINTS pt = MAKEPOINTS(lParam);
-		std::wstring temp = L"X: " + std::to_wstring(pt.x) + L", Y: " + std::to_wstring(pt.y);
+		std::string temp = "X: " + std::to_string(pt.x) + ", Y: " + std::to_string(pt.y);
 		SetWindowText(hWnd, temp.c_str());
 	}
 	break;
 	}
 
 	return DefWindowProc( hWnd,msg,wParam,lParam );
+}
+
+Window::Exception::Exception(int line, const char* file, HRESULT hr) noexcept
+	:
+	ChiliException(line, file),
+	hr(hr)
+{}
+
+const char* Window::Exception::what() const noexcept
+{
+	std::ostringstream oss;
+	oss << GetType() << std::endl
+		<< "[Error Code] " << std::hex << std::uppercase << GetErrorCode() << std::dec << " (" << (unsigned long)GetErrorCode() << ")" << std::endl
+		<< "[Description] " << GetErrorString() << std::endl
+		<< GetOriginString();
+	whatBuffer = oss.str();
+	return whatBuffer.c_str();
+}
+
+const char* Window::Exception::GetType() const noexcept
+{
+	return "Window Exception";
+}
+
+std::string Window::Exception::TranslateErrorCode(HRESULT hr) noexcept
+{
+	char* pMsgBuf = nullptr;
+	DWORD nMsgLen = FormatMessage(
+		FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+		nullptr, hr, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+		reinterpret_cast<LPSTR>(&pMsgBuf), 0, nullptr
+	);
+	if (nMsgLen == 0)
+	{
+		return "Unidentified error code";
+	}
+	std::string errorString = pMsgBuf;
+	LocalFree(pMsgBuf);
+	return errorString;
+}
+
+HRESULT Window::Exception::GetErrorCode() const noexcept
+{
+	return hr;
+}
+
+std::string Window::Exception::GetErrorString() const noexcept
+{
+	return TranslateErrorCode(hr);
 }
