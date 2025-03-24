@@ -1,7 +1,4 @@
 #include "Window.h"
-#include "WindowsMessageMap.h"
-#include <sstream>
-#include "resource.h"
 // Window Class Stuff
 Window::WindowClass Window::WindowClass::wndClass;
 
@@ -142,7 +139,7 @@ LRESULT Window::HandleMsg( HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam ) noex
 
 Window::Exception::Exception(int line, const char* file, HRESULT hr) noexcept
 	:
-	ChiliException(line, file),
+	CException(line, file),
 	hr(hr)
 {}
 

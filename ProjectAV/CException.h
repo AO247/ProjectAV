@@ -1,11 +1,12 @@
 #pragma once
 #include <exception>
 #include <string>
+#include <sstream>
 
-class ChiliException : public std::exception
+class CException : public std::exception
 {
 public:
-	ChiliException( int line,const char* file ) noexcept;
+	CException( int line,const char* file ) noexcept;
 	const char* what() const noexcept override;
 	virtual const char* GetType() const noexcept;
 	int GetLine() const noexcept;

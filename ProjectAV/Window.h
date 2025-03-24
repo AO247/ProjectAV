@@ -1,12 +1,14 @@
 #pragma once
-#include "ChiliWin.h"
-#include <wchar.h>
-#include "ChiliException.h"
+#include "Win.h"
+#include "CException.h"
+#include "WindowsMessageMap.h"
+#include <sstream>
+#include "resource.h"
 
 class Window
 {
 public:
-	class Exception : public ChiliException
+	class Exception : public CException
 	{
 	public:
 		Exception(int line, const char* file, HRESULT hr) noexcept;

@@ -1,5 +1,5 @@
 #include "Window.h"
-#include "ChiliException.h"
+#include "CException.h"
 int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	try
@@ -22,7 +22,7 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		return msg.wParam;
 	}
 	}
-	catch (const ChiliException& e)
+	catch (const CException& e)
 	{
 		MessageBox(nullptr, e.what(), e.GetType(), MB_OK | MB_ICONEXCLAMATION);
 	}
