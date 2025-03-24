@@ -13,6 +13,10 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	{
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
+		if (wnd.kbd.KeyIsPressed(VK_MENU))
+		{
+			MessageBox(nullptr, "ALT key pressed", "ALT key", MB_OK | MB_ICONEXCLAMATION);
+		}
 	}
 	if (gResult == -1)
 	{

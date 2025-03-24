@@ -164,6 +164,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Exception.cpp" />
+    <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="StringConverter.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="WindowsMessageMap.cpp" />
@@ -171,6 +172,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CException.h" />
+    <ClInclude Include="Keyboard.h" />
     <ClInclude Include="Win.h" />
     <ClInclude Include="StringConverter.h" />
     <ClInclude Include="Window.h" />

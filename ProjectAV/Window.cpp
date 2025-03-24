@@ -102,38 +102,27 @@ LRESULT Window::HandleMsg( HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam ) noex
 	case WM_CLOSE:
 		PostQuitMessage(0);
 		return 0;
+		////////// CLEAR PRESSED KEYS WHEN YOU ARE ON DIFFERENT WINDOW //////////
+	case WM_KILLFOCUS:
+		kbd.ClearState();
+		break;
+		////////// KEYBOARD MESSAGES //////////
 	case WM_KEYDOWN:
-		if (wParam == 'F')
+	case WM_SYSKEYDOWN:
+		if (!(lParam & 0x40000000) || kbd.AutorepeatIsEnabled())
 		{
-			SetWindowText(hWnd, "Respects");
-		}
-		if (wParam == VK_BACK)
-		{
-			title.pop_back();
-			SetWindowText(hWnd, title.c_str());
+			kbd.OnKeyPressed(static_cast<unsigned char>(wParam));
 		}
 		break;
 	case WM_KEYUP:
-		if (wParam == 'F')
-		{
-			SetWindowText(hWnd, "Happy World");
-		}
+	case WM_SYSKEYUP:
+		kbd.OnKeyReleased(static_cast<unsigned char>(wParam));
 		break;
 	case WM_CHAR:
-	{
-		title.push_back((char)wParam);
-		SetWindowText(hWnd, title.c_str());
+		kbd.OnChar(static_cast<unsigned char>(wParam));
+		break;
+		////////// END KEYBOARD MESSAGES //////////
 	}
-	break;
-	case WM_LBUTTONDOWN:
-	{
-		POINTS pt = MAKEPOINTS(lParam);
-		std::string temp = "X: " + std::to_string(pt.x) + ", Y: " + std::to_string(pt.y);
-		SetWindowText(hWnd, temp.c_str());
-	}
-	break;
-	}
-
 	return DefWindowProc( hWnd,msg,wParam,lParam );
 }
 
