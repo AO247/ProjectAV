@@ -1,7 +1,8 @@
 #include "Window.h"
 #include <sstream>
 #include "resource.h"
-#include "WindowsMessageMap.h"
+#include "WindowsThrowMacros.h"
+
 
 // Window Class Stuff
 Window::WindowClass Window::WindowClass::wndClass;
