@@ -155,8 +155,8 @@ LRESULT CALLBACK Window::HandleMsgThunk( HWND hWnd,UINT msg,WPARAM wParam,LPARAM
 
 LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
 {
-	static WindowsMessageMap mm;
-	OutputDebugString(mm(msg, lParam, wParam).c_str());
+	//static WindowsMessageMap mm;
+	//OutputDebugString(mm(msg, lParam, wParam).c_str());
 
 	switch (msg)
 	{
