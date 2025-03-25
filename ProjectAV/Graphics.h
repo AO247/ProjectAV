@@ -5,6 +5,8 @@
 #include <wrl.h>
 #include <vector>
 #include "DxgiInfoManager.h"
+#include <cmath>
+#include <DirectXMath.h>
 
 class Graphics
 {
@@ -52,7 +54,7 @@ public:
 	~Graphics() = default;
 	void EndFrame();
 	void ClearBuffer( float red,float green,float blue ) noexcept;
-	void DrawTestTriangle(float angle);
+	void DrawTestTriangle(float angle, float x, float y);
 private:
 #ifndef NDEBUG
 	DxgiInfoManager infoManager;
