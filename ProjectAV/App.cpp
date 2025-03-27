@@ -5,6 +5,9 @@
 #include <memory>
 #include <algorithm>
 #include "CMath.h"
+#include "imgui.h"
+#include "imgui_impl_win32.h"
+#include "imgui_impl_dx11.h"
 
 
 App::App()
@@ -71,6 +74,18 @@ void App::DoFrame()
 		d->Update( dt );
 		d->Draw( wnd.Gfx() );
 	}
+
+	ImGui_ImplDX11_NewFrame();
+	ImGui_ImplWin32_NewFrame();
+	ImGui::NewFrame();
+
+	ImGui::Begin("Tools");
+	ImGui::Text("Work in progress...");
+	ImGui::End();
+
+	ImGui::Render();
+	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
 	wnd.Gfx().EndFrame();
 }
 
