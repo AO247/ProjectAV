@@ -2,6 +2,7 @@
 #include "Window.h"
 #include "Timer.h"
 #include "ImguiManager.h"
+#include "Camera.h"
 
 class App
 {
@@ -13,6 +14,7 @@ public:
 private:
 	void DoFrame();
 private:
+	Camera cam;
 	ImguiManager imgui;
 	Window wnd;
 	Timer timer;

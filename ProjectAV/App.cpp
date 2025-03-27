@@ -68,6 +68,7 @@ App::App()
 void App::DoFrame()
 {
 	const auto dt = timer.Mark();
+	wnd.Gfx().SetCamera(cam.GetMatrix());
 	wnd.Gfx().ClearBuffer( 0.07f,0.0f,0.12f );
 	for( auto& d : drawables )
 	{
