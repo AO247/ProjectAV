@@ -12,8 +12,11 @@ public:
 	int Go();
 	~App();
 private:
-	void DoFrame();
+	void DoFrame(float dt);
+	void HandleInput(float dt);
 private:
+	bool cursorEnabled = true;
+	int x = 0, y = 0;
 	Camera cam;
 	ImguiManager imgui;
 	Window wnd;

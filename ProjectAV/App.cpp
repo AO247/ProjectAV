@@ -65,9 +65,8 @@ App::App()
 	wnd.Gfx().SetProjection( DirectX::XMMatrixPerspectiveLH( 1.0f,3.0f / 4.0f,0.5f,40.0f ) );
 }
 
-void App::DoFrame()
+void App::DoFrame(float dt)
 {
-	const auto dt = timer.Mark();
 	wnd.Gfx().SetCamera(cam.GetMatrix());
 	wnd.Gfx().ClearBuffer( 0.07f,0.0f,0.12f );
 	for( auto& d : drawables )
@@ -81,13 +80,62 @@ void App::DoFrame()
 	ImGui::NewFrame();
 
 	ImGui::Begin("Tools");
-	ImGui::Text("Work in progress...");
+	ImGui::Text("Press C to toggle camera control");
 	ImGui::End();
 
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
 	wnd.Gfx().EndFrame();
+}
+
+void App::HandleInput(float dt)
+{
+	while (const auto e = wnd.kbd.ReadKey())
+	{
+		if (!e->IsPress())
+		{
+			continue;
+		}
+		switch (e->GetCode())
+		{
+		case 'C':
+			if (cursorEnabled)
+			{
+				wnd.DisableCursor();
+				cursorEnabled = false;
+			}
+			else
+			{
+				wnd.EnableCursor();
+				cursorEnabled = true;
+			}
+		}
+	}
+	if (wnd.kbd.KeyIsPressed('W'))
+	{
+		cam.Translate({0.0f, 0.0f, dt});
+	}
+	if (wnd.kbd.KeyIsPressed('S'))
+	{
+		cam.Translate({ 0.0f, 0.0f, -dt });
+	}
+	if (wnd.kbd.KeyIsPressed('A'))
+	{
+		cam.Translate({ -dt, 0.0f, 0.0f });
+	}
+	if (wnd.kbd.KeyIsPressed('D'))
+	{
+		cam.Translate({ dt, 0.0f, 0.0f });
+	}
+
+	if (!cursorEnabled)
+	{
+		while (const auto delta = wnd.mouse.ReadRawDelta())
+		{
+			cam.Rotate(delta->x, delta->y);
+		}
+	}
 }
 
 App::~App()
@@ -104,6 +152,8 @@ int App::Go()
 			// if return optional has value, means we're quitting so return exit code
 			return *ecode;
 		}
-		DoFrame();
+		const auto dt = timer.Mark();
+		HandleInput(dt);
+		DoFrame(dt);
 	}
 }
