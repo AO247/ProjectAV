@@ -14,8 +14,7 @@ void PointLight::SpawnControlWindow() noexcept
 	if( ImGui::Begin( "Light" ) )
 	{
 		ImGui::Text( "Position" );
-		
-		( "X",&cbData.pos.x,-60.0f,60.0f,"%.1f" );
+		ImGui::SliderFloat( "X",&cbData.pos.x,-60.0f,60.0f);
 		ImGui::SliderFloat( "Y",&cbData.pos.y,-60.0f,60.0f);
 		ImGui::SliderFloat( "Z",&cbData.pos.z,-60.0f,60.0f);
 		
@@ -25,9 +24,8 @@ void PointLight::SpawnControlWindow() noexcept
 		ImGui::ColorEdit3( "Ambient",&cbData.ambient.x );
 		
 		ImGui::Text( "Falloff" );
-
 		ImGui::SliderFloat( "Constant",&cbData.attConst,0.05f,10.0f);
-		ImGui::SliderFloat( "Linear",&cbData.attLin,0.0001f,4.0f);
+		ImGui::SliderFloat( "Linear",&cbData.attLin,0.0001f,4.0f );
 		ImGui::SliderFloat( "Quadratic",&cbData.attQuad,0.0000001f,10.0f);
 
 		if( ImGui::Button( "Reset" ) )
@@ -51,7 +49,7 @@ void PointLight::Reset() noexcept
 	};
 }
 
-void PointLight::Draw( Graphics& gfx ) const noexcept(!IS_DEBUG)
+void PointLight::Draw( Graphics& gfx ) const noxnd
 {
 	mesh.SetPos( cbData.pos );
 	mesh.Draw( gfx );

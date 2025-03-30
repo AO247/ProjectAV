@@ -1,10 +1,10 @@
 #include "CException.h"
 
 
-CException::CException( int line,const char* file ) noexcept
+CException::CException(int line, const char* file) noexcept
 	:
-	line( line ),
-	file( file )
+	line(line),
+	file(file)
 {}
 
 const char* CException::what() const noexcept
