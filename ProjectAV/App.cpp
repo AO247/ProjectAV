@@ -96,7 +96,6 @@ App::App()
 
 void App::DoFrame(float dt)
 {
-	wnd.Gfx().SetCamera(cam.GetMatrix());
 	wnd.Gfx().BeginFrame( 0.07f,0.0f,0.12f );
 	wnd.Gfx().SetCamera( cam.GetMatrix() );
 	light.Bind( wnd.Gfx(),cam.GetMatrix() );
@@ -172,11 +171,9 @@ void App::SpawnSimulationWindow() noexcept
 {
 	if( ImGui::Begin( "Simulation Speed" ) )
 	{
-		ImGui::SliderFloat("Speed Factor", &speed_factor, 0.0f, 2.0f);
+		ImGui::SliderFloat( "Speed Factor",&speed_factor,0.0f,6.0f,"%.4f",3.2f );
 		ImGui::Text( "%.3f ms/frame (%.1f FPS)",1000.0f / ImGui::GetIO().Framerate,ImGui::GetIO().Framerate );
 		ImGui::Text( "Status: %s",wnd.kbd.KeyIsPressed( VK_SPACE ) ? "PAUSED" : "RUNNING (hold spacebar to pause)" );
-		ImGui::Text("Press C to enable camera");
-
 	}
 	ImGui::End();
 }
@@ -187,16 +184,16 @@ void App::SpawnBoxWindowManagerWindow() noexcept
 	{
 		using namespace std::string_literals;
 		const auto preview = comboBoxIndex ? std::to_string( *comboBoxIndex ) : "Choose a box..."s;
-		if (ImGui::BeginCombo("Box Number", preview.c_str()))
+		if( ImGui::BeginCombo( "Box Number",preview.c_str() ) )
 		{
-			for (int i = 0; i < boxes.size(); i++)
+			for( int i = 0; i < boxes.size(); i++ )
 			{
-				bool selected = comboBoxIndex.has_value() ? (*comboBoxIndex == i) : false;
-				if (ImGui::Selectable(std::to_string(i).c_str(), selected))
+				const bool selected = *comboBoxIndex == i;
+				if( ImGui::Selectable( std::to_string( i ).c_str(),selected ) )
 				{
 					comboBoxIndex = i;
 				}
-				if (selected)
+				if( selected )
 				{
 					ImGui::SetItemDefaultFocus();
 				}
