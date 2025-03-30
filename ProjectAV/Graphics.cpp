@@ -5,7 +5,8 @@
 #include <cmath>
 #include <DirectXMath.h>
 #include "GraphicsThrowMacros.h"
-#include "imgui_impl_dx11.h"
+#include "imgui/imgui_impl_dx11.h"
+#include "imgui/imgui_impl_win32.h"
 
 namespace wrl = Microsoft::WRL;
 namespace dx = DirectX;
@@ -108,8 +109,9 @@ Graphics::Graphics( HWND hWnd )
 	vp.TopLeftX = 0.0f;
 	vp.TopLeftY = 0.0f;
 	pContext->RSSetViewports( 1u,&vp );
-
-	ImGui_ImplDX11_Init(pDevice.Get(), pContext.Get());
+	
+	// init imgui d3d impl
+	ImGui_ImplDX11_Init( pDevice.Get(),pContext.Get() );
 }
 
 Graphics::~Graphics()
@@ -119,6 +121,13 @@ Graphics::~Graphics()
 
 void Graphics::EndFrame()
 {
+	// imgui frame end
+	if( imguiEnabled )
+	{
+		ImGui::Render();
+		ImGui_ImplDX11_RenderDrawData( ImGui::GetDrawData() );
+	}
+
 	HRESULT hr;
 #ifndef NDEBUG
 	infoManager.Set();
@@ -136,8 +145,16 @@ void Graphics::EndFrame()
 	}
 }
 
-void Graphics::ClearBuffer( float red,float green,float blue ) noexcept
+void Graphics::BeginFrame( float red,float green,float blue ) noexcept
 {
+	// imgui begin frame
+	if( imguiEnabled )
+	{
+		ImGui_ImplDX11_NewFrame();
+		ImGui_ImplWin32_NewFrame();
+		ImGui::NewFrame();
+	}
+
 	const float color[] = { red,green,blue,1.0f };
 	pContext->ClearRenderTargetView( pTarget.Get(),color );
 	pContext->ClearDepthStencilView( pDSV.Get(),D3D11_CLEAR_DEPTH,1.0f,0u );
@@ -153,7 +170,12 @@ void Graphics::SetProjection( DirectX::FXMMATRIX proj ) noexcept
 	projection = proj;
 }
 
-void Graphics::SetCamera(DirectX::FXMMATRIX cam) noexcept
+DirectX::XMMATRIX Graphics::GetProjection() const noexcept
+{
+	return projection;
+}
+
+void Graphics::SetCamera( DirectX::FXMMATRIX cam ) noexcept
 {
 	camera = cam;
 }
@@ -163,9 +185,19 @@ DirectX::XMMATRIX Graphics::GetCamera() const noexcept
 	return camera;
 }
 
-DirectX::XMMATRIX Graphics::GetProjection() const noexcept
+void Graphics::EnableImgui() noexcept
 {
-	return projection;
+	imguiEnabled = true;
+}
+
+void Graphics::DisableImgui() noexcept
+{
+	imguiEnabled = false;
+}
+
+bool Graphics::IsImguiEnabled() const noexcept
+{
+	return imguiEnabled;
 }
 
 

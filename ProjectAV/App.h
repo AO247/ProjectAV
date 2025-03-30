@@ -3,6 +3,8 @@
 #include "Timer.h"
 #include "ImguiManager.h"
 #include "Camera.h"
+#include "PointLight.h"
+#include <set>
 
 class App
 {
@@ -14,13 +16,21 @@ public:
 private:
 	void DoFrame(float dt);
 	void HandleInput(float dt);
+	void SpawnSimulationWindow() noexcept;
+	void SpawnBoxWindowManagerWindow() noexcept;
+	void SpawnBoxWindows() noexcept;
 private:
-	bool cursorEnabled = true;
-	int x = 0, y = 0;
-	Camera cam;
 	ImguiManager imgui;
 	Window wnd;
 	Timer timer;
 	std::vector<std::unique_ptr<class Drawable>> drawables;
+	std::vector<class Box*> boxes;
+	float speed_factor = 1.0f;
+	bool cursorEnabled = true;
+	int x = 0, y = 0;
+	Camera cam;
+	PointLight light;
 	static constexpr size_t nDrawables = 180;
+	std::optional<int> comboBoxIndex;
+	std::set<int> boxControlIds;
 };
