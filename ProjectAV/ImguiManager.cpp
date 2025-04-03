@@ -12,4 +12,3 @@ ImguiManager::~ImguiManager()
 {
 	ImGui::DestroyContext();
 }
-

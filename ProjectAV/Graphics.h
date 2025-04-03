@@ -15,6 +15,7 @@ namespace Bind
 {
 	class Bindable;
 }
+
 class Graphics
 {
 	friend Bind::Bindable;
@@ -56,13 +57,13 @@ public:
 		std::string reason;
 	};
 public:
-	Graphics( HWND hWnd );
+	Graphics( HWND hWnd,int width,int height );
 	Graphics( const Graphics& ) = delete;
 	Graphics& operator=( const Graphics& ) = delete;
 	~Graphics();
 	void EndFrame();
 	void BeginFrame( float red,float green,float blue ) noexcept;
-	void DrawIndexed(UINT count) noxnd;
+	void DrawIndexed( UINT count ) noxnd;
 	void SetProjection( DirectX::FXMMATRIX proj ) noexcept;
 	DirectX::XMMATRIX GetProjection() const noexcept;
 	void SetCamera( DirectX::FXMMATRIX cam ) noexcept;

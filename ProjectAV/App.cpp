@@ -1,5 +1,4 @@
 #include "App.h"
-#include "AssTest.h"
 #include <memory>
 #include <algorithm>
 #include "CMath.h"
@@ -13,10 +12,10 @@ GDIPlusManager gdipm;
 
 App::App()
 	:
-	wnd( 800,600,"Project AV" ),
+	wnd( 1280,720,"Project AV" ),
 	light( wnd.Gfx() )
 {
-	wnd.Gfx().SetProjection( dx::XMMatrixPerspectiveLH( 1.0f,3.0f / 4.0f,0.5f,40.0f ) );
+	wnd.Gfx().SetProjection( dx::XMMatrixPerspectiveLH( 1.0f,9.0f / 16.0f,0.5f,40.0f ) );
 }
 
 void App::DoFrame(float dt)
@@ -24,20 +23,18 @@ void App::DoFrame(float dt)
 	wnd.Gfx().BeginFrame( 0.07f,0.0f,0.12f );
 	wnd.Gfx().SetCamera( cam.GetMatrix() );
 	light.Bind( wnd.Gfx(),cam.GetMatrix() );
-
-	const auto transform = dx::XMMatrixRotationRollPitchYaw( pos.roll,pos.pitch,pos.yaw ) *
-		dx::XMMatrixTranslation( pos.x,pos.y,pos.z );
-	nano.Draw( wnd.Gfx(),transform );
+		
+	nano.Draw( wnd.Gfx() );
 	light.Draw( wnd.Gfx() );
 		
 	// imgui windows
 	light.SpawnControlWindow();
-	ShowModelWindow();
+	ShowImguiDemoWindow();
+	nano.ShowWindow();
 
 	// present
 	wnd.Gfx().EndFrame();
 }
-
 void App::HandleInput(float dt)
 {
 	while (const auto e = wnd.kbd.ReadKey())
@@ -87,23 +84,13 @@ void App::HandleInput(float dt)
 	}
 }
 
-void App::ShowModelWindow()
+void App::ShowImguiDemoWindow()
 {
-	if( ImGui::Begin( "Model" ) )
+	static bool show_demo_window = true;
+	if( show_demo_window )
 	{
-		using namespace std::string_literals;
-
-		ImGui::Text( "Orientation" );
-		ImGui::SliderAngle( "Roll",&pos.roll,-180.0f,180.0f );
-		ImGui::SliderAngle( "Pitch",&pos.pitch,-180.0f,180.0f );
-		ImGui::SliderAngle( "Yaw",&pos.yaw,-180.0f,180.0f );
-		
-		ImGui::Text( "Position" );
-		ImGui::SliderFloat( "X",&pos.x,-20.0f,20.0f );
-		ImGui::SliderFloat( "Y",&pos.y,-20.0f,20.0f );
-		ImGui::SliderFloat( "Z",&pos.z,-20.0f,20.0f );
+		ImGui::ShowDemoWindow( &show_demo_window );
 	}
-	ImGui::End();
 }
 
 App::~App()
@@ -120,7 +107,7 @@ int App::Go()
 			// if return optional has value, means we're quitting so return exit code
 			return *ecode;
 		}
-		const auto dt = timer.Mark() * speed_factor;
+		const auto dt = timer.Mark();
 		HandleInput(dt);
 		DoFrame(dt);
 	}

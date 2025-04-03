@@ -25,7 +25,7 @@ void PointLight::SpawnControlWindow() noexcept
 		
 		ImGui::Text( "Falloff" );
 		ImGui::SliderFloat( "Constant",&cbData.attConst,0.05f,10.0f);
-		ImGui::SliderFloat( "Linear",&cbData.attLin,0.0001f,4.0f );
+		ImGui::SliderFloat( "Linear",&cbData.attLin,0.0001f,4.0f);
 		ImGui::SliderFloat( "Quadratic",&cbData.attQuad,0.0000001f,10.0f);
 
 		if( ImGui::Button( "Reset" ) )
