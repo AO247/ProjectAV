@@ -15,17 +15,15 @@ public:
 	int Go();
 	~App();
 private:
-	void DoFrame(float dt);
-	void HandleInput(float dt);
+	void DoFrame();
 	void ShowImguiDemoWindow();
 private:
+	bool showDemoWindow = false;
 	ImguiManager imgui;
 	Window wnd;
 	Timer timer;
 	float speed_factor = 1.0f;
-	bool cursorEnabled = true;
-	int x = 0, y = 0;
 	Camera cam;
 	PointLight light;
-	Model nano{ wnd.Gfx(),"Models\\nano.gltf" };
+	Model nano{ wnd.Gfx(),"Models\\nano_textured\\nanosuit.obj" };
 };
