@@ -8,11 +8,6 @@ namespace Bind
 		INFOMAN( gfx );
 
 		Microsoft::WRL::ComPtr<ID3DBlob> pBlob;
-		OutputDebugString("Path...............................   ");
-
-		OutputDebugStringW(path.c_str());
-		OutputDebugString("\nPath...............................\n");
-
 		GFX_THROW_INFO( D3DReadFileToBlob( path.c_str(),&pBlob ) );
 		GFX_THROW_INFO( GetDevice( gfx )->CreatePixelShader( pBlob->GetBufferPointer(),pBlob->GetBufferSize(),nullptr,&pPixelShader ) );
 	}

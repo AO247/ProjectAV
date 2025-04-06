@@ -36,7 +36,7 @@ private:
     std::unique_ptr<Node> pSceneRoot; // Root of the scene graph
     Node* pNanosuitNode = nullptr;    // Pointer to the specific node holding the nanosuit model (optional, for easy access)
     Node* pNanosuitNode2 = nullptr;    // Pointer to the specific node holding the nanosuit model (optional, for easy access)
-    Node* pNanosuitNode3 = nullptr;    // Pointer to the specific node holding the nanosuit model (optional, for easy access)
+    Node* pBox = nullptr;    // Pointer to the specific node holding the nanosuit model (optional, for easy access)
     Node* pEmptyNode = nullptr;
     Node* pSelectedSceneNode = nullptr; // Add this pointer
 

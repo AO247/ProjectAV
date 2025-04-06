@@ -28,16 +28,17 @@ App::App()
     pNanosuitNode = pNanosuitOwner.get(); // Store non-owning pointer for easy access
     auto pNanosuitOwner2 = std::make_unique<Node>("Nanosuit2");
     pNanosuitNode2 = pNanosuitOwner2.get(); // Store non-owning pointer for easy access
-    auto pNanosuitOwner3 = std::make_unique<Node>("Nanosuit3");
-    pNanosuitNode3 = pNanosuitOwner3.get(); // Store non-owning pointer for easy access
+    auto pBoxOwner = std::make_unique<Node>("Box");
+    pBox = pBoxOwner.get(); // Store non-owning pointer for easy access
 	auto pEmptyNode = std::make_unique<Node>("EmptyNode");
 
     pNanosuitNode2->AddComponent(
         std::make_unique<ModelComponent>(pNanosuitNode2, wnd.Gfx(), "Models\\nano_textured\\nanosuit.obj")
     );
-    pNanosuitNode3->AddComponent(
-        std::make_unique<ModelComponent>(pNanosuitNode3, wnd.Gfx(), "Models\\nano_textured\\nanosuit.obj")
+    pBox->AddComponent(
+        std::make_unique<ModelComponent>(pBox, wnd.Gfx(), "Models\\box.glb")
     );
+	pBox->SetLocalScale(dx::XMFLOAT3(20.0f, 0.1f, 20.0f));
     // 2. Add the ModelComponent to the Nanosuit Node
     try {
         // The ModelComponent constructor now takes the Node* owner
@@ -63,7 +64,7 @@ App::App()
 
     // 3. Add the Nanosuit Node to the Scene Root
     pSceneRoot->AddChild(std::move(pNanosuitOwner));
-    pSceneRoot->AddChild(std::move(pNanosuitOwner3));
+    pSceneRoot->AddChild(std::move(pBoxOwner));
 	pNanosuitNode->AddChild(std::move(pNanosuitOwner2));
     pNanosuitNode2->SetLocalPosition(DirectX::XMFLOAT3(-20.0f,0.0f,0.0f));
 	pSceneRoot->AddChild(std::move(pEmptyNode));
