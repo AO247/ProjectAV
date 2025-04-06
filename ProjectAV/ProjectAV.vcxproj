@@ -188,7 +188,9 @@
     <ClCompile Include="InputLayout.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="ModelComponent.cpp" />
     <ClCompile Include="Mouse.cpp" />
+    <ClCompile Include="Node.cpp" />
     <ClCompile Include="PixelShader.cpp" />
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="Sampler.cpp" />
@@ -213,6 +215,7 @@
     <ClInclude Include="CException.h" />
     <ClInclude Include="CMath.h" />
     <ClInclude Include="Color.h" />
+    <ClInclude Include="Component.h" />
     <ClInclude Include="ConditionalNoexcept.h" />
     <ClInclude Include="ConstantBuffers.h" />
     <ClInclude Include="Drawable.h" />
@@ -236,7 +239,9 @@
     <ClInclude Include="InputLayout.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="ModelComponent.h" />
     <ClInclude Include="Mouse.h" />
+    <ClInclude Include="Node.h" />
     <ClInclude Include="PixelShader.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="resource.h" />

@@ -2,66 +2,40 @@
 #include "DrawableBase.h"
 #include "BindableCommon.h"
 #include "Vertex.h"
-#include <optional>
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
+#include <vector>
+#include <memory>
+#include <DirectXMath.h>
 #include "ConditionalNoexcept.h"
 
-
-class ModelException : public CException
-{
-public:
-	ModelException( int line,const char* file,std::string note ) noexcept;
-	const char* what() const noexcept override;
-	const char* GetType() const noexcept override;
-	const std::string& GetNote() const noexcept;
-private:
-	std::string note;
-};
+// Forward declare Graphics if necessary, or include Graphics.h
+class Graphics;
 
 class Mesh : public DrawableBase<Mesh>
 {
 public:
-	Mesh( Graphics& gfx,std::vector<std::unique_ptr<Bind::Bindable>> bindPtrs );
-	void Draw( Graphics& gfx,DirectX::FXMMATRIX accumulatedTransform ) const noxnd;
-	DirectX::XMMATRIX GetTransformXM() const noexcept override;
+    // Constructor takes ownership of bindables
+    Mesh(Graphics& gfx, std::vector<std::unique_ptr<Bind::Bindable>> bindPtrs);
+
+    // Draw with a specific world transform
+    void Draw(Graphics& gfx, DirectX::FXMMATRIX transform) const noxnd;
+
+    // Override GetTransformXM to return the transform passed during Draw
+    DirectX::XMMATRIX GetTransformXM() const noexcept override;
+
 private:
-	mutable DirectX::XMFLOAT4X4 transform;
+    // Store the transform passed during the Draw call for the TransformCbuf
+    mutable DirectX::XMFLOAT4X4 meshTransform;
 };
 
-class Node
+// Exception class remains the same - can stay here or move to a common exception file
+class ModelException : public CException
 {
-	friend class Model;
+    // ... (keep existing ModelException code) ...
 public:
-	Node( int id,const std::string& name,std::vector<Mesh*> meshPtrs,const DirectX::XMMATRIX& transform ) noxnd;
-	void Draw( Graphics& gfx,DirectX::FXMMATRIX accumulatedTransform ) const noxnd;
-	void SetAppliedTransform( DirectX::FXMMATRIX transform ) noexcept;
-	int GetId() const noexcept;
-	void ShowTree( Node*& pSelectedNode ) const noexcept;
+    ModelException(int line, const char* file, std::string note) noexcept;
+    const char* what() const noexcept override;
+    const char* GetType() const noexcept override;
+    const std::string& GetNote() const noexcept;
 private:
-	void AddChild( std::unique_ptr<Node> pChild ) noxnd;
-private:
-	std::string name;
-	int id;
-	std::vector<std::unique_ptr<Node>> childPtrs;
-	std::vector<Mesh*> meshPtrs;
-	DirectX::XMFLOAT4X4 transform;
-	DirectX::XMFLOAT4X4 appliedTransform;
-};
-
-class Model
-{
-public:
-	Model( Graphics& gfx,const std::string fileName );
-	void Draw( Graphics& gfx ) const noxnd;
-	void ShowWindow( const char* windowName = nullptr ) noexcept;
-	~Model() noexcept;
-private:
-	static std::unique_ptr<Mesh> ParseMesh( Graphics& gfx,const aiMesh& mesh,const aiMaterial* const* pMaterials );
-	std::unique_ptr<Node> ParseNode( int& nextId,const aiNode& node ) noexcept;
-private:
-	std::unique_ptr<Node> pRoot;
-	std::vector<std::unique_ptr<Mesh>> meshPtrs;
-	std::unique_ptr<class ModelWindow> pWindow;
+    std::string note;
 };
