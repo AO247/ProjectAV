@@ -61,6 +61,7 @@ App::App()
         MessageBoxA(nullptr, "Unknown exception during model loading.", "Unknown Exception", MB_OK | MB_ICONEXCLAMATION);
     }
 
+    physicsEngine = PhysicsEngine();
 
     // 3. Add the Nanosuit Node to the Scene Root
     pSceneRoot->AddChild(std::move(pNanosuitOwner));
@@ -157,7 +158,7 @@ void App::DoFrame(float dt)
     // Update scene graph (updates transforms, components)
     // Keep Z the same, or modify as needed
     // Set the node's local position to the updated stored position
-    pNanosuitNode->SetLocalPosition(DirectX::XMFLOAT3(pNanosuitNode->GetLocalPosition().x + dt, 0.0f, 0.0f));
+    //pNanosuitNode->SetLocalPosition(DirectX::XMFLOAT3(pNanosuitNode->GetLocalPosition().x + dt, 0.0f, 0.0f));
     pSceneRoot->Update(dt);
     // Begin Frame
     wnd.Gfx().BeginFrame(0.07f, 0.0f, 0.12f); // Clear color
