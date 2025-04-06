@@ -76,6 +76,8 @@ StyleCopReport.xml
 *.meta
 *.obj
 !ProjectAV/Models/*.obj
+!ProjectAV/Models/**/*.obj
+
 *.iobj
 *.pch
 *.pdb
