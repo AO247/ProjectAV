@@ -3,7 +3,7 @@
 IntersectData BoundingSphere::IntersectBoundingSphere(BoundingSphere& other)
 {
 	float radiusDistance = radius + other.radius;
-	Vector3 direction = (other.center - center);
+	Vector3 direction = (other.GetTransformedCenter() - GetTransformedCenter());
 	float centerDistance = direction.Length();
 	direction /= centerDistance;
 
@@ -21,4 +21,15 @@ Vector3& BoundingSphere::GetCenter()
 float BoundingSphere::GetRadius()
 {
 	return radius;
+}
+
+Vector3 BoundingSphere::GetTransformedCenter()
+{
+	if (rigidbody != nullptr)
+	{
+		OutputDebugString("essa");
+	}
+	return Vector3(rigidbody->GetPosition().x + center.x,
+				   rigidbody->GetPosition().y + center.y,
+				   rigidbody->GetPosition().z + center.z);
 }

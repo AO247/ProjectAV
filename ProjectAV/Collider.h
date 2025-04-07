@@ -1,5 +1,8 @@
 #pragma once
 #include "IntersectData.h"
+#include "Rigidbody.h"
+
+class Rigidbody;
 
 class Collider
 {
@@ -10,14 +13,16 @@ public:
 		AABB = 1
 	};
 
-	Collider(ColliderTypes colliderType) :
-		colliderType(colliderType) {
-	}
+	Collider(ColliderTypes colliderType, Rigidbody* rigidbody) :
+		colliderType(colliderType),
+		rigidbody(rigidbody) {}
 
-	IntersectData Intersect(Collider& other);
+	IntersectData Intersect(Collider* other);
 
 	ColliderTypes GetColliderType();
 
 private:
 	ColliderTypes colliderType;
+protected:
+	Rigidbody* rigidbody;
 };
