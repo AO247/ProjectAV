@@ -1,16 +1,20 @@
 #include "PhysicsEngine.h"
 
-void PhysicsEngine::AddRigidbody(Rigidbody* rigidbody)
+void PhysicsEngine::AddRigidbody(std::shared_ptr<Rigidbody> rigidbody)
 {
 	rigidbodies.push_back(rigidbody);
 }
 
 void PhysicsEngine::Simulate(float delta)
 {
-	for (Rigidbody* rigidbody : rigidbodies)
+	for (int i = 0; i < rigidbodies.size(); i++)
 	{
-		rigidbody->Integrate(delta);
+		rigidbodies[i]->Integrate(delta);
 	}
+	//for (Rigidbody* rigidbody : rigidbodies)
+	//{
+	//	rigidbody->Integrate(delta);
+	//}
 	HandleCollisions();
 }
 

@@ -38,17 +38,23 @@ App::App()
     pNanosuitNode2->SetLocalPosition(DirectX::XMFLOAT3(-15.0f, 0.0f, 0.0f));
 
     pNanosuitNode2->AddComponent(
-        std::make_unique<ModelComponent>(pNanosuitNode2, wnd.Gfx(), "Models\\nano_textured\\nanosuit.obj")
+        std::make_shared<ModelComponent>(pNanosuitNode2, wnd.Gfx(), "Models\\nano_textured\\nanosuit.obj")
     );
     Vector3 colCenter(0.0f, 0.0f, 0.0f);
     pNanosuitNode2->AddComponent(
-        std::make_unique<Rigidbody>(pNanosuitNode2, 
+        std::make_shared<Rigidbody>(pNanosuitNode2, 
             Vector3(pNanosuitNode2->GetLocalPosition().x,
                     pNanosuitNode2->GetLocalPosition().y,
                     pNanosuitNode2->GetLocalPosition().z),
             Vector3(0.5f, 0.0f, 0.0f))
     );
-    Rigidbody* rb = pNanosuitNode2->GetComponent<Rigidbody>();
+    std::shared_ptr<Rigidbody> rb = pNanosuitNode2->GetComponent<Rigidbody>();
+    OutputDebugString("PRZED \n");
+    if (rb == nullptr)
+    {
+        OutputDebugString("NO I MAMY NULLA \n");
+    }
+    OutputDebugString("PO \n");
     BoundingSphere* col = new BoundingSphere(colCenter, 5.0f, rb);
     rb->SetCollider(col);
     physicsEngine.AddRigidbody(rb);
@@ -92,7 +98,13 @@ App::App()
             Vector3(1.0f, 0.0f, 0.0f))
     );
     Vector3 col1Center(0.0f, 0.0f, 0.0f);
-    Rigidbody* rb1 = pNanosuitNode->GetComponent<Rigidbody>();
+    std::shared_ptr<Rigidbody> rb1 = pNanosuitNode->GetComponent<Rigidbody>();
+    OutputDebugString("PRZED \n");
+    if (rb1 == nullptr)
+    {
+        OutputDebugString("NO I MAMY NULLA NASTEPNEGO \n");
+    }
+    OutputDebugString("PO \n");
     BoundingSphere* col1 = new BoundingSphere(col1Center, 5.0f, rb1);
     rb1->SetCollider(col1);
     physicsEngine.AddRigidbody(rb1);
@@ -228,17 +240,17 @@ void App::ShowControlWindows()
     // --- Show Model Component Windows ---
     if (pNanosuitNode)
     {
-        if (auto* modelComp = pNanosuitNode->GetComponent<ModelComponent>())
-        {
-            modelComp->ShowWindow("Nanosuit Controls");
-        }
+        //if (auto* modelComp = pNanosuitNode->GetComponent<ModelComponent>())
+        //{
+        //    modelComp->ShowWindow("Nanosuit Controls");
+        //}
     }
     if (pNanosuitNode2)
     {
-        if (auto* modelComp = pNanosuitNode2->GetComponent<ModelComponent>())
-        {
-            modelComp->ShowWindow("Nanosuit2 Controls");
-        }
+        //if (auto* modelComp = pNanosuitNode2->GetComponent<ModelComponent>())
+        //{
+        //    modelComp->ShowWindow("Nanosuit2 Controls");
+        //}
     }
 
     // --- Simulation Speed Window ---

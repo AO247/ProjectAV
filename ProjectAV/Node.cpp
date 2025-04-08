@@ -44,11 +44,10 @@ const std::string& Node::GetName() const
     return name;
 }
 
-
-Component* Node::AddComponent(std::unique_ptr<Component> pComponent)
+Component* Node::AddComponent(std::shared_ptr<Component> pComponent)
 {
     assert(pComponent);
-    components.push_back(std::move(pComponent));
+    components.push_back(pComponent);
     return components.back().get(); // Return raw pointer to added component
 }
 
@@ -166,7 +165,7 @@ DirectX::XMFLOAT3 Node::GetLocalScale() const
     return scale;
 }
 
-const std::vector<std::unique_ptr<Component>>& Node::GetComponents() const
+const std::vector<std::shared_ptr<Component>>& Node::GetComponents() const
 {
     return components;
 }
@@ -220,7 +219,7 @@ void Node::Draw(Graphics& gfx) const
 {
     // 1. Draw components attached to this node that are drawable
     //    (We only have ModelComponent for now)
-    if (auto* modelComp = GetComponent<ModelComponent>()) // Checks if a ModelComponent exists
+    if (auto modelComp = GetComponent<ModelComponent>()) // Checks if a ModelComponent exists
     {
         modelComp->Draw(gfx, GetWorldTransform()); // Pass the final world transform
     }

@@ -13,7 +13,7 @@ public:
 		AABB = 1
 	};
 
-	Collider(ColliderTypes colliderType, Rigidbody* rigidbody) :
+	Collider(ColliderTypes colliderType, std::shared_ptr<Rigidbody> rigidbody) :
 		colliderType(colliderType),
 		rigidbody(rigidbody) {}
 
@@ -24,5 +24,5 @@ public:
 private:
 	ColliderTypes colliderType;
 protected:
-	Rigidbody* rigidbody;
+	std::shared_ptr<Rigidbody> rigidbody;
 };

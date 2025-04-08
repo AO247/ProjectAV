@@ -7,10 +7,10 @@ class PhysicsEngine
 public:
 	PhysicsEngine() {}
 
-	void AddRigidbody(Rigidbody* rigidbody);
+	void AddRigidbody(std::shared_ptr<Rigidbody> rigidbody);
 	void Simulate(float delta);
 	
 private:
-	std::vector<Rigidbody*> rigidbodies;
+	std::vector<std::shared_ptr<Rigidbody>> rigidbodies;
 	void HandleCollisions();
 };

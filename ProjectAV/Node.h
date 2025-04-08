@@ -24,12 +24,12 @@ public:
 
     // --- Components ---
     template<typename T>
-    T* GetComponent() const
+    std::shared_ptr<T> GetComponent() const
     {
         static_assert(std::is_base_of<Component, T>::value, "T must derive from Component");
         for (const auto& comp : components)
         {
-            if (auto* p = dynamic_cast<T*>(comp.get()))
+            if (auto p = std::dynamic_pointer_cast<T>(comp))
             {
                 return p;
             }
@@ -38,7 +38,7 @@ public:
     }
 
     // Takes ownership of the component
-    Component* AddComponent(std::unique_ptr<Component> pComponent);
+    Component* AddComponent(std::shared_ptr<Component> pComponent);
 
     // --- Transform ---
     // Set local transform relative to parent
@@ -53,7 +53,7 @@ public:
     DirectX::XMFLOAT3 GetLocalRotationEuler() const; // Returns Pitch, Yaw, Roll in RADIANS
     DirectX::XMFLOAT3 GetLocalScale() const;
 
-    const std::vector<std::unique_ptr<Component>>& GetComponents() const;
+    const std::vector<std::shared_ptr<Component>>& GetComponents() const;
 
     // --- Update & Draw ---
     // Updates world transform based on parent and local, then updates children and components
@@ -72,7 +72,7 @@ private:
 
     Node* parent = nullptr; // Non-owning pointer
     std::vector<std::unique_ptr<Node>> children;
-    std::vector<std::unique_ptr<Component>> components;
+    std::vector<std::shared_ptr<Component>> components;
 
     bool worldTransformDirty = true; // Flag to recalculate world transform
 };

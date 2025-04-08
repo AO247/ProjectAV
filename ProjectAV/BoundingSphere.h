@@ -8,7 +8,7 @@ using namespace DirectX::SimpleMath;
 class BoundingSphere : public Collider
 {
 public:
-	BoundingSphere(Vector3 center, float radius, Rigidbody* rigidbody) :
+	BoundingSphere(Vector3 center, float radius, std::shared_ptr<Rigidbody> rigidbody) :
 		center(center),
 		radius(radius),
 		Collider(Collider::ColliderTypes::SPHERE, rigidbody) {
