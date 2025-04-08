@@ -28,6 +28,7 @@ void PhysicsEngine::HandleCollisions()
 				rigidbodies[j]->GetCollider());
 			if (intersectData.GetDoesIntersect())
 			{
+				OutputDebugString("JEST KOLIZJA \n");
 				Vector3 firstBodyPositionAfterSeparation = rigidbodies[i]->GetPosition() + (intersectData.GetDirection() * -1);
 				rigidbodies[i]->SetPosition(firstBodyPositionAfterSeparation);
 			}

@@ -1,4 +1,5 @@
 #include "BoundingSphere.h"
+#include <sstream>
 
 IntersectData BoundingSphere::IntersectBoundingSphere(BoundingSphere& other)
 {
@@ -9,6 +10,12 @@ IntersectData BoundingSphere::IntersectBoundingSphere(BoundingSphere& other)
 
 	float intersectionDistance = centerDistance - radiusDistance;
 	Vector3 separationVector = direction * intersectionDistance;
+
+	std::ostringstream ss;
+	ss << direction.x;
+	std::string s(ss.str());
+	s += " TAKI\n";
+	OutputDebugString(s.c_str());
 
 	return IntersectData(intersectionDistance < 0, separationVector);
 }
@@ -25,10 +32,7 @@ float BoundingSphere::GetRadius()
 
 Vector3 BoundingSphere::GetTransformedCenter()
 {
-	if (rigidbody != nullptr)
-	{
-		OutputDebugString("essa");
-	}
+	float testowy = rigidbody->GetPosition().x;
 	return Vector3(rigidbody->GetPosition().x + center.x,
 				   rigidbody->GetPosition().y + center.y,
 				   rigidbody->GetPosition().z + center.z);

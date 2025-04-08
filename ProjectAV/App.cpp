@@ -60,14 +60,14 @@ App::App()
     physicsEngine.AddRigidbody(rb);
 
     pBox->AddComponent(
-        std::make_unique<ModelComponent>(pBox, wnd.Gfx(), "Models\\box.glb")
+        std::make_shared<ModelComponent>(pBox, wnd.Gfx(), "Models\\box.glb")
     );
 	pBox->SetLocalScale(dx::XMFLOAT3(20.0f, 0.1f, 20.0f));
     // 2. Add the ModelComponent to the Nanosuit Node
     try {
         // The ModelComponent constructor now takes the Node* owner
         pNanosuitNode->AddComponent(
-            std::make_unique<ModelComponent>(pNanosuitNode, wnd.Gfx(), "Models\\nano_textured\\nanosuit.obj")
+            std::make_shared<ModelComponent>(pNanosuitNode, wnd.Gfx(), "Models\\nano_textured\\nanosuit.obj")
         );
 
     }
@@ -93,9 +93,9 @@ App::App()
     pNanosuitNode->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 
     pNanosuitNode->AddComponent(
-        std::make_unique<Rigidbody>(pNanosuitNode,
+        std::make_shared<Rigidbody>(pNanosuitNode,
             Vector3(0.0f, 0.0f ,0.0f),
-            Vector3(1.0f, 0.0f, 0.0f))
+            Vector3(0.0f, 0.0f, 0.0f))
     );
     Vector3 col1Center(0.0f, 0.0f, 0.0f);
     std::shared_ptr<Rigidbody> rb1 = pNanosuitNode->GetComponent<Rigidbody>();
