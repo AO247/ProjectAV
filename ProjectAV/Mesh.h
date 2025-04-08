@@ -1,36 +1,20 @@
 #pragma once
-#include "DrawableBase.h"
-#include "BindableCommon.h"
-#include "Vertex.h"
+#include "Drawable.h" // Include the new base class
+#include "CException.h" // Assuming CException is your base exception class
 #include <vector>
-#include <memory>
+#include <memory>           // For shared_ptr
+#include <string>
 #include <DirectXMath.h>
 #include "ConditionalNoexcept.h"
 
-// Forward declare Graphics if necessary, or include Graphics.h
+// Forward declare Graphics and Bindable
 class Graphics;
+namespace Bind { class Bindable; }
 
-class Mesh : public DrawableBase<Mesh>
-{
-public:
-    // Constructor takes ownership of bindables
-    Mesh(Graphics& gfx, std::vector<std::unique_ptr<Bind::Bindable>> bindPtrs);
-
-    // Draw with a specific world transform
-    void Draw(Graphics& gfx, DirectX::FXMMATRIX transform) const noxnd;
-
-    // Override GetTransformXM to return the transform passed during Draw
-    DirectX::XMMATRIX GetTransformXM() const noexcept override;
-
-private:
-    // Store the transform passed during the Draw call for the TransformCbuf
-    mutable DirectX::XMFLOAT4X4 meshTransform;
-};
-
-// Exception class remains the same - can stay here or move to a common exception file
+// --- ModelException Declaration ---
+// (Moved definition to Mesh.cpp)
 class ModelException : public CException
 {
-    // ... (keep existing ModelException code) ...
 public:
     ModelException(int line, const char* file, std::string note) noexcept;
     const char* what() const noexcept override;
@@ -38,4 +22,24 @@ public:
     const std::string& GetNote() const noexcept;
 private:
     std::string note;
+};
+
+
+// --- Mesh Declaration ---
+// Inherit from the new Drawable base class
+class Mesh : public Drawable
+{
+public:
+    // Constructor now takes shared_ptrs
+    Mesh(Graphics& gfx, std::vector<std::shared_ptr<Bind::Bindable>> bindPtrs);
+
+    // GetTransformXM is required by the Drawable base class
+    DirectX::XMMATRIX GetTransformXM() const noexcept override;
+
+    // Method to set the transform before drawing (called by ModelInternalNode)
+    void SetTransform(DirectX::FXMMATRIX transform) const noxnd;
+
+private:
+    // Store the transform passed via SetTransform for GetTransformXM to use
+    mutable DirectX::XMFLOAT4X4 meshTransform = {};
 };

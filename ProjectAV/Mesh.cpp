@@ -1,30 +1,41 @@
 #include "Mesh.h"
-#include "Graphics.h" // Make sure Graphics is included
-#include "BindableCommon.h" // For TransformCbuf etc.
-#include <sstream> // For exceptions
+#include "Graphics.h" 
+#include "BindableCommon.h" // Include all necessary bindable headers
+#include <sstream> 
+#include <stdexcept> 
 
 namespace dx = DirectX;
 
-// --- ModelException Implementation --- (Keep as it was)
+// --- ModelException Implementation --- 
+// (Ensure definitions are present here)
 ModelException::ModelException(int line, const char* file, std::string note) noexcept
     :
-    CException(line, file),
+    CException(line, file), // Make sure CException base constructor matches
     note(std::move(note))
 {
 }
 
 const char* ModelException::what() const noexcept
 {
+    // If CException has its own whatBuffer, use it, otherwise manage locally
     std::ostringstream oss;
+    // Assuming CException::what() provides base info
     oss << CException::what() << std::endl
         << "[Note] " << GetNote();
-    whatBuffer = oss.str();
-    return whatBuffer.c_str();
+    // Need a way to store the buffer. If CException has whatBuffer, reuse it.
+    // If not, add one here: static thread_local std::string localWhatBuffer;
+    // For now, assuming CException manages its buffer:
+    whatBuffer = oss.str(); // Assign to base class's buffer if it exists & is accessible
+    return whatBuffer.c_str(); // Return pointer to base class's buffer
+    // If CException doesn't provide whatBuffer:
+    // static thread_local std::string localWhatBuffer; // Or make it a member of ModelException
+    // localWhatBuffer = oss.str();
+    // return localWhatBuffer.c_str();
 }
 
 const char* ModelException::GetType() const noexcept
 {
-    return "Model Exception";
+    return "Model Exception"; // Or "Project AV Model Exception" etc.
 }
 
 const std::string& ModelException::GetNote() const noexcept
@@ -35,51 +46,40 @@ const std::string& ModelException::GetNote() const noexcept
 
 // --- Mesh Implementation ---
 
-Mesh::Mesh(Graphics& gfx, std::vector<std::unique_ptr<Bind::Bindable>> bindPtrs)
+Mesh::Mesh(Graphics& gfx, std::vector<std::shared_ptr<Bind::Bindable>> bindPtrs)
 {
-    // Static initialization for Topology (remains the same)
-    if (!IsStaticInitialized())
-    {
-        AddStaticBind(std::make_unique<Bind::Topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
-    }
+    // Add default topology using Resolve (requires Topology.h via BindableCommon.h)
+    AddBind(Bind::Topology::Resolve(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
 
-    // Add IndexBuffer (remains the same)
-    for (auto& pb : bindPtrs)
+    // Add all bindables passed in the vector
+    for (auto& pBind : bindPtrs)
     {
-        if (auto pi = dynamic_cast<Bind::IndexBuffer*>(pb.get()))
+        if (pBind) // Add a null check just in case
         {
-            AddIndexBuffer(std::unique_ptr<Bind::IndexBuffer>{ pi });
-            pb.release(); // Release ownership as AddIndexBuffer takes it
+            AddBind(std::move(pBind)); // AddBind takes shared_ptr now
         }
     }
-    // Remove nullptrs from vector after release
-    bindPtrs.erase(std::remove(bindPtrs.begin(), bindPtrs.end(), nullptr), bindPtrs.end());
 
-
-    // Add other bindables (remains the same)
-    for (auto& pb : bindPtrs)
-    {
-        AddBind(std::move(pb));
-    }
-
-    // Add Transform Constant Buffer - THIS IS IMPORTANT
-    // It will use the GetTransformXM() which now returns the per-draw transform
-    AddBind(std::make_unique<Bind::TransformCbuf>(gfx, *this));
+    // Add the Transform Constant Buffer - *not* using Resolve, as it's unique per Drawable
+    // Ensure TransformCbuf constructor is compatible (takes Graphics&, const Drawable&)
+    // Requires TransformCbuf.h via BindableCommon.h
+    AddBind(std::make_shared<Bind::TransformCbuf>(gfx, *this));
 
     // Initialize meshTransform to identity
     dx::XMStoreFloat4x4(&meshTransform, dx::XMMatrixIdentity());
 }
 
-// Draw method now takes the transform
-void Mesh::Draw(Graphics& gfx, DirectX::FXMMATRIX transform) const noxnd
+// Set the transform to be used by GetTransformXM during the next Draw call
+void Mesh::SetTransform(DirectX::FXMMATRIX transform) const noxnd
 {
-    // Store the passed transform so GetTransformXM() can retrieve it for the cbuffer
+    // Store transposed matrix if TransformCbuf expects it, otherwise store directly.
+    // Assuming TransformCbuf handles potential transposition internally based on shader needs.
     dx::XMStoreFloat4x4(&meshTransform, transform);
-    Drawable::Draw(gfx); // Call the base class Draw which binds everything and calls DX context DrawIndexed
 }
 
-// GetTransformXM now returns the transform set during the Draw call
+// GetTransformXM returns the transform set by SetTransform
 DirectX::XMMATRIX Mesh::GetTransformXM() const noexcept
 {
+    // This matrix should be the world matrix ready for the VS Constant Buffer
     return dx::XMLoadFloat4x4(&meshTransform);
 }
