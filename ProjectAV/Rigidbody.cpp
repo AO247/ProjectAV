@@ -12,7 +12,7 @@ void Rigidbody::Integrate(float delta)
 	position += (velocity * delta);
 }
 
-void Rigidbody::SetPosition(Vector3& position)
+void Rigidbody::SetPosition(Vector3 position)
 {
 	this->position = position;
 }

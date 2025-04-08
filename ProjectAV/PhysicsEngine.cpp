@@ -1,4 +1,5 @@
 #include "PhysicsEngine.h"
+#include <sstream>
 
 void PhysicsEngine::AddRigidbody(std::shared_ptr<Rigidbody> rigidbody)
 {
@@ -29,7 +30,12 @@ void PhysicsEngine::HandleCollisions()
 			if (intersectData.GetDoesIntersect())
 			{
 				OutputDebugString("JEST KOLIZJA \n");
-				Vector3 firstBodyPositionAfterSeparation = rigidbodies[i]->GetPosition() + (intersectData.GetDirection() * -1);
+				std::ostringstream ss3;
+				ss3 << (intersectData.GetDirection() * -1).x;
+				std::string s3(ss3.str());
+				s3 += " X SEPARACJI\n";
+				OutputDebugString(s3.c_str());
+				Vector3 firstBodyPositionAfterSeparation = rigidbodies[i]->GetPosition() + (intersectData.GetDirection());
 				rigidbodies[i]->SetPosition(firstBodyPositionAfterSeparation);
 			}
 		}

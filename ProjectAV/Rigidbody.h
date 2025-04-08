@@ -19,7 +19,7 @@ public:
 	void Update(float dt) override;
 	void Integrate(float delta);
 
-	void SetPosition(Vector3& position);
+	void SetPosition(Vector3 position);
 	void SetCollider(Collider* collider);
 
 	Vector3& GetPosition();

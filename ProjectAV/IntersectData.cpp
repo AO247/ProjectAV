@@ -10,7 +10,7 @@ float IntersectData::GetDistance()
     return direction.Length();
 }
 
-Vector3& IntersectData::GetDirection()
+Vector3 IntersectData::GetDirection()
 {
     return direction;
 }

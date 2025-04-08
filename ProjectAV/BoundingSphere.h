@@ -14,7 +14,7 @@ public:
 		Collider(Collider::ColliderTypes::SPHERE, rigidbody) {
 	}
 
-	IntersectData IntersectBoundingSphere(BoundingSphere& other);
+	IntersectData IntersectBoundingSphere(BoundingSphere* other);
 
 	Vector3& GetCenter();
 	float GetRadius();
