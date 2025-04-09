@@ -46,9 +46,12 @@ public:
     void SetLocalPosition(const DirectX::XMFLOAT3& pos);
     void SetLocalRotation(const DirectX::XMFLOAT3& rotRad); // Euler angles in radians
     void SetLocalScale(const DirectX::XMFLOAT3& scale);
+    void SetWorldPosition(const DirectX::XMFLOAT3& pos); // <--- ADDED
 
     DirectX::XMMATRIX GetLocalTransform() const;
     DirectX::XMMATRIX GetWorldTransform() const; // Calculates on the fly or caches
+    DirectX::XMFLOAT3 GetWorldPosition() const; // <--- ADDED
+
     DirectX::XMFLOAT3 GetLocalPosition() const;
     DirectX::XMFLOAT3 GetLocalRotationEuler() const; // Returns Pitch, Yaw, Roll in RADIANS
     DirectX::XMFLOAT3 GetLocalScale() const;
