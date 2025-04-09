@@ -6,6 +6,7 @@
 #include "PointLight.h"
 #include <memory> // For unique_ptr
 #include "Node.h" // Include the new Node class
+#include "PhysicsEngine.h"
 
 // Forward declarations (if needed)
 
@@ -31,6 +32,7 @@ private:
     Camera cam;
     PointLight light; // Keep the light as is for now
     DirectX::XMFLOAT3 nanosuitPos = { 0.0f, 0.0f, 0.0f }; // Initial position
+    PhysicsEngine physicsEngine;
 
     // --- Scene Graph ---
     std::unique_ptr<Node> pSceneRoot; // Root of the scene graph

@@ -7,6 +7,7 @@
 #include "imgui/imgui.h"
 #include <memory>
 #include <algorithm>
+#include "BoundingSphere.h"
 
 namespace dx = DirectX;
 
@@ -19,7 +20,7 @@ App::App()
     pSceneRoot(std::make_unique<Node>("Root")) // Create scene root node
 {
     // Set Projection Matrix
-    wnd.Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 40.0f));
+    wnd.Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 200.0f));
 
     // --- Create Scene Objects ---
 
@@ -35,6 +36,17 @@ App::App()
     pNanosuitNode2->AddComponent(
         std::make_unique<ModelComponent>(pNanosuitNode2, wnd.Gfx(), "Models\\nano_textured\\nanosuit.obj")
     );
+    pNanosuitNode2->AddComponent(
+        std::make_unique<Rigidbody>(pNanosuitNode2, Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f))
+    );
+    Rigidbody* rb1 = pNanosuitNode2->GetComponent<Rigidbody>();
+    pNanosuitNode2->AddComponent(
+        std::make_unique<BoundingSphere>(pNanosuitNode2, Vector3(0.0f, 0.0f, 0.0f), 3.0f, rb1)
+    );
+    BoundingSphere* bs1 = pNanosuitNode2->GetComponent<BoundingSphere>();
+    rb1->SetCollider(bs1);
+    physicsEngine.AddRigidbody(rb1);
+
     pBox->AddComponent(
         std::make_unique<ModelComponent>(pBox, wnd.Gfx(), "Models\\box.glb")
     );
@@ -61,12 +73,24 @@ App::App()
         MessageBoxA(nullptr, "Unknown exception during model loading.", "Unknown Exception", MB_OK | MB_ICONEXCLAMATION);
     }
 
+    pNanosuitNode->AddComponent(
+        std::make_unique<Rigidbody>(pNanosuitNode, Vector3(-10.0f, 0.0f, 0.0f), Vector3(1.0f, 0.0f, 0.0f))
+    );
+    Rigidbody* rb2 = pNanosuitNode->GetComponent<Rigidbody>();
+    pNanosuitNode->AddComponent(
+        std::make_unique<BoundingSphere>(pNanosuitNode, Vector3(0.0f, 0.0f, 0.0f), 3.0f, rb2)
+    );
+    BoundingSphere* bs2 = pNanosuitNode->GetComponent<BoundingSphere>();
+    rb2->SetCollider(bs2);
+    physicsEngine.AddRigidbody(rb2);
+
 
     // 3. Add the Nanosuit Node to the Scene Root
-    pSceneRoot->AddChild(std::move(pNanosuitOwner));
+    pEmptyNode->AddChild(std::move(pNanosuitOwner));
     pSceneRoot->AddChild(std::move(pBoxOwner));
-	pNanosuitNode->AddChild(std::move(pNanosuitOwner2));
-    pNanosuitNode2->SetLocalPosition(DirectX::XMFLOAT3(-20.0f,0.0f,0.0f));
+    pSceneRoot->AddChild(std::move(pNanosuitOwner2));
+    pNanosuitNode2->SetLocalPosition(DirectX::XMFLOAT3(0.0f,0.0f,0.0f));
+    pNanosuitNode->SetLocalPosition(DirectX::XMFLOAT3(-10.0f, 0.0f, 0.0f));
 	pSceneRoot->AddChild(std::move(pEmptyNode));
     // Initialize cursor state
     wnd.DisableCursor();
@@ -91,6 +115,7 @@ int App::Go()
         const auto dt = timer.Mark() * speed_factor;
 
         // Main frame logic
+        physicsEngine.Simulate(dt);
         HandleInput(dt);
         DoFrame(dt);
     }
@@ -157,7 +182,7 @@ void App::DoFrame(float dt)
     // Update scene graph (updates transforms, components)
     // Keep Z the same, or modify as needed
     // Set the node's local position to the updated stored position
-    pNanosuitNode->SetLocalPosition(DirectX::XMFLOAT3(pNanosuitNode->GetLocalPosition().x + dt, 0.0f, 0.0f));
+    //pNanosuitNode->SetLocalPosition(DirectX::XMFLOAT3(pNanosuitNode->GetLocalPosition().x + dt, 0.0f, 0.0f));
     pSceneRoot->Update(dt);
     // Begin Frame
     wnd.Gfx().BeginFrame(0.07f, 0.0f, 0.12f); // Clear color
