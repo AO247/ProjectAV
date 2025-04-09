@@ -53,6 +53,8 @@ private:
 public:
 	Window( int width,int height,const char* name );
 	~Window();
+	int GetWidth() const;
+	int GetHeight() const;
 	Window( const Window& ) = delete;
 	Window& operator=( const Window& ) = delete;
 	void SetTitle( const std::string& title );
@@ -74,6 +76,7 @@ private:
 public:
 	Keyboard kbd;
 	Mouse mouse;
+	
 private:
 	bool cursorEnabled = true;
 	int width;

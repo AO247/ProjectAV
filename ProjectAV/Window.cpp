@@ -35,7 +35,14 @@ Window::WindowClass::WindowClass() noexcept
 	));
 	RegisterClassEx( &wc );
 }
-
+int Window::GetWidth() const 
+{
+	return width;
+}
+int Window::GetHeight() const
+{
+	return height;
+}
 Window::WindowClass::~WindowClass()
 {
 	UnregisterClass( wndClassName,GetInstance() );

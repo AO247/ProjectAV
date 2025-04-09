@@ -62,6 +62,7 @@ public:
 	Graphics& operator=( const Graphics& ) = delete;
 	~Graphics();
 	void EndFrame();
+<<<<<<< Updated upstream
 	void BeginFrame( float red,float green,float blue ) noexcept;
 	void DrawIndexed( UINT count ) noxnd;
 	void SetProjection( DirectX::FXMMATRIX proj ) noexcept;
@@ -71,6 +72,14 @@ public:
 	void EnableImgui() noexcept;
 	void DisableImgui() noexcept;
 	bool IsImguiEnabled() const noexcept;
+=======
+	void ClearBuffer( float red,float green,float blue ) noexcept;
+	void DrawTestTriangle();
+
+	ID3D11Device* GetDevice() const { return pDevice.Get(); }
+	ID3D11DeviceContext* GetContext() const { return pContext.Get(); }
+
+>>>>>>> Stashed changes
 private:
 	DirectX::XMMATRIX projection;
 	DirectX::XMMATRIX camera;
