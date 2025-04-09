@@ -9,7 +9,20 @@ void Rigidbody::Update(float dt)
 
 void Rigidbody::Integrate(float delta)
 {
-	position += (velocity * delta);
+	//position += (velocity * delta);
+
+	//DirectX::XMVECTOR positionVec = GetOwner()->GetWorldTransform().r[3];
+	//DirectX::XMFLOAT3 pos;
+	//XMStoreFloat3(&pos, positionVec);
+	//Vector3 v(pos.x, pos.y, pos.z);
+
+	Vector3 pos(GetOwner()->GetWorldPosition().x,
+				GetOwner()->GetWorldPosition().y,
+				GetOwner()->GetWorldPosition().z);
+
+
+
+	position = (pos + position) + (velocity * delta);
 }
 
 void Rigidbody::SetPosition(Vector3 position)

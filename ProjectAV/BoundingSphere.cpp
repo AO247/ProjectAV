@@ -57,7 +57,6 @@ float BoundingSphere::GetRadius()
 
 Vector3 BoundingSphere::GetTransformedCenter()
 {
-	float testowy = rigidbody->GetPosition().x;
 	return Vector3(rigidbody->GetPosition().x + center.x,
 				   rigidbody->GetPosition().y + center.y,
 				   rigidbody->GetPosition().z + center.z);

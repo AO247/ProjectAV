@@ -145,6 +145,46 @@ DirectX::XMFLOAT3 Node::GetLocalPosition() const
     return pos;
 }
 
+void Node::SetWorldPosition(const DirectX::XMFLOAT3& worldPos)
+{
+    // 1. Load the desired world position into a vector
+    dx::XMVECTOR desiredWorldPosVec = dx::XMLoadFloat3(&worldPos);
+
+    // 2. Get the parent's world transform (or identity if no parent)
+    dx::XMMATRIX parentWorldTransform = dx::XMMatrixIdentity();
+    if (parent)
+    {
+        parentWorldTransform = parent->GetWorldTransform(); // This ensures parent's transform is up-to-date
+    }
+
+    // 3. Calculate the inverse of the parent's world transform
+    //    (Determinant calculation can be skipped by passing nullptr)
+    dx::XMMATRIX invParentWorldTransform = dx::XMMatrixInverse(nullptr, parentWorldTransform);
+
+    // 4. Transform the desired world position into the parent's local space.
+    //    This gives the required local position for *this* node.
+    //    Use XMVector3TransformCoord as we're transforming a point (w=1 implicit).
+    dx::XMVECTOR requiredLocalPosVec = dx::XMVector3TransformCoord(desiredWorldPosVec, invParentWorldTransform);
+
+    // 5. Store the result back into an XMFLOAT3
+    DirectX::XMFLOAT3 requiredLocalPos;
+    dx::XMStoreFloat3(&requiredLocalPos, requiredLocalPosVec);
+
+    // 6. Use the existing SetLocalPosition function to apply it,
+    //    which preserves local rotation/scale and handles dirty flags.
+    SetLocalPosition(requiredLocalPos);
+}
+
+DirectX::XMFLOAT3 Node::GetWorldPosition() const
+{
+    dx::XMMATRIX T = dx::XMLoadFloat4x4(&worldTransform);
+    dx::XMVECTOR s, r, t;
+    dx::XMMatrixDecompose(&s, &r, &t, T);
+    DirectX::XMFLOAT3 pos;
+    dx::XMStoreFloat3(&pos, t);
+    return pos;
+}
+
 DirectX::XMFLOAT3 Node::GetLocalRotationEuler() const
 {
     dx::XMMATRIX T = dx::XMLoadFloat4x4(&localTransform);

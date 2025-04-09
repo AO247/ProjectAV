@@ -87,7 +87,7 @@ App::App()
 
     // 3. Add the Nanosuit Node to the Scene Root
     pSceneRoot->AddChild(std::move(pNanosuitOwner));
-    pSceneRoot->AddChild(std::move(pNanosuitOwner2));
+    pEmptyNode->AddChild(std::move(pNanosuitOwner2));
     pSceneRoot->AddChild(std::move(pBoxOwner));
 	//pNanosuitNode->AddChild(std::move(pNanosuitOwner2));
     pNanosuitNode->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
