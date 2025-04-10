@@ -28,9 +28,18 @@ App::App()
     pNanosuitNode = pNanosuitOwner.get(); // Store non-owning pointer for easy access
     auto pNanosuitOwner2 = std::make_unique<Node>("Nanosuit2");
     pNanosuitNode2 = pNanosuitOwner2.get(); // Store non-owning pointer for easy access
-    auto pBoxOwner = std::make_unique<Node>("Box");
-    pBox = pBoxOwner.get(); // Store non-owning pointer for easy access
+    //auto pBoxOwner = std::make_unique<Node>("Box");
+    //pBox = pBoxOwner.get(); // Store non-owning pointer for easy access
 	auto pEmptyNode = std::make_unique<Node>("EmptyNode");
+
+	auto pBrickOwner = std::make_unique<Node>("Brick");
+	pBrick = pBrickOwner.get(); // Store non-owning pointer for easy access
+
+    pBrick->AddComponent(
+        std::make_unique<ModelComponent>(pNanosuitNode2, wnd.Gfx(), "Models\\brick_wall\\brick_wall.obj")
+    );
+	pBrick->SetLocalScale(dx::XMFLOAT3(20.0f, 20.0f, 1.0f));
+	pBrick->SetLocalRotation(dx::XMFLOAT3(DirectX::XMConvertToRadians(90), 0.0f, 0.0f));
 
     pNanosuitNode2->AddComponent(
         std::make_unique<ModelComponent>(pNanosuitNode2, wnd.Gfx(), "Models\\nano_textured\\nanosuit.obj")
@@ -40,32 +49,19 @@ App::App()
     );
 	pBox->SetLocalScale(dx::XMFLOAT3(20.0f, 0.1f, 20.0f));
     // 2. Add the ModelComponent to the Nanosuit Node
-    try {
-        // The ModelComponent constructor now takes the Node* owner
-        pNanosuitNode->AddComponent(
-            std::make_unique<ModelComponent>(pNanosuitNode, wnd.Gfx(), "Models\\nano_textured\\nanosuit.obj")
-        );
+    
+    pNanosuitNode->AddComponent(
+        std::make_unique<ModelComponent>(pNanosuitNode, wnd.Gfx(), "Models\\nano_textured\\nanosuit.obj")
+    );
 
-    }
-    catch (const CException& e)
-    {
-        MessageBoxA(nullptr, e.what(), e.GetType(), MB_OK | MB_ICONEXCLAMATION);
-        // Handle model loading failure gracefully (e.g., exit or continue without model)
-    }
-    catch (const std::exception& e)
-    {
-        MessageBoxA(nullptr, e.what(), "Standard Exception", MB_OK | MB_ICONEXCLAMATION);
-    }
-    catch (...)
-    {
-        MessageBoxA(nullptr, "Unknown exception during model loading.", "Unknown Exception", MB_OK | MB_ICONEXCLAMATION);
-    }
+   
 
+    pSceneRoot->AddChild(std::move(pBrickOwner));
 
     // 3. Add the Nanosuit Node to the Scene Root
     pSceneRoot->AddChild(std::move(pNanosuitOwner));
-    pSceneRoot->AddChild(std::move(pBoxOwner));
-	pNanosuitNode->AddChild(std::move(pNanosuitOwner2));
+    //pSceneRoot->AddChild(std::move(pBoxOwner));
+	pSceneRoot->AddChild(std::move(pNanosuitOwner2));
     pNanosuitNode2->SetLocalPosition(DirectX::XMFLOAT3(-20.0f,0.0f,0.0f));
 	pSceneRoot->AddChild(std::move(pEmptyNode));
     // Initialize cursor state

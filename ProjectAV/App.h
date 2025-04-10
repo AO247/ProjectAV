@@ -37,6 +37,7 @@ private:
     Node* pNanosuitNode = nullptr;    // Pointer to the specific node holding the nanosuit model (optional, for easy access)
     Node* pNanosuitNode2 = nullptr;    // Pointer to the specific node holding the nanosuit model (optional, for easy access)
     Node* pBox = nullptr;    // Pointer to the specific node holding the nanosuit model (optional, for easy access)
+	Node* pBrick = nullptr;    // Pointer to the specific node holding the nanosuit model (optional, for easy access)
     Node* pEmptyNode = nullptr;
     Node* pSelectedSceneNode = nullptr; // Add this pointer
 

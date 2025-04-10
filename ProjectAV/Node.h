@@ -1,5 +1,4 @@
 #pragma once
-#pragma once
 #include <vector>
 #include <memory>
 #include <string>
@@ -16,6 +15,7 @@ public:
     virtual ~Node() = default;
 
     // --- Hierarchy ---
+    // ... (AddChild, GetChild, GetParent, GetChildren, GetName remain the same) ...
     void AddChild(std::unique_ptr<Node> pChild);
     Node* GetChild(size_t index);
     Node* GetParent() const;
@@ -23,59 +23,68 @@ public:
     const std::string& GetName() const;
 
     // --- Components ---
-    template<typename T>
-    T* GetComponent() const
-    {
-        static_assert(std::is_base_of<Component, T>::value, "T must derive from Component");
-        for (const auto& comp : components)
-        {
-            if (auto* p = dynamic_cast<T*>(comp.get()))
-            {
-                return p;
-            }
-        }
-        return nullptr;
-    }
-
-    // Takes ownership of the component
-    Component* AddComponent(std::unique_ptr<Component> pComponent);
+    // ... (GetComponent, AddComponent remain the same) ...
+    template<typename T> T* GetComponent() const; // Keep declaration
+    Component* AddComponent(std::unique_ptr<Component> pComponent); // Keep declaration
+    const std::vector<std::unique_ptr<Component>>& GetComponents() const; // Keep declaration
 
     // --- Transform ---
-    // Set local transform relative to parent
-    void SetLocalTransform(DirectX::FXMMATRIX transform);
-    void SetLocalPosition(const DirectX::XMFLOAT3& pos);
-    void SetLocalRotation(const DirectX::XMFLOAT3& rotRad); // Euler angles in radians
-    void SetLocalScale(const DirectX::XMFLOAT3& scale);
-    void SetWorldPosition(const DirectX::XMFLOAT3& pos); // <--- ADDED
+    // Local
+    void SetLocalTransform(DirectX::FXMMATRIX transform); // Recalculates stored Euler from matrix
+    void SetLocalPosition(const DirectX::XMFLOAT3& pos);  // Updates matrix using stored Euler
+    void SetLocalRotation(const DirectX::XMFLOAT3& rotRad); // Updates stored Euler & matrix
+    void SetLocalScale(const DirectX::XMFLOAT3& scale);    // Updates matrix using stored Euler
 
-    DirectX::XMMATRIX GetLocalTransform() const;
-    DirectX::XMMATRIX GetWorldTransform() const; // Calculates on the fly or caches
-    DirectX::XMFLOAT3 GetWorldPosition() const; // <--- ADDED
-
+    DirectX::XMMATRIX GetLocalTransform() const; // Constructs matrix from stored components
     DirectX::XMFLOAT3 GetLocalPosition() const;
-    DirectX::XMFLOAT3 GetLocalRotationEuler() const; // Returns Pitch, Yaw, Roll in RADIANS
+    DirectX::XMFLOAT3 GetLocalRotationEuler() const; // Returns stored Euler angles
     DirectX::XMFLOAT3 GetLocalScale() const;
 
-    const std::vector<std::unique_ptr<Component>>& GetComponents() const;
+    // World
+    DirectX::XMMATRIX GetWorldTransform() const;
+    DirectX::XMFLOAT3 GetWorldPosition() const;
+    void SetWorldPosition(const DirectX::XMFLOAT3& pos); // Adjusts local pos based on parent
 
     // --- Update & Draw ---
-    // Updates world transform based on parent and local, then updates children and components
     void Update(float dt);
-    // Draws components of this node and then children (basic scene graph traversal)
     void Draw(Graphics& gfx) const;
     void ShowNodeTree(Node*& pSelectedNode) noexcept;
 
-
 private:
-    void UpdateWorldTransform(); // Helper to update matrix based on parent
+    void UpdateWorldTransform();
+    void UpdateLocalTransformFromComponents(); // Helper to build matrix from stored pos/rot/scale
+    void UpdateStoredEulerFromMatrix();        // Helper used by SetLocalTransform
 
     std::string name;
-    DirectX::XMFLOAT4X4 localTransform;
-    DirectX::XMFLOAT4X4 worldTransform; // Cached world transform
 
-    Node* parent = nullptr; // Non-owning pointer
+    // --- Store transform components directly ---
+    DirectX::XMFLOAT3 localPosition = { 0.0f, 0.0f, 0.0f };
+    DirectX::XMFLOAT3 localRotationEulerRad = { 0.0f, 0.0f, 0.0f }; // Store Pitch, Yaw, Roll in Radians
+    DirectX::XMFLOAT3 localScale = { 1.0f, 1.0f, 1.0f };
+
+    // --- Matrix caches ---
+    DirectX::XMFLOAT4X4 localTransform;  // Cache built from pos/rot/scale
+    DirectX::XMFLOAT4X4 worldTransform; // Cache built from local and parent
+
+    Node* parent = nullptr;
     std::vector<std::unique_ptr<Node>> children;
     std::vector<std::unique_ptr<Component>> components;
 
-    bool worldTransformDirty = true; // Flag to recalculate world transform
+    bool localTransformDirty = true; // Flag to rebuild local matrix
+    bool worldTransformDirty = true; // Flag to recalculate world matrix
 };
+
+// Template implementations if needed in header
+template<typename T>
+T* Node::GetComponent() const
+{
+    static_assert(std::is_base_of<Component, T>::value, "T must derive from Component");
+    for (const auto& comp : components)
+    {
+        if (auto* p = dynamic_cast<T*>(comp.get()))
+        {
+            return p;
+        }
+    }
+    return nullptr;
+}
