@@ -17,7 +17,7 @@ public:
 		colliderType(colliderType),
 		rigidbody(rigidbody),
 	    Component(owner) {}
-
+	
 	void Update(float dt) override;
 
 	IntersectData Intersect(Collider* other);

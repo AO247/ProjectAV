@@ -17,23 +17,51 @@ float MaxVectorElementValue(DirectX::SimpleMath::Vector3& vector)
 	return max;
 }
 
-IntersectData AABB::IntersectAABB(AABB& other)
+IntersectData AxisAligned::AABB::IntersectAABB(AABB* other)
 {
-	Vector3 distances1 = other.minExtents - maxExtents;
-	Vector3 distances2 = minExtents - other.maxExtents;
+	Vector3 distances1 = other->GetTransformedExtents(other->minExtents) - GetTransformedExtents(maxExtents);
+	Vector3 distances2 = GetTransformedExtents(minExtents) - other->GetTransformedExtents(other->maxExtents);
 	Vector3 distances = Vector3::Max(distances1, distances2);
 
 	float maxDistance = MaxVectorElementValue(distances);
 
-	return IntersectData(maxDistance < 0, distances);
+	float maxPenetration = distances.x;
+	int axis = 0;
+
+	if (distances.y > maxPenetration) {
+		maxPenetration = distances.y;
+		axis = 1;
+	}
+	if (distances.z > maxPenetration) {
+		maxPenetration = distances.z;
+		axis = 2;
+	}
+
+	Vector3 separation(0, 0, 0);
+	if (maxPenetration < 0) {
+		if (axis == 0) separation.x = maxPenetration;
+		else if (axis == 1) separation.y = maxPenetration;
+		else if (axis == 2) separation.z = maxPenetration;
+	}
+
+	return IntersectData(maxDistance < 0, -separation);
 }
 
-Vector3& AABB::GetMinExtents()
+
+
+Vector3& AxisAligned::AABB::GetMinExtents()
 {
 	return minExtents;
 }
 
-Vector3& AABB::GetMaxExtents()
+Vector3& AxisAligned::AABB::GetMaxExtents()
 {
 	return maxExtents;
+}
+
+Vector3 AxisAligned::AABB::GetTransformedExtents(Vector3 extents)
+{
+	return Vector3(rigidbody->GetPosition().x + extents.x,
+				   rigidbody->GetPosition().y + extents.y, 
+				   rigidbody->GetPosition().z + extents.z);
 }

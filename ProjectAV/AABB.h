@@ -1,23 +1,29 @@
 #pragma once
 #include <SimpleMath.h>
 #include "IntersectData.h"
+#include "Collider.h"
 
 using namespace DirectX::SimpleMath;
 
-class AABB
+namespace AxisAligned
 {
-public:
-	AABB(Vector3& minExtents, Vector3& maxExtents) :
-		minExtents(minExtents),
-		maxExtents(maxExtents) {
-	}
+	class AABB : public Collider
+	{
+	public:
+		AABB(Node* owner, Vector3 minExtents, Vector3 maxExtents, Rigidbody* rigidbody) :
+			minExtents(minExtents),
+			maxExtents(maxExtents),
+			Collider(owner, Collider::ColliderTypes::AABB, rigidbody)
+		{
+		}
 
-	IntersectData IntersectAABB(AABB& other);
+		IntersectData IntersectAABB(AABB* other);
 
-	Vector3& GetMinExtents();
-	Vector3& GetMaxExtents();
-
-private:
-	Vector3 minExtents;
-	Vector3 maxExtents;
-};
+		Vector3& GetMinExtents();
+		Vector3& GetMaxExtents();
+		Vector3 GetTransformedExtents(Vector3 extents);
+	private:
+		Vector3 minExtents;
+		Vector3 maxExtents;
+	};
+}
