@@ -2,8 +2,11 @@
 #include <SimpleMath.h>
 #include "IntersectData.h"
 #include "Collider.h"
+#include "BoundingSphere.h"
 
 using namespace DirectX::SimpleMath;
+
+class BoundingSphere;
 
 namespace AxisAligned
 {
@@ -17,7 +20,10 @@ namespace AxisAligned
 		{
 		}
 
+		void Draw(Graphics& gfx, DirectX::FXMMATRIX worldTransform);
+
 		IntersectData IntersectAABB(AABB* other);
+		IntersectData IntersectBoundingSphere(BoundingSphere* other);
 
 		Vector3& GetMinExtents();
 		Vector3& GetMaxExtents();

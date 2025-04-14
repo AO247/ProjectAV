@@ -201,6 +201,7 @@
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="Rigidbody.cpp" />
     <ClCompile Include="Sampler.cpp" />
+    <ClCompile Include="SolidBox.cpp" />
     <ClCompile Include="SolidSphere.cpp" />
     <ClCompile Include="Surface.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -221,6 +222,7 @@
     <ClInclude Include="BindableCodex.h" />
     <ClInclude Include="BindableCommon.h" />
     <ClInclude Include="BoundingSphere.h" />
+    <ClInclude Include="Box.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CException.h" />
     <ClInclude Include="CMath.h" />
@@ -259,6 +261,7 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="Rigidbody.h" />
     <ClInclude Include="Sampler.h" />
+    <ClInclude Include="SolidBox.h" />
     <ClInclude Include="SolidSphere.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="Surface.h" />

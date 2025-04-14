@@ -1,6 +1,7 @@
 #pragma once
 #include "IntersectData.h"
 #include "Rigidbody.h"
+#include "ConditionalNoexcept.h"
 
 class Rigidbody;
 
@@ -19,6 +20,7 @@ public:
 	    Component(owner) {}
 	
 	void Update(float dt) override;
+	virtual void Draw(Graphics& gfx, DirectX::FXMMATRIX worldTransform);
 
 	IntersectData Intersect(Collider* other);
 
@@ -28,4 +30,5 @@ private:
 	ColliderTypes colliderType;
 protected:
 	Rigidbody* rigidbody;
+	bool firstDraw = true;
 };

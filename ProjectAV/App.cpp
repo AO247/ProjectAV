@@ -35,16 +35,16 @@ App::App()
 	auto pEmptyNode = std::make_unique<Node>("EmptyNode");
 
     pNanosuitNode2->AddComponent(
-        std::make_unique<ModelComponent>(pNanosuitNode2, wnd.Gfx(), "Models\\Colliders\\Box.obj")
+        std::make_unique<ModelComponent>(pNanosuitNode2, wnd.Gfx(), "Models\\Colliders\\Sphere.obj")
     );
     pNanosuitNode2->AddComponent(
         std::make_unique<Rigidbody>(pNanosuitNode2, Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f))
     );
     Rigidbody* rb1 = pNanosuitNode2->GetComponent<Rigidbody>();
     pNanosuitNode2->AddComponent(
-        std::make_unique<AxisAligned::AABB>(pNanosuitNode2, Vector3(-1.0f, -1.0f, -1.0f), Vector3(1.0f, 1.0f, 1.0f), rb1)
+        std::make_unique<BoundingSphere>(pNanosuitNode2, Vector3(0,0,0), 1.0f, rb1)
     );
-    AxisAligned::AABB* bs1 = pNanosuitNode2->GetComponent<AxisAligned::AABB>();
+    BoundingSphere* bs1 = pNanosuitNode2->GetComponent<BoundingSphere>();
     rb1->SetCollider(bs1);
     physicsEngine.AddRigidbody(rb1);
 
@@ -79,7 +79,7 @@ App::App()
     );
     Rigidbody* rb2 = pNanosuitNode->GetComponent<Rigidbody>();
     pNanosuitNode->AddComponent(
-        std::make_unique<AxisAligned::AABB>(pNanosuitNode, Vector3(-1.0f, -1.0f, -1.0f), Vector3(1.0f, 1.0f, 1.0f), rb2)
+        std::make_unique<AxisAligned::AABB>(pNanosuitNode, Vector3(-1,-1,-1), Vector3(1, 1, 1), rb2)
     );
     AxisAligned::AABB* bs2 = pNanosuitNode->GetComponent<AxisAligned::AABB>();
     rb2->SetCollider(bs2);

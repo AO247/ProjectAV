@@ -1,5 +1,19 @@
 #include "BoundingSphere.h"
 #include <sstream>
+#include <algorithm>
+
+void BoundingSphere::Draw(Graphics& gfx, DirectX::FXMMATRIX worldTransform)
+{
+	if (firstDraw)
+	{
+		firstDraw = false;
+		visualization = SolidSphere(gfx, radius);
+	}
+	visualization.SetPos(DirectX::XMFLOAT3(rigidbody->GetPosition().x,
+										   rigidbody->GetPosition().y,
+										   rigidbody->GetPosition().z));
+	visualization.Draw(gfx);
+}
 
 IntersectData BoundingSphere::IntersectBoundingSphere(BoundingSphere* other)
 {
@@ -12,6 +26,45 @@ IntersectData BoundingSphere::IntersectBoundingSphere(BoundingSphere* other)
 	Vector3 separationVector = direction * intersectionDistance;
 
 	return IntersectData(intersectionDistance < 0, separationVector);
+}
+
+float myMax(float a, float b)
+{
+	if (a > b)
+	{
+		return a;
+	}
+	else
+	{
+		return b;
+	}
+}
+
+float myMin(float a, float b)
+{
+	if (a < b)
+	{
+		return a;
+	}
+	else
+	{
+		return b;
+	}
+}
+
+IntersectData BoundingSphere::IntersectAABB(AxisAligned::AABB* other)
+{
+	Vector3 pointClosestToSphereCenter(myMax(other->GetTransformedExtents(other->GetMinExtents()).x, myMin(GetTransformedCenter().x, other->GetTransformedExtents(other->GetMaxExtents()).x)),
+									   myMax(other->GetTransformedExtents(other->GetMinExtents()).y, myMin(GetTransformedCenter().y, other->GetTransformedExtents(other->GetMaxExtents()).y)),
+									   myMax(other->GetTransformedExtents(other->GetMinExtents()).z, myMin(GetTransformedCenter().z, other->GetTransformedExtents(other->GetMaxExtents()).z)));
+
+	Vector3 direction = pointClosestToSphereCenter - GetTransformedCenter();
+	float penetrationDepth = radius - direction.Length();
+	direction /= direction.Length();
+
+	Vector3 separationVector = direction * penetrationDepth;
+
+	return IntersectData(penetrationDepth > 0, -separationVector);
 }
 
 Vector3& BoundingSphere::GetCenter()

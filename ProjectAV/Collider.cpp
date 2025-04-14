@@ -6,6 +6,11 @@ void Collider::Update(float dt)
 {
 }
 
+void Collider::Draw(Graphics& gfx, DirectX::FXMMATRIX worldTransform)
+{
+
+}
+
 IntersectData Collider::Intersect(Collider* other)
 {
 	if (colliderType == SPHERE && other->GetColliderType() == SPHERE)
@@ -17,6 +22,16 @@ IntersectData Collider::Intersect(Collider* other)
 	{
 		AxisAligned::AABB* self = (AxisAligned::AABB*)this;
 		return self->IntersectAABB((AxisAligned::AABB*)other);
+	}
+	if (colliderType == SPHERE && other->GetColliderType() == AABB)
+	{
+		BoundingSphere* self = (BoundingSphere*)this;
+		return self->IntersectAABB((AxisAligned::AABB*)other);
+	}
+	if (colliderType == AABB && other->GetColliderType() == SPHERE)
+	{
+		AxisAligned::AABB* self = (AxisAligned::AABB*)this;
+		return self->IntersectBoundingSphere((BoundingSphere*)other);
 	}
 }
 

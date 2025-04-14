@@ -1,5 +1,6 @@
 #include "AABB.h"
 #include "MiscMath.cpp"
+#include "Box.h"
 
 float MaxVectorElementValue(DirectX::SimpleMath::Vector3& vector)
 {
@@ -47,7 +48,49 @@ IntersectData AxisAligned::AABB::IntersectAABB(AABB* other)
 	return IntersectData(maxDistance < 0, -separation);
 }
 
+float mmyMax(float a, float b)
+{
+	if (a > b)
+	{
+		return a;
+	}
+	else
+	{
+		return b;
+	}
+}
 
+float mmyMin(float a, float b)
+{
+	if (a < b)
+	{
+		return a;
+	}
+	else
+	{
+		return b;
+	}
+}
+
+IntersectData AxisAligned::AABB::IntersectBoundingSphere(BoundingSphere* other)
+{
+	Vector3 pointClosestToSphereCenter(mmyMax(GetTransformedExtents(GetMinExtents()).x, mmyMin(other->GetTransformedCenter().x, GetTransformedExtents(GetMaxExtents()).x)),
+									   mmyMax(GetTransformedExtents(GetMinExtents()).y, mmyMin(other->GetTransformedCenter().y, GetTransformedExtents(GetMaxExtents()).y)),
+									   mmyMax(GetTransformedExtents(GetMinExtents()).z, mmyMin(other->GetTransformedCenter().z, GetTransformedExtents(GetMaxExtents()).z)));
+
+	Vector3 direction = other->GetTransformedCenter() - pointClosestToSphereCenter;
+	float penetrationDepth = other->GetRadius() - direction.Length();
+	direction /= direction.Length();
+
+	Vector3 separationVector = direction * penetrationDepth;
+
+	return IntersectData(penetrationDepth > 0, -separationVector);
+}
+
+void AxisAligned::AABB::Draw(Graphics& gfx, DirectX::FXMMATRIX worldTransform)
+{
+
+}
 
 Vector3& AxisAligned::AABB::GetMinExtents()
 {

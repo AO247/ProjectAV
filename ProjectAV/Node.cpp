@@ -3,6 +3,7 @@
 #include "Graphics.h"       // Include Graphics for the Draw method
 #include <DirectXMath.h>
 #include "imgui/imgui.h"
+#include "Collider.h"
 namespace dx = DirectX;
 
 Node::Node(std::string name, Node* parent)
@@ -267,6 +268,10 @@ void Node::Draw(Graphics& gfx) const
     if (auto* modelComp = GetComponent<ModelComponent>()) // Checks if a ModelComponent exists
     {
         modelComp->Draw(gfx, GetWorldTransform()); // Pass the final world transform
+    }
+    if (auto* colliderComp = GetComponent<Collider>()) // Checks if a ModelComponent exists
+    {
+        colliderComp->Draw(gfx, GetWorldTransform()); // Pass the final world transform
     }
 
     // 2. Draw children recursively

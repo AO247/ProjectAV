@@ -2,8 +2,13 @@
 #include <SimpleMath.h>
 #include "IntersectData.h"
 #include "Collider.h"
+#include "SolidSphere.h"
+#include "AABB.h"
 
 using namespace DirectX::SimpleMath;
+namespace AxisAligned {
+	class AABB;
+}
 
 class BoundingSphere : public Collider
 {
@@ -11,10 +16,12 @@ public:
 	BoundingSphere(Node* owner, Vector3 center, float radius, Rigidbody* rigidbody) :
 		center(center),
 		radius(radius),
-		Collider(owner, Collider::ColliderTypes::SPHERE, rigidbody) {
-	}
+		Collider(owner, Collider::ColliderTypes::SPHERE, rigidbody) {}
+
+	void Draw(Graphics& gfx, DirectX::FXMMATRIX worldTransform);
 
 	IntersectData IntersectBoundingSphere(BoundingSphere* other);
+	IntersectData IntersectAABB(AxisAligned::AABB* other);
 
 	Vector3& GetCenter();
 	float GetRadius();
@@ -23,4 +30,5 @@ public:
 private:
 	Vector3 center;
 	float radius;
+	mutable SolidSphere visualization;
 };
