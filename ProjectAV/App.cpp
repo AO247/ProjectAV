@@ -81,9 +81,10 @@ App::App()
     );
     Rigidbody* rb2 = pNanosuitNode->GetComponent<Rigidbody>();
     pNanosuitNode->AddComponent(
-        std::make_unique<AxisAligned::AABB>(pNanosuitNode, Vector3(-1,-1,-1), Vector3(1, 1, 1), rb2)
+        std::make_unique<AxisAligned::AABB>(pNanosuitNode, Vector3(-2,-2,-2), Vector3(2, 2, 2), rb2)
     );
     AxisAligned::AABB* bs2 = pNanosuitNode->GetComponent<AxisAligned::AABB>();
+    AddBoxColliderToDraw(wnd.Gfx(), bs2);
     rb2->SetCollider(bs2);
     physicsEngine.AddRigidbody(rb2);
 
@@ -204,6 +205,7 @@ void App::DoFrame(float dt)
     light.Draw(wnd.Gfx());
 
     DrawSphereColliders(wnd.Gfx());
+    DrawBoxColliders(wnd.Gfx());
 
     // --- ImGui ---
     if (showControlWindow) {
@@ -369,5 +371,29 @@ void App::DrawSphereColliders(Graphics& gfx)
                                         it->first->GetTransformedCenter().y,
                                         it->first->GetTransformedCenter().z));
         sphere.Draw(gfx);
+    }
+}
+
+void App::AddBoxColliderToDraw(Graphics& gfx, AxisAligned::AABB* aabb)
+{
+    boxCollidersToDraw[aabb] = SolidBox(gfx, DirectX::XMFLOAT3(aabb->GetTransformedExtents(aabb->GetMinExtents()).x,
+                                                               aabb->GetTransformedExtents(aabb->GetMinExtents()).y,
+                                                               aabb->GetTransformedExtents(aabb->GetMinExtents()).z),
+                                             DirectX::XMFLOAT3(aabb->GetTransformedExtents(aabb->GetMaxExtents()).x,
+                                                               aabb->GetTransformedExtents(aabb->GetMaxExtents()).y,
+                                                               aabb->GetTransformedExtents(aabb->GetMaxExtents()).z));
+}
+
+void App::DrawBoxColliders(Graphics& gfx)
+{
+    for (auto it = boxCollidersToDraw.begin(); it != boxCollidersToDraw.end(); ++it)
+    {
+        SolidBox box(gfx, DirectX::XMFLOAT3(it->first->GetTransformedExtents(it->first->GetMinExtents()).x,
+                                            it->first->GetTransformedExtents(it->first->GetMinExtents()).y,
+                                            it->first->GetTransformedExtents(it->first->GetMinExtents()).z),
+                                            DirectX::XMFLOAT3(it->first->GetTransformedExtents(it->first->GetMaxExtents()).x,
+                                                              it->first->GetTransformedExtents(it->first->GetMaxExtents()).y,
+                                                              it->first->GetTransformedExtents(it->first->GetMaxExtents()).z));
+        box.Draw(gfx);
     }
 }

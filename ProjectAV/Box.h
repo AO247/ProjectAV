@@ -1,105 +1,76 @@
 #pragma once
-#include "IndexedTriangleList.h"
+#include <optional>
+#include "Vertex.h"           // Assuming this defines Dvtx::VertexLayout and Dvtx::VertexBuffer
+#include "IndexedTriangleList.h" // Assuming this defines IndexedTriangleList
 #include <DirectXMath.h>
-#include "Vertex.h"
+#include <vector>
+#include <array>              // Useful for defining vertices concisely
+
+// Note: Including CMath.h seems unnecessary based on usage, 
+// unless it defines PI or other constants used elsewhere.
+// DirectX::XM_PI can be used if needed.
 
 class Box
 {
 public:
-	static IndexedTriangleList Make(DirectX::XMFLOAT3 minExtents, DirectX::XMFLOAT3 maxExtents)
-	{
-		Dvtx::VertexLayout layout = Dvtx::VertexLayout{}.Append(Dvtx::VertexLayout::ElementType::Position3D);
-		Dvtx::VertexBuffer vb{ std::move(layout) };
+    // Generates vertices and indices for an AABB defined by min/max extents
+    static IndexedTriangleList Make(Dvtx::VertexLayout layout, DirectX::XMFLOAT3 minExtents, DirectX::XMFLOAT3 maxExtents)
+    {
+        namespace dx = DirectX;
 
-		float xEdgeSize = abs(minExtents.x - maxExtents.x);
-		float yEdgeSize = abs(minExtents.y - maxExtents.y);
-		float zEdgeSize = abs(minExtents.z - maxExtents.z);
+        // Define the 8 vertices of the AABB
+        const std::array<dx::XMFLOAT3, 8> corners = {
+            dx::XMFLOAT3{ minExtents.x, minExtents.y, minExtents.z }, // 0: Bottom-Left-Back
+            dx::XMFLOAT3{ maxExtents.x, minExtents.y, minExtents.z }, // 1: Bottom-Right-Back
+            dx::XMFLOAT3{ minExtents.x, maxExtents.y, minExtents.z }, // 2: Top-Left-Back
+            dx::XMFLOAT3{ maxExtents.x, maxExtents.y, minExtents.z }, // 3: Top-Right-Back
+            dx::XMFLOAT3{ minExtents.x, minExtents.y, maxExtents.z }, // 4: Bottom-Left-Front
+            dx::XMFLOAT3{ maxExtents.x, minExtents.y, maxExtents.z }, // 5: Bottom-Right-Front
+            dx::XMFLOAT3{ minExtents.x, maxExtents.y, maxExtents.z }, // 6: Top-Left-Front
+            dx::XMFLOAT3{ maxExtents.x, maxExtents.y, maxExtents.z }  // 7: Top-Right-Front
+        };
 
-		// minExtents = bottom left corner closer to camera
-		// maxExtents = upper right corner away from camera
+        // Create the vertex buffer
+        Dvtx::VertexBuffer vb{ std::move(layout) };
+        for (const auto& corner : corners)
+        {
+            // EmplaceBack assumes it knows how to handle the layout
+            // (e.g., only fills Position3D if that's what the layout specifies)
+            // If other attributes (normals, texcoords) are needed, they must be calculated
+            // and passed appropriately based on the layout's requirements.
+            // For a simple solid box, only position might be needed initially.
+            vb.EmplaceBack(corner);
+        }
 
-		std::vector<unsigned short> indices;
+        // Define the indices for the 12 triangles (2 per face)
+        // Winding order is generally counter-clockwise for front-facing faces in DirectX
+        std::vector<unsigned short> indices = {
+            // Front face (+Z)
+            4, 6, 7,  4, 7, 5,
+            // Back face (-Z)
+            1, 3, 2,  1, 2, 0,
+            // Left face (-X)
+            0, 2, 6,  0, 6, 4,
+            // Right face (+X)
+            5, 7, 3,  5, 3, 1,
+            // Top face (+Y)
+            2, 3, 7,  2, 7, 6,
+            // Bottom face (-Y)
+            4, 5, 1,  4, 1, 0
+        };
 
-		// front wall
-		vb.EmplaceBack(minExtents);
-		vb.EmplaceBack(DirectX::XMFLOAT3(minExtents.x + xEdgeSize,
-										 minExtents.y, 
-										 minExtents.z));
-		vb.EmplaceBack(DirectX::XMFLOAT3(minExtents.x,
-										 minExtents.y + yEdgeSize,
-										 minExtents.z));
-		vb.EmplaceBack(DirectX::XMFLOAT3(minExtents.x + xEdgeSize,
-										 minExtents.y + yEdgeSize,
-										 minExtents.z));
-		indices.push_back(0);
-		indices.push_back(1);
-		indices.push_back(2);
-		indices.push_back(2);
-		indices.push_back(3);
-		indices.push_back(1);
 
-		// left wall
-		vb.EmplaceBack(minExtents);
-		vb.EmplaceBack(DirectX::XMFLOAT3(minExtents.x,
-										 minExtents.y,
-										 minExtents.z + zEdgeSize));
-		vb.EmplaceBack(DirectX::XMFLOAT3(minExtents.x,
-										 minExtents.y + yEdgeSize,
-										 minExtents.z));
-		vb.EmplaceBack(DirectX::XMFLOAT3(minExtents.x,
-										 minExtents.y + yEdgeSize,
-										 minExtents.z + zEdgeSize));
+        return { std::move(vb),std::move(indices) };
+    }
 
-		indices.push_back(4);
-		indices.push_back(5);
-		indices.push_back(6);
-		indices.push_back(6);
-		indices.push_back(7);
-		indices.push_back(5);
-
-		// right wall
-		vb.EmplaceBack(DirectX::XMFLOAT3(minExtents.x + xEdgeSize,
-										 minExtents.y,
-										 minExtents.z));
-		vb.EmplaceBack(DirectX::XMFLOAT3(minExtents.x + xEdgeSize,
-										 minExtents.y + yEdgeSize,
-										 minExtents.z));
-		vb.EmplaceBack(DirectX::XMFLOAT3(minExtents.x + xEdgeSize,
-										 minExtents.y,
-										 minExtents.z + zEdgeSize));
-		vb.EmplaceBack(DirectX::XMFLOAT3(minExtents.x + xEdgeSize,
-										 minExtents.y + yEdgeSize,
-										 minExtents.z + zEdgeSize));
-
-		indices.push_back(8);
-		indices.push_back(9);
-		indices.push_back(10);
-		indices.push_back(9);
-		indices.push_back(11);
-		indices.push_back(10);
-
-		// back wall
-		vb.EmplaceBack(DirectX::XMFLOAT3(minExtents.x + xEdgeSize,
-										 minExtents.y,
-										 minExtents.z + zEdgeSize));
-		vb.EmplaceBack(DirectX::XMFLOAT3(minExtents.x + xEdgeSize,
-										 minExtents.y + yEdgeSize,
-										 minExtents.z + zEdgeSize));
-		vb.EmplaceBack(DirectX::XMFLOAT3(minExtents.x,
-										 minExtents.y,
-										 minExtents.z + zEdgeSize));
-		vb.EmplaceBack(DirectX::XMFLOAT3(minExtents.x,
-										 minExtents.y + yEdgeSize,
-										 minExtents.z + zEdgeSize));
-
-		indices.push_back(12);
-		indices.push_back(13);
-		indices.push_back(14);
-		indices.push_back(14);
-		indices.push_back(15);
-		indices.push_back(13);
-
-		return { std::move(vb),std::move(indices) };
-	}
+    // Convenience overload with optional layout (defaults to Position3D)
+    static IndexedTriangleList Make(DirectX::XMFLOAT3 minExtents, DirectX::XMFLOAT3 maxExtents, std::optional<Dvtx::VertexLayout> layout = std::nullopt)
+    {
+        using Element = Dvtx::VertexLayout::ElementType;
+        if (!layout)
+        {
+            layout = Dvtx::VertexLayout{}.Append(Element::Position3D);
+        }
+        return Make(std::move(*layout), minExtents, maxExtents);
+    }
 };
-

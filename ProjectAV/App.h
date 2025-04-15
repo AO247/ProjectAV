@@ -9,6 +9,7 @@
 #include "PhysicsEngine.h"
 #include <map>
 #include "BoundingSphere.h"
+#include "SolidBox.h"
 
 // Forward declarations (if needed)
 
@@ -45,8 +46,11 @@ private:
     Node* pSelectedSceneNode = nullptr; // Add this pointer
 
     std::map<BoundingSphere*, SolidSphere> sphereCollidersToDraw;
+    std::map<AxisAligned::AABB*, SolidBox> boxCollidersToDraw;
     void AddSphereColliderToDraw(Graphics& gfx, BoundingSphere* boundingSphere);
     void DrawSphereColliders(Graphics& gfx);
+    void AddBoxColliderToDraw(Graphics& gfx, AxisAligned::AABB* aabb);
+    void DrawBoxColliders(Graphics& gfx);
 
     // --- UI State ---
     bool showDemoWindow = false;
