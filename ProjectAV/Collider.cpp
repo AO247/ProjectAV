@@ -6,11 +6,6 @@ void Collider::Update(float dt)
 {
 }
 
-void Collider::Draw(Graphics& gfx, DirectX::FXMMATRIX worldTransform)
-{
-
-}
-
 IntersectData Collider::Intersect(Collider* other)
 {
 	if (colliderType == SPHERE && other->GetColliderType() == SPHERE)

@@ -2,19 +2,6 @@
 #include <sstream>
 #include <algorithm>
 
-void BoundingSphere::Draw(Graphics& gfx, DirectX::FXMMATRIX worldTransform)
-{
-	if (firstDraw)
-	{
-		firstDraw = false;
-		visualization = SolidSphere(gfx, radius);
-	}
-	visualization.SetPos(DirectX::XMFLOAT3(rigidbody->GetPosition().x,
-										   rigidbody->GetPosition().y,
-										   rigidbody->GetPosition().z));
-	visualization.Draw(gfx);
-}
-
 IntersectData BoundingSphere::IntersectBoundingSphere(BoundingSphere* other)
 {
 	float radiusDistance = radius + other->radius;

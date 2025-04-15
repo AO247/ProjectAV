@@ -8,6 +8,7 @@
 #include <memory>
 #include <algorithm>
 #include "BoundingSphere.h"
+#include "ColliderSphere.h"
 #include "AABB.h"
 
 namespace dx = DirectX;
@@ -42,9 +43,10 @@ App::App()
     );
     Rigidbody* rb1 = pNanosuitNode2->GetComponent<Rigidbody>();
     pNanosuitNode2->AddComponent(
-        std::make_unique<BoundingSphere>(pNanosuitNode2, Vector3(0,0,0), 1.0f, rb1)
+        std::make_unique<BoundingSphere>(pNanosuitNode2, Vector3(0,0,0), 2.0f, rb1)
     );
     BoundingSphere* bs1 = pNanosuitNode2->GetComponent<BoundingSphere>();
+    AddSphereColliderToDraw(wnd.Gfx(), bs1);
     rb1->SetCollider(bs1);
     physicsEngine.AddRigidbody(rb1);
 
@@ -201,6 +203,8 @@ void App::DoFrame(float dt)
     // Draw helpers (like the light representation)
     light.Draw(wnd.Gfx());
 
+    DrawSphereColliders(wnd.Gfx());
+
     // --- ImGui ---
     if (showControlWindow) {
         ShowControlWindows();
@@ -345,4 +349,25 @@ void App::ShowControlWindows()
         }
     }
     ImGui::End(); // End Scene Hierarchy Window
+}
+
+void App::AddSphereColliderToDraw(Graphics& gfx, BoundingSphere* boundingSphere)
+{
+    sphereCollidersToDraw[boundingSphere] = SolidSphere(gfx, boundingSphere->GetRadius());
+}
+
+void App::DrawSphereColliders(Graphics& gfx)
+{
+    for (auto it = sphereCollidersToDraw.begin(); it != sphereCollidersToDraw.end(); ++it)
+    {
+        /*it->second.SetPos(DirectX::XMFLOAT3(it->first->GetCenter().x,
+                                            it->first->GetCenter().y,
+                                            it->first->GetCenter().z));
+        it->second.Draw(gfx);*/
+        ColliderSphere sphere(gfx, it->first->GetRadius());
+        sphere.SetPos(DirectX::XMFLOAT3(it->first->GetTransformedCenter().x,
+                                        it->first->GetTransformedCenter().y,
+                                        it->first->GetTransformedCenter().z));
+        sphere.Draw(gfx);
+    }
 }

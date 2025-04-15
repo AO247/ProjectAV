@@ -18,8 +18,6 @@ public:
 		radius(radius),
 		Collider(owner, Collider::ColliderTypes::SPHERE, rigidbody) {}
 
-	void Draw(Graphics& gfx, DirectX::FXMMATRIX worldTransform);
-
 	IntersectData IntersectBoundingSphere(BoundingSphere* other);
 	IntersectData IntersectAABB(AxisAligned::AABB* other);
 
@@ -30,5 +28,4 @@ public:
 private:
 	Vector3 center;
 	float radius;
-	mutable SolidSphere visualization;
 };

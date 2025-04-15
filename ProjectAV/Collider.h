@@ -20,7 +20,6 @@ public:
 	    Component(owner) {}
 	
 	void Update(float dt) override;
-	virtual void Draw(Graphics& gfx, DirectX::FXMMATRIX worldTransform);
 
 	IntersectData Intersect(Collider* other);
 

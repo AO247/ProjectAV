@@ -269,10 +269,6 @@ void Node::Draw(Graphics& gfx) const
     {
         modelComp->Draw(gfx, GetWorldTransform()); // Pass the final world transform
     }
-    if (auto* colliderComp = GetComponent<Collider>()) // Checks if a ModelComponent exists
-    {
-        colliderComp->Draw(gfx, GetWorldTransform()); // Pass the final world transform
-    }
 
     // 2. Draw children recursively
     for (const auto& child : children)

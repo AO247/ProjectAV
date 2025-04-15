@@ -7,6 +7,8 @@
 #include <memory> // For unique_ptr
 #include "Node.h" // Include the new Node class
 #include "PhysicsEngine.h"
+#include <map>
+#include "BoundingSphere.h"
 
 // Forward declarations (if needed)
 
@@ -41,6 +43,10 @@ private:
     Node* pBox = nullptr;    // Pointer to the specific node holding the nanosuit model (optional, for easy access)
     Node* pEmptyNode = nullptr;
     Node* pSelectedSceneNode = nullptr; // Add this pointer
+
+    std::map<BoundingSphere*, SolidSphere> sphereCollidersToDraw;
+    void AddSphereColliderToDraw(Graphics& gfx, BoundingSphere* boundingSphere);
+    void DrawSphereColliders(Graphics& gfx);
 
     // --- UI State ---
     bool showDemoWindow = false;
