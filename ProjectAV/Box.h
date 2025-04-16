@@ -6,10 +6,6 @@
 #include <vector>
 #include <array>              // Useful for defining vertices concisely
 
-// Note: Including CMath.h seems unnecessary based on usage, 
-// unless it defines PI or other constants used elsewhere.
-// DirectX::XM_PI can be used if needed.
-
 class Box
 {
 public:
@@ -18,52 +14,46 @@ public:
     {
         namespace dx = DirectX;
 
-        // Define the 8 vertices of the AABB
-        const std::array<dx::XMFLOAT3, 8> corners = {
-            dx::XMFLOAT3{ minExtents.x, minExtents.y, minExtents.z }, // 0: Bottom-Left-Back
-            dx::XMFLOAT3{ maxExtents.x, minExtents.y, minExtents.z }, // 1: Bottom-Right-Back
-            dx::XMFLOAT3{ minExtents.x, maxExtents.y, minExtents.z }, // 2: Top-Left-Back
-            dx::XMFLOAT3{ maxExtents.x, maxExtents.y, minExtents.z }, // 3: Top-Right-Back
-            dx::XMFLOAT3{ minExtents.x, minExtents.y, maxExtents.z }, // 4: Bottom-Left-Front
-            dx::XMFLOAT3{ maxExtents.x, minExtents.y, maxExtents.z }, // 5: Bottom-Right-Front
-            dx::XMFLOAT3{ minExtents.x, maxExtents.y, maxExtents.z }, // 6: Top-Left-Front
-            dx::XMFLOAT3{ maxExtents.x, maxExtents.y, maxExtents.z }  // 7: Top-Right-Front
-        };
+        // Define the 8 vertices of the AABB in the same order as Cube::Make implicitly uses
+        // relative to the center (even though we use min/max here)
+        // This order allows using Cube's indices directly.
+        std::vector<DirectX::XMFLOAT3> vertices(8);
+        vertices[0] = { minExtents.x, minExtents.y, minExtents.z }; // Cube 0: -side, -side, -side
+        vertices[1] = { maxExtents.x, minExtents.y, minExtents.z }; // Cube 1:  side, -side, -side
+        vertices[2] = { minExtents.x, maxExtents.y, minExtents.z }; // Cube 2: -side,  side, -side
+        vertices[3] = { maxExtents.x, maxExtents.y, minExtents.z }; // Cube 3:  side,  side, -side
+        vertices[4] = { minExtents.x, minExtents.y, maxExtents.z }; // Cube 4: -side, -side,  side
+        vertices[5] = { maxExtents.x, minExtents.y, maxExtents.z }; // Cube 5:  side, -side,  side
+        vertices[6] = { minExtents.x, maxExtents.y, maxExtents.z }; // Cube 6: -side,  side,  side
+        vertices[7] = { maxExtents.x, maxExtents.y, maxExtents.z }; // Cube 7:  side,  side,  side
 
-        // Create the vertex buffer
+        // Create the vertex buffer using the provided layout
         Dvtx::VertexBuffer vb{ std::move(layout) };
-        for (const auto& corner : corners)
+        for (const auto& cornerPos : vertices)
         {
-            // EmplaceBack assumes it knows how to handle the layout
-            // (e.g., only fills Position3D if that's what the layout specifies)
-            // If other attributes (normals, texcoords) are needed, they must be calculated
-            // and passed appropriately based on the layout's requirements.
-            // For a simple solid box, only position might be needed initially.
-            vb.EmplaceBack(corner);
+            // EmplaceBack needs to match the layout.
+            // Assuming layout only requires Position3D for this basic box.
+            // If layout needs more (e.g., normals), this needs adjustment.
+            vb.EmplaceBack(cornerPos);
         }
 
-        // Define the indices for the 12 triangles (2 per face)
-        // Winding order is generally counter-clockwise for front-facing faces in DirectX
+        // --- Use the exact same indices as Cube::Make ---
+        // These indices assume Clockwise (CW) winding order for front faces
+        // relative to the outside view, matching DirectX default culling.
         std::vector<unsigned short> indices = {
-            // Front face (+Z)
-            4, 6, 7,  4, 7, 5,
-            // Back face (-Z)
-            1, 3, 2,  1, 2, 0,
-            // Left face (-X)
-            0, 2, 6,  0, 6, 4,
-            // Right face (+X)
-            5, 7, 3,  5, 3, 1,
-            // Top face (+Y)
-            2, 3, 7,  2, 7, 6,
-            // Bottom face (-Y)
-            4, 5, 1,  4, 1, 0
+            0,2,1, 2,3,1, // Back Face   (-Z) triangles (0,2,1), (2,3,1)
+            1,3,5, 3,7,5, // Right Face  (+X) triangles (1,3,5), (3,7,5)
+            2,6,3, 3,6,7, // Top Face    (+Y) triangles (2,6,3), (3,6,7)
+            4,5,7, 4,7,6, // Front Face  (+Z) triangles (4,5,7), (4,7,6)
+            0,4,2, 2,4,6, // Left Face   (-X) triangles (0,4,2), (2,4,6)
+            0,1,4, 1,5,4  // Bottom Face (-Y) triangles (0,1,4), (1,5,4)
         };
-
+        // --- End index change ---
 
         return { std::move(vb),std::move(indices) };
     }
 
-    // Convenience overload with optional layout (defaults to Position3D)
+    // Convenience overload remains the same
     static IndexedTriangleList Make(DirectX::XMFLOAT3 minExtents, DirectX::XMFLOAT3 maxExtents, std::optional<Dvtx::VertexLayout> layout = std::nullopt)
     {
         using Element = Dvtx::VertexLayout::ElementType;
