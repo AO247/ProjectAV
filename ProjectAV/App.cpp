@@ -44,10 +44,10 @@ App::App()
     pNanosuitNode2->AddComponent(
         std::make_unique<ModelComponent>(pNanosuitNode2, wnd.Gfx(), "Models\\nano_textured\\nanosuit.obj")
     );
-    pBox->AddComponent(
-        std::make_unique<ModelComponent>(pBox, wnd.Gfx(), "Models\\box.glb")
-    );
-	pBox->SetLocalScale(dx::XMFLOAT3(20.0f, 0.1f, 20.0f));
+    //pBox->AddComponent(
+    //    std::make_unique<ModelComponent>(pBox, wnd.Gfx(), "Models\\box.glb")
+    //);
+	//pBox->SetLocalScale(dx::XMFLOAT3(20.0f, 0.1f, 20.0f));
     // 2. Add the ModelComponent to the Nanosuit Node
     
     pNanosuitNode->AddComponent(
