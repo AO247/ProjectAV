@@ -12,10 +12,6 @@ void PhysicsEngine::Simulate(float delta)
 	{
 		rigidbodies[i]->Integrate(delta);
 	}
-	//for (Rigidbody* rigidbody : rigidbodies)
-	//{
-	//	rigidbody->Integrate(delta);
-	//}
 	HandleCollisions();
 }
 
@@ -29,14 +25,51 @@ void PhysicsEngine::HandleCollisions()
 				rigidbodies[j]->GetCollider());
 			if (intersectData.GetDoesIntersect())
 			{
-				OutputDebugString("JEST KOLIZJA \n");
-				std::ostringstream ss3;
-				ss3 << (intersectData.GetDirection() * -1).x;
-				std::string s3(ss3.str());
-				s3 += " X SEPARACJI\n";
-				OutputDebugString(s3.c_str());
-				Vector3 firstBodyPositionAfterSeparation = rigidbodies[i]->GetPosition() + (intersectData.GetDirection());
-				rigidbodies[i]->SetPosition(firstBodyPositionAfterSeparation);
+				//
+				//
+				// SEPARATION
+				//
+				//
+
+				// Collision for moving and not moving body OR both not moving
+				if (rigidbodies[i]->GetVelocity().Length() * rigidbodies[j]->GetVelocity().Length() == 0)
+				{
+					if (rigidbodies[i]->GetVelocity().Length() != 0)
+					{
+						Vector3 firstBodyPositionAfterSeparation = rigidbodies[i]->GetPosition() + intersectData.GetDirection();
+						rigidbodies[i]->SetPosition(firstBodyPositionAfterSeparation);
+					}
+					else
+					{
+						Vector3 secondBodyPositionAfterSeparation = rigidbodies[j]->GetPosition() - intersectData.GetDirection();
+						rigidbodies[j]->SetPosition(secondBodyPositionAfterSeparation);
+					}
+				}
+				// Collision for moving and moving body
+				else
+				{
+					Vector3 halfSeparationVector = intersectData.GetDirection() / 2.0f;
+					Vector3 firstBodyPositionAfterSeparation = rigidbodies[i]->GetPosition() + halfSeparationVector;
+					Vector3 secondBodyPositionAfterSeparation = rigidbodies[j]->GetPosition() - halfSeparationVector;
+					rigidbodies[i]->SetPosition(firstBodyPositionAfterSeparation);
+					rigidbodies[j]->SetPosition(secondBodyPositionAfterSeparation);
+				}
+
+				//
+				//
+				// Combining forces
+				//
+				//
+				float e = 0.0f;
+				Vector3 relativeVelocity = rigidbodies[i]->GetVelocity() - rigidbodies[j]->GetVelocity();
+				float factor = ( (-(1 + e) * relativeVelocity)).Dot(intersectData.GetDirection() ) / 
+						  ( intersectData.GetDirection().Dot( intersectData.GetDirection() * (1/rigidbodies[i]->GetMass() + 1/rigidbodies[j]->GetMass()) ) );
+
+				Vector3 firstBodyNewVelocity = rigidbodies[i]->GetVelocity() + ((factor / rigidbodies[i]->GetMass()) * intersectData.GetDirection());
+				Vector3 secondBodyNewVelocity = rigidbodies[j]->GetVelocity() - ((factor / rigidbodies[j]->GetMass()) * intersectData.GetDirection());
+
+				rigidbodies[i]->SetVelocity(firstBodyNewVelocity);
+				rigidbodies[j]->SetVelocity(secondBodyNewVelocity);
 			}
 		}
 	}

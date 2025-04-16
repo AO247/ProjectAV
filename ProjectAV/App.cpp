@@ -10,6 +10,7 @@
 #include "BoundingSphere.h"
 #include "ColliderSphere.h"
 #include "AABB.h"
+//#include "Rigidbody.h"
 
 namespace dx = DirectX;
 
