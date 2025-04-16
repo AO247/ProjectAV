@@ -27,43 +27,67 @@ App::App()
     auto pNanosuitOwner = std::make_unique<Node>("Nanosuit");
     pNanosuitNode = pNanosuitOwner.get(); // Store non-owning pointer for easy access
     auto pNanosuitOwner2 = std::make_unique<Node>("Nanosuit2");
-    pNanosuitNode2 = pNanosuitOwner2.get(); // Store non-owning pointer for easy access
-    //auto pBoxOwner = std::make_unique<Node>("Box");
-    //pBox = pBoxOwner.get(); // Store non-owning pointer for easy access
+    pNanosuitNode2 = pNanosuitOwner2.get();
 	auto pEmptyNode = std::make_unique<Node>("EmptyNode");
 
 	auto pBrickOwner = std::make_unique<Node>("Brick");
-	pBrick = pBrickOwner.get(); // Store non-owning pointer for easy access
+	pBrick = pBrickOwner.get();
+	auto pBoxOwner = std::make_unique<Node>("Box");
+	pBox = pBoxOwner.get();
 
-    pBrick->AddComponent(
-        std::make_unique<ModelComponent>(pNanosuitNode2, wnd.Gfx(), "Models\\brick_wall\\brick_wall.obj")
-    );
-	pBrick->SetLocalScale(dx::XMFLOAT3(20.0f, 20.0f, 1.0f));
-	pBrick->SetLocalRotation(dx::XMFLOAT3(DirectX::XMConvertToRadians(90), 0.0f, 0.0f));
+	auto pStoneOwner = std::make_unique<Node>("Stone");
+	pStone = pStoneOwner.get();
+	auto pColumnOwner = std::make_unique<Node>("Column");
+	pColumn = pColumnOwner.get();
+	auto pIslandOwner = std::make_unique<Node>("Island");
+	pIsland = pIslandOwner.get();
 
-    pNanosuitNode2->AddComponent(
-        std::make_unique<ModelComponent>(pNanosuitNode2, wnd.Gfx(), "Models\\nano_textured\\nanosuit.obj")
-    );
-    //pBox->AddComponent(
-    //    std::make_unique<ModelComponent>(pBox, wnd.Gfx(), "Models\\box.glb")
-    //);
-	//pBox->SetLocalScale(dx::XMFLOAT3(20.0f, 0.1f, 20.0f));
-    // 2. Add the ModelComponent to the Nanosuit Node
-    
+    // Adding Components//
     pNanosuitNode->AddComponent(
         std::make_unique<ModelComponent>(pNanosuitNode, wnd.Gfx(), "Models\\nano_textured\\nanosuit.obj")
     );
+    pNanosuitNode2->AddComponent(
+        std::make_unique<ModelComponent>(pNanosuitNode2, wnd.Gfx(), "Models\\nano_textured\\nanosuit.obj")
+    );
+    pBrick->AddComponent(
+        std::make_unique<ModelComponent>(pBrick, wnd.Gfx(), "Models\\brick_wall\\brick_wall.obj")
+    );
+    pBox->AddComponent(
+        std::make_unique<ModelComponent>(pBox, wnd.Gfx(), "Models\\box.glb")
+    );
+    /*pStone->AddComponent(
+        std::make_unique<ModelComponent>(pStone, wnd.Gfx(), "Models\\kamien\\kamien.obj")
+    );*/
+    pColumn->AddComponent(
+        std::make_unique<ModelComponent>(pColumn, wnd.Gfx(), "Models\\kolumna\\kolumna.obj")
+    );
+    /*pIsland->AddComponent(
+        std::make_unique<ModelComponent>(pIsland, wnd.Gfx(), "Models\\wyspa\\wyspa.obj")
+    );*/
+
+	// Adding to Scene Graph//
+    pSceneRoot->AddChild(std::move(pNanosuitOwner));
+    pSceneRoot->AddChild(std::move(pNanosuitOwner2));
+    pSceneRoot->AddChild(std::move(pEmptyNode));
+    pSceneRoot->AddChild(std::move(pBrickOwner));
+    pSceneRoot->AddChild(std::move(pBoxOwner));
+	//pSceneRoot->AddChild(std::move(pStoneOwner));
+	pSceneRoot->AddChild(std::move(pColumnOwner));
+	//pSceneRoot->AddChild(std::move(pIslandOwner));
+
+
+    // Changing position scale etc.//
+    pNanosuitNode2->SetLocalPosition(DirectX::XMFLOAT3(-20.0f, 0.0f, 0.0f));
+	pBrick->SetLocalScale(dx::XMFLOAT3(20.0f, 20.0f, 1.0f));
+	pBrick->SetLocalRotation(dx::XMFLOAT3(DirectX::XMConvertToRadians(90), 0.0f, 0.0f));
+
+
+    
+
 
    
 
-    pSceneRoot->AddChild(std::move(pBrickOwner));
 
-    // 3. Add the Nanosuit Node to the Scene Root
-    pSceneRoot->AddChild(std::move(pNanosuitOwner));
-    //pSceneRoot->AddChild(std::move(pBoxOwner));
-	pSceneRoot->AddChild(std::move(pNanosuitOwner2));
-    pNanosuitNode2->SetLocalPosition(DirectX::XMFLOAT3(-20.0f,0.0f,0.0f));
-	pSceneRoot->AddChild(std::move(pEmptyNode));
     // Initialize cursor state
     wnd.DisableCursor();
     wnd.mouse.EnableRaw();
