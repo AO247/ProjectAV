@@ -47,6 +47,8 @@ App::App()
         std::make_unique<BoundingSphere>(pNanosuitNode2, Vector3(0,0,0), 2.0f, rb1)
     );
     BoundingSphere* bs1 = pNanosuitNode2->GetComponent<BoundingSphere>();
+    rb1->SetMass(1000);
+    rb1->SetStatic(true);
     AddSphereColliderToDraw(wnd.Gfx(), bs1);
     rb1->SetCollider(bs1);
     physicsEngine.AddRigidbody(rb1);
@@ -54,6 +56,18 @@ App::App()
     pBox->AddComponent(
         std::make_unique<ModelComponent>(pBox, wnd.Gfx(), "Models\\box.glb")
     );
+    pBox->AddComponent(
+        std::make_unique<Rigidbody>(pBox, Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f))
+    );
+    Rigidbody* brb = pBox->GetComponent<Rigidbody>();
+    brb->SetStatic(true);
+    pBox->AddComponent(
+        std::make_unique<AxisAligned::AABB>(pBox, Vector3(-20, 0, -20), Vector3(20, 0, 20), brb)
+    );
+    AxisAligned::AABB* baabb = pBox->GetComponent<AxisAligned::AABB>();
+    AddBoxColliderToDraw(wnd.Gfx(), baabb);
+    brb->SetCollider(baabb);
+    physicsEngine.AddRigidbody(brb);
 	pBox->SetLocalScale(dx::XMFLOAT3(20.0f, 0.1f, 20.0f));
     // 2. Add the ModelComponent to the Nanosuit Node
     try {
@@ -78,7 +92,7 @@ App::App()
     }
 
     pNanosuitNode->AddComponent(
-        std::make_unique<Rigidbody>(pNanosuitNode, Vector3(-10.0f, 0.0f, 0.0f), Vector3(1.0f, 0.0f, 0.0f))
+        std::make_unique<Rigidbody>(pNanosuitNode, Vector3(-10.0f, 0.0f, 0.0f), Vector3(0.0f, -3.0f, 0.0f))
     );
     Rigidbody* rb2 = pNanosuitNode->GetComponent<Rigidbody>();
     pNanosuitNode->AddComponent(

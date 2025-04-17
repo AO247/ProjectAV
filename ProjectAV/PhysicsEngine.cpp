@@ -31,16 +31,18 @@ void PhysicsEngine::HandleCollisions()
 				//
 				//
 
-				// Collision for moving and not moving body OR both not moving
+				// Collision for moving and not moving body OR both not moving (including static cases)
 				if (rigidbodies[i]->GetVelocity().Length() * rigidbodies[j]->GetVelocity().Length() == 0)
 				{
 					if (rigidbodies[i]->GetVelocity().Length() != 0)
 					{
+						OutputDebugString("AAA\n");
 						Vector3 firstBodyPositionAfterSeparation = rigidbodies[i]->GetPosition() + intersectData.GetDirection();
 						rigidbodies[i]->SetPosition(firstBodyPositionAfterSeparation);
 					}
 					else
 					{
+						OutputDebugString("BBB\n");
 						Vector3 secondBodyPositionAfterSeparation = rigidbodies[j]->GetPosition() - intersectData.GetDirection();
 						rigidbodies[j]->SetPosition(secondBodyPositionAfterSeparation);
 					}
@@ -60,7 +62,9 @@ void PhysicsEngine::HandleCollisions()
 				// Combining forces
 				//
 				//
-				float e = 1.0f;
+				
+				/*
+				float e = 0.0f;
 				Vector3 relativeVelocity = rigidbodies[i]->GetVelocity() - rigidbodies[j]->GetVelocity();
 				float factor = ( (-(1 + e) * relativeVelocity)).Dot(intersectData.GetDirection() ) / 
 						  ( intersectData.GetDirection().Dot( intersectData.GetDirection() * (1/rigidbodies[i]->GetMass() + 1/rigidbodies[j]->GetMass()) ) );
@@ -69,7 +73,17 @@ void PhysicsEngine::HandleCollisions()
 				Vector3 secondBodyNewVelocity = rigidbodies[j]->GetVelocity() - ((factor / rigidbodies[j]->GetMass()) * intersectData.GetDirection());
 
 				rigidbodies[i]->SetVelocity(firstBodyNewVelocity);
-				rigidbodies[j]->SetVelocity(secondBodyNewVelocity);
+				rigidbodies[j]->SetVelocity(secondBodyNewVelocity);*/
+
+				/*
+				if (rigidbodies[i]->GetIsStatic())
+				{
+					rigidbodies[j]->SetVelocity(Vector3(0, 0, 0));
+				}
+				if (rigidbodies[j]->GetIsStatic())
+				{
+					rigidbodies[i]->SetVelocity(Vector3(0, 0, 0));
+				}*/
 			}
 		}
 	}

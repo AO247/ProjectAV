@@ -24,8 +24,11 @@ void Rigidbody::Integrate(float delta)
 				GetOwner()->GetWorldPosition().z);
 	//position = pos;
 
-	force += mass * gravity;
-	velocity -= velocity * linearVelocityDamping;
+	if (!isStatic)
+	{
+		force += mass * gravity;
+	}
+	//velocity -= velocity * linearVelocityDamping;
 	velocity += (force / mass) * delta;
 	position = pos + (velocity * delta);
 
@@ -47,9 +50,19 @@ void Rigidbody::SetVelocity(Vector3 velocity)
 	this->velocity = velocity;
 }
 
+void Rigidbody::SetMass(float mass)
+{
+	this->mass = mass;
+}
+
 void Rigidbody::AddForce(Vector3 force)
 {
 	this->force += force;
+}
+
+void Rigidbody::SetStatic(bool isStatic)
+{
+	this->isStatic = isStatic;
 }
 
 Vector3& Rigidbody::GetPosition()
@@ -70,4 +83,9 @@ Collider* Rigidbody::GetCollider()
 float Rigidbody::GetMass()
 {
 	return mass;
+}
+
+bool Rigidbody::GetIsStatic()
+{
+	return isStatic;
 }
