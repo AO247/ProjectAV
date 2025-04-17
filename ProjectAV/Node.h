@@ -49,6 +49,7 @@ public:
     void Update(float dt);
     void Draw(Graphics& gfx) const;
     void ShowNodeTree(Node*& pSelectedNode) noexcept;
+    std::string tag;
 
 private:
     void UpdateWorldTransform();
