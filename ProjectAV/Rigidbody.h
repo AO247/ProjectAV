@@ -36,5 +36,6 @@ private:
 	Vector3 velocity;
 	Vector3 force;
 	float mass = 10.0f;
+	float linearVelocityDamping = 0.01f;
 	Collider* collider;
 };

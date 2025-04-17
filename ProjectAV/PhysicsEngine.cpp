@@ -60,7 +60,7 @@ void PhysicsEngine::HandleCollisions()
 				// Combining forces
 				//
 				//
-				float e = 0.0f;
+				float e = 1.0f;
 				Vector3 relativeVelocity = rigidbodies[i]->GetVelocity() - rigidbodies[j]->GetVelocity();
 				float factor = ( (-(1 + e) * relativeVelocity)).Dot(intersectData.GetDirection() ) / 
 						  ( intersectData.GetDirection().Dot( intersectData.GetDirection() * (1/rigidbodies[i]->GetMass() + 1/rigidbodies[j]->GetMass()) ) );

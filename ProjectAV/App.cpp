@@ -189,6 +189,10 @@ void App::DoFrame(float dt)
     // Set the node's local position to the updated stored position
     //pNanosuitNode->SetLocalPosition(DirectX::XMFLOAT3(pNanosuitNode->GetLocalPosition().x + dt, 0.0f, 0.0f));
     pSceneRoot->Update(dt);
+    if (wnd.kbd.KeyIsPressed('X'))
+    {
+        pNanosuitNode->GetComponent<Rigidbody>()->AddForce(Vector3(500.0f, 0.0f, 0.0f));
+    }
     // Begin Frame
     wnd.Gfx().BeginFrame(0.07f, 0.0f, 0.12f); // Clear color
 

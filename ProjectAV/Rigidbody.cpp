@@ -25,6 +25,7 @@ void Rigidbody::Integrate(float delta)
 	//position = pos;
 
 	force += mass * gravity;
+	velocity -= velocity * linearVelocityDamping;
 	velocity += (force / mass) * delta;
 	position = pos + (velocity * delta);
 
