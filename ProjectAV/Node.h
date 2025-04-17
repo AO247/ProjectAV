@@ -75,16 +75,3 @@ private:
 };
 
 // Template implementations if needed in header
-template<typename T>
-T* Node::GetComponent() const
-{
-    static_assert(std::is_base_of<Component, T>::value, "T must derive from Component");
-    for (const auto& comp : components)
-    {
-        if (auto* p = dynamic_cast<T*>(comp.get()))
-        {
-            return p;
-        }
-    }
-    return nullptr;
-}

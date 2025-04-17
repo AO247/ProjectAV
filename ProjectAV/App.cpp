@@ -19,7 +19,7 @@ App::App()
     pSceneRoot(std::make_unique<Node>("Root")) // Create scene root node
 {
     // Set Projection Matrix
-    wnd.Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 40.0f));
+    wnd.Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 2000.0f));
 
     // --- Create Scene Objects ---
 
@@ -61,9 +61,9 @@ App::App()
     pColumn->AddComponent(
         std::make_unique<ModelComponent>(pColumn, wnd.Gfx(), "Models\\kolumna\\kolumna.obj")
     );
-    /*pIsland->AddComponent(
+    pIsland->AddComponent(
         std::make_unique<ModelComponent>(pIsland, wnd.Gfx(), "Models\\wyspa\\wyspa.obj")
-    );*/
+    );
 
 	// Adding to Scene Graph//
     pSceneRoot->AddChild(std::move(pNanosuitOwner));
@@ -73,7 +73,7 @@ App::App()
     pSceneRoot->AddChild(std::move(pBoxOwner));
 	//pSceneRoot->AddChild(std::move(pStoneOwner));
 	pSceneRoot->AddChild(std::move(pColumnOwner));
-	//pSceneRoot->AddChild(std::move(pIslandOwner));
+	pSceneRoot->AddChild(std::move(pIslandOwner));
 
 
     // Changing position scale etc.//

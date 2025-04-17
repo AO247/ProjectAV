@@ -46,6 +46,9 @@
     <Filter Include="Source Files\Components">
       <UniqueIdentifier>{2627c391-8230-4cdb-95f9-3ad7ea8445f2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Enemies">
+      <UniqueIdentifier>{741a85d2-24b2-4598-ba88-360e22f6d032}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinMain.cpp">
@@ -329,6 +332,9 @@
     <ClInclude Include="TransformCbufDoubleboi.h">
       <Filter>Header Files\Bindable</Filter>
     </ClInclude>
+    <ClInclude Include="AIController.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ProjectAV.rc">
@@ -368,6 +374,8 @@
     <FxCompile Include="PhongPSNormalMapObject.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="PhongPSNotex.hlsl" />
+    <FxCompile Include="PhongVSNotex.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DXGetErrorDescription.inl">
