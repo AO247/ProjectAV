@@ -34,18 +34,7 @@ Node* Node::GetChild(size_t index) { /* ... same ... */
 Node* Node::GetParent() const { /* ... same ... */ return parent; }
 const std::vector<std::unique_ptr<Node>>& Node::GetChildren() const { /* ... same ... */ return children; }
 const std::string& Node::GetName() const { /* ... same ... */ return name; }
-template<typename T> T* Node::GetComponent() const
-{
-    static_assert(std::is_base_of<Component, T>::value, "T must derive from Component");
-    for (const auto& comp : components)
-    {
-        if (auto* p = dynamic_cast<T*>(comp.get()))
-        {
-            return p;
-        }
-    }
-    return nullptr;
-}
+
 Component* Node::AddComponent(std::unique_ptr<Component> pComponent) { /* ... same ... */
     assert(pComponent);
     components.push_back(std::move(pComponent));

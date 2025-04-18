@@ -1,6 +1,7 @@
 #include "App.h"
-#include "Node.h"           // Include Node
-#include "ModelComponent.h" // Include ModelComponent
+#include "Node.h"           
+#include "ModelComponent.h" 
+#include "PlayerController.h" // Include PlayerController header
 #include "CMath.h"
 #include "Surface.h"
 #include "GDIPlusManager.h"
@@ -10,39 +11,46 @@
 
 namespace dx = DirectX;
 
-GDIPlusManager gdipm; // Keep GDI+ manager
+GDIPlusManager gdipm;
 
 App::App()
     :
-    wnd(1280, 720, "Project AV"),
-    light(wnd.Gfx()), // Initialize light
-    pSceneRoot(std::make_unique<Node>("Root")) // Create scene root node
+    wnd(1280, 720, "Project AV - FPS Controller"), // Pass window dimensions/title
+    light(wnd.Gfx()),
+    pSceneRoot(std::make_unique<Node>("Root"))
 {
-    // Set Projection Matrix
+    // Set Projection Matrix (Far plane adjusted for larger scenes potentially)
     wnd.Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 2000.0f));
 
-    // --- Create Scene Objects ---
+    // --- Create Player Node ---
+   
 
-    // 1. Create a Node for the Nanosuit model
+
+
+
+    auto pPlayerNodeOwner = std::make_unique<Node>("Player");
+    pPlayerNode = pPlayerNodeOwner.get();
     auto pNanosuitOwner = std::make_unique<Node>("Nanosuit");
-    pNanosuitNode = pNanosuitOwner.get(); // Store non-owning pointer for easy access
+    pNanosuitNode = pNanosuitOwner.get();
     auto pNanosuitOwner2 = std::make_unique<Node>("Nanosuit2");
     pNanosuitNode2 = pNanosuitOwner2.get();
-	auto pEmptyNode = std::make_unique<Node>("EmptyNode");
+    auto pEmptyNode = std::make_unique<Node>("EmptyNode");
+    auto pBrickOwner = std::make_unique<Node>("Brick");
+    pBrick = pBrickOwner.get();
+    auto pBoxOwner = std::make_unique<Node>("Box");
+    pBox = pBoxOwner.get();
+    auto pStoneOwner = std::make_unique<Node>("Stone");
+    pStone = pStoneOwner.get();
+    auto pColumnOwner = std::make_unique<Node>("Column");
+    pColumn = pColumnOwner.get();
+    auto pIslandOwner = std::make_unique<Node>("Island");
+    pIsland = pIslandOwner.get();
 
-	auto pBrickOwner = std::make_unique<Node>("Brick");
-	pBrick = pBrickOwner.get();
-	auto pBoxOwner = std::make_unique<Node>("Box");
-	pBox = pBoxOwner.get();
 
-	auto pStoneOwner = std::make_unique<Node>("Stone");
-	pStone = pStoneOwner.get();
-	auto pColumnOwner = std::make_unique<Node>("Column");
-	pColumn = pColumnOwner.get();
-	auto pIslandOwner = std::make_unique<Node>("Island");
-	pIsland = pIslandOwner.get();
-
-    // Adding Components//
+    // Adding Components
+    pPlayerNode->AddComponent(
+		std::make_unique<PlayerController>(pPlayerNode, wnd)
+    );
     pNanosuitNode->AddComponent(
         std::make_unique<ModelComponent>(pNanosuitNode, wnd.Gfx(), "Models\\nano_textured\\nanosuit.obj")
     );
@@ -56,7 +64,7 @@ App::App()
         std::make_unique<ModelComponent>(pBox, wnd.Gfx(), "Models\\box.glb")
     );
     /*pStone->AddComponent(
-        std::make_unique<ModelComponent>(pStone, wnd.Gfx(), "Models\\kamien\\kamien.obj")
+		std::make_unique<ModelComponent>(pStone, wnd.Gfx(), "Models\\kamien\\kamien2.glb")
     );*/
     pColumn->AddComponent(
         std::make_unique<ModelComponent>(pColumn, wnd.Gfx(), "Models\\kolumna\\kolumna.obj")
@@ -65,60 +73,53 @@ App::App()
         std::make_unique<ModelComponent>(pIsland, wnd.Gfx(), "Models\\wyspa\\wyspa.obj")
     );
 
-	// Adding to Scene Graph//
+
+
+    // Adding to Scene Graph
+    pSceneRoot->AddChild(std::move(pPlayerNodeOwner));
     pSceneRoot->AddChild(std::move(pNanosuitOwner));
     pSceneRoot->AddChild(std::move(pNanosuitOwner2));
     pSceneRoot->AddChild(std::move(pEmptyNode));
     pSceneRoot->AddChild(std::move(pBrickOwner));
     pSceneRoot->AddChild(std::move(pBoxOwner));
-	//pSceneRoot->AddChild(std::move(pStoneOwner));
-	pSceneRoot->AddChild(std::move(pColumnOwner));
-	pSceneRoot->AddChild(std::move(pIslandOwner));
+    pSceneRoot->AddChild(std::move(pStoneOwner));
+    pSceneRoot->AddChild(std::move(pColumnOwner));
+    pSceneRoot->AddChild(std::move(pIslandOwner));
 
-
-    // Changing position scale etc.//
+    // Changing position scale etc.
+    pPlayerNode->SetLocalPosition({ 0.0f, 5.0f, -10.0f });
     pNanosuitNode2->SetLocalPosition(DirectX::XMFLOAT3(-20.0f, 0.0f, 0.0f));
-	pBrick->SetLocalScale(dx::XMFLOAT3(20.0f, 20.0f, 1.0f));
-	pBrick->SetLocalRotation(dx::XMFLOAT3(DirectX::XMConvertToRadians(90), 0.0f, 0.0f));
+    pBrick->SetLocalScale(dx::XMFLOAT3(20.0f, 20.0f, 1.0f));
+    pBrick->SetLocalRotation(dx::XMFLOAT3(DirectX::XMConvertToRadians(90), 0.0f, 0.0f));
+    pIsland->SetLocalPosition(DirectX::XMFLOAT3(0.0f, -20.0f, 0.0f));
 
 
-    
 
-
-   
-
-
-    // Initialize cursor state
     wnd.DisableCursor();
     wnd.mouse.EnableRaw();
     cursorEnabled = false;
 }
 
-App::~App() = default; // Destructor handles unique_ptrs automatically
+App::~App() = default;
 
 int App::Go()
 {
     while (true)
     {
-        // process all messages pending, but do not block for new messages
         if (const auto ecode = Window::ProcessMessages())
         {
-            // if return optional has value, means we're quitting so return exit code
             return *ecode;
         }
-
-        // Calculate delta time
         const auto dt = timer.Mark() * speed_factor;
-
-        // Main frame logic
         HandleInput(dt);
         DoFrame(dt);
     }
 }
 
+// --- UPDATED HandleInput ---
 void App::HandleInput(float dt)
 {
-    // Keyboard input
+    // --- Only handle non-player input here ---
     while (const auto e = wnd.kbd.ReadKey())
     {
         if (!e->IsPress()) continue;
@@ -126,88 +127,83 @@ void App::HandleInput(float dt)
         switch (e->GetCode())
         {
         case 'C': // Toggle cursor
-            if (cursorEnabled)
-            {
+            if (cursorEnabled) {
                 wnd.DisableCursor();
                 wnd.mouse.EnableRaw();
             }
-            else
-            {
+            else {
                 wnd.EnableCursor();
                 wnd.mouse.DisableRaw();
             }
-            cursorEnabled = !cursorEnabled; // Toggle state
+            cursorEnabled = !cursorEnabled;
             break;
-        case 'H':
-			showControlWindow = !showControlWindow; // Toggle control window
-			break;
-        case VK_ESCAPE: // Exit application
+        case 'H': // Toggle UI
+            showControlWindow = !showControlWindow;
+            break;
+        case VK_ESCAPE: // Exit
             PostQuitMessage(0);
             return;
-        case VK_F1:
-            showDemoWindow = !showDemoWindow; // Toggle demo window
+        case VK_F1: // Toggle ImGui Demo
+            showDemoWindow = !showDemoWindow;
             break;
         }
     }
 
-    // Camera movement only when cursor is disabled
-    if (!cursorEnabled)
-    {
-        if (wnd.kbd.KeyIsPressed('W')) cam.Translate({ 0.0f, 0.0f, dt });
-        if (wnd.kbd.KeyIsPressed('S')) cam.Translate({ 0.0f, 0.0f, -dt });
-        if (wnd.kbd.KeyIsPressed('A')) cam.Translate({ -dt, 0.0f, 0.0f });
-        if (wnd.kbd.KeyIsPressed('D')) cam.Translate({ dt, 0.0f, 0.0f });
-        if (wnd.kbd.KeyIsPressed('R')) cam.Translate({ 0.0f, dt, 0.0f }); // Up
-        if (wnd.kbd.KeyIsPressed('F')) cam.Translate({ 0.0f, -dt, 0.0f }); // Down
-    }
-
-    // Mouse input for camera rotation only when cursor is disabled
-    while (const auto delta = wnd.mouse.ReadRawDelta())
-    {
-        if (!cursorEnabled)
-        {
-            cam.Rotate((float)delta->x, (float)delta->y);
-        }
-    }
 }
-
 
 void App::DoFrame(float dt)
 {
-    // Update scene graph (updates transforms, components)
-    // Keep Z the same, or modify as needed
-    // Set the node's local position to the updated stored position
-    pNanosuitNode->SetLocalPosition(DirectX::XMFLOAT3(pNanosuitNode->GetLocalPosition().x + dt, 0.0f, 0.0f));
     pSceneRoot->Update(dt);
-    // Begin Frame
-    wnd.Gfx().BeginFrame(0.07f, 0.0f, 0.12f); // Clear color
 
-    // Set Camera
-    wnd.Gfx().SetCamera(cam.GetMatrix());
+    wnd.Gfx().BeginFrame(0.5f, 0.5f, 1.0f);
 
-    // Bind Lights (if applicable)
-    light.Bind(wnd.Gfx(), cam.GetMatrix());
+    if (pPlayerNode->GetComponent<PlayerController>())
+    {
+        dx::XMMATRIX playerWorldTransform = pPlayerNode->GetWorldTransform();
 
-    // --- Draw the Scene Graph ---
-    // The root node's Draw call will recursively draw all children and their components
+        dx::XMFLOAT2 playerRotation = pPlayerNode->GetComponent<PlayerController>()->GetRotation(); // {pitch, yaw}
+
+
+        dx::XMVECTOR camPosition = playerWorldTransform.r[3];
+
+        const dx::XMVECTOR forwardBaseVector = dx::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
+        const auto lookVector = dx::XMVector3Transform(forwardBaseVector,
+            dx::XMMatrixRotationRollPitchYaw(playerRotation.x, playerRotation.y, 0.0f) // Use controller's Pitch & Yaw
+        );
+
+        const auto camTarget = dx::XMVectorAdd(camPosition, lookVector);
+
+        const dx::XMMATRIX viewMatrix = dx::XMMatrixLookAtLH(
+            camPosition,
+            camTarget,
+            dx::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f) // World Up vector
+        );
+
+        wnd.Gfx().SetCamera(viewMatrix);
+    }
+    else {
+        wnd.Gfx().SetCamera(dx::XMMatrixIdentity());
+    }
+
+
+    light.Bind(wnd.Gfx(), wnd.Gfx().GetCamera()); // Pass the view matrix for light calculations
+
     pSceneRoot->Draw(wnd.Gfx());
 
-    // Draw helpers (like the light representation)
     light.Draw(wnd.Gfx());
 
-    // --- ImGui ---
+
     if (showControlWindow) {
         ShowControlWindows();
     }
 
-    // Present Frame
     wnd.Gfx().EndFrame();
 }
+
 
 void App::ShowControlWindows()
 {
     // --- Existing Windows ---
-    cam.SpawnControlWindow();
     light.SpawnControlWindow();
     if (showDemoWindow)
     {

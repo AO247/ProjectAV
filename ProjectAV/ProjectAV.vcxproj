@@ -196,6 +196,7 @@
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="PixelShader.cpp" />
+    <ClCompile Include="PlayerController.cpp" />
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="Sampler.cpp" />
     <ClCompile Include="SolidSphere.cpp" />
@@ -253,6 +254,7 @@
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="PixelShader.h" />
+    <ClInclude Include="PlayerController.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Sampler.h" />

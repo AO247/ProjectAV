@@ -26,6 +26,12 @@ StateMachine::StateMachine(Node* owner, StateType initialState)
 		ChangeState(StateType::IDLE); // Try changing to IDLE if initial faile
 	}
 }
+StateMachine::~StateMachine()
+{
+	// Cleanup is handled by unique_ptrs
+	// If you need to do something special, override this method
+	// and call the base class destructor
+}
 
 
 void StateMachine::Update(float dt)

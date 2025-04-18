@@ -71,3 +71,33 @@ void Camera::Translate( DirectX::XMFLOAT3 translation ) noexcept
 		pos.z + translation.z
 	};
 }
+DirectX::XMMATRIX Camera::GetMatrix(DirectX::FXMMATRIX targetWorldTransform,
+	DirectX::XMFLOAT3 eyeOffset) const noexcept
+{
+	// Define base vectors
+	const dx::XMVECTOR forwardVector = dx::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f); // Player looks down +Z locally
+	const dx::XMVECTOR upVector = dx::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);    // Player's up is +Y locally
+
+	// Extract position (eye position) from the target's world matrix
+	dx::XMVECTOR eyePosition = targetWorldTransform.r[3];
+
+	// Apply offset if provided (transform offset into world space using target's rotation)
+	if (eyeOffset.x != 0.0f || eyeOffset.y != 0.0f || eyeOffset.z != 0.0f) {
+		dx::XMMATRIX rotationOnly = targetWorldTransform;
+		rotationOnly.r[3] = dx::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f); // Zero out translation
+		dx::XMVECTOR offsetVec = dx::XMLoadFloat3(&eyeOffset);
+		offsetVec = dx::XMVector3TransformNormal(offsetVec, rotationOnly); // Rotate offset
+		eyePosition = dx::XMVectorAdd(eyePosition, offsetVec); // Add world-space offset
+	}
+
+	// Transform the local forward and up vectors into world space using the target's orientation
+	// Use TransformNormal as these are directions, not positions
+	const dx::XMVECTOR lookVectorWorld = dx::XMVector3TransformNormal(forwardVector, targetWorldTransform);
+	const dx::XMVECTOR upVectorWorld = dx::XMVector3TransformNormal(upVector, targetWorldTransform);
+
+	// Calculate the look-at target position in world space
+	const dx::XMVECTOR lookAtTarget = dx::XMVectorAdd(eyePosition, lookVectorWorld);
+
+	// Build the final view matrix
+	return dx::XMMatrixLookAtLH(eyePosition, lookAtTarget, upVectorWorld);
+}
