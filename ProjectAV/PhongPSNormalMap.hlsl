@@ -13,16 +13,34 @@ cbuffer ObjectCBuf
 {
     float specularIntensity;
     float specularPower;
-    float padding[2];
+    bool normalMapEnabled;
+    float padding[1];
 };
 
 Texture2D tex;
+Texture2D nmap : register(t2);
 
 SamplerState splr;
 
 
-float4 main(float3 viewPos : Position, float3 n : Normal, float2 tc : Texcoord) : SV_Target
+float4 main(float3 viewPos : Position, float3 n : Normal, float3 tan : Tangent, float3 bitan : Bitangent, float2 tc : Texcoord) : SV_Target
 {
+    // sample normal from map if normal mapping enabled
+    if( normalMapEnabled )
+    {
+        // build the tranform (rotation) into tangent space
+        const float3x3 tanToView = float3x3(
+            normalize(tan),
+            normalize(bitan),
+            normalize(n)
+        );
+        // unpack the normal from map into tangent space        
+        const float3 normalSample = nmap.Sample(splr, tc).xyz;
+        n = normalSample * 2.0f - 1.0f;
+        n.y = -n.y;
+        // bring normal from tanspace into view space
+        n = mul(n, tanToView);
+    }
 	// fragment to light vector data
     const float3 vToL = lightPos - viewPos;
     const float distToL = length(vToL);
