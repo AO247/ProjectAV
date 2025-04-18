@@ -2,12 +2,13 @@
 #include "Node.h"
 #include "DirectXMath.h"
 
-Vector3 Rigidbody::gravity = Vector3(0.0f, 0.0f, 0.0f);
+Vector3 Rigidbody::gravity = Vector3(0.0f, -5.0f, 0.0f);
 
 void Rigidbody::Update(float dt)
 {
 	//pOwner->SetLocalPosition(DirectX::XMFLOAT3(position.x, position.y, position.z));
 	pOwner->SetWorldPosition(DirectX::XMFLOAT3(position.x, position.y, position.z));
+	//pOwner->SetLocalRotation(DirectX::XMFLOAT3(rotation.x, rotation.y, rotation.z));
 }
 
 void Rigidbody::Integrate(float delta)
@@ -24,13 +25,21 @@ void Rigidbody::Integrate(float delta)
 				GetOwner()->GetWorldPosition().z);
 	//position = pos;
 
+	angularVelocity = Vector3(0.0f, 1.0f, 0.0f);
+
 	if (!isStatic)
 	{
 		force += mass * gravity;
 	}
-	//velocity -= velocity * linearVelocityDamping;
+	velocity -= velocity * linearVelocityDamping * delta;
 	velocity += (force / mass) * delta;
 	position = pos + (velocity * delta);
+
+	Vector3 rot(GetOwner()->GetLocalRotationEuler().x,
+				GetOwner()->GetLocalRotationEuler().y,
+				GetOwner()->GetLocalRotationEuler().z);
+
+	rotation = rot + (angularVelocity * delta);
 
 	force = Vector3(0, 0, 0);
 }

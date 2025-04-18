@@ -21,10 +21,25 @@ void PhysicsEngine::HandleCollisions()
 	{
 		for (int j = i + 1; j < rigidbodies.size(); j++)
 		{
-			IntersectData intersectData = rigidbodies[i]->GetCollider()->Intersect(
-				rigidbodies[j]->GetCollider());
+			// firstBody must contain a moving body
+			// in order to solve collisions properly
+			Rigidbody* firstBody, * secondBody;
+
+			firstBody = rigidbodies[i];
+			secondBody = rigidbodies[j];
+
+			if (rigidbodies[j]->GetVelocity().Length() != 0)
+			{
+				firstBody = rigidbodies[j];
+				secondBody = rigidbodies[i];
+			}
+
+			IntersectData intersectData = firstBody->GetCollider()->Intersect(
+										  secondBody->GetCollider());
+
 			if (intersectData.GetDoesIntersect())
 			{
+
 				//
 				//
 				// SEPARATION
@@ -32,29 +47,27 @@ void PhysicsEngine::HandleCollisions()
 				//
 
 				// Collision for moving and not moving body OR both not moving (including static cases)
-				if (rigidbodies[i]->GetVelocity().Length() * rigidbodies[j]->GetVelocity().Length() == 0)
+				if (firstBody->GetVelocity().Length() * secondBody->GetVelocity().Length() == 0)
 				{
-					if (rigidbodies[i]->GetVelocity().Length() != 0)
+					if (firstBody->GetVelocity().Length() != 0)
 					{
-						OutputDebugString("AAA\n");
-						Vector3 firstBodyPositionAfterSeparation = rigidbodies[i]->GetPosition() + intersectData.GetDirection();
-						rigidbodies[i]->SetPosition(firstBodyPositionAfterSeparation);
+						Vector3 firstBodyPositionAfterSeparation = firstBody->GetPosition() + intersectData.GetDirection();
+						firstBody->SetPosition(firstBodyPositionAfterSeparation);
 					}
 					else
 					{
-						OutputDebugString("BBB\n");
-						Vector3 secondBodyPositionAfterSeparation = rigidbodies[j]->GetPosition() - intersectData.GetDirection();
-						rigidbodies[j]->SetPosition(secondBodyPositionAfterSeparation);
+						Vector3 secondBodyPositionAfterSeparation = secondBody->GetPosition() - intersectData.GetDirection();
+						secondBody->SetPosition(secondBodyPositionAfterSeparation);
 					}
 				}
 				// Collision for moving and moving body
 				else
 				{
 					Vector3 halfSeparationVector = intersectData.GetDirection() / 2.0f;
-					Vector3 firstBodyPositionAfterSeparation = rigidbodies[i]->GetPosition() + halfSeparationVector;
-					Vector3 secondBodyPositionAfterSeparation = rigidbodies[j]->GetPosition() - halfSeparationVector;
-					rigidbodies[i]->SetPosition(firstBodyPositionAfterSeparation);
-					rigidbodies[j]->SetPosition(secondBodyPositionAfterSeparation);
+					Vector3 firstBodyPositionAfterSeparation = firstBody->GetPosition() + halfSeparationVector;
+					Vector3 secondBodyPositionAfterSeparation = secondBody->GetPosition() - halfSeparationVector;
+					firstBody->SetPosition(firstBodyPositionAfterSeparation);
+					secondBody->SetPosition(secondBodyPositionAfterSeparation);
 				}
 
 				//
@@ -63,27 +76,25 @@ void PhysicsEngine::HandleCollisions()
 				//
 				//
 				
-				/*
 				float e = 0.0f;
-				Vector3 relativeVelocity = rigidbodies[i]->GetVelocity() - rigidbodies[j]->GetVelocity();
+				Vector3 relativeVelocity = firstBody->GetVelocity() - secondBody->GetVelocity();
 				float factor = ( (-(1 + e) * relativeVelocity)).Dot(intersectData.GetDirection() ) / 
-						  ( intersectData.GetDirection().Dot( intersectData.GetDirection() * (1/rigidbodies[i]->GetMass() + 1/rigidbodies[j]->GetMass()) ) );
+						  ( intersectData.GetDirection().Dot( intersectData.GetDirection() * (1/firstBody->GetMass() + 1/secondBody->GetMass()) ) );
 
-				Vector3 firstBodyNewVelocity = rigidbodies[i]->GetVelocity() + ((factor / rigidbodies[i]->GetMass()) * intersectData.GetDirection());
-				Vector3 secondBodyNewVelocity = rigidbodies[j]->GetVelocity() - ((factor / rigidbodies[j]->GetMass()) * intersectData.GetDirection());
+				Vector3 firstBodyNewVelocity = firstBody->GetVelocity() + ((factor / firstBody->GetMass()) * intersectData.GetDirection());
+				Vector3 secondBodyNewVelocity = secondBody->GetVelocity() - ((factor / secondBody->GetMass()) * intersectData.GetDirection());
 
-				rigidbodies[i]->SetVelocity(firstBodyNewVelocity);
-				rigidbodies[j]->SetVelocity(secondBodyNewVelocity);*/
+				firstBody->SetVelocity(firstBodyNewVelocity);
+				secondBody->SetVelocity(secondBodyNewVelocity);
 
-				/*
-				if (rigidbodies[i]->GetIsStatic())
+				if (firstBody->GetIsStatic())
 				{
-					rigidbodies[j]->SetVelocity(Vector3(0, 0, 0));
+					firstBody->SetVelocity(Vector3(0, 0, 0));
 				}
-				if (rigidbodies[j]->GetIsStatic())
+				if (secondBody->GetIsStatic())
 				{
-					rigidbodies[i]->SetVelocity(Vector3(0, 0, 0));
-				}*/
+					secondBody->SetVelocity(Vector3(0, 0, 0));
+				}
 			}
 		}
 	}

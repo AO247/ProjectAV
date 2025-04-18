@@ -47,8 +47,7 @@ App::App()
         std::make_unique<BoundingSphere>(pNanosuitNode2, Vector3(0,0,0), 2.0f, rb1)
     );
     BoundingSphere* bs1 = pNanosuitNode2->GetComponent<BoundingSphere>();
-    rb1->SetMass(1000);
-    rb1->SetStatic(true);
+    rb1->SetMass(10);
     AddSphereColliderToDraw(wnd.Gfx(), bs1);
     rb1->SetCollider(bs1);
     physicsEngine.AddRigidbody(rb1);
@@ -92,7 +91,7 @@ App::App()
     }
 
     pNanosuitNode->AddComponent(
-        std::make_unique<Rigidbody>(pNanosuitNode, Vector3(-10.0f, 0.0f, 0.0f), Vector3(0.0f, -3.0f, 0.0f))
+        std::make_unique<Rigidbody>(pNanosuitNode, Vector3(-10.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f))
     );
     Rigidbody* rb2 = pNanosuitNode->GetComponent<Rigidbody>();
     pNanosuitNode->AddComponent(

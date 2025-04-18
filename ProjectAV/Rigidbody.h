@@ -36,10 +36,12 @@ public:
 
 private:
 	Vector3 position;
+	Vector3 rotation;
 	Vector3 velocity;
+	Vector3 angularVelocity;
 	Vector3 force;
 	float mass = 10.0f;
-	float linearVelocityDamping = 0.01f;
+	float linearVelocityDamping = 3.0f;
 	bool isStatic = false;
 	Collider* collider;
 };
