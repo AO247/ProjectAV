@@ -464,6 +464,12 @@
     <FxCompile Include="Transform.hlsl">
       <Filter>Shaders\Common</Filter>
     </FxCompile>
+    <FxCompile Include="Shader_Z.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader_Z_VS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="DXGetErrorDescription.inl">
@@ -474,6 +480,12 @@
     </None>
     <None Include="DXTrace.inl">
       <Filter>Dxerr</Filter>
+    </None>
+    <None Include="Shader_Z.dgsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Models\kamien\kamien_test.fbx">
+      <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
 </Project>

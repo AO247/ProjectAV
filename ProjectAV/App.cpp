@@ -94,9 +94,10 @@ App::App(const std::string& commandLine)
     pColumn->AddComponent(
         std::make_unique<ModelComponent>(pColumn, wnd.Gfx(), "Models\\kolumna\\kolumna.obj")
     );
-    pIsland->AddComponent(
-        std::make_unique<ModelComponent>(pIsland, wnd.Gfx(), "Models\\wyspa\\wyspa_test.fbx")
-    );
+    
+    //pIsland->AddComponent(
+    //    std::make_unique<ModelComponent>(pIsland, wnd.Gfx(), "Models\\wyspa\\wyspa_test.fbx")
+    //);
     pNoxTurn->AddComponent(
         std::make_unique<ModelComponent>(pNoxTurn, wnd.Gfx(), "Models\\stone\\char.fbx")
     );
@@ -118,7 +119,7 @@ App::App(const std::string& commandLine)
     pSceneRoot->AddChild(std::move(pBoxOwner));
     pSceneRoot->AddChild(std::move(pStoneOwner));
     pSceneRoot->AddChild(std::move(pColumnOwner));
-    pSceneRoot->AddChild(std::move(pIslandOwner));
+    //pSceneRoot->AddChild(std::move(pIslandOwner));
 	pSceneRoot->AddChild(std::move(pNoxTurnOwner));
 	pNoxTurn->AddChild(std::move(pNoxTurnHairOwner));
 	pSceneRoot->AddChild(std::move(pTestModelOwner));
@@ -130,7 +131,7 @@ App::App(const std::string& commandLine)
     pBrick->SetLocalRotation(dx::XMFLOAT3(DirectX::XMConvertToRadians(90), 0.0f, 0.0f));
 	pStone->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f));
 	pStone->SetLocalScale(dx::XMFLOAT3(1.5f, 1.5f, 1.5f));
-    pIsland->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+    //pIsland->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 	pIsland->SetLocalScale(dx::XMFLOAT3(1.3f, 1.3f, 1.3f));
 	pNoxTurn->SetLocalPosition(DirectX::XMFLOAT3(5.0f, 0.0f, 5.0f));
 	pNoxTurn->SetLocalScale(dx::XMFLOAT3(0.01f, 0.01f, 0.01f));

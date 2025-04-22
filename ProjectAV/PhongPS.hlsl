@@ -11,22 +11,39 @@ cbuffer ObjectCBuf
 };
 
 Texture2D tex;
-
 SamplerState splr;
-
 
 float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float2 tc : Texcoord) : SV_Target
 {
     // renormalize interpolated normal
     viewNormal = normalize(viewNormal);
-	// fragment to light vector data
+	
+    // fragment to light vector data
     const LightVectorData lv = CalculateLightVectorData(viewLightPos, viewFragPos);
-	// attenuation
+	
+    // attenuation
     const float att = Attenuate(attConst, attLin, attQuad, lv.distToL);
-	// diffuse
+	
+    // diffuse
     const float3 diffuse = Diffuse(diffuseColor, diffuseIntensity, att, lv.dirToL, viewNormal);
-	// specular
+	
+    // specular
     const float3 specular = Speculate(diffuseColor, diffuseIntensity, viewNormal, lv.vToL, viewFragPos, att, specularPower);
-	// final color
-    return float4(saturate((diffuse + ambient) * tex.Sample(splr, tc).rgb + specular), 1.0f);
+
+    // Sample texture color
+    float3 texColor = tex.Sample(splr, tc).rgb;
+
+    // Desaturate (grayscale conversion)
+    float luminance = dot(texColor, float3(0.299, 0.587, 0.114));
+    float3 desaturatedColor = float3(luminance, luminance, luminance);
+
+    //rimlight
+    float3 viewDir = normalize(-viewFragPos); 
+    float rim = 1.0 - saturate(dot(viewDir, viewNormal));
+    float3 rimColor = float3(0.5, 0.8, 1.0); // Light blue rim
+    float rimIntensity = pow(rim, 2.0) * 2.0; // Power and multiplier for effect strength
+    float3 rimLight = rimColor * rimIntensity;
+
+// Add rimLight to your final color
+    return float4(saturate((diffuse + ambient + rimLight) * desaturatedColor + specular), 1.0f);
 }
