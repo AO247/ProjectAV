@@ -14,6 +14,7 @@ class App
 {
 public:
     App();
+    App(const std::string& commandLine = "");
     int Go();
     ~App();
 private:
@@ -23,6 +24,7 @@ private:
 
 private:
     // Core App Systems
+    std::string commandLine;
     ImguiManager imgui;
     Window wnd; // PlayerController needs access to this
     Timer timer;
@@ -42,7 +44,9 @@ private:
     Node* pColumn = nullptr;
     Node* pIsland = nullptr;
     Node* pSelectedSceneNode = nullptr;
-
+	Node* pNoxTurn = nullptr; // Node for the camera
+	Node* pNoxTurnHair = nullptr; // Node for the camera
+	Node* pTestModel = nullptr; // Node for the test model
     // --- UI State ---
     bool showDemoWindow = false;
     bool cursorEnabled = false;

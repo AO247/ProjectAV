@@ -7,27 +7,43 @@
 #include "GDIPlusManager.h"
 #include "imgui/imgui.h"
 #include <memory>
+#include "NormalMapTwerker.h"
+#include <shellapi.h>
 #include <algorithm>
 
 namespace dx = DirectX;
 
 GDIPlusManager gdipm;
 
-App::App()
+App::App(const std::string& commandLine)
     :
-    wnd(1280, 720, "Project AV - FPS Controller"), // Pass window dimensions/title
+    commandLine(commandLine),
+    wnd(1280, 720, "Project AV"), // Pass window dimensions/title
     light(wnd.Gfx()),
     pSceneRoot(std::make_unique<Node>("Root"))
 {
     // Set Projection Matrix (Far plane adjusted for larger scenes potentially)
     wnd.Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 2000.0f));
-
-    // --- Create Player Node ---
+    if (this->commandLine != "")
+    {
+        int nArgs;
+        const auto pLineW = GetCommandLineW();
+        const auto pArgs = CommandLineToArgvW(pLineW, &nArgs);
+        if (nArgs >= 4 && std::wstring(pArgs[1]) == L"--ntwerk-rotx180")
+        {
+            const std::wstring pathInWide = pArgs[2];
+            const std::wstring pathOutWide = pArgs[3];
+            NormalMapTwerker::RotateXAxis180(
+                std::string(pathInWide.begin(), pathInWide.end()),
+                std::string(pathOutWide.begin(), pathOutWide.end())
+            );
+            throw std::runtime_error("Normal map processed successfully. Just kidding about that whole runtime error thing.");
+        }
+    }
+    
+    
+    // --- Create Nodes ---
    
-
-
-
-
     auto pPlayerNodeOwner = std::make_unique<Node>("Player");
     pPlayerNode = pPlayerNodeOwner.get();
     auto pNanosuitOwner = std::make_unique<Node>("Nanosuit");
@@ -45,6 +61,12 @@ App::App()
     pColumn = pColumnOwner.get();
     auto pIslandOwner = std::make_unique<Node>("Island");
     pIsland = pIslandOwner.get();
+	auto pNoxTurnOwner = std::make_unique<Node>("NoxTurn");
+	pNoxTurn = pNoxTurnOwner.get();
+	auto pNoxTurnHairOwner = std::make_unique<Node>("NoxTurnHair");
+	pNoxTurnHair = pNoxTurnHairOwner.get();
+	auto pTestModelOwner = std::make_unique<Node>("TestModel");
+	pTestModel = pTestModelOwner.get();
 
 
     // Adding Components
@@ -63,15 +85,27 @@ App::App()
     pBox->AddComponent(
         std::make_unique<ModelComponent>(pBox, wnd.Gfx(), "Models\\box.glb")
     );
-    /*pStone->AddComponent(
-		std::make_unique<ModelComponent>(pStone, wnd.Gfx(), "Models\\kamien\\kamien2.glb")
-    );*/
+    pStone->AddComponent(
+		std::make_unique<ModelComponent>(pStone, wnd.Gfx(), "Models\\kamien\\kamien_test.fbx")
+    );
+    //pStone->AddComponent(
+    //    std::make_unique<ModelComponent>(pStone, wnd.Gfx(), "Models\\stone\\stone.glb")
+    //);
     pColumn->AddComponent(
         std::make_unique<ModelComponent>(pColumn, wnd.Gfx(), "Models\\kolumna\\kolumna.obj")
     );
     pIsland->AddComponent(
-        std::make_unique<ModelComponent>(pIsland, wnd.Gfx(), "Models\\wyspa\\wyspa.obj")
+        std::make_unique<ModelComponent>(pIsland, wnd.Gfx(), "Models\\wyspa\\wyspa_test.fbx")
     );
+    pNoxTurn->AddComponent(
+        std::make_unique<ModelComponent>(pNoxTurn, wnd.Gfx(), "Models\\stone\\char.fbx")
+    );
+    pNoxTurnHair->AddComponent(
+        std::make_unique<ModelComponent>(pNoxTurnHair, wnd.Gfx(), "Models\\stone\\hair.fbx")
+    );
+	pTestModel->AddComponent(
+		std::make_unique<ModelComponent>(pTestModel, wnd.Gfx(), "Models\\stone\\grave5.fbx")
+	);
 
 
 
@@ -85,13 +119,23 @@ App::App()
     pSceneRoot->AddChild(std::move(pStoneOwner));
     pSceneRoot->AddChild(std::move(pColumnOwner));
     pSceneRoot->AddChild(std::move(pIslandOwner));
+	pSceneRoot->AddChild(std::move(pNoxTurnOwner));
+	pNoxTurn->AddChild(std::move(pNoxTurnHairOwner));
+	pSceneRoot->AddChild(std::move(pTestModelOwner));
 
     // Changing position scale etc.
     pPlayerNode->SetLocalPosition({ 0.0f, 5.0f, -10.0f });
     pNanosuitNode2->SetLocalPosition(DirectX::XMFLOAT3(-20.0f, 0.0f, 0.0f));
     pBrick->SetLocalScale(dx::XMFLOAT3(20.0f, 20.0f, 1.0f));
     pBrick->SetLocalRotation(dx::XMFLOAT3(DirectX::XMConvertToRadians(90), 0.0f, 0.0f));
-    pIsland->SetLocalPosition(DirectX::XMFLOAT3(0.0f, -20.0f, 0.0f));
+	pStone->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f));
+	pStone->SetLocalScale(dx::XMFLOAT3(1.5f, 1.5f, 1.5f));
+    pIsland->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+	pIsland->SetLocalScale(dx::XMFLOAT3(1.3f, 1.3f, 1.3f));
+	pNoxTurn->SetLocalPosition(DirectX::XMFLOAT3(5.0f, 0.0f, 5.0f));
+	pNoxTurn->SetLocalScale(dx::XMFLOAT3(0.01f, 0.01f, 0.01f));
+	pTestModel->SetLocalPosition({ -5.0f, 0.0f, -5.0f });
+	pTestModel->SetLocalScale(dx::XMFLOAT3(0.01f, 0.01f, 0.01f));
 
 
 

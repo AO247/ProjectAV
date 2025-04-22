@@ -1,10 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
@@ -20,12 +16,6 @@
     </Filter>
     <Filter Include="Header Files\Bindable">
       <UniqueIdentifier>{220f6211-42a2-4fb7-bb16-6abd7aa05d9c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Drawable">
-      <UniqueIdentifier>{19f58afa-8dc5-4bf5-8a7d-f33e1a586da1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Bindable">
-      <UniqueIdentifier>{d2d456d0-f479-4b83-9c47-b04b6f8228f2}</UniqueIdentifier>
     </Filter>
     <Filter Include="Dxerr">
       <UniqueIdentifier>{c51bb943-a60b-4970-b210-31fdadbf3b9d}</UniqueIdentifier>
@@ -43,17 +33,30 @@
     <Filter Include="Header Files\Components">
       <UniqueIdentifier>{7ad4ecba-a54e-41ab-8f65-b1e5267fa1e5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Components">
-      <UniqueIdentifier>{2627c391-8230-4cdb-95f9-3ad7ea8445f2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Enemies">
       <UniqueIdentifier>{741a85d2-24b2-4598-ba88-360e22f6d032}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Enemies">
-      <UniqueIdentifier>{44cc9cd3-00f6-4ac5-8ce9-a1422cad9aa5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\States">
       <UniqueIdentifier>{4ef6fe62-1bed-4971-8dc9-a3df3b6fc497}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\Common">
+      <UniqueIdentifier>{96e6657a-5804-495f-8734-6e9d33822952}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Drawable">
+      <UniqueIdentifier>{19f58afa-8dc5-4bf5-8a7d-f33e1a586da1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Bindable">
+      <UniqueIdentifier>{d2d456d0-f479-4b83-9c47-b04b6f8228f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Components">
+      <UniqueIdentifier>{2627c391-8230-4cdb-95f9-3ad7ea8445f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Enemies">
+      <UniqueIdentifier>{44cc9cd3-00f6-4ac5-8ce9-a1422cad9aa5}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\States">
       <UniqueIdentifier>{bd6c8b48-7d3e-4a88-b5e1-54f07d9a59ae}</UniqueIdentifier>
@@ -197,6 +200,12 @@
     </ClCompile>
     <ClCompile Include="PlayerController.cpp">
       <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="XM.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TestPlane.cpp">
+      <Filter>Source Files\Drawable</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -383,6 +392,18 @@
     <ClInclude Include="PlayerController.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
+    <ClInclude Include="XM.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NormalMapTwerker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TestPlane.h">
+      <Filter>Header Files\Drawable</Filter>
+    </ClInclude>
+    <ClInclude Include="Plane.h">
+      <Filter>Header Files\Drawable</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ProjectAV.rc">
@@ -398,7 +419,25 @@
     <FxCompile Include="PhongPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="PhongPSNormalMap.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="PhongPSNormalMapObject.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="PhongPSSpec.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="PhongPSSpecMap.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="PhongPSSpecNormalMap.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
     <FxCompile Include="PhongVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="PhongVSNormalMap.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="SolidPS.hlsl">
@@ -407,23 +446,24 @@
     <FxCompile Include="SolidVS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="PhongPSSpecMap.hlsl">
+    <FxCompile Include="PhongPSNotex.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="PhongPSNormalMap.hlsl">
+    <FxCompile Include="PhongVSNotex.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="PhongVSNormalMap.hlsl">
-      <Filter>Shaders</Filter>
+    <FxCompile Include="LightVectorData.hlsl">
+      <Filter>Shaders\Common</Filter>
     </FxCompile>
-    <FxCompile Include="PhongPSSpecNormalMap.hlsl">
-      <Filter>Shaders</Filter>
+    <FxCompile Include="PointLight.hlsl">
+      <Filter>Shaders\Common</Filter>
     </FxCompile>
-    <FxCompile Include="PhongPSNormalMapObject.hlsl">
-      <Filter>Shaders</Filter>
+    <FxCompile Include="ShaderOps.hlsl">
+      <Filter>Shaders\Common</Filter>
     </FxCompile>
-    <FxCompile Include="PhongPSNotex.hlsl" />
-    <FxCompile Include="PhongVSNotex.hlsl" />
+    <FxCompile Include="Transform.hlsl">
+      <Filter>Shaders\Common</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="DXGetErrorDescription.inl">

@@ -279,15 +279,14 @@ std::unique_ptr<ModelInternalNode> ModelComponent::ParseNodeRecursive(int& nextI
 // In ModelComponent.cpp
 
 // --- UPDATED ParseMesh with Tangent/Bitangent and Normal Map Logic ---
-std::unique_ptr<Mesh> ModelComponent::ParseMesh(Graphics& gfx, const aiMesh& mesh, const aiMaterial* const* pMaterials, const std::string& modelPath)
+std::unique_ptr<Mesh> ModelComponent::ParseMesh(Graphics& gfx, const aiMesh& mesh, const aiMaterial* const* pMaterials, const std::string& modelBasePath)
 {
 	using namespace Bind;
 	using Dvtx::VertexLayout;
 	namespace dx = DirectX;
 	using namespace std::string_literals; // For "..."s string literals
 
-	// --- Material Properties ---
-	// These will be determined by loaded textures/material data
+	// --- Material Properties Initialization ---
 	bool hasDiffuseMap = false;
 	bool hasSpecularMap = false;
 	bool hasNormalMap = false;
@@ -298,8 +297,12 @@ std::unique_ptr<Mesh> ModelComponent::ParseMesh(Graphics& gfx, const aiMesh& mes
 	dx::XMFLOAT4 specularColor = { 0.18f, 0.18f, 0.18f, 1.0f }; // Default from example
 	dx::XMFLOAT4 diffuseColor = { 0.45f, 0.45f, 0.85f, 1.0f };  // Default from example
 
-	// This vector will hold the bindables for this specific mesh
+	// Bindables vector for this mesh
 	std::vector<std::shared_ptr<Bindable>> bindablePtrs;
+
+	// File path handling from example
+	std::filesystem::path path = modelBasePath; // Convert base path string to path object
+	const auto rootPath = path.parent_path().string() + "\\"; // Get directory
 
 	// --- Process Material Data (Textures, Colors, Shininess) ---
 	if (mesh.mMaterialIndex >= 0) {
@@ -308,48 +311,43 @@ std::unique_ptr<Mesh> ModelComponent::ParseMesh(Graphics& gfx, const aiMesh& mes
 
 		// Diffuse Texture (Slot 0)
 		if (material.GetTexture(aiTextureType_DIFFUSE, 0, &texPathAi) == aiReturn_SUCCESS) {
-			// Construct full path before resolving
-			std::string diffusePath = modelPath + texPathAi.C_Str();
-			bindablePtrs.push_back(Texture::Resolve(gfx, diffusePath, 0u));
+			bindablePtrs.push_back(Texture::Resolve(gfx, rootPath + texPathAi.C_Str(), 0u));
 			hasDiffuseMap = true;
 		}
 		else {
-			// Load diffuse color if no map
 			material.Get(AI_MATKEY_COLOR_DIFFUSE, reinterpret_cast<aiColor3D&>(diffuseColor));
-			// diffuseColor.w = 1.0f; // Ensure alpha is 1 if loading from aiColor3D
+			// diffuseColor.w = 1.0f; // Ensure alpha is 1
 		}
 
 		// Specular Texture (Slot 1)
 		if (material.GetTexture(aiTextureType_SPECULAR, 0, &texPathAi) == aiReturn_SUCCESS) {
-			std::string specPath = modelPath + texPathAi.C_Str();
-			// Resolve the texture first to check for alpha
-			auto pTex = Texture::Resolve(gfx, specPath, 1u);
-			hasAlphaGloss = pTex->HasAlpha(); // Check if the loaded surface had non-255 alpha
-			bindablePtrs.push_back(std::move(pTex)); // Add the resolved texture
+			auto pTex = Texture::Resolve(gfx, rootPath + texPathAi.C_Str(), 1u);
+			hasAlphaGloss = pTex->HasAlpha(); // Check for gloss in alpha
+			bindablePtrs.push_back(std::move(pTex));
 			hasSpecularMap = true;
 		}
 		else {
-			// Load specular color if no map
 			material.Get(AI_MATKEY_COLOR_SPECULAR, reinterpret_cast<aiColor3D&>(specularColor));
-			// specularColor.w = 1.0f; // Ensure alpha is 1 if loading from aiColor3D
+			// specularColor.w = 1.0f; // Ensure alpha is 1
 		}
 
 		// Shininess / Specular Power (Load only if NOT using gloss map)
 		if (!hasAlphaGloss) {
 			material.Get(AI_MATKEY_SHININESS, shininess);
-			// Clamp shininess to avoid issues with pow(0,0) or very large values if needed
-			// shininess = std::max(shininess, 1.0f); 
 		}
 
 		// Normal Map Texture (Slot 2)
 		if (material.GetTexture(aiTextureType_NORMALS, 0, &texPathAi) == aiReturn_SUCCESS) {
-			std::string normPath = modelPath + texPathAi.C_Str();
-			bindablePtrs.push_back(Texture::Resolve(gfx, normPath, 2u));
+			// Resolve texture to check alpha if needed, although not used in example logic
+			auto pTex = Texture::Resolve(gfx, rootPath + texPathAi.C_Str(), 2u);
+			// hasAlphaGloss = pTex->HasAlpha(); // Example checks this again, maybe for consistency?
+			bindablePtrs.push_back(std::move(pTex));
 			hasNormalMap = true;
 		}
 		else if (material.GetTexture(aiTextureType_HEIGHT, 0, &texPathAi) == aiReturn_SUCCESS) {
-			std::string normPath = modelPath + texPathAi.C_Str();
-			bindablePtrs.push_back(Texture::Resolve(gfx, normPath, 2u));
+			auto pTex = Texture::Resolve(gfx, rootPath + texPathAi.C_Str(), 2u);
+			// hasAlphaGloss = pTex->HasAlpha();
+			bindablePtrs.push_back(std::move(pTex));
 			hasNormalMap = true;
 		}
 
@@ -359,26 +357,26 @@ std::unique_ptr<Mesh> ModelComponent::ParseMesh(Graphics& gfx, const aiMesh& mes
 		}
 	}
 
-	// --- Determine Vertex Layout based on available data (Normal Map requires Tangents) ---
+	// --- Vertex Layout, Buffer Population, Index Buffer ---
+	// (This part remains mostly the same as the previous version, but incorporates scaling)
+
 	VertexLayout layout = VertexLayout{}
 		.Append(VertexLayout::Position3D)
 		.Append(VertexLayout::Normal);
 
-	bool hasTangents = mesh.HasTangentsAndBitangents() && hasNormalMap; // Only need tangents if we HAVE a normal map
+	bool hasTangents = mesh.HasTangentsAndBitangents() && hasNormalMap;
 	if (hasTangents) {
 		layout.Append(VertexLayout::Tangent)
 			.Append(VertexLayout::Bitangent);
 	}
-	bool hasTexCoords = mesh.HasTextureCoords(0) && (hasDiffuseMap || hasSpecularMap || hasNormalMap); // Only need texcoords if a map uses them
+	bool hasTexCoords = mesh.HasTextureCoords(0) && (hasDiffuseMap || hasSpecularMap || hasNormalMap);
 	if (hasTexCoords) {
 		layout.Append(VertexLayout::Texture2D);
 	}
 
-
-	// --- Create and Populate Vertex Buffer ---
 	Dvtx::VertexBuffer vbuf(std::move(layout));
-	const float scale = 1.0f; // Use scale from example if needed (e.g., 6.0f for gobber)
-	// Or make it configurable
+	const float scale = 1.0f; // Apply scaling factor (adjust as needed, maybe pass as parameter)
+
 	for (unsigned int i = 0; i < mesh.mNumVertices; ++i) {
 		DirectX::XMFLOAT3 pos = *reinterpret_cast<dx::XMFLOAT3*>(&mesh.mVertices[i]);
 		pos = { pos.x * scale, pos.y * scale, pos.z * scale }; // Apply scaling
@@ -387,26 +385,16 @@ std::unique_ptr<Mesh> ModelComponent::ParseMesh(Graphics& gfx, const aiMesh& mes
 		DirectX::XMFLOAT3 bitan = hasTangents ? *reinterpret_cast<dx::XMFLOAT3*>(&mesh.mBitangents[i]) : DirectX::XMFLOAT3{ 0,0,0 };
 		DirectX::XMFLOAT2 tc = hasTexCoords ? *reinterpret_cast<dx::XMFLOAT2*>(&mesh.mTextureCoords[0][i]) : DirectX::XMFLOAT2{ 0,0 };
 
-		// Emplace back based on the **actual final layout** determined above
-		if (hasTangents && hasTexCoords) { // Layout: P, N, T, B, Tx
-			vbuf.EmplaceBack(pos, norm, tan, bitan, tc);
-		}
-		else if (hasTangents && !hasTexCoords) { // Layout: P, N, T, B
-			vbuf.EmplaceBack(pos, norm, tan, bitan);
-		}
-		else if (!hasTangents && hasTexCoords) { // Layout: P, N, Tx
-			vbuf.EmplaceBack(pos, norm, tc);
-		}
-		else { // Layout: P, N
-			vbuf.EmplaceBack(pos, norm);
-		}
+		// Emplace back based on the final layout
+		if (hasTangents && hasTexCoords) { vbuf.EmplaceBack(pos, norm, tan, bitan, tc); }
+		else if (hasTangents && !hasTexCoords) { vbuf.EmplaceBack(pos, norm, tan, bitan); }
+		else if (!hasTangents && hasTexCoords) { vbuf.EmplaceBack(pos, norm, tc); }
+		else { vbuf.EmplaceBack(pos, norm); }
 	}
 
-
-	// --- Index Buffer Data ---
 	std::vector<unsigned short> indices;
 	indices.reserve((size_t)mesh.mNumFaces * 3);
-	for (unsigned int i = 0; i < mesh.mNumFaces; ++i) {
+	for (unsigned int i = 0; i < mesh.mNumFaces; ++i) { /* ... copy indices ... */
 		const auto& face = mesh.mFaces[i];
 		assert(face.mNumIndices == 3);
 		indices.push_back(face.mIndices[0]);
@@ -414,112 +402,117 @@ std::unique_ptr<Mesh> ModelComponent::ParseMesh(Graphics& gfx, const aiMesh& mes
 		indices.push_back(face.mIndices[2]);
 	}
 
-	// --- Geometry Tags ---
-	std::string geometryTag = modelPath + "%" + mesh.mName.C_Str();
-	if (geometryTag.length() <= modelPath.length() + 1 && mesh.mName.length == 0) {
-		geometryTag = modelPath + "%mesh" + std::to_string((int)mesh.mNumVertices);
-	}
+	// --- Geometry Tags & Resolution ---
+	const auto meshTag = path.string() + "%" + mesh.mName.C_Str();
+	bindablePtrs.push_back(VertexBuffer::Resolve(gfx, meshTag, vbuf));
+	bindablePtrs.push_back(IndexBuffer::Resolve(gfx, meshTag, indices));
 
-	// --- Resolve Geometry Bindables ---
-	bindablePtrs.push_back(VertexBuffer::Resolve(gfx, geometryTag, vbuf));
-	bindablePtrs.push_back(IndexBuffer::Resolve(gfx, geometryTag, indices));
-
-
-	// --- Shader Selection & Pixel Constant Buffers ---
+	// --- Shader Selection & Pixel Constant Buffers (Based on Example Logic) ---
 	std::shared_ptr<VertexShader> pvs;
 	std::shared_ptr<PixelShader> pps;
-	std::shared_ptr<InputLayout> pil;
 
-	// Select shaders and setup pixel constant buffer based on material properties
-	// Match the logic flow from the example Model::ParseMesh
+	// Define constant buffer structs based on example (ensure these match your HLSL)
+	// NOTE: Defined locally, consider moving to a common header if used elsewhere.
+	struct PSMaterialConstantFullmonte { // For Diffuse + Normal + Specular
+		BOOL  normalMapEnabled = TRUE;
+		BOOL  specularMapEnabled = TRUE;
+		BOOL  hasGlossMap = FALSE;
+		float specularPower = 2.0f;
+		DirectX::XMFLOAT3 specularColor = { 0.18f,0.18f,0.18f };
+		float specularMapWeight = 1.0f;
+		// Ensure size is multiple of 16 (BOOL=4, BOOL=4, BOOL=4, float=4 => 16) + (float3=12, float=4 => 16) = 32 bytes ok
+	};
+	struct PSMaterialConstantDiffnorm { // For Diffuse + Normal (No Spec)
+		float specularIntensity = 0.18f;
+		float specularPower;
+		BOOL  normalMapEnabled = TRUE;
+		float padding[1]; // Pad to 16 bytes (4 + 4 + 4 + 4)
+	};
+	struct PSMaterialConstantDiffuseSpec { // For Diffuse + Specular (No Normal)
+		float specularPowerConst; // Matches example name
+		BOOL hasGloss;
+		float specularMapWeight;
+		float padding; // Pad to 16 bytes (4 + 4 + 4 + 4)
+	};
+	struct PSMaterialConstantDiffuse { // For Diffuse Only
+		float specularIntensity = 0.6f;
+		float specularPower;
+		float padding[2]; // Pad to 16 bytes (4 + 4 + 8)
+	};
+	struct PSMaterialConstantNotex { // For No Textures
+		DirectX::XMFLOAT4 materialColor;
+		DirectX::XMFLOAT4 specularColor;
+		float specularPower;
+		float padding[3]; // Pad to 32 bytes (16 + 16 + 4 + 12)
+	};
+
+
 	if (hasDiffuseMap && hasNormalMap && hasSpecularMap) {
 		pvs = VertexShader::Resolve(gfx, "PhongVSNormalMap.cso");
-		pps = PixelShader::Resolve(gfx, "PhongPSSpecNormalMap.cso");
+		pps = PixelShader::Resolve(gfx, "PhongPSSpecNormalMap.cso"); // PS needs spec + normal support
 
-		// Define structure matching PhongPSSpecNormalMap.hlsl ObjectCBuf
-		struct PSMaterialConstantFullmonte {
-			BOOL  normalMapEnabled = TRUE;
-			BOOL  specularMapEnabled = TRUE;
-			BOOL  hasGlossMap = FALSE; // Will be set based on texture alpha
-			float specularPower = 2.0f; // Default if hasGlossMap is false
-			DirectX::XMFLOAT3 specularColor = { 0.18f,0.18f,0.18f }; // Default if hasGlossMap is true
-			float specularMapWeight = 1.0f; // Default weight
-		};
 		PSMaterialConstantFullmonte pmc;
-		pmc.specularPower = shininess; // Use loaded shininess if no gloss map
+		pmc.specularPower = shininess;
 		pmc.hasGlossMap = hasAlphaGloss ? TRUE : FALSE;
-		pmc.specularColor = { specularColor.x, specularColor.y, specularColor.z }; // Use loaded color if has gloss map
-		// pmc.specularMapWeight = ...; // Can be adjusted if needed
-
-		bindablePtrs.push_back(std::make_shared<PixelConstantBuffer<PSMaterialConstantFullmonte>>(gfx, pmc, 1u));
+		pmc.specularColor = { specularColor.x, specularColor.y, specularColor.z };
+		// pmc.specularMapWeight = ...; // Default is 1.0f
+		bindablePtrs.push_back(std::make_shared<PixelConstantBuffer<PSMaterialConstantFullmonte>>(gfx, pmc, 1u)); // Use make_shared
 
 	}
-	else if (hasDiffuseMap && hasNormalMap) {
+	else if (hasDiffuseMap && hasNormalMap) { // Specular map missing
 		pvs = VertexShader::Resolve(gfx, "PhongVSNormalMap.cso");
-		pps = PixelShader::Resolve(gfx, "PhongPSNormalMap.cso");
+		pps = PixelShader::Resolve(gfx, "PhongPSNormalMap.cso"); // PS needs normal support, uses constants for spec
 
-		// Define structure matching PhongPSNormalMap.hlsl ObjectCBuf
-		struct PSMaterialConstantDiffnorm {
-			float specularIntensity = 0.18f; // Example default
-			float specularPower;
-			BOOL  normalMapEnabled = TRUE;
-			float padding[1]; // Pad to 16 bytes (4 + 4 + 4 + 4)
-		};
 		PSMaterialConstantDiffnorm pmc;
 		pmc.specularPower = shininess;
-		pmc.specularIntensity = (specularColor.x + specularColor.y + specularColor.z) / 3.0f; // Average specular color
+		pmc.specularIntensity = (specularColor.x + specularColor.y + specularColor.z) / 3.0f; // Average fallback spec color
 		pmc.normalMapEnabled = TRUE;
-
-		bindablePtrs.push_back(std::make_shared<PixelConstantBuffer<PSMaterialConstantDiffnorm>>(gfx, pmc, 1u));
+		bindablePtrs.push_back(std::make_shared<PixelConstantBuffer<PSMaterialConstantDiffnorm>>(gfx, pmc, 1u)); // Use make_shared
 
 	}
-	else if (hasDiffuseMap) { // Implies no normal map, no specular map
-		pvs = VertexShader::Resolve(gfx, "PhongVS.cso");
-		pps = PixelShader::Resolve(gfx, "PhongPS.cso");
+	else if (hasDiffuseMap && hasSpecularMap) { // Normal map missing
+		pvs = VertexShader::Resolve(gfx, "PhongVS.cso"); // Basic VS is sufficient
+		pps = PixelShader::Resolve(gfx, "PhongPSSpec.cso"); // PS needs specular map support
 
-		// Define structure matching PhongPS.hlsl ObjectCBuf
-		struct PSMaterialConstantDiffuse {
-			float specularIntensity = 0.6f; // Example default
-			float specularPower;
-			float padding[2]; // Pad to 16 bytes (4 + 4 + 8)
-		};
+		PSMaterialConstantDiffuseSpec pmc;
+		pmc.specularPowerConst = shininess;
+		pmc.hasGloss = hasAlphaGloss ? TRUE : FALSE;
+		pmc.specularMapWeight = 1.0f;
+		bindablePtrs.push_back(std::make_shared<PixelConstantBuffer<PSMaterialConstantDiffuseSpec>>(gfx, pmc, 1u)); // Use make_shared
+
+	}
+	else if (hasDiffuseMap) { // Only Diffuse map
+		OutputDebugStringA("Using Diffuse map only, no normal/specular maps.\n");
+		OutputDebugStringA(GetOwner()->GetName().c_str());
+
+		pvs = VertexShader::Resolve(gfx, "PhongVS.cso");
+		pps = PixelShader::Resolve(gfx, "PhongPS.cso"); // Basic PS, uses constants for spec
+
 		PSMaterialConstantDiffuse pmc;
 		pmc.specularPower = shininess;
 		pmc.specularIntensity = (specularColor.x + specularColor.y + specularColor.z) / 3.0f;
-
-		bindablePtrs.push_back(std::make_shared<PixelConstantBuffer<PSMaterialConstantDiffuse>>(gfx, pmc, 1u));
+		bindablePtrs.push_back(std::make_shared<PixelConstantBuffer<PSMaterialConstantDiffuse>>(gfx, pmc, 1u)); // Use make_shared
 
 	}
-	else if (!hasDiffuseMap && !hasNormalMap && !hasSpecularMap) {
-		// Case for no textures at all
-		pvs = VertexShader::Resolve(gfx, "PhongVSNotex.cso");
-		pps = PixelShader::Resolve(gfx, "PhongPSNotex.cso");
+	else if (!hasDiffuseMap && !hasNormalMap && !hasSpecularMap) { // No textures at all
+		pvs = VertexShader::Resolve(gfx, "PhongVSNotex.cso"); // VS assumes vertex normals only
+		pps = PixelShader::Resolve(gfx, "PhongPSNotex.cso"); // PS uses material colors
 
-		// Define structure matching PhongPSNotex.hlsl ObjectCBuf
-		struct PSMaterialConstantNotex {
-			DirectX::XMFLOAT4 materialColor; // Use loaded/default diffuse
-			DirectX::XMFLOAT4 specularColor; // Use loaded/default specular
-			float specularPower;
-			float padding[3]; // Pad to 32 bytes (16 + 16 + 4 + 12)
-		};
 		PSMaterialConstantNotex pmc;
 		pmc.specularPower = shininess;
 		pmc.specularColor = specularColor;
 		pmc.materialColor = diffuseColor;
-
-		bindablePtrs.push_back(std::make_shared<PixelConstantBuffer<PSMaterialConstantNotex>>(gfx, pmc, 1u));
+		bindablePtrs.push_back(std::make_shared<PixelConstantBuffer<PSMaterialConstantNotex>>(gfx, pmc, 1u)); // Use make_shared
 	}
 	else {
-		// Handle unsupported combinations
+		// Handle unsupported combinations (e.g., Normal map without Diffuse map is unusual)
 		throw std::runtime_error("Unsupported material texture combination for mesh: "s + mesh.mName.C_Str());
 	}
 
-	// Add the selected shaders
-	auto pvsbc = pvs->GetBytecode(); // Get bytecode *after* resolving
+	// --- Add Shaders and Input Layout ---
+	auto pvsbc = pvs->GetBytecode();
 	bindablePtrs.push_back(std::move(pvs));
 	bindablePtrs.push_back(std::move(pps));
-
-	// Resolve Input Layout based on final layout and VS
 	bindablePtrs.push_back(InputLayout::Resolve(gfx, vbuf.GetLayout(), pvsbc));
 
 
