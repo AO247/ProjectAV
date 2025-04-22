@@ -25,10 +25,16 @@ public:
 	void SetMass(float mass);
 	void AddForce(Vector3 force);
 	void SetStatic(bool isStatic);
+	void SetAngularVelocity(Vector3 velocity);
 
 	Vector3& GetPosition();
 	Vector3& GetVelocity();
+	Vector3& GetRotation();
+	Vector3& GetAngularVelocity();
 	Collider* GetCollider();
+	DirectX::XMMATRIX GetTransformationMatrixFromNode();
+	DirectX::XMFLOAT3 GetScaleFromNode();
+	DirectX::XMFLOAT3 GetRotationFromNode();
 	float GetMass();
 	bool GetIsStatic();
 
@@ -42,6 +48,7 @@ private:
 	Vector3 force;
 	float mass = 10.0f;
 	float linearVelocityDamping = 3.0f;
+	float angularVelocityDamping = 3.0f;
 	bool isStatic = false;
 	Collider* collider;
 };

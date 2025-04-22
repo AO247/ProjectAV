@@ -20,14 +20,15 @@ namespace AxisAligned
 		{
 		}
 
-		void Draw(Graphics& gfx, DirectX::FXMMATRIX worldTransform);
-
 		IntersectData IntersectAABB(AABB* other);
 		IntersectData IntersectBoundingSphere(BoundingSphere* other);
 
 		Vector3& GetMinExtents();
 		Vector3& GetMaxExtents();
 		Vector3 GetTransformedExtents(Vector3 extents);
+		Vector3 GetEdgeSizes();
+		Vector3 GetCenter();
+		Rigidbody* GetRigidbody();
 	private:
 		Vector3 minExtents;
 		Vector3 maxExtents;

@@ -201,6 +201,9 @@
     <ClCompile Include="TransformCbufDoubleboi.cpp">
       <Filter>Source Files\Bindable</Filter>
     </ClCompile>
+    <ClCompile Include="OBB.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowsMessageMap.h">
@@ -392,6 +395,9 @@
     <ClInclude Include="TransformCbufDoubleboi.h">
       <Filter>Header Files\Bindable</Filter>
     </ClInclude>
+    <ClInclude Include="OBB.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ProjectAV.rc">
@@ -434,6 +440,8 @@
     <FxCompile Include="TransparentPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="PhongPSNotex.hlsl" />
+    <FxCompile Include="PhongVSNotex.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DXGetErrorDescription.inl">

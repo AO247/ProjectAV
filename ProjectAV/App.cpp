@@ -44,7 +44,7 @@ App::App()
     );
     Rigidbody* rb1 = pNanosuitNode2->GetComponent<Rigidbody>();
     pNanosuitNode2->AddComponent(
-        std::make_unique<BoundingSphere>(pNanosuitNode2, Vector3(0,0,0), 2.0f, rb1)
+        std::make_unique<BoundingSphere>(pNanosuitNode2, Vector3(0,0,0), 1.0f, rb1)
     );
     BoundingSphere* bs1 = pNanosuitNode2->GetComponent<BoundingSphere>();
     rb1->SetMass(10);
@@ -61,10 +61,10 @@ App::App()
     Rigidbody* brb = pBox->GetComponent<Rigidbody>();
     brb->SetStatic(true);
     pBox->AddComponent(
-        std::make_unique<AxisAligned::AABB>(pBox, Vector3(-20, 0, -20), Vector3(20, 0, 20), brb)
+        std::make_unique<OBB>(pBox, brb, Vector3(0, 0, 0), Vector3(2, 2, 2))
     );
-    AxisAligned::AABB* baabb = pBox->GetComponent<AxisAligned::AABB>();
-    AddBoxColliderToDraw(wnd.Gfx(), baabb);
+    OBB* baabb = pBox->GetComponent<OBB>();
+    //AddBoxColliderToDraw(wnd.Gfx(), baabb);
     brb->SetCollider(baabb);
     physicsEngine.AddRigidbody(brb);
 	pBox->SetLocalScale(dx::XMFLOAT3(20.0f, 0.1f, 20.0f));
@@ -95,10 +95,10 @@ App::App()
     );
     Rigidbody* rb2 = pNanosuitNode->GetComponent<Rigidbody>();
     pNanosuitNode->AddComponent(
-        std::make_unique<AxisAligned::AABB>(pNanosuitNode, Vector3(-2,-2,-2), Vector3(2, 2, 2), rb2)
+        std::make_unique<OBB>(pNanosuitNode, rb2, Vector3(0, 0, 0), Vector3(2, 2, 2))
     );
-    AxisAligned::AABB* bs2 = pNanosuitNode->GetComponent<AxisAligned::AABB>();
-    AddBoxColliderToDraw(wnd.Gfx(), bs2);
+    OBB* bs2 = pNanosuitNode->GetComponent<OBB>();
+    //AddBoxColliderToDraw(wnd.Gfx(), bs2);
     rb2->SetCollider(bs2);
     physicsEngine.AddRigidbody(rb2);
 
@@ -107,8 +107,8 @@ App::App()
     pEmptyNode->AddChild(std::move(pNanosuitOwner));
     pSceneRoot->AddChild(std::move(pBoxOwner));
     pSceneRoot->AddChild(std::move(pNanosuitOwner2));
-    pNanosuitNode2->SetLocalPosition(DirectX::XMFLOAT3(0.0f,10.0f,0.0f));
-    pNanosuitNode->SetLocalPosition(DirectX::XMFLOAT3(-10.0f, 10.0f, 0.0f));
+    pNanosuitNode2->SetLocalPosition(DirectX::XMFLOAT3(20.0f,3.0f,0.0f));
+    pNanosuitNode->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 8.0f, 0.0f));
 	pSceneRoot->AddChild(std::move(pEmptyNode));
     // Initialize cursor state
     wnd.DisableCursor();
@@ -204,7 +204,7 @@ void App::DoFrame(float dt)
     pSceneRoot->Update(dt);
     if (wnd.kbd.KeyIsPressed('X'))
     {
-        pNanosuitNode->GetComponent<Rigidbody>()->AddForce(Vector3(500.0f, 0.0f, 0.0f));
+        pNanosuitNode->GetComponent<Rigidbody>()->AddForce(Vector3(-200.0f, 0.0f, 0.0f));
     }
     // Begin Frame
     wnd.Gfx().BeginFrame(0.07f, 0.0f, 0.12f); // Clear color
@@ -406,12 +406,19 @@ void App::DrawBoxColliders(Graphics& gfx)
 {
     for (auto it = boxCollidersToDraw.begin(); it != boxCollidersToDraw.end(); ++it)
     {
-        SolidBox box(gfx, DirectX::XMFLOAT3(it->first->GetTransformedExtents(it->first->GetMinExtents()).x,
-                                            it->first->GetTransformedExtents(it->first->GetMinExtents()).y,
-                                            it->first->GetTransformedExtents(it->first->GetMinExtents()).z),
-                                            DirectX::XMFLOAT3(it->first->GetTransformedExtents(it->first->GetMaxExtents()).x,
-                                                              it->first->GetTransformedExtents(it->first->GetMaxExtents()).y,
-                                                              it->first->GetTransformedExtents(it->first->GetMaxExtents()).z));
+        //SolidBox box(gfx, DirectX::XMFLOAT3(it->first->GetTransformedExtents(it->first->GetMinExtents()).x,
+        //                                    it->first->GetTransformedExtents(it->first->GetMinExtents()).y,
+        //                                    it->first->GetTransformedExtents(it->first->GetMinExtents()).z),
+        //                                    DirectX::XMFLOAT3(it->first->GetTransformedExtents(it->first->GetMaxExtents()).x,
+        //                                                      it->first->GetTransformedExtents(it->first->GetMaxExtents()).y,
+        //                                                      it->first->GetTransformedExtents(it->first->GetMaxExtents()).z));
+        SolidBox box(gfx, DirectX::XMFLOAT3(it->first->GetMinExtents().x,
+                                            it->first->GetMinExtents().y,
+                                            it->first->GetMinExtents().z),
+                                            DirectX::XMFLOAT3(it->first->GetMaxExtents().x,
+                                                              it->first->GetMaxExtents().y,
+                                                              it->first->GetMaxExtents().z));
+        box.SetTransformXM(it->first->GetRigidbody()->GetTransformationMatrixFromNode());
         box.Draw(gfx);
     }
 }

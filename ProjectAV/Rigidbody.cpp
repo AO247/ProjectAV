@@ -8,7 +8,7 @@ void Rigidbody::Update(float dt)
 {
 	//pOwner->SetLocalPosition(DirectX::XMFLOAT3(position.x, position.y, position.z));
 	pOwner->SetWorldPosition(DirectX::XMFLOAT3(position.x, position.y, position.z));
-	//pOwner->SetLocalRotation(DirectX::XMFLOAT3(rotation.x, rotation.y, rotation.z));
+	pOwner->SetLocalRotation(DirectX::XMFLOAT3(rotation.x, rotation.y, rotation.z));
 }
 
 void Rigidbody::Integrate(float delta)
@@ -25,8 +25,6 @@ void Rigidbody::Integrate(float delta)
 				GetOwner()->GetWorldPosition().z);
 	//position = pos;
 
-	angularVelocity = Vector3(0.0f, 1.0f, 0.0f);
-
 	if (!isStatic)
 	{
 		force += mass * gravity;
@@ -39,6 +37,7 @@ void Rigidbody::Integrate(float delta)
 				GetOwner()->GetLocalRotationEuler().y,
 				GetOwner()->GetLocalRotationEuler().z);
 
+	angularVelocity -= angularVelocity * angularVelocityDamping * delta;
 	rotation = rot + (angularVelocity * delta);
 
 	force = Vector3(0, 0, 0);
@@ -74,6 +73,11 @@ void Rigidbody::SetStatic(bool isStatic)
 	this->isStatic = isStatic;
 }
 
+void Rigidbody::SetAngularVelocity(Vector3 velocity)
+{
+	angularVelocity = velocity;
+}
+
 Vector3& Rigidbody::GetPosition()
 {
 	return position;
@@ -84,9 +88,34 @@ Vector3& Rigidbody::GetVelocity()
 	return velocity;
 }
 
+Vector3& Rigidbody::GetRotation()
+{
+	return rotation;
+}
+
+Vector3& Rigidbody::GetAngularVelocity()
+{
+	return angularVelocity;
+}
+
 Collider* Rigidbody::GetCollider()
 {
 	return collider;
+}
+
+DirectX::XMMATRIX Rigidbody::GetTransformationMatrixFromNode()
+{
+	return pOwner->GetWorldTransform();
+}
+
+DirectX::XMFLOAT3 Rigidbody::GetScaleFromNode()
+{
+	return pOwner->GetLocalScale();
+}
+
+DirectX::XMFLOAT3 Rigidbody::GetRotationFromNode()
+{
+	return pOwner->GetLocalRotationEuler();
 }
 
 float Rigidbody::GetMass()

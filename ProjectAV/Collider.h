@@ -11,7 +11,8 @@ public:
 	enum ColliderTypes
 	{
 		SPHERE = 0,
-		AABB = 1
+		AABB = 1,
+		TYPE_OBB = 2
 	};
 
 	Collider(Node* owner, ColliderTypes colliderType, Rigidbody* rigidbody) :
@@ -29,5 +30,4 @@ private:
 	ColliderTypes colliderType;
 protected:
 	Rigidbody* rigidbody;
-	bool firstDraw = true;
 };

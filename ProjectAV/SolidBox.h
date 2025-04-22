@@ -20,6 +20,9 @@ public:
     // Get the transformation matrix (currently only translation)
     DirectX::XMMATRIX GetTransformXM() const noexcept override;
 
+    void SetTransformXM(DirectX::XMMATRIX matrix);
+
 private:
     DirectX::XMFLOAT3 pos = { 0.0f, 0.0f, 0.0f }; // Default position at origin
+    DirectX::XMMATRIX matrix;
 };

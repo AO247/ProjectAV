@@ -45,7 +45,63 @@ IntersectData AxisAligned::AABB::IntersectAABB(AABB* other)
 		else if (axis == 2) separation.z = maxPenetration;
 	}
 
-	return IntersectData(maxDistance < 0, -separation);
+	Vector3 collisionPoint;
+	if (axis == 0)
+	{
+		if (distances.x > 0)
+		{
+			collisionPoint.x = GetTransformedExtents(maxExtents).x;
+			collisionPoint.y = GetTransformedExtents(maxExtents - (GetEdgeSizes() / 2.0f)).y;
+			collisionPoint.z = GetTransformedExtents(maxExtents - (GetEdgeSizes() / 2.0f)).z;
+		}
+		else
+		{
+			collisionPoint.x = GetTransformedExtents(minExtents).x;
+			collisionPoint.y = GetTransformedExtents(minExtents + (GetEdgeSizes() / 2.0f)).y;
+			collisionPoint.z = GetTransformedExtents(minExtents + (GetEdgeSizes() / 2.0f)).z;
+		}
+	}
+	if (axis == 1)
+	{
+		if (distances.y > 0)
+		{
+			collisionPoint.x = GetTransformedExtents(maxExtents - (GetEdgeSizes() / 2.0f)).x;
+			collisionPoint.y = GetTransformedExtents(maxExtents).y;
+			collisionPoint.z = GetTransformedExtents(maxExtents - (GetEdgeSizes() / 2.0f)).z;
+		}
+		else
+		{
+			collisionPoint.x = GetTransformedExtents(minExtents + (GetEdgeSizes() / 2.0f)).x;
+			collisionPoint.y = GetTransformedExtents(minExtents).y;
+			collisionPoint.z = GetTransformedExtents(minExtents + (GetEdgeSizes() / 2.0f)).z;
+		}
+	}
+	if (axis == 2)
+	{
+		if (distances.z > 0)
+		{
+			collisionPoint.x = GetTransformedExtents(maxExtents - (GetEdgeSizes() / 2.0f)).x;
+			collisionPoint.y = GetTransformedExtents(maxExtents - (GetEdgeSizes() / 2.0f)).y;
+			collisionPoint.z = GetTransformedExtents(maxExtents).z;
+		}
+		else
+		{
+			collisionPoint.x = GetTransformedExtents(minExtents + (GetEdgeSizes() / 2.0f)).x;
+			collisionPoint.y = GetTransformedExtents(minExtents + (GetEdgeSizes() / 2.0f)).y ;
+			collisionPoint.z = GetTransformedExtents(minExtents).z;
+		}
+	}
+
+	Vector3 ccc = GetCenter();
+	Vector3 collisionPointRadiusForFirstBody = collisionPoint - GetCenter();
+	Vector3 collisionPointRadiusForSecondBody = collisionPoint - other->GetCenter();
+
+	if (maxDistance < 0)
+	{
+		OutputDebugString("sztop");
+	}
+
+	return IntersectData(maxDistance < 0, -separation, collisionPoint, collisionPointRadiusForFirstBody, collisionPointRadiusForSecondBody);
 }
 
 float mmyMax(float a, float b)
@@ -83,13 +139,13 @@ IntersectData AxisAligned::AABB::IntersectBoundingSphere(BoundingSphere* other)
 	direction /= direction.Length();
 
 	Vector3 separationVector = direction * penetrationDepth;
+	
+	Vector3 collisionPoint = other->GetTransformedCenter() - (direction * other->GetRadius());
 
-	return IntersectData(penetrationDepth > 0, -separationVector);
-}
+	Vector3 collisionPointRadiusForFirstBody = collisionPoint - GetCenter();
+	Vector3 collisionPointRadiusForSecondBody = collisionPoint - other->GetTransformedCenter();
 
-void AxisAligned::AABB::Draw(Graphics& gfx, DirectX::FXMMATRIX worldTransform)
-{
-
+	return IntersectData(penetrationDepth > 0, -separationVector, collisionPoint, collisionPointRadiusForFirstBody, collisionPointRadiusForSecondBody);
 }
 
 Vector3& AxisAligned::AABB::GetMinExtents()
@@ -104,7 +160,40 @@ Vector3& AxisAligned::AABB::GetMaxExtents()
 
 Vector3 AxisAligned::AABB::GetTransformedExtents(Vector3 extents)
 {
-	return Vector3(rigidbody->GetPosition().x + extents.x,
-				   rigidbody->GetPosition().y + extents.y, 
-				   rigidbody->GetPosition().z + extents.z);
+	/*Vector3 actualExtents(rigidbody->GetPosition().x + extents.x,
+						  rigidbody->GetPosition().y + extents.y,
+						  rigidbody->GetPosition().z + extents.z);
+	DirectX::XMMATRIX rotationMatrix = DirectX::XMMatrixRotationRollPitchYaw(rigidbody->GetRotation().y, rigidbody->GetRotation().x, rigidbody->GetRotation().z);
+	DirectX::XMVECTOR e = DirectX::XMVectorSet(actualExtents.x, actualExtents.y, actualExtents.z, 1.0f);
+	e = DirectX::XMVector3Transform(e, rotationMatrix);
+	return Vector3(DirectX::XMVectorGetX(e),
+				   DirectX::XMVectorGetY(e),
+				   DirectX::XMVectorGetZ(e));*/
+	//return actualExtents;
+
+	DirectX::XMVECTOR e = DirectX::XMVectorSet(extents.x, extents.y, extents.z, 1.0f);
+	e = DirectX::XMVector3Transform(e, rigidbody->GetTransformationMatrixFromNode());
+	return Vector3(DirectX::XMVectorGetX(e),
+				   DirectX::XMVectorGetY(e),
+				   DirectX::XMVectorGetZ(e));
+}
+
+Vector3 AxisAligned::AABB::GetEdgeSizes()
+{
+	return Vector3(maxExtents.x - minExtents.x,
+				   maxExtents.y - minExtents.y,
+				   maxExtents.z - minExtents.z);
+}
+
+Vector3 AxisAligned::AABB::GetCenter()
+{
+
+	return Vector3(GetTransformedExtents(minExtents + (GetEdgeSizes() / 2.0f)).x,
+				   GetTransformedExtents(minExtents + (GetEdgeSizes() / 2.0f)).y,
+				   GetTransformedExtents(minExtents + (GetEdgeSizes() / 2.0f)).z);
+}
+
+Rigidbody* AxisAligned::AABB::GetRigidbody()
+{
+	return rigidbody;
 }

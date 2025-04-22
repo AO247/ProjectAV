@@ -4,11 +4,14 @@
 #include "Collider.h"
 #include "SolidSphere.h"
 #include "AABB.h"
+#include "OBB.h"
 
 using namespace DirectX::SimpleMath;
 namespace AxisAligned {
 	class AABB;
 }
+
+class OBB;
 
 class BoundingSphere : public Collider
 {
@@ -20,6 +23,7 @@ public:
 
 	IntersectData IntersectBoundingSphere(BoundingSphere* other);
 	IntersectData IntersectAABB(AxisAligned::AABB* other);
+	IntersectData IntersectOBB(OBB* other);
 
 	Vector3& GetCenter();
 	float GetRadius();

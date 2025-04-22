@@ -197,6 +197,7 @@
     <ClCompile Include="ModelComponent.cpp" />
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="Node.cpp" />
+    <ClCompile Include="OBB.cpp" />
     <ClCompile Include="PhysicsEngine.cpp" />
     <ClCompile Include="PixelShader.cpp" />
     <ClCompile Include="PointLight.cpp" />
@@ -258,6 +259,7 @@
     <ClInclude Include="ModelComponent.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="Node.h" />
+    <ClInclude Include="OBB.h" />
     <ClInclude Include="PhysicsEngine.h" />
     <ClInclude Include="PixelShader.h" />
     <ClInclude Include="PointLight.h" />

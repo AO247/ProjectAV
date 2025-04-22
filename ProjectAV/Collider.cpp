@@ -13,19 +13,19 @@ IntersectData Collider::Intersect(Collider* other)
 		BoundingSphere* self = (BoundingSphere*)this;
 		return self->IntersectBoundingSphere((BoundingSphere*)other);
 	}
-	if (colliderType == AABB && other->GetColliderType() == AABB)
+	if (colliderType == TYPE_OBB && other->GetColliderType() == TYPE_OBB)
 	{
-		AxisAligned::AABB* self = (AxisAligned::AABB*)this;
-		return self->IntersectAABB((AxisAligned::AABB*)other);
+		OBB* self = (OBB*)this;
+		return self->IntersectOBB((OBB*)other);
 	}
-	if (colliderType == SPHERE && other->GetColliderType() == AABB)
+	if (colliderType == SPHERE && other->GetColliderType() == TYPE_OBB)
 	{
 		BoundingSphere* self = (BoundingSphere*)this;
-		return self->IntersectAABB((AxisAligned::AABB*)other);
+		return self->IntersectOBB((OBB*)other);
 	}
-	if (colliderType == AABB && other->GetColliderType() == SPHERE)
+	if (colliderType == TYPE_OBB && other->GetColliderType() == SPHERE)
 	{
-		AxisAligned::AABB* self = (AxisAligned::AABB*)this;
+		OBB* self = (OBB*)this;
 		return self->IntersectBoundingSphere((BoundingSphere*)other);
 	}
 }

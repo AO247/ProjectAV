@@ -126,5 +126,11 @@ void SolidBox::SetPos(DirectX::XMFLOAT3 pos) noexcept
 DirectX::XMMATRIX SolidBox::GetTransformXM() const noexcept
 {
     // Only apply translation for now
-    return DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
+    //return DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
+    return matrix;
+}
+
+void SolidBox::SetTransformXM(DirectX::XMMATRIX matrix)
+{
+    this->matrix = matrix;
 }
