@@ -100,13 +100,13 @@ App::App(const std::string& commandLine)
         std::make_unique<ModelComponent>(pIsland, wnd.Gfx(), "Models\\wyspa\\wyspa_test.fbx")
     );
     pNoxTurn->AddComponent(
-        std::make_unique<ModelComponent>(pNoxTurn, wnd.Gfx(), "Models\\stone\\char.fbx")
+        std::make_unique<ModelComponent>(pNoxTurn, wnd.Gfx(), "Models\\kolumna\\kolumna.obj")
     );
-    pNoxTurnHair->AddComponent(
+    /*pNoxTurnHair->AddComponent(
         std::make_unique<ModelComponent>(pNoxTurnHair, wnd.Gfx(), "Models\\stone\\hair.fbx")
-    );
+    );*/
 	pTestModel->AddComponent(
-		std::make_unique<ModelComponent>(pTestModel, wnd.Gfx(), "Models\\stone\\grave5.fbx")
+		std::make_unique<ModelComponent>(pTestModel, wnd.Gfx(), "Models\\kolumna\\kolumna.obj")
 	);
     pEnemy->AddComponent(
         std::make_unique<ModelComponent>(pEnemy, wnd.Gfx(), "Models\\enemy\\basic.obj")
@@ -115,16 +115,16 @@ App::App(const std::string& commandLine)
 
     // Adding to Scene Graph
     pSceneRoot->AddChild(std::move(pPlayerNodeOwner));
-    pSceneRoot->AddChild(std::move(pNanosuitOwner));
-    pSceneRoot->AddChild(std::move(pNanosuitOwner2));
-    pSceneRoot->AddChild(std::move(pEmptyNode));
-    pSceneRoot->AddChild(std::move(pBrickOwner));
-    pSceneRoot->AddChild(std::move(pBoxOwner));
+    //pSceneRoot->AddChild(std::move(pNanosuitOwner));
+    //pSceneRoot->AddChild(std::move(pNanosuitOwner2));
+    //pSceneRoot->AddChild(std::move(pEmptyNode));
+    //pSceneRoot->AddChild(std::move(pBrickOwner));
+    //pSceneRoot->AddChild(std::move(pBoxOwner));
     pSceneRoot->AddChild(std::move(pStoneOwner));
     pSceneRoot->AddChild(std::move(pColumnOwner));
     pSceneRoot->AddChild(std::move(pIslandOwner));
 	pSceneRoot->AddChild(std::move(pNoxTurnOwner));
-	pNoxTurn->AddChild(std::move(pNoxTurnHairOwner));
+	//pNoxTurn->AddChild(std::move(pNoxTurnHairOwner));
 	pSceneRoot->AddChild(std::move(pTestModelOwner));
 	pSceneRoot->AddChild(std::move(pEnemyOwner));
 
@@ -133,15 +133,18 @@ App::App(const std::string& commandLine)
     pNanosuitNode2->SetLocalPosition(DirectX::XMFLOAT3(-20.0f, 0.0f, 0.0f));
     pBrick->SetLocalScale(dx::XMFLOAT3(20.0f, 20.0f, 1.0f));
     pBrick->SetLocalRotation(dx::XMFLOAT3(DirectX::XMConvertToRadians(90), 0.0f, 0.0f));
-	pStone->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f));
+    pColumn->SetLocalPosition(dx::XMFLOAT3(-9.0f, 0.0f, 11.0f));
+	pStone->SetLocalPosition(DirectX::XMFLOAT3(-4.0f, 0.0f, -14.0f));
 	pStone->SetLocalScale(dx::XMFLOAT3(1.5f, 1.5f, 1.5f));
     pIsland->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 	pIsland->SetLocalScale(dx::XMFLOAT3(1.3f, 1.3f, 1.3f));
-	pNoxTurn->SetLocalPosition(DirectX::XMFLOAT3(5.0f, 0.0f, 5.0f));
-	pNoxTurn->SetLocalScale(dx::XMFLOAT3(0.01f, 0.01f, 0.01f));
-	pTestModel->SetLocalPosition({ -5.0f, 0.0f, -5.0f });
-	pTestModel->SetLocalScale(dx::XMFLOAT3(0.01f, 0.01f, 0.01f));
+	pNoxTurn->SetLocalPosition(DirectX::XMFLOAT3(-1.0f, 0.0f, -19.0f));
+	pNoxTurn->SetLocalScale(dx::XMFLOAT3(1.0f, 1.0f, 1.0f));
+	pTestModel->SetLocalPosition({ 5.0f, 0.0f, 2.0f });
+	pTestModel->SetLocalScale(dx::XMFLOAT3(1.0f, 1.0f, 1.0f));
 	pEnemy->SetLocalPosition(DirectX::XMFLOAT3(10.0f, 0.0f, 0.0f));
+    pEnemy->SetLocalScale(dx::XMFLOAT3(2.0f, 2.0f, 2.0f));
+
 
 
 
