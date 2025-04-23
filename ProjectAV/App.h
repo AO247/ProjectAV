@@ -29,7 +29,8 @@ private:
     Window wnd; // PlayerController needs access to this
     Timer timer;
     float speed_factor = 1.0f;
-    PointLight light;
+    PointLight pointLight;
+
 
     // --- Scene Graph ---
     std::unique_ptr<Node> pSceneRoot;
@@ -47,6 +48,7 @@ private:
 	Node* pNoxTurn = nullptr; // Node for the camera
 	Node* pNoxTurnHair = nullptr; // Node for the camera
 	Node* pTestModel = nullptr; // Node for the test model
+	Node* pEnemy = nullptr; // Node for the enemy
     // --- UI State ---
     bool showDemoWindow = false;
     bool cursorEnabled = false;

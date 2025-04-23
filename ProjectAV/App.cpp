@@ -19,7 +19,7 @@ App::App(const std::string& commandLine)
     :
     commandLine(commandLine),
     wnd(1280, 720, "Project AV"), // Pass window dimensions/title
-    light(wnd.Gfx()),
+    pointLight(wnd.Gfx()), // Initialize PointLight
     pSceneRoot(std::make_unique<Node>("Root"))
 {
     // Set Projection Matrix (Far plane adjusted for larger scenes potentially)
@@ -67,6 +67,8 @@ App::App(const std::string& commandLine)
 	pNoxTurnHair = pNoxTurnHairOwner.get();
 	auto pTestModelOwner = std::make_unique<Node>("TestModel");
 	pTestModel = pTestModelOwner.get();
+	auto pEnemyOwner = std::make_unique<Node>("Enemy");
+	pEnemy = pEnemyOwner.get();
 
 
     // Adding Components
@@ -106,7 +108,9 @@ App::App(const std::string& commandLine)
 	pTestModel->AddComponent(
 		std::make_unique<ModelComponent>(pTestModel, wnd.Gfx(), "Models\\stone\\grave5.fbx")
 	);
-
+    pEnemy->AddComponent(
+        std::make_unique<ModelComponent>(pEnemy, wnd.Gfx(), "Models\\enemy\\basic.obj")
+    );
 
 
     // Adding to Scene Graph
@@ -122,6 +126,7 @@ App::App(const std::string& commandLine)
 	pSceneRoot->AddChild(std::move(pNoxTurnOwner));
 	pNoxTurn->AddChild(std::move(pNoxTurnHairOwner));
 	pSceneRoot->AddChild(std::move(pTestModelOwner));
+	pSceneRoot->AddChild(std::move(pEnemyOwner));
 
     // Changing position scale etc.
     pPlayerNode->SetLocalPosition({ 0.0f, 5.0f, -10.0f });
@@ -136,6 +141,7 @@ App::App(const std::string& commandLine)
 	pNoxTurn->SetLocalScale(dx::XMFLOAT3(0.01f, 0.01f, 0.01f));
 	pTestModel->SetLocalPosition({ -5.0f, 0.0f, -5.0f });
 	pTestModel->SetLocalScale(dx::XMFLOAT3(0.01f, 0.01f, 0.01f));
+	pEnemy->SetLocalPosition(DirectX::XMFLOAT3(10.0f, 0.0f, 0.0f));
 
 
 
@@ -201,40 +207,27 @@ void App::DoFrame(float dt)
 
     wnd.Gfx().BeginFrame(0.5f, 0.5f, 1.0f);
 
-    if (pPlayerNode->GetComponent<PlayerController>())
+    dx::XMMATRIX viewMatrix = dx::XMMatrixIdentity(); // Default
+    if (pPlayerNode && pPlayerNode->GetComponent<PlayerController>())
     {
         dx::XMMATRIX playerWorldTransform = pPlayerNode->GetWorldTransform();
-
-        dx::XMFLOAT2 playerRotation = pPlayerNode->GetComponent<PlayerController>()->GetRotation(); // {pitch, yaw}
-
-
+        dx::XMFLOAT2 playerRotation = pPlayerNode->GetComponent<PlayerController>()->GetRotation();
         dx::XMVECTOR camPosition = playerWorldTransform.r[3];
-
         const dx::XMVECTOR forwardBaseVector = dx::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
-        const auto lookVector = dx::XMVector3Transform(forwardBaseVector,
-            dx::XMMatrixRotationRollPitchYaw(playerRotation.x, playerRotation.y, 0.0f) // Use controller's Pitch & Yaw
-        );
-
+        const auto lookVector = dx::XMVector3Transform(forwardBaseVector, dx::XMMatrixRotationRollPitchYaw(playerRotation.x, playerRotation.y, 0.0f));
         const auto camTarget = dx::XMVectorAdd(camPosition, lookVector);
-
-        const dx::XMMATRIX viewMatrix = dx::XMMatrixLookAtLH(
-            camPosition,
-            camTarget,
-            dx::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f) // World Up vector
-        );
-
-        wnd.Gfx().SetCamera(viewMatrix);
+        viewMatrix = dx::XMMatrixLookAtLH(camPosition, camTarget, dx::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
     }
-    else {
-        wnd.Gfx().SetCamera(dx::XMMatrixIdentity());
-    }
+    wnd.Gfx().SetCamera(viewMatrix);
 
 
-    light.Bind(wnd.Gfx(), wnd.Gfx().GetCamera()); // Pass the view matrix for light calculations
+    // --- Bind Lights ---
+    pointLight.Bind(wnd.Gfx(), viewMatrix); // Bind point light (to slot 0)
+
 
     pSceneRoot->Draw(wnd.Gfx());
 
-    light.Draw(wnd.Gfx());
+    pointLight.Draw(wnd.Gfx());
 
 
     if (showControlWindow) {
@@ -248,7 +241,7 @@ void App::DoFrame(float dt)
 void App::ShowControlWindows()
 {
     // --- Existing Windows ---
-    light.SpawnControlWindow();
+    pointLight.SpawnControlWindow(); // Control for Point Light
     if (showDemoWindow)
     {
         ImGui::ShowDemoWindow(&showDemoWindow);
