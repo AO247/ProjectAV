@@ -35,9 +35,9 @@ App::App()
     //auto pNanosuitOwner2 = std::make_unique<Node>("Nanosuit2");
     //pNanosuitNode2 = pNanosuitOwner2.get();
     auto pEmptyNode = std::make_unique<Node>("EmptyNode");
-    /*auto pBrickOwner = std::make_unique<Node>("Brick");
+    auto pBrickOwner = std::make_unique<Node>("Brick");
     pBrick = pBrickOwner.get();
-    auto pBoxOwner = std::make_unique<Node>("Box");
+    /*auto pBoxOwner = std::make_unique<Node>("Box");
     pBox = pBoxOwner.get();
     auto pStoneOwner = std::make_unique<Node>("Stone");
     pStone = pStoneOwner.get();*/
@@ -57,10 +57,10 @@ App::App()
     pNanosuitNode2->AddComponent(
         std::make_unique<ModelComponent>(pNanosuitNode2, wnd.Gfx(), "Models\\nano_textured\\nanosuit.obj")
     );*/
-    /*pBrick->AddComponent(
+    pBrick->AddComponent(
         std::make_unique<ModelComponent>(pBrick, wnd.Gfx(), "Models\\brick_wall\\brick_wall.obj")
     );
-    pBox->AddComponent(
+    /*pBox->AddComponent(
         std::make_unique<ModelComponent>(pBox, wnd.Gfx(), "Models\\box.glb")
     );*/
     /*pStone->AddComponent(
@@ -80,8 +80,8 @@ App::App()
     //pSceneRoot->AddChild(std::move(pNanosuitOwner));
     //pSceneRoot->AddChild(std::move(pNanosuitOwner2));
     pSceneRoot->AddChild(std::move(pEmptyNode));
-    /*pSceneRoot->AddChild(std::move(pBrickOwner));
-    pSceneRoot->AddChild(std::move(pBoxOwner));
+    pSceneRoot->AddChild(std::move(pBrickOwner));
+    /*pSceneRoot->AddChild(std::move(pBoxOwner));
     pSceneRoot->AddChild(std::move(pStoneOwner));*/
     pSceneRoot->AddChild(std::move(pColumnOwner));
     //pSceneRoot->AddChild(std::move(pIslandOwner));
@@ -89,8 +89,8 @@ App::App()
     // Changing position scale etc.
     pPlayerNode->SetLocalPosition({ 0.0f, 5.0f, -10.0f });
     //pNanosuitNode2->SetLocalPosition(DirectX::XMFLOAT3(-20.0f, 0.0f, 0.0f));
-    //pBrick->SetLocalScale(dx::XMFLOAT3(20.0f, 20.0f, 1.0f));
-    //pBrick->SetLocalRotation(dx::XMFLOAT3(DirectX::XMConvertToRadians(90), 0.0f, 0.0f));
+    pBrick->SetLocalScale(dx::XMFLOAT3(20.0f, 20.0f, 1.0f));
+    pBrick->SetLocalRotation(dx::XMFLOAT3(DirectX::XMConvertToRadians(90), 0.0f, 0.0f));
     //pIsland->SetLocalPosition(DirectX::XMFLOAT3(0.0f, -20.0f, 0.0f));
 
 

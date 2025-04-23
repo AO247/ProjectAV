@@ -433,8 +433,8 @@ std::unique_ptr<Mesh> ModelComponent::ParseMesh(Graphics& gfx, const aiMesh& mes
 	// Select shaders and setup pixel constant buffer based on material properties
 	// Match the logic flow from the example Model::ParseMesh
 	if (hasDiffuseMap && hasNormalMap && hasSpecularMap) {
-		pvs = VertexShader::Resolve(gfx, "PhongVSNormalMap.cso");
-		pps = PixelShader::Resolve(gfx, "PhongPSSpecNormalMap.cso");
+		pvs = VertexShader::Resolve(gfx, "PhongVS.cso");
+		pps = PixelShader::Resolve(gfx, "PhongPS.cso");
 
 		// Define structure matching PhongPSSpecNormalMap.hlsl ObjectCBuf
 		struct PSMaterialConstantFullmonte {
@@ -455,8 +455,8 @@ std::unique_ptr<Mesh> ModelComponent::ParseMesh(Graphics& gfx, const aiMesh& mes
 
 	}
 	else if (hasDiffuseMap && hasNormalMap) {
-		pvs = VertexShader::Resolve(gfx, "PhongVSNormalMap.cso");
-		pps = PixelShader::Resolve(gfx, "PhongPSNormalMap.cso");
+		pvs = VertexShader::Resolve(gfx, "PhongVS.cso");
+		pps = PixelShader::Resolve(gfx, "PhongPS.cso");
 
 		// Define structure matching PhongPSNormalMap.hlsl ObjectCBuf
 		struct PSMaterialConstantDiffnorm {

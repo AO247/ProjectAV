@@ -11,7 +11,7 @@ cbuffer LightCBuf
     float attLin;
     float attQuad;
 
-    float spotCutoffCos; // cos(?), nie ?!
+    float spotCutoffCos;
     float spotExponent;
 };
 

@@ -18,9 +18,25 @@ void SpotLight::SpawnControlWindow() noexcept
         ImGui::SliderFloat("Z", &cbData.pos.z, -60.0f, 60.0f);
 
         ImGui::Text("Direction");
-        ImGui::SliderFloat("Dir X", &cbData.dir.x, -1.0f, 1.0f);
-        ImGui::SliderFloat("Dir Y", &cbData.dir.y, -1.0f, 1.0f);
-        ImGui::SliderFloat("Dir Z", &cbData.dir.z, -1.0f, 1.0f);
+        if (ImGui::SliderFloat("Dir X", &cbData.dir.x, -1.0f, 1.0f)) {
+			// Normalize the direction vector
+            DirectX::XMVECTOR dir = DirectX::XMLoadFloat3(&cbData.dir);
+			dir = DirectX::XMVector3Normalize(dir);
+            DirectX::XMStoreFloat3(&cbData.dir, dir);
+        }
+        if(ImGui::SliderFloat("Dir Y", &cbData.dir.y, -1.0f, 1.0f)) {
+			// Normalize the direction vector
+			DirectX::XMVECTOR dir = DirectX::XMLoadFloat3(&cbData.dir);
+			dir = DirectX::XMVector3Normalize(dir);
+			DirectX::XMStoreFloat3(&cbData.dir, dir);
+        }
+        
+        if(ImGui::SliderFloat("Dir Z", &cbData.dir.z, -1.0f, 1.0f)) {
+            // Normalize the direction vector
+            DirectX::XMVECTOR dir = DirectX::XMLoadFloat3(&cbData.dir);
+            dir = DirectX::XMVector3Normalize(dir);
+            DirectX::XMStoreFloat3(&cbData.dir, dir);
+        }
 
         ImGui::Text("Intensity/Color");
         ImGui::ColorEdit3("Ambient", &cbData.ambient.x);
