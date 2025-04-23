@@ -23,9 +23,9 @@ void SpotLight::SpawnControlWindow() noexcept
         ImGui::SliderFloat("Dir Z", &cbData.dir.z, -1.0f, 1.0f);
 
         ImGui::Text("Intensity/Color");
-        ImGui::SliderFloat("Intensity", &cbData.diffuseIntensity, 0.01f, 2.0f);
-        ImGui::ColorEdit3("Diffuse Color", &cbData.diffuseColor.x);
         ImGui::ColorEdit3("Ambient", &cbData.ambient.x);
+        ImGui::ColorEdit3("Diffuse Color", &cbData.diffuseColor.x);
+        ImGui::SliderFloat("Intensity", &cbData.diffuseIntensity, 0.01f, 2.0f);
 
         ImGui::Text("Falloff");
         ImGui::SliderFloat("Constant", &cbData.attConst, 0.05f, 10.0f);
@@ -69,10 +69,8 @@ void SpotLight::Draw(Graphics& gfx) noxnd
 void SpotLight::Bind(Graphics& gfx, DirectX::FXMMATRIX view) const noexcept
 {
     auto dataCopy = cbData;
-    const auto pos = DirectX::XMLoadFloat3(&cbData.pos);
-    const auto dir = DirectX::XMLoadFloat3(&cbData.dir);
-    DirectX::XMStoreFloat3(&dataCopy.pos, DirectX::XMVector3Transform(pos, view));
-    DirectX::XMStoreFloat3(&dataCopy.dir, DirectX::XMVector3TransformNormal(dir, view));
+    XMStoreFloat3(&dataCopy.pos, XMVector3Transform(XMLoadFloat3(&cbData.pos), view));
+    XMStoreFloat3(&dataCopy.dir, XMVector3TransformNormal(XMLoadFloat3(&cbData.dir), view));
     cbuf.Update(gfx, dataCopy);
     cbuf.Bind(gfx);
 }
