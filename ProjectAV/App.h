@@ -4,6 +4,7 @@
 #include "ImguiManager.h"
 // #include "Camera.h" // Remove Camera include for now
 #include "PointLight.h"
+#include "SpotLight.h"
 #include <memory> 
 #include "Node.h" 
 
@@ -27,7 +28,7 @@ private:
     Window wnd; // PlayerController needs access to this
     Timer timer;
     float speed_factor = 1.0f;
-    PointLight light;
+    SpotLight light;
 
     // --- Scene Graph ---
     std::unique_ptr<Node> pSceneRoot;

@@ -198,6 +198,9 @@
     <ClCompile Include="PlayerController.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
+    <ClCompile Include="SpotLight.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowsMessageMap.h">
@@ -383,6 +386,9 @@
     <ClInclude Include="PlayerController.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
+    <ClInclude Include="SpotLight.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ProjectAV.rc">
@@ -405,21 +411,6 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="SolidVS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="PhongPSSpecMap.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="PhongPSNormalMap.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="PhongVSNormalMap.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="PhongPSSpecNormalMap.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="PhongPSNormalMapObject.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="PhongPSNotex.hlsl" />

@@ -1,12 +1,18 @@
 cbuffer LightCBuf
 {
-    float3 lightPos;
-    float3 ambient;
+    float3 lightPosView; // Pozycja œwiat³a w przestrzeni widoku
+    float3 lightDirView; // Kierunek œwiat³a w przestrzeni widoku (znormalizowany)
+    float3 ambientColor;
+
     float3 diffuseColor;
     float diffuseIntensity;
+
     float attConst;
     float attLin;
     float attQuad;
+
+    float spotCutoffCos; // cos(?), nie ?!
+    float spotExponent;
 };
 
 cbuffer ObjectCBuf
@@ -21,21 +27,35 @@ Texture2D tex;
 SamplerState splr;
 
 
-float4 main(float3 viewPos : Position, float3 n : Normal, float2 tc : Texcoord) : SV_Target
+float4 main(float3 fragPosView : Position, float3 normalView : Normal, float2 texCoord : Texcoord) : SV_Target
 {
-	// fragment to light vector data
-    const float3 vToL = lightPos - viewPos;
-    const float distToL = length(vToL);
-    const float3 dirToL = vToL / distToL;
-	// attenuation
-    const float att = 1.0f / (attConst + attLin * distToL + attQuad * (distToL * distToL));
-	// diffuse intensity
-    const float3 diffuse = diffuseColor * diffuseIntensity * att * max(0.0f, dot(dirToL, n));
-	// reflected light vector
-    const float3 w = n * dot(vToL, n);
-    const float3 r = w * 2.0f - vToL;
-	// calculate specular intensity based on angle between viewing vector and reflection vector, narrow with power function
-    const float3 specular = att * (diffuseColor * diffuseIntensity) * specularIntensity * pow(max(0.0f, dot(normalize(-r), normalize(viewPos))), specularPower);
-	// final color
-    return float4(saturate((diffuse + ambient) * tex.Sample(splr, tc).rgb + specular), 1.0f);
+    float3 N = normalize(normalView);
+    float3 V = normalize(-fragPosView); // Kierunek do kamery (0,0,0 w view space)
+    
+    // Kierunek do œwiat³a i dystans
+    float3 L = lightPosView - fragPosView;
+    float dist = length(L);
+    float3 dirToLight = L / dist;
+
+    // Spot factor
+    float spotCos = dot(-lightDirView, dirToLight);
+    float spotEffect = (spotCos > spotCutoffCos) ? pow(spotCos, spotExponent) : 0.0f;
+
+    // Attenuation
+    float attenuation = 1.0f / (attConst + attLin * dist + attQuad * dist * dist);
+
+    // Diffuse
+    float diffuseFactor = max(dot(N, dirToLight), 0.0f);
+    float3 diffuse = diffuseColor * diffuseIntensity * diffuseFactor * attenuation * spotEffect;
+
+    // Specular (Blinn)
+    float3 H = normalize(dirToLight + V); // Halfway vector
+    float specFactor = pow(max(dot(N, H), 0.0f), specularPower);
+    float3 specular = diffuseColor * specularIntensity * specFactor * attenuation * spotEffect;
+
+    // Final color
+    float3 texColor = tex.Sample(splr, texCoord).rgb;
+    float3 finalColor = saturate((ambientColor + diffuse) * texColor + specular);
+
+    return float4(finalColor, 1.0f);
 }
