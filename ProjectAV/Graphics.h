@@ -5,20 +5,9 @@
 #include <wrl.h>
 #include <vector>
 #include "DxgiInfoManager.h"
-#include <d3dcompiler.h>
-#include <DirectXMath.h>
-#include <memory>
-#include <random>
-#include "ConditionalNoexcept.h"
-
-namespace Bind
-{
-	class Bindable;
-}
 
 class Graphics
 {
-	friend Bind::Bindable;
 public:
 	class Exception : public CException
 	{
@@ -41,7 +30,7 @@ public:
 	class InfoException : public Exception
 	{
 	public:
-		InfoException( int line,const char* file,std::vector<std::string> infoMsgs ) noexcept;
+		InfoException(int line, const char* file, std::vector<std::string> infoMsgs = {}) noexcept;
 		const char* what() const noexcept override;
 		const char* GetType() const noexcept override;
 		std::string GetErrorInfo() const noexcept;
@@ -57,33 +46,18 @@ public:
 		std::string reason;
 	};
 public:
-	Graphics( HWND hWnd,int width,int height );
+	Graphics( HWND hWnd );
 	Graphics( const Graphics& ) = delete;
 	Graphics& operator=( const Graphics& ) = delete;
-	~Graphics();
+	~Graphics() = default;
 	void EndFrame();
-<<<<<<< Updated upstream
-	void BeginFrame( float red,float green,float blue ) noexcept;
-	void DrawIndexed( UINT count ) noxnd;
-	void SetProjection( DirectX::FXMMATRIX proj ) noexcept;
-	DirectX::XMMATRIX GetProjection() const noexcept;
-	void SetCamera( DirectX::FXMMATRIX cam ) noexcept;
-	DirectX::XMMATRIX GetCamera() const noexcept;
-	void EnableImgui() noexcept;
-	void DisableImgui() noexcept;
-	bool IsImguiEnabled() const noexcept;
-=======
 	void ClearBuffer( float red,float green,float blue ) noexcept;
 	void DrawTestTriangle();
 
 	ID3D11Device* GetDevice() const { return pDevice.Get(); }
 	ID3D11DeviceContext* GetContext() const { return pContext.Get(); }
 
->>>>>>> Stashed changes
 private:
-	DirectX::XMMATRIX projection;
-	DirectX::XMMATRIX camera;
-	bool imguiEnabled = true;
 #ifndef NDEBUG
 	DxgiInfoManager infoManager;
 #endif
@@ -91,5 +65,4 @@ private:
 	Microsoft::WRL::ComPtr<IDXGISwapChain> pSwap;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> pContext;
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> pTarget;
-	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> pDSV;
 };

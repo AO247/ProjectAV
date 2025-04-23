@@ -1,21 +1,9 @@
-#include "Win.h"
 #include "Mouse.h"
-
+#include <Windows.h>
 
 std::pair<int,int> Mouse::GetPos() const noexcept
 {
 	return { x,y };
-}
-
-std::optional<Mouse::RawDelta> Mouse::ReadRawDelta() noexcept
-{
-	if( rawDeltaBuffer.empty() )
-	{
-		return std::nullopt;
-	}
-	const RawDelta d = rawDeltaBuffer.front();
-	rawDeltaBuffer.pop();
-	return d;
 }
 
 int Mouse::GetPosX() const noexcept
@@ -43,7 +31,17 @@ bool Mouse::RightIsPressed() const noexcept
 	return rightIsPressed;
 }
 
-std::optional<Mouse::Event> Mouse::Read() noexcept
+bool Mouse::X1IsPressed() const noexcept
+{
+	return x1IsPressed;
+}
+
+bool Mouse::X2IsPressed() const noexcept
+{
+	return x2IsPressed;
+}
+
+Mouse::Event Mouse::Read() noexcept
 {
 	if( buffer.size() > 0u )
 	{
@@ -51,27 +49,15 @@ std::optional<Mouse::Event> Mouse::Read() noexcept
 		buffer.pop();
 		return e;
 	}
-	return {};
+	else
+	{
+		return Mouse::Event();
+	}
 }
 
 void Mouse::Flush() noexcept
 {
 	buffer = std::queue<Event>();
-}
-
-void Mouse::EnableRaw() noexcept
-{
-	rawEnabled = true;
-}
-
-void Mouse::DisableRaw() noexcept
-{
-	rawEnabled = false;
-}
-
-bool Mouse::RawEnabled() const noexcept
-{
-	return rawEnabled;
 }
 
 void Mouse::OnMouseMove( int newx,int newy ) noexcept
@@ -94,12 +80,6 @@ void Mouse::OnMouseEnter() noexcept
 {
 	isInWindow = true;
 	buffer.push( Mouse::Event( Mouse::Event::Type::Enter,*this ) );
-	TrimBuffer();
-}
-
-void Mouse::OnRawDelta( int dx,int dy ) noexcept
-{
-	rawDeltaBuffer.push( { dx,dy } );
 	TrimBuffer();
 }
 
@@ -135,6 +115,38 @@ void Mouse::OnRightReleased( int x,int y ) noexcept
 	TrimBuffer();
 }
 
+void Mouse::OnX1Pressed() noexcept
+{
+	x1IsPressed = true;
+
+	buffer.push(Mouse::Event(Mouse::Event::Type::X1Press, *this));
+	TrimBuffer();
+}
+
+void Mouse::OnX1Released() noexcept
+{
+	x1IsPressed = false;
+
+	buffer.push(Mouse::Event(Mouse::Event::Type::X1Release, *this));
+	TrimBuffer();
+}
+
+void Mouse::OnX2Pressed() noexcept
+{
+	x2IsPressed = true;
+
+	buffer.push(Mouse::Event(Mouse::Event::Type::X2Press, *this));
+	TrimBuffer();
+}
+
+void Mouse::OnX2Released() noexcept
+{
+	x2IsPressed = false;
+
+	buffer.push(Mouse::Event(Mouse::Event::Type::X2Release, *this));
+	TrimBuffer();
+}
+
 void Mouse::OnWheelUp( int x,int y ) noexcept
 {
 	buffer.push( Mouse::Event( Mouse::Event::Type::WheelUp,*this ) );
@@ -152,14 +164,6 @@ void Mouse::TrimBuffer() noexcept
 	while( buffer.size() > bufferSize )
 	{
 		buffer.pop();
-	}
-}
-
-void Mouse::TrimRawInputBuffer() noexcept
-{
-	while( rawDeltaBuffer.size() > bufferSize )
-	{
-		rawDeltaBuffer.pop();
 	}
 }
 

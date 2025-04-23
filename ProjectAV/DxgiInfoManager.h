@@ -4,7 +4,6 @@
 #include <vector>
 #include <dxgidebug.h>
 #include <string>
-
 class DxgiInfoManager
 {
 public:

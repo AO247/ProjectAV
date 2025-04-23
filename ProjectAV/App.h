@@ -1,16 +1,7 @@
 #pragma once
 #include "Window.h"
 #include "Timer.h"
-<<<<<<< Updated upstream
-#include "ImguiManager.h"
-#include "Camera.h"
-#include "PointLight.h"
-#include <memory> // For unique_ptr
-#include "Node.h" // Include the new Node class
-
-// Forward declarations (if needed)
-
-=======
+#include "Button.h"
 #include <SpriteBatch.h>
 #include <SpriteFont.h>
 #include <WICTextureLoader.h>
@@ -18,44 +9,12 @@
 #include <vector>
 #include <memory>
 #include <random>
->>>>>>> Stashed changes
+#include "Mouse.h"
 
 class App
 {
 public:
     App();
-<<<<<<< Updated upstream
-    // master frame / message loop
-    int Go();
-    ~App();
-private:
-    void DoFrame(float dt); // Pass delta time
-    void HandleInput(float dt);
-    void ShowControlWindows();
-
-private:
-    // Core App Systems
-    ImguiManager imgui;
-    Window wnd;
-    Timer timer;
-    float speed_factor = 1.0f;
-    Camera cam;
-    PointLight light; // Keep the light as is for now
-    DirectX::XMFLOAT3 nanosuitPos = { 0.0f, 0.0f, 0.0f }; // Initial position
-
-    // --- Scene Graph ---
-    std::unique_ptr<Node> pSceneRoot; // Root of the scene graph
-    Node* pNanosuitNode = nullptr;    // Pointer to the specific node holding the nanosuit model (optional, for easy access)
-    Node* pNanosuitNode2 = nullptr;    // Pointer to the specific node holding the nanosuit model (optional, for easy access)
-    Node* pBox = nullptr;    // Pointer to the specific node holding the nanosuit model (optional, for easy access)
-    Node* pEmptyNode = nullptr;
-    Node* pSelectedSceneNode = nullptr; // Add this pointer
-
-    // --- UI State ---
-    bool showDemoWindow = false;
-    bool cursorEnabled = false; // Track cursor state explicitly
-	bool showControlWindow = true; // Show control window by default
-=======
     int Go();
 private:
     void DoFrame();
@@ -63,6 +22,8 @@ private:
     void LoadStaticSprite();
     void LoadBackgroundLayers();
     void UpdateBackground(float deltaTime);
+    void ToggleBackgroundDirection();
+
 
     Window wnd;
     Timer timer;
@@ -98,5 +59,11 @@ private:
 
     // Counter variable
     int currentNumber;
->>>>>>> Stashed changes
+
+    // Button
+    Mouse mouse;
+    std::unique_ptr<Button> directionButton;
+    bool backgroundMovingRight = false;
+    void PrintMousePosition() const;
+
 };

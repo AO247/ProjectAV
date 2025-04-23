@@ -58,30 +58,26 @@ public:
 	Window( const Window& ) = delete;
 	Window& operator=( const Window& ) = delete;
 	void SetTitle( const std::string& title );
-	void EnableCursor() noexcept;
-	void DisableCursor() noexcept;
-	bool CursorEnabled() const noexcept;
 	static std::optional<int> ProcessMessages() noexcept;
 	Graphics& Gfx();
 private:
-	void ConfineCursor() noexcept;
-	void FreeCursor() noexcept;
-	void ShowCursor() noexcept;
-	void HideCursor() noexcept;
-	void EnableImGuiMouse() noexcept;
-	void DisableImGuiMouse() noexcept;
 	static LRESULT CALLBACK HandleMsgSetup( HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam ) noexcept;
 	static LRESULT CALLBACK HandleMsgThunk( HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam ) noexcept;
 	LRESULT HandleMsg( HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam ) noexcept;
 public:
 	Keyboard kbd;
 	Mouse mouse;
-	
+	Mouse& GetMouse() noexcept { return mouse; }
+	const Mouse& GetMouse() const noexcept { return mouse; }
 private:
-	bool cursorEnabled = true;
 	int width;
 	int height;
 	HWND hWnd;
 	std::unique_ptr<Graphics> pGfx;
-	std::vector<BYTE> rawBuffer;
 };
+
+
+// error exception helper macro
+#define CHWND_EXCEPT( hr ) Window::HrException( __LINE__,__FILE__,(hr) )
+#define CHWND_LAST_EXCEPT() Window::HrException( __LINE__,__FILE__,GetLastError() )
+#define CHWND_NOGFX_EXCEPT() Window::NoGfxException( __LINE__,__FILE__ )
