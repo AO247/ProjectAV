@@ -451,7 +451,7 @@ std::unique_ptr<Mesh> ModelComponent::ParseMesh(Graphics& gfx, const aiMesh& mes
 		pmc.specularColor = { specularColor.x, specularColor.y, specularColor.z }; // Use loaded color if has gloss map
 		// pmc.specularMapWeight = ...; // Can be adjusted if needed
 
-		bindablePtrs.push_back(std::make_shared<PixelConstantBuffer<PSMaterialConstantFullmonte>>(gfx, pmc, 1u));
+		bindablePtrs.push_back(std::make_shared<PixelConstantBuffer<PSMaterialConstantFullmonte>>(gfx, pmc, 2u));
 
 	}
 	else if (hasDiffuseMap && hasNormalMap) {
@@ -470,13 +470,12 @@ std::unique_ptr<Mesh> ModelComponent::ParseMesh(Graphics& gfx, const aiMesh& mes
 		pmc.specularIntensity = (specularColor.x + specularColor.y + specularColor.z) / 3.0f; // Average specular color
 		pmc.normalMapEnabled = TRUE;
 
-		bindablePtrs.push_back(std::make_shared<PixelConstantBuffer<PSMaterialConstantDiffnorm>>(gfx, pmc, 1u));
+		bindablePtrs.push_back(std::make_shared<PixelConstantBuffer<PSMaterialConstantDiffnorm>>(gfx, pmc, 2u));
 
 	}
 	else if (hasDiffuseMap) { // Implies no normal map, no specular map
 		pvs = VertexShader::Resolve(gfx, "PhongVS.cso");
 		pps = PixelShader::Resolve(gfx, "PhongPS.cso");
-
 		// Define structure matching PhongPS.hlsl ObjectCBuf
 		struct PSMaterialConstantDiffuse {
 			float specularIntensity = 0.6f; // Example default
@@ -487,7 +486,7 @@ std::unique_ptr<Mesh> ModelComponent::ParseMesh(Graphics& gfx, const aiMesh& mes
 		pmc.specularPower = shininess;
 		pmc.specularIntensity = (specularColor.x + specularColor.y + specularColor.z) / 3.0f;
 
-		bindablePtrs.push_back(std::make_shared<PixelConstantBuffer<PSMaterialConstantDiffuse>>(gfx, pmc, 1u));
+		bindablePtrs.push_back(std::make_shared<PixelConstantBuffer<PSMaterialConstantDiffuse>>(gfx, pmc, 2u));
 
 	}
 	else if (!hasDiffuseMap && !hasNormalMap && !hasSpecularMap) {
@@ -507,7 +506,7 @@ std::unique_ptr<Mesh> ModelComponent::ParseMesh(Graphics& gfx, const aiMesh& mes
 		pmc.specularColor = specularColor;
 		pmc.materialColor = diffuseColor;
 
-		bindablePtrs.push_back(std::make_shared<PixelConstantBuffer<PSMaterialConstantNotex>>(gfx, pmc, 1u));
+		bindablePtrs.push_back(std::make_shared<PixelConstantBuffer<PSMaterialConstantNotex>>(gfx, pmc, 2u));
 	}
 	else {
 		// Handle unsupported combinations
