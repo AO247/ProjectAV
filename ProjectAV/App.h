@@ -35,7 +35,6 @@ private:
     float speed_factor = 1.0f;
     Camera cam;
     PointLight light; // Keep the light as is for now
-    DirectionalLight dLight;
     DirectX::XMFLOAT3 nanosuitPos = { 0.0f, 0.0f, 0.0f }; // Initial position
     PhysicsEngine physicsEngine;
 

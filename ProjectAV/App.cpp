@@ -20,7 +20,6 @@ App::App()
     :
     wnd(1280, 720, "Project AV"),
     light(wnd.Gfx()), // Initialize light
-    dLight(wnd.Gfx()),
     pSceneRoot(std::make_unique<Node>("Root")) // Create scene root node
 {
     // Set Projection Matrix
@@ -215,8 +214,6 @@ void App::DoFrame(float dt)
 
     // Bind Lights (if applicable)
     light.Bind(wnd.Gfx(), cam.GetMatrix());
-    dLight.Bind(wnd.Gfx(), cam.GetMatrix());
-    dLight.SetDirection(DirectX::XMFLOAT3(0.0f, -1.0f, 0.0f));
 
     // --- Draw the Scene Graph ---
     // The root node's Draw call will recursively draw all children and their components

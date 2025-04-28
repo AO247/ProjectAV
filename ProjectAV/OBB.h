@@ -4,9 +4,11 @@
 
 struct IntervalPair
 {
-	IntervalPair(float imin, float imax) : imin(imin), imax(imax) {}
+	IntervalPair() {}
 	float imin;
 	float imax;
+	// Only for face to face collision
+	Vector3 verticesClosestToTheAxis[4];
 };
 
 class BoundingSphere;
@@ -50,4 +52,8 @@ private:
 	Vector3 GetTransformedOrientation(Vector3 orientation);
 	IntervalPair GetInterval(Vector3 axis);
 	bool ColOverlapAxis(OBB* first, OBB* second, Vector3 axis);
+	bool ProjectAndCheckOverlapping(int surface, IntervalPair data1, IntervalPair data2);
+	Vector3* GenerateNormalsForProjection(int surface, Vector3* vertices);
+	Vector3 GetPerpendicular2DVector(int surface, Vector3 v);
+	IntervalPair GetInterval2D(Vector3 axis, Vector3* vertices);
 };

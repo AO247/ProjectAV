@@ -344,12 +344,12 @@ std::unique_ptr<Mesh> ModelComponent::ParseMesh(Graphics& gfx, const aiMesh& mes
 		// Normal Map Texture (Slot 2)
 		if (material.GetTexture(aiTextureType_NORMALS, 0, &texPathAi) == aiReturn_SUCCESS) {
 			std::string normPath = modelPath + texPathAi.C_Str();
-			bindablePtrs.push_back(Texture::Resolve(gfx, normPath, 2u));
+			bindablePtrs.push_back(Texture::Resolve(gfx, normPath, 1u));
 			hasNormalMap = true;
 		}
 		else if (material.GetTexture(aiTextureType_HEIGHT, 0, &texPathAi) == aiReturn_SUCCESS) {
 			std::string normPath = modelPath + texPathAi.C_Str();
-			bindablePtrs.push_back(Texture::Resolve(gfx, normPath, 2u));
+			bindablePtrs.push_back(Texture::Resolve(gfx, normPath, 1u));
 			hasNormalMap = true;
 		}
 
@@ -451,7 +451,7 @@ std::unique_ptr<Mesh> ModelComponent::ParseMesh(Graphics& gfx, const aiMesh& mes
 		pmc.specularColor = { specularColor.x, specularColor.y, specularColor.z }; // Use loaded color if has gloss map
 		// pmc.specularMapWeight = ...; // Can be adjusted if needed
 
-		bindablePtrs.push_back(std::make_shared<PixelConstantBuffer<PSMaterialConstantFullmonte>>(gfx, pmc, 2u));
+		bindablePtrs.push_back(std::make_shared<PixelConstantBuffer<PSMaterialConstantFullmonte>>(gfx, pmc, 1u));
 
 	}
 	else if (hasDiffuseMap && hasNormalMap) {
@@ -470,7 +470,7 @@ std::unique_ptr<Mesh> ModelComponent::ParseMesh(Graphics& gfx, const aiMesh& mes
 		pmc.specularIntensity = (specularColor.x + specularColor.y + specularColor.z) / 3.0f; // Average specular color
 		pmc.normalMapEnabled = TRUE;
 
-		bindablePtrs.push_back(std::make_shared<PixelConstantBuffer<PSMaterialConstantDiffnorm>>(gfx, pmc, 2u));
+		bindablePtrs.push_back(std::make_shared<PixelConstantBuffer<PSMaterialConstantDiffnorm>>(gfx, pmc, 1u));
 
 	}
 	else if (hasDiffuseMap) { // Implies no normal map, no specular map
@@ -486,7 +486,7 @@ std::unique_ptr<Mesh> ModelComponent::ParseMesh(Graphics& gfx, const aiMesh& mes
 		pmc.specularPower = shininess;
 		pmc.specularIntensity = (specularColor.x + specularColor.y + specularColor.z) / 3.0f;
 
-		bindablePtrs.push_back(std::make_shared<PixelConstantBuffer<PSMaterialConstantDiffuse>>(gfx, pmc, 2u));
+		bindablePtrs.push_back(std::make_shared<PixelConstantBuffer<PSMaterialConstantDiffuse>>(gfx, pmc, 1u));
 
 	}
 	else if (!hasDiffuseMap && !hasNormalMap && !hasSpecularMap) {
@@ -506,7 +506,7 @@ std::unique_ptr<Mesh> ModelComponent::ParseMesh(Graphics& gfx, const aiMesh& mes
 		pmc.specularColor = specularColor;
 		pmc.materialColor = diffuseColor;
 
-		bindablePtrs.push_back(std::make_shared<PixelConstantBuffer<PSMaterialConstantNotex>>(gfx, pmc, 2u));
+		bindablePtrs.push_back(std::make_shared<PixelConstantBuffer<PSMaterialConstantNotex>>(gfx, pmc, 1u));
 	}
 	else {
 		// Handle unsupported combinations

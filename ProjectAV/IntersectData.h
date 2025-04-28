@@ -13,6 +13,14 @@ public:
 		collisionPointRadiusForFirstBody(collisionPointRadiusForFirstBody),
 		collisionPointRadiusForSecondBody(collisionPointRadiusForSecondBody) {}
 
+	IntersectData(bool doesIntersect, Vector3 direction, Vector3 collisionPoint, Vector3 collisionPointRadiusForFirstBody, Vector3 collisionPointRadiusForSecondBody, bool OBBFullSurfaceCollision) :
+		doesIntersect(doesIntersect),
+		direction(direction),
+		collisionPoint(collisionPoint),
+		collisionPointRadiusForFirstBody(collisionPointRadiusForFirstBody),
+		collisionPointRadiusForSecondBody(collisionPointRadiusForSecondBody),
+	    OBBFullSurfaceCollision(OBBFullSurfaceCollision){}
+
 	bool GetDoesIntersect();
 	float GetDistance();
 	Vector3 GetDirection();
@@ -25,4 +33,5 @@ private:
 	Vector3 collisionPoint;
 	Vector3 collisionPointRadiusForFirstBody;
 	Vector3 collisionPointRadiusForSecondBody;
+	bool OBBFullSurfaceCollision = true;
 };

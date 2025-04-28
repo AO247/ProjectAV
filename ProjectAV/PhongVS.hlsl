@@ -4,13 +4,6 @@ cbuffer CBuf
     matrix modelViewProj;
 };
 
-struct VSIn
-{
-    float3 pos : Position;
-    float3 n : Normal;
-    float2 tc : Texcoord;
-};
-
 struct VSOut
 {
     float3 viewPos : Position;
@@ -19,13 +12,12 @@ struct VSOut
     float4 pos : SV_Position;
 };
 
-VSOut main(VSIn vsi)
+VSOut main(float3 pos : Position, float3 n : Normal, float2 tc : Texcoord)
 {
     VSOut vso;
-    vso.viewPos = (float3) mul(float4(vsi.pos, 1.0f), modelView);
-    vso.normal = normalize(mul(vsi.n, (float3x3) modelView));
-    vso.pos = mul(float4(vsi.pos, 1.0f), modelViewProj);
-    vso.tc = vsi.tc;
+    vso.viewPos = (float3) mul(float4(pos, 1.0f), modelView);
+    vso.normal = mul(n, (float3x3) modelView);
+    vso.pos = mul(float4(pos, 1.0f), modelViewProj);
+    vso.tc = tc;
     return vso;
 }
-

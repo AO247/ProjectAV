@@ -1,53 +1,41 @@
-cbuffer LightCBuf : register(b1)
+cbuffer LightCBuf
 {
-    float3 lightDirection;
-    float padding_light;
-
+    float3 lightPos;
     float3 ambient;
     float3 diffuseColor;
     float diffuseIntensity;
+    float attConst;
+    float attLin;
+    float attQuad;
 };
 
-cbuffer ObjectCBuf : register(b2)
+cbuffer ObjectCBuf
 {
     float specularIntensity;
     float specularPower;
-    float padding_obj[2];
+    float padding[2];
 };
 
 Texture2D tex;
+
 SamplerState splr;
 
-struct VSOut
+
+float4 main(float3 viewPos : Position, float3 n : Normal, float2 tc : Texcoord) : SV_Target
 {
-    float3 viewPos : Position;
-    float3 normal : Normal;
-    float2 tc : Texcoord;
-    float4 pos : SV_Position;
-};
-
-float4 main(VSOut vso) : SV_Target
-{
-
-    float3 n = normalize(vso.normal);
-
-    const float3 lightVector = -lightDirection;
-    
-    const float diffuseFactor = max(0.0f, dot(lightVector, n));
-    const float3 diffuse = diffuseColor * diffuseIntensity * diffuseFactor;
-
-    const float3 viewDir = normalize(-vso.viewPos);
-
-    const float3 w = n * dot(lightVector, n);
-    const float3 r = normalize(w * 2.0f - lightVector);
-
-    const float specFactor = pow(max(0.0f, dot(r, viewDir)), specularPower);
-    const float3 specular = (diffuseColor * diffuseIntensity) * specularIntensity * specFactor;
-
-
-    float3 texColor = tex.Sample(splr, vso.tc).rgb;
-
-    float3 finalColor = saturate((ambient + diffuse) * texColor + specular);
-
-    return float4(finalColor, 1.0f);
+	// fragment to light vector data
+    const float3 vToL = lightPos - viewPos;
+    const float distToL = length(vToL);
+    const float3 dirToL = vToL / distToL;
+	// attenuation
+    const float att = 1.0f / (attConst + attLin * distToL + attQuad * (distToL * distToL));
+	// diffuse intensity
+    const float3 diffuse = diffuseColor * diffuseIntensity * att * max(0.0f, dot(dirToL, n));
+	// reflected light vector
+    const float3 w = n * dot(vToL, n);
+    const float3 r = w * 2.0f - vToL;
+	// calculate specular intensity based on angle between viewing vector and reflection vector, narrow with power function
+    const float3 specular = att * (diffuseColor * diffuseIntensity) * specularIntensity * pow(max(0.0f, dot(normalize(-r), normalize(viewPos))), specularPower);
+	// final color
+    return float4(saturate((diffuse + ambient) * tex.Sample(splr, tc).rgb + specular), 1.0f);
 }
