@@ -79,13 +79,13 @@ IntersectData OBB::IntersectOBB(OBB* other)
 
 	// Collision type is face to face
 
-	if (ProjectAndCheckOverlapping(0, projectionDataForFirstFace, projectionDataForSecondFace) ||
+	/*if (ProjectAndCheckOverlapping(0, projectionDataForFirstFace, projectionDataForSecondFace) ||
 		ProjectAndCheckOverlapping(1, projectionDataForFirstFace, projectionDataForSecondFace) || 
 		ProjectAndCheckOverlapping(2, projectionDataForFirstFace, projectionDataForSecondFace))
 	{
 		r1 = Vector3(0, 0, 0);
 		r2 = Vector3(0, 0, 0);
-	}
+	}*/
 
 	// OX OZ Projection
 
@@ -198,7 +198,7 @@ IntervalPair OBB::GetInterval(Vector3 axis)
 		imin = min(imin, dot);
 		if (imax == dot)
 		{
-			result.verticesClosestToTheAxis[closestVertexIndex] = GetTransformedVertex(vertices[i]);
+			//result.verticesClosestToTheAxis[closestVertexIndex] = GetTransformedVertex(vertices[i]);
 			closestVertexIndex++;
 		}
 		imax = max(imax, dot);
@@ -221,7 +221,7 @@ bool OBB::ColOverlapAxis(OBB* first, OBB* second, Vector3 axis)
 // 0 - OX OZ
 // 1 - OX OY
 // 2 - OZ OY
-bool OBB::ProjectAndCheckOverlapping(int surface, IntervalPair data1, IntervalPair data2)
+/*bool OBB::ProjectAndCheckOverlapping(int surface, IntervalPair data1, IntervalPair data2)
 {
 	// Projection stage
 
@@ -382,7 +382,7 @@ bool OBB::ProjectAndCheckOverlapping(int surface, IntervalPair data1, IntervalPa
 	}
 
 	return false;
-}
+}*/
 
 // surface:
 // 0 - OX OZ

@@ -8,7 +8,7 @@ struct IntervalPair
 	float imin;
 	float imax;
 	// Only for face to face collision
-	Vector3 verticesClosestToTheAxis[4];
+	//Vector3 verticesClosestToTheAxis[4];
 };
 
 class BoundingSphere;

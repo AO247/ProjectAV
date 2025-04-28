@@ -102,20 +102,14 @@ void PhysicsEngine::HandleCollisions()
 				Vector3 firstBodyNewVelocity = firstBody->GetVelocity() + ((factor / firstBody->GetMass()) * collisionNormal);
 				Vector3 secondBodyNewVelocity = secondBody->GetVelocity() - ((factor / secondBody->GetMass()) * collisionNormal);
 
-				if (i == 1 && j == 2)
-				{
-					int a = 5;
-					a = 6;
-				}
-
 				Vector3 firstBodyNewAngularVelocity = firstBody->GetAngularVelocity() + (intersectData.GetCollisionPointRadiusForFirstBody().Cross(factor * collisionNormal) / i1);
 				Vector3 secondBodyNewAngularVelocity = secondBody->GetAngularVelocity() + (intersectData.GetCollisionPointRadiusForSecondBody().Cross(-factor * collisionNormal) / i2);
 
 				firstBody->SetVelocity(firstBodyNewVelocity);
 				secondBody->SetVelocity(secondBodyNewVelocity);
 
-				firstBody->SetAngularVelocity(firstBodyNewAngularVelocity);
-				secondBody->SetAngularVelocity(secondBodyNewAngularVelocity);
+				//firstBody->SetAngularVelocity(firstBodyNewAngularVelocity);
+				//secondBody->SetAngularVelocity(secondBodyNewAngularVelocity);
 				
 				if (firstBody->GetIsStatic())
 				{
@@ -128,11 +122,11 @@ void PhysicsEngine::HandleCollisions()
 
 				if (firstBody->GetIsStatic())
 				{
-					firstBody->SetAngularVelocity(Vector3(0, 0, 0));
+					//firstBody->SetAngularVelocity(Vector3(0, 0, 0));
 				}
 				if (secondBody->GetIsStatic())
 				{
-					secondBody->SetAngularVelocity(Vector3(0, 0, 0));
+					//secondBody->SetAngularVelocity(Vector3(0, 0, 0));
 				}
 			}
 		}
