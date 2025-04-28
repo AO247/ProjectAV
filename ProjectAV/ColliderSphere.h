@@ -1,11 +1,11 @@
 #pragma once
 #include "Drawable.h"
 
-class SolidSphere : public Drawable
+class ColliderSphere : public Drawable
 {
 public:
-	SolidSphere() {};
-	SolidSphere( Graphics& gfx,float radius );
+	ColliderSphere() {};
+	ColliderSphere( Graphics& gfx,float radius );
 	void Initialize(Graphics& gfx, float radius);
 	void SetPos( DirectX::XMFLOAT3 pos ) noexcept;
 	DirectX::XMMATRIX GetTransformXM() const noexcept override;
