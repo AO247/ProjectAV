@@ -48,7 +48,7 @@ private:
 	Vector3 force;
 	float mass = 10.0f;
 	float linearVelocityDamping = 3.0f;
-	float angularVelocityDamping = 3.0f;
+	float angularVelocityDamping = 1.0f;
 	bool isStatic = false;
 	Collider* collider;
 };

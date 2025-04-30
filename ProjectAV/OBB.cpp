@@ -190,22 +190,38 @@ IntervalPair OBB::GetInterval(Vector3 axis)
 	float imin = dot;
 	float imax = dot;
 
-	int closestVertexIndex = 0;
+	//int closestVertexIndex = 0;
 
 	for (int i = 1; i < 8; i++)
 	{
 		dot = v.Dot(GetTransformedVertex(vertices[i]));
 		imin = min(imin, dot);
+		//if (imax == dot)
+		//{
+		//	result.verticesClosestToTheAxis[closestVertexIndex] = GetTransformedVertex(vertices[i]);
+		//	closestVertexIndex++;
+		//}
+		imax = max(imax, dot);
+	}
+
+	int closestVertexIndex = 0;
+	for (int i = 0; i < 8; i++)
+	{
+		dot = v.Dot(GetTransformedVertex(vertices[i]));
 		if (imax == dot)
 		{
 			result.verticesClosestToTheAxis[closestVertexIndex] = GetTransformedVertex(vertices[i]);
 			closestVertexIndex++;
 		}
-		imax = max(imax, dot);
 	}
 
 	result.imin = imin;
 	result.imax = imax;
+
+	//result.verticesClosestToTheAxis[0] = Vector3(0, 0, 0);
+	//result.verticesClosestToTheAxis[1] = Vector3(0, 0, 0);
+	//result.verticesClosestToTheAxis[2] = Vector3(0, 0, 0);
+	//result.verticesClosestToTheAxis[3] = Vector3(0, 0, 0);
 
 	return result;
 }
@@ -221,6 +237,8 @@ bool OBB::ColOverlapAxis(OBB* first, OBB* second, Vector3 axis)
 // 0 - OX OZ
 // 1 - OX OY
 // 2 - OZ OY
+
+
 bool OBB::ProjectAndCheckOverlapping(int surface, IntervalPair data1, IntervalPair data2)
 {
 	// Projection stage
@@ -377,11 +395,16 @@ bool OBB::ProjectAndCheckOverlapping(int surface, IntervalPair data1, IntervalPa
 		if ((iA.imax < iB.imax && iA.imin > iB.imin) ||
 			(iB.imax < iA.imax && iB.imin > iA.imin))
 		{
-			return true;
+			//return true;
+			continue;
+		}
+		else
+		{
+			return false;
 		}
 	}
 
-	return false;
+	return true;
 }
 
 // surface:
@@ -417,16 +440,22 @@ Vector3 OBB::GetPerpendicular2DVector(int surface, Vector3 v)
 	switch (surface)
 	{
 	case 0:
-		result.z = 1.0f;
-		result.x = ((-1) * v.z * result.z) / v.x;
+		//result.z = 1.0f;
+		//result.x = ((-1) * v.z * result.z) / v.x;
+		result.x = v.z;
+		result.z = -v.x;
 		break;
 	case 1:
-		result.y = 1.0f;
-		result.x = ((-1) * v.y * result.y) / v.x;
+		//result.y = 1.0f;
+		//result.x = ((-1) * v.y * result.y) / v.x;
+		result.x = v.y;
+		result.y = -v.x;
 		break;
 	case 2:
-		result.y = 1.0f;
-		result.z = ((-1) * v.y * result.y) / v.z;
+		//result.y = 1.0f;
+		//result.z = ((-1) * v.y * result.y) / v.z;
+		result.z = v.y;
+		result.y = -v.z;
 		break;
 	}
 
