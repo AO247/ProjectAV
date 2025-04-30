@@ -1,61 +1,45 @@
 #include "SolidBox.h"
-#include "BindableCommon.h"      // Assuming this includes common bindable headers/helpers
-#include "GraphicsThrowMacros.h" // For error handling macros
-#include "Vertex.h"              // For Dvtx::* types
-#include "Box.h"                // Include the AABB mesh generator
-#include "Bindable.h"            // Include the base Bindable class definition
-#include <memory>                // For std::make_shared
-#include <string>                // For std::to_string, included via AABB.h now
-#include <sstream>               // For VecToString, included via AABB.h now
+#include "BindableCommon.h"      
+#include "GraphicsThrowMacros.h" 
+#include "Vertex.h"              
+#include "Box.h"                // Include the Box mesh generator
+#include "Bindable.h"            
+#include <memory>                
+#include <string>                
+#include <sstream>               
 
 namespace { // Anonymous namespace for internal linkage
+    // Keep VecToString for tag generation (using size now)
     inline std::string VecToString(const DirectX::XMFLOAT3& v) {
         std::ostringstream oss;
-        // Use fixed format for consistency, especially with floating point numbers
         oss << std::fixed << v.x << "_" << v.y << "_" << v.z;
         return oss.str();
     }
 }
 
 // --- Local BlendState Definition (Inside SolidBox.cpp) ---
-// Define a simple BlendState class locally just for SolidBox's use.
-namespace Bind
-{
-    class SolidBoxBlendState : public Bindable
-    {
+// (Keep the SolidBoxBlendState definition as it was)
+namespace Bind {
+    class SolidBoxBlendState : public Bindable {
+        // ... (Blend state implementation remains the same) ...
     public:
-        SolidBoxBlendState(Graphics& gfx)
-        {
+        SolidBoxBlendState(Graphics& gfx) {
             INFOMAN(gfx);
             D3D11_BLEND_DESC blendDesc = CD3D11_BLEND_DESC{ CD3D11_DEFAULT{} };
             auto& brt = blendDesc.RenderTarget[0];
-
-            // Setup standard alpha blending
             brt.BlendEnable = TRUE;
             brt.SrcBlend = D3D11_BLEND_SRC_ALPHA;
             brt.DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
             brt.BlendOp = D3D11_BLEND_OP_ADD;
-            brt.SrcBlendAlpha = D3D11_BLEND_ONE;        // Typically not used for standard alpha blend
-            brt.DestBlendAlpha = D3D11_BLEND_ZERO;      // Typically not used for standard alpha blend
-            brt.BlendOpAlpha = D3D11_BLEND_OP_ADD;      // Typically not used for standard alpha blend
+            brt.SrcBlendAlpha = D3D11_BLEND_ONE;
+            brt.DestBlendAlpha = D3D11_BLEND_ZERO;
+            brt.BlendOpAlpha = D3D11_BLEND_OP_ADD;
             brt.RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-
             GFX_THROW_INFO(GetDevice(gfx)->CreateBlendState(&blendDesc, &pBlender));
         }
-
-        void Bind(Graphics& gfx) noexcept override
-        {
-            // Bind the blend state
-            // The blend factor array and sample mask are often nullptr and 0xFFFFFFFFu respectively
-            // unless more advanced blending is needed.
+        void Bind(Graphics& gfx) noexcept override {
             GetContext(gfx)->OMSetBlendState(pBlender.Get(), nullptr, 0xFFFFFFFFu);
         }
-
-        // Static function to create and return a shared_ptr (optional, alternative to make_shared in constructor)
-        // static std::shared_ptr<SolidBoxBlendState> Resolve(Graphics& gfx) {
-        //    return std::make_shared<SolidBoxBlendState>(gfx);
-        // }
-
     protected:
         Microsoft::WRL::ComPtr<ID3D11BlendState> pBlender;
     };
@@ -63,24 +47,31 @@ namespace Bind
 // --- End Local BlendState Definition ---
 
 
-// --- SolidBox Constructor ---
-SolidBox::SolidBox(Graphics& gfx, DirectX::XMFLOAT3 minExtents, DirectX::XMFLOAT3 maxExtents)
+// --- **** UPDATED: SolidBox Constructor uses Initialize **** ---
+SolidBox::SolidBox(Graphics& gfx, DirectX::XMFLOAT3 center, DirectX::XMFLOAT3 size)
 {
-    Initialize(gfx, minExtents, maxExtents);
+    DirectX::XMStoreFloat4x4(&matrix, DirectX::XMMatrixIdentity()); // Initialize matrix member
+    Initialize(gfx, center, size);
 }
 
-// --- SolidBox Initialize ---
-void SolidBox::Initialize(Graphics& gfx, DirectX::XMFLOAT3 minExtents, DirectX::XMFLOAT3 maxExtents)
+// --- **** UPDATED: SolidBox Initialize uses center and size **** ---
+void SolidBox::Initialize(Graphics& gfx, DirectX::XMFLOAT3 center, DirectX::XMFLOAT3 size)
 {
-    using namespace Bind; // Use Bind namespace for common bindables
+    using namespace Bind;
     namespace dx = DirectX;
 
-    // Generate the AABB mesh data using the default layout (Position3D)
-    auto model = Box::Make(minExtents, maxExtents);
-    // Note: No scaling transform needed here.
+    // --- Calculate min/max extents from center and size ---
+    DirectX::XMFLOAT3 halfSize = { size.x / 2.0f, size.y / 2.0f, size.z / 2.0f };
+    DirectX::XMFLOAT3 minExtents = { center.x - halfSize.x, center.y - halfSize.y, center.z - halfSize.z };
+    DirectX::XMFLOAT3 maxExtents = { center.x + halfSize.x, center.y + halfSize.y, center.z + halfSize.z };
+    // --- End Calculation ---
 
-    // Create a unique tag for geometry caching based on extents
-    const auto geometryTag = "$box." + VecToString(minExtents) + "." + VecToString(maxExtents);
+    // Generate the AABB mesh data using calculated extents
+    auto model = Box::Make(minExtents, maxExtents); // Box::Make still uses min/max
+
+    // **** UPDATED: Create geometry tag based on SIZE **** 
+    // (This assumes the underlying geometry depends only on size, not center offset)
+    const auto geometryTag = "$box." + VecToString(size);
 
     // Resolve shared bindables via Codex
     AddBind(VertexBuffer::Resolve(gfx, geometryTag, model.vertices));
@@ -88,49 +79,34 @@ void SolidBox::Initialize(Graphics& gfx, DirectX::XMFLOAT3 minExtents, DirectX::
     AddBind(Topology::Resolve(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
 
     // Resolve shared shaders and input layout via Codex
-    auto pvs = VertexShader::Resolve(gfx, "SolidVS.cso"); // Assuming same VS works
+    auto pvs = VertexShader::Resolve(gfx, "SolidVS.cso");
     auto pvsbc = pvs->GetBytecode();
     AddBind(std::move(pvs));
 
-    AddBind(PixelShader::Resolve(gfx, "SolidPS.cso")); // Assuming same PS works BUT expects XMFLOAT4 constant
+    AddBind(PixelShader::Resolve(gfx, "SolidPS.cso"));
     AddBind(InputLayout::Resolve(gfx, model.vertices.GetLayout(), pvsbc));
 
-    // Update Constant Buffer for Color+Alpha
-    struct PSColorConstant
-    {
-        dx::XMFLOAT4 color; // Use XMFLOAT4 to include alpha
-    } colorConst;
-    // Ensure the constant buffer size is a multiple of 16 bytes
+    // Constant Buffer for Color+Alpha
+    struct PSColorConstant { dx::XMFLOAT4 color; } colorConst;
     static_assert((sizeof(PSColorConstant) % 16) == 0, "PSColorConstant size must be multiple of 16 bytes");
-    // Set RGBA color for the collider (e.g., semi-transparent green)
-    colorConst.color = { 0.3f, 0.9f, 0.4f, 0.6f }; // Set alpha here (0.6 = 60% opaque)
-    // Resolve the pixel constant buffer (assuming slot 0)
-    AddBind(PixelConstantBuffer<PSColorConstant>::Resolve(gfx, colorConst, 0u)); // Use slot 0 like in ColliderSphere
+    colorConst.color = { 0.3f, 0.9f, 0.4f, 0.6f }; // Semi-transparent green
+    AddBind(PixelConstantBuffer<PSColorConstant>::Resolve(gfx, colorConst, 0u));
 
-    // --- Add the LOCALLY DEFINED BlendState ---
-    // Each SolidBox gets its own BlendState instance, not shared via Codex.
+    // Add the locally defined BlendState
     AddBind(std::make_shared<SolidBoxBlendState>(gfx));
-    // --- End BlendState ---
 
     // TransformCbuf remains unique to this instance
     AddBind(std::make_shared<TransformCbuf>(gfx, *this));
 }
 
-
-// --- Rest of SolidBox methods remain the same ---
-void SolidBox::SetPos(DirectX::XMFLOAT3 pos) noexcept
-{
-    this->pos = pos;
-}
-
+// --- GetTransformXM returns the stored matrix ---
 DirectX::XMMATRIX SolidBox::GetTransformXM() const noexcept
 {
-    // Only apply translation for now
-    //return DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
-    return matrix;
+    return DirectX::XMLoadFloat4x4(&matrix);
 }
 
-void SolidBox::SetTransformXM(DirectX::XMMATRIX matrix)
+// --- SetTransformXM updates the stored matrix ---
+void SolidBox::SetTransformXM(DirectX::FXMMATRIX matrixIn) noexcept
 {
-    this->matrix = matrix;
+    DirectX::XMStoreFloat4x4(&matrix, matrixIn);
 }

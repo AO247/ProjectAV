@@ -1,28 +1,33 @@
 #pragma once
-#include "Drawable.h" // Assuming Drawable base class definition
+#include "Drawable.h" 
 #include <DirectXMath.h>
+
+class Graphics; // Forward declare
 
 class SolidBox : public Drawable
 {
 public:
-    // Default constructor: Leaves the object uninitialized
     SolidBox() = default;
 
-    // Constructor that initializes directly
-    SolidBox(Graphics& gfx, DirectX::XMFLOAT3 minExtents, DirectX::XMFLOAT3 maxExtents);
+    // **** CHANGED: Constructor takes center and size ****
+    SolidBox(Graphics& gfx, DirectX::XMFLOAT3 center, DirectX::XMFLOAT3 size);
 
-    // Initialization function (allows default construction then initialization)
-    void Initialize(Graphics& gfx, DirectX::XMFLOAT3 minExtents, DirectX::XMFLOAT3 maxExtents);
+    // **** CHANGED: Initialize takes center and size ****
+    void Initialize(Graphics& gfx, DirectX::XMFLOAT3 center, DirectX::XMFLOAT3 size);
 
-    // Set the position (translation) of the AABB in the world
-    void SetPos(DirectX::XMFLOAT3 pos) noexcept;
+    // --- Move/Copy semantics (as before) ---
+    SolidBox(SolidBox&&) noexcept = default;
+    SolidBox& operator=(SolidBox&&) noexcept = default;
+    SolidBox(const SolidBox&) = delete;
+    SolidBox& operator=(const SolidBox&) = delete;
 
-    // Get the transformation matrix (currently only translation)
+    // --- SetPos is no longer needed if using SetTransformXM ---
+    // void SetPos(DirectX::XMFLOAT3 pos) noexcept; 
+
     DirectX::XMMATRIX GetTransformXM() const noexcept override;
-
-    void SetTransformXM(DirectX::XMMATRIX matrix);
+    void SetTransformXM(DirectX::FXMMATRIX matrix) noexcept; // Use FXMMATRIX for input consistency
 
 private:
-    DirectX::XMFLOAT3 pos = { 0.0f, 0.0f, 0.0f }; // Default position at origin
-    DirectX::XMMATRIX matrix;
+    // Position is now part of the matrix, store only the matrix
+    DirectX::XMFLOAT4X4 matrix = {}; // Store as XMFLOAT4X4
 };

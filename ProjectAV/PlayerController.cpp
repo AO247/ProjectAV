@@ -10,6 +10,7 @@ namespace dx = DirectX;
 PlayerController::PlayerController(Node* owner, Window& window)
     : Component(owner), wnd(window) // Initialize reference member
 {
+	rigidbody = owner->GetComponent<Rigidbody>();
 }
 
 void PlayerController::Update(float dt)
@@ -41,30 +42,34 @@ void PlayerController::HandleMovementInput(float dt)
     if (wnd.kbd.KeyIsPressed('W'))
     {
         translation = dx::XMVectorAdd(translation, dx::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f));
+        //rigidbody->AddForce(Vector3(0.0f, 0.0f, 200.0f));
         moved = true;
     }
     if (wnd.kbd.KeyIsPressed('S'))
     {
         translation = dx::XMVectorAdd(translation, dx::XMVectorSet(0.0f, 0.0f, -1.0f, 0.0f));
+        //rigidbody->AddForce(Vector3(translation));
         moved = true;
     }
     if (wnd.kbd.KeyIsPressed('A'))
     {
         translation = dx::XMVectorAdd(translation, dx::XMVectorSet(-1.0f, 0.0f, 0.0f, 0.0f));
+        //rigidbody->AddForce(Vector3(translation));
         moved = true;
     }
     if (wnd.kbd.KeyIsPressed('D'))
     {
         translation = dx::XMVectorAdd(translation, dx::XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f));
+        //rigidbody->AddForce(Vector3(translation));
         moved = true;
     }
     if (wnd.kbd.KeyIsPressed(VK_SHIFT))
     {
-		moveSpeed = 30.0f;
+		moveSpeed = 100000.0f;
 	}
 	else
 	{
-        moveSpeed = 12.0f;
+        moveSpeed = 30000.0f;
 	}
     // Optional: Add Up/Down movement
     if (wnd.kbd.KeyIsPressed(VK_SPACE))
@@ -94,7 +99,8 @@ void PlayerController::HandleMovementInput(float dt)
 
         DirectX::XMFLOAT3 newPos;
         dx::XMStoreFloat3(&newPos, newPosVec);
-        GetOwner()->SetLocalPosition(newPos);
+        //GetOwner()->SetLocalPosition(newPos);
+        rigidbody->AddForce(translation);
     }
 }
 
