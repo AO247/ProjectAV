@@ -5,6 +5,7 @@
 #include "imgui/imgui.h"
 #include <cmath> // For math functions if needed elsewhere
 
+#include "Collider.h"
 namespace dx = DirectX;
 
 Node::Node(std::string name, Node* parent)

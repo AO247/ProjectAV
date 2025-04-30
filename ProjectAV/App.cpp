@@ -7,91 +7,141 @@
 #include "GDIPlusManager.h"
 #include "imgui/imgui.h"
 #include <memory>
+#include "NormalMapTwerker.h"
+#include <shellapi.h>
 #include <algorithm>
 
 namespace dx = DirectX;
 
 GDIPlusManager gdipm;
 
-App::App()
+App::App(const std::string& commandLine)
     :
-    wnd(1280, 720, "Project AV - FPS Controller"), // Pass window dimensions/title
-    light(wnd.Gfx()),
+    commandLine(commandLine),
+    wnd(1280, 720, "Project AV"), // Pass window dimensions/title
+    pointLight(wnd.Gfx()), // Initialize PointLight
     pSceneRoot(std::make_unique<Node>("Root"))
 {
     // Set Projection Matrix (Far plane adjusted for larger scenes potentially)
     wnd.Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 2000.0f));
-
-    // --- Create Player Node ---
+    if (this->commandLine != "")
+    {
+        int nArgs;
+        const auto pLineW = GetCommandLineW();
+        const auto pArgs = CommandLineToArgvW(pLineW, &nArgs);
+        if (nArgs >= 4 && std::wstring(pArgs[1]) == L"--ntwerk-rotx180")
+        {
+            const std::wstring pathInWide = pArgs[2];
+            const std::wstring pathOutWide = pArgs[3];
+            NormalMapTwerker::RotateXAxis180(
+                std::string(pathInWide.begin(), pathInWide.end()),
+                std::string(pathOutWide.begin(), pathOutWide.end())
+            );
+            throw std::runtime_error("Normal map processed successfully. Just kidding about that whole runtime error thing.");
+        }
+    }
+    
+    
+    // --- Create Nodes ---
    
-
-
-
-
     auto pPlayerNodeOwner = std::make_unique<Node>("Player");
     pPlayerNode = pPlayerNodeOwner.get();
-    //auto pNanosuitOwner = std::make_unique<Node>("Nanosuit");
-    //pNanosuitNode = pNanosuitOwner.get();
-    //auto pNanosuitOwner2 = std::make_unique<Node>("Nanosuit2");
-    //pNanosuitNode2 = pNanosuitOwner2.get();
+    auto pNanosuitOwner = std::make_unique<Node>("Nanosuit");
+    pNanosuitNode = pNanosuitOwner.get();
+    auto pNanosuitOwner2 = std::make_unique<Node>("Nanosuit2");
+    pNanosuitNode2 = pNanosuitOwner2.get();
     auto pEmptyNode = std::make_unique<Node>("EmptyNode");
     auto pBrickOwner = std::make_unique<Node>("Brick");
     pBrick = pBrickOwner.get();
-    /*auto pBoxOwner = std::make_unique<Node>("Box");
+    auto pBoxOwner = std::make_unique<Node>("Box");
     pBox = pBoxOwner.get();
     auto pStoneOwner = std::make_unique<Node>("Stone");
-    pStone = pStoneOwner.get();*/
+    pStone = pStoneOwner.get();
     auto pColumnOwner = std::make_unique<Node>("Column");
     pColumn = pColumnOwner.get();
-    //auto pIslandOwner = std::make_unique<Node>("Island");
-    //pIsland = pIslandOwner.get();
+    auto pIslandOwner = std::make_unique<Node>("Island");
+    pIsland = pIslandOwner.get();
+	auto pNoxTurnOwner = std::make_unique<Node>("NoxTurn");
+	pNoxTurn = pNoxTurnOwner.get();
+	auto pNoxTurnHairOwner = std::make_unique<Node>("NoxTurnHair");
+	pNoxTurnHair = pNoxTurnHairOwner.get();
+	auto pTestModelOwner = std::make_unique<Node>("TestModel");
+	pTestModel = pTestModelOwner.get();
+	auto pEnemyOwner = std::make_unique<Node>("Enemy");
+	pEnemy = pEnemyOwner.get();
 
 
     // Adding Components
     pPlayerNode->AddComponent(
 		std::make_unique<PlayerController>(pPlayerNode, wnd)
     );
-    /*pNanosuitNode->AddComponent(
+    pNanosuitNode->AddComponent(
         std::make_unique<ModelComponent>(pNanosuitNode, wnd.Gfx(), "Models\\nano_textured\\nanosuit.obj")
     );
     pNanosuitNode2->AddComponent(
         std::make_unique<ModelComponent>(pNanosuitNode2, wnd.Gfx(), "Models\\nano_textured\\nanosuit.obj")
-    );*/
+    );
     pBrick->AddComponent(
         std::make_unique<ModelComponent>(pBrick, wnd.Gfx(), "Models\\brick_wall\\brick_wall.obj")
     );
-    /*pBox->AddComponent(
+    pBox->AddComponent(
         std::make_unique<ModelComponent>(pBox, wnd.Gfx(), "Models\\box.glb")
-    );*/
-    /*pStone->AddComponent(
-		std::make_unique<ModelComponent>(pStone, wnd.Gfx(), "Models\\kamien\\kamien2.glb")
-    );*/
+    );
+    pStone->AddComponent(
+		std::make_unique<ModelComponent>(pStone, wnd.Gfx(), "Models\\kamien\\kamien_test.fbx")
+    );
+    //pStone->AddComponent(
+    //    std::make_unique<ModelComponent>(pStone, wnd.Gfx(), "Models\\stone\\stone.glb")
+    //);
     pColumn->AddComponent(
         std::make_unique<ModelComponent>(pColumn, wnd.Gfx(), "Models\\kolumna\\kolumna.obj")
     );
-    //pIsland->AddComponent(
-    //    std::make_unique<ModelComponent>(pIsland, wnd.Gfx(), "Models\\wyspa\\wyspa.obj")
-    //);
-
+    pIsland->AddComponent(
+        std::make_unique<ModelComponent>(pIsland, wnd.Gfx(), "Models\\wyspa\\wyspa_test.fbx")
+    );
+    pNoxTurn->AddComponent(
+        std::make_unique<ModelComponent>(pNoxTurn, wnd.Gfx(), "Models\\stone\\char.fbx")
+    );
+    pNoxTurnHair->AddComponent(
+        std::make_unique<ModelComponent>(pNoxTurnHair, wnd.Gfx(), "Models\\stone\\hair.fbx")
+    );
+	pTestModel->AddComponent(
+		std::make_unique<ModelComponent>(pTestModel, wnd.Gfx(), "Models\\stone\\grave5.fbx")
+	);
+    pEnemy->AddComponent(
+        std::make_unique<ModelComponent>(pEnemy, wnd.Gfx(), "Models\\enemy\\basic.obj")
+    );
 
 
     // Adding to Scene Graph
     pSceneRoot->AddChild(std::move(pPlayerNodeOwner));
-    //pSceneRoot->AddChild(std::move(pNanosuitOwner));
-    //pSceneRoot->AddChild(std::move(pNanosuitOwner2));
+    pSceneRoot->AddChild(std::move(pNanosuitOwner));
+    pSceneRoot->AddChild(std::move(pNanosuitOwner2));
     pSceneRoot->AddChild(std::move(pEmptyNode));
     pSceneRoot->AddChild(std::move(pBrickOwner));
-    /*pSceneRoot->AddChild(std::move(pBoxOwner));
-    pSceneRoot->AddChild(std::move(pStoneOwner));*/
+    pSceneRoot->AddChild(std::move(pBoxOwner));
+    pSceneRoot->AddChild(std::move(pStoneOwner));
     pSceneRoot->AddChild(std::move(pColumnOwner));
-    //pSceneRoot->AddChild(std::move(pIslandOwner));
+    pSceneRoot->AddChild(std::move(pIslandOwner));
+	pSceneRoot->AddChild(std::move(pNoxTurnOwner));
+	pNoxTurn->AddChild(std::move(pNoxTurnHairOwner));
+	pSceneRoot->AddChild(std::move(pTestModelOwner));
+	pSceneRoot->AddChild(std::move(pEnemyOwner));
 
     // Changing position scale etc.
     pPlayerNode->SetLocalPosition({ 0.0f, 5.0f, -10.0f });
-    //pNanosuitNode2->SetLocalPosition(DirectX::XMFLOAT3(-20.0f, 0.0f, 0.0f));
+    pNanosuitNode2->SetLocalPosition(DirectX::XMFLOAT3(-20.0f, 0.0f, 0.0f));
     pBrick->SetLocalScale(dx::XMFLOAT3(20.0f, 20.0f, 1.0f));
     pBrick->SetLocalRotation(dx::XMFLOAT3(DirectX::XMConvertToRadians(90), 0.0f, 0.0f));
-    //pIsland->SetLocalPosition(DirectX::XMFLOAT3(0.0f, -20.0f, 0.0f));
+	pStone->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f));
+	pStone->SetLocalScale(dx::XMFLOAT3(1.5f, 1.5f, 1.5f));
+    pIsland->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+	pIsland->SetLocalScale(dx::XMFLOAT3(1.3f, 1.3f, 1.3f));
+	pNoxTurn->SetLocalPosition(DirectX::XMFLOAT3(5.0f, 0.0f, 5.0f));
+	pNoxTurn->SetLocalScale(dx::XMFLOAT3(0.01f, 0.01f, 0.01f));
+	pTestModel->SetLocalPosition({ -5.0f, 0.0f, -5.0f });
+	pTestModel->SetLocalScale(dx::XMFLOAT3(0.01f, 0.01f, 0.01f));
+	pEnemy->SetLocalPosition(DirectX::XMFLOAT3(10.0f, 0.0f, 0.0f));
 
 
 
@@ -157,40 +207,27 @@ void App::DoFrame(float dt)
 
     wnd.Gfx().BeginFrame(0.5f, 0.5f, 1.0f);
 
-    if (pPlayerNode->GetComponent<PlayerController>())
+    dx::XMMATRIX viewMatrix = dx::XMMatrixIdentity(); // Default
+    if (pPlayerNode && pPlayerNode->GetComponent<PlayerController>())
     {
         dx::XMMATRIX playerWorldTransform = pPlayerNode->GetWorldTransform();
-
-        dx::XMFLOAT2 playerRotation = pPlayerNode->GetComponent<PlayerController>()->GetRotation(); // {pitch, yaw}
-
-
+        dx::XMFLOAT2 playerRotation = pPlayerNode->GetComponent<PlayerController>()->GetRotation();
         dx::XMVECTOR camPosition = playerWorldTransform.r[3];
-
         const dx::XMVECTOR forwardBaseVector = dx::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
-        const auto lookVector = dx::XMVector3Transform(forwardBaseVector,
-            dx::XMMatrixRotationRollPitchYaw(playerRotation.x, playerRotation.y, 0.0f) // Use controller's Pitch & Yaw
-        );
-
+        const auto lookVector = dx::XMVector3Transform(forwardBaseVector, dx::XMMatrixRotationRollPitchYaw(playerRotation.x, playerRotation.y, 0.0f));
         const auto camTarget = dx::XMVectorAdd(camPosition, lookVector);
-
-        const dx::XMMATRIX viewMatrix = dx::XMMatrixLookAtLH(
-            camPosition,
-            camTarget,
-            dx::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f) // World Up vector
-        );
-
-        wnd.Gfx().SetCamera(viewMatrix);
+        viewMatrix = dx::XMMatrixLookAtLH(camPosition, camTarget, dx::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
     }
-    else {
-        wnd.Gfx().SetCamera(dx::XMMatrixIdentity());
-    }
+    wnd.Gfx().SetCamera(viewMatrix);
 
 
-    light.Bind(wnd.Gfx(), wnd.Gfx().GetCamera()); // Pass the view matrix for light calculations
+    // --- Bind Lights ---
+    pointLight.Bind(wnd.Gfx(), viewMatrix); // Bind point light (to slot 0)
+
 
     pSceneRoot->Draw(wnd.Gfx());
 
-    light.Draw(wnd.Gfx());
+    pointLight.Draw(wnd.Gfx());
 
 
     if (showControlWindow) {
@@ -204,14 +241,14 @@ void App::DoFrame(float dt)
 void App::ShowControlWindows()
 {
     // --- Existing Windows ---
-    light.SpawnControlWindow();
+    pointLight.SpawnControlWindow(); // Control for Point Light
     if (showDemoWindow)
     {
         ImGui::ShowDemoWindow(&showDemoWindow);
     }
 
     // --- Show Model Component Windows ---
-    /*if (pNanosuitNode)
+    if (pNanosuitNode)
     {
         if (auto* modelComp = pNanosuitNode->GetComponent<ModelComponent>())
         {
@@ -224,7 +261,7 @@ void App::ShowControlWindows()
         {
             modelComp->ShowWindow("Nanosuit2 Controls");
         }
-    }*/
+    }
 
     // --- Simulation Speed Window ---
     if (ImGui::Begin("Simulation Speed"))
