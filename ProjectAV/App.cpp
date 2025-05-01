@@ -143,15 +143,16 @@ App::App(const std::string& commandLine)
     );
     OBB* pOBB = pPlayerNode->GetComponent<OBB>();
     pRigidbody->SetCollider(pOBB);
+	pRigidbody->SetMass(10.0f);
     physicsEngine.AddRigidbody(pRigidbody);
-
+    
 
     pEnemy->AddComponent(
         std::make_unique<Rigidbody>(pEnemy, Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f))
     );
     Rigidbody* eRigidbody = pEnemy->GetComponent<Rigidbody>();
     pEnemy->AddComponent(
-        std::make_unique<OBB>(pEnemy, eRigidbody, Vector3(0.0f, 1.3f, 0.0f), Vector3(1.0f, 3.0f, 1.0f))
+        std::make_unique<OBB>(pEnemy, eRigidbody, Vector3(-0.7f, 2.0f, -0.5f), Vector3(1.0f, 4.0f, 1.0f))
     );
     OBB* eOBB = pEnemy->GetComponent<OBB>();
     eRigidbody->SetCollider(eOBB);
@@ -164,7 +165,7 @@ App::App(const std::string& commandLine)
 	Rigidbody* iRigidbody = pIsland->GetComponent<Rigidbody>();
 	iRigidbody->SetStatic(true);
     pIsland->AddComponent(
-        std::make_unique<OBB>(pIsland, iRigidbody, Vector3(0.0f, 0.0f, 0.0f), Vector3(100.0f, 1.0f, 100.0f))
+        std::make_unique<OBB>(pIsland, iRigidbody, Vector3(0.0f, 0.0f, 0.0f), Vector3(50.0f, 1.0f, 50.0f))
     );
 	OBB* iOBB = pIsland->GetComponent<OBB>();
 	iRigidbody->SetCollider(iOBB);
@@ -183,6 +184,19 @@ App::App(const std::string& commandLine)
 	BoundingSphere* bBoundingSphere = pBox->GetComponent<BoundingSphere>();
 	bRigidbody->SetCollider(bBoundingSphere);
 	physicsEngine.AddRigidbody(bRigidbody);
+
+
+	pColumn->AddComponent(
+		std::make_unique<Rigidbody>(pColumn, Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f))
+	);
+	Rigidbody* cRigidbody = pColumn->GetComponent<Rigidbody>();
+	cRigidbody->SetStatic(true);
+	pColumn->AddComponent(
+		std::make_unique<OBB>(pColumn, cRigidbody, Vector3(-0.6f, 5.0f, 0.0f), Vector3(2.9f, 10.0f, 2.9f))
+	);
+	OBB* cOBB = pColumn->GetComponent<OBB>();
+	cRigidbody->SetCollider(cOBB);
+	physicsEngine.AddRigidbody(cRigidbody);
 
     //Adding Other Components
 
@@ -216,11 +230,12 @@ App::App(const std::string& commandLine)
 	pTestModel->SetLocalPosition({ -5.0f, 0.0f, -5.0f });
 	pTestModel->SetLocalScale(dx::XMFLOAT3(0.01f, 0.01f, 0.01f));
 	pEnemy->SetLocalPosition(DirectX::XMFLOAT3(15.0f, 10.0f, 0.0f));
-
+	pColumn->SetLocalPosition(DirectX::XMFLOAT3(-7.0f, 0.0f, -5.0f));
     //Adding colliders to draw
     AddBoxColliderToDraw(wnd.Gfx(), pOBB);
     AddBoxColliderToDraw(wnd.Gfx(), iOBB);
     AddBoxColliderToDraw(wnd.Gfx(), eOBB);
+	AddBoxColliderToDraw(wnd.Gfx(), cOBB);
 
 
 	AddSphereColliderToDraw(wnd.Gfx(), bBoundingSphere);
@@ -488,13 +503,12 @@ void App::DrawSphereColliders(Graphics& gfx)
 }
 
 
-// --- **** UPDATED Box Collider Drawing for OBB **** ---
 
 // Signature now takes OBB*
 void App::AddBoxColliderToDraw(Graphics& gfx, OBB* obb)
 {
 
-    boxCollidersToDraw[obb] = SolidBox(gfx, obb->GetTransformedCenter(), obb->GetTransformedSize());
+    boxCollidersToDraw[obb] = SolidSphere(gfx, 10.0f);
 
 }
 
@@ -504,9 +518,14 @@ void App::DrawBoxColliders(Graphics& gfx)
     for (auto it = boxCollidersToDraw.begin(); it != boxCollidersToDraw.end(); ++it)
     {
         SolidBox box(gfx, DirectX::XMFLOAT3(it->first->GetTransformedCenter()), DirectX::XMFLOAT3(it->first->GetTransformedSize()));
-		box.SetTransformXM(it->first->GetOwner()->GetLocalTransform());
-        
+		box.SetPos(DirectX::XMFLOAT3(it->first->GetTransformedCenter().x,
+			it->first->GetTransformedCenter().y,
+			it->first->GetTransformedCenter().z));
+      /*  box.SetSize(DirectX::XMFLOAT3(it->first->GetTransformedSize().x,
+            it->first->GetTransformedSize().y,
+            it->first->GetTransformedSize().z));*/
         box.Draw(gfx);
+        
     }
 
 }

@@ -32,10 +32,12 @@ void FollowState::Update(StateMachine* pOwner, float dt)
     if (vOwner.Distance(vOwner, vPlayer) > pOwner->followDistance) // Example threshold for "in range"
     {
         pOwner->RequestStateChange(StateType::IDLE);
+        return;
     }
     if (vOwner.Distance(vOwner, vPlayer) < pOwner->attackRange)
     {
 		pOwner->RequestStateChange(StateType::ATTACK);
+        return;
     }
     if (pOwner->pMovementComponent != nullptr) {
         pOwner->pMovementComponent->Follow(playerPos);

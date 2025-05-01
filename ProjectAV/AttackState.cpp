@@ -23,6 +23,7 @@ void AttackState::Update(StateMachine* pOwner, float dt)
 
 	if (time > 3.0f) {
 		pOwner->EndState();
+		return;
 	}
 }
 

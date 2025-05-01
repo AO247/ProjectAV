@@ -55,7 +55,7 @@ private:
     // --- UI State ---
 
     std::map<BoundingSphere*, SolidSphere> sphereCollidersToDraw;
-    std::map<OBB*, SolidBox> boxCollidersToDraw; 
+    std::map<OBB*, SolidSphere> boxCollidersToDraw; 
     void AddSphereColliderToDraw(Graphics& gfx, BoundingSphere* boundingSphere);
     void DrawSphereColliders(Graphics& gfx);
     void AddBoxColliderToDraw(Graphics& gfx, OBB* obb);

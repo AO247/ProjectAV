@@ -29,6 +29,7 @@ void IdleState::Update(StateMachine* pOwner, float dt)
     if (vOwner.Distance(vOwner, vPlayer) < pOwner->followDistance) // Example threshold for "in range"
     {
         pOwner->RequestStateChange(StateType::FOLLOW);
+        return;
     }
 
 }

@@ -50,27 +50,20 @@ namespace Bind {
 // --- **** UPDATED: SolidBox Constructor uses Initialize **** ---
 SolidBox::SolidBox(Graphics& gfx, DirectX::XMFLOAT3 center, DirectX::XMFLOAT3 size)
 {
-    DirectX::XMStoreFloat4x4(&matrix, DirectX::XMMatrixIdentity()); // Initialize matrix member
-    Initialize(gfx, center, size);
-}
-
-// --- **** UPDATED: SolidBox Initialize uses center and size **** ---
-void SolidBox::Initialize(Graphics& gfx, DirectX::XMFLOAT3 center, DirectX::XMFLOAT3 size)
-{
     using namespace Bind;
     namespace dx = DirectX;
 
-    // --- Calculate min/max extents from center and size ---
+    // --- Calculate min/max extents LOCALLY for Box::Make ---
     DirectX::XMFLOAT3 halfSize = { size.x / 2.0f, size.y / 2.0f, size.z / 2.0f };
-    DirectX::XMFLOAT3 minExtents = { center.x - halfSize.x, center.y - halfSize.y, center.z - halfSize.z };
-    DirectX::XMFLOAT3 maxExtents = { center.x + halfSize.x, center.y + halfSize.y, center.z + halfSize.z };
+    // Create geometry centered around LOCAL origin (0,0,0) with the given size
+    DirectX::XMFLOAT3 minExtents = { -halfSize.x, -halfSize.y, -halfSize.z };
+    DirectX::XMFLOAT3 maxExtents = { halfSize.x,  halfSize.y,  halfSize.z };
     // --- End Calculation ---
 
-    // Generate the AABB mesh data using calculated extents
-    auto model = Box::Make(minExtents, maxExtents); // Box::Make still uses min/max
+    // Generate box mesh data centered at origin with the specified size
+    auto model = Box::Make(minExtents, maxExtents);
 
-    // **** UPDATED: Create geometry tag based on SIZE **** 
-    // (This assumes the underlying geometry depends only on size, not center offset)
+    // Create geometry tag based ONLY on SIZE, as center offset is handled by transform
     const auto geometryTag = "$box." + VecToString(size);
 
     // Resolve shared bindables via Codex
@@ -82,7 +75,6 @@ void SolidBox::Initialize(Graphics& gfx, DirectX::XMFLOAT3 center, DirectX::XMFL
     auto pvs = VertexShader::Resolve(gfx, "SolidVS.cso");
     auto pvsbc = pvs->GetBytecode();
     AddBind(std::move(pvs));
-
     AddBind(PixelShader::Resolve(gfx, "SolidPS.cso"));
     AddBind(InputLayout::Resolve(gfx, model.vertices.GetLayout(), pvsbc));
 
@@ -99,14 +91,18 @@ void SolidBox::Initialize(Graphics& gfx, DirectX::XMFLOAT3 center, DirectX::XMFL
     AddBind(std::make_shared<TransformCbuf>(gfx, *this));
 }
 
+
+void SolidBox::SetPos(DirectX::XMFLOAT3 center) noexcept
+{
+    this->center = center;
+}
+void SolidBox::SetSize(DirectX::XMFLOAT3 size) noexcept
+{
+	this->size = size;
+}
 // --- GetTransformXM returns the stored matrix ---
 DirectX::XMMATRIX SolidBox::GetTransformXM() const noexcept
 {
-    return DirectX::XMLoadFloat4x4(&matrix);
+	return DirectX::XMMatrixTranslation(center.x, center.y, center.z);
 }
 
-// --- SetTransformXM updates the stored matrix ---
-void SolidBox::SetTransformXM(DirectX::FXMMATRIX matrixIn) noexcept
-{
-    DirectX::XMStoreFloat4x4(&matrix, matrixIn);
-}
