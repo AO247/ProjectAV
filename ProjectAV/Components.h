@@ -1,0 +1,10 @@
+#pragma once
+#include "Component.h"
+#include "BoundingSphere.h"
+#include "Collider.h"
+#include "ModelComponent.h"
+#include "OBB.h"
+#include "PlayerController.h"
+#include "Rigidbody.h"
+#include "Walking.h"
+#include "StateMachine.h"

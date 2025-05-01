@@ -6,7 +6,6 @@
 #include <algorithm> // for std::clamp
 
 namespace dx = DirectX;
-
 PlayerController::PlayerController(Node* owner, Window& window)
     : Component(owner), wnd(window) // Initialize reference member
 {
@@ -35,72 +34,78 @@ void PlayerController::HandleMouseLookInput()
 
 void PlayerController::HandleMovementInput(float dt)
 {
-    dx::XMVECTOR translation = dx::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+	Vector3 moveDirection = Vector3(0.0f, 0.0f, 0.0f);
     bool moved = false;
 
     // Calculate translation vector based on WASD keys
     if (wnd.kbd.KeyIsPressed('W'))
     {
-        translation = dx::XMVectorAdd(translation, dx::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f));
+		moveDirection += Vector3(0.0f, 0.0f, 1.0f);
         //rigidbody->AddForce(Vector3(0.0f, 0.0f, 200.0f));
         moved = true;
     }
     if (wnd.kbd.KeyIsPressed('S'))
     {
-        translation = dx::XMVectorAdd(translation, dx::XMVectorSet(0.0f, 0.0f, -1.0f, 0.0f));
+		moveDirection += Vector3(0.0f, 0.0f, -1.0f);
         //rigidbody->AddForce(Vector3(translation));
         moved = true;
     }
     if (wnd.kbd.KeyIsPressed('A'))
     {
-        translation = dx::XMVectorAdd(translation, dx::XMVectorSet(-1.0f, 0.0f, 0.0f, 0.0f));
+		moveDirection += Vector3(-1.0f, 0.0f, 0.0f);
         //rigidbody->AddForce(Vector3(translation));
         moved = true;
     }
     if (wnd.kbd.KeyIsPressed('D'))
     {
-        translation = dx::XMVectorAdd(translation, dx::XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f));
+		moveDirection += Vector3(1.0f, 0.0f, 0.0f);
         //rigidbody->AddForce(Vector3(translation));
         moved = true;
     }
     if (wnd.kbd.KeyIsPressed(VK_SHIFT))
     {
-		moveSpeed = 100000.0f;
+		moveSpeed = 30.0f;
 	}
 	else
 	{
-        moveSpeed = 30000.0f;
+        moveSpeed = 12.0f;
 	}
     // Optional: Add Up/Down movement
     if (wnd.kbd.KeyIsPressed(VK_SPACE))
     {
-        translation = dx::XMVectorAdd(translation, dx::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
+        if (!jumped) {
+			rigidbody->SetVelocity(Vector3(rigidbody->GetVelocity().x, 0.0f, rigidbody->GetVelocity().z));
+			rigidbody->AddForce(Vector3(0.0f, jumpForce * 1000.0f, 0.0f));
+			jumped = true;
+        }
         moved = true;
+    }
+    else {
+		jumped = false;
     }
     if (wnd.kbd.KeyIsPressed(VK_CONTROL))
     {
-        translation = dx::XMVectorAdd(translation, dx::XMVectorSet(0.0f, -1.0f, 0.0f, 0.0f));
+        moveDirection += Vector3(0.0f, -1.0f, 0.0f);
         moved = true;
     }
 
+    
 
     if (moved)
     {
-        translation = dx::XMVector3Normalize(translation);
-        translation = dx::XMVectorScale(translation, moveSpeed * dt);
+        moveDirection.Normalize();
+
+
+       /* dx::XMMATRIX rotationMatrix = dx::XMMatrixRotationRollPitchYaw(0.0f, yaw, 0.0f);
+		Matrix rotation = Matrix(rotationMatrix);
+		moveDirection.Transform(moveDirection, rotation);*/
 
         dx::XMMATRIX rotationMatrix = dx::XMMatrixRotationRollPitchYaw(0.0f, yaw, 0.0f);
-        translation = dx::XMVector3Transform(translation, rotationMatrix);
+        dx::XMVECTOR moveVector = dx::XMLoadFloat3(&moveDirection);
+        moveVector = dx::XMVector3Transform(moveVector, rotationMatrix);
+        dx::XMStoreFloat3(&moveDirection, moveVector);
 
-        DirectX::XMFLOAT3 currentPos = GetOwner()->GetLocalPosition();
-        dx::XMVECTOR newPosVec = dx::XMLoadFloat3(&currentPos);
-        newPosVec = dx::XMVectorAdd(newPosVec, translation);
-
-
-        DirectX::XMFLOAT3 newPos;
-        dx::XMStoreFloat3(&newPos, newPosVec);
-        //GetOwner()->SetLocalPosition(newPos);
-        rigidbody->AddForce(translation);
+        rigidbody->AddForce(moveDirection * moveSpeed * 100.0f);
     }
 }
 
@@ -115,4 +120,12 @@ void PlayerController::SetRotation(float pitchRad, float yawRad) noexcept
     yaw = wrap_angle(yawRad);
     // Immediately update the node's horizontal rotation
     GetOwner()->SetLocalRotation({ 0.0f, yaw, 0.0f });
+}
+
+void PlayerController::DrawImGuiControls()
+{
+    ImGui::Text("Player Controller Properties:");
+    ImGui::InputFloat("Move Speed", &moveSpeed);
+    ImGui::InputFloat("JumpForce", &jumpForce);
+    ImGui::Checkbox("Jumped", &jumped); // Display jump status
 }

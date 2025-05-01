@@ -9,32 +9,24 @@
 // but including Node.h is often fine here.
 class Node;
 
-class PlayerController : public Component
+class Walking : public Component
 {
 public:
-	PlayerController(Node* owner, Window& window);
+	Walking(Node* owner);
+	std::string tag;
 
-	virtual void Update(float dt) override;
-	DirectX::XMFLOAT2 GetRotation() const;
-	void SetRotation(float pitch, float yaw) noexcept;
+	float maxSpeed;
+	float maxForce;
+	float rotationLerpFactor;
+	Vector3 targetPosition;
+	virtual void Follow(DirectX::XMFLOAT3 target);
 	virtual void DrawImGuiControls() override;
-
-
-	float moveSpeed = 12.0f;
-	float jumpForce = 60.0f;
-
 private:
-	void HandleMovementInput(float dt);
-	void HandleMouseLookInput();
-	bool jumped = false;
-	bool godMode = false;
 	Rigidbody* rigidbody; // Rigidbody for physics interactions
-	Window& wnd;
 
 	float pitch = 0.0f;
 	float yaw = 0.0f;
 	float airMultiplier = 1.2f;
-
 
 	float rotationSpeed = 0.004f;
 	static constexpr float pitchLimit = DirectX::XM_PI / 2.0f * 0.995f;

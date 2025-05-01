@@ -289,3 +289,72 @@ void Node::ShowNodeTree(Node*& pSelectedNode) noexcept
         ImGui::TreePop();
     }
 }
+Node* Node::GetRoot() const
+{
+    // Start from the current node
+    const Node* pCurrent = this;
+    // Traverse upwards using the parent pointer until we find a node with no parent
+    while (pCurrent->parent != nullptr)
+    {
+        pCurrent = pCurrent->parent; // Move up one level
+    }
+
+    // pCurrent now points to the root node.
+    // We need to cast away the const-ness because the return type is Node*, 
+    // but the traversal itself didn't modify anything.
+    return const_cast<Node*>(pCurrent);
+}
+Node* Node::FindFirstChildByTag(const std::string& searchTag)
+{
+    // 1. Check if *this* node has the tag
+    if (this->tag == searchTag)
+    {
+        return this; // Found it!
+    }
+
+    // 2. Recursively search children
+    for (const auto& child : children)
+    {
+        if (child) // Ensure child is valid
+        {
+            Node* found = child->FindFirstChildByTag(searchTag);
+            if (found != nullptr)
+            {
+                // If a child found it, return the result immediately
+                return found;
+            }
+        }
+    }
+
+    // 3. Not found in this node or any descendants
+    return nullptr;
+}
+
+void FindAllChildrenByTagRecursive(Node* currentNode, const std::string& searchTag, std::vector<Node*>& foundNodes)
+{
+    if (!currentNode) return; // Base case for safety
+
+    // 1. Check if the current node has the tag
+    if (currentNode->tag == searchTag)
+    {
+        foundNodes.push_back(currentNode); // Add it to the results
+    }
+
+    // 2. Recursively search children
+    for (const auto& child : currentNode->GetChildren()) // Use GetChildren() or direct member access
+    {
+        FindAllChildrenByTagRecursive(child.get(), searchTag, foundNodes); // Pass vector by reference
+    }
+}
+
+// Public interface function
+std::vector<Node*> Node::FindAllChildrenByTag(const std::string& searchTag)
+{
+    std::vector<Node*> foundNodes; // Create the results vector
+
+    for (const auto& child : children) {
+        FindAllChildrenByTagRecursive(child.get(), searchTag, foundNodes);
+    }
+
+    return foundNodes; // Return the collected nodes
+}

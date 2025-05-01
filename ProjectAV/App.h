@@ -7,10 +7,9 @@
 #include <memory> 
 #include "Node.h" 
 #include "PhysicsEngine.h"
-#include "OBB.h"
-#include "BoundingSphere.h"
 #include <map>
 #include "SolidBox.h"
+#include "Components.h"
 // Forward declarations
 class PlayerController; // Forward declare
 
