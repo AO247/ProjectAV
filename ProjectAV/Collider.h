@@ -26,6 +26,8 @@ public:
 
 	ColliderTypes GetColliderType();
 
+	Rigidbody* GetRigidbody() const;
+
 private:
 	ColliderTypes colliderType;
 protected:

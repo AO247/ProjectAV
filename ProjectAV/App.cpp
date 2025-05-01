@@ -9,7 +9,11 @@
 #include <memory>
 #include "NormalMapTwerker.h"
 #include <shellapi.h>
+#include "Rigidbody.h"
+#include "OBB.h"
+#include "BoundingSphere.h"
 #include <algorithm>
+#include "ColliderSphere.h"
 
 namespace dx = DirectX;
 
@@ -40,7 +44,8 @@ App::App(const std::string& commandLine)
             throw std::runtime_error("Normal map processed successfully. Just kidding about that whole runtime error thing.");
         }
     }
-    
+	// Initialize Physics Engine
+	physicsEngine = PhysicsEngine();
     
     // --- Create Nodes ---
    
@@ -70,11 +75,11 @@ App::App(const std::string& commandLine)
 	auto pEnemyOwner = std::make_unique<Node>("Enemy");
 	pEnemy = pEnemyOwner.get();
 
+    //Adding Components
 
-    // Adding Components
-    pPlayerNode->AddComponent(
-		std::make_unique<PlayerController>(pPlayerNode, wnd)
-    );
+
+
+    // Adding Models
     pNanosuitNode->AddComponent(
         std::make_unique<ModelComponent>(pNanosuitNode, wnd.Gfx(), "Models\\nano_textured\\nanosuit.obj")
     );
@@ -96,9 +101,12 @@ App::App(const std::string& commandLine)
     pColumn->AddComponent(
         std::make_unique<ModelComponent>(pColumn, wnd.Gfx(), "Models\\kolumna\\kolumna.obj")
     );
+
     pIsland->AddComponent(
         std::make_unique<ModelComponent>(pIsland, wnd.Gfx(), "Models\\wyspa\\wyspa_test.fbx")
     );
+
+
     pNoxTurn->AddComponent(
         std::make_unique<ModelComponent>(pNoxTurn, wnd.Gfx(), "Models\\stone\\char.fbx")
     );
@@ -112,6 +120,50 @@ App::App(const std::string& commandLine)
         std::make_unique<ModelComponent>(pEnemy, wnd.Gfx(), "Models\\enemy\\basic.obj")
     );
 
+
+
+	//Adding Rigidbody and Collider
+    pPlayerNode->AddComponent(
+        std::make_unique<Rigidbody>(pPlayerNode, Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f))
+    );
+    Rigidbody* pRigidbody = pPlayerNode->GetComponent<Rigidbody>();
+    pPlayerNode->AddComponent(
+        std::make_unique<OBB>(pPlayerNode, pRigidbody, Vector3(0.0f, 0.0f, 0.0f), Vector3(1.0f, 3.0f, 1.0f))
+    );
+    OBB* pOBB = pPlayerNode->GetComponent<OBB>();
+    pRigidbody->SetCollider(pOBB);
+    physicsEngine.AddRigidbody(pRigidbody);
+
+    pIsland->AddComponent(
+        std::make_unique<Rigidbody>(pIsland, Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f))
+    );
+	Rigidbody* iRigidbody = pIsland->GetComponent<Rigidbody>();
+	iRigidbody->SetStatic(true);
+    pIsland->AddComponent(
+        std::make_unique<OBB>(pIsland, iRigidbody, Vector3(0.0f, 0.0f, 0.0f), Vector3(100.0f, 1.0f, 100.0f))
+    );
+	OBB* iOBB = pIsland->GetComponent<OBB>();
+	iRigidbody->SetCollider(iOBB);
+	physicsEngine.AddRigidbody(iRigidbody);
+
+
+
+	pBox->AddComponent(
+		std::make_unique<Rigidbody>(pBox, Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f))
+	);
+	Rigidbody* bRigidbody = pBox->GetComponent<Rigidbody>();
+	bRigidbody->SetStatic(true);
+	pBox->AddComponent(
+		std::make_unique<BoundingSphere>(pBox, Vector3(0.0f, 0.0f, 0.0f), 2.0f, bRigidbody)
+	);
+	BoundingSphere* bBoundingSphere = pBox->GetComponent<BoundingSphere>();
+	bRigidbody->SetCollider(bBoundingSphere);
+	physicsEngine.AddRigidbody(bRigidbody);
+
+
+    pPlayerNode->AddComponent(
+        std::make_unique<PlayerController>(pPlayerNode, wnd) // Add controller first
+    );
 
     // Adding to Scene Graph
     pSceneRoot->AddChild(std::move(pPlayerNodeOwner));
@@ -129,8 +181,9 @@ App::App(const std::string& commandLine)
 	pSceneRoot->AddChild(std::move(pEnemyOwner));
 
     // Changing position scale etc.
-    pPlayerNode->SetLocalPosition({ 0.0f, 5.0f, -10.0f });
+    pPlayerNode->SetLocalPosition({ 0.0f, 35.0f, 0.0f });
     pNanosuitNode2->SetLocalPosition(DirectX::XMFLOAT3(-20.0f, 0.0f, 0.0f));
+	pBox->SetLocalPosition(DirectX::XMFLOAT3(10.0f, 3.0f, 0.0f));
     pBrick->SetLocalScale(dx::XMFLOAT3(20.0f, 20.0f, 1.0f));
     pBrick->SetLocalRotation(dx::XMFLOAT3(DirectX::XMConvertToRadians(90), 0.0f, 0.0f));
 	pStone->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f));
@@ -143,6 +196,11 @@ App::App(const std::string& commandLine)
 	pTestModel->SetLocalScale(dx::XMFLOAT3(0.01f, 0.01f, 0.01f));
 	pEnemy->SetLocalPosition(DirectX::XMFLOAT3(10.0f, 0.0f, 0.0f));
 
+    //Adding colliders to draw
+    AddBoxColliderToDraw(wnd.Gfx(), pOBB);
+    AddBoxColliderToDraw(wnd.Gfx(), iOBB);
+
+	AddSphereColliderToDraw(wnd.Gfx(), bBoundingSphere);
 
 
     wnd.DisableCursor();
@@ -161,6 +219,8 @@ int App::Go()
             return *ecode;
         }
         const auto dt = timer.Mark() * speed_factor;
+
+        physicsEngine.Simulate(dt);
         HandleInput(dt);
         DoFrame(dt);
     }
@@ -206,7 +266,9 @@ void App::DoFrame(float dt)
     pSceneRoot->Update(dt);
 
     wnd.Gfx().BeginFrame(0.5f, 0.5f, 1.0f);
-
+    if (pPlayerNode->GetLocalPosition().y < -10.0f) {
+		pPlayerNode->SetLocalPosition({ 0.0f, 15.0f, 0.0f });
+    }
     dx::XMMATRIX viewMatrix = dx::XMMatrixIdentity(); // Default
     if (pPlayerNode && pPlayerNode->GetComponent<PlayerController>())
     {
@@ -220,12 +282,15 @@ void App::DoFrame(float dt)
     }
     wnd.Gfx().SetCamera(viewMatrix);
 
-
     // --- Bind Lights ---
     pointLight.Bind(wnd.Gfx(), viewMatrix); // Bind point light (to slot 0)
 
 
     pSceneRoot->Draw(wnd.Gfx());
+
+
+    DrawSphereColliders(wnd.Gfx());
+    DrawBoxColliders(wnd.Gfx()); // Call the updated function
 
     pointLight.Draw(wnd.Gfx());
 
@@ -372,4 +437,49 @@ void App::ShowControlWindows()
         }
     }
     ImGui::End(); // End Scene Hierarchy Window
+}
+void App::AddSphereColliderToDraw(Graphics& gfx, BoundingSphere* boundingSphere)
+{
+    // Using default constructor then initialize might be slightly cleaner if SolidSphere allows it
+
+    sphereCollidersToDraw[boundingSphere] = SolidSphere(gfx, boundingSphere->GetRadius());
+}
+
+void App::DrawSphereColliders(Graphics& gfx)
+{
+    for (auto it = sphereCollidersToDraw.begin(); it != sphereCollidersToDraw.end(); ++it)
+    {
+        /*it->second.SetPos(DirectX::XMFLOAT3(it->first->GetCenter().x,
+                                            it->first->GetCenter().y,
+                                            it->first->GetCenter().z));
+        it->second.Draw(gfx);*/
+        ColliderSphere sphere(gfx, it->first->GetRadius());
+        sphere.SetPos(DirectX::XMFLOAT3(it->first->GetTransformedCenter().x,
+            it->first->GetTransformedCenter().y,
+            it->first->GetTransformedCenter().z));
+        sphere.Draw(gfx);
+    }
+}
+
+
+// --- **** UPDATED Box Collider Drawing for OBB **** ---
+
+// Signature now takes OBB*
+void App::AddBoxColliderToDraw(Graphics& gfx, OBB* obb)
+{
+
+    boxCollidersToDraw[obb] = SolidBox(gfx, { -0.5f, -0.5f, -0.5f }, { 0.5f, 0.5f, 0.5f });
+
+}
+
+// Logic now uses Rigidbody's world transform for OBB
+void App::DrawBoxColliders(Graphics& gfx)
+{
+    for (auto it = boxCollidersToDraw.begin(); it != boxCollidersToDraw.end(); ++it)
+    {
+        SolidBox box(gfx, DirectX::XMFLOAT3(it->first->GetTransformedCenter()), DirectX::XMFLOAT3(it->first->GetTransformedSize()));
+		box.SetTransformXM(it->first->GetOwner()->GetWorldTransform());
+        box.Draw(gfx);
+    }
+
 }

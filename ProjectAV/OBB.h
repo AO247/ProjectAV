@@ -38,6 +38,7 @@ public:
 	
 	Vector3 NearestPoint(Vector3 otherPoint);
 	Vector3 GetTransformedCenter();
+	Vector3 GetTransformedSize();
 private:
 	Vector3 center;
 	Vector3 size;
@@ -46,7 +47,6 @@ private:
 	Vector3 orientationZ = Vector3(0.0f, 0.0f, 1.0f);
 	Vector3 vertices[8];
 
-	Vector3 GetTransformedSize();
 	Vector3 GetTransformedVertex(Vector3 vertex);
 	Vector3 GetClosestPoint(Vector3 point);
 	Vector3 GetTransformedOrientation(Vector3 orientation);

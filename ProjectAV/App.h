@@ -6,7 +6,11 @@
 #include "PointLight.h"
 #include <memory> 
 #include "Node.h" 
-
+#include "PhysicsEngine.h"
+#include "OBB.h"
+#include "BoundingSphere.h"
+#include <map>
+#include "SolidBox.h"
 // Forward declarations
 class PlayerController; // Forward declare
 
@@ -30,7 +34,7 @@ private:
     Timer timer;
     float speed_factor = 1.0f;
     PointLight pointLight;
-
+    PhysicsEngine physicsEngine; // Physics engine instance
 
     // --- Scene Graph ---
     std::unique_ptr<Node> pSceneRoot;
@@ -45,11 +49,19 @@ private:
     Node* pColumn = nullptr;
     Node* pIsland = nullptr;
     Node* pSelectedSceneNode = nullptr;
-	Node* pNoxTurn = nullptr; // Node for the camera
-	Node* pNoxTurnHair = nullptr; // Node for the camera
-	Node* pTestModel = nullptr; // Node for the test model
-	Node* pEnemy = nullptr; // Node for the enemy
+    Node* pNoxTurn = nullptr; // Node for the camera
+    Node* pNoxTurnHair = nullptr; // Node for the camera
+    Node* pTestModel = nullptr; // Node for the test model
+    Node* pEnemy = nullptr; // Node for the enemy
     // --- UI State ---
+
+    std::map<BoundingSphere*, SolidSphere> sphereCollidersToDraw;
+    std::map<OBB*, SolidBox> boxCollidersToDraw; 
+    void AddSphereColliderToDraw(Graphics& gfx, BoundingSphere* boundingSphere);
+    void DrawSphereColliders(Graphics& gfx);
+    void AddBoxColliderToDraw(Graphics& gfx, OBB* obb);
+    void DrawBoxColliders(Graphics& gfx);
+
     bool showDemoWindow = false;
     bool cursorEnabled = false;
     bool showControlWindow = true;

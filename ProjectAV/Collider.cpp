@@ -34,3 +34,8 @@ Collider::ColliderTypes Collider::GetColliderType()
 {
 	return colliderType;
 }
+
+Rigidbody* Collider::GetRigidbody() const
+{
+	return nullptr;
+}

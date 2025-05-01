@@ -3,6 +3,7 @@
 #include "Component.h"
 #include "Window.h" // Needs access to Window for input
 #include <DirectXMath.h>
+#include "Rigidbody.h"
 
 // Forward declare Node to avoid circular include if necessary,
 // but including Node.h is often fine here.
@@ -22,7 +23,7 @@ public:
 private:
 	void HandleMovementInput(float dt);
 	void HandleMouseLookInput();
-
+	Rigidbody* rigidbody; // Rigidbody for physics interactions
 	Window& wnd;
 
 	float pitch = 0.0f;

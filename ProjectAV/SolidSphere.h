@@ -4,7 +4,7 @@
 class SolidSphere : public Drawable
 {
 public:
-	SolidSphere() {};
+	SolidSphere() = default;
 	SolidSphere( Graphics& gfx,float radius );
 	void Initialize(Graphics& gfx, float radius);
 	void SetPos( DirectX::XMFLOAT3 pos ) noexcept;
