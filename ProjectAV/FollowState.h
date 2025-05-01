@@ -13,6 +13,5 @@ public:
 	virtual void Update(StateMachine* pOwner, float dt) override;
 	virtual void Exit(StateMachine* pOwner) override;
 	virtual StateType GetType() const override { return StateType::IDLE; }
-
 	float time;
 };

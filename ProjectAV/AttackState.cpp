@@ -12,7 +12,7 @@ AttackState::AttackState(StateMachine* pOwner) : State()
 
 void AttackState::Enter(StateMachine* pOwner)
 {
-	OutputDebugStringA("Entering IDLE State\n");
+	OutputDebugStringA("Entering ATTACK State\n");
 	time = 0.0f;
 
 }
@@ -21,13 +21,12 @@ void AttackState::Update(StateMachine* pOwner, float dt)
 {
 	time += dt;
 
-	if (time > 5.0f) {
-		OutputDebugStringA("Switching to FOLLOW State\n");
-		pOwner->RequestStateChange(StateType::FOLLOW);
+	if (time > 3.0f) {
+		pOwner->EndState();
 	}
 }
 
 void AttackState::Exit(StateMachine* pOwner)
 {
-	OutputDebugStringA("Exiting IDLE State\n");
+	OutputDebugStringA("Exiting ATTACK State\n");
 }

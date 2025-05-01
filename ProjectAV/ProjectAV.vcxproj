@@ -222,6 +222,7 @@
     <ClCompile Include="Vertex.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
     <ClCompile Include="VertexShader.cpp" />
+    <ClCompile Include="Walking.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="WindowsMessageMap.cpp" />
     <ClCompile Include="WinMain.cpp" />
@@ -244,6 +245,7 @@
     <ClInclude Include="ColliderSphere.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="Component.h" />
+    <ClInclude Include="Components.h" />
     <ClInclude Include="ConditionalNoexcept.h" />
     <ClInclude Include="ConstantBuffers.h" />
     <ClInclude Include="DirectionalLight.h" />
@@ -299,6 +301,7 @@
     <ClInclude Include="Vertex.h" />
     <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="VertexShader.h" />
+    <ClInclude Include="Walking.h" />
     <ClInclude Include="Win.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="WindowsMessageMap.h" />

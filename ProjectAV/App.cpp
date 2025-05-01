@@ -1,7 +1,6 @@
 #include "App.h"
 #include "Node.h"           
-#include "ModelComponent.h" 
-#include "PlayerController.h" // Include PlayerController header
+#include "State.h"
 #include "CMath.h"
 #include "Surface.h"
 #include "GDIPlusManager.h"
@@ -9,9 +8,6 @@
 #include <memory>
 #include "NormalMapTwerker.h"
 #include <shellapi.h>
-#include "Rigidbody.h"
-#include "OBB.h"
-#include "BoundingSphere.h"
 #include <algorithm>
 #include "ColliderSphere.h"
 
@@ -49,8 +45,10 @@ App::App(const std::string& commandLine)
     
     // --- Create Nodes ---
    
+
     auto pPlayerNodeOwner = std::make_unique<Node>("Player");
     pPlayerNode = pPlayerNodeOwner.get();
+	pPlayerNode->tag = "Player";
     auto pNanosuitOwner = std::make_unique<Node>("Nanosuit");
     pNanosuitNode = pNanosuitOwner.get();
     auto pNanosuitOwner2 = std::make_unique<Node>("Nanosuit2");
@@ -74,9 +72,22 @@ App::App(const std::string& commandLine)
 	pTestModel = pTestModelOwner.get();
 	auto pEnemyOwner = std::make_unique<Node>("Enemy");
 	pEnemy = pEnemyOwner.get();
+	pEnemy->tag = "Enemy";
 
-    //Adding Components
-
+    // Adding to Scene Graph
+    pSceneRoot->AddChild(std::move(pPlayerNodeOwner));
+    //pSceneRoot->AddChild(std::move(pNanosuitOwner));
+    //pSceneRoot->AddChild(std::move(pNanosuitOwner2));
+    //pSceneRoot->AddChild(std::move(pEmptyNode));
+    //pSceneRoot->AddChild(std::move(pBrickOwner));
+    pSceneRoot->AddChild(std::move(pBoxOwner));
+    pSceneRoot->AddChild(std::move(pStoneOwner));
+    pSceneRoot->AddChild(std::move(pColumnOwner));
+    pSceneRoot->AddChild(std::move(pIslandOwner));
+    //pSceneRoot->AddChild(std::move(pNoxTurnOwner));
+    //pNoxTurn->AddChild(std::move(pNoxTurnHairOwner));
+    //pSceneRoot->AddChild(std::move(pTestModelOwner));
+    pSceneRoot->AddChild(std::move(pEnemyOwner));
 
 
     // Adding Models
@@ -134,6 +145,19 @@ App::App(const std::string& commandLine)
     pRigidbody->SetCollider(pOBB);
     physicsEngine.AddRigidbody(pRigidbody);
 
+
+    pEnemy->AddComponent(
+        std::make_unique<Rigidbody>(pEnemy, Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f))
+    );
+    Rigidbody* eRigidbody = pEnemy->GetComponent<Rigidbody>();
+    pEnemy->AddComponent(
+        std::make_unique<OBB>(pEnemy, eRigidbody, Vector3(0.0f, 1.3f, 0.0f), Vector3(1.0f, 3.0f, 1.0f))
+    );
+    OBB* eOBB = pEnemy->GetComponent<OBB>();
+    eRigidbody->SetCollider(eOBB);
+    physicsEngine.AddRigidbody(eRigidbody);
+
+
     pIsland->AddComponent(
         std::make_unique<Rigidbody>(pIsland, Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f))
     );
@@ -160,25 +184,22 @@ App::App(const std::string& commandLine)
 	bRigidbody->SetCollider(bBoundingSphere);
 	physicsEngine.AddRigidbody(bRigidbody);
 
+    //Adding Other Components
 
     pPlayerNode->AddComponent(
         std::make_unique<PlayerController>(pPlayerNode, wnd) // Add controller first
     );
+	pEnemy->AddComponent(
+		std::make_unique<StateMachine>(pEnemy, StateType::IDLE)
+	);
+    pEnemy->GetComponent<StateMachine>()->AddComponent(
+        std::make_unique<Walking>(pEnemy)
+    );
+    pEnemy->GetComponent<StateMachine>()->UpdateComponents();
 
-    // Adding to Scene Graph
-    pSceneRoot->AddChild(std::move(pPlayerNodeOwner));
-    pSceneRoot->AddChild(std::move(pNanosuitOwner));
-    pSceneRoot->AddChild(std::move(pNanosuitOwner2));
-    pSceneRoot->AddChild(std::move(pEmptyNode));
-    pSceneRoot->AddChild(std::move(pBrickOwner));
-    pSceneRoot->AddChild(std::move(pBoxOwner));
-    pSceneRoot->AddChild(std::move(pStoneOwner));
-    pSceneRoot->AddChild(std::move(pColumnOwner));
-    pSceneRoot->AddChild(std::move(pIslandOwner));
-	pSceneRoot->AddChild(std::move(pNoxTurnOwner));
-	pNoxTurn->AddChild(std::move(pNoxTurnHairOwner));
-	pSceneRoot->AddChild(std::move(pTestModelOwner));
-	pSceneRoot->AddChild(std::move(pEnemyOwner));
+
+
+
 
     // Changing position scale etc.
     pPlayerNode->SetLocalPosition({ 0.0f, 35.0f, 0.0f });
@@ -194,11 +215,13 @@ App::App(const std::string& commandLine)
 	pNoxTurn->SetLocalScale(dx::XMFLOAT3(0.01f, 0.01f, 0.01f));
 	pTestModel->SetLocalPosition({ -5.0f, 0.0f, -5.0f });
 	pTestModel->SetLocalScale(dx::XMFLOAT3(0.01f, 0.01f, 0.01f));
-	pEnemy->SetLocalPosition(DirectX::XMFLOAT3(10.0f, 0.0f, 0.0f));
+	pEnemy->SetLocalPosition(DirectX::XMFLOAT3(15.0f, 10.0f, 0.0f));
 
     //Adding colliders to draw
     AddBoxColliderToDraw(wnd.Gfx(), pOBB);
     AddBoxColliderToDraw(wnd.Gfx(), iOBB);
+    AddBoxColliderToDraw(wnd.Gfx(), eOBB);
+
 
 	AddSphereColliderToDraw(wnd.Gfx(), bBoundingSphere);
 
@@ -268,6 +291,7 @@ void App::DoFrame(float dt)
     wnd.Gfx().BeginFrame(0.5f, 0.5f, 1.0f);
     if (pPlayerNode->GetLocalPosition().y < -10.0f) {
 		pPlayerNode->SetLocalPosition({ 0.0f, 15.0f, 0.0f });
+        pEnemy->SetLocalPosition({ 15.0f, 30.0f, 0.0f });
     }
     dx::XMMATRIX viewMatrix = dx::XMMatrixIdentity(); // Default
     if (pPlayerNode && pPlayerNode->GetComponent<PlayerController>())
@@ -289,10 +313,7 @@ void App::DoFrame(float dt)
     pSceneRoot->Draw(wnd.Gfx());
 
 
-    DrawSphereColliders(wnd.Gfx());
-    DrawBoxColliders(wnd.Gfx()); // Call the updated function
 
-    pointLight.Draw(wnd.Gfx());
 
 
     if (showControlWindow) {
@@ -306,6 +327,10 @@ void App::DoFrame(float dt)
 void App::ShowControlWindows()
 {
     // --- Existing Windows ---
+    DrawSphereColliders(wnd.Gfx());
+    DrawBoxColliders(wnd.Gfx()); // Call the updated function
+    pointLight.Draw(wnd.Gfx());
+
     pointLight.SpawnControlWindow(); // Control for Point Light
     if (showDemoWindow)
     {
@@ -318,13 +343,6 @@ void App::ShowControlWindows()
         if (auto* modelComp = pNanosuitNode->GetComponent<ModelComponent>())
         {
             modelComp->ShowWindow("Nanosuit Controls");
-        }
-    }
-    if (pNanosuitNode2)
-    {
-        if (auto* modelComp = pNanosuitNode2->GetComponent<ModelComponent>())
-        {
-            modelComp->ShowWindow("Nanosuit2 Controls");
         }
     }
 
@@ -409,22 +427,30 @@ void App::ShowControlWindows()
             if (ImGui::CollapsingHeader("Components", ImGuiTreeNodeFlags_DefaultOpen))
             {
                 const auto& components = pSelectedSceneNode->GetComponents();
-                if (components.empty())
-                {
+                if (components.empty()) {
                     ImGui::TextDisabled("No components attached.");
                 }
-                else
-                {
-                    for (const auto& comp : components)
-                    {
-                        if (comp) // Check if component pointer is valid
-                        {
-                            // Use typeid to get a (potentially mangled) name
-                            // For cleaner names, add a virtual GetTypeName() to Component base class
-                            ImGui::BulletText(typeid(*comp).name());
-                            // You could add specific UI for known component types here later:
-                            // if (auto* modelComp = dynamic_cast<ModelComponent*>(comp.get())) { ... }
-                            // if (auto* lightComp = dynamic_cast<LightComponent*>(comp.get())) { ... }
+                else {
+                    int compIndex = 0;
+                    for (const auto& comp : components) {
+                        if (comp) {
+                            // Create a unique ID for the component header
+                            std::string compLabel = typeid(*comp).name();
+                            // Remove "class " prefix if present (platform dependent)
+                            if (compLabel.rfind("class ", 0) == 0) {
+                                compLabel = compLabel.substr(6);
+                            }
+                            compLabel += "##" + std::to_string(compIndex++); // Add unique ID
+
+                            // Make each component collapsible
+                            if (ImGui::TreeNode(compLabel.c_str()))
+                            {
+                                // --- Call the component's ImGui draw function ---
+                                comp->DrawImGuiControls();
+                                // --- End Call ---
+
+                                ImGui::TreePop();
+                            }
                         }
                     }
                 }
@@ -468,7 +494,7 @@ void App::DrawSphereColliders(Graphics& gfx)
 void App::AddBoxColliderToDraw(Graphics& gfx, OBB* obb)
 {
 
-    boxCollidersToDraw[obb] = SolidBox(gfx, { -0.5f, -0.5f, -0.5f }, { 0.5f, 0.5f, 0.5f });
+    boxCollidersToDraw[obb] = SolidBox(gfx, obb->GetTransformedCenter(), obb->GetTransformedSize());
 
 }
 
@@ -478,7 +504,8 @@ void App::DrawBoxColliders(Graphics& gfx)
     for (auto it = boxCollidersToDraw.begin(); it != boxCollidersToDraw.end(); ++it)
     {
         SolidBox box(gfx, DirectX::XMFLOAT3(it->first->GetTransformedCenter()), DirectX::XMFLOAT3(it->first->GetTransformedSize()));
-		box.SetTransformXM(it->first->GetOwner()->GetWorldTransform());
+		box.SetTransformXM(it->first->GetOwner()->GetLocalTransform());
+        
         box.Draw(gfx);
     }
 

@@ -21,6 +21,9 @@ public:
     Node* GetParent() const;
     const std::vector<std::unique_ptr<Node>>& GetChildren() const;
     const std::string& GetName() const;
+    Node* FindFirstChildByTag(const std::string& searchTag);
+    std::vector<Node*> FindAllChildrenByTag(const std::string& searchTag);
+    Node* GetRoot() const; // Returns pointer to the top-most Node in this hierarchy
 
     // --- Components ---
     // ... (GetComponent, AddComponent remain the same) ...
@@ -50,6 +53,7 @@ public:
     void Draw(Graphics& gfx) const;
     void ShowNodeTree(Node*& pSelectedNode) noexcept;
     std::string tag;
+    Node* parent = nullptr;
 
 private:
     void UpdateWorldTransform();
@@ -67,7 +71,6 @@ private:
     DirectX::XMFLOAT4X4 localTransform;  // Cache built from pos/rot/scale
     DirectX::XMFLOAT4X4 worldTransform; // Cache built from local and parent
 
-    Node* parent = nullptr;
     std::vector<std::unique_ptr<Node>> children;
     std::vector<std::unique_ptr<Component>> components;
 

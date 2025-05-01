@@ -1,6 +1,8 @@
 #pragma once
 #include <memory>
-
+#include "imgui/imgui.h"
+#include <string>
+#include <DirectXMath.h>
 // Forward declarations
 class Node;
 class Graphics;
@@ -17,7 +19,10 @@ public:
     // Draw might need specific parameters depending on the component type
     // For now, ModelComponent will have its own Draw with needed params.
 
+    virtual void Follow(DirectX::XMFLOAT3 target) {}
     Node* GetOwner() const { return pOwner; }
+    virtual void DrawImGuiControls() {};
+    std::string tag;
 
 protected:
     Node* pOwner; // Non-owning pointer to the Node this component is attached to
