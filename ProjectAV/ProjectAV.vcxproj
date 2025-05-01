@@ -172,6 +172,7 @@
     <ClCompile Include="Bindable.cpp" />
     <ClCompile Include="BoundingSphere.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CapsuleCollider.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="ColliderSphere.cpp" />
     <ClCompile Include="DirectionalLight.cpp" />
@@ -228,6 +229,7 @@
     <ClInclude Include="BoundingSphere.h" />
     <ClInclude Include="Box.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CapsuleCollider.h" />
     <ClInclude Include="CException.h" />
     <ClInclude Include="CMath.h" />
     <ClInclude Include="Collider.h" />

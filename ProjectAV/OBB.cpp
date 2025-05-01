@@ -125,6 +125,29 @@ IntersectData OBB::IntersectBoundingSphere(BoundingSphere* other)
 	return IntersectData(dist < other->GetRadius(), separationVector, collisionPoint, r1, r2);
 }
 
+IntersectData OBB::IntersectCapsule(CapsuleCollider* other)
+{
+	Vector3 selfNormal = (other->GetTransformedTip() - other->GetTransformedBase()) / ((other->GetTransformedTip() - other->GetTransformedBase()).Length());
+	Vector3 selfLineEndOffset = selfNormal * other->GetRadius();
+	Vector3 selfA = other->GetTransformedBase() + selfLineEndOffset;
+	Vector3 selfB = other->GetTransformedTip() - selfLineEndOffset;
+
+	Vector3 bestA = other->ClosestPointOnLineSegment(selfA, selfB, GetTransformedCenter());
+
+	Vector3 nearest = NearestPoint(bestA);
+	Vector3 fromSphereCenterToNearestPoint = nearest - bestA;
+	float dist = fromSphereCenterToNearestPoint.Length();
+
+	Vector3 direction = fromSphereCenterToNearestPoint / dist;
+	Vector3 separationVector = direction * (other->GetRadius() - dist);
+
+	Vector3 collisionPoint = bestA + (direction * other->GetRadius());
+	Vector3 r1 = collisionPoint - GetTransformedCenter();
+	Vector3 r2 = collisionPoint - bestA;
+
+	return IntersectData(dist < other->GetRadius(), separationVector, collisionPoint, r1, r2);
+}
+
 Vector3 OBB::GetTransformedCenter()
 {
 	DirectX::XMVECTOR e = DirectX::XMVectorSet(center.x, center.y, center.z, 1.0f);
@@ -145,8 +168,8 @@ Vector3 OBB::GetTransformedVertex(Vector3 vertex)
 	DirectX::XMVECTOR e = DirectX::XMVectorSet(vertex.x, vertex.y, vertex.z, 1.0f);
 	e = DirectX::XMVector4Transform(e, rigidbody->GetTransformationMatrixFromNode());
 	return Vector3(DirectX::XMVectorGetX(e),
-		DirectX::XMVectorGetY(e),
-		DirectX::XMVectorGetZ(e));
+				   DirectX::XMVectorGetY(e),
+				   DirectX::XMVectorGetZ(e));
 }
 
 Vector3 OBB::NearestPoint(Vector3 otherPoint)

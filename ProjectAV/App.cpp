@@ -67,7 +67,7 @@ App::App()
     //AddBoxColliderToDraw(wnd.Gfx(), baabb);
     brb->SetCollider(baabb);
     physicsEngine.AddRigidbody(brb);
-	pBox->SetLocalScale(dx::XMFLOAT3(20.0f, 0.1f, 20.0f));
+	pBox->SetLocalScale(dx::XMFLOAT3(20.0f, 1.0f, 20.0f));
     // 2. Add the ModelComponent to the Nanosuit Node
     try {
         // The ModelComponent constructor now takes the Node* owner
@@ -91,24 +91,28 @@ App::App()
     }
 
     pNanosuitNode->AddComponent(
-        std::make_unique<Rigidbody>(pNanosuitNode, Vector3(-10.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f))
+        std::make_unique<Rigidbody>(pNanosuitNode, Vector3(-10.0f, 30.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f))
     );
     Rigidbody* rb2 = pNanosuitNode->GetComponent<Rigidbody>();
+    //pNanosuitNode->AddComponent(
+    //    std::make_unique<OBB>(pNanosuitNode, rb2, Vector3(0, 0, 0), Vector3(2, 2, 2))
+    //);
+    //OBB* bs2 = pNanosuitNode->GetComponent<OBB>();
+    //rb2->SetCollider(bs2);
     pNanosuitNode->AddComponent(
-        std::make_unique<OBB>(pNanosuitNode, rb2, Vector3(0, 0, 0), Vector3(2, 2, 2))
+        std::make_unique<CapsuleCollider>(pNanosuitNode, rb2, 2, Vector3(0, -2, 0), Vector3(0, 6, 0))
     );
-    OBB* bs2 = pNanosuitNode->GetComponent<OBB>();
-    //AddBoxColliderToDraw(wnd.Gfx(), bs2);
-    rb2->SetCollider(bs2);
+    CapsuleCollider* cc = pNanosuitNode->GetComponent<CapsuleCollider>();
+    rb2->SetCollider(cc);
     physicsEngine.AddRigidbody(rb2);
-
+    AddCapsuleColliderToDraw(wnd.Gfx(), cc);
 
     // 3. Add the Nanosuit Node to the Scene Root
     pEmptyNode->AddChild(std::move(pNanosuitOwner));
     pSceneRoot->AddChild(std::move(pBoxOwner));
     pSceneRoot->AddChild(std::move(pNanosuitOwner2));
-    pNanosuitNode2->SetLocalPosition(DirectX::XMFLOAT3(20.0f,3.0f,0.0f));
-    pNanosuitNode->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 8.0f, 0.0f));
+    pNanosuitNode2->SetLocalPosition(DirectX::XMFLOAT3(20.0f, 3.0f, 0.0f));
+    pNanosuitNode->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 10.0f, 0.0f));
 	pSceneRoot->AddChild(std::move(pEmptyNode));
     // Initialize cursor state
     wnd.DisableCursor();
@@ -376,6 +380,11 @@ void App::AddSphereColliderToDraw(Graphics& gfx, BoundingSphere* boundingSphere)
     sphereCollidersToDraw[boundingSphere] = SolidSphere(gfx, boundingSphere->GetRadius());
 }
 
+void App::AddCapsuleColliderToDraw(Graphics& gfx, CapsuleCollider* capsuleCollider)
+{
+    capsuleCollidersToDraw[capsuleCollider] = SolidSphere(gfx, capsuleCollider->GetRadius());
+}
+
 void App::DrawSphereColliders(Graphics& gfx)
 {
     for (auto it = sphereCollidersToDraw.begin(); it != sphereCollidersToDraw.end(); ++it)
@@ -389,6 +398,20 @@ void App::DrawSphereColliders(Graphics& gfx)
                                         it->first->GetTransformedCenter().y,
                                         it->first->GetTransformedCenter().z));
         sphere.Draw(gfx);
+    }
+    for (auto it = capsuleCollidersToDraw.begin(); it != capsuleCollidersToDraw.end(); ++it)
+    {
+        ColliderSphere tsphere(gfx, it->first->GetRadius());
+        tsphere.SetPos(DirectX::XMFLOAT3(it->first->GetTransformedTip().x,
+            it->first->GetTransformedTip().y,
+            it->first->GetTransformedTip().z));
+        tsphere.Draw(gfx);
+
+        ColliderSphere bsphere(gfx, it->first->GetRadius());
+        bsphere.SetPos(DirectX::XMFLOAT3(it->first->GetTransformedBase().x,
+            it->first->GetTransformedBase().y,
+            it->first->GetTransformedBase().z));
+        bsphere.Draw(gfx);
     }
 }
 

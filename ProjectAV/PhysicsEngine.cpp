@@ -114,8 +114,8 @@ void PhysicsEngine::HandleCollisions()
 				firstBody->SetVelocity(firstBodyNewVelocity);
 				secondBody->SetVelocity(secondBodyNewVelocity);
 
-				firstBody->SetAngularVelocity(firstBodyNewAngularVelocity);
-				secondBody->SetAngularVelocity(secondBodyNewAngularVelocity);
+				//firstBody->SetAngularVelocity(firstBodyNewAngularVelocity);
+				//secondBody->SetAngularVelocity(secondBodyNewAngularVelocity);
 				
 				if (firstBody->GetIsStatic())
 				{
@@ -126,14 +126,14 @@ void PhysicsEngine::HandleCollisions()
 					secondBody->SetVelocity(Vector3(0, 0, 0));
 				}
 
-				if (firstBody->GetIsStatic())
+				/*if (firstBody->GetIsStatic())
 				{
 					firstBody->SetAngularVelocity(Vector3(0, 0, 0));
 				}
 				if (secondBody->GetIsStatic())
 				{
 					secondBody->SetAngularVelocity(Vector3(0, 0, 0));
-				}
+				}*/
 			}
 		}
 	}

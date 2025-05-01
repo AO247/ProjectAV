@@ -51,8 +51,10 @@ private:
     Node* pSelectedSceneNode = nullptr; // Add this pointer
 
     std::map<BoundingSphere*, SolidSphere> sphereCollidersToDraw;
+    std::map<CapsuleCollider*, SolidSphere> capsuleCollidersToDraw;
     std::map<AxisAligned::AABB*, SolidBox> boxCollidersToDraw;
     void AddSphereColliderToDraw(Graphics& gfx, BoundingSphere* boundingSphere);
+    void AddCapsuleColliderToDraw(Graphics& gfx, CapsuleCollider* capsuleCollider);
     void DrawSphereColliders(Graphics& gfx);
     void AddBoxColliderToDraw(Graphics& gfx, AxisAligned::AABB* aabb);
     void DrawBoxColliders(Graphics& gfx);

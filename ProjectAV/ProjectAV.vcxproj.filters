@@ -204,6 +204,12 @@
     <ClCompile Include="OBB.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
+    <ClCompile Include="DirectionalLight.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CapsuleCollider.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowsMessageMap.h">
@@ -396,6 +402,12 @@
       <Filter>Header Files\Bindable</Filter>
     </ClInclude>
     <ClInclude Include="OBB.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectionalLight.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CapsuleCollider.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
   </ItemGroup>

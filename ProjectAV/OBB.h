@@ -27,6 +27,7 @@ public:
 };
 
 class BoundingSphere;
+class CapsuleCollider;
 
 class OBB : public Collider
 {
@@ -50,9 +51,11 @@ public:
 
 	IntersectData IntersectOBB(OBB* other);
 	IntersectData IntersectBoundingSphere(BoundingSphere* other);
+	IntersectData IntersectCapsule(CapsuleCollider* other);
 	
 	Vector3 NearestPoint(Vector3 otherPoint);
 	Vector3 GetTransformedCenter();
+	Vector3 GetClosestPoint(Vector3 point);
 private:
 	Vector3 center;
 	Vector3 size;
@@ -63,7 +66,6 @@ private:
 
 	Vector3 GetTransformedSize();
 	Vector3 GetTransformedVertex(Vector3 vertex);
-	Vector3 GetClosestPoint(Vector3 point);
 	Vector3 GetTransformedOrientation(Vector3 orientation);
 	IntervalPair GetInterval(Vector3 axis);
 	bool ColOverlapAxis(OBB* first, OBB* second, Vector3 axis);
