@@ -215,6 +215,7 @@
     <ClCompile Include="Surface.cpp" />
     <ClCompile Include="TestPlane.cpp" />
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="TexturePreprocessor.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Topology.cpp" />
     <ClCompile Include="TransformCbuf.cpp" />
@@ -275,7 +276,6 @@
     <ClInclude Include="ModelComponent.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="Node.h" />
-    <ClInclude Include="NormalMapTwerker.h" />
     <ClInclude Include="OBB.h" />
     <ClInclude Include="PhysicsEngine.h" />
     <ClInclude Include="PixelShader.h" />
@@ -294,6 +294,7 @@
     <ClInclude Include="Surface.h" />
     <ClInclude Include="TestPlane.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="TexturePreprocessor.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Topology.h" />
     <ClInclude Include="TransformCbuf.h" />

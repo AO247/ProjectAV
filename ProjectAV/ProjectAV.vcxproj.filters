@@ -249,6 +249,9 @@
     <ClCompile Include="Walking.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
+    <ClCompile Include="TexturePreprocessor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowsMessageMap.h">
@@ -467,9 +470,6 @@
     <ClInclude Include="XM.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="NormalMapTwerker.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TestPlane.h">
       <Filter>Header Files\Drawable</Filter>
     </ClInclude>
@@ -487,6 +487,9 @@
     </ClInclude>
     <ClInclude Include="Components.h">
       <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="TexturePreprocessor.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
