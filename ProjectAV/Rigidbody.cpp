@@ -108,6 +108,19 @@ DirectX::XMMATRIX Rigidbody::GetTransformationMatrixFromNode()
 	return pOwner->GetWorldTransform();
 }
 
+DirectX::XMMATRIX Rigidbody::GetBodyTransformationMatrix()
+{
+	DirectX::XMMATRIX result = DirectX::XMMatrixIdentity();
+	
+	DirectX::XMMATRIX translation = DirectX::XMMatrixTranslation(position.x, position.y, position.z);
+	DirectX::XMMATRIX rotation = DirectX::XMMatrixRotationRollPitchYaw(this->rotation.x, this->rotation.y, this->rotation.z);
+	DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(pOwner->GetLocalScale().x, pOwner->GetLocalScale().y, pOwner->GetLocalScale().z);
+
+	result = scale * rotation * translation;
+
+	return result;
+}
+
 DirectX::XMFLOAT3 Rigidbody::GetScaleFromNode()
 {
 	return pOwner->GetLocalScale();

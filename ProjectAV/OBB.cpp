@@ -151,7 +151,7 @@ IntersectData OBB::IntersectCapsule(CapsuleCollider* other)
 Vector3 OBB::GetTransformedCenter()
 {
 	DirectX::XMVECTOR e = DirectX::XMVectorSet(center.x, center.y, center.z, 1.0f);
-	e = DirectX::XMVector3Transform(e, rigidbody->GetTransformationMatrixFromNode());
+	e = DirectX::XMVector3Transform(e, rigidbody->GetBodyTransformationMatrix());
 	return Vector3(DirectX::XMVectorGetX(e),
 		DirectX::XMVectorGetY(e),
 		DirectX::XMVectorGetZ(e));
@@ -166,7 +166,7 @@ Vector3 OBB::GetTransformedSize()
 Vector3 OBB::GetTransformedVertex(Vector3 vertex)
 {
 	DirectX::XMVECTOR e = DirectX::XMVectorSet(vertex.x, vertex.y, vertex.z, 1.0f);
-	e = DirectX::XMVector4Transform(e, rigidbody->GetTransformationMatrixFromNode());
+	e = DirectX::XMVector4Transform(e, rigidbody->GetBodyTransformationMatrix());
 	return Vector3(DirectX::XMVectorGetX(e),
 				   DirectX::XMVectorGetY(e),
 				   DirectX::XMVectorGetZ(e));
@@ -526,8 +526,7 @@ Vector3 OBB::GetClosestPoint(Vector3 point)
 Vector3 OBB::GetTransformedOrientation(Vector3 orientation)
 {
 	DirectX::XMVECTOR e = DirectX::XMVectorSet(orientation.x, orientation.y, orientation.z, 0.0f);
-	Vector3 rot = rigidbody->GetRotationFromNode();
-	DirectX::XMMATRIX r = DirectX::XMMatrixRotationRollPitchYaw(rot.y, rot.x, rot.z);
+	DirectX::XMMATRIX r = DirectX::XMMatrixRotationRollPitchYaw(rigidbody->GetRotation().x, rigidbody->GetRotation().y, rigidbody->GetRotation().z);
 	e = DirectX::XMVector3Transform(e, r);
 	Vector3 transformed = Vector3(DirectX::XMVectorGetX(e),
 									DirectX::XMVectorGetY(e),

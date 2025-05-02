@@ -111,7 +111,7 @@ App::App()
     pEmptyNode->AddChild(std::move(pNanosuitOwner));
     pSceneRoot->AddChild(std::move(pBoxOwner));
     pSceneRoot->AddChild(std::move(pNanosuitOwner2));
-    pNanosuitNode2->SetLocalPosition(DirectX::XMFLOAT3(20.0f, 3.0f, 0.0f));
+    pNanosuitNode2->SetLocalPosition(DirectX::XMFLOAT3(15.0f, 3.0f, 0.0f));
     pNanosuitNode->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 10.0f, 0.0f));
 	pSceneRoot->AddChild(std::move(pEmptyNode));
     // Initialize cursor state

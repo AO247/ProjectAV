@@ -33,6 +33,7 @@ public:
 	Vector3& GetAngularVelocity();
 	Collider* GetCollider();
 	DirectX::XMMATRIX GetTransformationMatrixFromNode();
+	DirectX::XMMATRIX GetBodyTransformationMatrix();
 	DirectX::XMFLOAT3 GetScaleFromNode();
 	DirectX::XMFLOAT3 GetRotationFromNode();
 	float GetMass();

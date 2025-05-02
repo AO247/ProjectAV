@@ -84,7 +84,7 @@ IntersectData CapsuleCollider::IntersectOBB(OBB* other)
 	Vector3 selfB = GetTransformedTip() - selfLineEndOffset;
 
 	Vector3 bestA = ClosestPointOnLineSegment(selfA, selfB, other->GetTransformedCenter());
-	// mam tutaj fajne wartosci to mozna debugowac i recznie policzyc jak powinno byc
+
 	Vector3 nearest = other->NearestPoint(bestA);
 	Vector3 fromSphereCenterToNearestPoint = nearest - bestA;
 	float dist = fromSphereCenterToNearestPoint.Length();
@@ -96,11 +96,6 @@ IntersectData CapsuleCollider::IntersectOBB(OBB* other)
 	Vector3 r1 = collisionPoint - bestA;
 	Vector3 r2 = collisionPoint - other->GetTransformedCenter();
 
-	if (dist < GetRadius())
-	{
-		OutputDebugString("asdasdsa");
-	}
-
 	return IntersectData(dist < GetRadius(), -separationVector, collisionPoint, r1, r2);
 }
 
@@ -108,8 +103,11 @@ IntersectData CapsuleCollider::IntersectOBB(OBB* other)
 
 Vector3 CapsuleCollider::GetTransformedBase()
 {
-	DirectX::XMVECTOR e = DirectX::XMVectorSet(base.x, base.y, base.z, 1.0f);
-	e = DirectX::XMVector4Transform(e, rigidbody->GetTransformationMatrixFromNode());
+	DirectX::XMVECTOR e = DirectX::XMVectorSet(base.x,
+											   base.y,
+											   base.z,
+											   1.0f);
+	e = DirectX::XMVector4Transform(e, rigidbody->GetBodyTransformationMatrix());
 	return Vector3(DirectX::XMVectorGetX(e),
 		DirectX::XMVectorGetY(e),
 		DirectX::XMVectorGetZ(e));
@@ -117,11 +115,14 @@ Vector3 CapsuleCollider::GetTransformedBase()
 
 Vector3 CapsuleCollider::GetTransformedTip()
 {
-	DirectX::XMVECTOR e = DirectX::XMVectorSet(tip.x, tip.y, tip.z, 1.0f);
-	e = DirectX::XMVector4Transform(e, rigidbody->GetTransformationMatrixFromNode());
+	DirectX::XMVECTOR e = DirectX::XMVectorSet(tip.x, 
+											   tip.y,
+											   tip.z,
+											   1.0f);
+	e = DirectX::XMVector4Transform(e, rigidbody->GetBodyTransformationMatrix());
 	return Vector3(DirectX::XMVectorGetX(e),
-		DirectX::XMVectorGetY(e),
-		DirectX::XMVectorGetZ(e));
+					DirectX::XMVectorGetY(e),
+					DirectX::XMVectorGetZ(e));
 }
 
 float CapsuleCollider::GetRadius()
