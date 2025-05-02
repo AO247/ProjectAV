@@ -43,6 +43,7 @@ void PlayerController::HandleMovementInput(float dt)
 		moveDirection += Vector3(0.0f, 0.0f, 1.0f);
         //rigidbody->AddForce(Vector3(0.0f, 0.0f, 200.0f));
         moved = true;
+
     }
     if (wnd.kbd.KeyIsPressed('S'))
     {

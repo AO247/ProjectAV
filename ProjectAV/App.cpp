@@ -10,10 +10,19 @@
 #include <shellapi.h>
 #include <algorithm>
 #include "ColliderSphere.h"
+#include <windows.h>
+#include <AK/SoundEngine/Common/AkMemoryMgrModule.h>
+#include <AK/SoundEngine/Common/AkSoundEngine.h>
+//#include <AK/Tools/Common/AkPlatformFuncs.h>
+#include <AK/MusicEngine/Common/AkMusicEngine.h>
+
+#include <AK/SoundEngine/Common/AkStreamMgrModule.h>
 
 namespace dx = DirectX;
 
 GDIPlusManager gdipm;
+
+
 
 App::App(const std::string& commandLine)
     :
@@ -42,7 +51,7 @@ App::App(const std::string& commandLine)
     }
 	// Initialize Physics Engine
 	physicsEngine = PhysicsEngine();
-    
+   
     // --- Create Nodes ---
    
 
@@ -323,7 +332,6 @@ void App::DoFrame(float dt)
     wnd.Gfx().EndFrame();
 }
 
-
 void App::ShowControlWindows()
 {
     // --- Existing Windows ---
@@ -509,4 +517,26 @@ void App::DrawBoxColliders(Graphics& gfx)
         box.Draw(gfx);
     }
 
+}
+
+void InitializeWwise()
+{
+    // Inicjalizacja mened¿era pamiêci
+    AkMemSettings memSettings;
+    //memSettings.uMaxNumPools = 20;
+    AK::MemoryMgr::Init(&memSettings);
+
+    // Inicjalizacja mened¿era strumieni
+    AkStreamMgrSettings stmSettings;
+    AK::StreamMgr::GetDefaultSettings(stmSettings);
+    AK::StreamMgr::Create(stmSettings);
+
+    // Inicjalizacja silnika dŸwiêku
+    AkInitSettings initSettings;
+    AkPlatformInitSettings platformInitSettings;
+    AK::SoundEngine::Init(&initSettings, &platformInitSettings);
+
+    // Inicjalizacja silnika muzyki
+    AkMusicSettings musicSettings;
+    AK::MusicEngine::Init(&musicSettings);
 }

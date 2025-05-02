@@ -79,8 +79,8 @@
     <LibraryPath>$(SolutionDir)ProjectAV\Library\x86\Release;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)ProjectAV\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)ProjectAV\Library\x64\Debug;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)ProjectAV\Include;C:\Program Files %28x86%29\Audiokinetic\Wwise2024.1.4.8780\SDK\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)ProjectAV\Library\x64\Debug;C:\Program Files %28x86%29\Audiokinetic\Wwise2024.1.4.8780\SDK\Win32_vc170\Debug\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>$(SolutionDir)ProjectAV\Include;$(IncludePath)</IncludePath>
@@ -141,7 +141,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>assimp-vc140-mt.lib;AkSoundEngine.lib;AkMemoryMgr.lib;AkStreamMgr.lib;CommunicationCentral.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -291,6 +291,7 @@
     <ClInclude Include="State.h" />
     <ClInclude Include="StateType.h" />
     <ClInclude Include="StateMachine.h" />
+    <ClInclude Include="stringapisetAV.h" />
     <ClInclude Include="Surface.h" />
     <ClInclude Include="TestPlane.h" />
     <ClInclude Include="Texture.h" />
