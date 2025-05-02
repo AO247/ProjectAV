@@ -79,13 +79,13 @@ IntersectData OBB::IntersectOBB(OBB* other)
 
 	// Collision type is face to face
 
-	/*if (ProjectAndCheckOverlapping(0, projectionDataForFirstFace, projectionDataForSecondFace) ||
+	if (ProjectAndCheckOverlapping(0, projectionDataForFirstFace, projectionDataForSecondFace) ||
 		ProjectAndCheckOverlapping(1, projectionDataForFirstFace, projectionDataForSecondFace) || 
 		ProjectAndCheckOverlapping(2, projectionDataForFirstFace, projectionDataForSecondFace))
 	{
 		r1 = Vector3(0, 0, 0);
 		r2 = Vector3(0, 0, 0);
-	}*/
+	}
 
 	// OX OZ Projection
 
@@ -125,10 +125,33 @@ IntersectData OBB::IntersectBoundingSphere(BoundingSphere* other)
 	return IntersectData(dist < other->GetRadius(), separationVector, collisionPoint, r1, r2);
 }
 
+IntersectData OBB::IntersectCapsule(CapsuleCollider* other)
+{
+	Vector3 selfNormal = (other->GetTransformedTip() - other->GetTransformedBase()) / ((other->GetTransformedTip() - other->GetTransformedBase()).Length());
+	Vector3 selfLineEndOffset = selfNormal * other->GetRadius();
+	Vector3 selfA = other->GetTransformedBase() + selfLineEndOffset;
+	Vector3 selfB = other->GetTransformedTip() - selfLineEndOffset;
+
+	Vector3 bestA = other->ClosestPointOnLineSegment(selfA, selfB, GetTransformedCenter());
+
+	Vector3 nearest = NearestPoint(bestA);
+	Vector3 fromSphereCenterToNearestPoint = nearest - bestA;
+	float dist = fromSphereCenterToNearestPoint.Length();
+
+	Vector3 direction = fromSphereCenterToNearestPoint / dist;
+	Vector3 separationVector = direction * (other->GetRadius() - dist);
+
+	Vector3 collisionPoint = bestA + (direction * other->GetRadius());
+	Vector3 r1 = collisionPoint - GetTransformedCenter();
+	Vector3 r2 = collisionPoint - bestA;
+
+	return IntersectData(dist < other->GetRadius(), separationVector, collisionPoint, r1, r2);
+}
+
 Vector3 OBB::GetTransformedCenter()
 {
 	DirectX::XMVECTOR e = DirectX::XMVectorSet(center.x, center.y, center.z, 1.0f);
-	e = DirectX::XMVector3Transform(e, rigidbody->GetTransformationMatrixFromNode());
+	e = DirectX::XMVector3Transform(e, rigidbody->GetBodyTransformationMatrix());
 	return Vector3(DirectX::XMVectorGetX(e),
 		DirectX::XMVectorGetY(e),
 		DirectX::XMVectorGetZ(e));
@@ -143,10 +166,10 @@ Vector3 OBB::GetTransformedSize()
 Vector3 OBB::GetTransformedVertex(Vector3 vertex)
 {
 	DirectX::XMVECTOR e = DirectX::XMVectorSet(vertex.x, vertex.y, vertex.z, 1.0f);
-	e = DirectX::XMVector4Transform(e, rigidbody->GetTransformationMatrixFromNode());
+	e = DirectX::XMVector4Transform(e, rigidbody->GetBodyTransformationMatrix());
 	return Vector3(DirectX::XMVectorGetX(e),
-		DirectX::XMVectorGetY(e),
-		DirectX::XMVectorGetZ(e));
+				   DirectX::XMVectorGetY(e),
+				   DirectX::XMVectorGetZ(e));
 }
 
 Vector3 OBB::NearestPoint(Vector3 otherPoint)
@@ -190,22 +213,38 @@ IntervalPair OBB::GetInterval(Vector3 axis)
 	float imin = dot;
 	float imax = dot;
 
-	int closestVertexIndex = 0;
+	//int closestVertexIndex = 0;
 
 	for (int i = 1; i < 8; i++)
 	{
 		dot = v.Dot(GetTransformedVertex(vertices[i]));
 		imin = min(imin, dot);
+		//if (imax == dot)
+		//{
+		//	result.verticesClosestToTheAxis[closestVertexIndex] = GetTransformedVertex(vertices[i]);
+		//	closestVertexIndex++;
+		//}
+		imax = max(imax, dot);
+	}
+
+	int closestVertexIndex = 0;
+	for (int i = 0; i < 8; i++)
+	{
+		dot = v.Dot(GetTransformedVertex(vertices[i]));
 		if (imax == dot)
 		{
-			//result.verticesClosestToTheAxis[closestVertexIndex] = GetTransformedVertex(vertices[i]);
+			result.verticesClosestToTheAxis[closestVertexIndex] = GetTransformedVertex(vertices[i]);
 			closestVertexIndex++;
 		}
-		imax = max(imax, dot);
 	}
 
 	result.imin = imin;
 	result.imax = imax;
+
+	//result.verticesClosestToTheAxis[0] = Vector3(0, 0, 0);
+	//result.verticesClosestToTheAxis[1] = Vector3(0, 0, 0);
+	//result.verticesClosestToTheAxis[2] = Vector3(0, 0, 0);
+	//result.verticesClosestToTheAxis[3] = Vector3(0, 0, 0);
 
 	return result;
 }
@@ -221,7 +260,9 @@ bool OBB::ColOverlapAxis(OBB* first, OBB* second, Vector3 axis)
 // 0 - OX OZ
 // 1 - OX OY
 // 2 - OZ OY
-/*bool OBB::ProjectAndCheckOverlapping(int surface, IntervalPair data1, IntervalPair data2)
+
+
+bool OBB::ProjectAndCheckOverlapping(int surface, IntervalPair data1, IntervalPair data2)
 {
 	// Projection stage
 
@@ -377,12 +418,17 @@ bool OBB::ColOverlapAxis(OBB* first, OBB* second, Vector3 axis)
 		if ((iA.imax < iB.imax && iA.imin > iB.imin) ||
 			(iB.imax < iA.imax && iB.imin > iA.imin))
 		{
-			return true;
+			//return true;
+			continue;
+		}
+		else
+		{
+			return false;
 		}
 	}
 
-	return false;
-}*/
+	return true;
+}
 
 // surface:
 // 0 - OX OZ
@@ -417,16 +463,22 @@ Vector3 OBB::GetPerpendicular2DVector(int surface, Vector3 v)
 	switch (surface)
 	{
 	case 0:
-		result.z = 1.0f;
-		result.x = ((-1) * v.z * result.z) / v.x;
+		//result.z = 1.0f;
+		//result.x = ((-1) * v.z * result.z) / v.x;
+		result.x = v.z;
+		result.z = -v.x;
 		break;
 	case 1:
-		result.y = 1.0f;
-		result.x = ((-1) * v.y * result.y) / v.x;
+		//result.y = 1.0f;
+		//result.x = ((-1) * v.y * result.y) / v.x;
+		result.x = v.y;
+		result.y = -v.x;
 		break;
 	case 2:
-		result.y = 1.0f;
-		result.z = ((-1) * v.y * result.y) / v.z;
+		//result.y = 1.0f;
+		//result.z = ((-1) * v.y * result.y) / v.z;
+		result.z = v.y;
+		result.y = -v.z;
 		break;
 	}
 
@@ -474,8 +526,7 @@ Vector3 OBB::GetClosestPoint(Vector3 point)
 Vector3 OBB::GetTransformedOrientation(Vector3 orientation)
 {
 	DirectX::XMVECTOR e = DirectX::XMVectorSet(orientation.x, orientation.y, orientation.z, 0.0f);
-	Vector3 rot = rigidbody->GetRotationFromNode();
-	DirectX::XMMATRIX r = DirectX::XMMatrixRotationRollPitchYaw(rot.y, rot.x, rot.z);
+	DirectX::XMMATRIX r = DirectX::XMMatrixRotationRollPitchYaw(rigidbody->GetRotation().x, rigidbody->GetRotation().y, rigidbody->GetRotation().z);
 	e = DirectX::XMVector3Transform(e, r);
 	Vector3 transformed = Vector3(DirectX::XMVectorGetX(e),
 									DirectX::XMVectorGetY(e),

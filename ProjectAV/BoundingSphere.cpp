@@ -80,6 +80,29 @@ IntersectData BoundingSphere::IntersectOBB(OBB* other)
 	return IntersectData(dist < GetRadius(), -separationVector, collisionPoint, r1, r2);
 }
 
+IntersectData BoundingSphere::IntersectCapsule(CapsuleCollider* other)
+{
+	Vector3 selfNormal = (other->GetTransformedTip() - other->GetTransformedBase()) / ((other->GetTransformedTip() - other->GetTransformedBase()).Length());
+	Vector3 selfLineEndOffset = selfNormal * other->GetRadius();
+	Vector3 selfA = other->GetTransformedBase() + selfLineEndOffset;
+	Vector3 selfB = other->GetTransformedTip() - selfLineEndOffset;
+
+	Vector3 bestA = other->ClosestPointOnLineSegment(selfA, selfB, GetTransformedCenter());
+
+	Vector3 penetrationNormal = bestA - GetTransformedCenter();
+	float len = penetrationNormal.Length();
+	penetrationNormal /= len;
+	float penetrationDepth = radius + other->GetRadius() - len;
+
+	Vector3 separationVector = penetrationNormal * penetrationDepth;
+	Vector3 collisionPoint = bestA + (penetrationNormal * other->GetRadius());
+
+	Vector3 collisionPointRadiusForFirstBody = collisionPoint - GetTransformedCenter();
+	Vector3 collisionPointRadiusForSecondBody = collisionPoint - bestA;
+
+	return IntersectData(penetrationDepth > 0, -separationVector, collisionPoint, collisionPointRadiusForFirstBody, collisionPointRadiusForSecondBody);
+}
+
 Vector3& BoundingSphere::GetCenter()
 {
 	return center;
