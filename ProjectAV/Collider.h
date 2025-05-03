@@ -27,10 +27,27 @@ public:
 
 	ColliderTypes GetColliderType();
 
-	Rigidbody* GetRigidbody() const;
+	void SetIsTrigger(bool isTrigger);
+	bool GetIsTrigger();
+
+	void AddToTriggerList(Collider* other);
+	void UpdateTrigger();
+
+	std::vector<Collider*> GetTriggerEnter();
+	std::vector<Collider*> GetTriggerStay();
+	std::vector<Collider*> GetTriggerExit();
 
 private:
 	ColliderTypes colliderType;
+	std::vector<Collider*> collidersThatEnteredTheTrigger;
+	std::vector<Collider*> collidersThatLeftTheTrigger;
+	std::vector<Collider*> collidersInsideTheTriggerFromPreviousIteration;
+	std::vector<Collider*> collidersInsideTheTrigger;
+	std::vector<Collider*> stayingColliders;
+
+	void MakeAListOfCollidersThatEnteredTheTrigger();
+	void MakeAListOfCollidersThatLeftTheTrigger();
 protected:
 	Rigidbody* rigidbody;
+	bool isTrigger = false;
 };
