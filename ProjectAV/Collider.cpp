@@ -59,3 +59,86 @@ Collider::ColliderTypes Collider::GetColliderType()
 {
 	return colliderType;
 }
+
+void Collider::SetIsTrigger(bool isTrigger)
+{
+	this->isTrigger = isTrigger;
+}
+
+bool Collider::GetIsTrigger()
+{
+	return isTrigger;
+}
+
+void Collider::UpdateTrigger()
+{
+	MakeAListOfCollidersThatEnteredTheTrigger();
+	MakeAListOfCollidersThatLeftTheTrigger();
+	stayingColliders = collidersInsideTheTrigger;
+	collidersInsideTheTriggerFromPreviousIteration = collidersInsideTheTrigger;
+	collidersInsideTheTrigger.clear();
+}
+
+std::vector<Collider*> Collider::GetTriggerEnter()
+{
+	return collidersThatEnteredTheTrigger;
+}
+
+std::vector<Collider*> Collider::GetTriggerStay()
+{
+	return stayingColliders;
+}
+
+std::vector<Collider*> Collider::GetTriggerExit()
+{
+	return collidersThatLeftTheTrigger;
+}
+
+void Collider::AddToTriggerList(Collider* other)
+{
+	collidersInsideTheTrigger.push_back(other);
+}
+
+void Collider::MakeAListOfCollidersThatEnteredTheTrigger()
+{
+	collidersThatEnteredTheTrigger.clear();
+
+	for (int i = 0; i < collidersInsideTheTrigger.size(); i++)
+	{
+		bool theColliderIsNewForTheTrigger = true;
+		for (int j = 0; j < collidersInsideTheTriggerFromPreviousIteration.size(); j++)
+		{
+			if (collidersInsideTheTriggerFromPreviousIteration[j] == collidersInsideTheTrigger[i])
+			{
+				theColliderIsNewForTheTrigger = false;
+				break;
+			}
+		}
+		if (theColliderIsNewForTheTrigger)
+		{
+			collidersThatEnteredTheTrigger.push_back(collidersInsideTheTrigger[i]);
+		}
+	}
+}
+
+void Collider::MakeAListOfCollidersThatLeftTheTrigger()
+{
+	collidersThatLeftTheTrigger.clear();
+
+	for (int i = 0; i < collidersInsideTheTriggerFromPreviousIteration.size(); i++)
+	{
+		bool theColliderIsMissing = true;
+		for (int j = 0; j < collidersInsideTheTrigger.size(); j++)
+		{
+			if (collidersInsideTheTrigger[j] == collidersInsideTheTriggerFromPreviousIteration[i])
+			{
+				theColliderIsMissing = false;
+				break;
+			}
+		}
+		if (theColliderIsMissing)
+		{
+			collidersThatLeftTheTrigger.push_back(collidersInsideTheTriggerFromPreviousIteration[i]);
+		}
+	}
+}

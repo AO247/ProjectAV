@@ -47,6 +47,7 @@ App::App()
         std::make_unique<BoundingSphere>(pNanosuitNode2, Vector3(0,0,0), 1.0f, rb1)
     );
     BoundingSphere* bs1 = pNanosuitNode2->GetComponent<BoundingSphere>();
+    bs1->SetIsTrigger(true);
     rb1->SetMass(10);
     AddSphereColliderToDraw(wnd.Gfx(), bs1);
     rb1->SetCollider(bs1);

@@ -21,6 +21,11 @@ void PhysicsEngine::HandleCollisions()
 	{
 		for (int j = i + 1; j < rigidbodies.size(); j++)
 		{
+			if (rigidbodies[i]->GetIsStatic() && rigidbodies[j]->GetIsStatic())
+			{
+				continue;
+			}
+
 			// firstBody must contain a moving body
 			// in order to solve collisions properly
 			Rigidbody* firstBody, * secondBody;
@@ -39,6 +44,19 @@ void PhysicsEngine::HandleCollisions()
 
 			if (intersectData.GetDoesIntersect())
 			{
+
+				if (firstBody->GetCollider()->GetIsTrigger() || secondBody->GetCollider()->GetIsTrigger())
+				{
+					if (firstBody->GetCollider()->GetIsTrigger())
+					{
+						firstBody->GetCollider()->AddToTriggerList(secondBody->GetCollider());
+					}
+					if (secondBody->GetCollider()->GetIsTrigger())
+					{
+						secondBody->GetCollider()->AddToTriggerList(firstBody->GetCollider());
+					}
+					continue;
+				}
 
 				//
 				//
@@ -135,6 +153,14 @@ void PhysicsEngine::HandleCollisions()
 					secondBody->SetAngularVelocity(Vector3(0, 0, 0));
 				}*/
 			}
+		}
+	}
+
+	for (int i = 0; i < rigidbodies.size(); i++)
+	{
+		if (rigidbodies[i]->GetCollider()->GetIsTrigger())
+		{
+			rigidbodies[i]->GetCollider()->UpdateTrigger();
 		}
 	}
 }
