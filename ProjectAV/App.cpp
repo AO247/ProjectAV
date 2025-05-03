@@ -10,6 +10,7 @@
 #include "BoundingSphere.h"
 #include "ColliderSphere.h"
 #include "AABB.h"
+#include "Raycast.h"
 //#include "Rigidbody.h"
 
 namespace dx = DirectX;
@@ -35,6 +36,8 @@ App::App()
     auto pBoxOwner = std::make_unique<Node>("Box");
     pBox = pBoxOwner.get(); // Store non-owning pointer for easy access
 	auto pEmptyNode = std::make_unique<Node>("EmptyNode");
+
+    Raycast::physicsEngine = &physicsEngine;
 
     pNanosuitNode2->AddComponent(
         std::make_unique<ModelComponent>(pNanosuitNode2, wnd.Gfx(), "Models\\Colliders\\Sphere.obj")

@@ -2,6 +2,8 @@
 #include <vector>
 #include "Rigidbody.h"
 
+class Rigidbody;
+
 class PhysicsEngine
 {
 public:
@@ -9,8 +11,8 @@ public:
 
 	void AddRigidbody(Rigidbody* rigidbody);
 	void Simulate(float delta);
+	std::vector<Rigidbody*> rigidbodies;
 	
 private:
-	std::vector<Rigidbody*> rigidbodies;
 	void HandleCollisions();
 };

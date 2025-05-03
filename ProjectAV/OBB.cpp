@@ -148,6 +148,63 @@ IntersectData OBB::IntersectCapsule(CapsuleCollider* other)
 	return IntersectData(dist < other->GetRadius(), separationVector, collisionPoint, r1, r2);
 }
 
+RaycastData OBB::IntersectRay(Raycast* ray)
+{
+	Vector3 p = GetTransformedCenter() - ray->origin;
+
+	Vector3 axes[3] = { GetTransformedOrientation(orientationX), 
+		GetTransformedOrientation(orientationY), 
+		GetTransformedOrientation(orientationZ) };
+
+	float t1[3] = {};
+	float t2[3] = {};
+
+	float halfSizes[3] = {GetTransformedSize().x / 2.0f,
+						  GetTransformedSize().y / 2.0f,
+						  GetTransformedSize().z / 2.0f};
+
+	for (int i = 0; i < 3; i++)
+	{
+		float d = ray->direction.Dot(axes[i]);
+		float p_axis = p.Dot(axes[i]);
+
+		if (d == 0)
+		{
+			if (abs(p_axis) > halfSizes[i])
+			{
+				return RaycastData(nullptr, Vector3(0,0,0));
+			}
+			t1[i] = -FLT_MAX;
+			t2[i] = FLT_MAX;
+			continue;
+		}
+
+		t1[i] = (p_axis - (halfSizes[i])) / d;
+		t2[i] = (p_axis + (halfSizes[i])) / d;
+
+		if (t1[i] > t2[i])
+		{
+			float temp = t1[i];
+			t1[i] = t2[i];
+			t2[i] = temp;
+		}
+	}
+
+	float t_min = max(t1[0], t1[1]);
+	t_min = max(t_min, t1[2]);
+
+	float t_max = min(t2[0], t2[1]);
+	t_max = min(t_max, t2[2]);
+
+	if (t_min > t_max || t_max < 0)
+	{
+		return RaycastData(nullptr, Vector3(0, 0, 0));
+	}
+
+	return RaycastData(this, (ray->origin + (t_min * ray->direction)));
+}
+
+
 Vector3 OBB::GetTransformedCenter()
 {
 	DirectX::XMVECTOR e = DirectX::XMVectorSet(center.x, center.y, center.z, 1.0f);
