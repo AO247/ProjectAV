@@ -10,10 +10,16 @@
 #include <shellapi.h>
 #include <algorithm>
 #include "ColliderSphere.h"
+#include "SoundDevice.h"
+#include "SoundBuffer.h"
+#include "SoundSource.h"
+#include "MusicBuffer.h"
 
 namespace dx = DirectX;
 
 GDIPlusManager gdipm;
+
+
 
 App::App(const std::string& commandLine)
     :
@@ -42,7 +48,19 @@ App::App(const std::string& commandLine)
     }
 	// Initialize Physics Engine
 	physicsEngine = PhysicsEngine();
+    SoundDevice::init();
+    uint32_t /*ALuint*/ sound1 = SoundBuffer::get()->addSoundEffect("D:\\GameDev\\ProjectAV\\ProjectAV\\Models\\turn.ogg");
+    //SoundSource mySpeaker();
+    //mySpeaker.Play(sound1);
+    MusicBuffer myMusic("D:\\GameDev\\ProjectAV\\ProjectAV\\Models\\muza_full.wav");
+	myMusic.Play();
+	ALint state = AL_PLAYING;
+    while (state == AL_PLAYING && alGetError() == AL_NO_ERROR) {
+		myMusic.UpdateBufferStream();
+        alGetSourcei(myMusic.getSource(), AL_SOURCE_STATE, &state);
+    }
     
+
     // --- Create Nodes ---
    
 
@@ -197,7 +215,11 @@ App::App(const std::string& commandLine)
     );
     pEnemy->GetComponent<StateMachine>()->UpdateComponents();
 
-
+	//Adding Audio Components
+	SoundSource* pSoundSource = pPlayerNode->GetComponent<SoundSource>();
+	pPlayerNode->AddComponent(
+		std::make_unique<SoundSource>(pPlayerNode)
+	);
 
 
 
@@ -253,10 +275,10 @@ int App::Go()
 void App::HandleInput(float dt)
 {
     // --- Only handle non-player input here ---
+    
     while (const auto e = wnd.kbd.ReadKey())
     {
         if (!e->IsPress()) continue;
-
         switch (e->GetCode())
         {
         case 'C': // Toggle cursor

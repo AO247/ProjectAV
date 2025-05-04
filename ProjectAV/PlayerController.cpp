@@ -4,6 +4,10 @@
 #include "CMath.h"      // For wrap_angle and PI (ensure this is included)
 #include <DirectXMath.h>
 #include <algorithm> // for std::clamp
+#include "SoundDevice.h"
+#include "SoundBuffer.h"
+#include "SoundSource.h"
+#include "MusicBuffer.h"
 
 namespace dx = DirectX;
 PlayerController::PlayerController(Node* owner, Window& window)

@@ -201,6 +201,7 @@
     <ClCompile Include="MiscMath.cpp" />
     <ClCompile Include="ModelComponent.cpp" />
     <ClCompile Include="Mouse.cpp" />
+    <ClCompile Include="MusicBuffer.cpp" />
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="OBB.cpp" />
     <ClCompile Include="PhysicsEngine.cpp" />
@@ -211,6 +212,9 @@
     <ClCompile Include="Sampler.cpp" />
     <ClCompile Include="SolidBox.cpp" />
     <ClCompile Include="SolidSphere.cpp" />
+    <ClCompile Include="SoundBuffer.cpp" />
+    <ClCompile Include="SoundDevice.cpp" />
+    <ClCompile Include="SoundSource.cpp" />
     <ClCompile Include="StateMachine.cpp" />
     <ClCompile Include="Surface.cpp" />
     <ClCompile Include="TestPlane.cpp" />
@@ -274,6 +278,7 @@
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="ModelComponent.h" />
     <ClInclude Include="Mouse.h" />
+    <ClInclude Include="MusicBuffer.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="NormalMapTwerker.h" />
     <ClInclude Include="OBB.h" />
@@ -287,6 +292,9 @@
     <ClInclude Include="Sampler.h" />
     <ClInclude Include="SolidBox.h" />
     <ClInclude Include="SolidSphere.h" />
+    <ClInclude Include="SoundBuffer.h" />
+    <ClInclude Include="SoundDevice.h" />
+    <ClInclude Include="SoundSource.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="StateType.h" />
