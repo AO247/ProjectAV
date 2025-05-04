@@ -11,6 +11,28 @@ void PhysicsEngine::AddCollider(Collider* collider)
 	colliders.push_back(collider);
 }
 
+void PhysicsEngine::RemoveRigidbody(Rigidbody* rigidbody)
+{
+	for (int i = 0; i < rigidbodies.size(); i++)
+	{
+		if (rigidbodies[i] == rigidbody)
+		{
+			rigidbodies.erase(rigidbodies.begin() + i);
+		}
+	}
+}
+
+void PhysicsEngine::RemoveCollider(Collider* collider)
+{
+	for (int i = 0; i < colliders.size(); i++)
+	{
+		if (colliders[i] == collider)
+		{
+			colliders.erase(colliders.begin() + i);
+		}
+	}
+}
+
 void PhysicsEngine::Simulate(float delta)
 {
 	for (int i = 0; i < rigidbodies.size(); i++)
