@@ -129,7 +129,7 @@ App::~App() = default; // Destructor handles unique_ptrs automatically
 int App::Go()
 {
     float lag = 0.0f;
-    float FIXED_TIME_STEP = 0.017f;
+    const float FIXED_TIME_STEP = 0.01666f;
     while (true)
     {
         // process all messages pending, but do not block for new messages
@@ -148,6 +148,8 @@ int App::Go()
             physicsEngine.Simulate(FIXED_TIME_STEP);
             lag -= FIXED_TIME_STEP;
         }
+        physicsEngine.Simulate(lag);
+        lag = 0.0f;
 
         HandleInput(dt);
         DoFrame(dt);
