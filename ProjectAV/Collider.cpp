@@ -75,13 +75,31 @@ bool Collider::GetIsTrigger()
 	return isTrigger;
 }
 
+void Collider::SetTriggerEnabled(bool triggerEnabled)
+{
+	this->triggerEnabled = triggerEnabled;
+	collidersThatEnteredTheTrigger.clear();
+	collidersThatLeftTheTrigger.clear();
+	collidersInsideTheTriggerFromPreviousIteration.clear();
+	collidersInsideTheTrigger.clear();
+	stayingColliders.clear();
+}
+
+bool Collider::GetTriggerEnabled()
+{
+	return triggerEnabled;
+}
+
 void Collider::UpdateTrigger()
 {
-	MakeAListOfCollidersThatEnteredTheTrigger();
-	MakeAListOfCollidersThatLeftTheTrigger();
-	stayingColliders = collidersInsideTheTrigger;
-	collidersInsideTheTriggerFromPreviousIteration = collidersInsideTheTrigger;
-	collidersInsideTheTrigger.clear();
+	if (triggerEnabled)
+	{
+		MakeAListOfCollidersThatEnteredTheTrigger();
+		MakeAListOfCollidersThatLeftTheTrigger();
+		stayingColliders = collidersInsideTheTrigger;
+		collidersInsideTheTriggerFromPreviousIteration = collidersInsideTheTrigger;
+		collidersInsideTheTrigger.clear();
+	}
 }
 
 std::vector<Collider*> Collider::GetTriggerEnter()
@@ -101,7 +119,10 @@ std::vector<Collider*> Collider::GetTriggerExit()
 
 void Collider::AddToTriggerList(Collider* other)
 {
-	collidersInsideTheTrigger.push_back(other);
+	if (triggerEnabled)
+	{
+		collidersInsideTheTrigger.push_back(other);
+	}
 }
 
 void Collider::MakeAListOfCollidersThatEnteredTheTrigger()

@@ -35,6 +35,8 @@ public:
 
 	void SetIsTrigger(bool isTrigger);
 	bool GetIsTrigger();
+	void SetTriggerEnabled(bool triggerEnabled);
+	bool GetTriggerEnabled();
 
 	void AddToTriggerList(Collider* other);
 	void UpdateTrigger();
@@ -56,4 +58,5 @@ private:
 protected:
 	Rigidbody* rigidbody;
 	bool isTrigger = false;
+	bool triggerEnabled = true;
 };
