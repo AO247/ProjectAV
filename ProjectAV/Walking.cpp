@@ -81,13 +81,13 @@ Vector3 Walking::CalculateAvoidanceForce()
 
 	float targetDistance = Vector3(pos - targetPosition).Length();
 
-	if (hitLeft.hitCollider != nullptr /*&& hitLeft.hitCollider->GetOwner()->tag == "Wall"*/ && Vector3(hitLeft.hitPoint - pos).Length() < targetDistance) {
+	if (hitLeft.hitCollider != nullptr && hitLeft.hitCollider->GetOwner()->tag == "Wall" && Vector3(hitLeft.hitPoint - pos).Length() < targetDistance) {
 		leftHit = true;
 
 		avoidanceForce = right * maxForce;
 	}
 
-	if (hitRight.hitCollider != nullptr /*&& hitRight.hitCollider->GetOwner()->tag == "Wall" */ && Vector3(hitRight.hitPoint - pos).Length() < targetDistance) {
+	if (hitRight.hitCollider != nullptr && hitRight.hitCollider->GetOwner()->tag == "Wall"  && Vector3(hitRight.hitPoint - pos).Length() < targetDistance) {
 		rightHit = true;
 		avoidanceForce = -right * maxForce;
 	}
