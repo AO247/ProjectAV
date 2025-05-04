@@ -128,6 +128,8 @@ App::~App() = default; // Destructor handles unique_ptrs automatically
 
 int App::Go()
 {
+    float lag = 0.0f;
+    float FIXED_TIME_STEP = 0.017f;
     while (true)
     {
         // process all messages pending, but do not block for new messages
@@ -139,9 +141,14 @@ int App::Go()
 
         // Calculate delta time
         const auto dt = timer.Mark() * speed_factor;
+        lag += dt;
+        
+        while (lag >= FIXED_TIME_STEP)
+        {
+            physicsEngine.Simulate(FIXED_TIME_STEP);
+            lag -= FIXED_TIME_STEP;
+        }
 
-        // Main frame logic
-        physicsEngine.Simulate(dt);
         HandleInput(dt);
         DoFrame(dt);
     }
