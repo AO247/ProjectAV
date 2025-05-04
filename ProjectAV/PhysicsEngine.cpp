@@ -64,6 +64,13 @@ void PhysicsEngine::HandleCollisions()
 				//
 				//
 
+				if (std::isnan(intersectData.GetDirection().x) ||
+					std::isnan(intersectData.GetDirection().y) ||
+					std::isnan(intersectData.GetDirection().z))
+				{
+					continue;
+				}
+
 				// Collision for moving and not moving body OR both not moving (including static cases)
 				if (firstBody->GetVelocity().Length() * secondBody->GetVelocity().Length() == 0)
 				{
