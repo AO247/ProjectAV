@@ -208,6 +208,8 @@
     <ClCompile Include="PixelShader.cpp" />
     <ClCompile Include="PlayerController.cpp" />
     <ClCompile Include="PointLight.cpp" />
+    <ClCompile Include="Raycast.cpp" />
+    <ClCompile Include="RaycastData.cpp" />
     <ClCompile Include="Rigidbody.cpp" />
     <ClCompile Include="Sampler.cpp" />
     <ClCompile Include="SolidBox.cpp" />
@@ -286,6 +288,8 @@
     <ClInclude Include="Plane.h" />
     <ClInclude Include="PlayerController.h" />
     <ClInclude Include="PointLight.h" />
+    <ClInclude Include="Raycast.h" />
+    <ClInclude Include="RaycastData.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Rigidbody.h" />
     <ClInclude Include="Sampler.h" />

@@ -55,6 +55,11 @@ IntersectData Collider::Intersect(Collider* other)
 	}
 }
 
+RaycastData Collider::IntersectRay(Raycast* ray)
+{
+	return RaycastData(nullptr, Vector3(0, 0, 0));
+}
+
 Collider::ColliderTypes Collider::GetColliderType()
 {
 	return colliderType;

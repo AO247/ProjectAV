@@ -103,6 +103,34 @@ IntersectData BoundingSphere::IntersectCapsule(CapsuleCollider* other)
 	return IntersectData(penetrationDepth > 0, -separationVector, collisionPoint, collisionPointRadiusForFirstBody, collisionPointRadiusForSecondBody);
 }
 
+RaycastData BoundingSphere::IntersectRay(Raycast* ray)
+{
+	Vector3 L = GetTransformedCenter() - ray->origin;
+	float tca = L.Dot(ray->direction);
+	if (tca < 0)
+	{
+		return RaycastData(nullptr, Vector3(0, 0, 0));
+	}
+
+	float d = sqrt((L.Length() * L.Length()) - (tca * tca));
+	if (d > radius)
+	{
+		return RaycastData(nullptr, Vector3(0, 0, 0));
+	}
+
+	float thc = sqrt((radius*radius) - (d*d));
+
+	float t0 = tca - thc;
+	float t1 = tca + thc;
+
+	if (t0 < 0)
+	{
+		t0 = t1;
+	}
+
+	return RaycastData(this, (ray->origin + (t0 * ray->direction)));
+}
+
 Vector3& BoundingSphere::GetCenter()
 {
 	return center;

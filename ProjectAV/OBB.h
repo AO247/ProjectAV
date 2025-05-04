@@ -52,6 +52,8 @@ public:
 	IntersectData IntersectOBB(OBB* other);
 	IntersectData IntersectBoundingSphere(BoundingSphere* other);
 	IntersectData IntersectCapsule(CapsuleCollider* other);
+	RaycastData IntersectRay(Raycast* ray) override;
+	
 	Vector3 GetTransformedSize();
 
 	Vector3 NearestPoint(Vector3 otherPoint);

@@ -2,8 +2,12 @@
 #include "IntersectData.h"
 #include "Rigidbody.h"
 #include "ConditionalNoexcept.h"
+#include "Raycast.h"
+//#include "RaycastData.h"
 
 class Rigidbody;
+class Raycast;
+class RaycastData;
 
 class Collider : public Component
 {
@@ -24,6 +28,7 @@ public:
 	void Update(float dt) override;
 
 	IntersectData Intersect(Collider* other);
+	virtual RaycastData IntersectRay(Raycast* ray);
 
 	ColliderTypes GetColliderType();
 

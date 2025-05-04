@@ -5,6 +5,7 @@
 
 using namespace DirectX::SimpleMath;
 
+class PhysicsEngine;
 class Collider;
 
 class Rigidbody : public Component

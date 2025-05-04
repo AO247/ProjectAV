@@ -99,7 +99,10 @@ IntersectData CapsuleCollider::IntersectOBB(OBB* other)
 	return IntersectData(dist < GetRadius(), -separationVector, collisionPoint, r1, r2);
 }
 
-
+RaycastData CapsuleCollider::IntersectRay(Raycast* ray)
+{
+	return RaycastData(nullptr, Vector3(0, 0, 0));
+}
 
 Vector3 CapsuleCollider::GetTransformedBase()
 {
