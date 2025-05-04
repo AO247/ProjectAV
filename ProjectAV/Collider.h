@@ -3,6 +3,7 @@
 #include "Rigidbody.h"
 #include "ConditionalNoexcept.h"
 #include "Raycast.h"
+#include "Node.h"
 //#include "RaycastData.h"
 
 class Rigidbody;

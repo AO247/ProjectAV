@@ -5,21 +5,7 @@
 class IntervalPair
 {
 public:
-
 	IntervalPair() {}
-
-	/*IntervalPair& operator=(const IntervalPair& x)
-	{
-		imin = x.imin;
-		imax = x.imax;
-		verticesClosestToTheAxis[0] = x.verticesClosestToTheAxis[0];
-		verticesClosestToTheAxis[1] = x.verticesClosestToTheAxis[1];
-		verticesClosestToTheAxis[2] = x.verticesClosestToTheAxis[2];
-		verticesClosestToTheAxis[3] = x.verticesClosestToTheAxis[3];
-
-		return *this;
-	}*/
-
 	float imin = 0;
 	float imax = 0;
 	// Only for face to face collision

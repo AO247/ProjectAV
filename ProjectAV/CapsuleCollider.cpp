@@ -106,11 +106,19 @@ RaycastData CapsuleCollider::IntersectRay(Raycast* ray)
 
 Vector3 CapsuleCollider::GetTransformedBase()
 {
-	DirectX::XMVECTOR e = DirectX::XMVectorSet(base.x,
-											   base.y,
-											   base.z,
-											   1.0f);
-	e = DirectX::XMVector4Transform(e, rigidbody->GetBodyTransformationMatrix());
+	DirectX::XMVECTOR e = DirectX::XMVectorSet (base.x,
+												base.y,
+												base.z,
+												1.0f);
+	if (rigidbody != nullptr)
+	{
+		e = DirectX::XMVector4Transform(e, rigidbody->GetBodyTransformationMatrix());
+		return Vector3(DirectX::XMVectorGetX(e),
+			DirectX::XMVectorGetY(e),
+			DirectX::XMVectorGetZ(e));
+	}
+	
+	e = DirectX::XMVector4Transform(e, pOwner->GetWorldTransform());
 	return Vector3(DirectX::XMVectorGetX(e),
 		DirectX::XMVectorGetY(e),
 		DirectX::XMVectorGetZ(e));
@@ -118,14 +126,22 @@ Vector3 CapsuleCollider::GetTransformedBase()
 
 Vector3 CapsuleCollider::GetTransformedTip()
 {
-	DirectX::XMVECTOR e = DirectX::XMVectorSet(tip.x, 
-											   tip.y,
-											   tip.z,
-											   1.0f);
-	e = DirectX::XMVector4Transform(e, rigidbody->GetBodyTransformationMatrix());
+	DirectX::XMVECTOR e = DirectX::XMVectorSet(tip.x,
+		tip.y,
+		tip.z,
+		1.0f);
+	if (rigidbody != nullptr)
+	{
+		e = DirectX::XMVector4Transform(e, rigidbody->GetBodyTransformationMatrix());
+		return Vector3(DirectX::XMVectorGetX(e),
+			DirectX::XMVectorGetY(e),
+			DirectX::XMVectorGetZ(e));
+	}
+
+	e = DirectX::XMVector4Transform(e, pOwner->GetWorldTransform());
 	return Vector3(DirectX::XMVectorGetX(e),
-					DirectX::XMVectorGetY(e),
-					DirectX::XMVectorGetZ(e));
+		DirectX::XMVectorGetY(e),
+		DirectX::XMVectorGetZ(e));
 }
 
 float CapsuleCollider::GetRadius()

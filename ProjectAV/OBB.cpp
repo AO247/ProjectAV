@@ -208,7 +208,15 @@ RaycastData OBB::IntersectRay(Raycast* ray)
 Vector3 OBB::GetTransformedCenter()
 {
 	DirectX::XMVECTOR e = DirectX::XMVectorSet(center.x, center.y, center.z, 1.0f);
-	e = DirectX::XMVector3Transform(e, rigidbody->GetBodyTransformationMatrix());
+	if (rigidbody != nullptr)
+	{
+		e = DirectX::XMVector3Transform(e, rigidbody->GetBodyTransformationMatrix());
+		return Vector3(DirectX::XMVectorGetX(e),
+			DirectX::XMVectorGetY(e),
+			DirectX::XMVectorGetZ(e));
+	}
+	
+	e = DirectX::XMVector3Transform(e, pOwner->GetWorldTransform());
 	return Vector3(DirectX::XMVectorGetX(e),
 		DirectX::XMVectorGetY(e),
 		DirectX::XMVectorGetZ(e));
@@ -216,17 +224,30 @@ Vector3 OBB::GetTransformedCenter()
 
 Vector3 OBB::GetTransformedSize()
 {
-	DirectX::XMFLOAT3 scale = rigidbody->GetScaleFromNode();
+	if (rigidbody != nullptr)
+	{
+		DirectX::XMFLOAT3 scale = rigidbody->GetScaleFromNode();
+		return Vector3(size.x * scale.x, size.y * scale.y, size.z * scale.z);
+	}
+	DirectX::XMFLOAT3 scale = pOwner->GetLocalScale();
 	return Vector3(size.x * scale.x, size.y * scale.y, size.z * scale.z);
 }
 
 Vector3 OBB::GetTransformedVertex(Vector3 vertex)
 {
 	DirectX::XMVECTOR e = DirectX::XMVectorSet(vertex.x, vertex.y, vertex.z, 1.0f);
-	e = DirectX::XMVector4Transform(e, rigidbody->GetBodyTransformationMatrix());
+	if (rigidbody != nullptr)
+	{
+		e = DirectX::XMVector4Transform(e, rigidbody->GetBodyTransformationMatrix());
+		return Vector3(DirectX::XMVectorGetX(e),
+			DirectX::XMVectorGetY(e),
+			DirectX::XMVectorGetZ(e));
+	}
+	
+	e = DirectX::XMVector4Transform(e, pOwner->GetWorldTransform());
 	return Vector3(DirectX::XMVectorGetX(e),
-				   DirectX::XMVectorGetY(e),
-				   DirectX::XMVectorGetZ(e));
+		DirectX::XMVectorGetY(e),
+		DirectX::XMVectorGetZ(e));
 }
 
 Vector3 OBB::NearestPoint(Vector3 otherPoint)
@@ -583,11 +604,22 @@ Vector3 OBB::GetClosestPoint(Vector3 point)
 Vector3 OBB::GetTransformedOrientation(Vector3 orientation)
 {
 	DirectX::XMVECTOR e = DirectX::XMVectorSet(orientation.x, orientation.y, orientation.z, 0.0f);
-	DirectX::XMMATRIX r = DirectX::XMMatrixRotationRollPitchYaw(rigidbody->GetRotation().x, rigidbody->GetRotation().y, rigidbody->GetRotation().z);
+	if (rigidbody != nullptr)
+	{
+		DirectX::XMMATRIX r = DirectX::XMMatrixRotationRollPitchYaw(rigidbody->GetRotation().x, rigidbody->GetRotation().y, rigidbody->GetRotation().z);
+		e = DirectX::XMVector3Transform(e, r);
+		Vector3 transformed = Vector3(DirectX::XMVectorGetX(e),
+			DirectX::XMVectorGetY(e),
+			DirectX::XMVectorGetZ(e));
+		transformed /= transformed.Length();
+		return transformed;
+	}
+
+	DirectX::XMMATRIX r = DirectX::XMMatrixRotationRollPitchYaw(pOwner->GetLocalRotationEuler().x, pOwner->GetLocalRotationEuler().y, pOwner->GetLocalRotationEuler().z);
 	e = DirectX::XMVector3Transform(e, r);
 	Vector3 transformed = Vector3(DirectX::XMVectorGetX(e),
-									DirectX::XMVectorGetY(e),
-									DirectX::XMVectorGetZ(e));
+		DirectX::XMVectorGetY(e),
+		DirectX::XMVectorGetZ(e));
 	transformed /= transformed.Length();
 	return transformed;
 }
