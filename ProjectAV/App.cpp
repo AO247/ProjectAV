@@ -188,44 +188,25 @@ App::App(const std::string& commandLine)
 
 
     pIsland->AddComponent(
-        std::make_unique<Rigidbody>(pIsland, Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f))
-    );
-	Rigidbody* iRigidbody = pIsland->GetComponent<Rigidbody>();
-	iRigidbody->SetStatic(true);
-    pIsland->AddComponent(
-        std::make_unique<OBB>(pIsland, iRigidbody, Vector3(0.0f, -0.2f, 0.0f), Vector3(50.0f, 1.0f, 50.0f))
+        std::make_unique<OBB>(pIsland, nullptr, Vector3(0.0f, -0.2f, 0.0f), Vector3(50.0f, 1.0f, 50.0f))
     );
 	OBB* iOBB = pIsland->GetComponent<OBB>();
-	iRigidbody->SetCollider(iOBB);
-	physicsEngine.AddRigidbody(iRigidbody);
+	physicsEngine.AddCollider(iOBB);
 
 
 
 	pBox->AddComponent(
-		std::make_unique<Rigidbody>(pBox, Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f))
-	);
-	Rigidbody* bRigidbody = pBox->GetComponent<Rigidbody>();
-	bRigidbody->SetStatic(true);
-	pBox->AddComponent(
-		std::make_unique<BoundingSphere>(pBox, Vector3(0.0f, 0.0f, 0.0f), 2.0f, bRigidbody)
+		std::make_unique<BoundingSphere>(pBox, Vector3(0.0f, 0.0f, 0.0f), 2.0f, nullptr)
 	);
 	BoundingSphere* bBoundingSphere = pBox->GetComponent<BoundingSphere>();
-	bRigidbody->SetCollider(bBoundingSphere);
-	physicsEngine.AddRigidbody(bRigidbody);
+	physicsEngine.AddCollider(bBoundingSphere);
 
-
+	
 	pColumn->AddComponent(
-		std::make_unique<Rigidbody>(pColumn, Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f))
-	);
-	Rigidbody* cRigidbody = pColumn->GetComponent<Rigidbody>();
-	cRigidbody->SetStatic(true);
-	pColumn->AddComponent(
-		std::make_unique<OBB>(pColumn, cRigidbody, Vector3(-0.6f, 5.0f, 0.0f), Vector3(2.9f, 10.0f, 2.9f))
+		std::make_unique<OBB>(pColumn, nullptr, Vector3(-0.6f, 5.0f, 0.0f), Vector3(2.9f, 10.0f, 2.9f))
 	);
 	OBB* cOBB = pColumn->GetComponent<OBB>();
-	cRigidbody->SetCollider(cOBB);
-	physicsEngine.AddRigidbody(cRigidbody);
-
+	physicsEngine.AddCollider(cOBB);
     //Adding Other Components
     pFreeViewCamera->AddComponent(
         std::make_unique<Camera>(pFreeViewCamera, wnd)
