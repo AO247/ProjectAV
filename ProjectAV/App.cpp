@@ -79,7 +79,7 @@ App::App(const std::string& commandLine)
     auto pEmptyNode = std::make_unique<Node>("EmptyNode");
     auto pBrickOwner = std::make_unique<Node>("Brick");
     pBrick = pBrickOwner.get();
-    auto pBoxOwner = std::make_unique<Node>("Box");
+    auto pBoxOwner = std::make_unique<Node>("Box", nullptr, "Wall");
     pBox = pBoxOwner.get();
     auto pStoneOwner = std::make_unique<Node>("Stone");
     pStone = pStoneOwner.get();

@@ -21,13 +21,12 @@ public:
 	Vector3 targetPosition;
 	virtual void Follow(DirectX::XMFLOAT3 target);
 	virtual void DrawImGuiControls() override;
+	float avoidanceWeight = 150.0f;
+	float raycastDistance = 5.0f;
+	float raycastWidthOffset = 0.8f;
 private:
-	Rigidbody* rigidbody; // Rigidbody for physics interactions
+	Rigidbody* rigidbody;
 
-	float pitch = 0.0f;
-	float yaw = 0.0f;
-	float airMultiplier = 1.2f;
-
-	float rotationSpeed = 0.004f;
-	static constexpr float pitchLimit = DirectX::XM_PI / 2.0f * 0.995f;
+	Vector3 CalculateAvoidanceForce();
+	bool rightHit, leftHit, centerHit;
 };
