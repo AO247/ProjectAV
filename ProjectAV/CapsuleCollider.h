@@ -21,6 +21,16 @@ public:
 
 	Vector3 GetTransformedBase();
 	Vector3 GetTransformedTip();
+	Vector3 SetBase(Vector3 newBase)
+	{
+		base = newBase;
+		return base;
+	}
+	Vector3 SetTip(Vector3 newTip)
+	{
+		tip = newTip;
+		return tip;
+	}
 	float GetRadius();
 	Vector3 ClosestPointOnLineSegment(Vector3 a, Vector3 b, Vector3 point);
 private:

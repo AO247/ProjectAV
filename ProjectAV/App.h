@@ -39,6 +39,8 @@ private:
     Node* pCamera = nullptr;
 	Node* pFreeViewCamera = nullptr; // Node for the free view camera
     Node* pPlayer = nullptr; // Node representing the player capsule/origin
+	Node* pAbility1 = nullptr; // Node for the first ability
+	Node* pAbility2 = nullptr; // Node for the second ability
     // --- Pointers to other nodes (keep as is) ---
     Node* pNanosuitNode = nullptr;
     Node* pNanosuitNode2 = nullptr;

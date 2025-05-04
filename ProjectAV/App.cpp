@@ -64,14 +64,16 @@ App::App(const std::string& commandLine)
 	Raycast::physicsEngine = &physicsEngine; // Set the physics engine for raycasting
     // --- Create Nodes ---
    
-	auto pCameraNodeOwner = std::make_unique<Node>("Camera");
+	auto pCameraNodeOwner = std::make_unique<Node>("Camera", nullptr, "Camera");
 	pCamera = pCameraNodeOwner.get();
-	pCamera->tag = "Camera";
 	auto pFreeViewCameraOwner = std::make_unique<Node>("FreeViewCamera");
 	pFreeViewCamera = pFreeViewCameraOwner.get();
     auto pPlayerOwner = std::make_unique<Node>("Player", nullptr, "Player");
     pPlayer = pPlayerOwner.get();
-	pPlayer->tag = "Player";
+	auto pAbility1Owner = std::make_unique<Node>("Ability1", nullptr, "Ability1");
+	pAbility1 = pAbility1Owner.get();
+	auto pAbility2Owner = std::make_unique<Node>("Ability2", nullptr, "Ability2");
+	pAbility2 = pAbility2Owner.get();
     auto pNanosuitOwner = std::make_unique<Node>("Nanosuit");
     pNanosuitNode = pNanosuitOwner.get();
     auto pNanosuitOwner2 = std::make_unique<Node>("Nanosuit2");
@@ -93,14 +95,15 @@ App::App(const std::string& commandLine)
 	pNoxTurnHair = pNoxTurnHairOwner.get();
 	auto pTestModelOwner = std::make_unique<Node>("TestModel");
 	pTestModel = pTestModelOwner.get();
-	auto pEnemyOwner = std::make_unique<Node>("Enemy");
+	auto pEnemyOwner = std::make_unique<Node>("Enemy", nullptr, "Enemy");
 	pEnemy = pEnemyOwner.get();
-	pEnemy->tag = "Enemy";
 
     // Adding to Scene Graph
 	pSceneRoot->AddChild(std::move(pCameraNodeOwner));
 	pSceneRoot->AddChild(std::move(pFreeViewCameraOwner));
     pSceneRoot->AddChild(std::move(pPlayerOwner));
+	pSceneRoot ->AddChild(std::move(pAbility1Owner));
+	pSceneRoot->AddChild(std::move(pAbility2Owner));
     //pSceneRoot->AddChild(std::move(pNanosuitOwner));
     //pSceneRoot->AddChild(std::move(pNanosuitOwner2));
     //pSceneRoot->AddChild(std::move(pEmptyNode));
@@ -173,7 +176,23 @@ App::App(const std::string& commandLine)
 	pRigidbody->SetCollider(pCapsule);
 	pRigidbody->SetMass(10.0f);
     physicsEngine.AddRigidbody(pRigidbody);
+
+	pAbility1->AddComponent(
+        std::make_unique<CapsuleCollider>(pAbility1, nullptr, 1.0f, Vector3(0.0f, -1.0f, 0.0f), Vector3(0.0f, 1.5f, 5.0f))
+    );
+    CapsuleCollider* a1CapsuleCollider = pAbility1->GetComponent<CapsuleCollider>();
+    a1CapsuleCollider->SetIsTrigger(true);
+    a1CapsuleCollider->SetTriggerEnabled(true);
+	physicsEngine.AddCollider(a1CapsuleCollider);
+
+	pAbility2->AddComponent(
+		std::make_unique<OBB>(pAbility2, nullptr, Vector3(0.0f, 0.0f, 4.0f), Vector3(3.0f, 2.0f, 8.0f))
+	);
+	OBB* a2OBB = pAbility2->GetComponent<OBB>();
+	a2OBB->SetIsTrigger(true);
+	physicsEngine.AddCollider(a2OBB);
     
+
 
     pEnemy->AddComponent(
         std::make_unique<Rigidbody>(pEnemy, Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f))
@@ -188,7 +207,7 @@ App::App(const std::string& commandLine)
 
 
     pIsland->AddComponent(
-        std::make_unique<OBB>(pIsland, nullptr, Vector3(0.0f, -0.2f, 0.0f), Vector3(50.0f, 1.0f, 50.0f))
+        std::make_unique<OBB>(pIsland, nullptr, Vector3(0.0f, -0.3f, 0.0f), Vector3(50.0f, 1.0f, 50.0f))
     );
 	OBB* iOBB = pIsland->GetComponent<OBB>();
 	physicsEngine.AddCollider(iOBB);
@@ -207,6 +226,18 @@ App::App(const std::string& commandLine)
 	);
 	OBB* cOBB = pColumn->GetComponent<OBB>();
 	physicsEngine.AddCollider(cOBB);
+    
+    pStone->AddComponent(
+        std::make_unique<Rigidbody>(pStone, Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f))
+    );
+	Rigidbody* sRigidbody = pStone->GetComponent<Rigidbody>();
+	pStone->AddComponent(
+		std::make_unique<OBB>(pStone, sRigidbody, Vector3(0.0f, 0.6f, 0.0f), Vector3(1.2f, 1.1f, 1.7f))
+	);
+	OBB* sOBB = pStone->GetComponent<OBB>();
+	sRigidbody->SetCollider(sOBB);
+	physicsEngine.AddRigidbody(sRigidbody);
+
     //Adding Other Components
     pFreeViewCamera->AddComponent(
         std::make_unique<Camera>(pFreeViewCamera, wnd)
@@ -225,7 +256,7 @@ App::App(const std::string& commandLine)
     );
     pEnemy->GetComponent<StateMachine>()->UpdateComponents();
 
-
+    
 
 
 
@@ -249,12 +280,13 @@ App::App(const std::string& commandLine)
     //Adding colliders to draw
     AddBoxColliderToDraw(wnd.Gfx(), iOBB);
 	AddBoxColliderToDraw(wnd.Gfx(), cOBB);
-
+	AddBoxColliderToDraw(wnd.Gfx(), sOBB);
 
 	AddSphereColliderToDraw(wnd.Gfx(), bBoundingSphere);
 
 	AddCapsuleColliderToDraw(wnd.Gfx(), pCapsule);
 	AddCapsuleColliderToDraw(wnd.Gfx(), eCapsule);
+	AddCapsuleColliderToDraw(wnd.Gfx(), a1CapsuleCollider);
 
     wnd.DisableCursor();
     wnd.mouse.EnableRaw();

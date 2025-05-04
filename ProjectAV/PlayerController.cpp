@@ -6,18 +6,28 @@
 #include <algorithm> // for std::clamp
 #include "Raycast.h"
 #include <string>
+#include "CapsuleCollider.h"
 namespace dx = DirectX;
 PlayerController::PlayerController(Node* owner, Window& window)
     : Component(owner), wnd(window) // Initialize reference member
 {
 	rigidbody = owner->GetComponent<Rigidbody>();
 	camera = owner->GetRoot()->FindFirstChildByTag("Camera");
+	ability1 = owner->GetRoot()->FindFirstChildByTag("Ability1");
+	ability2 = owner->GetRoot()->FindFirstChildByTag("Ability2");
 }
 
 void PlayerController::Update(float dt)
 {
 	camera->SetLocalPosition({ GetOwner()->GetLocalPosition().x, GetOwner()->GetLocalPosition().y + height * 9 /10, GetOwner()->GetLocalPosition().z });
     GetOwner()->SetLocalRotation({ 0.0f, camera->GetLocalRotationEuler().y, 0.0f });
+	ability1->SetLocalPosition(camera->GetLocalPosition());
+	ability1->SetLocalRotation(camera->GetLocalRotationEuler());
+
+	
+
+
+
     if (!wnd.CursorEnabled())
     {
         GroundCheck();
@@ -95,9 +105,28 @@ void PlayerController::MovePlayer()
     rigidbody->AddForce(moveDirection * moveSpeed * 1000.0f);
 }
 
+void PlayerController::Ability1()
+{
+    CapsuleCollider* col = ability1->GetComponent<CapsuleCollider>();
+    std::vector<Collider*> colliders = col->GetTriggerStay();
+	for (Collider* collider : colliders)
+	{
+		OutputDebugString(("\nCollided with: " + collider->GetOwner()->tag + "\n").c_str());
+		if (collider->GetOwner()->tag == "Enemy")
+		{
+			collider->GetOwner()->GetComponent<Rigidbody>()->AddForce(ability1->Forward() * 1000.0f);
+		}
+	}
+}
+
 void PlayerController::KeyboardInput()
 {
     moveDirection = Vector3(0.0f, 0.0f, 0.0f);
+
+    if (wnd.mouse.LeftIsPressed())
+    {
+        Ability1();
+    }
 
     if (wnd.kbd.KeyIsPressed('W'))
     {

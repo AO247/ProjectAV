@@ -25,7 +25,8 @@ private:
 	Window& wnd;
 	Rigidbody* rigidbody;
 	Node* camera;
-
+	Node* ability1;
+	Node* ability2;
 	bool jumped = false;
 	bool dashed = false;
 	bool grounded = false;
@@ -41,5 +42,7 @@ private:
 	void GroundCheck();
 	void Jump();
 	void Dash();
+	void Ability1();
+	void Ability2();
 
 };
