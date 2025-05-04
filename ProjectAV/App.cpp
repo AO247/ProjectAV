@@ -328,17 +328,39 @@ void App::HandleInput(float dt)
             break;
         case 'V':
         {
-			freeViewCamera = !freeViewCamera;
+            freeViewCamera = !freeViewCamera;
             if (freeViewCamera) {
                 pCamera->GetComponent<Camera>()->active = false;
                 pFreeViewCamera->GetComponent<Camera>()->active = true;
             }
-			else {
-				pCamera->GetComponent<Camera>()->active = true;
-				pFreeViewCamera->GetComponent<Camera>()->active = false;
-			}
+            else {
+                pCamera->GetComponent<Camera>()->active = true;
+                pFreeViewCamera->GetComponent<Camera>()->active = false;
+            }
             break;
         }
+        }
+    }
+
+    // FreeCamera Movement
+    if (freeViewCamera) {
+        if (wnd.kbd.KeyIsPressed('I')) {
+            pFreeViewCamera->TranslateLocal({ 0.0f, 0.0f, 0.1f });
+        }
+        if (wnd.kbd.KeyIsPressed('K')) {
+            pFreeViewCamera->TranslateLocal({ 0.0f, 0.0f, -0.1f });
+        }
+        if (wnd.kbd.KeyIsPressed('J')) {
+            pFreeViewCamera->TranslateLocal({ -0.1f, 0.0f, 0.0f });
+        }
+        if (wnd.kbd.KeyIsPressed('L')) {
+            pFreeViewCamera->TranslateLocal({ 0.1f, 0.0f, 0.0f });
+        }
+        if (wnd.kbd.KeyIsPressed('U')) {
+            pFreeViewCamera->TranslateLocal({ 0.0f, -0.1f, 0.0f });
+        }
+        if (wnd.kbd.KeyIsPressed('O')) {
+            pFreeViewCamera->TranslateLocal({ 0.0f, 0.1f, 0.0f });
         }
     }
 
