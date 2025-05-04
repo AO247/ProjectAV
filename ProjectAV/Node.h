@@ -12,7 +12,7 @@ class Graphics; // Forward declaration
 class Node
 {
 public:
-    Node(std::string name = "Node", Node* parent = nullptr);
+    Node(std::string name = "Node", Node* parent = nullptr, std::string tag = "");
     virtual ~Node() = default;
 
     // --- Hierarchy ---

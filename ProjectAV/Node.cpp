@@ -8,8 +8,8 @@
 #include "Collider.h"
 namespace dx = DirectX;
 
-Node::Node(std::string name, Node* parent)
-    : name(std::move(name)), parent(parent)
+Node::Node(std::string name, Node* parent, std::string tag)
+	: name(std::move(name)), parent(parent), tag(std::move(tag))
 {
     // Initialize stored components (already done via member initializers)
     // Initialize matrix caches

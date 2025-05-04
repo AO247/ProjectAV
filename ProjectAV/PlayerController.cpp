@@ -4,7 +4,8 @@
 #include "CMath.h"      // For wrap_angle and PI (ensure this is included)
 #include <DirectXMath.h>
 #include <algorithm> // for std::clamp
-
+#include "Raycast.h"
+#include <string>
 namespace dx = DirectX;
 PlayerController::PlayerController(Node* owner, Window& window)
     : Component(owner), wnd(window) // Initialize reference member
@@ -15,11 +16,11 @@ PlayerController::PlayerController(Node* owner, Window& window)
 
 void PlayerController::Update(float dt)
 {
-	camera->SetLocalPosition({ GetOwner()->GetLocalPosition().x, GetOwner()->GetLocalPosition().y, GetOwner()->GetLocalPosition().z });
-	GetOwner()->SetLocalRotation({ 0.0f, camera->GetLocalRotationEuler().y, 0.0f});
-
+	camera->SetLocalPosition({ GetOwner()->GetLocalPosition().x, GetOwner()->GetLocalPosition().y + height * 9 /10, GetOwner()->GetLocalPosition().z });
+    GetOwner()->SetLocalRotation({ 0.0f, camera->GetLocalRotationEuler().y, 0.0f });
     if (!wnd.CursorEnabled())
     {
+        GroundCheck();
 		KeyboardInput();
 		SpeedControl();
 		MovePlayer();
@@ -48,13 +49,12 @@ void PlayerController::SpeedControl()
 
 void PlayerController::Jump()
 {
-    if (!jumped) {
+    if (grounded && !jumped) {
         rigidbody->SetVelocity(Vector3(rigidbody->GetVelocity().x, 0.0f, rigidbody->GetVelocity().z));
         rigidbody->AddForce(Vector3(0.0f, jumpForce * 1000.0f, 0.0f));
-        jumped = true;
+        grounded = false;
+		jumped = true;
     }
-
-	
 }
 
 void PlayerController::Dash()
@@ -67,24 +67,52 @@ void PlayerController::Dash()
     }
 }
 
+void PlayerController::GroundCheck()
+{
+	RaycastData rayData = Raycast::Cast(GetOwner()->GetWorldPosition(), Vector3(0.0f, -1.0f, 0.0f));
+	if (rayData.hitCollider != nullptr)
+	{
+		if (rayData.hitCollider->GetOwner()->tag == "Ground")
+		{
+
+            if (GetOwner()->GetWorldPosition().y - rayData.hitPoint.y <= 0.01)
+			{
+				grounded = true;
+			}
+			else
+			{
+				grounded = false;
+			}
+		}
+
+	}
+}
+
+void PlayerController::MovePlayer()
+{
+    moveDirection.Normalize();
+
+    rigidbody->AddForce(moveDirection * moveSpeed * 1000.0f);
+}
+
 void PlayerController::KeyboardInput()
 {
-	moveDirection = Vector3(0.0f, 0.0f, 0.0f);
+    moveDirection = Vector3(0.0f, 0.0f, 0.0f);
 
-	if (wnd.kbd.KeyIsPressed('W'))
-	{
+    if (wnd.kbd.KeyIsPressed('W'))
+    {
         moveDirection += GetOwner()->Forward();
     }
-	if (wnd.kbd.KeyIsPressed('S'))
-	{
+    if (wnd.kbd.KeyIsPressed('S'))
+    {
         moveDirection += GetOwner()->Back();
     }
-	if (wnd.kbd.KeyIsPressed('A'))
-	{
+    if (wnd.kbd.KeyIsPressed('A'))
+    {
         moveDirection += GetOwner()->Left();
     }
-	if (wnd.kbd.KeyIsPressed('D'))
-	{
+    if (wnd.kbd.KeyIsPressed('D'))
+    {
         moveDirection += GetOwner()->Right();
     }
     if (wnd.kbd.KeyIsPressed(VK_SPACE))
@@ -99,18 +127,10 @@ void PlayerController::KeyboardInput()
         Dash();
     }
     else {
-		dashed = false;
+        dashed = false;
     }
 
 }
-
-void PlayerController::MovePlayer()
-{
-    moveDirection.Normalize();
-
-    rigidbody->AddForce(moveDirection * moveSpeed * 1000.0f);
-}
-
 void PlayerController::DrawImGuiControls()
 {
     ImGui::Text("Player Controller Properties:");
@@ -119,4 +139,5 @@ void PlayerController::DrawImGuiControls()
 	ImGui::InputFloat("Dash Force", &dashForce);
     ImGui::Checkbox("Jumped", &jumped);
 	ImGui::Checkbox("Dashed", &dashed);
+	ImGui::Checkbox("Grounded", &grounded);
 }

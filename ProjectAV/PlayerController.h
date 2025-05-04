@@ -19,6 +19,7 @@ public:
 	float moveSpeed = 12.0f;
 	float jumpForce = 60.0f;
 	float dashForce = 1000.0f;
+	float height = 4.0f;
 
 private:
 	Window& wnd;
@@ -27,6 +28,7 @@ private:
 
 	bool jumped = false;
 	bool dashed = false;
+	bool grounded = false;
 
 	float airMultiplier = 1.2f;
 
@@ -36,6 +38,7 @@ private:
 	void KeyboardInput();
 	void MovePlayer();
 	void SpeedControl();
+	void GroundCheck();
 	void Jump();
 	void Dash();
 

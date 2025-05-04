@@ -61,7 +61,7 @@ App::App(const std::string& commandLine)
     }
 	// Initialize Physics Engine
 	physicsEngine = PhysicsEngine();
-    
+	Raycast::physicsEngine = &physicsEngine; // Set the physics engine for raycasting
     // --- Create Nodes ---
    
 	auto pCameraNodeOwner = std::make_unique<Node>("Camera");
@@ -69,7 +69,7 @@ App::App(const std::string& commandLine)
 	pCamera->tag = "Camera";
 	auto pFreeViewCameraOwner = std::make_unique<Node>("FreeViewCamera");
 	pFreeViewCamera = pFreeViewCameraOwner.get();
-    auto pPlayerOwner = std::make_unique<Node>("Player");
+    auto pPlayerOwner = std::make_unique<Node>("Player", nullptr, "Player");
     pPlayer = pPlayerOwner.get();
 	pPlayer->tag = "Player";
     auto pNanosuitOwner = std::make_unique<Node>("Nanosuit");
@@ -83,9 +83,9 @@ App::App(const std::string& commandLine)
     pBox = pBoxOwner.get();
     auto pStoneOwner = std::make_unique<Node>("Stone");
     pStone = pStoneOwner.get();
-    auto pColumnOwner = std::make_unique<Node>("Column");
+    auto pColumnOwner = std::make_unique<Node>("Column", nullptr, "Wall");
     pColumn = pColumnOwner.get();
-    auto pIslandOwner = std::make_unique<Node>("Island");
+    auto pIslandOwner = std::make_unique<Node>("Island", nullptr, "Ground");
     pIsland = pIslandOwner.get();
 	auto pNoxTurnOwner = std::make_unique<Node>("NoxTurn");
 	pNoxTurn = pNoxTurnOwner.get();
@@ -105,7 +105,7 @@ App::App(const std::string& commandLine)
     //pSceneRoot->AddChild(std::move(pNanosuitOwner2));
     //pSceneRoot->AddChild(std::move(pEmptyNode));
     //pSceneRoot->AddChild(std::move(pBrickOwner));
-    pStone->AddChild(std::move(pBoxOwner));
+    pSceneRoot->AddChild(std::move(pBoxOwner));
     pSceneRoot->AddChild(std::move(pStoneOwner));
     pSceneRoot->AddChild(std::move(pColumnOwner));
     pSceneRoot->AddChild(std::move(pIslandOwner));
@@ -163,8 +163,11 @@ App::App(const std::string& commandLine)
         std::make_unique<Rigidbody>(pPlayer, Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f))
     );
     Rigidbody* pRigidbody = pPlayer->GetComponent<Rigidbody>();
+    pPlayer->AddComponent(
+        std::make_unique<PlayerController>(pPlayer, wnd) // Add controller first
+    );
 	pPlayer->AddComponent(
-		std::make_unique<CapsuleCollider>(pPlayer, pRigidbody, 1.0f, Vector3(0.0f, -2.0f, 0.0f), Vector3(0.0f, 0.5f, 0.0f))
+		std::make_unique<CapsuleCollider>(pPlayer, pRigidbody, 1.0f, Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, pPlayer->GetComponent<PlayerController>()->height, 0.0f))
 	);
 	CapsuleCollider* pCapsule = pPlayer->GetComponent<CapsuleCollider>();
 	pRigidbody->SetCollider(pCapsule);
@@ -231,9 +234,8 @@ App::App(const std::string& commandLine)
 		std::make_unique<Camera>(pCamera, wnd)
 	);
 	pCamera->GetComponent<Camera>()->active = true;
-    pPlayer->AddComponent(
-        std::make_unique<PlayerController>(pPlayer, wnd) // Add controller first
-    );
+
+
 	pEnemy->AddComponent(
 		std::make_unique<StateMachine>(pEnemy, StateType::IDLE)
 	);
