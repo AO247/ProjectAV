@@ -17,6 +17,7 @@ public:
 	IntersectData IntersectCapsule(CapsuleCollider* other);
 	IntersectData IntersectSphere(BoundingSphere* other);
 	IntersectData IntersectOBB(OBB* other);
+	RaycastData IntersectRay(Raycast* ray) override;
 
 	Vector3 GetTransformedBase();
 	Vector3 GetTransformedTip();

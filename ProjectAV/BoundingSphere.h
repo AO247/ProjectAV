@@ -27,6 +27,7 @@ public:
 	IntersectData IntersectAABB(AxisAligned::AABB* other);
 	IntersectData IntersectOBB(OBB* other);
 	IntersectData IntersectCapsule(CapsuleCollider* other);
+	RaycastData IntersectRay(Raycast* ray) override;
 
 	Vector3& GetCenter();
 	float GetRadius();
