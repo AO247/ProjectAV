@@ -282,6 +282,8 @@ App::~App() = default;
 
 int App::Go()
 {
+    float lag = 0.0f;
+    const float FIXED_TIME_STEP = 0.017f;
     while (true)
     {
         if (const auto ecode = Window::ProcessMessages())
@@ -289,8 +291,14 @@ int App::Go()
             return *ecode;
         }
         const auto dt = timer.Mark() * speed_factor;
+        lag += dt;
 
-        physicsEngine.Simulate(dt);
+        while (lag >= FIXED_TIME_STEP)
+        {
+            physicsEngine.Simulate(FIXED_TIME_STEP);
+            lag -= FIXED_TIME_STEP;
+        }
+        
         HandleInput(dt);
         DoFrame(dt);
     }
@@ -371,10 +379,10 @@ void App::DoFrame(float dt)
     pSceneRoot->Update(dt);
     
     wnd.Gfx().BeginFrame(0.5f, 0.5f, 1.0f);
-    if (pPlayer->GetLocalPosition().y < -10.0f) {
-		pPlayer->SetLocalPosition({ -20.0f, 225.0f, -25.0f });
-        pEnemy->SetLocalPosition({ 15.0f, 225.0f, 0.0f });
-    }
+    //if (pPlayer->GetLocalPosition().y < -10.0f) {
+	//	pPlayer->SetLocalPosition({ -20.0f, 225.0f, -25.0f });
+    //    pEnemy->SetLocalPosition({ 15.0f, 225.0f, 0.0f });
+    //}
 	dx::XMMATRIX viewMatrix = pCamera->GetComponent<Camera>()->GetViewMatrix();
 	if (freeViewCamera)
 	{
