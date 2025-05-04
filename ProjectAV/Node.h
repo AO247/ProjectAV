@@ -5,6 +5,7 @@
 #include <DirectXMath.h>
 #include <typeinfo> // For GetComponent
 #include "Component.h"
+#include <SimpleMath.h>
 
 class Graphics; // Forward declaration
 
@@ -37,11 +38,19 @@ public:
     void SetLocalPosition(const DirectX::XMFLOAT3& pos);  // Updates matrix using stored Euler
     void SetLocalRotation(const DirectX::XMFLOAT3& rotRad); // Updates stored Euler & matrix
     void SetLocalScale(const DirectX::XMFLOAT3& scale);    // Updates matrix using stored Euler
+    void TranslateLocal(const DirectX::XMFLOAT3& translation);
 
     DirectX::XMMATRIX GetLocalTransform() const; // Constructs matrix from stored components
     DirectX::XMFLOAT3 GetLocalPosition() const;
     DirectX::XMFLOAT3 GetLocalRotationEuler() const; // Returns stored Euler angles
     DirectX::XMFLOAT3 GetLocalScale() const;
+    DirectX::SimpleMath::Vector3 Forward() const; // World Space Forward (+Z in local)
+    DirectX::SimpleMath::Vector3 Back() const;    // World Space Back (-Z in local)
+    DirectX::SimpleMath::Vector3 Right() const;   // World Space Right (+X in local)
+    DirectX::SimpleMath::Vector3 Left() const;    // World Space Left (-X in local)
+    DirectX::SimpleMath::Vector3 Up() const;      // World Space Up (+Y in local)
+    DirectX::SimpleMath::Vector3 Down() const;    // World Space Down (-Y in local)
+
 
     // World
     DirectX::XMMATRIX GetWorldTransform() const;

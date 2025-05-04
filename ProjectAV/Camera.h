@@ -1,22 +1,38 @@
 #pragma once
-#include "Graphics.h"
 
-class Camera
+#include "Component.h"
+#include "Window.h" // Needs access to Window for input
+#include <DirectXMath.h>
+
+class Node; // Forward declare
+
+class Camera : public Component
 {
 public:
-	Camera() noexcept;
-	DirectX::XMMATRIX GetMatrix() const noexcept;
-	DirectX::XMMATRIX GetMatrix(DirectX::FXMMATRIX targetWorldTransform,
-	DirectX::XMFLOAT3 eyeOffset = { 0.0f, 0.0f, 0.0f }) const noexcept;
+	// Constructor takes owner (the camera position node), window, and the orientation node
+	Camera(Node* owner, Window& window);
 
-	void SpawnControlWindow() noexcept;
-	void Reset() noexcept;
-	void Rotate( float dx,float dy ) noexcept;
-	void Translate( DirectX::XMFLOAT3 translation ) noexcept;
+	virtual void Update(float dt) override;
+
+	// Calculates and returns the View Matrix
+	DirectX::XMMATRIX GetViewMatrix() const noexcept;
+
+	// Optional: Set sensitivity
+	void SetSensitivity(float xSens, float ySens) { sensX = xSens; sensY = ySens; }
+	float active = false;
 private:
-	DirectX::XMFLOAT3 pos;
-	float pitch;
-	float yaw;
-	static constexpr float travelSpeed = 12.0f;
-	static constexpr float rotationSpeed = 0.004f;
+	void HandleMouseLook(float dt);
+
+	Window& wnd;
+
+	// Rotation state (stored internally, affects nodes)
+	float xRotation = 0.0f; // Pitch (applied to camera owner node)
+	float yRotation = 0.0f; // Yaw (applied to orientation node)
+
+	// Sensitivity
+	float sensX = 0.1f; // Increased default sensitivity (like Unity example * Time.deltaTime)
+	float sensY = 0.1f; // Increased default sensitivity
+
+	// Pitch limits
+	static constexpr float pitchLimit = DirectX::XM_PI / 2.0f * 0.99f;
 };

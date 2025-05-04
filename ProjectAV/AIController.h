@@ -18,7 +18,7 @@
 //    const std::vector<std::unique_ptr<Component>>& GetComponents() const;
 //
 //    std::vector<std::unique_ptr<Component>> components;
-//	Node* pPlayerNode = nullptr; // Node representing the player capsule/origin
+//	Node* pPlayer = nullptr; // Node representing the player capsule/origin
 //
 //};
 //template<typename T> T* AIController::GetComponent() const

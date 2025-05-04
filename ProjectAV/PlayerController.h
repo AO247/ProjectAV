@@ -13,29 +13,30 @@ class PlayerController : public Component
 {
 public:
 	PlayerController(Node* owner, Window& window);
-
 	virtual void Update(float dt) override;
-	DirectX::XMFLOAT2 GetRotation() const;
-	void SetRotation(float pitch, float yaw) noexcept;
 	virtual void DrawImGuiControls() override;
-
 
 	float moveSpeed = 12.0f;
 	float jumpForce = 60.0f;
+	float dashForce = 1000.0f;
 
 private:
-	void HandleMovementInput(float dt);
-	void HandleMouseLookInput();
-	bool jumped = false;
-	bool godMode = false;
-	Rigidbody* rigidbody; // Rigidbody for physics interactions
 	Window& wnd;
+	Rigidbody* rigidbody;
+	Node* camera;
 
-	float pitch = 0.0f;
-	float yaw = 0.0f;
+	bool jumped = false;
+	bool dashed = false;
+
 	float airMultiplier = 1.2f;
 
+	Vector3 moveDirection;
+	Vector3 dashDirection;
 
-	float rotationSpeed = 0.004f;
-	static constexpr float pitchLimit = DirectX::XM_PI / 2.0f * 0.995f;
+	void KeyboardInput();
+	void MovePlayer();
+	void SpeedControl();
+	void Jump();
+	void Dash();
+
 };

@@ -8,3 +8,5 @@
 #include "Rigidbody.h"
 #include "Walking.h"
 #include "StateMachine.h"
+#include "CapsuleCollider.h"
+#include "Camera.h"

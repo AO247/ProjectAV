@@ -24,7 +24,7 @@ void FollowState::Enter(StateMachine* pOwner)
 void FollowState::Update(StateMachine* pOwner, float dt)
 {
     dx::XMFLOAT3 ownerPos = pOwner->GetOwner()->GetWorldPosition();
-    dx::XMFLOAT3 playerPos = pOwner->pPlayerNode->GetWorldPosition();
+    dx::XMFLOAT3 playerPos = pOwner->pPlayer->GetWorldPosition();
 
 	sm::Vector3 vOwner(ownerPos.x, ownerPos.y, ownerPos.z);
 	sm::Vector3 vPlayer(playerPos.x, playerPos.y, playerPos.z);

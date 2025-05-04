@@ -2,7 +2,6 @@
 #include "Window.h"
 #include "Timer.h"
 #include "ImguiManager.h"
-// #include "Camera.h" // Remove Camera include for now
 #include "PointLight.h"
 #include <memory> 
 #include "Node.h" 
@@ -37,7 +36,9 @@ private:
 
     // --- Scene Graph ---
     std::unique_ptr<Node> pSceneRoot;
-    Node* pPlayerNode = nullptr; // Node representing the player capsule/origin
+    Node* pCamera = nullptr;
+	Node* pFreeViewCamera = nullptr; // Node for the free view camera
+    Node* pPlayer = nullptr; // Node representing the player capsule/origin
     // --- Pointers to other nodes (keep as is) ---
     Node* pNanosuitNode = nullptr;
     Node* pNanosuitNode2 = nullptr;
@@ -56,12 +57,17 @@ private:
 
     std::map<BoundingSphere*, SolidSphere> sphereCollidersToDraw;
     std::map<OBB*, SolidSphere> boxCollidersToDraw; 
+	std::map<CapsuleCollider*, SolidSphere> capsuleCollidersToDraw;
+
     void AddSphereColliderToDraw(Graphics& gfx, BoundingSphere* boundingSphere);
     void DrawSphereColliders(Graphics& gfx);
     void AddBoxColliderToDraw(Graphics& gfx, OBB* obb);
     void DrawBoxColliders(Graphics& gfx);
+	void AddCapsuleColliderToDraw(Graphics& gfx, CapsuleCollider* capsule);
+	void DrawCapsuleColliders(Graphics& gfx);
 
     bool showDemoWindow = false;
     bool cursorEnabled = false;
     bool showControlWindow = true;
+	bool freeViewCamera = false;
 };

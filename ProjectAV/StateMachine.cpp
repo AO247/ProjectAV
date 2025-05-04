@@ -24,7 +24,7 @@ StateMachine::StateMachine(Node* owner, StateType initialState)
 		ChangeState(StateType::IDLE); // Try changing to IDLE if initial faile
 	}
 	
-	pPlayerNode = owner->GetRoot()->FindFirstChildByTag("Player");
+	pPlayer = owner->GetRoot()->FindFirstChildByTag("Player");
 }
 StateMachine::~StateMachine()
 {

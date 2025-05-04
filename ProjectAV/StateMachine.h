@@ -27,7 +27,7 @@ public:
 	Node* GetOwnerNode() const; // Convenience accessor
 	//std::vector<std::unique_ptr<Component>> movementComponents;
 	//std::vector<std::unique_ptr<Component>> attackComponents;
-	Node* pPlayerNode = nullptr; // Node representing the player capsule/origin
+	Node* pPlayer = nullptr; // Node representing the player capsule/origin
 
 	float followDistance = 40.0f;
 	float attackRange = 8.0f; // Distance to trigger attack state

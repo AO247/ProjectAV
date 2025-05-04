@@ -3,7 +3,7 @@
 //AIController::AIController(Node* owner)
 //    :Component(owner)
 //{
-//	pPlayerNode = owner->GetRoot()->FindFirstChildByTag("Player");        
+//	pPlayer = owner->GetRoot()->FindFirstChildByTag("Player");        
 //}
 //
 //

@@ -10,116 +10,105 @@ PlayerController::PlayerController(Node* owner, Window& window)
     : Component(owner), wnd(window) // Initialize reference member
 {
 	rigidbody = owner->GetComponent<Rigidbody>();
+	camera = owner->GetRoot()->FindFirstChildByTag("Camera");
 }
 
 void PlayerController::Update(float dt)
 {
+	camera->SetLocalPosition({ GetOwner()->GetLocalPosition().x, GetOwner()->GetLocalPosition().y, GetOwner()->GetLocalPosition().z });
+	GetOwner()->SetLocalRotation({ 0.0f, camera->GetLocalRotationEuler().y, 0.0f});
+
     if (!wnd.CursorEnabled())
     {
-        HandleMouseLookInput();
-        HandleMovementInput(dt); // Pass delta time for movement calculation
+		KeyboardInput();
+		SpeedControl();
+		MovePlayer();
     }
 }
 
-void PlayerController::HandleMouseLookInput()
-{
-    while (const auto delta = wnd.mouse.ReadRawDelta())
-    {
-        yaw = wrap_angle(yaw + delta->x * rotationSpeed);
-        pitch = std::clamp(pitch + delta->y * rotationSpeed, -pitchLimit, pitchLimit);
-    }
 
-    GetOwner()->SetLocalRotation({ 0.0f, yaw, 0.0f }); // Set Node's Y rotation (Yaw) ONLY
+void PlayerController::SpeedControl()
+{
+    Vector3 velocity(rigidbody->GetVelocity().x, 0.0f, rigidbody->GetVelocity().z);
+
+    if (velocity.Length() > moveSpeed) 
+    {
+		velocity.Normalize();
+        Vector3 limitedVel = velocity * moveSpeed;
+		rigidbody->SetVelocity(Vector3(limitedVel.x, rigidbody->GetVelocity().y, limitedVel.z));
+    }
+	if (moveDirection.Length() == 0)
+	{
+		Vector3 currentVelocity = rigidbody->GetVelocity();
+		currentVelocity.x = currentVelocity.x / 1.3f;
+		currentVelocity.z = currentVelocity.z / 1.3f;
+		rigidbody->SetVelocity(currentVelocity);
+	}
 }
 
-void PlayerController::HandleMovementInput(float dt)
+void PlayerController::Jump()
 {
-	Vector3 moveDirection = Vector3(0.0f, 0.0f, 0.0f);
-    bool moved = false;
+    if (!jumped) {
+        rigidbody->SetVelocity(Vector3(rigidbody->GetVelocity().x, 0.0f, rigidbody->GetVelocity().z));
+        rigidbody->AddForce(Vector3(0.0f, jumpForce * 1000.0f, 0.0f));
+        jumped = true;
+    }
 
-    // Calculate translation vector based on WASD keys
-    if (wnd.kbd.KeyIsPressed('W'))
-    {
-		moveDirection += Vector3(0.0f, 0.0f, 1.0f);
-        //rigidbody->AddForce(Vector3(0.0f, 0.0f, 200.0f));
-        moved = true;
+	
+}
+
+void PlayerController::Dash()
+{
+    if (!dashed) {
+        Vector3 dashDirection = moveDirection;
+        dashDirection.Normalize();
+        rigidbody->AddForce(dashDirection * dashForce * 1000.0f);
+        dashed = true;
     }
-    if (wnd.kbd.KeyIsPressed('S'))
-    {
-		moveDirection += Vector3(0.0f, 0.0f, -1.0f);
-        //rigidbody->AddForce(Vector3(translation));
-        moved = true;
+}
+
+void PlayerController::KeyboardInput()
+{
+	moveDirection = Vector3(0.0f, 0.0f, 0.0f);
+
+	if (wnd.kbd.KeyIsPressed('W'))
+	{
+        moveDirection += GetOwner()->Forward();
     }
-    if (wnd.kbd.KeyIsPressed('A'))
-    {
-		moveDirection += Vector3(-1.0f, 0.0f, 0.0f);
-        //rigidbody->AddForce(Vector3(translation));
-        moved = true;
+	if (wnd.kbd.KeyIsPressed('S'))
+	{
+        moveDirection += GetOwner()->Back();
     }
-    if (wnd.kbd.KeyIsPressed('D'))
+	if (wnd.kbd.KeyIsPressed('A'))
+	{
+        moveDirection += GetOwner()->Left();
+    }
+	if (wnd.kbd.KeyIsPressed('D'))
+	{
+        moveDirection += GetOwner()->Right();
+    }
+    if (wnd.kbd.KeyIsPressed(VK_SPACE))
     {
-		moveDirection += Vector3(1.0f, 0.0f, 0.0f);
-        //rigidbody->AddForce(Vector3(translation));
-        moved = true;
+        Jump();
+    }
+    else {
+        jumped = false;
     }
     if (wnd.kbd.KeyIsPressed(VK_SHIFT))
     {
-		moveSpeed = 30.0f;
-	}
-	else
-	{
-        moveSpeed = 12.0f;
-	}
-    // Optional: Add Up/Down movement
-    if (wnd.kbd.KeyIsPressed(VK_SPACE))
-    {
-        if (!jumped) {
-			rigidbody->SetVelocity(Vector3(rigidbody->GetVelocity().x, 0.0f, rigidbody->GetVelocity().z));
-			rigidbody->AddForce(Vector3(0.0f, jumpForce * 1000.0f, 0.0f));
-			jumped = true;
-        }
-        moved = true;
+        Dash();
     }
     else {
-		jumped = false;
-    }
-    if (wnd.kbd.KeyIsPressed(VK_CONTROL))
-    {
-        moveDirection += Vector3(0.0f, -1.0f, 0.0f);
-        moved = true;
+		dashed = false;
     }
 
-    
-
-    if (moved)
-    {
-        moveDirection.Normalize();
-
-
-       /* dx::XMMATRIX rotationMatrix = dx::XMMatrixRotationRollPitchYaw(0.0f, yaw, 0.0f);
-		Matrix rotation = Matrix(rotationMatrix);
-		moveDirection.Transform(moveDirection, rotation);*/
-
-        dx::XMMATRIX rotationMatrix = dx::XMMatrixRotationRollPitchYaw(0.0f, yaw, 0.0f);
-        dx::XMVECTOR moveVector = dx::XMLoadFloat3(&moveDirection);
-        moveVector = dx::XMVector3Transform(moveVector, rotationMatrix);
-        dx::XMStoreFloat3(&moveDirection, moveVector);
-
-        rigidbody->AddForce(moveDirection * moveSpeed * 100.0f);
-    }
 }
 
-DirectX::XMFLOAT2 PlayerController::GetRotation() const
+void PlayerController::MovePlayer()
 {
-    return { pitch, yaw };
-}
+    moveDirection.Normalize();
 
-void PlayerController::SetRotation(float pitchRad, float yawRad) noexcept
-{
-    pitch = std::clamp(pitchRad, -pitchLimit, pitchLimit);
-    yaw = wrap_angle(yawRad);
-    // Immediately update the node's horizontal rotation
-    GetOwner()->SetLocalRotation({ 0.0f, yaw, 0.0f });
+    rigidbody->AddForce(moveDirection * moveSpeed * 1000.0f);
 }
 
 void PlayerController::DrawImGuiControls()
@@ -127,5 +116,7 @@ void PlayerController::DrawImGuiControls()
     ImGui::Text("Player Controller Properties:");
     ImGui::InputFloat("Move Speed", &moveSpeed);
     ImGui::InputFloat("JumpForce", &jumpForce);
-    ImGui::Checkbox("Jumped", &jumped); // Display jump status
+	ImGui::InputFloat("Dash Force", &dashForce);
+    ImGui::Checkbox("Jumped", &jumped);
+	ImGui::Checkbox("Dashed", &dashed);
 }

@@ -127,6 +127,37 @@ void Node::SetLocalScale(const DirectX::XMFLOAT3& scale)
     worldTransformDirty = true; // Mark world matrix for rebuild
 }
 
+void Node::TranslateLocal(const DirectX::XMFLOAT3& translation)
+{
+    // 1. Get the current local rotation as a quaternion or matrix
+    //    Using the stored Euler angles is easiest here.
+    dx::XMMATRIX rotMatrix = dx::XMMatrixRotationRollPitchYaw(
+        localRotationEulerRad.x,
+        localRotationEulerRad.y,
+        localRotationEulerRad.z);
+
+    // 2. Load the translation vector to apply
+    dx::XMVECTOR translationVec = dx::XMLoadFloat3(&translation);
+
+    // 3. Transform the translation vector by the local rotation matrix
+    //    This rotates the translation amount to align with the node's orientation.
+    //    Use TransformNormal because it's a direction/offset vector.
+    dx::XMVECTOR rotatedTranslationVec = dx::XMVector3TransformNormal(translationVec, rotMatrix);
+
+    // 4. Load the current local position
+    dx::XMVECTOR currentPosVec = dx::XMLoadFloat3(&localPosition);
+
+    // 5. Add the rotated translation to the current position
+    dx::XMVECTOR newPosVec = dx::XMVectorAdd(currentPosVec, rotatedTranslationVec);
+
+    // 6. Store the new local position back into the member variable
+    dx::XMStoreFloat3(&localPosition, newPosVec);
+
+    // 7. Mark matrices as dirty
+    localTransformDirty = true;
+    worldTransformDirty = true;
+}
+
 
 // --- UPDATED GetLocal... Methods ---
 
@@ -154,6 +185,124 @@ DirectX::XMFLOAT3 Node::GetLocalRotationEuler() const
 DirectX::XMFLOAT3 Node::GetLocalScale() const
 {
     return localScale; // Return stored value
+}
+
+
+Vector3 Node::Forward() const
+{
+    // Get the node's current world transform matrix
+    dx::XMMATRIX worldMat = GetWorldTransform(); // Ensures matrix is up-to-date
+
+    // Define the local forward vector (+Z)
+    dx::XMVECTOR localForward = dx::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
+
+    // Transform the local forward vector into world space using the world matrix
+    // Use TransformNormal as it's a direction (ignores translation)
+    dx::XMVECTOR worldForward = dx::XMVector3TransformNormal(localForward, worldMat);
+
+    // Normalize the result (important if scaling is non-uniform)
+    worldForward = dx::XMVector3Normalize(worldForward);
+
+    // Store and return as SimpleMath::Vector3
+    Vector3 result;
+    dx::XMStoreFloat3(&result, worldForward);
+    return result;
+}
+
+Vector3 Node::Back() const
+{
+    // Get the node's current world transform matrix
+    dx::XMMATRIX worldMat = GetWorldTransform();
+
+    // Define the local back vector (-Z)
+    dx::XMVECTOR localBack = dx::XMVectorSet(0.0f, 0.0f, -1.0f, 0.0f);
+
+    // Transform into world space
+    dx::XMVECTOR worldBack = dx::XMVector3TransformNormal(localBack, worldMat);
+    worldBack = dx::XMVector3Normalize(worldBack);
+
+    // Store and return
+    Vector3 result;
+    dx::XMStoreFloat3(&result, worldBack);
+    return result;
+
+    // Alternatively: return -Forward(); // Mathematically equivalent if Forward() is correct
+}
+
+Vector3 Node::Right() const
+{
+    // Get the node's current world transform matrix
+    dx::XMMATRIX worldMat = GetWorldTransform();
+
+    // Define the local right vector (+X)
+    dx::XMVECTOR localRight = dx::XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
+
+    // Transform into world space
+    dx::XMVECTOR worldRight = dx::XMVector3TransformNormal(localRight, worldMat);
+    worldRight = dx::XMVector3Normalize(worldRight);
+
+    // Store and return
+    Vector3 result;
+    dx::XMStoreFloat3(&result, worldRight);
+    return result;
+}
+
+Vector3 Node::Left() const
+{
+    // Get the node's current world transform matrix
+    dx::XMMATRIX worldMat = GetWorldTransform();
+
+    // Define the local left vector (-X)
+    dx::XMVECTOR localLeft = dx::XMVectorSet(-1.0f, 0.0f, 0.0f, 0.0f);
+
+    // Transform into world space
+    dx::XMVECTOR worldLeft = dx::XMVector3TransformNormal(localLeft, worldMat);
+    worldLeft = dx::XMVector3Normalize(worldLeft);
+
+    // Store and return
+    Vector3 result;
+    dx::XMStoreFloat3(&result, worldLeft);
+    return result;
+
+    // Alternatively: return -Right();
+}
+
+Vector3 Node::Up() const
+{
+    // Get the node's current world transform matrix
+    dx::XMMATRIX worldMat = GetWorldTransform();
+
+    // Define the local up vector (+Y)
+    dx::XMVECTOR localUp = dx::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+
+    // Transform into world space
+    dx::XMVECTOR worldUp = dx::XMVector3TransformNormal(localUp, worldMat);
+    worldUp = dx::XMVector3Normalize(worldUp);
+
+    // Store and return
+    Vector3 result;
+    dx::XMStoreFloat3(&result, worldUp);
+    return result;
+}
+
+Vector3 Node::Down() const
+{
+    // Get the node's current world transform matrix
+    dx::XMMATRIX worldMat = GetWorldTransform();
+
+    // Define the local down vector (-Y)
+    dx::XMVECTOR localDown = dx::XMVectorSet(0.0f, -1.0f, 0.0f, 0.0f);
+
+    // Transform into world space
+    dx::XMVECTOR worldDown = dx::XMVector3TransformNormal(localDown, worldMat);
+    worldDown = dx::XMVector3Normalize(worldDown);
+
+    // Store and return
+    Vector3 result;
+    dx::XMStoreFloat3(&result, worldDown);
+    return result;
+
+    // Alternatively: return -Up();
 }
 
 // --- World Transform Methods (GetWorldTransform, GetWorldPosition, SetWorldPosition) ---

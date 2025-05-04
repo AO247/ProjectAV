@@ -6,8 +6,8 @@ Vector3 Rigidbody::gravity = Vector3(0.0f, -98.0f, 0.0f);
 
 void Rigidbody::Update(float dt)
 {
-	//pOwner->SetLocalPosition(DirectX::XMFLOAT3(position.x, position.y, position.z));
-	pOwner->SetWorldPosition(DirectX::XMFLOAT3(position.x, position.y, position.z));
+	pOwner->SetLocalPosition(DirectX::XMFLOAT3(position.x, position.y, position.z));
+	//pOwner->SetWorldPosition(DirectX::XMFLOAT3(position.x, position.y, position.z));
 	pOwner->SetLocalRotation(DirectX::XMFLOAT3(rotation.x, rotation.y, rotation.z));
 }
 
