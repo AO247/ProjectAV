@@ -6,6 +6,11 @@ void PhysicsEngine::AddRigidbody(Rigidbody* rigidbody)
 	rigidbodies.push_back(rigidbody);
 }
 
+void PhysicsEngine::AddCollider(Collider* collider)
+{
+	colliders.push_back(collider);
+}
+
 void PhysicsEngine::Simulate(float delta)
 {
 	for (int i = 0; i < rigidbodies.size(); i++)
@@ -16,6 +21,12 @@ void PhysicsEngine::Simulate(float delta)
 }
 
 void PhysicsEngine::HandleCollisions()
+{
+	HandleRigidbodyCollisions();
+	HandleColliderCollisions();
+}
+
+void PhysicsEngine::HandleRigidbodyCollisions()
 {
 	for (int i = 0; i < rigidbodies.size(); i++)
 	{
@@ -40,7 +51,7 @@ void PhysicsEngine::HandleCollisions()
 			}
 
 			IntersectData intersectData = firstBody->GetCollider()->Intersect(
-										  secondBody->GetCollider());
+				secondBody->GetCollider());
 
 			if (intersectData.GetDoesIntersect())
 			{
@@ -93,11 +104,11 @@ void PhysicsEngine::HandleCollisions()
 				// Combining forces
 				//
 				//
-				
+
 				/*
 				float e = 0.0f;
 				Vector3 relativeVelocity = firstBody->GetVelocity() - secondBody->GetVelocity();
-				float factor = ( (-(1 + e) * relativeVelocity)).Dot(intersectData.GetDirection() ) / 
+				float factor = ( (-(1 + e) * relativeVelocity)).Dot(intersectData.GetDirection() ) /
 						  ( intersectData.GetDirection().Dot( intersectData.GetDirection() * (1/firstBody->GetMass() + 1/secondBody->GetMass()) ) );
 
 				Vector3 firstBodyNewVelocity = firstBody->GetVelocity() + ((factor / firstBody->GetMass()) * intersectData.GetDirection());
@@ -113,9 +124,9 @@ void PhysicsEngine::HandleCollisions()
 				Vector3 collisionNormal = intersectData.GetDirection() / intersectData.GetDirection().Length();
 				Vector3 relativeVelocity = firstBody->GetVelocity() - secondBody->GetVelocity();
 				float factor = ((-(1 + e) * relativeVelocity)).Dot(collisionNormal) /
-					( (collisionNormal.Dot(collisionNormal * (1 / firstBody->GetMass() + 1 / secondBody->GetMass()))) +
-					  ( (intersectData.GetCollisionPointRadiusForFirstBody().Dot(collisionNormal)) * (intersectData.GetCollisionPointRadiusForFirstBody().Dot(collisionNormal)) / i1 ) +
-					  ( (intersectData.GetCollisionPointRadiusForSecondBody().Dot(collisionNormal)) * (intersectData.GetCollisionPointRadiusForSecondBody().Dot(collisionNormal)) / i2));
+					((collisionNormal.Dot(collisionNormal * (1 / firstBody->GetMass() + 1 / secondBody->GetMass()))) +
+						((intersectData.GetCollisionPointRadiusForFirstBody().Dot(collisionNormal)) * (intersectData.GetCollisionPointRadiusForFirstBody().Dot(collisionNormal)) / i1) +
+						((intersectData.GetCollisionPointRadiusForSecondBody().Dot(collisionNormal)) * (intersectData.GetCollisionPointRadiusForSecondBody().Dot(collisionNormal)) / i2));
 
 				Vector3 firstBodyNewVelocity = firstBody->GetVelocity() + ((factor / firstBody->GetMass()) * collisionNormal);
 				Vector3 secondBodyNewVelocity = secondBody->GetVelocity() - ((factor / secondBody->GetMass()) * collisionNormal);
@@ -134,7 +145,7 @@ void PhysicsEngine::HandleCollisions()
 
 				//firstBody->SetAngularVelocity(firstBodyNewAngularVelocity);
 				//secondBody->SetAngularVelocity(secondBodyNewAngularVelocity);
-				
+
 				if (firstBody->GetIsStatic())
 				{
 					firstBody->SetVelocity(Vector3(0, 0, 0));
@@ -161,6 +172,89 @@ void PhysicsEngine::HandleCollisions()
 		if (rigidbodies[i]->GetCollider()->GetIsTrigger())
 		{
 			rigidbodies[i]->GetCollider()->UpdateTrigger();
+		}
+	}
+}
+
+void PhysicsEngine::HandleColliderCollisions()
+{
+	for (int i = 0; i < rigidbodies.size(); i++)
+	{
+		for (int j = 0; j < colliders.size(); j++)
+		{
+			if (rigidbodies[i]->GetIsStatic())
+			{
+				continue;
+			}
+
+			Rigidbody* body = rigidbodies[i];
+			Collider* collider = colliders[j];
+
+			IntersectData intersectData = body->GetCollider()->Intersect(collider);
+
+			if (intersectData.GetDoesIntersect())
+			{
+				if (body->GetCollider()->GetIsTrigger() || collider->GetIsTrigger())
+				{
+					if (body->GetCollider()->GetIsTrigger())
+					{
+						body->GetCollider()->AddToTriggerList(collider);
+					}
+					if (collider->GetIsTrigger())
+					{
+						collider->AddToTriggerList(body->GetCollider());
+					}
+					continue;
+				}
+
+				//
+				//
+				// SEPARATION
+				//
+				//
+
+				Vector3 bodyPositionAfterSeparation = body->GetPosition() + intersectData.GetDirection();
+				body->SetPosition(bodyPositionAfterSeparation);
+
+				//
+				//
+				// Combining forces
+				//
+				//
+
+				Rigidbody* firstBody = body;
+				Rigidbody* secondBody = new Rigidbody(nullptr, Vector3(0,0,0), Vector3(0,0,0));
+
+				float e = 0.0f;
+				float i1 = 1.0f;
+				float i2 = 1.0f;
+				Vector3 collisionNormal = intersectData.GetDirection() / intersectData.GetDirection().Length();
+				Vector3 relativeVelocity = firstBody->GetVelocity() - secondBody->GetVelocity();
+				float factor = ((-(1 + e) * relativeVelocity)).Dot(collisionNormal) /
+					((collisionNormal.Dot(collisionNormal * (1 / firstBody->GetMass() + 1 / secondBody->GetMass()))) +
+						((intersectData.GetCollisionPointRadiusForFirstBody().Dot(collisionNormal)) * (intersectData.GetCollisionPointRadiusForFirstBody().Dot(collisionNormal)) / i1) +
+						((intersectData.GetCollisionPointRadiusForSecondBody().Dot(collisionNormal)) * (intersectData.GetCollisionPointRadiusForSecondBody().Dot(collisionNormal)) / i2));
+
+				Vector3 firstBodyNewVelocity = firstBody->GetVelocity() + ((factor / firstBody->GetMass()) * collisionNormal);
+				Vector3 secondBodyNewVelocity = secondBody->GetVelocity() - ((factor / secondBody->GetMass()) * collisionNormal);
+
+				Vector3 firstBodyNewAngularVelocity = firstBody->GetAngularVelocity() + (intersectData.GetCollisionPointRadiusForFirstBody().Cross(factor * collisionNormal) / i1);
+				Vector3 secondBodyNewAngularVelocity = secondBody->GetAngularVelocity() + (intersectData.GetCollisionPointRadiusForSecondBody().Cross(-factor * collisionNormal) / i2);
+
+				firstBody->SetVelocity(firstBodyNewVelocity);
+				secondBody->SetVelocity(secondBodyNewVelocity);
+
+				if (firstBody->GetIsStatic())
+				{
+					firstBody->SetVelocity(Vector3(0, 0, 0));
+				}
+				if (secondBody->GetIsStatic())
+				{
+					secondBody->SetVelocity(Vector3(0, 0, 0));
+				}
+
+				delete secondBody;
+			}
 		}
 	}
 }

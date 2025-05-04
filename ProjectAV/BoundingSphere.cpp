@@ -143,7 +143,14 @@ float BoundingSphere::GetRadius()
 
 Vector3 BoundingSphere::GetTransformedCenter()
 {
-	return Vector3(rigidbody->GetPosition().x + center.x,
-				   rigidbody->GetPosition().y + center.y,
-				   rigidbody->GetPosition().z + center.z);
+	if (rigidbody != nullptr)
+	{
+		return Vector3(rigidbody->GetPosition().x + center.x,
+			rigidbody->GetPosition().y + center.y,
+			rigidbody->GetPosition().z + center.z);
+	}
+
+	return Vector3 (pOwner->GetWorldPosition().x + center.x,
+					pOwner->GetWorldPosition().y + center.y,
+					pOwner->GetWorldPosition().z + center.z);
 }
