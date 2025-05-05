@@ -216,7 +216,7 @@ App::App(const std::string& commandLine)
 
 
 	pBox->AddComponent(
-		std::make_unique<BoundingSphere>(pBox, Vector3(0.0f, 0.0f, 0.0f), 4.0f, nullptr)
+		std::make_unique<BoundingSphere>(pBox, Vector3(0.0f, 0.0f, 0.0f), 2.0f, nullptr)
 	);
 	BoundingSphere* bBoundingSphere = pBox->GetComponent<BoundingSphere>();
 	physicsEngine.AddCollider(bBoundingSphere);

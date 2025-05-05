@@ -152,14 +152,19 @@ void PlayerController::KeyboardInput()
 {
     moveDirection = Vector3(0.0f, 0.0f, 0.0f);
 
-    if (wnd.mouse.LeftIsPressed())
+    while (const auto e = wnd.mouse.Read()) // Read events from the queue
     {
-        Ability1();
+        switch (e->GetType())
+        {
+        case Mouse::Event::Type::LPress:
+            Ability1();
+            break;
+
+        case Mouse::Event::Type::RPress:
+            Ability2();
+            break;
+        }
     }
-	if (wnd.mouse.RightIsPressed())
-	{
-		Ability2();
-	}
 
     if (wnd.kbd.KeyIsPressed('W'))
     {
