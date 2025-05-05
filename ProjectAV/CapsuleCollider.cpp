@@ -252,11 +252,11 @@ EndSphereIntersectionData CapsuleCollider::EndSphereIntersection(Raycast* ray, b
 	Vector3 c;
 	if (!tipSphere)
 	{
-		c = selfA;
+		c = b;
 	}
 	else
 	{
-		c = selfB;
+		c = b + (a * h);
 	}
 
 	float nDotC = n.Dot(c);
