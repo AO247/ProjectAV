@@ -257,4 +257,12 @@ void PhysicsEngine::HandleColliderCollisions()
 			}
 		}
 	}
+
+	for (int i = 0; i < colliders.size(); i++)
+	{
+		if (colliders[i]->GetIsTrigger())
+		{
+			colliders[i]->UpdateTrigger();
+		}
+	}
 }
