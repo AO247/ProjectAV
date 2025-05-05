@@ -178,7 +178,7 @@ App::App(const std::string& commandLine)
     physicsEngine.AddRigidbody(pRigidbody);
 
 	pAbility1->AddComponent(
-        std::make_unique<CapsuleCollider>(pAbility1, nullptr, 1.0f, Vector3(0.0f, -1.0f, 0.0f), Vector3(0.0f, 1.5f, 5.0f))
+        std::make_unique<CapsuleCollider>(pAbility1, nullptr, 1.0f, Vector3(0.0f, -1.0f, 0.0f), Vector3(0.0f, 1.5f, 8.0f))
     );
     CapsuleCollider* a1CapsuleCollider = pAbility1->GetComponent<CapsuleCollider>();
     a1CapsuleCollider->SetIsTrigger(true);

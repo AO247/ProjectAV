@@ -114,7 +114,9 @@ void PlayerController::Ability1()
 		OutputDebugString(("\nCollided with: " + collider->GetOwner()->tag + "\n").c_str());
 		if (collider->GetOwner()->tag == "Enemy")
 		{
-			collider->GetOwner()->GetComponent<Rigidbody>()->AddForce(ability1->Forward() * 1000.0f);
+            OutputDebugString(("\n\n\n ENEMYYY \n\n\n"));
+			collider->GetOwner()->GetComponent<Rigidbody>()->SetVelocity(Vector3(0.0f, 0.0f, 0.0f));
+			collider->GetOwner()->GetComponent<Rigidbody>()->AddForce(ability1->Forward() * 100000.0f);
 		}
 	}
 }
