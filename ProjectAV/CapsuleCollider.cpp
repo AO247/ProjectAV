@@ -101,6 +101,87 @@ IntersectData CapsuleCollider::IntersectOBB(OBB* other)
 
 RaycastData CapsuleCollider::IntersectRay(Raycast* ray)
 {
+	Vector3 a = (GetTransformedTip() - GetTransformedBase()) / ((GetTransformedTip() - GetTransformedBase()).Length());
+	Vector3 selfLineEndOffset = a * radius;
+	Vector3 selfA = GetTransformedBase() + selfLineEndOffset;
+	Vector3 selfB = GetTransformedTip() - selfLineEndOffset;
+	Vector3 n = ray->direction;
+	Vector3 b = selfA - ray->origin;
+	float h = (selfB - selfA).Length();
+	float r = radius;
+
+	// ----- SPHERE TEST -----
+
+	// Base sphere
+
+	EndSphereIntersectionData baseSphereData = EndSphereIntersection(ray, false);
+	if (baseSphereData.isIntersecting)
+	{
+		return RaycastData(this, baseSphereData.closestPoint);
+	}
+
+	// Tip sphere
+
+	EndSphereIntersectionData tipSphereData = EndSphereIntersection(ray, true);
+	if (tipSphereData.isIntersecting)
+	{
+		return RaycastData(this, tipSphereData.closestPoint);
+	}
+
+	// ----- CYLINDER TEST -----
+
+	Vector3 nxa = n.Cross(a);
+	// Ray is parallel to the axis, and there is no intersection, or the intersection is a line
+	if (nxa.Length() == 0)
+	{
+		return RaycastData(nullptr, Vector3(0, 0, 0));
+	}
+
+	// Ray does not intersect the cylinder
+	float bDotnxa = b.Dot(nxa);
+	if ( ((nxa.Dot(nxa) * r * r) - (a.Dot(a) * bDotnxa * bDotnxa)) < 0 )
+	{
+		return RaycastData(nullptr, Vector3(0, 0, 0));
+	}
+
+	Vector3 bxa = b.Cross(a);
+
+	float dotProduct = nxa.Dot(bxa);
+
+	float root = sqrt( (nxa.Dot(nxa) * r * r) - (a.Dot(a) * bDotnxa * bDotnxa) );
+
+	float denominator = nxa.Dot(nxa);
+
+	float d1 = (dotProduct - root) / denominator;
+	float d2 = (dotProduct + root) / denominator;
+
+	// Both points are behind the ray origin
+	if (d1 < 0 && d2 < 0)
+	{
+		return RaycastData(nullptr, Vector3(0, 0, 0));
+	}
+
+	// Keep the positive point in d1
+	if (d1 < 0)
+	{
+		d1 = d2;
+	}
+
+	// Keep closer point in d1
+	if (d1 > d2)
+	{
+		d1 = d2;
+	}
+
+	float t = a.Dot((n * d1) - b);
+
+	// The point is inside the cylinder
+	if (t >= 0 && t <= h)
+	{
+		Vector3 hitPoint = ray->origin + (n * d1);
+		return RaycastData(this, hitPoint);
+	}
+
 	return RaycastData(nullptr, Vector3(0, 0, 0));
 }
 
@@ -155,4 +236,78 @@ Vector3 CapsuleCollider::ClosestPointOnLineSegment(Vector3 a, Vector3 b, Vector3
 	float t = ((point - a).Dot(ab)) / (ab.Dot(ab));
 	Vector3 result = (a + (min(max(t, 0), 1) * ab));
 	return result;
+}
+
+EndSphereIntersectionData CapsuleCollider::EndSphereIntersection(Raycast* ray, bool tipSphere)
+{
+	Vector3 a = (GetTransformedTip() - GetTransformedBase()) / ((GetTransformedTip() - GetTransformedBase()).Length());
+	Vector3 selfLineEndOffset = a * radius;
+	Vector3 selfA = GetTransformedBase() + selfLineEndOffset;
+	Vector3 selfB = GetTransformedTip() - selfLineEndOffset;
+	Vector3 n = ray->direction;
+	Vector3 b = selfA - ray->origin;
+	float h = (selfB - selfA).Length();
+	float r = radius;
+
+	Vector3 c;
+	if (!tipSphere)
+	{
+		c = selfA;
+	}
+	else
+	{
+		c = selfB;
+	}
+
+	float nDotC = n.Dot(c);
+	float root = sqrt((nDotC * nDotC) + (r * r) - (c.Dot(c)));
+
+	// No intersection
+	if ( ((nDotC * nDotC) + (r * r) - (c.Dot(c))) < 0 )
+	{
+		return EndSphereIntersectionData(false, Vector3(0, 0, 0));
+	}
+
+	float d1 = nDotC - root;
+	float d2 = nDotC + root;
+
+	// Both points are behind the ray origin
+	if (d1 < 0 && d2 < 0)
+	{
+		return EndSphereIntersectionData(false, Vector3(0, 0, 0));
+	}
+
+	// Keep the positive point in d1
+	if (d1 < 0)
+	{
+		d1 = d2;
+	}
+
+	// Keep closer point in d1
+	if (d1 > d2)
+	{
+		d1 = d2;
+	}
+
+	float t = a.Dot((n * d1) - b);
+	
+	if (!tipSphere)
+	{
+		if (t >= -r && t < 0)
+		{
+			Vector3 hitPoint = ray->origin + (n * d1);
+			return EndSphereIntersectionData(true, hitPoint);
+		}
+	}
+	else
+	{
+		if (t > h && t <= h + r)
+		{
+			Vector3 hitPoint = ray->origin + (n * d1);
+			return EndSphereIntersectionData(true, hitPoint);
+		}
+	}
+
+	return EndSphereIntersectionData(false, Vector3(0, 0, 0));
+
 }
