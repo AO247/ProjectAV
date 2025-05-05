@@ -7,6 +7,7 @@
 #include "Raycast.h"
 #include <string>
 #include "CapsuleCollider.h"
+#include "BoundingSphere.h"
 namespace dx = DirectX;
 PlayerController::PlayerController(Node* owner, Window& window)
     : Component(owner), wnd(window) // Initialize reference member
@@ -111,15 +112,41 @@ void PlayerController::Ability1()
     std::vector<Collider*> colliders = col->GetTriggerStay();
 	for (Collider* collider : colliders)
 	{
-		OutputDebugString(("\nCollided with: " + collider->GetOwner()->tag + "\n").c_str());
-		if (collider->GetOwner()->tag == "Enemy")
+		if (collider->GetOwner()->tag == "Enemy" || collider->GetOwner()->tag == "Stone")
 		{
-            OutputDebugString(("\n\n\n ENEMYYY \n\n\n"));
 			collider->GetOwner()->GetComponent<Rigidbody>()->SetVelocity(Vector3(0.0f, 0.0f, 0.0f));
 			collider->GetOwner()->GetComponent<Rigidbody>()->AddForce(ability1->Forward() * 100000.0f);
 		}
 	}
 }
+
+void PlayerController::Ability2()
+{
+    RaycastData rayData = Raycast::Cast(camera->GetWorldPosition(), camera->Forward());
+
+	if (rayData.hitCollider != nullptr)
+	{
+		if (rayData.hitCollider->GetOwner()->tag == "Ground" || rayData.hitCollider->GetOwner()->tag == "Stone")
+		{
+			ability2->SetLocalPosition(rayData.hitPoint);
+			BoundingSphere* col = ability2->GetComponent<BoundingSphere>();
+
+            std::vector<Collider*> colliders = col->GetTriggerStay();
+
+            for (Collider* collider : colliders)
+            {
+                if (collider->GetOwner()->tag == "Enemy" || collider->GetOwner()->tag == "Stone")
+                {
+                    collider->GetOwner()->GetComponent<Rigidbody>()->SetVelocity(Vector3(0.0f, 0.0f, 0.0f));
+                    collider->GetOwner()->GetComponent<Rigidbody>()->AddForce(Vector3(0.0f, 70000.0f, 0.0f));
+                }
+            }
+		}
+	}
+
+
+}
+
 
 void PlayerController::KeyboardInput()
 {
@@ -129,6 +156,10 @@ void PlayerController::KeyboardInput()
     {
         Ability1();
     }
+	if (wnd.mouse.RightIsPressed())
+	{
+		Ability2();
+	}
 
     if (wnd.kbd.KeyIsPressed('W'))
     {

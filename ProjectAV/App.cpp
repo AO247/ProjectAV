@@ -83,7 +83,7 @@ App::App(const std::string& commandLine)
     pBrick = pBrickOwner.get();
     auto pBoxOwner = std::make_unique<Node>("Box", nullptr, "Wall");
     pBox = pBoxOwner.get();
-    auto pStoneOwner = std::make_unique<Node>("Stone");
+    auto pStoneOwner = std::make_unique<Node>("Stone", nullptr, "Stone");
     pStone = pStoneOwner.get();
     auto pColumnOwner = std::make_unique<Node>("Column", nullptr, "Wall");
     pColumn = pColumnOwner.get();
@@ -186,11 +186,12 @@ App::App(const std::string& commandLine)
 	physicsEngine.AddCollider(a1CapsuleCollider);
 
 	pAbility2->AddComponent(
-		std::make_unique<OBB>(pAbility2, nullptr, Vector3(0.0f, 0.0f, 4.0f), Vector3(3.0f, 2.0f, 8.0f))
-	);
-	OBB* a2OBB = pAbility2->GetComponent<OBB>();
-	a2OBB->SetIsTrigger(true);
-	physicsEngine.AddCollider(a2OBB);
+        std::make_unique<BoundingSphere>(pAbility2, Vector3(0.0f, 0.0f, 0.0f), 2.0f, nullptr)
+    );
+    BoundingSphere* a2Sphere = pAbility2->GetComponent<BoundingSphere>();
+    a2Sphere->SetIsTrigger(true);
+    a2Sphere->SetTriggerEnabled(true);
+	physicsEngine.AddCollider(a2Sphere);
     
 
 
@@ -215,7 +216,7 @@ App::App(const std::string& commandLine)
 
 
 	pBox->AddComponent(
-		std::make_unique<BoundingSphere>(pBox, Vector3(0.0f, 0.0f, 0.0f), 2.0f, nullptr)
+		std::make_unique<BoundingSphere>(pBox, Vector3(0.0f, 0.0f, 0.0f), 4.0f, nullptr)
 	);
 	BoundingSphere* bBoundingSphere = pBox->GetComponent<BoundingSphere>();
 	physicsEngine.AddCollider(bBoundingSphere);
@@ -283,6 +284,7 @@ App::App(const std::string& commandLine)
 	AddBoxColliderToDraw(wnd.Gfx(), sOBB);
 
 	AddSphereColliderToDraw(wnd.Gfx(), bBoundingSphere);
+	AddSphereColliderToDraw(wnd.Gfx(), a2Sphere);
 
 	AddCapsuleColliderToDraw(wnd.Gfx(), pCapsule);
 	AddCapsuleColliderToDraw(wnd.Gfx(), eCapsule);
