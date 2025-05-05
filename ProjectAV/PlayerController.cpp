@@ -25,7 +25,15 @@ void PlayerController::Update(float dt)
 	ability1->SetLocalPosition(camera->GetLocalPosition());
 	ability1->SetLocalRotation(camera->GetLocalRotationEuler());
 
-	
+    RaycastData rayData = Raycast::Cast(camera->GetWorldPosition(), camera->Forward());
+
+    if (rayData.hitCollider != nullptr)
+    {
+        if (rayData.hitCollider->GetOwner()->tag == "Ground" || rayData.hitCollider->GetOwner()->tag == "Stone")
+        {
+            ability2->SetLocalPosition(rayData.hitPoint);
+        }
+    }
 
 
 
@@ -122,27 +130,19 @@ void PlayerController::Ability1()
 
 void PlayerController::Ability2()
 {
-    RaycastData rayData = Raycast::Cast(camera->GetWorldPosition(), camera->Forward());
+    
+	BoundingSphere* col = ability2->GetComponent<BoundingSphere>();
 
-	if (rayData.hitCollider != nullptr)
-	{
-		if (rayData.hitCollider->GetOwner()->tag == "Ground" || rayData.hitCollider->GetOwner()->tag == "Stone")
-		{
-			ability2->SetLocalPosition(rayData.hitPoint);
-			BoundingSphere* col = ability2->GetComponent<BoundingSphere>();
+    std::vector<Collider*> colliders = col->GetTriggerStay();
 
-            std::vector<Collider*> colliders = col->GetTriggerStay();
-
-            for (Collider* collider : colliders)
-            {
-                if (collider->GetOwner()->tag == "Enemy" || collider->GetOwner()->tag == "Stone")
-                {
-                    collider->GetOwner()->GetComponent<Rigidbody>()->SetVelocity(Vector3(0.0f, 0.0f, 0.0f));
-                    collider->GetOwner()->GetComponent<Rigidbody>()->AddForce(Vector3(0.0f, 70000.0f, 0.0f));
-                }
-            }
-		}
-	}
+    for (Collider* collider : colliders)
+    {
+        if (collider->GetOwner()->tag == "Enemy" || collider->GetOwner()->tag == "Stone")
+        {
+            collider->GetOwner()->GetComponent<Rigidbody>()->SetVelocity(Vector3(0.0f, 0.0f, 0.0f));
+            collider->GetOwner()->GetComponent<Rigidbody>()->AddForce(Vector3(0.0f, 70000.0f, 0.0f));
+        }
+    }
 
 
 }
