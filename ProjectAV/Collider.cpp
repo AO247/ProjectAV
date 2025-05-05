@@ -117,6 +117,16 @@ std::vector<Collider*> Collider::GetTriggerExit()
 	return collidersThatLeftTheTrigger;
 }
 
+void Collider::SetLayer(Layers layer)
+{
+	this->layer = layer;
+}
+
+Collider::Layers Collider::GetLayer()
+{
+	return layer;
+}
+
 void Collider::AddToTriggerList(Collider* other)
 {
 	if (triggerEnabled)
