@@ -4,7 +4,6 @@
 #include "ConditionalNoexcept.h"
 #include "Raycast.h"
 #include "Node.h"
-//#include "RaycastData.h"
 
 class Rigidbody;
 class Raycast;
@@ -19,6 +18,12 @@ public:
 		AABB = 1,
 		TYPE_OBB = 2,
 		CAPSULE = 3
+	};
+
+	enum Layers
+	{
+		NONE = 0,
+		PLAYER = 1
 	};
 
 	Collider(Node* owner, ColliderTypes colliderType, Rigidbody* rigidbody) :
@@ -45,8 +50,12 @@ public:
 	std::vector<Collider*> GetTriggerStay();
 	std::vector<Collider*> GetTriggerExit();
 
+	void SetLayer(Layers layer);
+	Layers GetLayer();
+
 private:
 	ColliderTypes colliderType;
+	Layers layer = NONE;
 	std::vector<Collider*> collidersThatEnteredTheTrigger;
 	std::vector<Collider*> collidersThatLeftTheTrigger;
 	std::vector<Collider*> collidersInsideTheTriggerFromPreviousIteration;
