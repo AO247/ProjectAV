@@ -5,6 +5,13 @@
 class BoundingSphere;
 class OBB;
 
+struct EndSphereIntersectionData
+{
+	EndSphereIntersectionData(bool isIntersecting, Vector3 closestPoint) : isIntersecting(isIntersecting), closestPoint(closestPoint) {}
+	bool isIntersecting;
+	Vector3 closestPoint;
+};
+
 class CapsuleCollider : public Collider
 {
 public:
@@ -28,6 +35,5 @@ private:
 	Vector3 base;
 	Vector3 tip;
 
-	
+	EndSphereIntersectionData EndSphereIntersection(Raycast* ray, bool tipSphere);
 };
-
