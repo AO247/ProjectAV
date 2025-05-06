@@ -139,7 +139,7 @@ void PlayerController::Ability2()
     {
         if (collider->GetOwner()->tag == "Enemy" || collider->GetOwner()->tag == "Stone")
         {
-            collider->GetOwner()->GetComponent<Rigidbody>()->SetVelocity(Vector3(0.0f, 0.0f, 0.0f));
+            collider->GetOwner()->GetComponent<Rigidbody>()->SetVelocity(Vector3(GetOwner()->GetComponent<Rigidbody>()->GetVelocity().x, 0.0f, GetOwner()->GetComponent<Rigidbody>()->GetVelocity().z));
             collider->GetOwner()->GetComponent<Rigidbody>()->AddForce(Vector3(0.0f, 70000.0f, 0.0f));
         }
     }

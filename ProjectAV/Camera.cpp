@@ -49,7 +49,7 @@ void Camera::HandleMouseLook(float dt)
 
 DirectX::XMMATRIX Camera::GetViewMatrix() const noexcept
 {
-    dx::XMMATRIX cameraWorldTransform = GetOwner()->GetWorldTransform();
+    dx::XMMATRIX cameraWorldTransform = GetOwner()->GetLocalTransform();
 
     dx::XMVECTOR determinant = dx::XMMatrixDeterminant(cameraWorldTransform);
     return dx::XMMatrixInverse(&determinant, cameraWorldTransform);

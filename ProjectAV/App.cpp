@@ -11,6 +11,7 @@
 #include "ColliderSphere.h"
 #include "TexturePreprocessor.h"
 #include "SolidCapsule.h"
+#include "DebugLine.h"
 
 namespace dx = DirectX;
 
@@ -24,7 +25,7 @@ App::App(const std::string& commandLine)
     pSceneRoot(std::make_unique<Node>("Root"))
 {
     // Set Projection Matrix (Far plane adjusted for larger scenes potentially)
-    wnd.Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 2000.0f));
+    wnd.Gfx().SetProjection(dx::XMMatrixPerspectiveLH(DirectX::XMConvertToRadians(60.0f), 9.0f / 16.0f, 0.5f, 300.0f));
     if (this->commandLine != "")
     {
         int nArgs;
@@ -403,16 +404,48 @@ void App::DoFrame(float dt)
     //    pEnemy->SetLocalPosition({ 15.0f, 225.0f, 0.0f });
     //}
 	dx::XMMATRIX viewMatrix = pCamera->GetComponent<Camera>()->GetViewMatrix();
+    wnd.Gfx().SetCamera(viewMatrix);
+
+    dx::XMMATRIX projMatrix = wnd.Gfx().GetProjection(); // Get projection matrix
+    dx::XMMATRIX viewProjMatrix = dx::XMMatrixMultiply(viewMatrix, projMatrix);
+    DirectX::BoundingFrustum::CreateFromMatrix(cameraFrustum, viewProjMatrix);
+
 	if (freeViewCamera)
 	{
         viewMatrix = pFreeViewCamera->GetComponent<Camera>()->GetViewMatrix();
+        wnd.Gfx().SetCamera(viewMatrix);
 	}
-    wnd.Gfx().SetCamera(viewMatrix);
+
 
     // --- Bind Lights ---
     pointLight.Bind(wnd.Gfx(), viewMatrix); // Bind point light (to slot 0)
 
-    pSceneRoot->Draw(wnd.Gfx());
+    //pSceneRoot->Draw(wnd.Gfx());
+
+    DrawNodeRecursive(wnd.Gfx(), *pSceneRoot);
+
+    DirectX::XMFLOAT3 corners[DirectX::BoundingFrustum::CORNER_COUNT];
+    cameraFrustum.GetCorners(corners); // Get corners in world space
+
+    // Define the 12 lines connecting the corners
+    // Near Plane lines
+    DebugLine(wnd.Gfx(), corners[0], corners[1]).Draw(wnd.Gfx()); // Near bottom left to near bottom right
+    DebugLine(wnd.Gfx(), corners[1], corners[2]).Draw(wnd.Gfx()); // Near bottom right to near top right
+    DebugLine(wnd.Gfx(), corners[2], corners[3]).Draw(wnd.Gfx()); // Near top right to near top left
+    DebugLine(wnd.Gfx(), corners[3], corners[0]).Draw(wnd.Gfx()); // Near top left to near bottom left
+
+    // Far Plane lines
+    DebugLine(wnd.Gfx(), corners[4], corners[5]).Draw(wnd.Gfx()); // Far bottom left to far bottom right
+    DebugLine(wnd.Gfx(), corners[5], corners[6]).Draw(wnd.Gfx()); // Far bottom right to far top right
+    DebugLine(wnd.Gfx(), corners[6], corners[7]).Draw(wnd.Gfx()); // Far top right to far top left
+    DebugLine(wnd.Gfx(), corners[7], corners[4]).Draw(wnd.Gfx()); // Far top left to far bottom left
+
+    // Connecting Lines (Near to Far)
+    DebugLine(wnd.Gfx(), corners[0], corners[4]).Draw(wnd.Gfx()); // Near bottom left to far bottom left
+    DebugLine(wnd.Gfx(), corners[1], corners[5]).Draw(wnd.Gfx()); // Near bottom right to far bottom right
+    DebugLine(wnd.Gfx(), corners[2], corners[6]).Draw(wnd.Gfx()); // Near top left to far top left
+    DebugLine(wnd.Gfx(), corners[3], corners[7]).Draw(wnd.Gfx()); // Near top right to far top right
+
 
 
     if (showControlWindow) {
@@ -420,6 +453,53 @@ void App::DoFrame(float dt)
     }
 
     wnd.Gfx().EndFrame();
+}
+
+
+void App::DrawNodeRecursive(Graphics& gfx, Node& node)
+{
+    // --- Culling Check ---
+    bool shouldDraw = true; // Assume we draw by default
+    ModelComponent* modelComp = node.GetComponent<ModelComponent>();
+
+    if (modelComp != nullptr) // Only cull nodes with models (or add BoundsComponent later)
+    {
+        DirectX::BoundingSphere worldBounds = modelComp->GetWorldBoundingSphere();
+
+        // Perform Frustum vs. BoundingSphere intersection test
+        DirectX::ContainmentType containment = cameraFrustum.Contains(worldBounds);
+        
+        
+        
+        if (containment == DirectX::DISJOINT) // DISJOINT means completely outside
+        {
+            shouldDraw = false; // Don't draw this node or its children
+        }
+        // Optional: You could also handle CONTAINS (fully inside, maybe skip children tests) 
+        // or INTERSECTS (partially inside, draw and continue checking children).
+    }
+    // --- End Culling Check ---
+
+
+    // --- Draw if Visible ---
+    if (shouldDraw)
+    {
+        // Draw the node itself (its ModelComponent, etc.)
+        // The original Node::Draw logic only drew components, which is fine.
+        // We need to ensure Node::Draw or a similar function exists and works.
+        // Let's assume Node::Draw works as before:
+        node.Draw(gfx);
+		OutputDebugStringA(("\nModel: " + node.GetName() + "\n").c_str());
+        // --- Draw Children Recursively ---
+        for (const auto& pChild : node.GetChildren())
+        {
+            if (pChild)
+            {
+                DrawNodeRecursive(gfx, *pChild); // Recurse for children
+            }
+        }
+    }
+	OutputDebugStringA(("\n\n\n\nEEEEEEEEEEEEEEEEEEEENNNNNNNNNNNNNNNDDDDDDDDDDDDDDDD\n\n\n\n"));
 }
 
 

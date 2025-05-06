@@ -21,7 +21,7 @@ void Walking::Follow(DirectX::XMFLOAT3 targetPosition)
         return;
     }
 
-    Vector3 targetPos(targetPosition.x, targetPosition.y, targetPosition.z);
+    Vector3 targetPos(targetPosition);
     Vector3 currentPos = rigidbody->GetPosition(); 
     Vector3 currentVelocity = rigidbody->GetVelocity();
 

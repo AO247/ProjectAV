@@ -9,6 +9,7 @@
 #include <map>
 #include "SolidBox.h"
 #include "Components.h"
+#include <DirectXCollision.h>
 // Forward declarations
 class PlayerController; // Forward declare
 
@@ -33,6 +34,9 @@ private:
     float speed_factor = 1.0f;
     PointLight pointLight;
     PhysicsEngine physicsEngine; // Physics engine instance
+
+    DirectX::BoundingFrustum cameraFrustum;
+
 
     // --- Scene Graph ---
     std::unique_ptr<Node> pSceneRoot;
@@ -67,6 +71,9 @@ private:
     void DrawBoxColliders(Graphics& gfx);
 	void AddCapsuleColliderToDraw(Graphics& gfx, CapsuleCollider* capsule);
 	void DrawCapsuleColliders(Graphics& gfx);
+
+    void DrawNodeRecursive(Graphics& gfx, Node& node);
+
 
     bool showDemoWindow = false;
     bool cursorEnabled = false;

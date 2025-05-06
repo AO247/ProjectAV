@@ -5,7 +5,7 @@
 #include "Surface.h"       // Still needed for Texture::Resolve internally, but not directly used here
 #include "BindableCommon.h" // Include all necessary bindable headers
 #include "Vertex.h"
-
+#include <limits>   
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
@@ -216,6 +216,8 @@ ModelComponent::ModelComponent(Node* owner, Graphics& gfx, const std::string& mo
 		// Pass modelPath correctly
 		meshPtrs.push_back(ParseMesh(gfx, *pScene->mMeshes[i], pScene->mMaterials, modelPath));
 	}
+
+	CalculateLocalBoundingSphere();
 
 	// Parse node hierarchy recursively
 	int nextId = 0; // Start ID counter for internal nodes
@@ -518,6 +520,79 @@ std::unique_ptr<Mesh> ModelComponent::ParseMesh(Graphics& gfx, const aiMesh& mes
 
 	// Construct the Mesh object with the resolved bindables
 	return std::make_unique<Mesh>(gfx, std::move(bindablePtrs));
+}
+
+void ModelComponent::CalculateLocalBoundingSphere()
+{
+	if (meshPtrs.empty()) {
+		// Default sphere at origin if no meshes
+		localBoundingSphere.Center = { 0.0f, 0.0f, 0.0f };
+		localBoundingSphere.Radius = 0.1f; // Small default radius
+		return;
+	}
+
+	// Find the min/max extents of all vertices across all meshes IN LOCAL SPACE
+	// Note: This assumes the vertices loaded by ParseMesh are in the Node's local space
+	// (which they should be if ParseMesh doesn't apply transforms itself).
+	DirectX::XMFLOAT3 minExtent = { std::numeric_limits<float>::max(), std::numeric_limits<float>::max(), std::numeric_limits<float>::max() };
+	DirectX::XMFLOAT3 maxExtent = { std::numeric_limits<float>::lowest(), std::numeric_limits<float>::lowest(), std::numeric_limits<float>::lowest() };
+
+	// Need access to vertex data. Mesh doesn't expose its Dvtx::VertexBuffer easily.
+	// This is a limitation. We either need:
+	// 1. Mesh to store/expose its vertex data (inefficient duplication).
+	// 2. Calculate bounds during ParseMesh and store them per mesh.
+	// 3. Reload vertex data here (very inefficient).
+
+	// --- SIMPLIFIED APPROACH (Less Accurate): Use Node Hierarchy Bounds ---
+	// Calculate bounds based on the transforms and *assumed* mesh bounds within internal nodes.
+	// This is complex. A simpler placeholder is needed for now.
+
+	// --- PLACEHOLDER: Calculate sphere based on first mesh's assumed bounds ---
+	// THIS IS A VERY ROUGH APPROXIMATION AND SHOULD BE IMPROVED
+	// A better way is to calculate during Assimp loading.
+	if (!meshPtrs.empty() && meshPtrs[0] != nullptr) {
+		// Ideally, get bounds from Mesh[0], but we can't easily access vertices.
+		// Let's create a *very* rough sphere for now. Needs proper calculation.
+		OutputDebugStringA("Warning: ModelComponent::CalculateLocalBoundingSphere using placeholder bounds!\n");
+		localBoundingSphere.Center = { 0.0f, 0.0f, 0.0f }; // Assume centered locally
+		localBoundingSphere.Radius = 5.0f; // GUESS a radius
+	}
+	else {
+		localBoundingSphere.Center = { 0.0f, 0.0f, 0.0f };
+		localBoundingSphere.Radius = 0.1f;
+	}
+
+	// --- PROPER APPROACH (Conceptual - Requires changes to loading/Mesh): ---
+	/*
+	std::vector<DirectX::XMFLOAT3> allVertices;
+	// Somehow iterate through all meshPtrs and collect their LOCAL vertex positions
+	// This requires Mesh or ParseMesh to provide this data.
+	// Example: Assuming Mesh had a GetVertices() method returning const std::vector<VertexData>&
+	for(const auto& pMesh : meshPtrs) {
+		const auto& vertices = pMesh->GetVertices(); // Fictional method
+		for(const auto& vtx : vertices) {
+		   allVertices.push_back(vtx.position); // Assuming VertexData has position
+		}
+	}
+	if (!allVertices.empty()) {
+	   DirectX::BoundingSphere::CreateFromPoints(localBoundingSphere, allVertices.size(), allVertices.data(), sizeof(DirectX::XMFLOAT3));
+	} else {
+		// Default sphere
+		localBoundingSphere.Center = {0.0f, 0.0f, 0.0f};
+		localBoundingSphere.Radius = 0.1f;
+	}
+	*/
+}
+// --- End Calculate ---
+
+
+// --- NEW: Get World Bounding Sphere ---
+DirectX::BoundingSphere ModelComponent::GetWorldBoundingSphere() const
+{
+	DirectX::BoundingSphere worldSphere;
+	// Transform the local sphere by the owner Node's world transform
+	localBoundingSphere.Transform(worldSphere, pOwner->GetWorldTransform());
+	return worldSphere;
 }
 
 // --- ModelComponent::ShowWindow implementation remains the same ---
