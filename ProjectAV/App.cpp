@@ -76,8 +76,6 @@ App::App(const std::string& commandLine)
 	pAbility2 = pAbility2Owner.get();
     auto pNanosuitOwner = std::make_unique<Node>("Nanosuit");
     pNanosuitNode = pNanosuitOwner.get();
-    auto pNanosuitOwner2 = std::make_unique<Node>("Nanosuit2");
-    pNanosuitNode2 = pNanosuitOwner2.get();
     auto pEmptyNode = std::make_unique<Node>("EmptyNode");
     auto pBrickOwner = std::make_unique<Node>("Brick");
     pBrick = pBrickOwner.get();
@@ -87,14 +85,18 @@ App::App(const std::string& commandLine)
     pStone = pStoneOwner.get();
     auto pColumnOwner = std::make_unique<Node>("Column", nullptr, "Wall");
     pColumn = pColumnOwner.get();
+	auto pColumn2Owner = std::make_unique<Node>("Column2", nullptr, "Wall");
+	pColumn2 = pColumn2Owner.get();
+	auto pColumn3Owner = std::make_unique<Node>("Column3", nullptr, "Wall");
+	pColumn3 = pColumn3Owner.get();
+	auto pColumn4Owner = std::make_unique<Node>("Column4", nullptr, "Wall");
+	pColumn4 = pColumn4Owner.get();
     auto pIslandOwner = std::make_unique<Node>("Island", nullptr, "Ground");
     pIsland = pIslandOwner.get();
 	auto pNoxTurnOwner = std::make_unique<Node>("NoxTurn");
 	pNoxTurn = pNoxTurnOwner.get();
 	auto pNoxTurnHairOwner = std::make_unique<Node>("NoxTurnHair");
 	pNoxTurnHair = pNoxTurnHairOwner.get();
-	auto pTestModelOwner = std::make_unique<Node>("TestModel");
-	pTestModel = pTestModelOwner.get();
 	auto pEnemyOwner = std::make_unique<Node>("Enemy", nullptr, "Enemy");
 	pEnemy = pEnemyOwner.get();
 
@@ -105,25 +107,23 @@ App::App(const std::string& commandLine)
 	pSceneRoot ->AddChild(std::move(pAbility1Owner));
 	pSceneRoot->AddChild(std::move(pAbility2Owner));
     //pSceneRoot->AddChild(std::move(pNanosuitOwner));
-    //pSceneRoot->AddChild(std::move(pNanosuitOwner2));
     //pSceneRoot->AddChild(std::move(pEmptyNode));
     //pSceneRoot->AddChild(std::move(pBrickOwner));
     pSceneRoot->AddChild(std::move(pBoxOwner));
     pSceneRoot->AddChild(std::move(pStoneOwner));
     pSceneRoot->AddChild(std::move(pColumnOwner));
+	pSceneRoot->AddChild(std::move(pColumn2Owner));
+	pSceneRoot->AddChild(std::move(pColumn3Owner));
+	pSceneRoot->AddChild(std::move(pColumn4Owner));
     pSceneRoot->AddChild(std::move(pIslandOwner));
     //pSceneRoot->AddChild(std::move(pNoxTurnOwner));
     //pNoxTurn->AddChild(std::move(pNoxTurnHairOwner));
-    //pSceneRoot->AddChild(std::move(pTestModelOwner));
     pSceneRoot->AddChild(std::move(pEnemyOwner));
 
 
     // Adding Models
     pNanosuitNode->AddComponent(
         std::make_unique<ModelComponent>(pNanosuitNode, wnd.Gfx(), "Models\\nano_textured\\nanosuit.obj")
-    );
-    pNanosuitNode2->AddComponent(
-        std::make_unique<ModelComponent>(pNanosuitNode2, wnd.Gfx(), "Models\\nano_textured\\nanosuit.obj")
     );
     pBrick->AddComponent(
         std::make_unique<ModelComponent>(pBrick, wnd.Gfx(), "Models\\brick_wall\\brick_wall.obj")
@@ -140,6 +140,15 @@ App::App(const std::string& commandLine)
     pColumn->AddComponent(
         std::make_unique<ModelComponent>(pColumn, wnd.Gfx(), "Models\\kolumna\\kolumna.obj")
     );
+	pColumn2->AddComponent(
+		std::make_unique<ModelComponent>(pColumn2, wnd.Gfx(), "Models\\kolumna\\kolumna.obj")
+	);
+	pColumn3->AddComponent(
+		std::make_unique<ModelComponent>(pColumn3, wnd.Gfx(), "Models\\kolumna\\kolumna.obj")
+	);
+	pColumn4->AddComponent(
+		std::make_unique<ModelComponent>(pColumn4, wnd.Gfx(), "Models\\kolumna\\kolumna.obj")
+	);
 
     pIsland->AddComponent(
         std::make_unique<ModelComponent>(pIsland, wnd.Gfx(), "Models\\wyspa\\wyspa_test.fbx")
@@ -152,9 +161,6 @@ App::App(const std::string& commandLine)
     pNoxTurnHair->AddComponent(
         std::make_unique<ModelComponent>(pNoxTurnHair, wnd.Gfx(), "Models\\stone\\hair.fbx")
     );
-	pTestModel->AddComponent(
-		std::make_unique<ModelComponent>(pTestModel, wnd.Gfx(), "Models\\stone\\grave5.fbx")
-	);
     pEnemy->AddComponent(
         std::make_unique<ModelComponent>(pEnemy, wnd.Gfx(), "Models\\enemy\\basic.obj")
     );
@@ -173,6 +179,7 @@ App::App(const std::string& commandLine)
 		std::make_unique<CapsuleCollider>(pPlayer, pRigidbody, 1.0f, Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, pPlayer->GetComponent<PlayerController>()->height, 0.0f))
 	);
 	CapsuleCollider* pCapsule = pPlayer->GetComponent<CapsuleCollider>();
+	pCapsule->SetLayer(Layers::PLAYER);
 	pRigidbody->SetCollider(pCapsule);
 	pRigidbody->SetMass(10.0f);
     physicsEngine.AddRigidbody(pRigidbody);
@@ -211,6 +218,7 @@ App::App(const std::string& commandLine)
         std::make_unique<OBB>(pIsland, nullptr, Vector3(0.0f, -0.3f, 0.0f), Vector3(50.0f, 1.0f, 50.0f))
     );
 	OBB* iOBB = pIsland->GetComponent<OBB>();
+	iOBB->SetLayer(Layers::GROUND);
 	physicsEngine.AddCollider(iOBB);
 
 
@@ -227,6 +235,21 @@ App::App(const std::string& commandLine)
 	);
 	OBB* cOBB = pColumn->GetComponent<OBB>();
 	physicsEngine.AddCollider(cOBB);
+	pColumn2->AddComponent(
+		std::make_unique<OBB>(pColumn2, nullptr, Vector3(-0.6f, 5.0f, 0.0f), Vector3(2.9f, 10.0f, 2.9f))
+	);
+	OBB* cOBB2 = pColumn2->GetComponent<OBB>();
+	physicsEngine.AddCollider(cOBB2);
+	pColumn3->AddComponent(
+		std::make_unique<OBB>(pColumn3, nullptr, Vector3(-0.6f, 5.0f, 0.0f), Vector3(2.9f, 10.0f, 2.9f))
+	);
+	OBB* cOBB3 = pColumn3->GetComponent<OBB>();
+	physicsEngine.AddCollider(cOBB3);
+	pColumn4->AddComponent(
+		std::make_unique<OBB>(pColumn4, nullptr, Vector3(-0.6f, 5.0f, 0.0f), Vector3(2.9f, 10.0f, 2.9f))
+	);
+	OBB* cOBB4 = pColumn4->GetComponent<OBB>();
+	physicsEngine.AddCollider(cOBB4);
     
     pStone->AddComponent(
         std::make_unique<Rigidbody>(pStone, Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f))
@@ -264,24 +287,29 @@ App::App(const std::string& commandLine)
     // Changing position scale etc.]
 	pFreeViewCamera->SetLocalPosition({ 4.0f, 11.0f, -28.0f });
     pPlayer->SetLocalPosition({ 0.0f, 35.0f, 0.0f });
-    pNanosuitNode2->SetLocalPosition(DirectX::XMFLOAT3(-20.0f, 0.0f, 0.0f));
 	pBox->SetLocalPosition(DirectX::XMFLOAT3(-10.0f, 3.0f, 10.0f));
     pBrick->SetLocalScale(dx::XMFLOAT3(20.0f, 20.0f, 1.0f));
     pBrick->SetLocalRotation(dx::XMFLOAT3(DirectX::XMConvertToRadians(90), 0.0f, 0.0f));
-	pStone->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f));
+	pStone->SetLocalPosition(DirectX::XMFLOAT3(10.0f, 1.0f, 10.0f));
 	pStone->SetLocalScale(dx::XMFLOAT3(1.5f, 1.5f, 1.5f));
     pIsland->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 	pIsland->SetLocalScale(dx::XMFLOAT3(1.3f, 1.3f, 1.3f));
 	pNoxTurn->SetLocalPosition(DirectX::XMFLOAT3(5.0f, 0.0f, 5.0f));
 	pNoxTurn->SetLocalScale(dx::XMFLOAT3(0.01f, 0.01f, 0.01f));
-	pTestModel->SetLocalPosition({ -5.0f, 0.0f, -5.0f });
-	pTestModel->SetLocalScale(dx::XMFLOAT3(0.01f, 0.01f, 0.01f));
 	pEnemy->SetLocalPosition(DirectX::XMFLOAT3(15.0f, 10.0f, 0.0f));
-	pColumn->SetLocalPosition(DirectX::XMFLOAT3(-7.0f, 0.0f, -5.0f));
+	pColumn->SetLocalPosition(DirectX::XMFLOAT3(-8.0f, 0.0f, -7.0f));
+	pColumn2->SetLocalPosition(DirectX::XMFLOAT3(-2.0f, 0.0f, 4.0f));
+	pColumn3->SetLocalPosition(DirectX::XMFLOAT3(-16.0f, 0.0f, -6.0f));
+	pColumn4->SetLocalPosition(DirectX::XMFLOAT3(10.0f, 0.0f, 6.0f));
+
     //Adding colliders to draw
     AddBoxColliderToDraw(wnd.Gfx(), iOBB);
+    AddBoxColliderToDraw(wnd.Gfx(), sOBB);
 	AddBoxColliderToDraw(wnd.Gfx(), cOBB);
-	AddBoxColliderToDraw(wnd.Gfx(), sOBB);
+	AddBoxColliderToDraw(wnd.Gfx(), cOBB2);
+	AddBoxColliderToDraw(wnd.Gfx(), cOBB3);
+	AddBoxColliderToDraw(wnd.Gfx(), cOBB4);
+
 
 	AddSphereColliderToDraw(wnd.Gfx(), bBoundingSphere);
 	AddSphereColliderToDraw(wnd.Gfx(), a2Sphere);

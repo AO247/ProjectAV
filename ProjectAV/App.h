@@ -43,17 +43,18 @@ private:
 	Node* pAbility2 = nullptr; // Node for the second ability
     // --- Pointers to other nodes (keep as is) ---
     Node* pNanosuitNode = nullptr;
-    Node* pNanosuitNode2 = nullptr;
     Node* pBox = nullptr;
     Node* pEmptyNode = nullptr;
     Node* pBrick = nullptr;
     Node* pStone = nullptr;
     Node* pColumn = nullptr;
+	Node* pColumn2 = nullptr;
+    Node* pColumn3 = nullptr;
+    Node* pColumn4 = nullptr;
     Node* pIsland = nullptr;
     Node* pSelectedSceneNode = nullptr;
     Node* pNoxTurn = nullptr; // Node for the camera
     Node* pNoxTurnHair = nullptr; // Node for the camera
-    Node* pTestModel = nullptr; // Node for the test model
     Node* pEnemy = nullptr; // Node for the enemy
     // --- UI State ---
 

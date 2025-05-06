@@ -3,5 +3,6 @@
 enum Layers
 {
 	NONE = 0,
-	PLAYER = 1
+	PLAYER = 1,
+	GROUND = 2
 };

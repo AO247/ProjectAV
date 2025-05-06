@@ -25,7 +25,7 @@ void PlayerController::Update(float dt)
 	ability1->SetLocalPosition(camera->GetLocalPosition());
 	ability1->SetLocalRotation(camera->GetLocalRotationEuler());
 
-    RaycastData rayData = Raycast::Cast(camera->GetWorldPosition(), camera->Forward());
+    RaycastData rayData = Raycast::CastThroughLayers(camera->GetWorldPosition(), camera->Forward(), std::vector<Layers>{PLAYER});
 
     if (rayData.hitCollider != nullptr)
     {
@@ -88,23 +88,23 @@ void PlayerController::Dash()
 
 void PlayerController::GroundCheck()
 {
-	RaycastData rayData = Raycast::Cast(GetOwner()->GetWorldPosition(), Vector3(0.0f, -1.0f, 0.0f));
-	if (rayData.hitCollider != nullptr)
-	{
-		if (rayData.hitCollider->GetOwner()->tag == "Ground")
-		{
+   // Corrected the third parameter to be a vector of Layers instead of a single Layer
+   RaycastData rayData = Raycast::CastAtLayers(GetOwner()->GetWorldPosition(), Vector3(0.0f, -1.0f, 0.0f), std::vector<Layers>{GROUND});
 
-            if (GetOwner()->GetWorldPosition().y - rayData.hitPoint.y <= 0.01)
-			{
-				grounded = true;
-			}
-			else
-			{
-				grounded = false;
-			}
-		}
-
-	}
+   if (rayData.hitCollider != nullptr)
+   {
+       if (rayData.hitCollider->GetOwner()->tag == "Ground")
+       {
+           if (GetOwner()->GetWorldPosition().y - rayData.hitPoint.y <= 0.01)
+           {
+               grounded = true;
+           }
+           else
+           {
+               grounded = false;
+           }
+       }
+   }
 }
 
 void PlayerController::MovePlayer()
