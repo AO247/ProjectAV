@@ -184,6 +184,7 @@
     <ClCompile Include="DxgiInfoManager.cpp" />
     <ClCompile Include="CException.cpp" />
     <ClCompile Include="FollowState.cpp" />
+    <ClCompile Include="Frustumclass.cpp" />
     <ClCompile Include="GDIPlusManager.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="IdleState.cpp" />
@@ -262,6 +263,7 @@
     <ClInclude Include="dxerr.h" />
     <ClInclude Include="DxgiInfoManager.h" />
     <ClInclude Include="FollowState.h" />
+    <ClInclude Include="frustumclass.h" />
     <ClInclude Include="GDIPlusManager.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="GraphicsThrowMacros.h" />

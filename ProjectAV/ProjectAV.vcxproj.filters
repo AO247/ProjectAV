@@ -270,6 +270,9 @@
     <ClCompile Include="DebugLine.cpp">
       <Filter>Source Files\Drawable</Filter>
     </ClCompile>
+    <ClCompile Include="Frustumclass.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowsMessageMap.h">
@@ -529,6 +532,9 @@
     </ClInclude>
     <ClInclude Include="DebugLine.h">
       <Filter>Header Files\Drawable</Filter>
+    </ClInclude>
+    <ClInclude Include="frustumclass.h">
+      <Filter>Resource Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

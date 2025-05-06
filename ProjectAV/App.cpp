@@ -12,7 +12,7 @@
 #include "TexturePreprocessor.h"
 #include "SolidCapsule.h"
 #include "DebugLine.h"
-
+#include <string.h>
 namespace dx = DirectX;
 
 GDIPlusManager gdipm;
@@ -25,7 +25,7 @@ App::App(const std::string& commandLine)
     pSceneRoot(std::make_unique<Node>("Root"))
 {
     // Set Projection Matrix (Far plane adjusted for larger scenes potentially)
-    wnd.Gfx().SetProjection(dx::XMMatrixPerspectiveLH(DirectX::XMConvertToRadians(60.0f), 9.0f / 16.0f, 0.5f, 300.0f));
+    wnd.Gfx().SetProjection(dx::XMMatrixPerspectiveLH(DirectX::XMConvertToRadians(60.0f), 9.0f / 16.0f, 0.5f, 1000.0f));
     if (this->commandLine != "")
     {
         int nArgs;
@@ -405,17 +405,14 @@ void App::DoFrame(float dt)
     //}
 	dx::XMMATRIX viewMatrix = pCamera->GetComponent<Camera>()->GetViewMatrix();
     wnd.Gfx().SetCamera(viewMatrix);
+    
+    FrustumCalculating();
 
-    dx::XMMATRIX projMatrix = wnd.Gfx().GetProjection(); // Get projection matrix
-    dx::XMMATRIX viewProjMatrix = dx::XMMatrixMultiply(viewMatrix, projMatrix);
-    DirectX::BoundingFrustum::CreateFromMatrix(cameraFrustum, viewProjMatrix);
-
-	if (freeViewCamera)
+    if (freeViewCamera)
 	{
         viewMatrix = pFreeViewCamera->GetComponent<Camera>()->GetViewMatrix();
         wnd.Gfx().SetCamera(viewMatrix);
 	}
-
 
     // --- Bind Lights ---
     pointLight.Bind(wnd.Gfx(), viewMatrix); // Bind point light (to slot 0)
@@ -423,7 +420,6 @@ void App::DoFrame(float dt)
     //pSceneRoot->Draw(wnd.Gfx());
 
     DrawNodeRecursive(wnd.Gfx(), *pSceneRoot);
-
     DirectX::XMFLOAT3 corners[DirectX::BoundingFrustum::CORNER_COUNT];
     cameraFrustum.GetCorners(corners); // Get corners in world space
 
@@ -446,15 +442,67 @@ void App::DoFrame(float dt)
     DebugLine(wnd.Gfx(), corners[2], corners[6]).Draw(wnd.Gfx()); // Near top left to far top left
     DebugLine(wnd.Gfx(), corners[3], corners[7]).Draw(wnd.Gfx()); // Near top right to far top right
 
-
-
     if (showControlWindow) {
         ShowControlWindows();
     }
 
     wnd.Gfx().EndFrame();
 }
+void App::FrustumCalculating() {
+    dx::XMMATRIX camWorldTransform = pCamera->GetWorldTransform();
+    dx::XMVECTOR camWorldPos = camWorldTransform.r[3]; // Default
+    dx::XMVECTOR camWorldForward = dx::XMVector3Normalize(dx::XMVector3TransformNormal(dx::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f), camWorldTransform)); // Default
+    dx::XMVECTOR camWorldUp = dx::XMVector3Normalize(dx::XMVector3TransformNormal(dx::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), camWorldTransform));    // Default
+    dx::XMVECTOR camWorldRight = dx::XMVector3Normalize(dx::XMVector3TransformNormal(dx::XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f), camWorldTransform)); // Default
 
+    const float fovAngleY = 1.0f; // Field of View in Y direction (radians) - MUST MATCH YOUR PROJECTION
+    const float aspectRatio = 16.0f / 9.0f; // MUST MATCH YOUR PROJECTION
+    const float nearDist = 0.5f;         // MUST MATCH YOUR PROJECTION
+    const float farDist = 2000.0f;       // MUST MATCH YOUR PROJECTION
+
+    // Half heights/widths at near and far planes
+    float halfHeightNear = nearDist * tanf(fovAngleY * 0.5f);
+    float halfWidthNear = halfHeightNear * aspectRatio;
+    float halfHeightFar = farDist * tanf(fovAngleY * 0.5f);
+    float halfWidthFar = halfHeightFar * aspectRatio;
+
+    dx::XMVECTOR nearCenter = dx::XMVectorAdd(camWorldPos, dx::XMVectorScale(camWorldForward, nearDist));
+    dx::XMVECTOR farCenter = dx::XMVectorAdd(camWorldPos, dx::XMVectorScale(camWorldForward, farDist));
+
+    // Calculate the 8 corner points (optional for plane calculation, but useful for verification)
+    dx::XMVECTOR nearTopLeft = dx::XMVectorAdd(nearCenter, dx::XMVectorSubtract(dx::XMVectorScale(camWorldUp, halfHeightNear), dx::XMVectorScale(camWorldRight, halfWidthNear)));
+    dx::XMVECTOR nearTopRight = dx::XMVectorAdd(nearCenter, dx::XMVectorAdd(dx::XMVectorScale(camWorldUp, halfHeightNear), dx::XMVectorScale(camWorldRight, halfWidthNear)));
+    dx::XMVECTOR nearBottomLeft = dx::XMVectorAdd(nearCenter, dx::XMVectorSubtract(dx::XMVectorScale(camWorldUp, -halfHeightNear), dx::XMVectorScale(camWorldRight, halfWidthNear)));
+    dx::XMVECTOR nearBottomRight = dx::XMVectorAdd(nearCenter, dx::XMVectorAdd(dx::XMVectorScale(camWorldUp, -halfHeightNear), dx::XMVectorScale(camWorldRight, halfWidthNear)));
+    dx::XMVECTOR farTopLeft = dx::XMVectorAdd(farCenter, dx::XMVectorSubtract(dx::XMVectorScale(camWorldUp, halfHeightFar), dx::XMVectorScale(camWorldRight, halfWidthFar)));
+    dx::XMVECTOR farTopRight = dx::XMVectorAdd(farCenter, dx::XMVectorAdd(dx::XMVectorScale(camWorldUp, halfHeightFar), dx::XMVectorScale(camWorldRight, halfWidthFar)));
+    dx::XMVECTOR farBottomLeft = dx::XMVectorAdd(farCenter, dx::XMVectorSubtract(dx::XMVectorScale(camWorldUp, -halfHeightFar), dx::XMVectorScale(camWorldRight, halfWidthFar)));
+    dx::XMVECTOR farBottomRight = dx::XMVectorAdd(farCenter, dx::XMVectorAdd(dx::XMVectorScale(camWorldUp, -halfHeightFar), dx::XMVectorScale(camWorldRight, halfWidthFar)));
+
+    cameraFrustum.Near = 0.5f;
+
+    // Far Plane: Normal = -camWorldForward, Point = farCenter
+    cameraFrustum.Far = 300.0f;
+
+    float tanHalfFovY = tanf(fovAngleY * 0.5f);
+    cameraFrustum.TopSlope = tanHalfFovY;
+    cameraFrustum.BottomSlope = -tanHalfFovY;
+
+    cameraFrustum.RightSlope = tanHalfFovY * aspectRatio;
+    cameraFrustum.LeftSlope = -tanHalfFovY * aspectRatio;
+
+    DirectX::XMStoreFloat3(&cameraFrustum.Origin, camWorldPos);
+    dx::XMMATRIX worldOrientationMatrix;
+    worldOrientationMatrix.r[0] = camWorldRight;   // World X-axis of the camera
+    worldOrientationMatrix.r[1] = camWorldUp;      // World Y-axis of the camera
+    worldOrientationMatrix.r[2] = camWorldForward; // World Z-axis of the camera
+    worldOrientationMatrix.r[3] = dx::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f); // Set W component for a valid matrix
+
+    // 3. Convert the Orientation Matrix to a Quaternion
+    DirectX::XMStoreFloat4(&cameraFrustum.Orientation, dx::XMQuaternionRotationMatrix(worldOrientationMatrix));
+
+
+}
 
 void App::DrawNodeRecursive(Graphics& gfx, Node& node)
 {
@@ -464,12 +512,28 @@ void App::DrawNodeRecursive(Graphics& gfx, Node& node)
 
     if (modelComp != nullptr) // Only cull nodes with models (or add BoundsComponent later)
     {
-        DirectX::BoundingSphere worldBounds = modelComp->GetWorldBoundingSphere();
-
-        // Perform Frustum vs. BoundingSphere intersection test
-        DirectX::ContainmentType containment = cameraFrustum.Contains(worldBounds);
-        
-        
+        DirectX::BoundingSphere sphere;
+		DirectX::BoundingBox box;
+        DirectX::ContainmentType containment = DirectX::DISJOINT;
+		if (node.GetComponent<BoundingSphere>() != nullptr)
+		{
+			sphere.Center = node.GetWorldPosition();
+			sphere.Radius = node.GetComponent<BoundingSphere>()->GetRadius();
+            containment = cameraFrustum.Contains(sphere);
+		}
+        else if (node.GetComponent<OBB>() != nullptr)
+        {
+            box.Center = node.GetWorldPosition();
+            box.Extents = node.GetComponent<OBB>()->GetTransformedSize();
+            containment = cameraFrustum.Contains(box);
+        }
+		else if (node.GetComponent<CapsuleCollider>() != nullptr)
+		{
+			// Assuming you have a method to get the capsule's bounding sphere
+			sphere.Center = node.GetWorldPosition();
+			sphere.Radius = node.GetComponent<CapsuleCollider>()->GetRadius() * 2;
+			containment = cameraFrustum.Contains(sphere);
+		}
         
         if (containment == DirectX::DISJOINT) // DISJOINT means completely outside
         {
@@ -489,8 +553,6 @@ void App::DrawNodeRecursive(Graphics& gfx, Node& node)
         // We need to ensure Node::Draw or a similar function exists and works.
         // Let's assume Node::Draw works as before:
         node.Draw(gfx);
-		OutputDebugStringA(("\nModel: " + node.GetName() + "\n").c_str());
-        // --- Draw Children Recursively ---
         for (const auto& pChild : node.GetChildren())
         {
             if (pChild)
@@ -499,7 +561,7 @@ void App::DrawNodeRecursive(Graphics& gfx, Node& node)
             }
         }
     }
-	OutputDebugStringA(("\n\n\n\nEEEEEEEEEEEEEEEEEEEENNNNNNNNNNNNNNNDDDDDDDDDDDDDDDD\n\n\n\n"));
+	//OutputDebugStringA(("\n\n\n\nEEEEEEEEEEEEEEEEEEEENNNNNNNNNNNNNNNDDDDDDDDDDDDDDDD\n\n\n\n"));
 }
 
 

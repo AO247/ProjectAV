@@ -10,6 +10,7 @@
 #include "SolidBox.h"
 #include "Components.h"
 #include <DirectXCollision.h>
+#include "BoundingSphere.h"
 // Forward declarations
 class PlayerController; // Forward declare
 
@@ -73,7 +74,7 @@ private:
 	void DrawCapsuleColliders(Graphics& gfx);
 
     void DrawNodeRecursive(Graphics& gfx, Node& node);
-
+    void FrustumCalculating();
 
     bool showDemoWindow = false;
     bool cursorEnabled = false;

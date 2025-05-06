@@ -10,20 +10,36 @@ constexpr auto sq( const T& x )
 	return x * x;
 }
 
-template<typename T>
-T wrap_angle( T theta )
+template <typename T>
+T wrap_angle(T theta)
 {
-	constexpr T twoPi = (T)2 * (T)PI_D;
-	const T mod = fmod(theta, twoPi);
-	if (mod > (T)PI_D)
-	{
-		return mod - twoPi;
-	}
-	else if (mod < (T)PI_D)
-	{
-		return mod + twoPi;
-	}
-	return mod;
+    // Use static_cast for constants to match template type T
+    constexpr T twoPi = static_cast<T>(2.0 * PI);
+    constexpr T pi = static_cast<T>(PI);
+
+    // Reduce angle to basic range (-2PI, 2PI) using fmod
+    T mod = std::fmod(theta, twoPi);
+
+    // Adjust range to be [-PI, PI]
+    if (mod > pi)
+    {
+        // Angle is > 180 degrees, wrap to negative equivalent
+        mod -= twoPi;
+    }
+    else if (mod < -pi)
+    {
+        // Angle is < -180 degrees, wrap to positive equivalent
+        mod += twoPi;
+    }
+
+    // Handle potential precision issues near -PI (optional but safer)
+    // If mod is extremely close to -PI, prefer +PI if that's desired behavior
+    // constexpr T epsilon = std::numeric_limits<T>::epsilon() * 10; 
+    // if (std::abs(mod + pi) < epsilon) {
+    //     mod = pi;
+    // }
+
+    return mod;
 }
 
 template<typename T>

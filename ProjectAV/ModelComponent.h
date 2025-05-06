@@ -5,7 +5,6 @@
 #include <string>
 #include <DirectXMath.h>
 #include "ConditionalNoexcept.h" // For noxnd
-#include <DirectXCollision.h>
 
 // Forward Declarations
 class Mesh;
@@ -58,19 +57,16 @@ public:
     // Show ImGui control window
     void ShowWindow(const char* windowName = nullptr) noexcept;
 
-    DirectX::BoundingSphere GetWorldBoundingSphere() const;
 
 private:
     // --- Assimp Loading ---
     std::unique_ptr<ModelInternalNode> ParseNodeRecursive(int& nextId, const aiNode& node) noexcept;
     std::unique_ptr<Mesh> ParseMesh(Graphics& gfx, const aiMesh& mesh, const aiMaterial* const* pMaterials, const std::string& modelPath);
 
-    void CalculateLocalBoundingSphere();
+
     // --- Data ---
     std::unique_ptr<ModelInternalNode> pRootInternal; // Root of the *internal* hierarchy loaded from file
     std::vector<std::unique_ptr<Mesh>> meshPtrs; // Owns all the meshes for this model instance
-
-    DirectX::BoundingSphere localBoundingSphere;
 
     // --- ImGui Window --- (Using pImpl)
     std::unique_ptr<ModelControlWindow> pControlWindow;
