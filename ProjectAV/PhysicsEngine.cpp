@@ -242,6 +242,13 @@ void PhysicsEngine::HandleColliderCollisions()
 				//
 				//
 
+				if (std::isnan(intersectData.GetDirection().x) ||
+					std::isnan(intersectData.GetDirection().y) ||
+					std::isnan(intersectData.GetDirection().z))
+				{
+					continue;
+				}
+
 				Vector3 bodyPositionAfterSeparation = body->GetPosition() + intersectData.GetDirection();
 				body->SetPosition(bodyPositionAfterSeparation);
 
