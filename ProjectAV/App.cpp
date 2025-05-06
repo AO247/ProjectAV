@@ -455,10 +455,10 @@ void App::FrustumCalculating() {
     dx::XMVECTOR camWorldUp = dx::XMVector3Normalize(dx::XMVector3TransformNormal(dx::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), camWorldTransform));    // Default
     dx::XMVECTOR camWorldRight = dx::XMVector3Normalize(dx::XMVector3TransformNormal(dx::XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f), camWorldTransform)); // Default
 
-    const float fovAngleY = 1.0f; // Field of View in Y direction (radians) - MUST MATCH YOUR PROJECTION
+    const float fovAngleY = DirectX::XMConvertToRadians(70.0f); // Field of View in Y direction (radians) - MUST MATCH YOUR PROJECTION
     const float aspectRatio = 16.0f / 9.0f; // MUST MATCH YOUR PROJECTION
     const float nearDist = 0.5f;         // MUST MATCH YOUR PROJECTION
-    const float farDist = 2000.0f;       // MUST MATCH YOUR PROJECTION
+    const float farDist = 300.0f;       // MUST MATCH YOUR PROJECTION
 
     // Half heights/widths at near and far planes
     float halfHeightNear = nearDist * tanf(fovAngleY * 0.5f);
@@ -530,8 +530,10 @@ void App::DrawNodeRecursive(Graphics& gfx, Node& node)
 		else if (node.GetComponent<CapsuleCollider>() != nullptr)
 		{
 			// Assuming you have a method to get the capsule's bounding sphere
-			sphere.Center = node.GetWorldPosition();
-			sphere.Radius = node.GetComponent<CapsuleCollider>()->GetRadius() * 2;
+			sphere.Center = DirectX::XMFLOAT3(node.GetWorldPosition().x, 
+                (node.GetWorldPosition().y + 1.5f), 
+                node.GetWorldPosition().z);
+			sphere.Radius = node.GetComponent<CapsuleCollider>()->GetRadius() * 2.5f;
 			containment = cameraFrustum.Contains(sphere);
 		}
         
@@ -539,19 +541,12 @@ void App::DrawNodeRecursive(Graphics& gfx, Node& node)
         {
             shouldDraw = false; // Don't draw this node or its children
         }
-        // Optional: You could also handle CONTAINS (fully inside, maybe skip children tests) 
-        // or INTERSECTS (partially inside, draw and continue checking children).
+
     }
-    // --- End Culling Check ---
 
 
-    // --- Draw if Visible ---
     if (shouldDraw)
     {
-        // Draw the node itself (its ModelComponent, etc.)
-        // The original Node::Draw logic only drew components, which is fine.
-        // We need to ensure Node::Draw or a similar function exists and works.
-        // Let's assume Node::Draw works as before:
         node.Draw(gfx);
         for (const auto& pChild : node.GetChildren())
         {
@@ -561,7 +556,6 @@ void App::DrawNodeRecursive(Graphics& gfx, Node& node)
             }
         }
     }
-	//OutputDebugStringA(("\n\n\n\nEEEEEEEEEEEEEEEEEEEENNNNNNNNNNNNNNNDDDDDDDDDDDDDDDD\n\n\n\n"));
 }
 
 
