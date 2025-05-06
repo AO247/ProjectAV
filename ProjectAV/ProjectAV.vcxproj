@@ -267,6 +267,7 @@
     <ClInclude Include="Node.h" />
     <ClInclude Include="OBB.h" />
     <ClInclude Include="PhysicsEngine.h" />
+    <ClInclude Include="PhysicsLayers.h" />
     <ClInclude Include="PixelShader.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="Raycast.h" />
