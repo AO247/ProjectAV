@@ -151,7 +151,7 @@ RaycastData Raycast::CastThroughLayers(Vector3 origin, Vector3 direction, std::v
 		RaycastData rayData = physicsEngine->colliders[i]->IntersectRay(&ray);
 		if (rayData.hitCollider != nullptr)
 		{
-			if (!CheckIfColliderIsInLayers(rayData.hitCollider, layersToAvoid))
+			if (CheckIfColliderIsInLayers(rayData.hitCollider, layersToAvoid))
 			{
 				continue;
 			}
