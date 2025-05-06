@@ -4,6 +4,7 @@
 #include "ConditionalNoexcept.h"
 #include "Raycast.h"
 #include "Node.h"
+#include "PhysicsLayers.h"
 
 class Rigidbody;
 class Raycast;
@@ -18,12 +19,6 @@ public:
 		AABB = 1,
 		TYPE_OBB = 2,
 		CAPSULE = 3
-	};
-
-	enum Layers
-	{
-		NONE = 0,
-		PLAYER = 1
 	};
 
 	Collider(Node* owner, ColliderTypes colliderType, Rigidbody* rigidbody) :

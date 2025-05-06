@@ -54,7 +54,7 @@ RaycastData Raycast::Cast(Vector3 origin, Vector3 direction)
 	return castResult;
 }
 
-RaycastData Raycast::CastAtLayers(Vector3 origin, Vector3 direction, std::vector<Collider::Layers> layersToIntersect)
+RaycastData Raycast::CastAtLayers(Vector3 origin, Vector3 direction, std::vector<Layers> layersToIntersect)
 {
 	RaycastData castResult(nullptr, Vector3(0, 0, 0));
 
@@ -114,7 +114,8 @@ RaycastData Raycast::CastAtLayers(Vector3 origin, Vector3 direction, std::vector
 	return castResult;
 }
 
-RaycastData Raycast::CastThroughLayers(Vector3 origin, Vector3 direction, std::vector<Collider::Layers> layersToAvoid)
+
+RaycastData Raycast::CastThroughLayers(Vector3 origin, Vector3 direction, std::vector<Layers> layersToAvoid)
 {
 	RaycastData castResult(nullptr, Vector3(0, 0, 0));
 
@@ -174,7 +175,8 @@ RaycastData Raycast::CastThroughLayers(Vector3 origin, Vector3 direction, std::v
 	return castResult;
 }
 
-bool Raycast::CheckIfColliderIsInLayers(Collider* collider, std::vector<Collider::Layers> layers)
+
+bool Raycast::CheckIfColliderIsInLayers(Collider* collider, std::vector<Layers> layers)
 {
 	for (int i = 0; i < layers.size(); i++)
 	{
