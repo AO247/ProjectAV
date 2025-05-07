@@ -52,7 +52,7 @@ App::App(const std::string& commandLine)
 	// --- Initialize Sound System ---
     SoundDevice::Init();
     //static SoundEffectsPlayer effectsPlayer1;
-    //static uint32_t sound1 = SE_LOAD("D:\\GameDev\\ProjectAV\\ProjectAV\\Models\\turn.ogg");
+    uint32_t sound1 = SE_LOAD("D:\\GameDev\\ProjectAV\\ProjectAV\\Models\\turn.ogg");
     myMusic = std::make_unique<MusicBuffer>("D:\\GameDev\\ProjectAV\\ProjectAV\\Models\\muza_full.wav");
     
     

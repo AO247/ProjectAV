@@ -7,6 +7,7 @@
 
 // Forward declare Node to avoid circular include if necessary,
 // but including Node.h is often fine here.
+class App;
 class Node;
 
 class PlayerController : public Component
@@ -23,6 +24,8 @@ public:
 	float moveSpeed = 12.0f;
 	float jumpForce = 60.0f;
 
+	uint32_t sound1;
+
 private:
 	void HandleMovementInput(float dt);
 	void HandleMouseLookInput();
@@ -38,4 +41,5 @@ private:
 
 	float rotationSpeed = 0.004f;
 	static constexpr float pitchLimit = DirectX::XM_PI / 2.0f * 0.995f;
+
 };

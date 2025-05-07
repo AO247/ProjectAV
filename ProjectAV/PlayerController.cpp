@@ -18,6 +18,7 @@ PlayerController::PlayerController(Node* owner, Window& window)
     : Component(owner), wnd(window) // Initialize reference member
 {
 	rigidbody = owner->GetComponent<Rigidbody>();
+    sound1 = SE_LOAD("D:\\GameDev\\ProjectAV\\ProjectAV\\Models\\turn.ogg");
 }
 
 void PlayerController::Update(float dt)
@@ -53,25 +54,32 @@ void PlayerController::HandleMovementInput(float dt)
 		moveDirection += Vector3(0.0f, 0.0f, 1.0f);
         //rigidbody->AddForce(Vector3(0.0f, 0.0f, 200.0f));
         moved = true;
+        static SoundEffectsPlayer effectsPlayer4;
+        effectsPlayer4.Play(sound1);
     }
     if (wnd.kbd.KeyIsPressed('S'))
     {
 		moveDirection += Vector3(0.0f, 0.0f, -1.0f);
         //rigidbody->AddForce(Vector3(translation));
         moved = true;
+        static SoundEffectsPlayer effectsPlayer3;
+        effectsPlayer3.Play(sound1);
     }
     if (wnd.kbd.KeyIsPressed('A'))
     {
 		moveDirection += Vector3(-1.0f, 0.0f, 0.0f);
         //rigidbody->AddForce(Vector3(translation));
         moved = true;
+        static SoundEffectsPlayer effectsPlayer2;
+        effectsPlayer2.Play(sound1);
     }
     if (wnd.kbd.KeyIsPressed('D'))
     {
         moveDirection += Vector3(1.0f, 0.0f, 0.0f);
         //rigidbody->AddForce(Vector3(translation));
         moved = true;
-        //effectsPlayer1->Play(sound1);
+        static SoundEffectsPlayer effectsPlayer1;
+        effectsPlayer1.Play(sound1);
     }
     if (wnd.kbd.KeyIsPressed(VK_SHIFT))
     {

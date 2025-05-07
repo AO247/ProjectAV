@@ -21,6 +21,7 @@ public:
     App(const std::string& commandLine = "");
     int Go();
     ~App();
+    uint32_t sound1;
 private:
     void DoFrame(float dt);
     void HandleInput(float dt);
