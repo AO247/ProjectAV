@@ -6,6 +6,7 @@ Vector3 Rigidbody::gravity = Vector3(0.0f, -98.0f, 0.0f);
 
 void Rigidbody::Update(float dt)
 {
+
 	pOwner->SetLocalPosition(DirectX::XMFLOAT3(position.x, position.y, position.z));
 	//pOwner->SetWorldPosition(DirectX::XMFLOAT3(position.x, position.y, position.z));
 	pOwner->SetLocalRotation(DirectX::XMFLOAT3(rotation.x, rotation.y, rotation.z));
@@ -13,6 +14,23 @@ void Rigidbody::Update(float dt)
 
 void Rigidbody::Integrate(float delta)
 {
+	RaycastData rayData = Raycast::CastAtLayers(GetOwner()->GetWorldPosition(), Vector3(0.0f, -1.0f, 0.0f), std::vector<Layers>{GROUND});
+
+	if (rayData.hitCollider != nullptr)
+	{
+		if (rayData.hitCollider->GetOwner()->tag == "Ground")
+		{
+			if (GetOwner()->GetWorldPosition().y - rayData.hitPoint.y <= 0.01)
+			{
+				grounded = true;
+			}
+			else
+			{
+				grounded = false;
+			}
+		}
+	}
+
 	//position += (velocity * delta);
 
 	//DirectX::XMVECTOR positionVec = GetOwner()->GetWorldTransform().r[3];
@@ -28,6 +46,11 @@ void Rigidbody::Integrate(float delta)
 	if (!isStatic)
 	{
 		force += mass * gravity;
+	}
+	if (grounded)
+	{
+		velocity -= velocity * linearVelocityDamping * 1.5f * delta;
+
 	}
 	velocity -= velocity * linearVelocityDamping * delta;
 	velocity += (force / mass) * delta;
@@ -139,4 +162,9 @@ float Rigidbody::GetMass()
 bool Rigidbody::GetIsStatic()
 {
 	return isStatic;
+}
+
+void Rigidbody::DrawImGuiControls()
+{
+	ImGui::Checkbox("Grounded", &grounded);
 }

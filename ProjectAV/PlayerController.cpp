@@ -10,13 +10,14 @@
 #include "BoundingSphere.h"
 namespace dx = DirectX;
 PlayerController::PlayerController(Node* owner, Window& window)
-    : Component(owner), wnd(window) // Initialize reference member
+    : Component(owner), wnd(window)  // Initialize reference member
 {
 	rigidbody = owner->GetComponent<Rigidbody>();
 	camera = owner->GetRoot()->FindFirstChildByTag("Camera");
 	ability1 = owner->GetRoot()->FindFirstChildByTag("Ability1");
 	ability2 = owner->GetRoot()->FindFirstChildByTag("Ability2");
 }
+
 
 void PlayerController::Update(float dt)
 {
@@ -60,19 +61,19 @@ void PlayerController::SpeedControl()
 {
     Vector3 velocity(rigidbody->GetVelocity().x, 0.0f, rigidbody->GetVelocity().z);
 
-    if (velocity.Length() > moveSpeed) 
+    if (velocity.Length() > moveSpeed && !dashed) 
     {
 		velocity.Normalize();
         Vector3 limitedVel = velocity * moveSpeed;
 		rigidbody->SetVelocity(Vector3(limitedVel.x, rigidbody->GetVelocity().y, limitedVel.z));
     }
-	if (moveDirection.Length() == 0)
+	/*if (moveDirection.Length() == 0)
 	{
 		Vector3 currentVelocity = rigidbody->GetVelocity();
 		currentVelocity.x = currentVelocity.x / 1.3f;
 		currentVelocity.z = currentVelocity.z / 1.3f;
 		rigidbody->SetVelocity(currentVelocity);
-	}
+	}*/
 }
 
 void PlayerController::Jump()
@@ -90,7 +91,7 @@ void PlayerController::Dash()
     if (!dashed) {
         Vector3 dashDirection = moveDirection;
         dashDirection.Normalize();
-        rigidbody->AddForce(dashDirection * dashForce * 1000.0f);
+        rigidbody->AddForce(dashDirection * dashForce * 10.0f);
         dashed = true;
     }
 }
@@ -148,7 +149,8 @@ void PlayerController::Ability2()
     {
         if (collider->GetOwner()->tag == "Enemy" || collider->GetOwner()->tag == "Stone")
         {
-            collider->GetOwner()->GetComponent<Rigidbody>()->SetVelocity(Vector3(0.0f, 0.0f, 0.0f));
+            collider->GetOwner()->GetComponent<Rigidbody>()->SetVelocity(Vector3(collider->GetOwner()->GetComponent<Rigidbody>()->GetVelocity().x,
+                0.0f, collider->GetOwner()->GetComponent<Rigidbody>()->GetVelocity().z));
             collider->GetOwner()->GetComponent<Rigidbody>()->AddForce(Vector3(0.0f, 70000.0f, 0.0f));
         }
     }
@@ -209,7 +211,6 @@ void PlayerController::KeyboardInput()
 }
 void PlayerController::DrawImGuiControls()
 {
-    ImGui::Text("Player Controller Properties:");
     ImGui::InputFloat("Move Speed", &moveSpeed);
     ImGui::InputFloat("JumpForce", &jumpForce);
 	ImGui::InputFloat("Dash Force", &dashForce);

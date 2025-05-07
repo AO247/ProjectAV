@@ -16,7 +16,6 @@ public:
 		position(position),
 		velocity(velocity),
 		Component(owner) {}
-
 	void Update(float dt) override;
 	void Integrate(float delta);
 
@@ -41,6 +40,9 @@ public:
 	bool GetIsStatic();
 
 	static Vector3 gravity;
+	bool grounded = false;
+
+	virtual void DrawImGuiControls() override;
 
 private:
 	Vector3 position;

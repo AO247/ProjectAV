@@ -8,8 +8,8 @@
 #include "DebugLine.h"
 
 namespace dx = DirectX;
-Walking::Walking(Node* owner, Window& window)
-	: Component(owner), wnd(window)
+Walking::Walking(Node* owner)
+	: Component(owner)
 {
 	rigidbody = owner->GetComponent<Rigidbody>();
 	tag = "Movement";

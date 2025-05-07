@@ -279,7 +279,7 @@ App::App(const std::string& commandLine)
 		std::make_unique<StateMachine>(pEnemy, StateType::IDLE)
 	);
     pEnemy->GetComponent<StateMachine>()->AddComponent(
-        std::make_unique<Walking>(pEnemy, wnd)
+        std::make_unique<Walking>(pEnemy)
     );
     pEnemy->GetComponent<StateMachine>()->UpdateComponents();
 
