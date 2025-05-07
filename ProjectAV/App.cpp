@@ -11,16 +11,10 @@
 #include "ColliderSphere.h"
 #include "TexturePreprocessor.h"
 #include "SolidCapsule.h"
-#include "SoundDevice.h"
-#include "MusicBuffer.h"
-#include "SoundEffectsLibrary.h"
-#include "SoundEffectsPlayer.h"
 
 namespace dx = DirectX;
 
 GDIPlusManager gdipm;
-
-
 
 App::App(const std::string& commandLine)
     :
@@ -68,15 +62,6 @@ App::App(const std::string& commandLine)
 	// Initialize Physics Engine
 	physicsEngine = PhysicsEngine();
 	Raycast::physicsEngine = &physicsEngine; // Set the physics engine for raycasting
-
-	// --- Initialize Sound System ---
-    SoundDevice::Init();
-    //static SoundEffectsPlayer effectsPlayer1;
-    uint32_t sound1 = SE_LOAD("D:\\GameDev\\ProjectAV\\ProjectAV\\Models\\turn.ogg");
-    myMusic = std::make_unique<MusicBuffer>("D:\\GameDev\\ProjectAV\\ProjectAV\\Models\\muza_full.wav");
-    
-    
-
     // --- Create Nodes ---
    
 	auto pCameraNodeOwner = std::make_unique<Node>("Camera", nullptr, "Camera");
@@ -205,6 +190,7 @@ App::App(const std::string& commandLine)
     CapsuleCollider* a1CapsuleCollider = pAbility1->GetComponent<CapsuleCollider>();
     a1CapsuleCollider->SetIsTrigger(true);
     a1CapsuleCollider->SetTriggerEnabled(true);
+	a1CapsuleCollider->SetLayer(Layers::PLAYER);
 	physicsEngine.AddCollider(a1CapsuleCollider);
 
 	pAbility2->AddComponent(
@@ -213,6 +199,7 @@ App::App(const std::string& commandLine)
     BoundingSphere* a2Sphere = pAbility2->GetComponent<BoundingSphere>();
     a2Sphere->SetIsTrigger(true);
     a2Sphere->SetTriggerEnabled(true);
+	a2Sphere->SetLayer(Layers::PLAYER);
 	physicsEngine.AddCollider(a2Sphere);
     
 
@@ -225,6 +212,7 @@ App::App(const std::string& commandLine)
 		std::make_unique<CapsuleCollider>(pEnemy, eRigidbody, 1.0f, Vector3(-0.8f, 0.0f, -0.4f), Vector3(-0.8f, 4.0f, -0.4f))
 	);
 	CapsuleCollider* eCapsule = pEnemy->GetComponent<CapsuleCollider>();
+	eCapsule->SetLayer(Layers::ENEMY);
 	eRigidbody->SetCollider(eCapsule);
     physicsEngine.AddRigidbody(eRigidbody);
 
@@ -373,19 +361,10 @@ void App::HandleInput(float dt)
     while (const auto e = wnd.kbd.ReadKey())
     {
         if (!e->IsPress()) continue;
+
         switch (e->GetCode())
         {
-		case 'M': // Toggle Music
-            if (myMusic->isPlaying()) // toggle play/pause
-            {
-                myMusic->Pause();
-            }
-            else
-            {
-                myMusic->Play();
-            }
-            break;
-		case 'C': // Toggle cursor
+        case 'C': // Toggle cursor
             if (cursorEnabled) {
                 wnd.DisableCursor();
                 wnd.mouse.EnableRaw();
@@ -465,11 +444,6 @@ void App::DoFrame(float dt)
     pointLight.Bind(wnd.Gfx(), viewMatrix); // Bind point light (to slot 0)
 
     pSceneRoot->Draw(wnd.Gfx());
-
-	if (myMusic->isPlaying())
-	{
-		myMusic->UpdateBufferStream();
-	}
 
 
     if (showControlWindow) {

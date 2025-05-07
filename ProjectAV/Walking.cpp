@@ -56,6 +56,11 @@ void Walking::Follow(DirectX::XMFLOAT3 targetPosition)
 Vector3 Walking::CalculateAvoidanceForce()
 {
 	Vector3 avoidanceForce(0.0f, 0.0f, 0.0f);
+	Vector3 previousRotation = GetOwner()->GetLocalRotationEuler();
+	/*Vector3 temporaryDirection = targetPosition - rigidbody->GetPosition();
+	temporaryDirection.Normalize();
+	float targetYaw = atan2f(temporaryDirection.x, temporaryDirection.z);
+	pOwner->SetLocalRotation({ 0.0f, targetYaw, 0.0f });*/
 	float radius = GetOwner()->GetComponent<CapsuleCollider>()->GetRadius();
 
 	Vector3 pos = GetOwner()->GetWorldPosition();
@@ -75,9 +80,9 @@ Vector3 Walking::CalculateAvoidanceForce()
 	// Vector3 leftDir = (forward - right * 0.3f); leftDir.Normalize(); 
 	// Vector3 rightDir = (forward + right * 0.3f); rightDir.Normalize();
 
-	RaycastData hitLeft = Raycast::Cast(leftOrigin, centerDir);
-	RaycastData hitRight = Raycast::Cast(rightOrigin, centerDir);
-	RaycastData hitCenter = Raycast::Cast(centerOrigin, centerDir);
+	RaycastData hitLeft = Raycast::CastThroughLayers(leftOrigin, centerDir, std::vector<Layers>{ENEMY});
+	RaycastData hitRight = Raycast::CastThroughLayers(rightOrigin, centerDir, std::vector<Layers>{ENEMY});
+	RaycastData hitCenter = Raycast::CastThroughLayers(centerOrigin, centerDir, std::vector<Layers>{ENEMY});
 
 	float targetDistance = Vector3(pos - targetPosition).Length();
 
@@ -96,6 +101,8 @@ Vector3 Walking::CalculateAvoidanceForce()
 		centerHit = true;
 		avoidanceForce = -right * maxForce * 1.5f;
 	}
+
+	//pOwner->SetLocalRotation(previousRotation);
 
 	return avoidanceForce;
 

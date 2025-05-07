@@ -9,7 +9,6 @@
 #include <map>
 #include "SolidBox.h"
 #include "Components.h"
-#include "MusicBuffer.h"
 // Forward declarations
 class PlayerController; // Forward declare
 
@@ -20,7 +19,6 @@ public:
     App(const std::string& commandLine = "");
     int Go();
     ~App();
-    uint32_t sound1;
 private:
     void DoFrame(float dt);
     void HandleInput(float dt);
@@ -35,7 +33,6 @@ private:
     float speed_factor = 1.0f;
     PointLight pointLight;
     PhysicsEngine physicsEngine; // Physics engine instance
-	std::unique_ptr<MusicBuffer> myMusic;
 
     // --- Scene Graph ---
     std::unique_ptr<Node> pSceneRoot;
