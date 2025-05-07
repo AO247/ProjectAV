@@ -7,6 +7,7 @@
 
 // Forward declare Node to avoid circular include if necessary,
 // but including Node.h is often fine here.
+class App;
 class Node;
 
 class PlayerController : public Component
@@ -20,6 +21,8 @@ public:
 	float jumpForce = 60.0f;
 	float dashForce = 1000.0f;
 	float height = 4.0f;
+
+	uint32_t sound1;
 
 private:
 	Window& wnd;

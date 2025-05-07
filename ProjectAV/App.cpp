@@ -11,10 +11,16 @@
 #include "ColliderSphere.h"
 #include "TexturePreprocessor.h"
 #include "SolidCapsule.h"
+#include "SoundDevice.h"
+#include "MusicBuffer.h"
+#include "SoundEffectsLibrary.h"
+#include "SoundEffectsPlayer.h"
 
 namespace dx = DirectX;
 
 GDIPlusManager gdipm;
+
+
 
 App::App(const std::string& commandLine)
     :
@@ -62,6 +68,15 @@ App::App(const std::string& commandLine)
 	// Initialize Physics Engine
 	physicsEngine = PhysicsEngine();
 	Raycast::physicsEngine = &physicsEngine; // Set the physics engine for raycasting
+
+	// --- Initialize Sound System ---
+    SoundDevice::Init();
+    //static SoundEffectsPlayer effectsPlayer1;
+    uint32_t sound1 = SE_LOAD("D:\\GameDev\\ProjectAV\\ProjectAV\\Models\\turn.ogg");
+    myMusic = std::make_unique<MusicBuffer>("D:\\GameDev\\ProjectAV\\ProjectAV\\Models\\muza_full.wav");
+    
+    
+
     // --- Create Nodes ---
    
 	auto pCameraNodeOwner = std::make_unique<Node>("Camera", nullptr, "Camera");
@@ -358,10 +373,19 @@ void App::HandleInput(float dt)
     while (const auto e = wnd.kbd.ReadKey())
     {
         if (!e->IsPress()) continue;
-
         switch (e->GetCode())
         {
-        case 'C': // Toggle cursor
+		case 'M': // Toggle Music
+            if (myMusic->isPlaying()) // toggle play/pause
+            {
+                myMusic->Pause();
+            }
+            else
+            {
+                myMusic->Play();
+            }
+            break;
+		case 'C': // Toggle cursor
             if (cursorEnabled) {
                 wnd.DisableCursor();
                 wnd.mouse.EnableRaw();
@@ -441,6 +465,11 @@ void App::DoFrame(float dt)
     pointLight.Bind(wnd.Gfx(), viewMatrix); // Bind point light (to slot 0)
 
     pSceneRoot->Draw(wnd.Gfx());
+
+	if (myMusic->isPlaying())
+	{
+		myMusic->UpdateBufferStream();
+	}
 
 
     if (showControlWindow) {

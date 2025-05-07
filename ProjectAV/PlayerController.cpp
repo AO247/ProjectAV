@@ -8,7 +8,16 @@
 #include <string>
 #include "CapsuleCollider.h"
 #include "BoundingSphere.h"
+#include "SoundDevice.h"
+#include "SoundBuffer.h"
+#include "SoundSource.h"
+#include "MusicBuffer.h"
+#include "SoundEffectsLibrary.h"
+#include "SoundEffectsPlayer.h"
+
 namespace dx = DirectX;
+
+
 PlayerController::PlayerController(Node* owner, Window& window)
     : Component(owner), wnd(window) // Initialize reference member
 {
@@ -16,6 +25,7 @@ PlayerController::PlayerController(Node* owner, Window& window)
 	camera = owner->GetRoot()->FindFirstChildByTag("Camera");
 	ability1 = owner->GetRoot()->FindFirstChildByTag("Ability1");
 	ability2 = owner->GetRoot()->FindFirstChildByTag("Ability2");
+    sound1 = SE_LOAD("D:\\GameDev\\ProjectAV\\ProjectAV\\Models\\turn.ogg");
 }
 
 void PlayerController::Update(float dt)
