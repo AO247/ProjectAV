@@ -261,6 +261,12 @@
     <ClCompile Include="MusicBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SoundEffectsLibrary.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundEffectsPlayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowsMessageMap.h">
@@ -510,6 +516,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MusicBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundEffectsLibrary.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundEffectsPlayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -8,8 +8,12 @@
 #include "SoundBuffer.h"
 #include "SoundSource.h"
 #include "MusicBuffer.h"
+#include "SoundEffectsLibrary.h"
+#include "SoundEffectsPlayer.h"
 
 namespace dx = DirectX;
+
+
 PlayerController::PlayerController(Node* owner, Window& window)
     : Component(owner), wnd(window) // Initialize reference member
 {
@@ -40,6 +44,8 @@ void PlayerController::HandleMovementInput(float dt)
 {
 	Vector3 moveDirection = Vector3(0.0f, 0.0f, 0.0f);
     bool moved = false;
+    //static SoundEffectsPlayer* effectsPlayer1;
+    //static uint32_t sound1 = SE_LOAD("D:\\GameDev\\ProjectAV\\ProjectAV\\Models\\turn.ogg");
 
     // Calculate translation vector based on WASD keys
     if (wnd.kbd.KeyIsPressed('W'))
@@ -62,9 +68,10 @@ void PlayerController::HandleMovementInput(float dt)
     }
     if (wnd.kbd.KeyIsPressed('D'))
     {
-		moveDirection += Vector3(1.0f, 0.0f, 0.0f);
+        moveDirection += Vector3(1.0f, 0.0f, 0.0f);
         //rigidbody->AddForce(Vector3(translation));
         moved = true;
+        //effectsPlayer1->Play(sound1);
     }
     if (wnd.kbd.KeyIsPressed(VK_SHIFT))
     {
