@@ -12,7 +12,7 @@ class Node;
 class Walking : public Component
 {
 public:
-	Walking(Node* owner);
+	Walking(Node* owner, Window& window);
 	std::string tag;
 
 	float maxSpeed;
@@ -26,6 +26,7 @@ public:
 	float raycastWidthOffset = 0.8f;
 private:
 	Rigidbody* rigidbody;
+	Window& wnd;
 
 	Vector3 CalculateAvoidanceForce();
 	bool rightHit, leftHit, centerHit;

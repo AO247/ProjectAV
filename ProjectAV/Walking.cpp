@@ -5,9 +5,11 @@
 #include <DirectXMath.h>
 #include <algorithm>
 #include "CapsuleCollider.h"
+#include "DebugLine.h"
+
 namespace dx = DirectX;
-Walking::Walking(Node* owner)
-	: Component(owner) 
+Walking::Walking(Node* owner, Window& window)
+	: Component(owner), wnd(window)
 {
 	rigidbody = owner->GetComponent<Rigidbody>();
 	tag = "Movement";
@@ -56,14 +58,15 @@ void Walking::Follow(DirectX::XMFLOAT3 targetPosition)
 Vector3 Walking::CalculateAvoidanceForce()
 {
 	Vector3 avoidanceForce(0.0f, 0.0f, 0.0f);
-	Vector3 previousRotation = GetOwner()->GetLocalRotationEuler();
-	/*Vector3 temporaryDirection = targetPosition - rigidbody->GetPosition();
-	temporaryDirection.Normalize();
+	//Vector3 previousRotation = GetOwner()->GetLocalRotationEuler();
+
+	Vector3 temporaryDirection = targetPosition - rigidbody->GetPosition();
+	/*temporaryDirection.Normalize();
 	float targetYaw = atan2f(temporaryDirection.x, temporaryDirection.z);
 	pOwner->SetLocalRotation({ 0.0f, targetYaw, 0.0f });*/
 	float radius = GetOwner()->GetComponent<CapsuleCollider>()->GetRadius();
 
-	Vector3 pos = GetOwner()->GetWorldPosition();
+	Vector3 pos = pOwner->GetComponent<CapsuleCollider>()->GetTransformedBase();
 	Vector3 forward = GetOwner()->Forward();
 	Vector3 right = GetOwner()->Right();
 
@@ -81,14 +84,16 @@ Vector3 Walking::CalculateAvoidanceForce()
 	// Vector3 rightDir = (forward + right * 0.3f); rightDir.Normalize();
 
 	RaycastData hitLeft = Raycast::CastThroughLayers(leftOrigin, centerDir, std::vector<Layers>{ENEMY});
+
 	RaycastData hitRight = Raycast::CastThroughLayers(rightOrigin, centerDir, std::vector<Layers>{ENEMY});
+
 	RaycastData hitCenter = Raycast::CastThroughLayers(centerOrigin, centerDir, std::vector<Layers>{ENEMY});
 
 	float targetDistance = Vector3(pos - targetPosition).Length();
 
 	if (hitLeft.hitCollider != nullptr && hitLeft.hitCollider->GetOwner()->tag == "Wall" && Vector3(hitLeft.hitPoint - pos).Length() < targetDistance) {
 		leftHit = true;
-
+		
 		avoidanceForce = right * maxForce;
 	}
 
