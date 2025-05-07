@@ -48,5 +48,7 @@ private:
 	void Dash();
 	void Ability1();
 	void Ability2();
+	void Cooldowns(float dt);
+	void Positioning();
 
 };

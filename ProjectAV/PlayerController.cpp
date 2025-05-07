@@ -21,54 +21,11 @@ PlayerController::PlayerController(Node* owner, Window& window)
 
 void PlayerController::Update(float dt)
 {
-	camera->SetLocalPosition({ GetOwner()->GetLocalPosition().x, GetOwner()->GetLocalPosition().y + height * 9 /10, GetOwner()->GetLocalPosition().z });
-    GetOwner()->SetLocalRotation({ 0.0f, camera->GetLocalRotationEuler().y, 0.0f });
-	ability1->SetLocalPosition(camera->GetLocalPosition());
-	ability1->SetLocalRotation(camera->GetLocalRotationEuler());
-
-    RaycastData rayData = Raycast::CastThroughLayers(camera->GetWorldPosition(), camera->Forward(), std::vector<Layers>{PLAYER});
-
-	if (dashTimer > 0.0f)
-	{
-		dashTimer -= dt;
-	}
-	else
-	{
-		dashed = false;
-		rigidbody->friction = true;
-	}
-	if (dashCooldownTimer > 0.0f)
-	{
-		dashCooldownTimer -= dt;
-	}
-	else
-	{
-		canDash = true;
-	}
-
-    if (rayData.hitCollider != nullptr)
-    {
-        if (rayData.hitCollider->GetOwner()->tag == "Ground")
-        {
-            ability2->SetLocalPosition(rayData.hitPoint);
-        }
-        else
-        {
-            RaycastData rayData2 = Raycast::CastAtLayers(rayData.hitCollider->GetOwner()->GetWorldPosition(), Vector3(0.0f, -1.0f, 0.0f), std::vector<Layers>{GROUND});
-            if (rayData2.hitCollider->GetOwner()->tag == "Ground")
-            {
-                ability2->SetLocalPosition(rayData2.hitPoint);
-            }
-
-        }
-    }
-
-
-
+    Positioning();
     if (!wnd.CursorEnabled())
     {
-
         GroundCheck();
+        Cooldowns(dt);
 		KeyboardInput();
 		SpeedControl();
 		MovePlayer();
@@ -193,6 +150,56 @@ void PlayerController::Ability2()
             collider->GetOwner()->GetComponent<Rigidbody>()->SetVelocity(Vector3(collider->GetOwner()->GetComponent<Rigidbody>()->GetVelocity().x,
                 0.0f, collider->GetOwner()->GetComponent<Rigidbody>()->GetVelocity().z));
             collider->GetOwner()->GetComponent<Rigidbody>()->AddForce(Vector3(0.0f, 70000.0f, 0.0f));
+        }
+    }
+
+
+}
+
+void PlayerController::Cooldowns(float dt)
+{
+    if (dashTimer > 0.0f)
+    {
+        dashTimer -= dt;
+    }
+    else
+    {
+        dashed = false;
+        rigidbody->friction = true;
+    }
+    if (dashCooldownTimer > 0.0f)
+    {
+        dashCooldownTimer -= dt;
+    }
+    else
+    {
+        canDash = true;
+    }
+}
+
+void PlayerController::Positioning()
+{
+    camera->SetLocalPosition({ GetOwner()->GetLocalPosition().x, GetOwner()->GetLocalPosition().y + height * 9 / 10, GetOwner()->GetLocalPosition().z });
+    GetOwner()->SetLocalRotation({ 0.0f, camera->GetLocalRotationEuler().y, 0.0f });
+    ability1->SetLocalPosition(camera->GetLocalPosition());
+    ability1->SetLocalRotation(camera->GetLocalRotationEuler());
+
+    RaycastData rayData = Raycast::CastThroughLayers(camera->GetWorldPosition(), camera->Forward(), std::vector<Layers>{PLAYER});
+
+    if (rayData.hitCollider != nullptr)
+    {
+        if (rayData.hitCollider->GetOwner()->tag == "Ground")
+        {
+            ability2->SetLocalPosition(rayData.hitPoint);
+        }
+        else
+        {
+            RaycastData rayData2 = Raycast::CastAtLayers(rayData.hitCollider->GetOwner()->GetWorldPosition(), Vector3(0.0f, -1.0f, 0.0f), std::vector<Layers>{GROUND});
+            if (rayData2.hitCollider->GetOwner()->tag == "Ground")
+            {
+                ability2->SetLocalPosition(rayData2.hitPoint);
+            }
+
         }
     }
 
