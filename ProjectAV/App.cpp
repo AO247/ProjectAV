@@ -11,6 +11,7 @@
 #include "ColliderSphere.h"
 #include "TexturePreprocessor.h"
 #include "SolidCapsule.h"
+#include "SoundDevice.h"
 
 namespace dx = DirectX;
 

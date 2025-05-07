@@ -1,6 +1,7 @@
 #pragma once
 #include <AL\al.h>
 #include <sndfile.h>
+
 class MusicBuffer
 {
 public:
