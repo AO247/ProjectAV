@@ -91,10 +91,15 @@ void PlayerController::SpeedControl()
 
 void PlayerController::Jump()
 {
-    if (grounded && !jumped) {
+    if ((grounded || !doubleJumped) && !jumped) {
         rigidbody->SetVelocity(Vector3(rigidbody->GetVelocity().x, 0.0f, rigidbody->GetVelocity().z));
         rigidbody->AddForce(Vector3(0.0f, jumpForce * 1000.0f, 0.0f));
-        grounded = false;
+        if (grounded) {
+			grounded = false;
+        }
+        else {
+			doubleJumped = true;
+        }
 		jumped = true;
     }
 }
@@ -142,6 +147,7 @@ void PlayerController::GroundCheck()
            if (GetOwner()->GetWorldPosition().y - rayData.hitPoint.y <= 0.01)
            {
                grounded = true;
+			   doubleJumped = false;
            }
            else
            {
@@ -211,35 +217,36 @@ void PlayerController::KeyboardInput()
             break;
         }
     }
-    if (!dashed)
+    if (wnd.kbd.KeyIsPressed(VK_SPACE))
     {
-        if (wnd.kbd.KeyIsPressed('W'))
-        {
-            moveDirection += GetOwner()->Forward();
-        }
-        if (wnd.kbd.KeyIsPressed('S'))
-        {
-            moveDirection += GetOwner()->Back();
-        }
-        if (wnd.kbd.KeyIsPressed('A'))
-        {
-            moveDirection += GetOwner()->Left();
-        }
-        if (wnd.kbd.KeyIsPressed('D'))
-        {
-            moveDirection += GetOwner()->Right();
-        }
-        if (wnd.kbd.KeyIsPressed(VK_SPACE))
-        {
-            Jump();
-        }
-        else {
-            jumped = false;
-        }
-        if (wnd.kbd.KeyIsPressed(VK_SHIFT))
-        {
-            Dash();
-        }
+        Jump();
+    }
+    else {
+        jumped = false;
+    }
+    if (dashed) return;
+
+    if (wnd.kbd.KeyIsPressed('W'))
+    {
+        moveDirection += GetOwner()->Forward();
+    }
+    if (wnd.kbd.KeyIsPressed('S'))
+    {
+        moveDirection += GetOwner()->Back();
+    }
+    if (wnd.kbd.KeyIsPressed('A'))
+    {
+        moveDirection += GetOwner()->Left();
+    }
+    if (wnd.kbd.KeyIsPressed('D'))
+    {
+        moveDirection += GetOwner()->Right();
+    }
+
+
+    if (wnd.kbd.KeyIsPressed(VK_SHIFT))
+    {
+        Dash();
     }
 }
 void PlayerController::DrawImGuiControls()

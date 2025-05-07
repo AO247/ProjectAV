@@ -38,6 +38,7 @@ private:
 	float dashCooldownTimer = 0.0f;
 	float dashTimer = 0.0f;
 	bool dashed = false;
+	bool doubleJumped = false;
 
 	void KeyboardInput();
 	void MovePlayer();
