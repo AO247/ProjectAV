@@ -1,10 +1,18 @@
 #include "SoundEffectsPlayer.h"
+#include "SoundEffectsLibrary.h"
 #include <iostream>
 
-SoundEffectsPlayer::SoundEffectsPlayer()
+SoundEffectsPlayer::SoundEffectsPlayer(Node* owner) : Component(owner)
 {
 	alGenSources(1, &p_Source);
 	alSourcei(p_Source, AL_BUFFER, p_Buffer);
+	//sound1 = SE_LOAD("..\\ProjectAV\\Models\\turn.ogg");
+	
+
+}
+
+void SoundEffectsPlayer::AddSound(std::string path) {
+	sound.push_back(SE_LOAD(path.c_str()));
 }
 
 SoundEffectsPlayer::~SoundEffectsPlayer()
@@ -12,8 +20,9 @@ SoundEffectsPlayer::~SoundEffectsPlayer()
 	alDeleteSources(1, &p_Source);
 }
 
-void SoundEffectsPlayer::Play(const ALuint& buffer_to_play)
+void SoundEffectsPlayer::Play(int t)
 {
+	ALuint& buffer_to_play = sound[t];
 	if (buffer_to_play != p_Buffer)
 	{
 		p_Buffer = buffer_to_play;

@@ -12,6 +12,8 @@
 #include "TexturePreprocessor.h"
 #include "SolidCapsule.h"
 #include "SoundDevice.h"
+#include "SoundEffectsLibrary.h"
+#include "SoundEffectsPlayer.h"
 
 namespace dx = DirectX;
 
@@ -63,6 +65,13 @@ App::App(const std::string& commandLine)
 	// Initialize Physics Engine
 	physicsEngine = PhysicsEngine();
 	Raycast::physicsEngine = &physicsEngine; // Set the physics engine for raycasting
+    
+    SoundDevice::Init();
+    //static SoundEffectsPlayer effectsPlayer1;
+    //uint32_t sound1 = SE_LOAD("..\\ProjectAV\\Models\\turn.ogg");
+    myMusic = std::make_unique<MusicBuffer>("Models\\muza_full.wav");
+
+
     // --- Create Nodes ---
    
 	auto pCameraNodeOwner = std::make_unique<Node>("Camera", nullptr, "Camera");
@@ -100,6 +109,8 @@ App::App(const std::string& commandLine)
 	pNoxTurnHair = pNoxTurnHairOwner.get();
 	auto pEnemyOwner = std::make_unique<Node>("Enemy", nullptr, "Enemy");
 	pEnemy = pEnemyOwner.get();
+	//auto pSoundEffectsPlayerOwner = std::make_unique<Node>("SoundEffectsPlayer");
+	//pSoundEffectsPlayer = pSoundEffectsPlayerOwner.get();
 
     // Adding to Scene Graph
 	pSceneRoot->AddChild(std::move(pCameraNodeOwner));
@@ -285,8 +296,11 @@ App::App(const std::string& commandLine)
     pEnemy->GetComponent<StateMachine>()->UpdateComponents();
 
     
-
-
+	pPlayer->AddComponent(
+		std::make_unique<SoundEffectsPlayer>(pPlayer)
+	);
+	SoundEffectsPlayer* pSoundEffectsPlayer = pPlayer->GetComponent<SoundEffectsPlayer>();
+    pSoundEffectsPlayer->AddSound("Models\\turn.ogg");
 
     // Changing position scale etc.]
 	pFreeViewCamera->SetLocalPosition({ 4.0f, 11.0f, -28.0f });
@@ -365,6 +379,16 @@ void App::HandleInput(float dt)
 
         switch (e->GetCode())
         {
+		case 'M': // Toggle Music
+			if (myMusic->isPlaying())
+			{
+				myMusic->Stop();
+			}
+			else
+			{
+				myMusic->Play();
+			}
+			break;
         case 'C': // Toggle cursor
             if (cursorEnabled) {
                 wnd.DisableCursor();
@@ -446,6 +470,10 @@ void App::DoFrame(float dt)
 
     pSceneRoot->Draw(wnd.Gfx());
 
+    if (myMusic->isPlaying())
+    {
+        myMusic->UpdateBufferStream();
+    }
 
     if (showControlWindow) {
         ShowControlWindows();

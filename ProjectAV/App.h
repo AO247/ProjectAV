@@ -9,6 +9,7 @@
 #include <map>
 #include "SolidBox.h"
 #include "Components.h"
+#include "MusicBuffer.h"
 // Forward declarations
 class PlayerController; // Forward declare
 
@@ -33,6 +34,7 @@ private:
     float speed_factor = 1.0f;
     PointLight pointLight;
     PhysicsEngine physicsEngine; // Physics engine instance
+    std::unique_ptr<MusicBuffer> myMusic;
 
     // --- Scene Graph ---
     std::unique_ptr<Node> pSceneRoot;
@@ -56,6 +58,7 @@ private:
     Node* pNoxTurn = nullptr; // Node for the camera
     Node* pNoxTurnHair = nullptr; // Node for the camera
     Node* pEnemy = nullptr; // Node for the enemy
+	Node* pSoundEffectsPlayer = nullptr; // Node for the sound effects player
     // --- UI State ---
 
     std::map<BoundingSphere*, SolidSphere> sphereCollidersToDraw;

@@ -8,6 +8,7 @@
 #include <string>
 #include "CapsuleCollider.h"
 #include "BoundingSphere.h"
+
 namespace dx = DirectX;
 PlayerController::PlayerController(Node* owner, Window& window)
     : Component(owner), wnd(window) // Initialize reference member
@@ -16,6 +17,7 @@ PlayerController::PlayerController(Node* owner, Window& window)
 	camera = owner->GetRoot()->FindFirstChildByTag("Camera");
 	ability1 = owner->GetRoot()->FindFirstChildByTag("Ability1");
 	ability2 = owner->GetRoot()->FindFirstChildByTag("Ability2");
+
 }
 
 void PlayerController::Update(float dt)
@@ -169,6 +171,9 @@ void PlayerController::KeyboardInput()
     if (wnd.kbd.KeyIsPressed('W'))
     {
         moveDirection += GetOwner()->Forward();
+        if (!pOwner->GetComponent<SoundEffectsPlayer>()->isPlaying()) {
+            pOwner->GetComponent<SoundEffectsPlayer>()->Play(0);
+        }
     }
     if (wnd.kbd.KeyIsPressed('S'))
     {
