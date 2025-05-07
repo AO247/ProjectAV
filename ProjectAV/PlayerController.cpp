@@ -28,6 +28,24 @@ void PlayerController::Update(float dt)
 
     RaycastData rayData = Raycast::CastThroughLayers(camera->GetWorldPosition(), camera->Forward(), std::vector<Layers>{PLAYER});
 
+	if (dashTimer > 0.0f)
+	{
+		dashTimer -= dt;
+	}
+	else
+	{
+		dashed = false;
+		rigidbody->friction = true;
+	}
+	if (dashCooldownTimer > 0.0f)
+	{
+		dashCooldownTimer -= dt;
+	}
+	else
+	{
+		canDash = true;
+	}
+
     if (rayData.hitCollider != nullptr)
     {
         if (rayData.hitCollider->GetOwner()->tag == "Ground")
@@ -49,6 +67,7 @@ void PlayerController::Update(float dt)
 
     if (!wnd.CursorEnabled())
     {
+
         GroundCheck();
 		KeyboardInput();
 		SpeedControl();
@@ -59,21 +78,15 @@ void PlayerController::Update(float dt)
 
 void PlayerController::SpeedControl()
 {
+	if (dashed) return;
     Vector3 velocity(rigidbody->GetVelocity().x, 0.0f, rigidbody->GetVelocity().z);
 
-    if (velocity.Length() > moveSpeed && !dashed) 
+    if (velocity.Length() > moveSpeed) 
     {
 		velocity.Normalize();
         Vector3 limitedVel = velocity * moveSpeed;
 		rigidbody->SetVelocity(Vector3(limitedVel.x, rigidbody->GetVelocity().y, limitedVel.z));
     }
-	/*if (moveDirection.Length() == 0)
-	{
-		Vector3 currentVelocity = rigidbody->GetVelocity();
-		currentVelocity.x = currentVelocity.x / 1.3f;
-		currentVelocity.z = currentVelocity.z / 1.3f;
-		rigidbody->SetVelocity(currentVelocity);
-	}*/
 }
 
 void PlayerController::Jump()
@@ -88,12 +101,33 @@ void PlayerController::Jump()
 
 void PlayerController::Dash()
 {
-    if (!dashed) {
-        Vector3 dashDirection = moveDirection;
-        dashDirection.Normalize();
-        rigidbody->AddForce(dashDirection * dashForce * 10.0f);
-        dashed = true;
+    if (!canDash) return;
+    dashed = true;
+	canDash = false;
+    
+    Vector3 dashDirection = moveDirection;
+    if (moveDirection == pOwner->Forward())
+    {
+		dashDirection = camera->Forward();
     }
+    else if (moveDirection == pOwner->Back())
+    {
+        dashDirection = camera->Back();
+    }
+
+    if (moveDirection == Vector3(0.0f, 0.0f, 0.0f))
+    {
+		dashDirection = camera->Forward();
+    }
+    //dashDirection = camera->Back();
+    dashDirection.Normalize();
+
+    dashTimer = 0.3f;
+	dashCooldownTimer = dashCooldown;
+
+	rigidbody->friction = false;
+    rigidbody->SetVelocity({ 0.0f, 0.0f, 0.0f });
+    rigidbody->AddForce(dashDirection * dashForce * 100.0f);
 }
 
 void PlayerController::GroundCheck()
@@ -120,6 +154,7 @@ void PlayerController::GroundCheck()
 void PlayerController::MovePlayer()
 {
     moveDirection.Normalize();
+
 
     rigidbody->AddForce(moveDirection * moveSpeed * 1000.0f);
 }
@@ -176,38 +211,36 @@ void PlayerController::KeyboardInput()
             break;
         }
     }
-
-    if (wnd.kbd.KeyIsPressed('W'))
+    if (!dashed)
     {
-        moveDirection += GetOwner()->Forward();
+        if (wnd.kbd.KeyIsPressed('W'))
+        {
+            moveDirection += GetOwner()->Forward();
+        }
+        if (wnd.kbd.KeyIsPressed('S'))
+        {
+            moveDirection += GetOwner()->Back();
+        }
+        if (wnd.kbd.KeyIsPressed('A'))
+        {
+            moveDirection += GetOwner()->Left();
+        }
+        if (wnd.kbd.KeyIsPressed('D'))
+        {
+            moveDirection += GetOwner()->Right();
+        }
+        if (wnd.kbd.KeyIsPressed(VK_SPACE))
+        {
+            Jump();
+        }
+        else {
+            jumped = false;
+        }
+        if (wnd.kbd.KeyIsPressed(VK_SHIFT))
+        {
+            Dash();
+        }
     }
-    if (wnd.kbd.KeyIsPressed('S'))
-    {
-        moveDirection += GetOwner()->Back();
-    }
-    if (wnd.kbd.KeyIsPressed('A'))
-    {
-        moveDirection += GetOwner()->Left();
-    }
-    if (wnd.kbd.KeyIsPressed('D'))
-    {
-        moveDirection += GetOwner()->Right();
-    }
-    if (wnd.kbd.KeyIsPressed(VK_SPACE))
-    {
-        Jump();
-    }
-    else {
-        jumped = false;
-    }
-    if (wnd.kbd.KeyIsPressed(VK_SHIFT))
-    {
-        Dash();
-    }
-    else {
-        dashed = false;
-    }
-
 }
 void PlayerController::DrawImGuiControls()
 {
@@ -215,6 +248,8 @@ void PlayerController::DrawImGuiControls()
     ImGui::InputFloat("JumpForce", &jumpForce);
 	ImGui::InputFloat("Dash Force", &dashForce);
     ImGui::Checkbox("Jumped", &jumped);
-	ImGui::Checkbox("Dashed", &dashed);
+	ImGui::Checkbox("CanDash", &canDash);
 	ImGui::Checkbox("Grounded", &grounded);
+
+	ImGui::InputFloat("Dash Cooldown", &dashCooldown);
 }

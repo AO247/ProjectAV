@@ -479,7 +479,8 @@ void App::DoFrame(float dt)
  //   DebugLine(wnd.Gfx(), centerOrigin, hitCenter.hitPoint).Draw(wnd.Gfx());
 
     //pEnemy->SetLocalRotation(previousRotation);
-
+    Vector3 secPos(pCamera->GetWorldPosition().x + pCamera->Forward().x, pCamera->GetWorldPosition().y + pCamera->Forward().y, pCamera->GetWorldPosition().z + pCamera->Forward().z);
+    DebugLine(wnd.Gfx(), pCamera->GetWorldPosition(), secPos).Draw(wnd.Gfx());
 
     if (showControlWindow) {
         ShowControlWindows();

@@ -14,23 +14,30 @@ void Rigidbody::Update(float dt)
 
 void Rigidbody::Integrate(float delta)
 {
-	RaycastData rayData = Raycast::CastAtLayers(GetOwner()->GetWorldPosition(), Vector3(0.0f, -1.0f, 0.0f), std::vector<Layers>{GROUND});
-
-	if (rayData.hitCollider != nullptr)
+	if (friction)
 	{
-		if (rayData.hitCollider->GetOwner()->tag == "Ground")
+		RaycastData rayData = Raycast::CastAtLayers(GetOwner()->GetWorldPosition(), Vector3(0.0f, -1.0f, 0.0f), std::vector<Layers>{GROUND});
+
+		if (rayData.hitCollider != nullptr)
 		{
-			if (GetOwner()->GetWorldPosition().y - rayData.hitPoint.y <= 0.01)
+			if (rayData.hitCollider->GetOwner()->tag == "Ground")
 			{
-				grounded = true;
-			}
-			else
-			{
-				grounded = false;
+				if (GetOwner()->GetWorldPosition().y - rayData.hitPoint.y <= 0.01)
+				{
+					grounded = true;
+				}
+				else
+				{
+					grounded = false;
+				}
 			}
 		}
-	}
+		if (grounded)
+		{
+			velocity -= velocity * linearVelocityDamping * 1.5f * delta;
 
+		}
+	}
 	//position += (velocity * delta);
 
 	//DirectX::XMVECTOR positionVec = GetOwner()->GetWorldTransform().r[3];
@@ -47,11 +54,7 @@ void Rigidbody::Integrate(float delta)
 	{
 		force += mass * gravity;
 	}
-	if (grounded)
-	{
-		velocity -= velocity * linearVelocityDamping * 1.5f * delta;
 
-	}
 	velocity -= velocity * linearVelocityDamping * delta;
 	velocity += (force / mass) * delta;
 	position = pos + (velocity * delta);

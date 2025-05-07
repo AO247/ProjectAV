@@ -41,7 +41,7 @@ public:
 
 	static Vector3 gravity;
 	bool grounded = false;
-
+	bool friction = true;
 	virtual void DrawImGuiControls() override;
 
 private:
@@ -50,6 +50,7 @@ private:
 	Vector3 velocity;
 	Vector3 angularVelocity;
 	Vector3 force;
+
 	float mass = 10.0f;
 	float linearVelocityDamping = 3.0f;
 	float angularVelocityDamping = 1.0f;
