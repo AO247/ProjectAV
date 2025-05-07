@@ -9,8 +9,6 @@
 #include "CapsuleCollider.h"
 #include "BoundingSphere.h"
 #include "SoundDevice.h"
-#include "SoundBuffer.h"
-#include "SoundSource.h"
 #include "MusicBuffer.h"
 #include "SoundEffectsLibrary.h"
 #include "SoundEffectsPlayer.h"
@@ -179,18 +177,26 @@ void PlayerController::KeyboardInput()
     if (wnd.kbd.KeyIsPressed('W'))
     {
         moveDirection += GetOwner()->Forward();
+		//SoundEffectsPlayer* effectPlayer = new SoundEffectsPlayer;
+		//effectPlayer->Play(sound1);
     }
     if (wnd.kbd.KeyIsPressed('S'))
     {
         moveDirection += GetOwner()->Back();
+        //SoundEffectsPlayer* effectPlayer = new SoundEffectsPlayer;
+        //effectPlayer->Play(sound1);
     }
     if (wnd.kbd.KeyIsPressed('A'))
     {
         moveDirection += GetOwner()->Left();
+        //SoundEffectsPlayer* effectPlayer = new SoundEffectsPlayer;
+        //effectPlayer->Play(sound1);
     }
     if (wnd.kbd.KeyIsPressed('D'))
     {
         moveDirection += GetOwner()->Right();
+        //SoundEffectsPlayer* effectPlayer = new SoundEffectsPlayer;
+        //effectPlayer->Play(sound1);
     }
     if (wnd.kbd.KeyIsPressed(VK_SPACE))
     {

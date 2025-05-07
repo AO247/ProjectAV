@@ -216,11 +216,9 @@
     <ClCompile Include="SolidBox.cpp" />
     <ClCompile Include="SolidCapsule.cpp" />
     <ClCompile Include="SolidSphere.cpp" />
-    <ClCompile Include="SoundBuffer.cpp" />
     <ClCompile Include="SoundDevice.cpp" />
     <ClCompile Include="SoundEffectsLibrary.cpp" />
     <ClCompile Include="SoundEffectsPlayer.cpp" />
-    <ClCompile Include="SoundSource.cpp" />
     <ClCompile Include="StateMachine.cpp" />
     <ClCompile Include="Surface.cpp" />
     <ClCompile Include="TestPlane.cpp" />
@@ -304,11 +302,9 @@
     <ClInclude Include="SolidBox.h" />
     <ClInclude Include="SolidCapsule.h" />
     <ClInclude Include="SolidSphere.h" />
-    <ClInclude Include="SoundBuffer.h" />
     <ClInclude Include="SoundDevice.h" />
     <ClInclude Include="SoundEffectsLibrary.h" />
     <ClInclude Include="SoundEffectsPlayer.h" />
-    <ClInclude Include="SoundSource.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="StateType.h" />
