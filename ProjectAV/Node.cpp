@@ -402,10 +402,10 @@ void Node::Draw(Graphics& gfx) const
     {
         modelComp->Draw(gfx, GetWorldTransform());
     }
-    for (const auto& child : children)
+	/*for (const auto& child : children) // Commented out for FRUSTUM CULLING
     {
         child->Draw(gfx);
-    }
+    }*/
 }
 
 // --- ShowNodeTree remains the same ---

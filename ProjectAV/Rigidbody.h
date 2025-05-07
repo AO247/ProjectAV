@@ -42,6 +42,7 @@ public:
 	static Vector3 gravity;
 	bool grounded = false;
 	bool friction = true;
+	float frictionDamping = 5.0f;
 	virtual void DrawImGuiControls() override;
 
 private:

@@ -33,6 +33,7 @@ private:
     float speed_factor = 1.0f;
     PointLight pointLight;
     PhysicsEngine physicsEngine; // Physics engine instance
+	DirectX::BoundingFrustum cameraFrustum; // Frustum for the camera
 
     // --- Scene Graph ---
     std::unique_ptr<Node> pSceneRoot;
@@ -56,6 +57,7 @@ private:
     Node* pNoxTurn = nullptr; // Node for the camera
     Node* pNoxTurnHair = nullptr; // Node for the camera
     Node* pEnemy = nullptr; // Node for the enemy
+
     // --- UI State ---
 
     std::map<BoundingSphere*, SolidSphere> sphereCollidersToDraw;
@@ -68,6 +70,9 @@ private:
     void DrawBoxColliders(Graphics& gfx);
 	void AddCapsuleColliderToDraw(Graphics& gfx, CapsuleCollider* capsule);
 	void DrawCapsuleColliders(Graphics& gfx);
+    void FrustumCalculating();
+    void DrawNodeRecursive(Graphics& gfx, Node& node);
+
 
     bool showDemoWindow = false;
     bool cursorEnabled = false;

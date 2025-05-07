@@ -34,7 +34,7 @@ void Rigidbody::Integrate(float delta)
 		}
 		if (grounded)
 		{
-			velocity -= velocity * linearVelocityDamping * 1.5f * delta;
+			velocity -= velocity * frictionDamping * delta;
 
 		}
 	}

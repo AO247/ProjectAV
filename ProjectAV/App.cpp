@@ -258,12 +258,23 @@ App::App(const std::string& commandLine)
         std::make_unique<Rigidbody>(pStone, Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f))
     );
 	Rigidbody* sRigidbody = pStone->GetComponent<Rigidbody>();
+    pStone->AddComponent(
+        std::make_unique<Throwable>(pStone)
+    );
 	pStone->AddComponent(
 		std::make_unique<OBB>(pStone, sRigidbody, Vector3(0.0f, 0.6f, 0.0f), Vector3(1.2f, 1.1f, 1.7f))
 	);
 	OBB* sOBB = pStone->GetComponent<OBB>();
 	sRigidbody->SetCollider(sOBB);
 	physicsEngine.AddRigidbody(sRigidbody);
+    pStone->AddComponent(
+        std::make_unique<BoundingSphere>(pStone, Vector3(0.0f, 0.6f, 0.0f), 1.5f, nullptr)
+    );
+	BoundingSphere* sBoundingSphere = pStone->GetComponent<BoundingSphere>();
+	sBoundingSphere->SetIsTrigger(true);
+	sBoundingSphere->SetTriggerEnabled(true);
+	pStone->GetComponent<Throwable>()->damageArea = sBoundingSphere;
+	physicsEngine.AddCollider(sBoundingSphere);
 
     //Adding Other Components
     pFreeViewCamera->AddComponent(
@@ -316,6 +327,7 @@ App::App(const std::string& commandLine)
 
 	AddSphereColliderToDraw(wnd.Gfx(), bBoundingSphere);
 	AddSphereColliderToDraw(wnd.Gfx(), a2Sphere);
+	AddSphereColliderToDraw(wnd.Gfx(), sBoundingSphere);
 
 	AddCapsuleColliderToDraw(wnd.Gfx(), pCapsule);
 	AddCapsuleColliderToDraw(wnd.Gfx(), eCapsule);
@@ -443,7 +455,8 @@ void App::DoFrame(float dt)
     // --- Bind Lights ---
     pointLight.Bind(wnd.Gfx(), viewMatrix); // Bind point light (to slot 0)
 
-    pSceneRoot->Draw(wnd.Gfx());
+    FrustumCalculating(); // Draw with FRUSTUM CULLING
+    //pSceneRoot->Draw(wnd.Gfx()); // Draw without FRUSTUM CULLING you have to also uncomment the draw method in Node.cpp
 
     //Vector3 previousRotation = pEnemy->GetLocalRotationEuler();
 
@@ -489,6 +502,117 @@ void App::DoFrame(float dt)
     wnd.Gfx().EndFrame();
 }
 
+
+void App::FrustumCalculating() {
+    dx::XMMATRIX camWorldTransform = pCamera->GetWorldTransform();
+    dx::XMVECTOR camWorldPos = camWorldTransform.r[3]; // Default
+    dx::XMVECTOR camWorldForward = dx::XMVector3Normalize(dx::XMVector3TransformNormal(dx::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f), camWorldTransform)); // Default
+    dx::XMVECTOR camWorldUp = dx::XMVector3Normalize(dx::XMVector3TransformNormal(dx::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), camWorldTransform));    // Default
+    dx::XMVECTOR camWorldRight = dx::XMVector3Normalize(dx::XMVector3TransformNormal(dx::XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f), camWorldTransform)); // Default
+
+    const float fovAngleY = DirectX::XMConvertToRadians(70.0f); // Field of View in Y direction (radians) - MUST MATCH YOUR PROJECTION
+    const float aspectRatio = 16.0f / 9.0f; // MUST MATCH YOUR PROJECTION
+    const float nearDist = 0.5f;         // MUST MATCH YOUR PROJECTION
+    const float farDist = 300.0f;       // MUST MATCH YOUR PROJECTION
+
+    // Half heights/widths at near and far planes
+    float halfHeightNear = nearDist * tanf(fovAngleY * 0.5f);
+    float halfWidthNear = halfHeightNear * aspectRatio;
+    float halfHeightFar = farDist * tanf(fovAngleY * 0.5f);
+    float halfWidthFar = halfHeightFar * aspectRatio;
+
+    dx::XMVECTOR nearCenter = dx::XMVectorAdd(camWorldPos, dx::XMVectorScale(camWorldForward, nearDist));
+    dx::XMVECTOR farCenter = dx::XMVectorAdd(camWorldPos, dx::XMVectorScale(camWorldForward, farDist));
+
+    // Calculate the 8 corner points (optional for plane calculation, but useful for verification)
+    dx::XMVECTOR nearTopLeft = dx::XMVectorAdd(nearCenter, dx::XMVectorSubtract(dx::XMVectorScale(camWorldUp, halfHeightNear), dx::XMVectorScale(camWorldRight, halfWidthNear)));
+    dx::XMVECTOR nearTopRight = dx::XMVectorAdd(nearCenter, dx::XMVectorAdd(dx::XMVectorScale(camWorldUp, halfHeightNear), dx::XMVectorScale(camWorldRight, halfWidthNear)));
+    dx::XMVECTOR nearBottomLeft = dx::XMVectorAdd(nearCenter, dx::XMVectorSubtract(dx::XMVectorScale(camWorldUp, -halfHeightNear), dx::XMVectorScale(camWorldRight, halfWidthNear)));
+    dx::XMVECTOR nearBottomRight = dx::XMVectorAdd(nearCenter, dx::XMVectorAdd(dx::XMVectorScale(camWorldUp, -halfHeightNear), dx::XMVectorScale(camWorldRight, halfWidthNear)));
+    dx::XMVECTOR farTopLeft = dx::XMVectorAdd(farCenter, dx::XMVectorSubtract(dx::XMVectorScale(camWorldUp, halfHeightFar), dx::XMVectorScale(camWorldRight, halfWidthFar)));
+    dx::XMVECTOR farTopRight = dx::XMVectorAdd(farCenter, dx::XMVectorAdd(dx::XMVectorScale(camWorldUp, halfHeightFar), dx::XMVectorScale(camWorldRight, halfWidthFar)));
+    dx::XMVECTOR farBottomLeft = dx::XMVectorAdd(farCenter, dx::XMVectorSubtract(dx::XMVectorScale(camWorldUp, -halfHeightFar), dx::XMVectorScale(camWorldRight, halfWidthFar)));
+    dx::XMVECTOR farBottomRight = dx::XMVectorAdd(farCenter, dx::XMVectorAdd(dx::XMVectorScale(camWorldUp, -halfHeightFar), dx::XMVectorScale(camWorldRight, halfWidthFar)));
+
+    cameraFrustum.Near = 0.5f;
+
+    // Far Plane: Normal = -camWorldForward, Point = farCenter
+    cameraFrustum.Far = 300.0f;
+
+    float tanHalfFovY = tanf(fovAngleY * 0.5f);
+    cameraFrustum.TopSlope = tanHalfFovY;
+    cameraFrustum.BottomSlope = -tanHalfFovY;
+
+    cameraFrustum.RightSlope = tanHalfFovY * aspectRatio;
+    cameraFrustum.LeftSlope = -tanHalfFovY * aspectRatio;
+
+    DirectX::XMStoreFloat3(&cameraFrustum.Origin, camWorldPos);
+    dx::XMMATRIX worldOrientationMatrix;
+    worldOrientationMatrix.r[0] = camWorldRight;   // World X-axis of the camera
+    worldOrientationMatrix.r[1] = camWorldUp;      // World Y-axis of the camera
+    worldOrientationMatrix.r[2] = camWorldForward; // World Z-axis of the camera
+    worldOrientationMatrix.r[3] = dx::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f); // Set W component for a valid matrix
+
+    // 3. Convert the Orientation Matrix to a Quaternion
+    DirectX::XMStoreFloat4(&cameraFrustum.Orientation, dx::XMQuaternionRotationMatrix(worldOrientationMatrix));
+
+
+    DrawNodeRecursive(wnd.Gfx(), *pSceneRoot);
+}
+
+void App::DrawNodeRecursive(Graphics& gfx, Node& node)
+{
+    // --- Culling Check ---
+    bool shouldDraw = true; // Assume we draw by default
+    ModelComponent* modelComp = node.GetComponent<ModelComponent>();
+
+    if (modelComp != nullptr) // Only cull nodes with models (or add BoundsComponent later)
+    {
+        DirectX::BoundingSphere sphere;
+        DirectX::BoundingBox box;
+        DirectX::ContainmentType containment = DirectX::DISJOINT;
+        if (node.GetComponent<BoundingSphere>() != nullptr)
+        {
+            sphere.Center = node.GetWorldPosition();
+            sphere.Radius = node.GetComponent<BoundingSphere>()->GetRadius();
+            containment = cameraFrustum.Contains(sphere);
+        }
+        else if (node.GetComponent<OBB>() != nullptr)
+        {
+            box.Center = node.GetWorldPosition();
+            box.Extents = node.GetComponent<OBB>()->GetTransformedSize();
+            containment = cameraFrustum.Contains(box);
+        }
+        else if (node.GetComponent<CapsuleCollider>() != nullptr)
+        {
+            // Assuming you have a method to get the capsule's bounding sphere
+            sphere.Center = DirectX::XMFLOAT3(node.GetWorldPosition().x,
+                (node.GetWorldPosition().y + 1.5f),
+                node.GetWorldPosition().z);
+            sphere.Radius = node.GetComponent<CapsuleCollider>()->GetRadius() * 2.5f;
+            containment = cameraFrustum.Contains(sphere);
+        }
+
+        if (containment == DirectX::DISJOINT) // DISJOINT means completely outside
+        {
+            shouldDraw = false; // Don't draw this node or its children
+        }
+
+    }
+
+
+    if (shouldDraw)
+    {
+        node.Draw(gfx);
+        for (const auto& pChild : node.GetChildren())
+        {
+            if (pChild)
+            {
+                DrawNodeRecursive(gfx, *pChild); // Recurse for children
+            }
+        }
+    }
+}
 
 void App::ShowControlWindows()
 {
