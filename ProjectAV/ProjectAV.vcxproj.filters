@@ -273,6 +273,12 @@
     <ClCompile Include="Throwable.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
+    <ClCompile Include="Blender.cpp">
+      <Filter>Source Files\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="Rasterizer.cpp">
+      <Filter>Source Files\Bindable</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowsMessageMap.h">
@@ -539,6 +545,12 @@
     <ClInclude Include="Throwable.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
+    <ClInclude Include="Blender.h">
+      <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Rasterizer.h">
+      <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ProjectAV.rc">
@@ -604,6 +616,9 @@
     </FxCompile>
     <FxCompile Include="PhongPSNotex.hlsl" />
     <FxCompile Include="PhongVSNotex.hlsl" />
+    <FxCompile Include="PhongPSSpecNormMask.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="DXGetErrorDescription.inl">
