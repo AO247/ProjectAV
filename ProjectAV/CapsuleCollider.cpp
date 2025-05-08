@@ -225,6 +225,16 @@ Vector3 CapsuleCollider::GetTransformedTip()
 		DirectX::XMVectorGetZ(e));
 }
 
+Vector3 CapsuleCollider::GetColliderTransformedCenter()
+{
+	Vector3 fromBaseToTip = GetTransformedTip() - GetTransformedBase();
+	float distanceFromBaseToTip = fromBaseToTip.Length();
+	Vector3 fromBaseToTipDirection = fromBaseToTip / distanceFromBaseToTip;
+	Vector3 capsuleCenter = fromBaseToTipDirection * distanceFromBaseToTip;
+
+	return capsuleCenter;
+}
+
 float CapsuleCollider::GetRadius()
 {
 	return radius;

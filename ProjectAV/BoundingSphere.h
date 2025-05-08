@@ -32,6 +32,7 @@ public:
 	Vector3& GetCenter();
 	float GetRadius();
 	Vector3 GetTransformedCenter();
+	Vector3 GetColliderTransformedCenter() override;
 
 private:
 	Vector3 center;

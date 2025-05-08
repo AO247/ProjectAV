@@ -43,6 +43,7 @@ public:
 	Vector3 NearestPoint(Vector3 otherPoint);
 	Vector3 GetTransformedCenter();
 	Vector3 GetClosestPoint(Vector3 point);
+	Vector3 GetColliderTransformedCenter() override;
 private:
 	Vector3 center;
 	Vector3 size;

@@ -170,19 +170,6 @@ void PhysicsEngine::HandleRigidbodyCollisions()
 					secondBody->SetAngularVelocity(Vector3(0, 0, 0));
 				}*/
 			}
-			else
-			{
-				Vector3 previousStepFromFirstBodyToSecondBody = secondBody->GetPreviousStepPosition() - firstBody->GetPreviousStepPosition();
-				Vector3 actualFromFirstBodyToSecondBody = secondBody->GetPosition() - firstBody->GetPosition();
-
-				// If the vectors point opposite directions, the bodies must have missed each other
-				// So the collision happened
-				if (previousStepFromFirstBodyToSecondBody.Dot(actualFromFirstBodyToSecondBody) < 0)
-				{
-					OutputDebugString("POMINIETA KOLIZJA");
-				}
-			}
-
 		}
 	}
 

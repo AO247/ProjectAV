@@ -601,6 +601,11 @@ Vector3 OBB::GetClosestPoint(Vector3 point)
 	return closest;
 }
 
+Vector3 OBB::GetColliderTransformedCenter()
+{
+	return GetTransformedCenter();
+}
+
 Vector3 OBB::GetTransformedOrientation(Vector3 orientation)
 {
 	DirectX::XMVECTOR e = DirectX::XMVectorSet(orientation.x, orientation.y, orientation.z, 0.0f);

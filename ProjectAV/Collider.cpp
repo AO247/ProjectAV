@@ -6,6 +6,11 @@ void Collider::Update(float dt)
 {
 }
 
+Vector3 Collider::GetColliderTransformedCenter()
+{
+	return Vector3(0,0,0);
+}
+
 IntersectData Collider::Intersect(Collider* other)
 {
 	if (colliderType == SPHERE && other->GetColliderType() == SPHERE)

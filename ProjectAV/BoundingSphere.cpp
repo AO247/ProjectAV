@@ -154,3 +154,8 @@ Vector3 BoundingSphere::GetTransformedCenter()
 					pOwner->GetWorldPosition().y + center.y,
 					pOwner->GetWorldPosition().z + center.z);
 }
+
+Vector3 BoundingSphere::GetColliderTransformedCenter()
+{
+	return GetTransformedCenter();
+}

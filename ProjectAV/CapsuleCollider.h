@@ -28,6 +28,7 @@ public:
 
 	Vector3 GetTransformedBase();
 	Vector3 GetTransformedTip();
+	Vector3 GetColliderTransformedCenter() override;
 	float GetRadius();
 	Vector3 ClosestPointOnLineSegment(Vector3 a, Vector3 b, Vector3 point);
 private:

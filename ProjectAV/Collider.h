@@ -28,6 +28,8 @@ public:
 	
 	void Update(float dt) override;
 
+	virtual Vector3 GetColliderTransformedCenter();
+
 	IntersectData Intersect(Collider* other);
 	virtual RaycastData IntersectRay(Raycast* ray);
 
