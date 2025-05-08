@@ -9,6 +9,7 @@
 #include <map>
 #include "SolidBox.h"
 #include "Components.h"
+#include "ScriptCommander.h"
 // Forward declarations
 class PlayerController; // Forward declare
 
@@ -29,6 +30,7 @@ private:
     std::string commandLine;
     ImguiManager imgui;
     Window wnd; // PlayerController needs access to this
+	ScriptCommander scriptCommander;
     Timer timer;
     float speed_factor = 1.0f;
     PointLight pointLight;

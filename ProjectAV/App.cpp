@@ -3,62 +3,28 @@
 #include "State.h"
 #include "CMath.h"
 #include "Surface.h"
-#include "GDIPlusManager.h"
 #include "imgui/imgui.h"
 #include <memory>
-#include <shellapi.h>
 #include <algorithm>
+#include "CUtil.h"
 #include "ColliderSphere.h"
 #include "TexturePreprocessor.h"
 #include "SolidCapsule.h"
 #include "DebugLine.h"
 namespace dx = DirectX;
 
-GDIPlusManager gdipm;
 
 App::App(const std::string& commandLine)
     :
     commandLine(commandLine),
     wnd(1280, 720, "Project AV"), // Pass window dimensions/title
+	scriptCommander(TokenizeQuoted(commandLine)),
     pointLight(wnd.Gfx()), // Initialize PointLight
     pSceneRoot(std::make_unique<Node>("Root"))
 {
     // Set Projection Matrix (Far plane adjusted for larger scenes potentially)
     wnd.Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 2000.0f));
-    if (this->commandLine != "")
-    {
-        int nArgs;
-        const auto pLineW = GetCommandLineW();
-        const auto pArgs = CommandLineToArgvW(pLineW, &nArgs);
-        if (nArgs >= 3 && std::wstring(pArgs[1]) == L"--twerk-objnorm")
-        {
-            const std::wstring pathInWide = pArgs[2];
-            TexturePreprocessor::FlipYAllNormalMapsInObj(
-                std::string(pathInWide.begin(), pathInWide.end())
-            );
-            throw std::runtime_error("Normal maps all processed successfully. Just kidding about that whole runtime error thing.");
-        }
-        else if (nArgs >= 3 && std::wstring(pArgs[1]) == L"--twerk-flipy")
-        {
-            const std::wstring pathInWide = pArgs[2];
-            const std::wstring pathOutWide = pArgs[3];
-            TexturePreprocessor::FlipYNormalMap(
-                std::string(pathInWide.begin(), pathInWide.end()),
-                std::string(pathOutWide.begin(), pathOutWide.end())
-            );
-            throw std::runtime_error("Normal map processed successfully. Just kidding about that whole runtime error thing.");
-        }
-        else if (nArgs >= 4 && std::wstring(pArgs[1]) == L"--twerk-validate")
-        {
-            const std::wstring minWide = pArgs[2];
-            const std::wstring maxWide = pArgs[3];
-            const std::wstring pathWide = pArgs[4];
-            TexturePreprocessor::ValidateNormalMap(
-                std::string(pathWide.begin(), pathWide.end()), std::stof(minWide), std::stof(maxWide)
-            );
-            throw std::runtime_error("Normal map validated successfully. Just kidding about that whole runtime error thing.");
-        }
-    }
+
 	// Initialize Physics Engine
 	physicsEngine = PhysicsEngine();
 	Raycast::physicsEngine = &physicsEngine; // Set the physics engine for raycasting

@@ -2,10 +2,11 @@
 #include <filesystem>
 #include <sstream>
 #include "Mesh.h"
+#include "CMath.h"
+#include <assimp/types.h>
+#include <assimp/material.h>
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
-#include <assimp/postprocess.h>
-#include "CMath.h"
 
 
 template<typename F>
@@ -109,6 +110,30 @@ void TexturePreprocessor::ValidateNormalMap( const std::string& pathIn,float thr
 		oss << "Normal map biases: (" << sumv.x << "," << sumv.y << ")\n";
 		OutputDebugStringA( oss.str().c_str() );		
 	}
+}
+
+void TexturePreprocessor::MakeStripes( const std::string& pathOut,int size,int stripeWidth )
+{
+	// make sure texture dimension is power of 2
+	auto power = log2( size );
+	assert( modf( power,&power ) == 0.0 );
+	// make sure stripe width enables at least 2 stripes
+	assert( stripeWidth < size / 2 );
+
+	Surface s( size,size );
+	for( int y = 0; y < size; y++ )
+	{
+		for( int x = 0; x < size; x++ )
+		{
+			Surface::Color c = { 0,0,0 };
+			if( (x / stripeWidth) % 2 == 0 )
+			{
+				c = { 255,255,255 };
+			}
+			s.PutPixel( x,y,c );
+		}
+	}
+	s.Save( pathOut );
 }
 
 DirectX::XMVECTOR TexturePreprocessor::ColorToVector( Surface::Color c ) noexcept
