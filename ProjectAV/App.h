@@ -10,6 +10,8 @@
 #include "SolidBox.h"
 #include "Components.h"
 #include "MusicBuffer.h"
+#include "SoundDevice.h"
+
 // Forward declarations
 class PlayerController; // Forward declare
 
@@ -34,6 +36,7 @@ private:
     float speed_factor = 1.0f;
     PointLight pointLight;
     PhysicsEngine physicsEngine; // Physics engine instance
+	SoundDevice* soundDevice; // Sound device instance
     std::unique_ptr<MusicBuffer> myMusic;
 
     // --- Scene Graph ---

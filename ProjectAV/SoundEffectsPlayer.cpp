@@ -11,6 +11,15 @@ SoundEffectsPlayer::SoundEffectsPlayer(Node* owner) : Component(owner)
 
 }
 
+void SoundEffectsPlayer::Update(float dt)
+{
+	SetPosition(
+		pOwner->GetLocalPosition().x,
+		pOwner->GetLocalPosition().y,
+		pOwner->GetLocalPosition().z
+	);
+}
+
 void SoundEffectsPlayer::AddSound(std::string path) {
 	sound.push_back(SE_LOAD(path.c_str()));
 }
@@ -65,6 +74,7 @@ void SoundEffectsPlayer::SetPosition(const float& x, const float& y, const float
 {
 	alSource3f(p_Source, AL_POSITION, x, y, z);
 }
+
 
 bool SoundEffectsPlayer::isPlaying()
 {

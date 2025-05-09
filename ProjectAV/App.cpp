@@ -66,7 +66,9 @@ App::App(const std::string& commandLine)
 	physicsEngine = PhysicsEngine();
 	Raycast::physicsEngine = &physicsEngine; // Set the physics engine for raycasting
     
-    SoundDevice::Init();
+    soundDevice = LISTENER->Get();
+    ALint attentuation = AL_INVERSE_DISTANCE_CLAMPED;
+	soundDevice->SetAttenuation(attentuation);
     //static SoundEffectsPlayer effectsPlayer1;
     //uint32_t sound1 = SE_LOAD("..\\ProjectAV\\Models\\turn.ogg");
     myMusic = std::make_unique<MusicBuffer>("Models\\muza_full.wav");
@@ -321,10 +323,14 @@ App::App(const std::string& commandLine)
 	pNoxTurn->SetLocalPosition(DirectX::XMFLOAT3(5.0f, 0.0f, 5.0f));
 	pNoxTurn->SetLocalScale(dx::XMFLOAT3(0.01f, 0.01f, 0.01f));
 	pEnemy->SetLocalPosition(DirectX::XMFLOAT3(15.0f, 10.0f, 0.0f));
+	//pEnemySoundEffectsPlayer->SetPosition(0.0f, 0.0f, 0.0f);
 	pColumn->SetLocalPosition(DirectX::XMFLOAT3(-8.0f, 0.0f, -7.0f));
 	pColumn2->SetLocalPosition(DirectX::XMFLOAT3(-2.0f, 0.0f, 4.0f));
 	pColumn3->SetLocalPosition(DirectX::XMFLOAT3(-16.0f, 0.0f, -6.0f));
 	pColumn4->SetLocalPosition(DirectX::XMFLOAT3(10.0f, 0.0f, 6.0f));
+	soundDevice->SetLocation(pPlayer->GetLocalPosition().x, pPlayer->GetLocalPosition().y, pPlayer->GetLocalPosition().z);
+	//soundDevice->SetOrientation
+	//soundDevice->SetOrientation(0.f, 1.f, 0.f, 0.f, 0.f, 1.f);
 
     //Adding colliders to draw
     AddBoxColliderToDraw(wnd.Gfx(), iOBB);
@@ -480,6 +486,22 @@ void App::DoFrame(float dt)
     {
         myMusic->UpdateBufferStream();
     }
+
+	soundDevice->SetLocation(
+		pPlayer->GetLocalPosition().x,
+		pPlayer->GetLocalPosition().y,
+		pPlayer->GetLocalPosition().z
+	);
+
+	soundDevice->SetOrientation(
+		pCamera->Back().x,
+		pCamera->Back().y,
+		pCamera->Back().z,
+		pCamera->Up().x,
+		pCamera->Up().y,
+		pCamera->Up().z
+	);
+	//pCamera->Forward();
 
     if (showControlWindow) {
         ShowControlWindows();
