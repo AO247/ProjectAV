@@ -183,11 +183,13 @@ void PlayerController::Positioning()
         else
         {
             RaycastData rayData2 = Raycast::CastAtLayers(rayData.hitCollider->GetOwner()->GetWorldPosition(), Vector3(0.0f, -1.0f, 0.0f), std::vector<Layers>{GROUND});
-            if (rayData2.hitCollider->GetOwner()->tag == "Ground")
-            {
-                ability2->SetLocalPosition(rayData2.hitPoint);
-            }
-
+			if (rayData2.hitCollider)
+			{
+                if (rayData2.hitCollider->GetOwner()->tag == "Ground")
+                {
+                    ability2->SetLocalPosition(rayData2.hitPoint);
+                }
+			}
         }
     }
 

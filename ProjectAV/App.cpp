@@ -101,7 +101,7 @@ App::App(const std::string& commandLine)
         std::make_unique<ModelComponent>(pBox, wnd.Gfx(), "Models\\box.glb")
     );
     pStone->AddComponent(
-		std::make_unique<ModelComponent>(pStone, wnd.Gfx(), "Models\\kamien\\kamien_test.fbx")
+		std::make_unique<ModelComponent>(pStone, wnd.Gfx(), "Models\\kamien\\kamien_6.obj")
     );
     //pStone->AddComponent(
     //    std::make_unique<ModelComponent>(pStone, wnd.Gfx(), "Models\\stone\\stone.glb")
