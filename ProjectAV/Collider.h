@@ -18,7 +18,8 @@ public:
 		SPHERE = 0,
 		AABB = 1,
 		TYPE_OBB = 2,
-		CAPSULE = 3
+		CAPSULE = 3,
+		MESH = 4
 	};
 
 	Collider(Node* owner, ColliderTypes colliderType, Rigidbody* rigidbody) :

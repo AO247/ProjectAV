@@ -28,6 +28,12 @@ IntersectData Collider::Intersect(Collider* other)
 		BoundingSphere* self = (BoundingSphere*)this;
 		return self->IntersectCapsule((CapsuleCollider*)other);
 	}
+	if (colliderType == SPHERE && other->GetColliderType() == MESH)
+	{
+		BoundingSphere* self = (BoundingSphere*)this;
+		return self->IntersectMesh((MeshCollider*)other);
+	}
+
 	if (colliderType == TYPE_OBB && other->GetColliderType() == TYPE_OBB)
 	{
 		OBB* self = (OBB*)this;
@@ -43,6 +49,12 @@ IntersectData Collider::Intersect(Collider* other)
 		OBB* self = (OBB*)this;
 		return self->IntersectCapsule((CapsuleCollider*)other);
 	}
+	if (colliderType == TYPE_OBB && other->GetColliderType() == MESH)
+	{
+		OBB* self = (OBB*)this;
+		return self->IntersectMesh((MeshCollider*)other);
+	}
+
 	if (colliderType == CAPSULE && other->GetColliderType() == CAPSULE)
 	{
 		CapsuleCollider* self = (CapsuleCollider*)this;
@@ -57,6 +69,32 @@ IntersectData Collider::Intersect(Collider* other)
 	{
 		CapsuleCollider* self = (CapsuleCollider*)this;
 		return self->IntersectOBB((OBB*)other);
+	}
+	if (colliderType == CAPSULE && other->GetColliderType() == MESH)
+	{
+		CapsuleCollider* self = (CapsuleCollider*)this;
+		return self->IntersectMesh((MeshCollider*)other);
+	}
+
+	if (colliderType == MESH && other->GetColliderType() == MESH)
+	{
+		MeshCollider* self = (MeshCollider*)this;
+		return self->IntersectMesh((MeshCollider*)other);
+	}
+	if (colliderType == MESH && other->GetColliderType() == SPHERE)
+	{
+		MeshCollider* self = (MeshCollider*)this;
+		return self->IntersectSphere((BoundingSphere*)other);
+	}
+	if (colliderType == MESH && other->GetColliderType() == TYPE_OBB)
+	{
+		MeshCollider* self = (MeshCollider*)this;
+		return self->IntersectOBB((OBB*)other);
+	}
+	if (colliderType == MESH && other->GetColliderType() == CAPSULE)
+	{
+		MeshCollider* self = (MeshCollider*)this;
+		return self->IntersectCapsule((CapsuleCollider*)other);
 	}
 }
 

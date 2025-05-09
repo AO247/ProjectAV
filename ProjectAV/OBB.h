@@ -14,6 +14,7 @@ public:
 
 class BoundingSphere;
 class CapsuleCollider;
+class MeshCollider;
 
 class OBB : public Collider
 {
@@ -38,23 +39,24 @@ public:
 	IntersectData IntersectOBB(OBB* other);
 	IntersectData IntersectBoundingSphere(BoundingSphere* other);
 	IntersectData IntersectCapsule(CapsuleCollider* other);
+	IntersectData IntersectMesh(MeshCollider* other);
 	RaycastData IntersectRay(Raycast* ray) override;
 	
 	Vector3 NearestPoint(Vector3 otherPoint);
 	Vector3 GetTransformedCenter();
 	Vector3 GetClosestPoint(Vector3 point);
 	Vector3 GetColliderTransformedCenter() override;
-private:
-	Vector3 center;
-	Vector3 size;
+	Vector3 GetTransformedOrientation(Vector3 orientation);
 	Vector3 orientationX = Vector3(1.0, 0.0f, 0.0f);
 	Vector3 orientationY = Vector3(0.0f, 1.0f, 0.0f);
 	Vector3 orientationZ = Vector3(0.0f, 0.0f, 1.0f);
+	Vector3 GetTransformedSize();
+private:
+	Vector3 center;
+	Vector3 size;
 	Vector3 vertices[8];
 
-	Vector3 GetTransformedSize();
 	Vector3 GetTransformedVertex(Vector3 vertex);
-	Vector3 GetTransformedOrientation(Vector3 orientation);
 	IntervalPair GetInterval(Vector3 axis);
 	bool ColOverlapAxis(OBB* first, OBB* second, Vector3 axis);
 	bool ProjectAndCheckOverlapping(int surface, IntervalPair data1, IntervalPair data2);

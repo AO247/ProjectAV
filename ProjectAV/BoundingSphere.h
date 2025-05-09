@@ -6,6 +6,7 @@
 #include "AABB.h"
 #include "OBB.h"
 #include "CapsuleCollider.h"
+#include "MeshCollider.h"
 
 using namespace DirectX::SimpleMath;
 namespace AxisAligned {
@@ -14,6 +15,7 @@ namespace AxisAligned {
 
 class OBB;
 class CapsuleCollider;
+class MeshCollider;
 
 class BoundingSphere : public Collider
 {
@@ -27,6 +29,7 @@ public:
 	IntersectData IntersectAABB(AxisAligned::AABB* other);
 	IntersectData IntersectOBB(OBB* other);
 	IntersectData IntersectCapsule(CapsuleCollider* other);
+	IntersectData IntersectMesh(MeshCollider* other);
 	RaycastData IntersectRay(Raycast* ray) override;
 
 	Vector3& GetCenter();

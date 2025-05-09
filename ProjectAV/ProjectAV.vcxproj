@@ -195,6 +195,7 @@
     <ClCompile Include="IntersectData.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="MeshCollider.cpp" />
     <ClCompile Include="MiscMath.cpp" />
     <ClCompile Include="ModelComponent.cpp" />
     <ClCompile Include="Mouse.cpp" />
@@ -262,6 +263,7 @@
     <ClInclude Include="IntersectData.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="MeshCollider.h" />
     <ClInclude Include="ModelComponent.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="Node.h" />

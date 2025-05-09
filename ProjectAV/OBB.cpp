@@ -148,6 +148,17 @@ IntersectData OBB::IntersectCapsule(CapsuleCollider* other)
 	return IntersectData(dist < other->GetRadius(), separationVector, collisionPoint, r1, r2);
 }
 
+IntersectData OBB::IntersectMesh(MeshCollider* other)
+{
+	IntersectData data = other->IntersectOBB(this);
+
+	return IntersectData(data.GetDoesIntersect(),
+						-data.GetDirection(),
+						Vector3(0, 0, 0),
+						Vector3(0, 0, 0),
+						Vector3(0, 0, 0));
+}
+
 RaycastData OBB::IntersectRay(Raycast* ray)
 {
 	Vector3 p = GetTransformedCenter() - ray->origin;
