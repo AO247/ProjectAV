@@ -12,6 +12,7 @@
 #include <unordered_map>
 #include <sstream>
 #include <filesystem>
+#include "Stencil.h"
 
 #include "DynamicConstant.h" // NEW: For Dcb::RawLayout and Dcb::Buffer
 #include "ConstantBuffersEx.h" // NEW: For CachingPixelConstantBufferEX
@@ -486,6 +487,7 @@ std::unique_ptr<Mesh> ModelComponent::ParseMesh(Graphics& gfx, const aiMesh& mes
 	// You need to ensure your Rasterizer and Blender classes have these Resolve methods.
 	bindablePtrs.push_back(Rasterizer::Resolve(gfx, hasAlphaDiffuse));
 	bindablePtrs.push_back(Blender::Resolve(gfx, hasAlphaDiffuse)); // Assuming diffuse alpha also means blend
+	bindablePtrs.push_back(std::make_shared<Stencil>(gfx, Stencil::Mode::Off));
 
 
 	// Construct the Mesh object

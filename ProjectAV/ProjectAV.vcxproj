@@ -317,6 +317,7 @@
     <ClInclude Include="State.h" />
     <ClInclude Include="StateType.h" />
     <ClInclude Include="StateMachine.h" />
+    <ClInclude Include="Stencil.h" />
     <ClInclude Include="Surface.h" />
     <ClInclude Include="Testing.h" />
     <ClInclude Include="TestPlane.h" />
