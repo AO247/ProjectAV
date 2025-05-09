@@ -11,6 +11,8 @@
 #include "TexturePreprocessor.h"
 #include "SolidCapsule.h"
 #include "DebugLine.h"
+#include "Testing.h"
+
 namespace dx = DirectX;
 
 
@@ -22,6 +24,7 @@ App::App(const std::string& commandLine)
     pointLight(wnd.Gfx()), // Initialize PointLight
     pSceneRoot(std::make_unique<Node>("Root"))
 {
+    TestDynamicConstant();
     // Set Projection Matrix (Far plane adjusted for larger scenes potentially)
     wnd.Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 2000.0f));
 

@@ -185,6 +185,7 @@
     <ClCompile Include="dxerr.cpp" />
     <ClCompile Include="DxgiInfoManager.cpp" />
     <ClCompile Include="CException.cpp" />
+    <ClCompile Include="DynamicConstant.cpp" />
     <ClCompile Include="FollowState.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="IdleState.cpp" />
@@ -200,6 +201,7 @@
     <ClCompile Include="InputLayout.cpp" />
     <ClCompile Include="IntersectData.cpp" />
     <ClCompile Include="Keyboard.cpp" />
+    <ClCompile Include="LayoutCodex.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MiscMath.cpp" />
     <ClCompile Include="ModelComponent.cpp" />
@@ -221,6 +223,7 @@
     <ClCompile Include="SolidSphere.cpp" />
     <ClCompile Include="StateMachine.cpp" />
     <ClCompile Include="Surface.cpp" />
+    <ClCompile Include="Testing.cpp" />
     <ClCompile Include="TestPlane.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TexturePreprocessor.cpp" />
@@ -261,12 +264,14 @@
     <ClInclude Include="Components.h" />
     <ClInclude Include="ConditionalNoexcept.h" />
     <ClInclude Include="ConstantBuffers.h" />
+    <ClInclude Include="ConstantBuffersEx.h" />
     <ClInclude Include="CUtil.h" />
     <ClInclude Include="DebugLine.h" />
     <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="Drawable.h" />
     <ClInclude Include="dxerr.h" />
     <ClInclude Include="DxgiInfoManager.h" />
+    <ClInclude Include="DynamicConstant.h" />
     <ClInclude Include="FollowState.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="GraphicsThrowMacros.h" />
@@ -286,6 +291,7 @@
     <ClInclude Include="IntersectData.h" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="Keyboard.h" />
+    <ClInclude Include="LayoutCodex.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="ModelComponent.h" />
     <ClInclude Include="Mouse.h" />
@@ -312,6 +318,7 @@
     <ClInclude Include="StateType.h" />
     <ClInclude Include="StateMachine.h" />
     <ClInclude Include="Surface.h" />
+    <ClInclude Include="Testing.h" />
     <ClInclude Include="TestPlane.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TexturePreprocessor.h" />

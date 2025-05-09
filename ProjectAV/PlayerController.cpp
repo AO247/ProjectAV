@@ -95,24 +95,11 @@ void PlayerController::Dash()
 
 void PlayerController::GroundCheck()
 {
-   // Corrected the third parameter to be a vector of Layers instead of a single Layer
-   RaycastData rayData = Raycast::CastAtLayers(GetOwner()->GetWorldPosition(), Vector3(0.0f, -1.0f, 0.0f), std::vector<Layers>{GROUND});
-
-   if (rayData.hitCollider != nullptr)
-   {
-       if (rayData.hitCollider->GetOwner()->tag == "Ground")
-       {
-           if (GetOwner()->GetWorldPosition().y - rayData.hitPoint.y <= 0.01)
-           {
-               grounded = true;
-			   doubleJumped = false;
-           }
-           else
-           {
-               grounded = false;
-           }
-       }
-   }
+    grounded = rigidbody->grounded;
+    if (grounded)
+    {
+        doubleJumped = false;
+    }
 }
 
 void PlayerController::MovePlayer()
