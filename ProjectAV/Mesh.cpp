@@ -1,11 +1,11 @@
 #include "Mesh.h"
 #include "Graphics.h" 
-#include "BindableCommon.h" // Include all necessary bindable headers
+#include "Material.h" // Include the new Material class
+#include "FrameCommander.h" // Include for Submit
+#include <assimp/mesh.h> // For aiMesh definition
 #include <sstream> 
-#include <stdexcept> 
 
 namespace dx = DirectX;
-
 // --- ModelException Implementation --- 
 // (Ensure definitions are present here)
 ModelException::ModelException(int line, const char* file, std::string note) noexcept
@@ -46,40 +46,22 @@ const std::string& ModelException::GetNote() const noexcept
 
 // --- Mesh Implementation ---
 
-Mesh::Mesh(Graphics& gfx, std::vector<std::shared_ptr<Bind::Bindable>> bindPtrs)
+Mesh::Mesh(Graphics& gfx, const Material& mat, const aiMesh& mesh, float scale) noxnd
+    : Drawable(gfx, mat, mesh, scale) // Call base Drawable constructor
 {
-    // Add default topology using Resolve (requires Topology.h via BindableCommon.h)
-    AddBind(Bind::Topology::Resolve(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
-
-    // Add all bindables passed in the vector
-    for (auto& pBind : bindPtrs)
-    {
-        if (pBind) // Add a null check just in case
-        {
-            AddBind(std::move(pBind)); // AddBind takes shared_ptr now
-        }
-    }
-
-    // Add the Transform Constant Buffer - *not* using Resolve, as it's unique per Drawable
-    // Ensure TransformCbuf constructor is compatible (takes Graphics&, const Drawable&)
-    // Requires TransformCbuf.h via BindableCommon.h
-    AddBind(std::make_shared<Bind::TransformCbuf>(gfx, *this));
-
-    // Initialize meshTransform to identity
-    dx::XMStoreFloat4x4(&meshTransform, dx::XMMatrixIdentity());
+    // Drawable constructor now handles pVertices, pIndices, pTopology, and techniques
+    dx::XMStoreFloat4x4(&transform, dx::XMMatrixIdentity());
 }
 
-// Set the transform to be used by GetTransformXM during the next Draw call
-void Mesh::SetTransform(DirectX::FXMMATRIX transform) const noxnd
+// **** NEW SUBMIT METHOD ****
+void Mesh::Submit(FrameCommander& frame, dx::FXMMATRIX accumulatedTransform) const noxnd
 {
-    // Store transposed matrix if TransformCbuf expects it, otherwise store directly.
-    // Assuming TransformCbuf handles potential transposition internally based on shader needs.
-    dx::XMStoreFloat4x4(&meshTransform, transform);
+    dx::XMStoreFloat4x4(&transform, accumulatedTransform); // Store the final world transform for this mesh
+    Drawable::Submit(frame); // Call base Drawable's Submit, which iterates techniques
 }
 
-// GetTransformXM returns the transform set by SetTransform
 DirectX::XMMATRIX Mesh::GetTransformXM() const noexcept
 {
-    // This matrix should be the world matrix ready for the VS Constant Buffer
-    return dx::XMLoadFloat4x4(&meshTransform);
+    // This is called by TransformCbuf within a Technique's Step
+    return DirectX::XMLoadFloat4x4(&transform);
 }

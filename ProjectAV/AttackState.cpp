@@ -3,7 +3,7 @@
 #include "Node.h" // Include Node to get other components
 
 
-#include <Windows.h> // For OutputDebugStringA
+#include "Win.h" // For OutputDebugStringA
 
 AttackState::AttackState(StateMachine* pOwner) : State()
 {

@@ -424,9 +424,16 @@ void App::DoFrame(float dt)
     // --- Bind Lights ---
     pointLight.Bind(wnd.Gfx(), viewMatrix); // Bind point light (to slot 0)
 
-    FrustumCalculating(); // Draw with FRUSTUM CULLING
+    //FrustumCalculating(); // Draw with FRUSTUM CULLING
     //pSceneRoot->Draw(wnd.Gfx()); // Draw without FRUSTUM CULLING you have to also uncomment the draw method in Node.cpp
+    //FrameCommander fc; // Create FrameCommander for this frame
 
+    //// Submit the entire scene graph to the FrameCommander
+    //// Pass Graphics context if Submit methods require it
+    pSceneRoot->Submit(fc, wnd.Gfx());
+
+    //// Also submit the point light's mesh to a pass (e.g., main pass 0)
+    //// Execute all rendering passes accumulated in the FrameCommander
     //Vector3 previousRotation = pEnemy->GetLocalRotationEuler();
 
  //   Vector3 targetPosition = pPlayer->GetWorldPosition();
@@ -461,14 +468,17 @@ void App::DoFrame(float dt)
  //   DebugLine(wnd.Gfx(), centerOrigin, hitCenter.hitPoint).Draw(wnd.Gfx());
 
     //pEnemy->SetLocalRotation(previousRotation);
-    Vector3 secPos(pCamera->GetWorldPosition().x + pCamera->Forward().x, pCamera->GetWorldPosition().y + pCamera->Forward().y, pCamera->GetWorldPosition().z + pCamera->Forward().z);
-    DebugLine(wnd.Gfx(), pCamera->GetWorldPosition(), secPos).Draw(wnd.Gfx());
+    //ector3 secPos(pCamera->GetWorldPosition().x + pCamera->Forward().x, pCamera->GetWorldPosition().y + pCamera->Forward().y, pCamera->GetWorldPosition().z + pCamera->Forward().z);
+    //DebugLine(wnd.Gfx(), pCamera->GetWorldPosition(), secPos).Draw(wnd.Gfx());
+
 
     if (showControlWindow) {
         ShowControlWindows();
     }
 
+    fc.Execute(wnd.Gfx());
     wnd.Gfx().EndFrame();
+    fc.Reset();
 }
 
 
@@ -572,7 +582,7 @@ void App::DrawNodeRecursive(Graphics& gfx, Node& node)
 
     if (shouldDraw)
     {
-        node.Draw(gfx);
+        //node.Draw(gfx);
         for (const auto& pChild : node.GetChildren())
         {
             if (pChild)
@@ -586,10 +596,11 @@ void App::DrawNodeRecursive(Graphics& gfx, Node& node)
 void App::ShowControlWindows()
 {
     // --- Existing Windows ---
-    DrawSphereColliders(wnd.Gfx());
+
+	DrawSphereColliders(wnd.Gfx()); // Call the updated function
     DrawBoxColliders(wnd.Gfx()); // Call the updated function
 	DrawCapsuleColliders(wnd.Gfx());
-    pointLight.Draw(wnd.Gfx());
+    pointLight.Submit(fc);
 
     pointLight.SpawnControlWindow(); // Control for Point Light
     if (showDemoWindow)
@@ -609,7 +620,7 @@ void App::ShowControlWindows()
     // --- Simulation Speed Window ---
     if (ImGui::Begin("Simulation Speed"))
     {
-        ImGui::SliderFloat("Speed Factor", &speed_factor, 0.0f, 4.0f, "%.2f");
+        ImGui::SliderFloat("Speed Factor", &speed_factor, 0.0f, 4.0f);
 		ImGui::Text("To change camera press 'C'");
 		ImGui::Text("To show/hide control window press 'H'");
     }
@@ -727,19 +738,19 @@ void App::ShowControlWindows()
 void App::AddSphereColliderToDraw(Graphics& gfx, BoundingSphere* boundingSphere)
 {
     // Using default constructor then initialize might be slightly cleaner if SolidSphere allows it
+	ColliderSphere* sphereCollider = new ColliderSphere(gfx, boundingSphere->GetRadius());
+    sphereCollidersToDraw[boundingSphere] = sphereCollider;
 
-    sphereCollidersToDraw[boundingSphere] = SolidSphere(gfx, boundingSphere->GetRadius());
 }
 
 void App::DrawSphereColliders(Graphics& gfx)
 {
     for (auto it = sphereCollidersToDraw.begin(); it != sphereCollidersToDraw.end(); ++it)
     {
-        ColliderSphere sphere(gfx, it->first->GetRadius());
-        sphere.SetPos(DirectX::XMFLOAT3(it->first->GetTransformedCenter().x,
-            it->first->GetTransformedCenter().y,
-            it->first->GetTransformedCenter().z));
-        sphere.Draw(gfx);
+		it->second->SetPos(DirectX::XMFLOAT3(it->first->GetTransformedCenter().x,
+			it->first->GetTransformedCenter().y,
+			it->first->GetTransformedCenter().z));
+		it->second->Submit(fc);
     }
 }
 
@@ -748,8 +759,8 @@ void App::DrawSphereColliders(Graphics& gfx)
 // Signature now takes OBB*
 void App::AddBoxColliderToDraw(Graphics& gfx, OBB* obb)
 {
-
-    boxCollidersToDraw[obb] = SolidSphere(gfx, 10.0f);
+	SolidBox* box = new SolidBox(gfx, obb->GetTransformedCenter(), obb->GetTransformedSize());
+    boxCollidersToDraw[obb] = box;
 
 }
 
@@ -758,14 +769,13 @@ void App::DrawBoxColliders(Graphics& gfx)
 {
     for (auto it = boxCollidersToDraw.begin(); it != boxCollidersToDraw.end(); ++it)
     {
-        SolidBox box(gfx, DirectX::XMFLOAT3(it->first->GetTransformedCenter()), DirectX::XMFLOAT3(it->first->GetTransformedSize()));
-		box.SetPos(DirectX::XMFLOAT3(it->first->GetTransformedCenter().x,
+		it->second->SetPos(DirectX::XMFLOAT3(it->first->GetTransformedCenter().x,
 			it->first->GetTransformedCenter().y,
 			it->first->GetTransformedCenter().z));
-        box.SetSize(DirectX::XMFLOAT3(it->first->GetTransformedSize().x,
-            it->first->GetTransformedSize().y,
-            it->first->GetTransformedSize().z));
-        box.Draw(gfx);
+		it->second->SetSize(DirectX::XMFLOAT3(it->first->GetTransformedSize().x,
+			it->first->GetTransformedSize().y,
+			it->first->GetTransformedSize().z));
+        it->second->Submit(fc);
         
     }
 
@@ -773,17 +783,17 @@ void App::DrawBoxColliders(Graphics& gfx)
 
 void App::AddCapsuleColliderToDraw(Graphics& gfx, CapsuleCollider* capsule)
 {
-	capsuleCollidersToDraw[capsule] = SolidSphere(gfx, 10.0f);
+	SolidCapsule* solidCapsule = new SolidCapsule(gfx, capsule->GetTransformedBase(), capsule->GetTransformedTip(), capsule->GetRadius());
+	capsuleCollidersToDraw[capsule] = solidCapsule;
 }
 
 void App::DrawCapsuleColliders(Graphics& gfx)
 {
     for (auto it = capsuleCollidersToDraw.begin(); it != capsuleCollidersToDraw.end(); ++it)
     {
-        SolidCapsule capsule(gfx, it->first->GetTransformedBase(), it->first->GetTransformedTip(), it->first->GetRadius());
-        capsule.SetBase(it->first->GetTransformedBase());
-		capsule.SetTip(it->first->GetTransformedTip());
-		capsule.SetRadius(it->first->GetRadius());
-        capsule.Draw(gfx);
+		it->second->SetBase(it->first->GetTransformedBase());
+		it->second->SetTip(it->first->GetTransformedTip());
+		it->second->SetRadius(it->first->GetRadius());
+		it->second->Submit(fc);
     }
 }

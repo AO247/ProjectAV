@@ -1,5 +1,4 @@
 #pragma once
-#include "Win.h"
 #include "CException.h"
 #include <string>
 #include <optional>

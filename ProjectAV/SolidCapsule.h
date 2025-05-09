@@ -29,6 +29,7 @@ public:
     SolidCapsule& operator=(const SolidCapsule&) = delete;
 
 private:
+
     // Store parameters needed for GetTransformXM (if any) 
     // or potentially for rebuilding geometry if Setters modify size/radius.
     DirectX::SimpleMath::Vector3 basePos = { 0,0,0 }; // Store world base for translation

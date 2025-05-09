@@ -40,7 +40,7 @@ IntersectData OBB::IntersectOBB(OBB* other)
 		{
 			return IntersectData(false, Vector3(0,0,0), Vector3(0, 0, 0), Vector3(0, 0, 0), Vector3(0, 0, 0));
 		}
-		float overlap = min(iA.imax, iB.imax) - max(iA.imin, iB.imin);
+		float overlap = std::fmin(iA.imax, iB.imax) - std::fmax(iA.imin, iB.imin);
 		/*if (overlap == minPenetration && i < 6 && i > 2)
 		{
 			secondCollidingSurfaceIndex = i;
@@ -190,11 +190,11 @@ RaycastData OBB::IntersectRay(Raycast* ray)
 		}
 	}
 
-	float t_min = max(t1[0], t1[1]);
-	t_min = max(t_min, t1[2]);
+	float t_min = std::fmax(t1[0], t1[1]);
+	t_min = std::fmax(t_min, t1[2]);
 
-	float t_max = min(t2[0], t2[1]);
-	t_max = min(t_max, t2[2]);
+	float t_max = std::fmin(t2[0], t2[1]);
+	t_max = std::fmin(t_max, t2[2]);
 
 	if (t_min > t_max || t_max < 0)
 	{
@@ -296,13 +296,13 @@ IntervalPair OBB::GetInterval(Vector3 axis)
 	for (int i = 1; i < 8; i++)
 	{
 		dot = v.Dot(GetTransformedVertex(vertices[i]));
-		imin = min(imin, dot);
+		imin = std::fmin(imin, dot);
 		//if (imax == dot)
 		//{
 		//	result.verticesClosestToTheAxis[closestVertexIndex] = GetTransformedVertex(vertices[i]);
 		//	closestVertexIndex++;
 		//}
-		imax = max(imax, dot);
+		imax = std::fmax(imax, dot);
 	}
 
 	int closestVertexIndex = 0;
@@ -579,8 +579,8 @@ IntervalPair OBB::GetInterval2D(Vector3 axis, Vector3* vertices)
 	for (int i = 1; i < 4; i++)
 	{
 		dot = v.Dot(vertices[i]);
-		imin = min(imin, dot);
-		imax = max(imax, dot);
+		imin = std::fmin(imin, dot);
+		imax = std::fmax(imax, dot);
 	}
 
 	result.imin = imin;

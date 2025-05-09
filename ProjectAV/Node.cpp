@@ -372,40 +372,36 @@ void Node::UpdateWorldTransform()
 // --- Update - Update world first, then components/children ---
 void Node::Update(float dt)
 {
-    // 1. Update this node's world transform (will rebuild local if needed)
-    if (worldTransformDirty) {
-        UpdateWorldTransform();
-    }
-    else if (localTransformDirty) {
-        // If only local was dirty, world still needs update
-        UpdateWorldTransform();
-    }
+    // ... (Update transform logic as before) ...
+    if (worldTransformDirty) { UpdateWorldTransform(); }
+    else if (localTransformDirty) { UpdateWorldTransform(); }
 
-
-    // 2. Update components
-    for (auto& comp : components)
-    {
+    // Update components
+    for (auto& comp : components) {
+        // Some components might need Graphics or FrameCommander in their Update
+        // For now, assuming Component::Update only needs dt
         comp->Update(dt);
     }
-
-    // 3. Update children recursively
-    for (auto& child : children)
-    {
+    // Update children
+    for (auto& child : children) {
         child->Update(dt);
     }
 }
-
 // --- Draw Method remains the same ---
-void Node::Draw(Graphics& gfx) const
+void Node::Submit(FrameCommander& frame, Graphics& gfx) const
 {
+    // 1. Submit components attached to this node that are "Submittable"
+    //    For now, only ModelComponent will be handled this way.
     if (auto* modelComp = GetComponent<ModelComponent>())
     {
-        modelComp->Draw(gfx, GetWorldTransform());
+        modelComp->Submit(frame, gfx, GetWorldTransform()); // Pass gfx
     }
-	/*for (const auto& child : children) // Commented out for FRUSTUM CULLING
+
+    // 2. Submit children recursively
+    for (const auto& child : children)
     {
-        child->Draw(gfx);
-    }*/
+        child->Submit(frame, gfx); // Pass gfx
+    }
 }
 
 // --- ShowNodeTree remains the same ---

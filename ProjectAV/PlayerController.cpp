@@ -13,7 +13,7 @@ PlayerController::PlayerController(Node* owner, Window& window)
     : Component(owner), wnd(window)  // Initialize reference member
 {
 	rigidbody = owner->GetComponent<Rigidbody>();
-    rigidbody->frictionDamping = 8.0f;
+    rigidbody->frictionDamping = 12.0f;
 	camera = owner->GetRoot()->FindFirstChildByTag("Camera");
 	ability1 = owner->GetRoot()->FindFirstChildByTag("Ability1");
 	ability2 = owner->GetRoot()->FindFirstChildByTag("Ability2");

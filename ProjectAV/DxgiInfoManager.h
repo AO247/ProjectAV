@@ -1,5 +1,4 @@
 #pragma once
-#include "Win.h"
 #include <wrl.h>
 #include <vector>
 #include <dxgidebug.h>

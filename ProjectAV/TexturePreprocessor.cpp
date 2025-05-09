@@ -1,12 +1,11 @@
 #include "TexturePreprocessor.h"
 #include <filesystem>
 #include <sstream>
-#include "Mesh.h"
-#include "CMath.h"
-#include <assimp/types.h>
-#include <assimp/material.h>
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
+#include <assimp/postprocess.h>
+#include "CMath.h"
+#include "ModelException.h"
 
 
 template<typename F>

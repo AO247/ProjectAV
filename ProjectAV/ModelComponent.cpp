@@ -2,9 +2,9 @@
 #include "Mesh.h" 
 #include "Node.h" 
 #include "Graphics.h"
-#include "Surface.h"       // Still needed for Texture::Resolve internally, but not directly used here
-#include "BindableCommon.h" // Include all necessary bindable headers
-#include "Vertex.h"
+#include "Material.h" // Include the new Material class
+#include "FrameCommander.h" // Include for Submit
+
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
@@ -12,11 +12,10 @@
 #include <unordered_map>
 #include <sstream>
 #include <filesystem>
-#include "Stencil.h"
+#include <stdexcept>
 
-#include "DynamicConstant.h" // NEW: For Dcb::RawLayout and Dcb::Buffer
-#include "ConstantBuffersEx.h" // NEW: For CachingPixelConstantBufferEX
 namespace dx = DirectX;
+
 // --- TransformParameters, ModelControlWindow, ModelInternalNode implementations remain the same ---
 
 // ... (Struct TransformParameters, class ModelControlWindow, class ModelInternalNode implementations) ...
@@ -110,26 +109,20 @@ void ModelInternalNode::AddChild(std::unique_ptr<ModelInternalNode> pChild) noxn
 }
 
 // Draw method for the *internal* node structure
-void ModelInternalNode::Draw(Graphics& gfx, dx::FXMMATRIX accumulatedTransform) const noxnd
+void ModelInternalNode::Submit(FrameCommander& frame, Graphics& gfx, dx::FXMMATRIX accumulatedTransform) const noxnd
 {
 	const auto modelNodeTransform =
 		dx::XMLoadFloat4x4(&appliedTransform) *
 		dx::XMLoadFloat4x4(&transform) *
 		accumulatedTransform;
 
-	// Draw meshes associated with this node
-	for (const auto pm : meshPtrs)
+	for (const auto pm : meshPtrs) // pm is Mesh*
 	{
-		// Set the transform on the mesh FIRST
-		pm->SetTransform(modelNodeTransform);
-		// THEN call the base Drawable::Draw which binds everything and issues DrawIndexed
-		pm->Draw(gfx);
+		pm->Submit(frame, modelNodeTransform); // Call Mesh's Submit
 	}
-
-	// Recursively draw children
 	for (const auto& pc : childPtrs)
 	{
-		pc->Draw(gfx, modelNodeTransform);
+		pc->Submit(frame, gfx, modelNodeTransform); // Pass gfx if needed, or remove if not
 	}
 }
 
@@ -184,321 +177,102 @@ void ModelInternalNode::ShowTree(int& nodeIndexTracker, ModelInternalNode*& pSel
 
 // --- ModelComponent Implementation ---
 
-ModelComponent::ModelComponent(Node* owner, Graphics& gfx, const std::string& modelFile)
+ModelComponent::ModelComponent(Node* owner, Graphics& gfx, const std::string& modelFile, float scale)
 	: Component(owner), pControlWindow(std::make_unique<ModelControlWindow>())
 {
-	// ... (Assimp loading remains the same) ...
 	Assimp::Importer importer;
 	const auto pScene = importer.ReadFile(modelFile.c_str(),
 		aiProcess_Triangulate |
 		aiProcess_JoinIdenticalVertices |
-		aiProcess_ConvertToLeftHanded | // Ensure left-handed coordinates
-		aiProcess_GenNormals |          // Generate normals if missing
-		aiProcess_CalcTangentSpace     // Optional: if using normal maps
+		aiProcess_ConvertToLeftHanded |
+		aiProcess_GenNormals |
+		aiProcess_CalcTangentSpace
 	);
 
-	if (!pScene || !pScene->mRootNode || pScene->mFlags & AI_SCENE_FLAGS_INCOMPLETE)
-	{
-		throw ModelException(__LINE__, __FILE__, "Failed to load model file: " + modelFile + " | Assimp error: " + importer.GetErrorString());
+	if (!pScene || !pScene->mRootNode || pScene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) {
+		throw ModelException(__LINE__, __FILE__, "Assimp error: " + std::string(importer.GetErrorString()));
 	}
 
-	// Extract path from model file for loading textures relative to it
-	std::filesystem::path filePath(modelFile);
-	std::string modelPath = filePath.parent_path().string();
-	if (!modelPath.empty()) // Add trailing separator if path is not empty
-	{
-		modelPath += "\\";
+	std::filesystem::path filePath(modelFile); // Used by Material class
+
+	// Parse materials FIRST
+	std::vector<Material> materials; // Local vector to hold parsed materials
+	materials.reserve(pScene->mNumMaterials);
+	for (size_t i = 0; i < pScene->mNumMaterials; ++i) {
+		// Material constructor takes path now
+		materials.emplace_back(gfx, *pScene->mMaterials[i], filePath);
 	}
 
-
-	// Parse materials and meshes first
+	// Parse meshes, creating Mesh objects using the parsed Materials
 	meshPtrs.reserve(pScene->mNumMeshes);
-	for (unsigned int i = 0; i < pScene->mNumMeshes; ++i)
-	{
-		// Pass modelPath correctly
-		meshPtrs.push_back(ParseMesh(gfx, *pScene->mMeshes[i], pScene->mMaterials, modelPath));
+	for (unsigned int i = 0; i < pScene->mNumMeshes; ++i) {
+		const auto& assimpMesh = *pScene->mMeshes[i];
+		// Mesh constructor now takes Graphics, Material, aiMesh, scale
+		meshPtrs.push_back(std::make_unique<Mesh>(gfx, materials[assimpMesh.mMaterialIndex], assimpMesh, scale));
 	}
 
-	// Parse node hierarchy recursively
-	int nextId = 0; // Start ID counter for internal nodes
-	pRootInternal = ParseNodeRecursive(nextId, *pScene->mRootNode);
+	int nextId = 0;
+	pRootInternal = ParseNodeRecursive(nextId, *pScene->mRootNode, scale);
 }
 
 ModelComponent::~ModelComponent() noexcept = default;
 
-void ModelComponent::Draw(Graphics& gfx, dx::FXMMATRIX worldTransform) const noxnd
+// **** CHANGED Draw to Submit ****
+void ModelComponent::Submit(FrameCommander& frame, Graphics& gfx, dx::FXMMATRIX worldTransform) const noxnd
 {
-	if (pRootInternal)
-	{
-		pRootInternal->Draw(gfx, worldTransform);
+	if (pRootInternal) {
+		pRootInternal->Submit(frame, gfx, worldTransform); // Pass gfx if ModelInternalNode::Submit needs it
 	}
 }
 
-std::unique_ptr<ModelInternalNode> ModelComponent::ParseNodeRecursive(int& nextId, const aiNode& node) noexcept
+// ParseMesh function is removed from ModelComponent, as Material and Mesh constructors handle it.
+
+std::unique_ptr<ModelInternalNode> ModelComponent::ParseNodeRecursive(int& nextId, const aiNode& node, float scale)
 {
-	// ... (Implementation remains the same as before) ...
 	namespace dx = DirectX;
-	// Get the node's transform relative to its parent (and transpose for DirectX)
-	const auto nodeTransform = dx::XMMatrixTranspose(dx::XMLoadFloat4x4(
+	// Use ScaleTranslation from example if it exists, otherwise regular matrix math
+	const auto transformMatrix = dx::XMMatrixTranspose(dx::XMLoadFloat4x4(
 		reinterpret_cast<const dx::XMFLOAT4X4*>(&node.mTransformation)
 	));
+	// The example Model::ParseNode applies scaling to the node transform here.
+	// If your Mesh takes a scale parameter, this might be redundant or need adjustment.
+	// Let's assume ScaleTranslation is available and correct.
+	// If not, you can decompose, scale translation, and recompose, or apply scale in Mesh.
+	dx::XMMATRIX finalNodeTransform = transformMatrix; // Modify if using ScaleTranslation
+	// If ScaleTranslation is a global helper:
+	// dx::XMMATRIX finalNodeTransform = ScaleTranslation(transformMatrix, scale);
 
-	// Gather pointers to the meshes this node uses
+
 	std::vector<Mesh*> currentNodeMeshPtrs;
 	currentNodeMeshPtrs.reserve(node.mNumMeshes);
-	for (unsigned int i = 0; i < node.mNumMeshes; ++i)
-	{
+	for (unsigned int i = 0; i < node.mNumMeshes; ++i) {
 		const auto meshIndex = node.mMeshes[i];
-		// Ensure meshIndex is valid before accessing meshPtrs
-		if (meshIndex < meshPtrs.size())
-		{
+		if (meshIndex < meshPtrs.size()) {
 			currentNodeMeshPtrs.push_back(meshPtrs[meshIndex].get());
 		}
 		else {
-			// Handle error or warning: mesh index out of bounds
 			OutputDebugStringA(("Warning: Mesh index out of bounds in node " + std::string(node.mName.C_Str()) + "\n").c_str());
 		}
-
 	}
 
-	// Create the internal node object
-	auto pNode = std::make_unique<ModelInternalNode>(nextId++, node.mName.C_Str(), std::move(currentNodeMeshPtrs), nodeTransform);
+	auto pNode = std::make_unique<ModelInternalNode>(nextId++, node.mName.C_Str(), std::move(currentNodeMeshPtrs), finalNodeTransform);
 
-	// Recursively parse children
-	for (unsigned int i = 0; i < node.mNumChildren; ++i)
-	{
-		pNode->AddChild(ParseNodeRecursive(nextId, *node.mChildren[i]));
+	for (unsigned int i = 0; i < node.mNumChildren; ++i) {
+		pNode->AddChild(ParseNodeRecursive(nextId, *node.mChildren[i], scale));
 	}
-
 	return pNode;
 }
 
-
-// --- UPDATED ParseMesh using BindableCodex::Resolve ---
-// In ModelComponent.cpp
-
-// --- UPDATED ParseMesh with Tangent/Bitangent and Normal Map Logic ---
-// In ModelComponent.cpp
-
-// --- UPDATED ParseMesh with Tangent/Bitangent and Normal Map Logic ---
-std::unique_ptr<Mesh> ModelComponent::ParseMesh(Graphics& gfx, const aiMesh& mesh, const aiMaterial* const* pMaterials, const std::string& modelBasePath)
+void ModelComponent::ShowWindow(Graphics& gfx, const char* windowName) noexcept
 {
-	using namespace Bind;
-	using Dvtx::VertexLayout;
-	namespace dx = DirectX;
-	using namespace std::string_literals;
-
-	// --- Material Properties Initialization (from example) ---
-	bool hasSpecularMap = false;
-	bool hasAlphaGloss = false;
-	bool hasAlphaDiffuse = false; // Example uses this for masking/2-sided rasterizer
-	bool hasNormalMap = false;
-	bool hasDiffuseMap = false;
-	float shininess = 2.0f;
-	dx::XMFLOAT4 specularColor = { 0.18f,0.18f,0.18f,1.0f };
-	dx::XMFLOAT4 diffuseColor = { 0.45f,0.45f,0.85f,1.0f };
-
-	// Bindables vector
-	std::vector<std::shared_ptr<Bindable>> bindablePtrs;
-
-	// File path handling
-	std::filesystem::path pathFs = modelBasePath; // Use filesystem::path for parent_path
-	const auto rootPath = pathFs.parent_path().string() + "\\";
-
-	// --- Process Material Data (Textures, Colors, Shininess) ---
-	if (mesh.mMaterialIndex >= 0) {
-		const auto& material = *pMaterials[mesh.mMaterialIndex];
-		aiString texPathAi;
-
-		// Diffuse Texture (Slot 0)
-		if (material.GetTexture(aiTextureType_DIFFUSE, 0, &texPathAi) == aiReturn_SUCCESS) {
-			auto pTex = Texture::Resolve(gfx, rootPath + texPathAi.C_Str(), 0u);
-			hasAlphaDiffuse = pTex->HasAlpha(); // Check diffuse alpha for potential masking
-			bindablePtrs.push_back(std::move(pTex));
-			hasDiffuseMap = true;
-		}
-		else {
-			material.Get(AI_MATKEY_COLOR_DIFFUSE, reinterpret_cast<aiColor3D&>(diffuseColor));
-		}
-
-		// Specular Texture (Slot 1)
-		if (material.GetTexture(aiTextureType_SPECULAR, 0, &texPathAi) == aiReturn_SUCCESS) {
-			auto pTex = Texture::Resolve(gfx, rootPath + texPathAi.C_Str(), 1u);
-			hasAlphaGloss = pTex->HasAlpha();
-			bindablePtrs.push_back(std::move(pTex));
-			hasSpecularMap = true;
-		}
-		else {
-			material.Get(AI_MATKEY_COLOR_SPECULAR, reinterpret_cast<aiColor3D&>(specularColor));
-		}
-
-		if (!hasAlphaGloss) { // Only get shininess from material if no gloss map
-			material.Get(AI_MATKEY_SHININESS, shininess);
-		}
-
-		// Normal Map Texture (Slot 2)
-		// Example checks alpha on normal map too, but usually normal maps don't use alpha for gloss
-		if (material.GetTexture(aiTextureType_NORMALS, 0, &texPathAi) == aiReturn_SUCCESS) {
-			bindablePtrs.push_back(Texture::Resolve(gfx, rootPath + texPathAi.C_Str(), 2u));
-			hasNormalMap = true;
-		}
-		else if (material.GetTexture(aiTextureType_HEIGHT, 0, &texPathAi) == aiReturn_SUCCESS) { // Fallback for some loaders
-			bindablePtrs.push_back(Texture::Resolve(gfx, rootPath + texPathAi.C_Str(), 2u));
-			hasNormalMap = true;
-		}
-
-		// Sampler (Add if any texture was loaded)
-		if (hasDiffuseMap || hasSpecularMap || hasNormalMap) {
-			bindablePtrs.push_back(Sampler::Resolve(gfx));
-		}
-	}
-
-	// --- Vertex Layout & Buffer ---
-	VertexLayout layout = VertexLayout{}.Append(VertexLayout::Position3D).Append(VertexLayout::Normal);
-	bool hasTangents = mesh.HasTangentsAndBitangents() && hasNormalMap;
-	if (hasTangents) {
-		layout.Append(VertexLayout::Tangent).Append(VertexLayout::Bitangent);
-	}
-	bool hasTexCoords = mesh.HasTextureCoords(0) && (hasDiffuseMap || hasSpecularMap || hasNormalMap);
-	if (hasTexCoords) {
-		layout.Append(VertexLayout::Texture2D);
-	}
-	Dvtx::VertexBuffer vbuf(std::move(layout));
-	const float scale = 1.0f; // Or pass scale as a parameter
-	for (unsigned int i = 0; i < mesh.mNumVertices; ++i) { /* ... Populate vbuf as before ... */
-		DirectX::XMFLOAT3 pos = *reinterpret_cast<dx::XMFLOAT3*>(&mesh.mVertices[i]);
-		pos = { pos.x * scale, pos.y * scale, pos.z * scale };
-		DirectX::XMFLOAT3 norm = *reinterpret_cast<dx::XMFLOAT3*>(&mesh.mNormals[i]);
-		DirectX::XMFLOAT3 tan = hasTangents ? *reinterpret_cast<dx::XMFLOAT3*>(&mesh.mTangents[i]) : DirectX::XMFLOAT3{ 0,0,0 };
-		DirectX::XMFLOAT3 bitan = hasTangents ? *reinterpret_cast<dx::XMFLOAT3*>(&mesh.mBitangents[i]) : DirectX::XMFLOAT3{ 0,0,0 };
-		DirectX::XMFLOAT2 tc = hasTexCoords ? *reinterpret_cast<dx::XMFLOAT2*>(&mesh.mTextureCoords[0][i]) : DirectX::XMFLOAT2{ 0,0 };
-		if (hasTangents && hasTexCoords) { vbuf.EmplaceBack(pos, norm, tan, bitan, tc); }
-		else if (hasTangents && !hasTexCoords) { vbuf.EmplaceBack(pos, norm, tan, bitan); }
-		else if (!hasTangents && hasTexCoords) { vbuf.EmplaceBack(pos, norm, tc); }
-		else { vbuf.EmplaceBack(pos, norm); }
-	}
-	std::vector<unsigned short> indices;
-	indices.reserve((size_t)mesh.mNumFaces * 3);
-	for (unsigned int i = 0; i < mesh.mNumFaces; ++i) { /* ... copy indices ... */
-		const auto& face = mesh.mFaces[i];
-		assert(face.mNumIndices == 3);
-		indices.push_back(face.mIndices[0]);
-		indices.push_back(face.mIndices[1]);
-		indices.push_back(face.mIndices[2]);
-	}
-	const auto meshTag = pathFs.string() + "%" + mesh.mName.C_Str(); // Use pathFs from filesystem
-	bindablePtrs.push_back(VertexBuffer::Resolve(gfx, meshTag, vbuf));
-	bindablePtrs.push_back(IndexBuffer::Resolve(gfx, meshTag, indices));
-
-	// --- Shader Selection & Dynamic Constant Buffer ---
-	std::shared_ptr<VertexShader> pvs;
-	std::shared_ptr<PixelShader> pps;
-	Dcb::RawLayout materialConstantsLayout; // Create a RawLayout for this mesh's material
-
-	// Select shaders and define Dcb::RawLayout based on material properties
-	// This logic closely follows the example provided
-	if (hasDiffuseMap && hasNormalMap && hasSpecularMap) {
-		pvs = VertexShader::Resolve(gfx, "PhongVSNormalMap.cso");
-		pps = PixelShader::Resolve(gfx, hasAlphaDiffuse ? "PhongPSSpecNormMask.cso" : "PhongPSSpecNormalMap.cso");
-
-		// Define layout matching PhongPSSpecNormalMap / Mask HLSL (ObjectCBuf)
-		materialConstantsLayout.Add<Dcb::Bool>("normalMapEnabled");
-		materialConstantsLayout.Add<Dcb::Bool>("specularMapEnabled");
-		materialConstantsLayout.Add<Dcb::Bool>("hasGlossMap");
-		materialConstantsLayout.Add<Dcb::Float>("specularPower");
-		materialConstantsLayout.Add<Dcb::Float3>("specularColor");
-		materialConstantsLayout.Add<Dcb::Float>("specularMapWeight");
-		auto buf = Dcb::Buffer(std::move(materialConstantsLayout)); // Cook and create buffer
-		buf["normalMapEnabled"] = true;
-		buf["specularMapEnabled"] = true;
-		buf["hasGlossMap"] = hasAlphaGloss;
-		buf["specularPower"] = shininess;
-		buf["specularColor"] = dx::XMFLOAT3{ specularColor.x, specularColor.y, specularColor.z }; // From loaded/default
-		buf["specularMapWeight"] = 0.671f; // Example default
-		bindablePtrs.push_back(std::make_shared<CachingPixelConstantBufferEX>(gfx, buf, 1u));
-
-	}
-	else if (hasDiffuseMap && hasNormalMap) { // No Specular Map
-		pvs = VertexShader::Resolve(gfx, "PhongVSNormalMap.cso");
-		pps = PixelShader::Resolve(gfx, "PhongPSNormalMap.cso");
-
-		materialConstantsLayout.Add<Dcb::Float>("specularIntensity");
-		materialConstantsLayout.Add<Dcb::Float>("specularPower");
-		materialConstantsLayout.Add<Dcb::Bool>("normalMapEnabled");
-		auto buf = Dcb::Buffer(std::move(materialConstantsLayout));
-		buf["specularIntensity"] = (specularColor.x + specularColor.y + specularColor.z) / 3.0f;
-		buf["specularPower"] = shininess;
-		buf["normalMapEnabled"] = true;
-		bindablePtrs.push_back(std::make_shared<CachingPixelConstantBufferEX>(gfx, buf, 1u));
-
-	}
-	else if (hasDiffuseMap && hasSpecularMap) { // No Normal Map
-		pvs = VertexShader::Resolve(gfx, "PhongVS.cso");
-		pps = PixelShader::Resolve(gfx, "PhongPSSpec.cso");
-
-		materialConstantsLayout.Add<Dcb::Float>("specularPower"); // Example uses specularPower directly
-		materialConstantsLayout.Add<Dcb::Bool>("hasGloss");      // Example uses hasGloss
-		materialConstantsLayout.Add<Dcb::Float>("specularMapWeight");
-		auto buf = Dcb::Buffer(std::move(materialConstantsLayout));
-		buf["specularPower"] = shininess;
-		buf["hasGloss"] = hasAlphaGloss;
-		buf["specularMapWeight"] = 1.0f;
-		bindablePtrs.push_back(std::make_shared<CachingPixelConstantBufferEX>(gfx, buf, 1u));
-
-	}
-	else if (hasDiffuseMap) { // Only Diffuse map
-		pvs = VertexShader::Resolve(gfx, "PhongVS.cso");
-		pps = PixelShader::Resolve(gfx, "PhongPS.cso");
-
-		materialConstantsLayout.Add<Dcb::Float>("specularIntensity");
-		materialConstantsLayout.Add<Dcb::Float>("specularPower");
-		auto buf = Dcb::Buffer(std::move(materialConstantsLayout));
-		buf["specularIntensity"] = (specularColor.x + specularColor.y + specularColor.z) / 3.0f;
-		buf["specularPower"] = shininess;
-		bindablePtrs.push_back(std::make_shared<CachingPixelConstantBufferEX>(gfx, buf, 1u));
-
-	}
-	else if (!hasDiffuseMap && !hasNormalMap && !hasSpecularMap) { // No textures
-		pvs = VertexShader::Resolve(gfx, "PhongVSNotex.cso");
-		pps = PixelShader::Resolve(gfx, "PhongPSNotex.cso");
-
-		materialConstantsLayout.Add<Dcb::Float4>("materialColor");
-		materialConstantsLayout.Add<Dcb::Float4>("specularColor");
-		materialConstantsLayout.Add<Dcb::Float>("specularPower");
-		auto buf = Dcb::Buffer(std::move(materialConstantsLayout));
-		buf["materialColor"] = diffuseColor;   // Use loaded/default diffuse color
-		buf["specularColor"] = specularColor; // Use loaded/default specular color
-		buf["specularPower"] = shininess;
-		bindablePtrs.push_back(std::make_shared<CachingPixelConstantBufferEX>(gfx, buf, 1u));
-	}
-	else {
-		throw std::runtime_error("Unsupported material texture combination for mesh: "s + mesh.mName.C_Str());
-	}
-
-	// --- Add Shaders and Input Layout ---
-	auto pvsbc = pvs->GetBytecode();
-	bindablePtrs.push_back(std::move(pvs));
-	bindablePtrs.push_back(std::move(pps));
-	bindablePtrs.push_back(InputLayout::Resolve(gfx, vbuf.GetLayout(), pvsbc));
-
-	// --- Add Rasterizer and Blender states (from example) ---
-	// Example implies Rasterizer::Resolve takes a bool for 2-sided (based on diffuse alpha)
-	// and Blender::Resolve takes a bool (perhaps for alpha blending enabled).
-	// You need to ensure your Rasterizer and Blender classes have these Resolve methods.
-	bindablePtrs.push_back(Rasterizer::Resolve(gfx, hasAlphaDiffuse));
-	bindablePtrs.push_back(Blender::Resolve(gfx, hasAlphaDiffuse)); // Assuming diffuse alpha also means blend
-	bindablePtrs.push_back(std::make_shared<Stencil>(gfx, Stencil::Mode::Off));
-
-
-	// Construct the Mesh object
-	return std::make_unique<Mesh>(gfx, std::move(bindablePtrs));
-}
-
-// --- ModelComponent::ShowWindow implementation remains the same ---
-void ModelComponent::ShowWindow(const char* windowName) noexcept
-{
-	if (pRootInternal && pControlWindow)
-	{
+	if (pRootInternal && pControlWindow) {
+		// pControlWindow->Show(gfx, windowName, *pRootInternal, pControlWindow->pSelectedNode, pControlWindow->transforms);
+		// The ImGui window now needs different parameters or different logic
+		// The example ModelWindow has its own Material instances and ControlMeDaddy.
+		// You'll need to adapt this or create a new ImGui window for your ModelComponent
+		// that perhaps allows selecting techniques or modifying common material parameters
+		// exposed via a TechniqueProbe.
+		// For now, let's just make it a simple transform editor for the root ModelInternalNode:
 		pControlWindow->Show(windowName, *pRootInternal, pControlWindow->pSelectedNode, pControlWindow->transforms);
 	}
 }

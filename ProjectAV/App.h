@@ -7,9 +7,13 @@
 #include "Node.h" 
 #include "PhysicsEngine.h"
 #include <map>
-#include "SolidBox.h"
 #include "Components.h"
 #include "ScriptCommander.h"
+#include "FrameCommander.h"
+#include "ColliderSphere.h"
+#include "SolidBox.h"
+#include "SolidCapsule.h"
+
 // Forward declarations
 class PlayerController; // Forward declare
 
@@ -36,6 +40,7 @@ private:
     PointLight pointLight;
     PhysicsEngine physicsEngine; // Physics engine instance
 	DirectX::BoundingFrustum cameraFrustum; // Frustum for the camera
+    FrameCommander fc;
 
     // --- Scene Graph ---
     std::unique_ptr<Node> pSceneRoot;
@@ -61,10 +66,11 @@ private:
     Node* pEnemy = nullptr; // Node for the enemy
 
     // --- UI State ---
+    
+    std::map<BoundingSphere*, ColliderSphere*> sphereCollidersToDraw;
 
-    std::map<BoundingSphere*, SolidSphere> sphereCollidersToDraw;
-    std::map<OBB*, SolidSphere> boxCollidersToDraw; 
-	std::map<CapsuleCollider*, SolidSphere> capsuleCollidersToDraw;
+    std::map<OBB*, SolidBox*> boxCollidersToDraw;
+	std::map<CapsuleCollider*, SolidCapsule*> capsuleCollidersToDraw;
 
     void AddSphereColliderToDraw(Graphics& gfx, BoundingSphere* boundingSphere);
     void DrawSphereColliders(Graphics& gfx);
