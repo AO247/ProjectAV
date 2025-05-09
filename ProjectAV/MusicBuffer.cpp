@@ -3,6 +3,7 @@
 #include <AL\alext.h>
 #include <malloc.h>
 
+
 void MusicBuffer::Play()
 {
 	ALsizei i;
@@ -122,6 +123,16 @@ bool MusicBuffer::isPlaying()
 	ALint state;
 	alGetSourcei(p_Source, AL_SOURCE_STATE, &state);
 	return (state == AL_PLAYING);
+}
+
+void MusicBuffer::setGain(const float& val)
+{
+	float newVal = val;
+	if (newVal < 0.f)
+		newVal = 0.f;
+	else if (newVal > 5.f)
+		newVal = 5.f;
+	alSourcef(p_Source, AL_GAIN, val);
 }
 
 MusicBuffer::MusicBuffer(const char* filename)

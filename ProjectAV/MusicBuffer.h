@@ -16,6 +16,8 @@ public:
 
 	bool isPlaying();
 
+	void setGain(const float& val);
+
 	MusicBuffer(const char* filename);
 	~MusicBuffer();
 private:

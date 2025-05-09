@@ -109,8 +109,6 @@ App::App(const std::string& commandLine)
 	pNoxTurnHair = pNoxTurnHairOwner.get();
 	auto pEnemyOwner = std::make_unique<Node>("Enemy", nullptr, "Enemy");
 	pEnemy = pEnemyOwner.get();
-	//auto pSoundEffectsPlayerOwner = std::make_unique<Node>("SoundEffectsPlayer");
-	//pSoundEffectsPlayer = pSoundEffectsPlayerOwner.get();
 
     // Adding to Scene Graph
 	pSceneRoot->AddChild(std::move(pCameraNodeOwner));
@@ -296,11 +294,19 @@ App::App(const std::string& commandLine)
     pEnemy->GetComponent<StateMachine>()->UpdateComponents();
 
     
+
+
 	pPlayer->AddComponent(
 		std::make_unique<SoundEffectsPlayer>(pPlayer)
 	);
 	SoundEffectsPlayer* pSoundEffectsPlayer = pPlayer->GetComponent<SoundEffectsPlayer>();
     pSoundEffectsPlayer->AddSound("Models\\turn.ogg");
+	pEnemy->AddComponent(
+		std::make_unique<SoundEffectsPlayer>(pEnemy)
+	);
+	SoundEffectsPlayer* pEnemySoundEffectsPlayer = pEnemy->GetComponent<SoundEffectsPlayer>();
+	pEnemySoundEffectsPlayer->AddSound("Models\\sci-fidrone.ogg");
+
 
     // Changing position scale etc.]
 	pFreeViewCamera->SetLocalPosition({ 4.0f, 11.0f, -28.0f });

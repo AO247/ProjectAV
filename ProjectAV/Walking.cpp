@@ -5,6 +5,8 @@
 #include <DirectXMath.h>
 #include <algorithm>
 #include "CapsuleCollider.h"
+#include "SoundEffectsPlayer.h"
+
 namespace dx = DirectX;
 Walking::Walking(Node* owner)
 	: Component(owner) 
@@ -51,6 +53,10 @@ void Walking::Follow(DirectX::XMFLOAT3 targetPosition)
 
         GetOwner()->SetLocalRotation({ 0.0f, targetYaw, 0.0f });
     }
+
+	if (pOwner->GetComponent<SoundEffectsPlayer>()->isPlaying() == false) {
+		pOwner->GetComponent<SoundEffectsPlayer>()->Play(0);
+	}
 }
 
 Vector3 Walking::CalculateAvoidanceForce()
