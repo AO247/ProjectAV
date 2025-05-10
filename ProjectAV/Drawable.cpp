@@ -16,16 +16,26 @@ void Drawable::Submit( FrameCommander& frame ) const noexcept
 	}
 }
 
-Drawable::Drawable( Graphics& gfx,const Material& mat,const aiMesh& mesh,float scale ) noexcept
+Drawable::Drawable(Graphics& gfx, const Material& mat, const aiMesh& mesh, float scale) noexcept
+    : // Member initializer list
+    // pVertices and pIndices are initialized by assignments in the body
+    pTopology(Bind::Topology::Resolve(gfx)),       // Initialize pTopology
+    meshVertexDataCPU(Dvtx::VertexLayout{}, 0u),   // Explicitly initialize meshVertexDataCPU
+    meshIndexDataCPU{}                             // Default construct meshIndexDataCPU (empty vector)
 {
-	pVertices = mat.MakeVertexBindable( gfx,mesh,scale );
-	pIndices = mat.MakeIndexBindable( gfx,mesh );
-	pTopology = Bind::Topology::Resolve( gfx );
+    // Constructor body
+    VertexDataBundle vertBundle = mat.MakeVertexDataBundle(gfx, mesh, scale);
+    pVertices = vertBundle.gpuBuffer;
+    meshVertexDataCPU = std::move(vertBundle.cpuBuffer); // Then assign
 
-	for( auto& t : mat.GetTechniques() )
-	{
-		AddTechnique( std::move( t ) );
-	}
+    IndexDataBundle idxBundle = mat.MakeIndexDataBundle(gfx, mesh);
+    pIndices = idxBundle.gpuBuffer;
+    meshIndexDataCPU = std::move(idxBundle.cpuIndices); // Then assign
+
+    for (auto& t : mat.GetTechniques())
+    {
+        AddTechnique(std::move(t));
+    }
 }
 
 void Drawable::AddTechnique( Technique tech_in ) noexcept

@@ -141,14 +141,38 @@ namespace Dvtx
 	{
 		Resize( size );
 	}
-	void VertexBuffer::Resize( size_t newSize ) noxnd
-	{
-		const auto size = Size();
-		if( size < newSize )
+		void VertexBuffer::Resize(size_t newSize) noxnd
 		{
-			buffer.resize( buffer.size() + layout.Size() * (newSize - size) );
+			// If the layout has no size (stride is 0), it means no actual vertex data can be stored per vertex.
+			// In this case, the concept of 'number of vertices' (which Size() returns) is ill-defined
+			// or should be 0. The buffer should also remain empty or be sized to 0.
+			if (layout.Size() == 0) // Check if stride is 0
+			{
+				buffer.clear(); // Ensure buffer is empty if layout is empty
+				// Or buffer.resize(0);
+				return;         // Nothing more to do if stride is 0
+			}
+
+			// If layout.Size() > 0, then proceed with the original logic
+			const auto currentVertexCount = buffer.size() / layout.Size(); // This is now safe
+
+			if (currentVertexCount < newSize)
+			{
+				// Resize buffer to hold 'newSize' vertices
+				// The total bytes needed is newSize * layout.Size()
+				// The number of new bytes to add is (newSize - currentVertexCount) * layout.Size()
+				// A simpler way:
+				buffer.resize(newSize * layout.Size());
+			}
+			// If newSize <= currentVertexCount, you might want to shrink the buffer or do nothing.
+			// The original logic only grew. Let's stick to that for minimal change,
+			// but resizing down could also be buffer.resize(newSize * layout.Size());
+			else if (newSize < currentVertexCount) {
+				// Optional: shrink buffer if newSize is smaller
+				buffer.resize(newSize * layout.Size());
+			}
+			// If newSize == currentVertexCount, do nothing.
 		}
-	}
 	const char* VertexBuffer::GetData() const noxnd
 	{
 		return buffer.data();

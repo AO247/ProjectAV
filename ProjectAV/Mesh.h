@@ -38,6 +38,17 @@ public:
     // **** NEW SUBMIT METHOD ****
     void Submit(FrameCommander& frame, DirectX::FXMMATRIX accumulatedTransform) const noxnd;
 
+    const Dvtx::VertexBuffer& GetVertexDataCPU() const
+    {
+        return static_cast<const Drawable*>(this)->GetVertexDataCPU();
+    }
+
+    const std::vector<unsigned short>& GetIndexDataCPU() const
+    {
+        return static_cast<const Drawable*>(this)->GetIndexDataCPU();
+    }
+
+
 private:
     mutable DirectX::XMFLOAT4X4 transform = {}; // For storing world transform for this mesh
 };

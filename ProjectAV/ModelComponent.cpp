@@ -102,10 +102,84 @@ ModelInternalNode::ModelInternalNode(int id, const std::string& name, std::vecto
 	dx::XMStoreFloat4x4(&appliedTransform, dx::XMMatrixIdentity()); // Init applied transform
 }
 
+void ModelInternalNode::CollectTrianglesRecursive(std::vector<Triangle>& allTriangles,
+	DirectX::FXMMATRIX accumulatedTransform) const noxnd
+{
+	namespace dx = DirectX;
+	const auto nodeObjectTransform =
+		dx::XMLoadFloat4x4(&appliedTransform) *
+		dx::XMLoadFloat4x4(&transform) *
+		accumulatedTransform;
+
+	for (const auto pMesh : meshPtrs)
+	{
+		if (!pMesh) continue;
+
+		const Dvtx::VertexBuffer& vtxBufferCPU = pMesh->GetVertexDataCPU(); // Using Mesh's CPU getter
+		const std::vector<unsigned short>& idxBufferCPU = pMesh->GetIndexDataCPU();   // Using Mesh's CPU getter
+
+		if (vtxBufferCPU.GetLayout().Size() == 0)
+		{
+			OutputDebugStringA(("Warning: Mesh in node '" + GetName() + "' has layout.Size() == 0. Skipping.\n").c_str());
+			// You can even put a breakpoint here to ensure it's hit
+			continue; // Skip this mesh
+		}
+
+		if (!vtxBufferCPU.GetLayout().Has(Dvtx::VertexLayout::Position3D))
+		{
+			OutputDebugStringA(("Warning: Mesh in node '" + GetName() + "' lacks Position3D in its CPU vertex data. Skipping.\n").c_str());
+			continue;
+		}
+		if (idxBufferCPU.empty() || idxBufferCPU.size() % 3 != 0)
+		{
+			OutputDebugStringA(("Warning: Mesh in node '" + GetName() + "' has invalid CPU indices for triangles. Skipping.\n").c_str());
+			continue;
+		}
+
+		for (size_t i = 0; i < idxBufferCPU.size(); i += 3)
+		{
+			Triangle currentTriangle;
+
+			// Get vertex positions. These are from the CPU buffer and already scaled.
+			const DirectX::XMFLOAT3& v0_local_mesh = vtxBufferCPU[idxBufferCPU[i]].Attr<Dvtx::VertexLayout::Position3D>();
+			const DirectX::XMFLOAT3& v1_local_mesh = vtxBufferCPU[idxBufferCPU[i + 1]].Attr<Dvtx::VertexLayout::Position3D>();
+			const DirectX::XMFLOAT3& v2_local_mesh = vtxBufferCPU[idxBufferCPU[i + 2]].Attr<Dvtx::VertexLayout::Position3D>();
+
+			// Transform from mesh's local space (which is model-part local space) to the target space
+			dx::XMVECTOR v0_transformed_vec = dx::XMVector3TransformCoord(dx::XMLoadFloat3(&v0_local_mesh), nodeObjectTransform);
+			dx::XMVECTOR v1_transformed_vec = dx::XMVector3TransformCoord(dx::XMLoadFloat3(&v1_local_mesh), nodeObjectTransform);
+			dx::XMVECTOR v2_transformed_vec = dx::XMVector3TransformCoord(dx::XMLoadFloat3(&v2_local_mesh), nodeObjectTransform);
+
+			dx::XMStoreFloat3(&currentTriangle.v0, v0_transformed_vec);
+			dx::XMStoreFloat3(&currentTriangle.v1, v1_transformed_vec);
+			dx::XMStoreFloat3(&currentTriangle.v2, v2_transformed_vec);
+			allTriangles.push_back(currentTriangle);
+		}
+	}
+
+	for (const auto& pChildNode : childPtrs)
+	{
+		if (pChildNode)
+		{
+			pChildNode->CollectTrianglesRecursive(allTriangles, nodeObjectTransform);
+		}
+	}
+}
+
 void ModelInternalNode::AddChild(std::unique_ptr<ModelInternalNode> pChild) noxnd
 {
 	assert(pChild);
 	childPtrs.push_back(std::move(pChild));
+}
+
+std::vector<Triangle> ModelComponent::GetTriangles(DirectX::FXMMATRIX baseTransform) const
+{
+	std::vector<Triangle> allTriangles;
+	if (pRootInternal)
+	{
+		pRootInternal->CollectTrianglesRecursive(allTriangles, baseTransform);
+	}
+	return allTriangles;
 }
 
 // Draw method for the *internal* node structure

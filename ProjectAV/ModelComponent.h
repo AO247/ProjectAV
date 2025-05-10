@@ -15,11 +15,20 @@ struct aiNode; // Assimp internal node
 struct aiMesh;
 struct aiMaterial;
 
+struct Triangle
+{
+    DirectX::XMFLOAT3 v0;
+    DirectX::XMFLOAT3 v1;
+    DirectX::XMFLOAT3 v2;
+};
+
 // This internal Node structure (ModelInternalNode) represents the hierarchy loaded FROM the model file
 class ModelInternalNode
 {
     friend class ModelComponent;
 public:
+    void CollectTrianglesRecursive(std::vector<Triangle>& allTriangles,
+        DirectX::FXMMATRIX accumulatedTransform) const noxnd;
     ModelInternalNode(int id, const std::string& name, std::vector<Mesh*> meshPtrs, const DirectX::XMMATRIX& transform) noxnd;
     const std::string& GetName() const noexcept { return name; }
     // **** CHANGED Draw to Submit ****
@@ -48,7 +57,7 @@ public:
 
     // **** CHANGED Draw to Submit ****
     void Submit(FrameCommander& frame, Graphics& gfx, DirectX::FXMMATRIX worldTransform) const noxnd;
-
+    std::vector<Triangle> GetTriangles(DirectX::FXMMATRIX baseTransform) const;
     void ShowWindow(Graphics& gfx, const char* windowName = nullptr) noexcept; // Pass Gfx if ImGui needs it
 
 private:

@@ -199,24 +199,47 @@ std::vector<unsigned short> Material::ExtractIndices( const aiMesh& mesh ) const
 	}
 	return indices;
 }
-std::shared_ptr<Bind::VertexBuffer> Material::MakeVertexBindable( Graphics& gfx,const aiMesh& mesh,float scale ) const noxnd
+VertexDataBundle Material::MakeVertexDataBundle(Graphics& gfx, const aiMesh& mesh, float scale) const noxnd
 {
-	auto vtc = ExtractVertices( mesh );
-	if( scale != 1.0f )
+	// 1. Extract vertices (creates a Dvtx::VertexBuffer using this->vtxLayout)
+	Dvtx::VertexBuffer cpuVertexBuffer = ExtractVertices(mesh); // vtxLayout is used here
+
+	// 2. Apply scale to the CPU-side vertex buffer
+	if (scale != 1.0f)
 	{
-		for( auto i = 0u; i < vtc.Size(); i++ )
+		// Check if layout actually has Position3D before trying to access it
+		if (cpuVertexBuffer.GetLayout().Has(Dvtx::VertexLayout::Position3D))
 		{
-			DirectX::XMFLOAT3& pos = vtc[i].Attr<Dvtx::VertexLayout::ElementType::Position3D>();
-			pos.x *= scale;
-			pos.y *= scale;
-			pos.z *= scale;
+			for (size_t i = 0u; i < cpuVertexBuffer.Size(); i++) // Use size_t for loop
+			{
+				DirectX::XMFLOAT3& pos = cpuVertexBuffer[i].Attr<Dvtx::VertexLayout::Position3D>();
+				pos.x *= scale;
+				pos.y *= scale;
+				pos.z *= scale;
+			}
 		}
+		// Else: you might want to log a warning or handle if Position3D is expected but not present
 	}
-	return Bind::VertexBuffer::Resolve( gfx,MakeMeshTag( mesh ),std::move( vtc ) );
+
+	// 3. Create the GPU VertexBuffer bindable
+	std::shared_ptr<Bind::VertexBuffer> gpuVertexBuffer = Bind::VertexBuffer::Resolve(gfx, MakeMeshTag(mesh), cpuVertexBuffer);
+	// Note: Resolve takes cpuVertexBuffer by const&, so it's safe to move it next.
+
+	// 4. Return the bundle
+	return { std::move(gpuVertexBuffer), std::move(cpuVertexBuffer) };
 }
-std::shared_ptr<Bind::IndexBuffer> Material::MakeIndexBindable( Graphics& gfx,const aiMesh& mesh ) const noxnd
+
+IndexDataBundle Material::MakeIndexDataBundle(Graphics& gfx, const aiMesh& mesh) const noxnd
 {
-	return Bind::IndexBuffer::Resolve( gfx,MakeMeshTag( mesh ),ExtractIndices( mesh ) );
+	// 1. Extract indices
+	std::vector<unsigned short> cpuIndexBuffer = ExtractIndices(mesh);
+
+	// 2. Create the GPU IndexBuffer bindable
+	std::shared_ptr<Bind::IndexBuffer> gpuIndexBuffer = Bind::IndexBuffer::Resolve(gfx, MakeMeshTag(mesh), cpuIndexBuffer);
+	// Note: Resolve takes cpuIndexBuffer by const&.
+
+	// 3. Return the bundle
+	return { std::move(gpuIndexBuffer), std::move(cpuIndexBuffer) };
 }
 std::string Material::MakeMeshTag( const aiMesh& mesh ) const noexcept
 {
