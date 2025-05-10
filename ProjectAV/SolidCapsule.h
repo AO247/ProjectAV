@@ -22,17 +22,12 @@ public:
     // if geometry is created in world space each frame.
     DirectX::XMMATRIX GetTransformXM() const noexcept override;
 
-    // --- Move/Copy semantics ---
-    SolidCapsule(SolidCapsule&&) noexcept = default;
-    SolidCapsule& operator=(SolidCapsule&&) noexcept = default;
-    SolidCapsule(const SolidCapsule&) = delete;
-    SolidCapsule& operator=(const SolidCapsule&) = delete;
-
+    void Update(Graphics& gfx);
 private:
 
     // Store parameters needed for GetTransformXM (if any) 
     // or potentially for rebuilding geometry if Setters modify size/radius.
-    DirectX::SimpleMath::Vector3 basePos = { 0,0,0 }; // Store world base for translation
-    DirectX::SimpleMath::Vector3 tipPos = { 0,1,0 };  // Store world tip
-    float capRadius = 0.5f;                           // Store radius
+    DirectX::SimpleMath::Vector3 basePos; // Store world base for translation
+    DirectX::SimpleMath::Vector3 tipPos;  // Store world tip
+    float capRadius;                           // Store radius
 };

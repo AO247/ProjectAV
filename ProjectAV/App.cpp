@@ -602,6 +602,8 @@ void App::ShowControlWindows()
 	DrawCapsuleColliders(wnd.Gfx());
     pointLight.Submit(fc);
 
+
+
     pointLight.SpawnControlWindow(); // Control for Point Light
     if (showDemoWindow)
     {
@@ -794,6 +796,7 @@ void App::DrawCapsuleColliders(Graphics& gfx)
 		it->second->SetBase(it->first->GetTransformedBase());
 		it->second->SetTip(it->first->GetTransformedTip());
 		it->second->SetRadius(it->first->GetRadius());
+        it->second->Update(gfx);
 		it->second->Submit(fc);
     }
 }

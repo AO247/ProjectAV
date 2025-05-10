@@ -22,17 +22,17 @@ SolidCapsule::SolidCapsule(Graphics& gfx, Vector3 base, Vector3 tip, float radiu
 
     // --- Generate capsule geometry using WORLD coordinates ---
     // Convert Vector3 to XMFLOAT3 for Capsule::Make
-    DirectX::XMFLOAT3 baseF3 = { base.x, base.y, base.z };
-    DirectX::XMFLOAT3 tipF3 = { tip.x, tip.y, tip.z };
-    auto model = Capsule::Make(baseF3, tipF3, radius);
+    DirectX::XMFLOAT3 baseF3 = { basePos.x, basePos.y, basePos.z };
+    DirectX::XMFLOAT3 tipF3 = { tipPos.x, tipPos.y, tipPos.z };
+    auto model = Capsule::Make(baseF3, tipF3, capRadius);
     // --- End geometry generation ---
 
     // --- Create unique geometry tag based on parameters ---
     // This won't really cache well with world coordinates, but follows pattern
     std::stringstream ss;
-    ss << std::fixed << "$capsule_" << radius << "_"
-        << base.x << "_" << base.y << "_" << base.z << "_"
-        << tip.x << "_" << tip.y << "_" << tip.z;
+    ss << std::fixed << "$capsule_" << capRadius << "_"
+        << basePos.x << "_" << basePos.y << "_" << basePos.z << "_"
+        << tipPos.x << "_" << tipPos.y << "_" << tipPos.z;
     const auto geometryTag = ss.str();
 
     pVertices = VertexBuffer::Resolve(gfx, geometryTag, model.vertices);
@@ -80,6 +80,30 @@ SolidCapsule::SolidCapsule(Graphics& gfx, Vector3 base, Vector3 tip, float radiu
     }
 }
 
+void SolidCapsule::Update(Graphics& gfx) {
+    using namespace Bind;
+    namespace dx = DirectX;
+
+    // --- Generate capsule geometry using WORLD coordinates ---
+    // Convert Vector3 to XMFLOAT3 for Capsule::Make
+    DirectX::XMFLOAT3 baseF3 = { basePos.x, basePos.y, basePos.z };
+    DirectX::XMFLOAT3 tipF3 = { tipPos.x, tipPos.y, tipPos.z };
+    auto model = Capsule::Make(baseF3, tipF3, capRadius);
+    // --- End geometry generation ---
+
+    // --- Create unique geometry tag based on parameters ---
+    // This won't really cache well with world coordinates, but follows pattern
+    std::stringstream ss;
+    ss << std::fixed << "$capsule_" << capRadius << "_"
+        << basePos.x << "_" << basePos.y << "_" << basePos.z << "_"
+        << tipPos.x << "_" << tipPos.y << "_" << tipPos.z;
+    const auto geometryTag = ss.str();
+
+    pVertices = VertexBuffer::Resolve(gfx, geometryTag, model.vertices);
+    pIndices = IndexBuffer::Resolve(gfx, geometryTag, model.indices);
+    pTopology = Topology::Resolve(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+}
 // --- Setters update stored members ---
 void SolidCapsule::SetBase(Vector3 base) noexcept
 {
