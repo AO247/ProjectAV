@@ -99,18 +99,18 @@ App::App()
         std::make_unique<Rigidbody>(pNanosuitNode, Vector3(-10.0f, 30.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f))
     );
     Rigidbody* rb2 = pNanosuitNode->GetComponent<Rigidbody>();
-    //pNanosuitNode->AddComponent(
-    //    std::make_unique<OBB>(pNanosuitNode, rb2, Vector3(0, 0, 0), Vector3(2, 2, 2))
-    //);
-    //OBB* bs2 = pNanosuitNode->GetComponent<OBB>();
-    //rb2->SetCollider(bs2);
     pNanosuitNode->AddComponent(
-        std::make_unique<CapsuleCollider>(pNanosuitNode, rb2, 2, Vector3(0, -2, 0), Vector3(0, 6, 0))
+        std::make_unique<OBB>(pNanosuitNode, rb2, Vector3(0, 0, 0), Vector3(2, 2, 2))
     );
-    CapsuleCollider* cc = pNanosuitNode->GetComponent<CapsuleCollider>();
-    rb2->SetCollider(cc);
+    OBB* bs2 = pNanosuitNode->GetComponent<OBB>();
+    rb2->SetCollider(bs2);
+    //pNanosuitNode->AddComponent(
+    //    std::make_unique<CapsuleCollider>(pNanosuitNode, rb2, 2, Vector3(0, -2, 0), Vector3(0, 6, 0))
+    //);
+    //CapsuleCollider* cc = pNanosuitNode->GetComponent<CapsuleCollider>();
+    //rb2->SetCollider(cc);
     physicsEngine.AddRigidbody(rb2);
-    AddCapsuleColliderToDraw(wnd.Gfx(), cc);
+    //AddCapsuleColliderToDraw(wnd.Gfx(), cc);
 
     // 3. Add the Nanosuit Node to the Scene Root
     pEmptyNode->AddChild(std::move(pNanosuitOwner));

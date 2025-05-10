@@ -25,8 +25,10 @@ IntersectData OBB::IntersectOBB(OBB* other)
 	//int firstCollidingSurfaceIndex = -1;
 	//int secondCollidingSurfaceIndex = -1;
 
-	IntervalPair projectionDataForFirstFace;
-	IntervalPair projectionDataForSecondFace;
+	//IntervalPair projectionDataForFirstFace;
+	//IntervalPair projectionDataForSecondFace;
+
+	bool faceFaceCollision = false;
 
 	for (int i = 0; i < 15; i++)
 	{
@@ -49,12 +51,16 @@ IntersectData OBB::IntersectOBB(OBB* other)
 		{
 			minPenetration = overlap;
 			minAxis = axes[i];
-			projectionDataForFirstFace = iA;
-			projectionDataForSecondFace = iB;
+			//projectionDataForFirstFace = iA;
+			//projectionDataForSecondFace = iB;
 			//if (i < 3)
 			//{
 			//	firstCollidingSurfaceIndex = i;
 			//}
+		}
+		else if (overlap == minPenetration)
+		{
+			faceFaceCollision = true;
 		}
 	}
 	
@@ -64,28 +70,58 @@ IntersectData OBB::IntersectOBB(OBB* other)
 
 	Vector3 mtv = minAxis * minPenetration;
 
-	//Vector3 colPointA = this->GetClosestPoint(other->GetTransformedCenter());
-	//Vector3 colPointB = other->GetClosestPoint(this->GetTransformedCenter());
 	Vector3 colPointA = this->NearestPoint(other->GetTransformedCenter());
 	Vector3 colPointB = other->NearestPoint(this->GetTransformedCenter());
-	Vector3 collisionPoint = (colPointA + colPointB) * 0.5f;
+	//Vector3 collisionPoint = (colPointA + colPointB) * 0.5f;
+	Vector3 collisionPoint = colPointA;
 
-	if (minPenetration > 0.8f && fabs(minAxis.Dot(GetTransformedOrientation(orientationY))) > 0.9f) {
-		collisionPoint = this->GetTransformedCenter();
+	//if (minPenetration > 0.8f && fabs(minAxis.Dot(GetTransformedOrientation(orientationY))) > 0.9f) {
+	//	collisionPoint = this->GetTransformedCenter();
+	//}
+
+	if(faceFaceCollision)
+	{ 
+		Axes axisClosestToMinAxis = GetAxisClosestToTheDirection(minAxis);
+		std::vector<Vector3> face = GetVerticesOfFacePointedByAxis(axisClosestToMinAxis);
+
+		Axes refAxisClosestToMinAxis = other->GetAxisClosestToTheDirection(-minAxis);
+		std::vector<Vector3> refFace = other->GetVerticesOfFacePointedByAxis(refAxisClosestToMinAxis);
+
+		Vector3 u = refFace[0] - refFace[1];
+		float sizeU = u.Length();
+		u /= sizeU;
+		Vector3 v = refFace[2] - refFace[1];
+		float sizeV = v.Length();
+		v /= sizeV;
+
+		float hu = sizeU / 2.0f;
+		float hv = sizeV / 2.0f;
+
+		Vector3 center;
+		center += refFace[1] + (u * hu);
+		center += v * hv;
+
+		std::vector<MyPlane> refPlanes = GetFaceSidePlanes(center, u, v, hu, hv);
+
+		std::vector<Vector3> contactPoints = ClipIncidentFaceToReferenceFace(face, refPlanes);
+		Vector3 contact = AverageContactPoint(contactPoints);
+		collisionPoint = contact;
 	}
+
 
 	Vector3 r1 = collisionPoint - GetTransformedCenter();
 	Vector3 r2 = collisionPoint - other->GetTransformedCenter();
 
-	// Collision type is face to face
 
-	if (ProjectAndCheckOverlapping(0, projectionDataForFirstFace, projectionDataForSecondFace) ||
-		ProjectAndCheckOverlapping(1, projectionDataForFirstFace, projectionDataForSecondFace) || 
-		ProjectAndCheckOverlapping(2, projectionDataForFirstFace, projectionDataForSecondFace))
-	{
-		r1 = Vector3(0, 0, 0);
-		r2 = Vector3(0, 0, 0);
-	}
+
+	// Collision type is face to face
+	//if (ProjectAndCheckOverlapping(0, projectionDataForFirstFace, projectionDataForSecondFace) ||
+	//	ProjectAndCheckOverlapping(1, projectionDataForFirstFace, projectionDataForSecondFace) || 
+	//	ProjectAndCheckOverlapping(2, projectionDataForFirstFace, projectionDataForSecondFace))
+	//{
+	//	r1 = Vector3(0, 0, 0);
+	//	r2 = Vector3(0, 0, 0);
+	//}
 
 	// OX OZ Projection
 
@@ -215,7 +251,6 @@ RaycastData OBB::IntersectRay(Raycast* ray)
 	return RaycastData(this, (ray->origin + (t_min * ray->direction)));
 }
 
-
 Vector3 OBB::GetTransformedCenter()
 {
 	DirectX::XMVECTOR e = DirectX::XMVectorSet(center.x, center.y, center.z, 1.0f);
@@ -316,15 +351,15 @@ IntervalPair OBB::GetInterval(Vector3 axis)
 		imax = max(imax, dot);
 	}
 
-	int closestVertexIndex = 0;
+	//int closestVertexIndex = 0;
 	for (int i = 0; i < 8; i++)
 	{
 		dot = v.Dot(GetTransformedVertex(vertices[i]));
-		if (imax == dot)
-		{
-			result.verticesClosestToTheAxis[closestVertexIndex] = GetTransformedVertex(vertices[i]);
-			closestVertexIndex++;
-		}
+		//if (imax == dot)
+		//{
+		//	result.verticesClosestToTheAxis[closestVertexIndex] = GetTransformedVertex(vertices[i]);
+		//	closestVertexIndex++;
+		//}
 	}
 
 	result.imin = imin;
@@ -349,8 +384,7 @@ bool OBB::ColOverlapAxis(OBB* first, OBB* second, Vector3 axis)
 // 0 - OX OZ
 // 1 - OX OY
 // 2 - OZ OY
-
-
+/*
 bool OBB::ProjectAndCheckOverlapping(int surface, IntervalPair data1, IntervalPair data2)
 {
 	// Projection stage
@@ -517,7 +551,7 @@ bool OBB::ProjectAndCheckOverlapping(int surface, IntervalPair data1, IntervalPa
 	}
 
 	return true;
-}
+}*/
 
 // surface:
 // 0 - OX OZ
@@ -598,6 +632,200 @@ IntervalPair OBB::GetInterval2D(Vector3 axis, Vector3* vertices)
 	result.imax = imax;
 
 	return result;
+}
+
+// Use the Axes enum as the axis parameter
+// The vertices returned order is CCW
+std::vector<Vector3> OBB::GetVerticesOfFacePointedByAxis(Axes axis)
+{
+	std::vector<Vector3> result;
+
+	switch(axis)
+	{
+		case 0:
+		{
+			result.push_back(GetTransformedVertex(vertices[3]));
+			result.push_back(GetTransformedVertex(vertices[7]));
+			result.push_back(GetTransformedVertex(vertices[5]));
+			result.push_back(GetTransformedVertex(vertices[1]));
+			break;
+		}
+		case 1:
+		{
+			result.push_back(GetTransformedVertex(vertices[3]));
+			result.push_back(GetTransformedVertex(vertices[2]));
+			result.push_back(GetTransformedVertex(vertices[6]));
+			result.push_back(GetTransformedVertex(vertices[7]));
+			break;
+		}
+		case 2:
+		{
+			result.push_back(GetTransformedVertex(vertices[7]));
+			result.push_back(GetTransformedVertex(vertices[6]));
+			result.push_back(GetTransformedVertex(vertices[4]));
+			result.push_back(GetTransformedVertex(vertices[5]));
+			break;
+		}
+		case 3:
+		{
+			result.push_back(GetTransformedVertex(vertices[6]));
+			result.push_back(GetTransformedVertex(vertices[2]));
+			result.push_back(GetTransformedVertex(vertices[0]));
+			result.push_back(GetTransformedVertex(vertices[4]));
+			break;
+		}
+		case 4:
+		{
+			result.push_back(GetTransformedVertex(vertices[5]));
+			result.push_back(GetTransformedVertex(vertices[4]));
+			result.push_back(GetTransformedVertex(vertices[0]));
+			result.push_back(GetTransformedVertex(vertices[1]));
+			break;
+		}
+		case 5:
+		{
+			result.push_back(GetTransformedVertex(vertices[2]));
+			result.push_back(GetTransformedVertex(vertices[3]));
+			result.push_back(GetTransformedVertex(vertices[1]));
+			result.push_back(GetTransformedVertex(vertices[0]));
+			break;
+		}
+	}
+
+	return result;
+}
+
+OBB::Axes OBB::GetAxisClosestToTheDirection(Vector3 direction)
+{
+
+	Vector3 axes[6] =
+	{
+		GetTransformedOrientation(orientationX),
+		GetTransformedOrientation(orientationY),
+		GetTransformedOrientation(orientationZ),
+		-GetTransformedOrientation(orientationX),
+		-GetTransformedOrientation(orientationY),
+		-GetTransformedOrientation(orientationZ),
+	};
+
+	float bestCorrelation = axes[0].Dot(direction);
+	int bestAxis = 0;
+	for (int i = 1; i < 6; i++)
+	{
+		float correlation = axes[i].Dot(direction);
+		if (correlation > bestCorrelation)
+		{
+			bestCorrelation = correlation;
+			bestAxis = i;
+		}
+	}
+
+	switch (bestAxis)
+	{
+		case 0:
+		{
+			return Axes::X;
+		}
+		case 1:
+		{
+			return Axes::Y;
+		}
+		case 2:
+		{
+			return Axes::Z;
+		}
+		case 3:
+		{
+			return Axes::NEGATIVE_X;
+		}
+		case 4:
+		{
+			return Axes::NEGATIVE_Y;
+		}
+		case 5:
+		{
+			return Axes::NEGATIVE_Z;
+		}
+	}
+
+	return Axes::X;
+}
+
+std::vector<Vector3> OBB::ClipPolygon(std::vector<Vector3> polygon, MyPlane plane)
+{
+	std::vector<Vector3> clipped;
+	int count = polygon.size();
+
+	for (int i = 0; i < count; i++)
+	{
+		Vector3 prev = polygon[(i + count - 1) % count];
+		Vector3 curr = polygon[i];
+
+		float prevDist = plane.normal.Dot(prev) - plane.offset;
+		float testowa = plane.normal.Dot(prev);
+		float currDist = plane.normal.Dot(curr) - plane.offset;
+
+		bool prevInside = prevDist >= 0.0f;
+		bool currInside = currDist >= 0.0f;
+
+		if (currInside)
+		{
+			if (!prevInside)
+			{
+				float t = prevDist / (prevDist - currDist);
+				Vector3 intersection = prev + t * (curr - prev);
+				clipped.push_back(intersection);
+			}
+			clipped.push_back(curr);
+		}
+		else if (prevInside)
+		{
+			float t = prevDist / (prevDist - currDist);
+			Vector3 intersection = prev + t * (curr - prev);
+			clipped.push_back(intersection);
+		}
+	}
+
+	return clipped;
+}
+
+std::vector<OBB::MyPlane> OBB::GetFaceSidePlanes(Vector3 faceCenter, Vector3 u, Vector3 v, float hu, float hv)
+{
+	std::vector<MyPlane> outPlanes;
+
+	outPlanes.push_back({ -u, (-u).Dot(faceCenter - u * hu)});
+	outPlanes.push_back({ u, u.Dot(faceCenter + u * hu) });
+	outPlanes.push_back({ -v, (-v).Dot(faceCenter - v * hv) });
+	outPlanes.push_back({ v, v.Dot(faceCenter + v * hv) });
+
+	return outPlanes;
+}
+
+std::vector<Vector3> OBB::ClipIncidentFaceToReferenceFace(std::vector<Vector3> incidentFaceVerts, std::vector<MyPlane> refSidePlanes)
+{
+	std::vector<Vector3> clipped = incidentFaceVerts;
+
+	for (int i = 0; i < refSidePlanes.size(); i++)
+	{
+		MyPlane plane = refSidePlanes[i];
+		clipped = ClipPolygon(clipped, plane);
+		if (clipped.empty())
+		{
+			break;
+		}
+	}
+
+	return clipped;
+}
+
+Vector3 OBB::AverageContactPoint(std::vector<Vector3> contactPoints)
+{
+	Vector3 sum(0,0,0);
+	for (int i = 0; i < contactPoints.size(); i++)
+	{
+		sum += contactPoints[i];
+	}
+	return contactPoints.empty() ? Vector3(0,0,0) : sum / static_cast<float>(contactPoints.size());
 }
 
 Vector3 OBB::GetClosestPoint(Vector3 point)
