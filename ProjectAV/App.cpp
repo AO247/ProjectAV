@@ -409,7 +409,7 @@ void App::HandleInput(float dt)
 void App::DoFrame(float dt)
 {
     pSceneRoot->Update(dt);
-    
+
     wnd.Gfx().BeginFrame(0.5f, 0.5f, 1.0f);
     //if (pPlayer->GetLocalPosition().y < -10.0f) {
 	//	pPlayer->SetLocalPosition({ -20.0f, 225.0f, -25.0f });
@@ -421,6 +421,7 @@ void App::DoFrame(float dt)
         viewMatrix = pFreeViewCamera->GetComponent<Camera>()->GetViewMatrix();
 	}
     wnd.Gfx().SetCamera(viewMatrix);
+    fc.ShowWindows(wnd.Gfx());
 
     // --- Bind Lights ---
     pointLight.Bind(wnd.Gfx(), viewMatrix); // Bind point light (to slot 0)
