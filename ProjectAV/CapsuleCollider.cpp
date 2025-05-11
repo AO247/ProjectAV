@@ -1,5 +1,5 @@
 #include "CapsuleCollider.h"
-
+#include <algorithm>
 IntersectData CapsuleCollider::IntersectCapsule(CapsuleCollider* other)
 {
 	Vector3 selfNormal = (GetTransformedTip() - GetTransformedBase()) / ((GetTransformedTip() - GetTransformedBase()).Length());
@@ -232,9 +232,10 @@ float CapsuleCollider::GetRadius()
 
 Vector3 CapsuleCollider::ClosestPointOnLineSegment(Vector3 a, Vector3 b, Vector3 point)
 {
+	
 	Vector3 ab = b - a;
 	float t = ((point - a).Dot(ab)) / (ab.Dot(ab));
-	Vector3 result = (a + (min(max(t, 0), 1) * ab));
+	Vector3 result = (a + (std::fmin(std::fmax(t, 0), 1) * ab));
 	return result;
 }
 

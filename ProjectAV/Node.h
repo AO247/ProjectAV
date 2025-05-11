@@ -3,11 +3,11 @@
 #include <memory>
 #include <string>
 #include <DirectXMath.h>
-#include <typeinfo> // For GetComponent
+#include <typeinfo> 
 #include "Component.h"
 #include <SimpleMath.h>
-
-class Graphics; // Forward declaration
+class Graphics;
+class FrameCommander; // Forward declare
 
 class Node
 {
@@ -59,7 +59,7 @@ public:
 
     // --- Update & Draw ---
     void Update(float dt);
-    void Draw(Graphics& gfx) const;
+    void Submit(FrameCommander& frame, Graphics& gfx) const; // NEW SUBMIT (pass gfx if needed by components)
     void ShowNodeTree(Node*& pSelectedNode) noexcept;
     std::string tag;
     Node* parent = nullptr;

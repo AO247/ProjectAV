@@ -4,70 +4,62 @@
 #include <memory>
 #include <string>
 #include <DirectXMath.h>
-#include "ConditionalNoexcept.h" // For noxnd
-
+#include "ConditionalNoexcept.h"
 // Forward Declarations
-class Mesh;
+class Mesh; // Your Mesh class
 class Graphics;
-namespace Assimp { class Importer; } // Forward declare instead of including Assimp headers here
-struct aiNode;
+class FrameCommander; // For Submit method
+class ModelControlWindow; // Keep for ImGui
+namespace Assimp { class Importer; }
+struct aiNode; // Assimp internal node
 struct aiMesh;
 struct aiMaterial;
-namespace Bind { class Bindable; } // Forward declaration
 
-// Use pImpl idiom for ModelWindow to hide ImGui details from the header
-class ModelControlWindow;
-
-// This internal Node structure represents the hierarchy loaded FROM the model file
-// It is distinct from the main scene Node class.
+// This internal Node structure (ModelInternalNode) represents the hierarchy loaded FROM the model file
 class ModelInternalNode
 {
-    friend class ModelComponent; // Allow ModelComponent to access private members/methods
+    friend class ModelComponent;
 public:
     ModelInternalNode(int id, const std::string& name, std::vector<Mesh*> meshPtrs, const DirectX::XMMATRIX& transform) noxnd;
     const std::string& GetName() const noexcept { return name; }
-    void Draw(Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform) const noxnd;
-    void ShowTree(int& nodeIndexTracker, ModelInternalNode*& pSelectedNode) const noexcept; // Pass selected node state
-    void SetAppliedTransform(DirectX::FXMMATRIX transform) noexcept; // Used by ImGui controls
+    // **** CHANGED Draw to Submit ****
+    void Submit(FrameCommander& frame, Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform) const noxnd;
+    void ShowTree(int& nodeIndexTracker, ModelInternalNode*& pSelectedNode) const noexcept;
+    void SetAppliedTransform(DirectX::FXMMATRIX transform) noexcept;
     int GetId() const noexcept;
-
 private:
     void AddChild(std::unique_ptr<ModelInternalNode> pChild) noxnd;
-
 private:
     std::string name;
-
     int id;
     std::vector<std::unique_ptr<ModelInternalNode>> childPtrs;
-    std::vector<Mesh*> meshPtrs; // Pointers to meshes owned by ModelComponent
-    DirectX::XMFLOAT4X4 transform; // Local transform within the model file's hierarchy
-    DirectX::XMFLOAT4X4 appliedTransform; // Additional transform applied via ImGui
+    std::vector<Mesh*> meshPtrs;
+    DirectX::XMFLOAT4X4 transform;
+    DirectX::XMFLOAT4X4 appliedTransform;
 };
 
 
 class ModelComponent : public Component
 {
 public:
-    ModelComponent(Node* owner, Graphics& gfx, const std::string& modelFile);
-    virtual ~ModelComponent() noexcept; // Need destructor to manage pImpl
+    // Constructor will take model file and scale
+    ModelComponent(Node* owner, Graphics& gfx, const std::string& modelFile, float scale = 1.0f);
+    virtual ~ModelComponent() noexcept;
 
-    // Draw the model using the provided world transform from the owning Node
-    void Draw(Graphics& gfx, DirectX::FXMMATRIX worldTransform) const noxnd;
+    // **** CHANGED Draw to Submit ****
+    void Submit(FrameCommander& frame, Graphics& gfx, DirectX::FXMMATRIX worldTransform) const noxnd;
 
-    // Show ImGui control window
-    void ShowWindow(const char* windowName = nullptr) noexcept;
-
+    void ShowWindow(Graphics& gfx, const char* windowName = nullptr) noexcept; // Pass Gfx if ImGui needs it
 
 private:
-    // --- Assimp Loading ---
-    std::unique_ptr<ModelInternalNode> ParseNodeRecursive(int& nextId, const aiNode& node) noexcept;
-    std::unique_ptr<Mesh> ParseMesh(Graphics& gfx, const aiMesh& mesh, const aiMaterial* const* pMaterials, const std::string& modelPath);
-
+    // ParseNodeRecursive no longer needs to create Mesh objects, just references them
+    std::unique_ptr<ModelInternalNode> ParseNodeRecursive(int& nextId, const aiNode& node, float scale); // Pass scale
+    // ParseMesh is removed, Material and Mesh constructor handle this
 
     // --- Data ---
-    std::unique_ptr<ModelInternalNode> pRootInternal; // Root of the *internal* hierarchy loaded from file
-    std::vector<std::unique_ptr<Mesh>> meshPtrs; // Owns all the meshes for this model instance
+    std::unique_ptr<ModelInternalNode> pRootInternal;
+    std::vector<std::unique_ptr<Mesh>> meshPtrs; // Owns all the Mesh objects
+    // std::vector<Material> materials; // No longer needed here if Mesh handles it
 
-    // --- ImGui Window --- (Using pImpl)
     std::unique_ptr<ModelControlWindow> pControlWindow;
 };

@@ -1,98 +1,83 @@
-// ColliderSphere.cpp
 #include "ColliderSphere.h"
-#include "BindableCommon.h" // We still need other common bindables
-#include "GraphicsThrowMacros.h"
-#include "Vertex.h"
-#include "Sphere.h"
-#include "Bindable.h"     // Include the base Bindable class definition
-#include <memory>         // For std::make_shared
+#include "BindableCommon.h"      // Includes VertexBuffer, IndexBuffer, Shaders, etc.
+#include "GraphicsThrowMacros.h" // For INFOMAN
+#include "Vertex.h"              // For Dvtx::* types
+#include "Sphere.h"              // For Sphere::Make()
+#include "Stencil.h"             // Include if using Stencil (example SolidSphere might not, but good practice)
+#include "ConstantBuffers.h"     // For PixelConstantBuffer<T>
 
-// --- Local BlendState Definition (Inside ColliderSphere.cpp) ---
-namespace Bind
-{
-    // Define a simple BlendState class locally just for ColliderSphere's use.
-    // It inherits from Bindable but isn't meant for the Codex.
-    class ColliderSphereBlendState : public Bindable
-    {
-    public:
-        ColliderSphereBlendState(Graphics& gfx)
-        {
-            INFOMAN(gfx);
-            D3D11_BLEND_DESC blendDesc = CD3D11_BLEND_DESC{ CD3D11_DEFAULT{} };
-            auto& brt = blendDesc.RenderTarget[0];
+// No need for a local ColliderSphereBlendState if your BindableCommon.h
+// already includes a general Blender::Resolve(gfx, bool blendEnabled)
+// If not, you'd keep the local BlendState definition from your original code.
+// For this adaptation, I'll assume Blender::Resolve(gfx, true) enables alpha blending.
 
-            // Setup standard alpha blending
-            brt.BlendEnable = TRUE;
-            brt.SrcBlend = D3D11_BLEND_SRC_ALPHA;
-            brt.DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
-            brt.BlendOp = D3D11_BLEND_OP_ADD;
-            brt.SrcBlendAlpha = D3D11_BLEND_ONE;
-            brt.DestBlendAlpha = D3D11_BLEND_ZERO;
-            brt.BlendOpAlpha = D3D11_BLEND_OP_ADD;
-            brt.RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+namespace dx = DirectX;
 
-            GFX_THROW_INFO(GetDevice(gfx)->CreateBlendState(&blendDesc, &pBlender));
-        }
-
-        void Bind(Graphics& gfx) noexcept override
-        {
-            GetContext(gfx)->OMSetBlendState(pBlender.Get(), nullptr, 0xFFFFFFFFu);
-        }
-
-    protected:
-        Microsoft::WRL::ComPtr<ID3D11BlendState> pBlender;
-    };
-} // namespace Bind
-// --- End Local BlendState Definition ---
-
-
-// --- ColliderSphere Constructor ---
 ColliderSphere::ColliderSphere(Graphics& gfx, float radius)
 {
-    using namespace Bind; // Still use Bind namespace for other bindables
+    using namespace Bind;
     namespace dx = DirectX;
 
+    // ... (Geometry setup: model, geometryTag) ...
     auto model = Sphere::Make();
     model.Transform(dx::XMMatrixScaling(radius, radius, radius));
-    const auto geometryTag = "$sphere." + std::to_string(radius);
+    const auto geometryTag = "$debug_sphere." + std::to_string(radius);
 
-    // Resolve shared bindables via Codex
-    AddBind(VertexBuffer::Resolve(gfx, geometryTag, model.vertices));
-    AddBind(IndexBuffer::Resolve(gfx, geometryTag, model.indices));
-    AddBind(Topology::Resolve(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
+    pVertices = VertexBuffer::Resolve(gfx, geometryTag, model.vertices);
+    pIndices = IndexBuffer::Resolve(gfx, geometryTag, model.indices);
+    pTopology = Topology::Resolve(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-    auto pvs = VertexShader::Resolve(gfx, "SolidVS.cso");
-    auto pvsbc = pvs->GetBytecode();
-    AddBind(std::move(pvs)); // Use resolved shared_ptr
-
-    AddBind(PixelShader::Resolve(gfx, "SolidPS.cso")); // Assumes updated shader
-    AddBind(InputLayout::Resolve(gfx, model.vertices.GetLayout(), pvsbc));
-
-    // Update Constant Buffer for Color+Alpha
-    struct PSColorConstant
     {
-        dx::XMFLOAT4 color; // Use XMFLOAT4
-    } colorConst;
-    static_assert(sizeof(PSColorConstant) % 16 == 0, "PSColorConstant size must be multiple of 16!");
-    colorConst.color = { 0.3f, 0.4f, 0.9f, 0.6f }; // RGBA - Set alpha here
-    AddBind(PixelConstantBuffer<PSColorConstant>::Resolve(gfx, colorConst, 0u));
+        Technique colliderTechnique("ColliderSolid");
+        Step mainPass(0);
 
-    // --- Add the LOCALLY DEFINED BlendState ---
-    // Create a unique instance for this sphere using make_shared
-    AddBind(std::make_shared<ColliderSphereBlendState>(gfx));
-    // --- End BlendState ---
+        // --- Vertex Shader ---
+        auto pvs = VertexShader::Resolve(gfx, "Solid_VS.cso");
+        auto pvsbc = pvs->GetBytecode();
+        mainPass.AddBindable(std::move(pvs));
 
-    // TransformCbuf remains unique to this instance
-    AddBind(std::make_shared<TransformCbuf>(gfx, *this));
+        // --- Pixel Shader ---
+        mainPass.AddBindable(PixelShader::Resolve(gfx, "Solid_PS.cso"));
+
+        // --- Pixel Constant Buffer for Color ---
+        struct PSColorConstant { dx::XMFLOAT4 color; } colorConst;
+        static_assert(sizeof(PSColorConstant) % 16 == 0);
+        colorConst.color = { 0.0f, 0.0f, 0.7f, 0.6f };
+        mainPass.AddBindable(std::make_shared<PixelConstantBuffer<PSColorConstant>>(gfx, colorConst, 1u));
+
+        // --- Input Layout ---
+        mainPass.AddBindable(InputLayout::Resolve(gfx, model.vertices.GetLayout(), pvsbc));
+
+        // --- Transform Constant Buffer ---
+        mainPass.AddBindable(std::make_shared<TransformCbuf>(gfx)); // Assuming default slot 0 for VS
+
+        // --- Rasterizer State ---
+        mainPass.AddBindable(Rasterizer::Resolve(gfx, false)); // false for default (cull back)
+
+        // --- **** CORRECTED ORDER FOR BLENDING **** ---
+        // 1. Bind Stencil first (if it modifies blend state, its effect is set)
+        mainPass.AddBindable(Stencil::Resolve(gfx, Stencil::Mode::Off));
+
+        // 2. THEN Bind your Blender to *override* with desired blend settings
+        //    Pass 'true' to enable blending, and std::nullopt for factor to use SrcAlpha/InvSrcAlpha
+        mainPass.AddBindable(Blender::Resolve(gfx, true));
+        // --- **** END CORRECTION **** ---
+
+        colliderTechnique.AddStep(std::move(mainPass));
+        AddTechnique(std::move(colliderTechnique));
+    }
+
+    pos = { 0.0f, 0.0f, 0.0f };
 }
 
-// --- Rest of ColliderSphere methods remain the same ---
-void ColliderSphere::SetPos(DirectX::XMFLOAT3 pos) noexcept
+void ColliderSphere::SetPos(DirectX::XMFLOAT3 newPos) noexcept
 {
-    this->pos = pos;
+    this->pos = newPos;
 }
 
 DirectX::XMMATRIX ColliderSphere::GetTransformXM() const noexcept
 {
+    // The sphere geometry is a unit sphere scaled by radius, centered at origin.
+    // This transform matrix will place it in the world.
     return DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
 }

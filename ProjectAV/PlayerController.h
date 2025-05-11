@@ -21,6 +21,7 @@ public:
 	float jumpForce = 60.0f;
 	float dashForce = 1000.0f;
 	float height = 4.0f;
+	float dashCooldown = 1.0f;
 
 private:
 	Window& wnd;
@@ -29,13 +30,16 @@ private:
 	Node* ability1;
 	Node* ability2;
 	bool jumped = false;
-	bool dashed = false;
 	bool grounded = false;
-
+	bool canDash = true;
 	float airMultiplier = 1.2f;
 
 	Vector3 moveDirection;
 	Vector3 dashDirection;
+	float dashCooldownTimer = 0.0f;
+	float dashTimer = 0.0f;
+	bool dashed = false;
+	bool doubleJumped = false;
 
 	void KeyboardInput();
 	void MovePlayer();
@@ -45,5 +49,7 @@ private:
 	void Dash();
 	void Ability1();
 	void Ability2();
+	void Cooldowns(float dt);
+	void Positioning();
 
 };

@@ -5,11 +5,9 @@
 class SolidBox : public Drawable
 {
 public:
-    SolidBox() {};
+    SolidBox() = default;
 
     SolidBox(Graphics& gfx, DirectX::XMFLOAT3 center, DirectX::XMFLOAT3 size);
-
-    void Initialize(Graphics& gfx, DirectX::XMFLOAT3 center, DirectX::XMFLOAT3 size);
 
     void SetPos(DirectX::XMFLOAT3 center) noexcept;
 	void SetSize(DirectX::XMFLOAT3 size) noexcept;

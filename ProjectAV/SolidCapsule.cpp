@@ -12,32 +12,6 @@
 namespace dx = DirectX;
 using namespace DirectX::SimpleMath; // For Vector3
 
-namespace Bind {
-    class SolidCapsuleBlendState : public Bindable {
-        // ... (Blend state implementation remains the same) ...
-    public:
-        SolidCapsuleBlendState(Graphics& gfx) {
-            INFOMAN(gfx);
-            D3D11_BLEND_DESC blendDesc = CD3D11_BLEND_DESC{ CD3D11_DEFAULT{} };
-            auto& brt = blendDesc.RenderTarget[0];
-            brt.BlendEnable = TRUE;
-            brt.SrcBlend = D3D11_BLEND_SRC_ALPHA;
-            brt.DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
-            brt.BlendOp = D3D11_BLEND_OP_ADD;
-            brt.SrcBlendAlpha = D3D11_BLEND_ONE;
-            brt.DestBlendAlpha = D3D11_BLEND_ZERO;
-            brt.BlendOpAlpha = D3D11_BLEND_OP_ADD;
-            brt.RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-            GFX_THROW_INFO(GetDevice(gfx)->CreateBlendState(&blendDesc, &pBlender));
-        }
-        void Bind(Graphics& gfx) noexcept override {
-            GetContext(gfx)->OMSetBlendState(pBlender.Get(), nullptr, 0xFFFFFFFFu);
-        }
-    protected:
-        Microsoft::WRL::ComPtr<ID3D11BlendState> pBlender;
-    };
-}
-// --- SolidCapsule Constructor ---
 SolidCapsule::SolidCapsule(Graphics& gfx, Vector3 base, Vector3 tip, float radius) :
     basePos(base), // Initialize members
     tipPos(tip),
@@ -48,44 +22,88 @@ SolidCapsule::SolidCapsule(Graphics& gfx, Vector3 base, Vector3 tip, float radiu
 
     // --- Generate capsule geometry using WORLD coordinates ---
     // Convert Vector3 to XMFLOAT3 for Capsule::Make
-    DirectX::XMFLOAT3 baseF3 = { base.x, base.y, base.z };
-    DirectX::XMFLOAT3 tipF3 = { tip.x, tip.y, tip.z };
-    auto model = Capsule::Make(baseF3, tipF3, radius);
+    DirectX::XMFLOAT3 baseF3 = { basePos.x, basePos.y, basePos.z };
+    DirectX::XMFLOAT3 tipF3 = { tipPos.x, tipPos.y, tipPos.z };
+    auto model = Capsule::Make(baseF3, tipF3, capRadius);
     // --- End geometry generation ---
 
     // --- Create unique geometry tag based on parameters ---
     // This won't really cache well with world coordinates, but follows pattern
     std::stringstream ss;
-    ss << std::fixed << "$capsule_" << radius << "_"
-        << base.x << "_" << base.y << "_" << base.z << "_"
-        << tip.x << "_" << tip.y << "_" << tip.z;
+    ss << std::fixed << "$capsule_" << capRadius << "_"
+        << basePos.x << "_" << basePos.y << "_" << basePos.z << "_"
+        << tipPos.x << "_" << tipPos.y << "_" << tipPos.z;
     const auto geometryTag = ss.str();
 
-    // Resolve shared bindables via Codex (Geometry won't be shared well here)
-    AddBind(VertexBuffer::Resolve(gfx, geometryTag, model.vertices));
-    AddBind(IndexBuffer::Resolve(gfx, geometryTag, model.indices));
-    AddBind(Topology::Resolve(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
+    pVertices = VertexBuffer::Resolve(gfx, geometryTag, model.vertices);
+    pIndices = IndexBuffer::Resolve(gfx, geometryTag, model.indices);
+    pTopology = Topology::Resolve(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-    // Resolve shared shaders and input layout via Codex
-    auto pvs = VertexShader::Resolve(gfx, "SolidVS.cso");
-    auto pvsbc = pvs->GetBytecode();
-    AddBind(std::move(pvs));
-    AddBind(PixelShader::Resolve(gfx, "SolidPS.cso"));
-    AddBind(InputLayout::Resolve(gfx, model.vertices.GetLayout(), pvsbc));
+    {
+        Technique colliderTechnique("ColliderSolid");
+        Step mainPass(0);
 
-    // Constant Buffer for Color+Alpha
-    struct PSColorConstant { dx::XMFLOAT4 color; } colorConst;
-    static_assert((sizeof(PSColorConstant) % 16) == 0, "PSColorConstant size must be multiple of 16 bytes");
-    colorConst.color = { 0.9f, 0.4f, 0.3f, 0.6f }; // Semi-transparent orange
-    AddBind(PixelConstantBuffer<PSColorConstant>::Resolve(gfx, colorConst, 0u));
+        // --- Vertex Shader ---
+        auto pvs = VertexShader::Resolve(gfx, "Solid_VS.cso");
+        auto pvsbc = pvs->GetBytecode();
+        mainPass.AddBindable(std::move(pvs));
 
-    // Add the locally defined BlendState
-    AddBind(std::make_shared<SolidCapsuleBlendState>(gfx)); // Requires definition
+        // --- Pixel Shader ---
+        mainPass.AddBindable(PixelShader::Resolve(gfx, "Solid_PS.cso"));
 
-    // TransformCbuf - uses GetTransformXM which returns Identity for this approach
-    AddBind(std::make_shared<TransformCbuf>(gfx, *this));
+        // --- Pixel Constant Buffer for Color ---
+        struct PSColorConstant { dx::XMFLOAT4 color; } colorConst;
+        static_assert(sizeof(PSColorConstant) % 16 == 0);
+        colorConst.color = { 0.7f, 0.0f, 0.0f, 0.6f };
+        mainPass.AddBindable(std::make_shared<PixelConstantBuffer<PSColorConstant>>(gfx, colorConst, 1u));
+
+        // --- Input Layout ---
+        mainPass.AddBindable(InputLayout::Resolve(gfx, model.vertices.GetLayout(), pvsbc));
+
+        // --- Transform Constant Buffer ---
+        mainPass.AddBindable(std::make_shared<TransformCbuf>(gfx)); // Assuming default slot 0 for VS
+
+        // --- Rasterizer State ---
+        mainPass.AddBindable(Rasterizer::Resolve(gfx, false)); // false for default (cull back)
+
+        // --- **** CORRECTED ORDER FOR BLENDING **** ---
+        // 1. Bind Stencil first (if it modifies blend state, its effect is set)
+        mainPass.AddBindable(Stencil::Resolve(gfx, Stencil::Mode::Off));
+
+        // 2. THEN Bind your Blender to *override* with desired blend settings
+        //    Pass 'true' to enable blending, and std::nullopt for factor to use SrcAlpha/InvSrcAlpha
+        mainPass.AddBindable(Blender::Resolve(gfx, true));
+        // --- **** END CORRECTION **** ---
+
+        colliderTechnique.AddStep(std::move(mainPass));
+        AddTechnique(std::move(colliderTechnique));
+    }
 }
 
+void SolidCapsule::Update(Graphics& gfx) {
+    using namespace Bind;
+    namespace dx = DirectX;
+
+    // --- Generate capsule geometry using WORLD coordinates ---
+    // Convert Vector3 to XMFLOAT3 for Capsule::Make
+    DirectX::XMFLOAT3 baseF3 = { basePos.x, basePos.y, basePos.z };
+    DirectX::XMFLOAT3 tipF3 = { tipPos.x, tipPos.y, tipPos.z };
+    auto model = Capsule::Make(baseF3, tipF3, capRadius);
+    // --- End geometry generation ---
+
+    // --- Create unique geometry tag based on parameters ---
+    // This won't really cache well with world coordinates, but follows pattern
+    std::stringstream ss;
+    ss << std::fixed << "$capsule_" << capRadius << "_"
+        << basePos.x << "_" << basePos.y << "_" << basePos.z << "_"
+        << tipPos.x << "_" << tipPos.y << "_" << tipPos.z;
+    const auto geometryTag = ss.str();
+
+    pVertices = VertexBuffer::Resolve(gfx, geometryTag, model.vertices);
+    pIndices = IndexBuffer::Resolve(gfx, geometryTag, model.indices);
+    pTopology = Topology::Resolve(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+}
 // --- Setters update stored members ---
 void SolidCapsule::SetBase(Vector3 base) noexcept
 {

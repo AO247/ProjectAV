@@ -1,14 +1,25 @@
 #pragma once
-#include "Drawable.h"
+#include "Drawable.h" // Your new Drawable base class
+#include <DirectXMath.h>
+
+class Graphics; // Forward declare
 
 class ColliderSphere : public Drawable
 {
 public:
-	ColliderSphere() {};
-	ColliderSphere( Graphics& gfx,float radius );
-	void Initialize(Graphics& gfx, float radius);
-	void SetPos( DirectX::XMFLOAT3 pos ) noexcept;
-	DirectX::XMMATRIX GetTransformXM() const noexcept override;
+    // Default constructor: often useful for map storage if you revert from temp drawing
+    ColliderSphere() = default;
+
+    // Main constructor that sets up the drawable
+    ColliderSphere(Graphics& gfx, float radius);
+
+    // Set the position (used by GetTransformXM)
+    void SetPos(DirectX::XMFLOAT3 pos) noexcept;
+
+    // Required by Drawable
+    DirectX::XMMATRIX GetTransformXM() const noexcept override;
+
 private:
-	DirectX::XMFLOAT3 pos = { 1.0f,1.0f,1.0f };
+    // Stores the position for the translation matrix
+    DirectX::XMFLOAT3 pos = { 0.0f, 0.0f, 0.0f }; // Default to origin
 };

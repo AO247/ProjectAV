@@ -11,37 +11,24 @@
 
 namespace dx = DirectX;
 PlayerController::PlayerController(Node* owner, Window& window)
-    : Component(owner), wnd(window) // Initialize reference member
+    : Component(owner), wnd(window)  // Initialize reference member
 {
 	rigidbody = owner->GetComponent<Rigidbody>();
+    rigidbody->frictionDamping = 12.0f;
 	camera = owner->GetRoot()->FindFirstChildByTag("Camera");
 	ability1 = owner->GetRoot()->FindFirstChildByTag("Ability1");
 	ability2 = owner->GetRoot()->FindFirstChildByTag("Ability2");
 
 }
 
+
 void PlayerController::Update(float dt)
 {
-	camera->SetLocalPosition({ GetOwner()->GetLocalPosition().x, GetOwner()->GetLocalPosition().y + height * 9 /10, GetOwner()->GetLocalPosition().z });
-    GetOwner()->SetLocalRotation({ 0.0f, camera->GetLocalRotationEuler().y, 0.0f });
-	ability1->SetLocalPosition(camera->GetLocalPosition());
-	ability1->SetLocalRotation(camera->GetLocalRotationEuler());
-
-    RaycastData rayData = Raycast::CastThroughLayers(camera->GetWorldPosition(), camera->Forward(), std::vector<Layers>{PLAYER});
-
-    if (rayData.hitCollider != nullptr)
-    {
-        if (rayData.hitCollider->GetOwner()->tag == "Ground" || rayData.hitCollider->GetOwner()->tag == "Stone")
-        {
-            ability2->SetLocalPosition(rayData.hitPoint);
-        }
-    }
-
-
-
+    Positioning();
     if (!wnd.CursorEnabled())
     {
         GroundCheck();
+        Cooldowns(dt);
 		KeyboardInput();
 		SpeedControl();
 		MovePlayer();
@@ -51,6 +38,7 @@ void PlayerController::Update(float dt)
 
 void PlayerController::SpeedControl()
 {
+	if (dashed) return;
     Vector3 velocity(rigidbody->GetVelocity().x, 0.0f, rigidbody->GetVelocity().z);
 
     if (velocity.Length() > moveSpeed) 
@@ -59,59 +47,67 @@ void PlayerController::SpeedControl()
         Vector3 limitedVel = velocity * moveSpeed;
 		rigidbody->SetVelocity(Vector3(limitedVel.x, rigidbody->GetVelocity().y, limitedVel.z));
     }
-	if (moveDirection.Length() == 0)
-	{
-		Vector3 currentVelocity = rigidbody->GetVelocity();
-		currentVelocity.x = currentVelocity.x / 1.3f;
-		currentVelocity.z = currentVelocity.z / 1.3f;
-		rigidbody->SetVelocity(currentVelocity);
-	}
 }
 
 void PlayerController::Jump()
 {
-    if (grounded && !jumped) {
+    if ((grounded || !doubleJumped) && !jumped) {
         rigidbody->SetVelocity(Vector3(rigidbody->GetVelocity().x, 0.0f, rigidbody->GetVelocity().z));
         rigidbody->AddForce(Vector3(0.0f, jumpForce * 1000.0f, 0.0f));
-        grounded = false;
+        if (grounded) {
+			grounded = false;
+        }
+        else {
+			doubleJumped = true;
+        }
 		jumped = true;
     }
 }
 
 void PlayerController::Dash()
 {
-    if (!dashed) {
-        Vector3 dashDirection = moveDirection;
-        dashDirection.Normalize();
-        rigidbody->AddForce(dashDirection * dashForce * 1000.0f);
-        dashed = true;
+    if (!canDash) return;
+    dashed = true;
+	canDash = false;
+    
+    Vector3 dashDirection = moveDirection;
+    if (moveDirection == pOwner->Forward())
+    {
+		dashDirection = camera->Forward();
     }
+    else if (moveDirection == pOwner->Back())
+    {
+        dashDirection = camera->Back();
+    }
+
+    if (moveDirection == Vector3(0.0f, 0.0f, 0.0f))
+    {
+		dashDirection = camera->Forward();
+    }
+    //dashDirection = camera->Back();
+    dashDirection.Normalize();
+
+    dashTimer = 0.3f;
+	dashCooldownTimer = dashCooldown;
+
+	rigidbody->friction = false;
+    rigidbody->SetVelocity({ 0.0f, 0.0f, 0.0f });
+    rigidbody->AddForce(dashDirection * dashForce * 100.0f);
 }
 
 void PlayerController::GroundCheck()
 {
-   // Corrected the third parameter to be a vector of Layers instead of a single Layer
-   RaycastData rayData = Raycast::CastAtLayers(GetOwner()->GetWorldPosition(), Vector3(0.0f, -1.0f, 0.0f), std::vector<Layers>{GROUND});
-
-   if (rayData.hitCollider != nullptr)
-   {
-       if (rayData.hitCollider->GetOwner()->tag == "Ground")
-       {
-           if (GetOwner()->GetWorldPosition().y - rayData.hitPoint.y <= 0.01)
-           {
-               grounded = true;
-           }
-           else
-           {
-               grounded = false;
-           }
-       }
-   }
+    grounded = rigidbody->grounded;
+    if (grounded)
+    {
+        doubleJumped = false;
+    }
 }
 
 void PlayerController::MovePlayer()
 {
     moveDirection.Normalize();
+
 
     rigidbody->AddForce(moveDirection * moveSpeed * 1000.0f);
 }
@@ -141,8 +137,61 @@ void PlayerController::Ability2()
     {
         if (collider->GetOwner()->tag == "Enemy" || collider->GetOwner()->tag == "Stone")
         {
-            collider->GetOwner()->GetComponent<Rigidbody>()->SetVelocity(Vector3(0.0f, 0.0f, 0.0f));
+            collider->GetOwner()->GetComponent<Rigidbody>()->SetVelocity(Vector3(collider->GetOwner()->GetComponent<Rigidbody>()->GetVelocity().x,
+                0.0f, collider->GetOwner()->GetComponent<Rigidbody>()->GetVelocity().z));
             collider->GetOwner()->GetComponent<Rigidbody>()->AddForce(Vector3(0.0f, 70000.0f, 0.0f));
+        }
+    }
+
+
+}
+
+void PlayerController::Cooldowns(float dt)
+{
+    if (dashTimer > 0.0f)
+    {
+        dashTimer -= dt;
+    }
+    else
+    {
+        dashed = false;
+        rigidbody->friction = true;
+    }
+    if (dashCooldownTimer > 0.0f)
+    {
+        dashCooldownTimer -= dt;
+    }
+    else
+    {
+        canDash = true;
+    }
+}
+
+void PlayerController::Positioning()
+{
+    camera->SetLocalPosition({ GetOwner()->GetLocalPosition().x, GetOwner()->GetLocalPosition().y + height * 9 / 10, GetOwner()->GetLocalPosition().z });
+    GetOwner()->SetLocalRotation({ 0.0f, camera->GetLocalRotationEuler().y, 0.0f });
+    ability1->SetLocalPosition(camera->GetLocalPosition());
+    ability1->SetLocalRotation(camera->GetLocalRotationEuler());
+
+    RaycastData rayData = Raycast::CastThroughLayers(camera->GetWorldPosition(), camera->Forward(), std::vector<Layers>{PLAYER});
+
+    if (rayData.hitCollider != nullptr)
+    {
+        if (rayData.hitCollider->GetOwner()->tag == "Ground")
+        {
+            ability2->SetLocalPosition(rayData.hitPoint);
+        }
+        else
+        {
+            RaycastData rayData2 = Raycast::CastAtLayers(rayData.hitCollider->GetOwner()->GetWorldPosition(), Vector3(0.0f, -1.0f, 0.0f), std::vector<Layers>{GROUND});
+			if (rayData2.hitCollider)
+			{
+                if (rayData2.hitCollider->GetOwner()->tag == "Ground")
+                {
+                    ability2->SetLocalPosition(rayData2.hitPoint);
+                }
+			}
         }
     }
 
@@ -167,6 +216,14 @@ void PlayerController::KeyboardInput()
             break;
         }
     }
+    if (wnd.kbd.KeyIsPressed(VK_SPACE))
+    {
+        Jump();
+    }
+    else {
+        jumped = false;
+    }
+    if (dashed) return;
 
     if (wnd.kbd.KeyIsPressed('W'))
     {
@@ -187,29 +244,21 @@ void PlayerController::KeyboardInput()
     {
         moveDirection += GetOwner()->Right();
     }
-    if (wnd.kbd.KeyIsPressed(VK_SPACE))
-    {
-        Jump();
-    }
-    else {
-        jumped = false;
-    }
+
+
     if (wnd.kbd.KeyIsPressed(VK_SHIFT))
     {
         Dash();
     }
-    else {
-        dashed = false;
-    }
-
 }
 void PlayerController::DrawImGuiControls()
 {
-    ImGui::Text("Player Controller Properties:");
     ImGui::InputFloat("Move Speed", &moveSpeed);
     ImGui::InputFloat("JumpForce", &jumpForce);
 	ImGui::InputFloat("Dash Force", &dashForce);
     ImGui::Checkbox("Jumped", &jumped);
-	ImGui::Checkbox("Dashed", &dashed);
+	ImGui::Checkbox("CanDash", &canDash);
 	ImGui::Checkbox("Grounded", &grounded);
+
+	ImGui::InputFloat("Dash Cooldown", &dashCooldown);
 }

@@ -7,10 +7,14 @@
 #include "Node.h" 
 #include "PhysicsEngine.h"
 #include <map>
-#include "SolidBox.h"
 #include "Components.h"
 #include "MusicBuffer.h"
 #include "SoundDevice.h"
+#include "ScriptCommander.h"
+#include "FrameCommander.h"
+#include "ColliderSphere.h"
+#include "SolidBox.h"
+#include "SolidCapsule.h"
 
 // Forward declarations
 class PlayerController; // Forward declare
@@ -32,12 +36,15 @@ private:
     std::string commandLine;
     ImguiManager imgui;
     Window wnd; // PlayerController needs access to this
+	ScriptCommander scriptCommander;
     Timer timer;
     float speed_factor = 1.0f;
     PointLight pointLight;
     PhysicsEngine physicsEngine; // Physics engine instance
 	SoundDevice* soundDevice; // Sound device instance
     std::unique_ptr<MusicBuffer> myMusic;
+	DirectX::BoundingFrustum cameraFrustum; // Frustum for the camera
+    FrameCommander fc;
 
     // --- Scene Graph ---
     std::unique_ptr<Node> pSceneRoot;
@@ -63,10 +70,11 @@ private:
     Node* pEnemy = nullptr; // Node for the enemy
 	Node* pSoundEffectsPlayer = nullptr; // Node for the sound effects player
     // --- UI State ---
+    
+    std::map<BoundingSphere*, ColliderSphere*> sphereCollidersToDraw;
 
-    std::map<BoundingSphere*, SolidSphere> sphereCollidersToDraw;
-    std::map<OBB*, SolidSphere> boxCollidersToDraw; 
-	std::map<CapsuleCollider*, SolidSphere> capsuleCollidersToDraw;
+    std::map<OBB*, SolidBox*> boxCollidersToDraw;
+	std::map<CapsuleCollider*, SolidCapsule*> capsuleCollidersToDraw;
 
     void AddSphereColliderToDraw(Graphics& gfx, BoundingSphere* boundingSphere);
     void DrawSphereColliders(Graphics& gfx);
@@ -74,6 +82,9 @@ private:
     void DrawBoxColliders(Graphics& gfx);
 	void AddCapsuleColliderToDraw(Graphics& gfx, CapsuleCollider* capsule);
 	void DrawCapsuleColliders(Graphics& gfx);
+    void FrustumCalculating();
+    void DrawNodeRecursive(Graphics& gfx, Node& node);
+
 
     bool showDemoWindow = false;
     bool cursorEnabled = false;

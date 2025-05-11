@@ -8,7 +8,7 @@
 #include <stdexcept> // For runtime_error
 #include <cassert>
 #include <string>
-#include <Windows.h> // For OutputDebugStringA
+#include "Win.h"// For OutputDebugStringA
 
 
 
@@ -24,7 +24,7 @@ StateMachine::StateMachine(Node* owner, StateType initialState)
 		ChangeState(StateType::IDLE); // Try changing to IDLE if initial faile
 	}
 	
-	pPlayer = owner->GetRoot()->FindFirstChildByTag("Player");
+	pPlayer = pOwner->GetRoot()->FindFirstChildByTag("Player");
 }
 StateMachine::~StateMachine()
 {

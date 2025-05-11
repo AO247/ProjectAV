@@ -16,7 +16,6 @@ public:
 		position(position),
 		velocity(velocity),
 		Component(owner) {}
-
 	void Update(float dt) override;
 	void Integrate(float delta);
 
@@ -41,6 +40,10 @@ public:
 	bool GetIsStatic();
 
 	static Vector3 gravity;
+	bool grounded = false;
+	bool friction = true;
+	float frictionDamping = 5.0f;
+	virtual void DrawImGuiControls() override;
 
 private:
 	Vector3 position;
@@ -48,6 +51,7 @@ private:
 	Vector3 velocity;
 	Vector3 angularVelocity;
 	Vector3 force;
+
 	float mass = 10.0f;
 	float linearVelocityDamping = 3.0f;
 	float angularVelocityDamping = 1.0f;

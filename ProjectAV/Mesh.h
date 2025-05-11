@@ -1,18 +1,18 @@
 #pragma once
-#include "Drawable.h" // Include the new base class
-#include "CException.h" // Assuming CException is your base exception class
+#include "Drawable.h" // Your new Drawable base
+#include "CException.h" 
 #include <vector>
-#include <memory>           // For shared_ptr
+#include <memory>
 #include <string>
 #include <DirectXMath.h>
 #include "ConditionalNoexcept.h"
-
-// Forward declare Graphics and Bindable
+// Forward declarations
 class Graphics;
-namespace Bind { class Bindable; }
+class Material; // Forward declare the new Material class
+struct aiMesh;   // Forward declare Assimp mesh
+class FrameCommander; // Forward declare for Submit
 
-// --- ModelException Declaration ---
-// (Moved definition to Mesh.cpp)
+
 class ModelException : public CException
 {
 public:
@@ -30,16 +30,14 @@ private:
 class Mesh : public Drawable
 {
 public:
-    // Constructor now takes shared_ptrs
-    Mesh(Graphics& gfx, std::vector<std::shared_ptr<Bind::Bindable>> bindPtrs);
+    // **** MODIFIED CONSTRUCTOR ****
+    Mesh(Graphics& gfx, const Material& mat, const aiMesh& mesh, float scale = 1.0f) noxnd;
 
-    // GetTransformXM is required by the Drawable base class
     DirectX::XMMATRIX GetTransformXM() const noexcept override;
 
-    // Method to set the transform before drawing (called by ModelInternalNode)
-    void SetTransform(DirectX::FXMMATRIX transform) const noxnd;
+    // **** NEW SUBMIT METHOD ****
+    void Submit(FrameCommander& frame, DirectX::FXMMATRIX accumulatedTransform) const noxnd;
 
 private:
-    // Store the transform passed via SetTransform for GetTransformXM to use
-    mutable DirectX::XMFLOAT4X4 meshTransform = {};
+    mutable DirectX::XMFLOAT4X4 transform = {}; // For storing world transform for this mesh
 };

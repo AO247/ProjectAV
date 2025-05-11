@@ -3,65 +3,34 @@
 #include "State.h"
 #include "CMath.h"
 #include "Surface.h"
-#include "GDIPlusManager.h"
 #include "imgui/imgui.h"
 #include <memory>
-#include <shellapi.h>
 #include <algorithm>
+#include "CUtil.h"
 #include "ColliderSphere.h"
 #include "TexturePreprocessor.h"
 #include "SolidCapsule.h"
 #include "SoundDevice.h"
 #include "SoundEffectsLibrary.h"
 #include "SoundEffectsPlayer.h"
+#include "DebugLine.h"
+#include "Testing.h"
 
 namespace dx = DirectX;
 
-GDIPlusManager gdipm;
 
 App::App(const std::string& commandLine)
     :
     commandLine(commandLine),
     wnd(1280, 720, "Project AV"), // Pass window dimensions/title
+	scriptCommander(TokenizeQuoted(commandLine)),
     pointLight(wnd.Gfx()), // Initialize PointLight
     pSceneRoot(std::make_unique<Node>("Root"))
 {
+    TestDynamicConstant();
     // Set Projection Matrix (Far plane adjusted for larger scenes potentially)
     wnd.Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 2000.0f));
-    if (this->commandLine != "")
-    {
-        int nArgs;
-        const auto pLineW = GetCommandLineW();
-        const auto pArgs = CommandLineToArgvW(pLineW, &nArgs);
-        if (nArgs >= 3 && std::wstring(pArgs[1]) == L"--twerk-objnorm")
-        {
-            const std::wstring pathInWide = pArgs[2];
-            TexturePreprocessor::FlipYAllNormalMapsInObj(
-                std::string(pathInWide.begin(), pathInWide.end())
-            );
-            throw std::runtime_error("Normal maps all processed successfully. Just kidding about that whole runtime error thing.");
-        }
-        else if (nArgs >= 3 && std::wstring(pArgs[1]) == L"--twerk-flipy")
-        {
-            const std::wstring pathInWide = pArgs[2];
-            const std::wstring pathOutWide = pArgs[3];
-            TexturePreprocessor::FlipYNormalMap(
-                std::string(pathInWide.begin(), pathInWide.end()),
-                std::string(pathOutWide.begin(), pathOutWide.end())
-            );
-            throw std::runtime_error("Normal map processed successfully. Just kidding about that whole runtime error thing.");
-        }
-        else if (nArgs >= 4 && std::wstring(pArgs[1]) == L"--twerk-validate")
-        {
-            const std::wstring minWide = pArgs[2];
-            const std::wstring maxWide = pArgs[3];
-            const std::wstring pathWide = pArgs[4];
-            TexturePreprocessor::ValidateNormalMap(
-                std::string(pathWide.begin(), pathWide.end()), std::stof(minWide), std::stof(maxWide)
-            );
-            throw std::runtime_error("Normal map validated successfully. Just kidding about that whole runtime error thing.");
-        }
-    }
+
 	// Initialize Physics Engine
 	physicsEngine = PhysicsEngine();
 	Raycast::physicsEngine = &physicsEngine; // Set the physics engine for raycasting
@@ -124,9 +93,9 @@ App::App(const std::string& commandLine)
     pSceneRoot->AddChild(std::move(pBoxOwner));
     pSceneRoot->AddChild(std::move(pStoneOwner));
     pSceneRoot->AddChild(std::move(pColumnOwner));
-	pSceneRoot->AddChild(std::move(pColumn2Owner));
-	pSceneRoot->AddChild(std::move(pColumn3Owner));
-	pSceneRoot->AddChild(std::move(pColumn4Owner));
+	//pSceneRoot->AddChild(std::move(pColumn2Owner));
+	//pSceneRoot->AddChild(std::move(pColumn3Owner));
+	//pSceneRoot->AddChild(std::move(pColumn4Owner));
     pSceneRoot->AddChild(std::move(pIslandOwner));
     //pSceneRoot->AddChild(std::move(pNoxTurnOwner));
     //pNoxTurn->AddChild(std::move(pNoxTurnHairOwner));
@@ -144,7 +113,7 @@ App::App(const std::string& commandLine)
         std::make_unique<ModelComponent>(pBox, wnd.Gfx(), "Models\\box.glb")
     );
     pStone->AddComponent(
-		std::make_unique<ModelComponent>(pStone, wnd.Gfx(), "Models\\kamien\\kamien_test.fbx")
+		std::make_unique<ModelComponent>(pStone, wnd.Gfx(), "Models\\kamien\\kamien_6.obj")
     );
     //pStone->AddComponent(
     //    std::make_unique<ModelComponent>(pStone, wnd.Gfx(), "Models\\stone\\stone.glb")
@@ -250,32 +219,43 @@ App::App(const std::string& commandLine)
 	);
 	OBB* cOBB = pColumn->GetComponent<OBB>();
 	physicsEngine.AddCollider(cOBB);
-	pColumn2->AddComponent(
-		std::make_unique<OBB>(pColumn2, nullptr, Vector3(-0.6f, 5.0f, 0.0f), Vector3(2.9f, 10.0f, 2.9f))
-	);
-	OBB* cOBB2 = pColumn2->GetComponent<OBB>();
-	physicsEngine.AddCollider(cOBB2);
-	pColumn3->AddComponent(
-		std::make_unique<OBB>(pColumn3, nullptr, Vector3(-0.6f, 5.0f, 0.0f), Vector3(2.9f, 10.0f, 2.9f))
-	);
-	OBB* cOBB3 = pColumn3->GetComponent<OBB>();
-	physicsEngine.AddCollider(cOBB3);
-	pColumn4->AddComponent(
-		std::make_unique<OBB>(pColumn4, nullptr, Vector3(-0.6f, 5.0f, 0.0f), Vector3(2.9f, 10.0f, 2.9f))
-	);
-	OBB* cOBB4 = pColumn4->GetComponent<OBB>();
-	physicsEngine.AddCollider(cOBB4);
+	//pColumn2->AddComponent(
+	//	std::make_unique<OBB>(pColumn2, nullptr, Vector3(-0.6f, 5.0f, 0.0f), Vector3(2.9f, 10.0f, 2.9f))
+	//);
+	//OBB* cOBB2 = pColumn2->GetComponent<OBB>();
+	//physicsEngine.AddCollider(cOBB2);
+	//pColumn3->AddComponent(
+	//	std::make_unique<OBB>(pColumn3, nullptr, Vector3(-0.6f, 5.0f, 0.0f), Vector3(2.9f, 10.0f, 2.9f))
+	//);
+	//OBB* cOBB3 = pColumn3->GetComponent<OBB>();
+	//physicsEngine.AddCollider(cOBB3);
+	//pColumn4->AddComponent(
+	//	std::make_unique<OBB>(pColumn4, nullptr, Vector3(-0.6f, 5.0f, 0.0f), Vector3(2.9f, 10.0f, 2.9f))
+	//);
+	//OBB* cOBB4 = pColumn4->GetComponent<OBB>();
+	//physicsEngine.AddCollider(cOBB4);
     
     pStone->AddComponent(
         std::make_unique<Rigidbody>(pStone, Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f))
     );
 	Rigidbody* sRigidbody = pStone->GetComponent<Rigidbody>();
+    pStone->AddComponent(
+        std::make_unique<Throwable>(pStone)
+    );
 	pStone->AddComponent(
 		std::make_unique<OBB>(pStone, sRigidbody, Vector3(0.0f, 0.6f, 0.0f), Vector3(1.2f, 1.1f, 1.7f))
 	);
 	OBB* sOBB = pStone->GetComponent<OBB>();
 	sRigidbody->SetCollider(sOBB);
 	physicsEngine.AddRigidbody(sRigidbody);
+    pStone->AddComponent(
+        std::make_unique<BoundingSphere>(pStone, Vector3(0.0f, 0.6f, 0.0f), 1.5f, nullptr)
+    );
+	BoundingSphere* sBoundingSphere = pStone->GetComponent<BoundingSphere>();
+	sBoundingSphere->SetIsTrigger(true);
+	sBoundingSphere->SetTriggerEnabled(true);
+	pStone->GetComponent<Throwable>()->damageArea = sBoundingSphere;
+	physicsEngine.AddCollider(sBoundingSphere);
 
     //Adding Other Components
     pFreeViewCamera->AddComponent(
@@ -336,13 +316,14 @@ App::App(const std::string& commandLine)
     AddBoxColliderToDraw(wnd.Gfx(), iOBB);
     AddBoxColliderToDraw(wnd.Gfx(), sOBB);
 	AddBoxColliderToDraw(wnd.Gfx(), cOBB);
-	AddBoxColliderToDraw(wnd.Gfx(), cOBB2);
+	/*AddBoxColliderToDraw(wnd.Gfx(), cOBB2);
 	AddBoxColliderToDraw(wnd.Gfx(), cOBB3);
-	AddBoxColliderToDraw(wnd.Gfx(), cOBB4);
+	AddBoxColliderToDraw(wnd.Gfx(), cOBB4);*/
 
 
 	AddSphereColliderToDraw(wnd.Gfx(), bBoundingSphere);
 	AddSphereColliderToDraw(wnd.Gfx(), a2Sphere);
+	AddSphereColliderToDraw(wnd.Gfx(), sBoundingSphere);
 
 	AddCapsuleColliderToDraw(wnd.Gfx(), pCapsule);
 	AddCapsuleColliderToDraw(wnd.Gfx(), eCapsule);
@@ -480,7 +461,52 @@ void App::DoFrame(float dt)
     // --- Bind Lights ---
     pointLight.Bind(wnd.Gfx(), viewMatrix); // Bind point light (to slot 0)
 
-    pSceneRoot->Draw(wnd.Gfx());
+    //FrustumCalculating(); // Draw with FRUSTUM CULLING
+    //pSceneRoot->Draw(wnd.Gfx()); // Draw without FRUSTUM CULLING you have to also uncomment the draw method in Node.cpp
+    //FrameCommander fc; // Create FrameCommander for this frame
+
+    //// Submit the entire scene graph to the FrameCommander
+    //// Pass Graphics context if Submit methods require it
+    pSceneRoot->Submit(fc, wnd.Gfx());
+
+    //// Also submit the point light's mesh to a pass (e.g., main pass 0)
+    //// Execute all rendering passes accumulated in the FrameCommander
+    //Vector3 previousRotation = pEnemy->GetLocalRotationEuler();
+
+ //   Vector3 targetPosition = pPlayer->GetWorldPosition();
+	//Rigidbody* rigidbody = pEnemy->GetComponent<Rigidbody>();
+
+ //   Vector3 temporaryDirection = targetPosition - rigidbody->GetPosition();
+ //   temporaryDirection.Normalize();
+ //   /*float targetYaw = atan2f(temporaryDirection.x, temporaryDirection.z);
+ //   pEnemy->SetLocalRotation({ 0.0f, targetYaw, 0.0f });*/
+ //   float radius = pEnemy->GetComponent<CapsuleCollider>()->GetRadius();
+
+ //   Vector3 pos = pEnemy->GetComponent<CapsuleCollider>()->GetTransformedBase();
+ //   Vector3 forward = pEnemy->Forward();
+ //   Vector3 right = pEnemy->Right();
+
+ //   Vector3 centerOrigin = pos + forward;
+ //   Vector3 leftOrigin = centerOrigin - right * pEnemy->GetComponent<CapsuleCollider>()->GetRadius();
+ //   Vector3 rightOrigin = centerOrigin + right * pEnemy->GetComponent<CapsuleCollider>()->GetRadius();
+
+ //   Vector3 centerDir = forward;
+
+ //   // Vector3 leftDir = (forward - right * 0.3f); leftDir.Normalize(); 
+ //   // Vector3 rightDir = (forward + right * 0.3f); rightDir.Normalize();
+
+ //   RaycastData hitLeft = Raycast::CastThroughLayers(leftOrigin, temporaryDirection, std::vector<Layers>{ENEMY});
+ //   DebugLine(wnd.Gfx(), leftOrigin, hitLeft.hitPoint).Draw(wnd.Gfx());
+
+ //   RaycastData hitRight = Raycast::CastThroughLayers(rightOrigin, temporaryDirection, std::vector<Layers>{ENEMY});
+ //   DebugLine(wnd.Gfx(), rightOrigin, hitRight.hitPoint).Draw(wnd.Gfx());
+
+ //   RaycastData hitCenter = Raycast::CastThroughLayers(centerOrigin, temporaryDirection, std::vector<Layers>{ENEMY});
+ //   DebugLine(wnd.Gfx(), centerOrigin, hitCenter.hitPoint).Draw(wnd.Gfx());
+
+    //pEnemy->SetLocalRotation(previousRotation);
+    //ector3 secPos(pCamera->GetWorldPosition().x + pCamera->Forward().x, pCamera->GetWorldPosition().y + pCamera->Forward().y, pCamera->GetWorldPosition().z + pCamera->Forward().z);
+    //DebugLine(wnd.Gfx(), pCamera->GetWorldPosition(), secPos).Draw(wnd.Gfx());
 
     if (myMusic->isPlaying())
     {
@@ -507,17 +533,133 @@ void App::DoFrame(float dt)
         ShowControlWindows();
     }
 
+    fc.Execute(wnd.Gfx());
     wnd.Gfx().EndFrame();
+    fc.Reset();
 }
 
+
+void App::FrustumCalculating() {
+    dx::XMMATRIX camWorldTransform = pCamera->GetWorldTransform();
+    dx::XMVECTOR camWorldPos = camWorldTransform.r[3]; // Default
+    dx::XMVECTOR camWorldForward = dx::XMVector3Normalize(dx::XMVector3TransformNormal(dx::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f), camWorldTransform)); // Default
+    dx::XMVECTOR camWorldUp = dx::XMVector3Normalize(dx::XMVector3TransformNormal(dx::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), camWorldTransform));    // Default
+    dx::XMVECTOR camWorldRight = dx::XMVector3Normalize(dx::XMVector3TransformNormal(dx::XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f), camWorldTransform)); // Default
+
+    const float fovAngleY = DirectX::XMConvertToRadians(70.0f); // Field of View in Y direction (radians) - MUST MATCH YOUR PROJECTION
+    const float aspectRatio = 16.0f / 9.0f; // MUST MATCH YOUR PROJECTION
+    const float nearDist = 0.5f;         // MUST MATCH YOUR PROJECTION
+    const float farDist = 300.0f;       // MUST MATCH YOUR PROJECTION
+
+    // Half heights/widths at near and far planes
+    float halfHeightNear = nearDist * tanf(fovAngleY * 0.5f);
+    float halfWidthNear = halfHeightNear * aspectRatio;
+    float halfHeightFar = farDist * tanf(fovAngleY * 0.5f);
+    float halfWidthFar = halfHeightFar * aspectRatio;
+
+    dx::XMVECTOR nearCenter = dx::XMVectorAdd(camWorldPos, dx::XMVectorScale(camWorldForward, nearDist));
+    dx::XMVECTOR farCenter = dx::XMVectorAdd(camWorldPos, dx::XMVectorScale(camWorldForward, farDist));
+
+    // Calculate the 8 corner points (optional for plane calculation, but useful for verification)
+    dx::XMVECTOR nearTopLeft = dx::XMVectorAdd(nearCenter, dx::XMVectorSubtract(dx::XMVectorScale(camWorldUp, halfHeightNear), dx::XMVectorScale(camWorldRight, halfWidthNear)));
+    dx::XMVECTOR nearTopRight = dx::XMVectorAdd(nearCenter, dx::XMVectorAdd(dx::XMVectorScale(camWorldUp, halfHeightNear), dx::XMVectorScale(camWorldRight, halfWidthNear)));
+    dx::XMVECTOR nearBottomLeft = dx::XMVectorAdd(nearCenter, dx::XMVectorSubtract(dx::XMVectorScale(camWorldUp, -halfHeightNear), dx::XMVectorScale(camWorldRight, halfWidthNear)));
+    dx::XMVECTOR nearBottomRight = dx::XMVectorAdd(nearCenter, dx::XMVectorAdd(dx::XMVectorScale(camWorldUp, -halfHeightNear), dx::XMVectorScale(camWorldRight, halfWidthNear)));
+    dx::XMVECTOR farTopLeft = dx::XMVectorAdd(farCenter, dx::XMVectorSubtract(dx::XMVectorScale(camWorldUp, halfHeightFar), dx::XMVectorScale(camWorldRight, halfWidthFar)));
+    dx::XMVECTOR farTopRight = dx::XMVectorAdd(farCenter, dx::XMVectorAdd(dx::XMVectorScale(camWorldUp, halfHeightFar), dx::XMVectorScale(camWorldRight, halfWidthFar)));
+    dx::XMVECTOR farBottomLeft = dx::XMVectorAdd(farCenter, dx::XMVectorSubtract(dx::XMVectorScale(camWorldUp, -halfHeightFar), dx::XMVectorScale(camWorldRight, halfWidthFar)));
+    dx::XMVECTOR farBottomRight = dx::XMVectorAdd(farCenter, dx::XMVectorAdd(dx::XMVectorScale(camWorldUp, -halfHeightFar), dx::XMVectorScale(camWorldRight, halfWidthFar)));
+
+    cameraFrustum.Near = 0.5f;
+
+    // Far Plane: Normal = -camWorldForward, Point = farCenter
+    cameraFrustum.Far = 300.0f;
+
+    float tanHalfFovY = tanf(fovAngleY * 0.5f);
+    cameraFrustum.TopSlope = tanHalfFovY;
+    cameraFrustum.BottomSlope = -tanHalfFovY;
+
+    cameraFrustum.RightSlope = tanHalfFovY * aspectRatio;
+    cameraFrustum.LeftSlope = -tanHalfFovY * aspectRatio;
+
+    DirectX::XMStoreFloat3(&cameraFrustum.Origin, camWorldPos);
+    dx::XMMATRIX worldOrientationMatrix;
+    worldOrientationMatrix.r[0] = camWorldRight;   // World X-axis of the camera
+    worldOrientationMatrix.r[1] = camWorldUp;      // World Y-axis of the camera
+    worldOrientationMatrix.r[2] = camWorldForward; // World Z-axis of the camera
+    worldOrientationMatrix.r[3] = dx::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f); // Set W component for a valid matrix
+
+    // 3. Convert the Orientation Matrix to a Quaternion
+    DirectX::XMStoreFloat4(&cameraFrustum.Orientation, dx::XMQuaternionRotationMatrix(worldOrientationMatrix));
+
+
+    DrawNodeRecursive(wnd.Gfx(), *pSceneRoot);
+}
+
+void App::DrawNodeRecursive(Graphics& gfx, Node& node)
+{
+    // --- Culling Check ---
+    bool shouldDraw = true; // Assume we draw by default
+    ModelComponent* modelComp = node.GetComponent<ModelComponent>();
+
+    if (modelComp != nullptr) // Only cull nodes with models (or add BoundsComponent later)
+    {
+        DirectX::BoundingSphere sphere;
+        DirectX::BoundingBox box;
+        DirectX::ContainmentType containment = DirectX::DISJOINT;
+        if (node.GetComponent<BoundingSphere>() != nullptr)
+        {
+            sphere.Center = node.GetWorldPosition();
+            sphere.Radius = node.GetComponent<BoundingSphere>()->GetRadius();
+            containment = cameraFrustum.Contains(sphere);
+        }
+        else if (node.GetComponent<OBB>() != nullptr)
+        {
+            box.Center = node.GetWorldPosition();
+            box.Extents = node.GetComponent<OBB>()->GetTransformedSize();
+            containment = cameraFrustum.Contains(box);
+        }
+        else if (node.GetComponent<CapsuleCollider>() != nullptr)
+        {
+            // Assuming you have a method to get the capsule's bounding sphere
+            sphere.Center = DirectX::XMFLOAT3(node.GetWorldPosition().x,
+                (node.GetWorldPosition().y + 1.5f),
+                node.GetWorldPosition().z);
+            sphere.Radius = node.GetComponent<CapsuleCollider>()->GetRadius() * 2.5f;
+            containment = cameraFrustum.Contains(sphere);
+        }
+
+        if (containment == DirectX::DISJOINT) // DISJOINT means completely outside
+        {
+            shouldDraw = false; // Don't draw this node or its children
+        }
+
+    }
+
+
+    if (shouldDraw)
+    {
+        //node.Draw(gfx);
+        for (const auto& pChild : node.GetChildren())
+        {
+            if (pChild)
+            {
+                DrawNodeRecursive(gfx, *pChild); // Recurse for children
+            }
+        }
+    }
+}
 
 void App::ShowControlWindows()
 {
     // --- Existing Windows ---
-    DrawSphereColliders(wnd.Gfx());
+
+	DrawSphereColliders(wnd.Gfx()); // Call the updated function
     DrawBoxColliders(wnd.Gfx()); // Call the updated function
 	DrawCapsuleColliders(wnd.Gfx());
-    pointLight.Draw(wnd.Gfx());
+    pointLight.Submit(fc);
+
+
 
     pointLight.SpawnControlWindow(); // Control for Point Light
     if (showDemoWindow)
@@ -537,7 +679,7 @@ void App::ShowControlWindows()
     // --- Simulation Speed Window ---
     if (ImGui::Begin("Simulation Speed"))
     {
-        ImGui::SliderFloat("Speed Factor", &speed_factor, 0.0f, 4.0f, "%.2f");
+        ImGui::SliderFloat("Speed Factor", &speed_factor, 0.0f, 4.0f);
 		ImGui::Text("To change camera press 'C'");
 		ImGui::Text("To show/hide control window press 'H'");
     }
@@ -655,19 +797,19 @@ void App::ShowControlWindows()
 void App::AddSphereColliderToDraw(Graphics& gfx, BoundingSphere* boundingSphere)
 {
     // Using default constructor then initialize might be slightly cleaner if SolidSphere allows it
+	ColliderSphere* sphereCollider = new ColliderSphere(gfx, boundingSphere->GetRadius());
+    sphereCollidersToDraw[boundingSphere] = sphereCollider;
 
-    sphereCollidersToDraw[boundingSphere] = SolidSphere(gfx, boundingSphere->GetRadius());
 }
 
 void App::DrawSphereColliders(Graphics& gfx)
 {
     for (auto it = sphereCollidersToDraw.begin(); it != sphereCollidersToDraw.end(); ++it)
     {
-        ColliderSphere sphere(gfx, it->first->GetRadius());
-        sphere.SetPos(DirectX::XMFLOAT3(it->first->GetTransformedCenter().x,
-            it->first->GetTransformedCenter().y,
-            it->first->GetTransformedCenter().z));
-        sphere.Draw(gfx);
+		it->second->SetPos(DirectX::XMFLOAT3(it->first->GetTransformedCenter().x,
+			it->first->GetTransformedCenter().y,
+			it->first->GetTransformedCenter().z));
+		it->second->Submit(fc);
     }
 }
 
@@ -676,8 +818,8 @@ void App::DrawSphereColliders(Graphics& gfx)
 // Signature now takes OBB*
 void App::AddBoxColliderToDraw(Graphics& gfx, OBB* obb)
 {
-
-    boxCollidersToDraw[obb] = SolidSphere(gfx, 10.0f);
+	SolidBox* box = new SolidBox(gfx, obb->GetTransformedCenter(), obb->GetTransformedSize());
+    boxCollidersToDraw[obb] = box;
 
 }
 
@@ -686,14 +828,13 @@ void App::DrawBoxColliders(Graphics& gfx)
 {
     for (auto it = boxCollidersToDraw.begin(); it != boxCollidersToDraw.end(); ++it)
     {
-        SolidBox box(gfx, DirectX::XMFLOAT3(it->first->GetTransformedCenter()), DirectX::XMFLOAT3(it->first->GetTransformedSize()));
-		box.SetPos(DirectX::XMFLOAT3(it->first->GetTransformedCenter().x,
+		it->second->SetPos(DirectX::XMFLOAT3(it->first->GetTransformedCenter().x,
 			it->first->GetTransformedCenter().y,
 			it->first->GetTransformedCenter().z));
-        box.SetSize(DirectX::XMFLOAT3(it->first->GetTransformedSize().x,
-            it->first->GetTransformedSize().y,
-            it->first->GetTransformedSize().z));
-        box.Draw(gfx);
+		it->second->SetSize(DirectX::XMFLOAT3(it->first->GetTransformedSize().x,
+			it->first->GetTransformedSize().y,
+			it->first->GetTransformedSize().z));
+        it->second->Submit(fc);
         
     }
 
@@ -701,17 +842,18 @@ void App::DrawBoxColliders(Graphics& gfx)
 
 void App::AddCapsuleColliderToDraw(Graphics& gfx, CapsuleCollider* capsule)
 {
-	capsuleCollidersToDraw[capsule] = SolidSphere(gfx, 10.0f);
+	SolidCapsule* solidCapsule = new SolidCapsule(gfx, capsule->GetTransformedBase(), capsule->GetTransformedTip(), capsule->GetRadius());
+	capsuleCollidersToDraw[capsule] = solidCapsule;
 }
 
 void App::DrawCapsuleColliders(Graphics& gfx)
 {
     for (auto it = capsuleCollidersToDraw.begin(); it != capsuleCollidersToDraw.end(); ++it)
     {
-        SolidCapsule capsule(gfx, it->first->GetTransformedBase(), it->first->GetTransformedTip(), it->first->GetRadius());
-        capsule.SetBase(it->first->GetTransformedBase());
-		capsule.SetTip(it->first->GetTransformedTip());
-		capsule.SetRadius(it->first->GetRadius());
-        capsule.Draw(gfx);
+		it->second->SetBase(it->first->GetTransformedBase());
+		it->second->SetTip(it->first->GetTransformedTip());
+		it->second->SetRadius(it->first->GetRadius());
+        it->second->Update(gfx);
+		it->second->Submit(fc);
     }
 }

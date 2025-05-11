@@ -5,7 +5,7 @@
 #include <SimpleMath.h>
 
 
-#include <Windows.h> // For OutputDebugStringA
+#include "Win.h" // For OutputDebugStringA
 namespace dx = DirectX;
 namespace sm = DirectX::SimpleMath;
 FollowState::FollowState(StateMachine* pOwner) : State()
