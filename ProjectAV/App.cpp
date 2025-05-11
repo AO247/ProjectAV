@@ -19,6 +19,7 @@
 namespace dx = DirectX;
 
 
+
 App::App(const std::string& commandLine)
     :
     commandLine(commandLine),
@@ -445,7 +446,7 @@ void App::HandleInput(float dt)
 void App::DoFrame(float dt)
 {
     pSceneRoot->Update(dt);
-    
+
     wnd.Gfx().BeginFrame(0.5f, 0.5f, 1.0f);
     //if (pPlayer->GetLocalPosition().y < -10.0f) {
 	//	pPlayer->SetLocalPosition({ -20.0f, 225.0f, -25.0f });
@@ -457,6 +458,7 @@ void App::DoFrame(float dt)
         viewMatrix = pFreeViewCamera->GetComponent<Camera>()->GetViewMatrix();
 	}
     wnd.Gfx().SetCamera(viewMatrix);
+    fc.ShowWindows(wnd.Gfx());
 
     // --- Bind Lights ---
     pointLight.Bind(wnd.Gfx(), viewMatrix); // Bind point light (to slot 0)
@@ -546,7 +548,7 @@ void App::FrustumCalculating() {
     dx::XMVECTOR camWorldUp = dx::XMVector3Normalize(dx::XMVector3TransformNormal(dx::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), camWorldTransform));    // Default
     dx::XMVECTOR camWorldRight = dx::XMVector3Normalize(dx::XMVector3TransformNormal(dx::XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f), camWorldTransform)); // Default
 
-    const float fovAngleY = DirectX::XMConvertToRadians(70.0f); // Field of View in Y direction (radians) - MUST MATCH YOUR PROJECTION
+    constexpr float fovAngleY = DirectX::XMConvertToRadians(70.0f); // Field of View in Y direction (radians) - MUST MATCH YOUR PROJECTION
     const float aspectRatio = 16.0f / 9.0f; // MUST MATCH YOUR PROJECTION
     const float nearDist = 0.5f;         // MUST MATCH YOUR PROJECTION
     const float farDist = 300.0f;       // MUST MATCH YOUR PROJECTION

@@ -22,7 +22,6 @@ class PlayerController; // Forward declare
 class App
 {
 public:
-    App();
     App(const std::string& commandLine = "");
     int Go();
     ~App();
@@ -44,7 +43,7 @@ private:
 	SoundDevice* soundDevice; // Sound device instance
     std::unique_ptr<MusicBuffer> myMusic;
 	DirectX::BoundingFrustum cameraFrustum; // Frustum for the camera
-    FrameCommander fc;
+    FrameCommander fc{ wnd.Gfx() };
 
     // --- Scene Graph ---
     std::unique_ptr<Node> pSceneRoot;
