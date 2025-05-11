@@ -16,6 +16,7 @@
 namespace dx = DirectX;
 
 
+
 App::App(const std::string& commandLine)
     :
     commandLine(commandLine),
@@ -489,7 +490,7 @@ void App::FrustumCalculating() {
     dx::XMVECTOR camWorldUp = dx::XMVector3Normalize(dx::XMVector3TransformNormal(dx::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), camWorldTransform));    // Default
     dx::XMVECTOR camWorldRight = dx::XMVector3Normalize(dx::XMVector3TransformNormal(dx::XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f), camWorldTransform)); // Default
 
-    const float fovAngleY = DirectX::XMConvertToRadians(70.0f); // Field of View in Y direction (radians) - MUST MATCH YOUR PROJECTION
+    constexpr float fovAngleY = DirectX::XMConvertToRadians(70.0f); // Field of View in Y direction (radians) - MUST MATCH YOUR PROJECTION
     const float aspectRatio = 16.0f / 9.0f; // MUST MATCH YOUR PROJECTION
     const float nearDist = 0.5f;         // MUST MATCH YOUR PROJECTION
     const float farDist = 300.0f;       // MUST MATCH YOUR PROJECTION

@@ -20,7 +20,6 @@ class PlayerController; // Forward declare
 class App
 {
 public:
-    App();
     App(const std::string& commandLine = "");
     int Go();
     ~App();
@@ -40,7 +39,7 @@ private:
     PointLight pointLight;
     PhysicsEngine physicsEngine; // Physics engine instance
 	DirectX::BoundingFrustum cameraFrustum; // Frustum for the camera
-    FrameCommander fc;
+    FrameCommander fc{ wnd.Gfx() };
 
     // --- Scene Graph ---
     std::unique_ptr<Node> pSceneRoot;
