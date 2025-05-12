@@ -9,9 +9,16 @@ class TechniqueProbe;
 
 namespace Bind
 {
+
 	class Bindable
 	{
 	public:
+
+		struct BoneTransformCB
+		{
+			DirectX::XMFLOAT4X4 boneTransforms[64];
+		};
+
 		virtual void Bind( Graphics& gfx ) noexcept = 0;
 		virtual void InitializeParentReference( const Drawable& ) noexcept
 		{}

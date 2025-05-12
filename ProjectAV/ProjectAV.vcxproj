@@ -169,6 +169,7 @@
   <ItemGroup>
     <ClCompile Include="AABB.cpp" />
     <ClCompile Include="AIController.cpp" />
+    <ClCompile Include="AnimationComponent.cpp" />
     <ClCompile Include="App.cpp" />
     <ClCompile Include="AttackState.cpp" />
     <ClCompile Include="Bindable.cpp" />
@@ -249,6 +250,7 @@
   <ItemGroup>
     <ClInclude Include="AABB.h" />
     <ClInclude Include="AIController.h" />
+    <ClInclude Include="AnimationComponent.h" />
     <ClInclude Include="App.h" />
     <ClInclude Include="AttackState.h" />
     <ClInclude Include="Bindable.h" />
@@ -645,6 +647,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="cpp.hint" />
     <None Include="DXGetErrorDescription.inl" />
     <None Include="DXGetErrorString.inl" />
     <None Include="DXTrace.inl" />

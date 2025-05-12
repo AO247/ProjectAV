@@ -71,6 +71,15 @@ public:
 	void EnableImgui() noexcept;
 	void DisableImgui() noexcept;
 	bool IsImguiEnabled() const noexcept;
+
+	ID3D11DeviceContext* GetContext() const noexcept
+	{
+		return pContext.Get();
+	}
+	ID3D11Device* GetDevice() const noexcept
+	{
+		return pDevice.Get();
+	}
 private:
 	DirectX::XMMATRIX projection;
 	DirectX::XMMATRIX camera;

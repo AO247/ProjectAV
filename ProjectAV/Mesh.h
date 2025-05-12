@@ -1,11 +1,13 @@
 #pragma once
 #include "Drawable.h" // Your new Drawable base
-#include "CException.h" 
+#include "CException.h"
 #include <vector>
 #include <memory>
 #include <string>
 #include <DirectXMath.h>
 #include "ConditionalNoexcept.h"
+#include "Vertex.h" // Required for Dvtx::VertexBoneData
+
 // Forward declarations
 class Graphics;
 class Material; // Forward declare the new Material class
@@ -31,7 +33,8 @@ class Mesh : public Drawable
 {
 public:
     // **** MODIFIED CONSTRUCTOR ****
-    Mesh(Graphics& gfx, const Material& mat, const aiMesh& mesh, float scale = 1.0f) noxnd;
+    Mesh(Graphics& gfx, const Material& mat, const aiMesh& mesh, float scale = 1.0f,
+        const std::vector<Dvtx::VertexBoneData>& vertexBoneData = {}) noxnd;
 
     DirectX::XMMATRIX GetTransformXM() const noexcept override;
 

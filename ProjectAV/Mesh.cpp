@@ -1,12 +1,12 @@
 #include "Mesh.h"
-#include "Graphics.h" 
+#include "Graphics.h"
 #include "Material.h" // Include the new Material class
 #include "FrameCommander.h" // Include for Submit
 #include <assimp/mesh.h> // For aiMesh definition
-#include <sstream> 
+#include <sstream>
 
 namespace dx = DirectX;
-// --- ModelException Implementation --- 
+// --- ModelException Implementation ---
 // (Ensure definitions are present here)
 ModelException::ModelException(int line, const char* file, std::string note) noexcept
     :
@@ -46,8 +46,9 @@ const std::string& ModelException::GetNote() const noexcept
 
 // --- Mesh Implementation ---
 
-Mesh::Mesh(Graphics& gfx, const Material& mat, const aiMesh& mesh, float scale) noxnd
-    : Drawable(gfx, mat, mesh, scale) // Call base Drawable constructor
+Mesh::Mesh(Graphics& gfx, const Material& mat, const aiMesh& mesh, float scale,
+    const std::vector<Dvtx::VertexBoneData>& vertexBoneData) noxnd
+    : Drawable(gfx, mat, mesh, scale, vertexBoneData) // Call base Drawable constructor
 {
     // Drawable constructor now handles pVertices, pIndices, pTopology, and techniques
     dx::XMStoreFloat4x4(&transform, dx::XMMatrixIdentity());
