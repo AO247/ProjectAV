@@ -398,10 +398,10 @@ void Node::Submit(FrameCommander& frame, Graphics& gfx) const
     }
 
     // 2. Submit children recursively
-    for (const auto& child : children)
-    {
-        child->Submit(frame, gfx); // Pass gfx
-    }
+	//for (const auto& child : children)   // Commented out for FRUSTUM !!!!
+    //{
+    //    child->Submit(frame, gfx); // Pass gfx
+    //}
 }
 
 // --- ShowNodeTree remains the same ---

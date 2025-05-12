@@ -463,13 +463,12 @@ void App::DoFrame(float dt)
     // --- Bind Lights ---
     pointLight.Bind(wnd.Gfx(), viewMatrix); // Bind point light (to slot 0)
 
-    //FrustumCalculating(); // Draw with FRUSTUM CULLING
-    //pSceneRoot->Draw(wnd.Gfx()); // Draw without FRUSTUM CULLING you have to also uncomment the draw method in Node.cpp
+    FrustumCalculating(); // Draw with FRUSTUM CULLING
+    //pSceneRoot->Submit(fc, wnd.Gfx()); // Draw without FRUSTUM CULLING you have to also uncomment the draw method in Node.cpp
     //FrameCommander fc; // Create FrameCommander for this frame
 
     //// Submit the entire scene graph to the FrameCommander
     //// Pass Graphics context if Submit methods require it
-    pSceneRoot->Submit(fc, wnd.Gfx());
 
     //// Also submit the point light's mesh to a pass (e.g., main pass 0)
     //// Execute all rendering passes accumulated in the FrameCommander
@@ -641,7 +640,7 @@ void App::DrawNodeRecursive(Graphics& gfx, Node& node)
 
     if (shouldDraw)
     {
-        //node.Draw(gfx);
+        node.Submit(fc, wnd.Gfx());
         for (const auto& pChild : node.GetChildren())
         {
             if (pChild)
