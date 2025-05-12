@@ -9,33 +9,28 @@
 #include "DebugLine.h"
 
 namespace dx = DirectX;
-Walking::Walking(Node* owner)
-	: Component(owner)
+Walking::Walking(Node* owner, std::string tag)
+	: Component(owner, std::move(tag))
 {
 	rigidbody = owner->GetComponent<Rigidbody>();
-	tag = "Movement";
-    maxSpeed = 20.0f;
-    maxForce = 200.0f;
-    rotationLerpFactor = 0.1f;
 }
-void Walking::Follow(DirectX::XMFLOAT3 targetPosition)
+void Walking::Follow(DirectX::XMFLOAT3 targetPos)
 {
     if (!rigidbody || rigidbody->GetIsStatic()) { 
         return;
     }
-
-    Vector3 targetPos(targetPosition.x, targetPosition.y, targetPosition.z);
+	targetPosition = targetPos;
     Vector3 currentPos = rigidbody->GetPosition(); 
     Vector3 currentVelocity = rigidbody->GetVelocity();
 
-    Vector3 desiredDirection = targetPos - currentPos;
+    Vector3 desiredDirection = targetPosition - currentPos;
 
     desiredDirection.Normalize();
     Vector3 desiredVelocity = desiredDirection * maxSpeed;
 
     Vector3 steeringForce = desiredVelocity - currentVelocity;
 
-	steeringForce = steeringForce + (CalculateAvoidanceForce() * avoidanceWeight);
+	steeringForce = steeringForce + (CalculateAvoidanceForce());
 
     float steeringMagnitude = steeringForce.Length();
     if (steeringMagnitude > maxForce) {
@@ -50,9 +45,15 @@ void Walking::Follow(DirectX::XMFLOAT3 targetPosition)
         Vector3 facingDirection = currentVelocity; 
         facingDirection.Normalize();
 
-        float targetYaw = atan2f(facingDirection.x, facingDirection.z);
 
-        GetOwner()->SetLocalRotation({ 0.0f, targetYaw, 0.0f });
+		float currentYaw = pOwner->GetLocalRotationEuler().y;
+		float targetYaw = atan2f(facingDirection.x, facingDirection.z);
+
+		float yawDifference = targetYaw - currentYaw;
+
+		targetYaw = currentYaw + yawDifference;
+
+        pOwner->SetLocalRotation({ 0.0f, targetYaw, 0.0f });
     }
 
 	if (pOwner->GetComponent<SoundEffectsPlayer>()->isPlaying() == false) {
@@ -63,21 +64,22 @@ void Walking::Follow(DirectX::XMFLOAT3 targetPosition)
 Vector3 Walking::CalculateAvoidanceForce()
 {
 	Vector3 avoidanceForce(0.0f, 0.0f, 0.0f);
-	//Vector3 previousRotation = GetOwner()->GetLocalRotationEuler();
 
-	Vector3 temporaryDirection = targetPosition - rigidbody->GetPosition();
-	/*temporaryDirection.Normalize();
+	Vector3 previousRotation = pOwner->GetLocalRotationEuler();
+	pOwner->TranslateLocal({ 0.0f, 1.0f, 0.0f });
+	Vector3 temporaryDirection = targetPosition - pOwner->GetWorldPosition();
+	temporaryDirection.Normalize();
 	float targetYaw = atan2f(temporaryDirection.x, temporaryDirection.z);
-	pOwner->SetLocalRotation({ 0.0f, targetYaw, 0.0f });*/
-	float radius = GetOwner()->GetComponent<CapsuleCollider>()->GetRadius();
+	pOwner->SetLocalRotation({ 0.0f, targetYaw, 0.0f });
+
+	float radius = pOwner->GetComponent<CapsuleCollider>()->GetRadius();
 
 	Vector3 pos = pOwner->GetComponent<CapsuleCollider>()->GetTransformedBase();
-	Vector3 forward = GetOwner()->Forward();
-	Vector3 right = GetOwner()->Right();
+	Vector3 forward = pOwner->Forward();
+	Vector3 right = pOwner->Right();
 
 	leftHit = false;
 	rightHit = false;
-	centerHit = false;
 
 	Vector3 centerOrigin = pos + forward;
 	Vector3 leftOrigin = centerOrigin - right * radius;
@@ -85,34 +87,46 @@ Vector3 Walking::CalculateAvoidanceForce()
 
 	Vector3 centerDir = forward;
 	
-	// Vector3 leftDir = (forward - right * 0.3f); leftDir.Normalize(); 
-	// Vector3 rightDir = (forward + right * 0.3f); rightDir.Normalize();
+	Vector3 leftDir = (forward - right * 0.5f); leftDir.Normalize(); 
 
-	RaycastData hitLeft = Raycast::CastThroughLayers(leftOrigin, centerDir, std::vector<Layers>{ENEMY});
+	Vector3 rightDir = (forward + right * 0.5f); rightDir.Normalize();
 
-	RaycastData hitRight = Raycast::CastThroughLayers(rightOrigin, centerDir, std::vector<Layers>{ENEMY});
+	RaycastData hitLeft = Raycast::CastThroughLayers(leftOrigin, centerDir, std::vector<Layers>{ENEMY, PLAYER});
 
-	RaycastData hitCenter = Raycast::CastThroughLayers(centerOrigin, centerDir, std::vector<Layers>{ENEMY});
+
+	RaycastData hitRight = Raycast::CastThroughLayers(rightOrigin, centerDir, std::vector<Layers>{ENEMY, PLAYER});
 
 	float targetDistance = Vector3(pos - targetPosition).Length();
-
-	if (hitLeft.hitCollider != nullptr && hitLeft.hitCollider->GetOwner()->tag == "Wall" && Vector3(hitLeft.hitPoint - pos).Length() < targetDistance) {
+	float distance = Vector3(pos - hitLeft.hitPoint).Length();
+	if (hitLeft.hitCollider != nullptr && Vector3(hitLeft.hitPoint - pos).Length() < targetDistance && 
+		Vector3(hitLeft.hitPoint - pos).Length() < avoidanceDistance) {
 		leftHit = true;
 		
-		avoidanceForce = right * maxForce;
+		avoidanceForce = right * avoidanceWeight;
 	}
 
-	if (hitRight.hitCollider != nullptr && hitRight.hitCollider->GetOwner()->tag == "Wall"  && Vector3(hitRight.hitPoint - pos).Length() < targetDistance) {
+	if (hitRight.hitCollider != nullptr && Vector3(hitRight.hitPoint - pos).Length() < targetDistance && 
+		Vector3(hitRight.hitPoint - pos).Length() < avoidanceDistance) {
 		rightHit = true;
-		avoidanceForce = -right * maxForce;
+		avoidanceForce = -right * avoidanceWeight;
 	}
 
-	if (!leftHit && !rightHit && hitCenter.hitCollider != nullptr && hitCenter.hitCollider->GetOwner()->tag == "Wall" && Vector3(hitCenter.hitPoint - pos).Length() < targetDistance) {
-		centerHit = true;
-		avoidanceForce = -right * maxForce * 1.5f;
+	if (leftHit && rightHit) {
+		RaycastData moreLeft = Raycast::CastThroughLayers(leftOrigin, leftDir, std::vector<Layers>{ENEMY, PLAYER});
+		RaycastData moreRight = Raycast::CastThroughLayers(rightOrigin, rightDir, std::vector<Layers>{ENEMY, PLAYER});
+
+		if (moreLeft.hitCollider != nullptr && Vector3(moreLeft.hitPoint - pos).Length() < targetDistance && 
+			Vector3(moreLeft.hitPoint - pos).Length() < avoidanceDistance) {
+			avoidanceForce = right * avoidanceWeight;
+		}
+		else if (moreRight.hitCollider != nullptr && Vector3(moreRight.hitPoint - pos).Length() < targetDistance && 
+			Vector3(moreRight.hitPoint - pos).Length() < avoidanceDistance) {
+			avoidanceForce = -right * avoidanceWeight;
+		}
 	}
 
-	//pOwner->SetLocalRotation(previousRotation);
+	pOwner->SetLocalRotation(previousRotation);
+	pOwner->TranslateLocal({ 0.0f, -1.0f, 0.0f });
 
 	return avoidanceForce;
 
@@ -120,12 +134,10 @@ Vector3 Walking::CalculateAvoidanceForce()
 
 void Walking::DrawImGuiControls()
 {
-   ImGui::Text("Player Controller Properties:");
    ImGui::Text("Tag: %s", tag.c_str());
    ImGui::InputFloat("Max Speed", &maxSpeed);
    ImGui::InputFloat("Max Force", &maxForce);
-   ImGui::Checkbox("Right", &rightHit);
-   ImGui::Checkbox("Left", &leftHit);
-   ImGui::Checkbox("Center", &centerHit);
+   ImGui::InputFloat("Avoidance Weight", &avoidanceWeight);
+   ImGui::InputFloat("Avoidance Distance", &avoidanceDistance);
 
 }

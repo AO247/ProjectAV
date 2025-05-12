@@ -94,9 +94,9 @@ App::App(const std::string& commandLine)
     pSceneRoot->AddChild(std::move(pBoxOwner));
     pSceneRoot->AddChild(std::move(pStoneOwner));
     pSceneRoot->AddChild(std::move(pColumnOwner));
-	//pSceneRoot->AddChild(std::move(pColumn2Owner));
-	//pSceneRoot->AddChild(std::move(pColumn3Owner));
-	//pSceneRoot->AddChild(std::move(pColumn4Owner));
+	pSceneRoot->AddChild(std::move(pColumn2Owner));
+	pSceneRoot->AddChild(std::move(pColumn3Owner));
+	pSceneRoot->AddChild(std::move(pColumn4Owner));
     pSceneRoot->AddChild(std::move(pIslandOwner));
     //pSceneRoot->AddChild(std::move(pNoxTurnOwner));
     //pNoxTurn->AddChild(std::move(pNoxTurnHairOwner));
@@ -220,21 +220,21 @@ App::App(const std::string& commandLine)
 	);
 	OBB* cOBB = pColumn->GetComponent<OBB>();
 	physicsEngine.AddCollider(cOBB);
-	//pColumn2->AddComponent(
-	//	std::make_unique<OBB>(pColumn2, nullptr, Vector3(-0.6f, 5.0f, 0.0f), Vector3(2.9f, 10.0f, 2.9f))
-	//);
-	//OBB* cOBB2 = pColumn2->GetComponent<OBB>();
-	//physicsEngine.AddCollider(cOBB2);
-	//pColumn3->AddComponent(
-	//	std::make_unique<OBB>(pColumn3, nullptr, Vector3(-0.6f, 5.0f, 0.0f), Vector3(2.9f, 10.0f, 2.9f))
-	//);
-	//OBB* cOBB3 = pColumn3->GetComponent<OBB>();
-	//physicsEngine.AddCollider(cOBB3);
-	//pColumn4->AddComponent(
-	//	std::make_unique<OBB>(pColumn4, nullptr, Vector3(-0.6f, 5.0f, 0.0f), Vector3(2.9f, 10.0f, 2.9f))
-	//);
-	//OBB* cOBB4 = pColumn4->GetComponent<OBB>();
-	//physicsEngine.AddCollider(cOBB4);
+	pColumn2->AddComponent(
+		std::make_unique<OBB>(pColumn2, nullptr, Vector3(-0.6f, 5.0f, 0.0f), Vector3(2.9f, 10.0f, 2.9f))
+	);
+	OBB* cOBB2 = pColumn2->GetComponent<OBB>();
+	physicsEngine.AddCollider(cOBB2);
+	pColumn3->AddComponent(
+		std::make_unique<OBB>(pColumn3, nullptr, Vector3(-0.6f, 5.0f, 0.0f), Vector3(2.9f, 10.0f, 2.9f))
+	);
+	OBB* cOBB3 = pColumn3->GetComponent<OBB>();
+	physicsEngine.AddCollider(cOBB3);
+	pColumn4->AddComponent(
+		std::make_unique<OBB>(pColumn4, nullptr, Vector3(-0.6f, 5.0f, 0.0f), Vector3(2.9f, 10.0f, 2.9f))
+	);
+	OBB* cOBB4 = pColumn4->GetComponent<OBB>();
+	physicsEngine.AddCollider(cOBB4);
     
     pStone->AddComponent(
         std::make_unique<Rigidbody>(pStone, Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f))
@@ -267,16 +267,13 @@ App::App(const std::string& commandLine)
 	);
 	pCamera->GetComponent<Camera>()->active = true;
 
+    pEnemy->AddComponent(
+        std::make_unique<Walking>(pEnemy)
+    );
 
 	pEnemy->AddComponent(
 		std::make_unique<StateMachine>(pEnemy, StateType::IDLE)
 	);
-    pEnemy->GetComponent<StateMachine>()->AddComponent(
-        std::make_unique<Walking>(pEnemy)
-    );
-    pEnemy->GetComponent<StateMachine>()->UpdateComponents();
-
-    
 
 
 	pPlayer->AddComponent(
@@ -317,9 +314,9 @@ App::App(const std::string& commandLine)
     AddBoxColliderToDraw(wnd.Gfx(), iOBB);
     AddBoxColliderToDraw(wnd.Gfx(), sOBB);
 	AddBoxColliderToDraw(wnd.Gfx(), cOBB);
-	/*AddBoxColliderToDraw(wnd.Gfx(), cOBB2);
+	AddBoxColliderToDraw(wnd.Gfx(), cOBB2);
 	AddBoxColliderToDraw(wnd.Gfx(), cOBB3);
-	AddBoxColliderToDraw(wnd.Gfx(), cOBB4);*/
+	AddBoxColliderToDraw(wnd.Gfx(), cOBB4);
 
 
 	AddSphereColliderToDraw(wnd.Gfx(), bBoundingSphere);
@@ -362,6 +359,7 @@ int App::Go()
         DoFrame(dt);
     }
 }
+
 
 // --- UPDATED HandleInput ---
 void App::HandleInput(float dt)
@@ -465,49 +463,8 @@ void App::DoFrame(float dt)
 
     FrustumCalculating(); // Draw with FRUSTUM CULLING
     //pSceneRoot->Submit(fc, wnd.Gfx()); // Draw without FRUSTUM CULLING you have to also uncomment the draw method in Node.cpp
-    //FrameCommander fc; // Create FrameCommander for this frame
 
-    //// Submit the entire scene graph to the FrameCommander
-    //// Pass Graphics context if Submit methods require it
 
-    //// Also submit the point light's mesh to a pass (e.g., main pass 0)
-    //// Execute all rendering passes accumulated in the FrameCommander
-    //Vector3 previousRotation = pEnemy->GetLocalRotationEuler();
-
- //   Vector3 targetPosition = pPlayer->GetWorldPosition();
-	//Rigidbody* rigidbody = pEnemy->GetComponent<Rigidbody>();
-
- //   Vector3 temporaryDirection = targetPosition - rigidbody->GetPosition();
- //   temporaryDirection.Normalize();
- //   /*float targetYaw = atan2f(temporaryDirection.x, temporaryDirection.z);
- //   pEnemy->SetLocalRotation({ 0.0f, targetYaw, 0.0f });*/
- //   float radius = pEnemy->GetComponent<CapsuleCollider>()->GetRadius();
-
- //   Vector3 pos = pEnemy->GetComponent<CapsuleCollider>()->GetTransformedBase();
- //   Vector3 forward = pEnemy->Forward();
- //   Vector3 right = pEnemy->Right();
-
- //   Vector3 centerOrigin = pos + forward;
- //   Vector3 leftOrigin = centerOrigin - right * pEnemy->GetComponent<CapsuleCollider>()->GetRadius();
- //   Vector3 rightOrigin = centerOrigin + right * pEnemy->GetComponent<CapsuleCollider>()->GetRadius();
-
- //   Vector3 centerDir = forward;
-
- //   // Vector3 leftDir = (forward - right * 0.3f); leftDir.Normalize(); 
- //   // Vector3 rightDir = (forward + right * 0.3f); rightDir.Normalize();
-
- //   RaycastData hitLeft = Raycast::CastThroughLayers(leftOrigin, temporaryDirection, std::vector<Layers>{ENEMY});
- //   DebugLine(wnd.Gfx(), leftOrigin, hitLeft.hitPoint).Draw(wnd.Gfx());
-
- //   RaycastData hitRight = Raycast::CastThroughLayers(rightOrigin, temporaryDirection, std::vector<Layers>{ENEMY});
- //   DebugLine(wnd.Gfx(), rightOrigin, hitRight.hitPoint).Draw(wnd.Gfx());
-
- //   RaycastData hitCenter = Raycast::CastThroughLayers(centerOrigin, temporaryDirection, std::vector<Layers>{ENEMY});
- //   DebugLine(wnd.Gfx(), centerOrigin, hitCenter.hitPoint).Draw(wnd.Gfx());
-
-    //pEnemy->SetLocalRotation(previousRotation);
-    //ector3 secPos(pCamera->GetWorldPosition().x + pCamera->Forward().x, pCamera->GetWorldPosition().y + pCamera->Forward().y, pCamera->GetWorldPosition().z + pCamera->Forward().z);
-    //DebugLine(wnd.Gfx(), pCamera->GetWorldPosition(), secPos).Draw(wnd.Gfx());
 
     if (myMusic->isPlaying())
     {
@@ -658,9 +615,8 @@ void App::ShowControlWindows()
 	DrawSphereColliders(wnd.Gfx()); // Call the updated function
     DrawBoxColliders(wnd.Gfx()); // Call the updated function
 	DrawCapsuleColliders(wnd.Gfx());
+    //ForEnemyWalking();
     pointLight.Submit(fc);
-
-
 
     pointLight.SpawnControlWindow(); // Control for Point Light
     if (showDemoWindow)
@@ -857,4 +813,76 @@ void App::DrawCapsuleColliders(Graphics& gfx)
         it->second->Update(gfx);
 		it->second->Submit(fc);
     }
+}
+
+void App::ForEnemyWalking() {
+    Vector3 previousRotation = pEnemy->GetLocalRotationEuler();
+	pEnemy->TranslateLocal({ 0.0f, 1.0f, 0.0f });
+
+    Vector3 temporaryDirection = pPlayer->GetWorldPosition() - pEnemy->GetWorldPosition();
+
+    temporaryDirection.Normalize();
+    float targetYaw = atan2f(temporaryDirection.x, temporaryDirection.z);
+    pEnemy->SetLocalRotation({ 0.0f, targetYaw, 0.0f });
+
+    float radius = pEnemy->GetComponent<CapsuleCollider>()->GetRadius();
+
+    Vector3 pos = pEnemy->GetWorldPosition();
+    Vector3 forward = pEnemy->Forward();
+    Vector3 right = pEnemy->Right();
+    Vector3 down = pEnemy->Down();
+
+    Vector3 centerOrigin = pos + forward;
+    Vector3 leftOrigin = centerOrigin - right * radius;
+    Vector3 rightOrigin = centerOrigin + right * radius;
+
+    Vector3 centerDir = forward;
+
+    Vector3 leftDir = (forward - right * 0.5f); leftDir.Normalize();
+
+    Vector3 rightDir = (forward + right * 0.5f); rightDir.Normalize();
+
+    RaycastData hitLeft = Raycast::CastThroughLayers(leftOrigin, centerDir, std::vector<Layers>{ENEMY, PLAYER});
+    if (hitLeft.hitCollider != nullptr) {
+        line1->SetPoints(wnd.Gfx(), leftOrigin, hitLeft.hitPoint);
+        line1->Submit(fc);
+    }
+    else
+    {
+        line1->SetPoints(wnd.Gfx(), leftOrigin, { pos.x, pos.y - 5.0f, pos.z });
+        line1->Submit(fc);
+    }
+    RaycastData moreLeft = Raycast::CastThroughLayers(leftOrigin, leftDir, std::vector<Layers>{ENEMY, PLAYER});
+    if (moreLeft.hitCollider != nullptr) {
+        line2->SetPoints(wnd.Gfx(), leftOrigin, moreLeft.hitPoint);
+        line2->Submit(fc);
+    }
+    else
+    {
+        line2->SetPoints(wnd.Gfx(), leftOrigin, { pos.x, pos.y - 5.0f, pos.z });
+        line2->Submit(fc);
+    }
+    RaycastData hitRight = Raycast::CastThroughLayers(rightOrigin, centerDir, std::vector<Layers>{ENEMY, PLAYER});
+    if (hitRight.hitCollider != nullptr) {
+        line3->SetPoints(wnd.Gfx(), rightOrigin, hitRight.hitPoint);
+        line3->Submit(fc);
+    }
+    else
+    {
+        line3->SetPoints(wnd.Gfx(), leftOrigin, { pos.x, pos.y - 5.0f, pos.z });
+        line3->Submit(fc);
+    }
+    RaycastData moreRight = Raycast::CastThroughLayers(rightOrigin, rightDir, std::vector<Layers>{ENEMY, PLAYER});
+    if (moreRight.hitCollider != nullptr) {
+        line4->SetPoints(wnd.Gfx(), rightOrigin, moreRight.hitPoint);
+        line4->Submit(fc);
+    }
+    else
+    {
+        line4->SetPoints(wnd.Gfx(), leftOrigin, { pos.x, pos.y - 5.0f, pos.z });
+        line4->Submit(fc);
+    }
+
+    pEnemy->SetLocalRotation(previousRotation);
+    pEnemy->TranslateLocal({ 0.0f, -1.0f, 0.0f });
 }

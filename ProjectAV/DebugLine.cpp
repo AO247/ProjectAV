@@ -1,17 +1,15 @@
 #include "DebugLine.h"
-#include "BindableCommon.h"      // For VertexBuffer, IndexBuffer, Shaders, etc.
+#include "BindableCommon.h"      // For VertexBuffer, IndexBuffer, Topology, Shaders, ConstantBuffers, etc.
 #include "GraphicsThrowMacros.h" // For INFOMAN
 #include "Vertex.h"              // For Dvtx::* types
 #include "Technique.h"           // For Technique and Step
-#include "ConstantBuffers.h"     // For PixelConstantBuffer
-#include "Stencil.h"             // If you standardize and add Stencil
-#include "Blender.h"             // If you standardize and add Blender
-
-#include <sstream> // For tag generation (though we might not cache debug line geometry)
+#include "ConstantBuffers.h"     // For PixelConstantBuffer (if not already in BindableCommon)
+#include "Stencil.h"             // For Stencil state
+#include <sstream>               // For tag generation (though less critical for non-cached debug lines)
 
 namespace dx = DirectX;
 
-// Helper to create unique tag (less useful if not caching via Resolve)
+// Helper to create unique tag (less important if not using Codex for geometry)
 std::string DebugLine::GenerateLineTag(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end) {
     std::ostringstream oss;
     oss << "$debug_line_"
@@ -22,57 +20,66 @@ std::string DebugLine::GenerateLineTag(const DirectX::XMFLOAT3& start, const Dir
 
 
 DebugLine::DebugLine(Graphics& gfx, dx::XMFLOAT3 start, dx::XMFLOAT3 end, dx::XMFLOAT4 color)
-    : startPoint(start), endPoint(end) // Store for potential later use if SetPoints is implemented
+    : startPoint(start), endPoint(end) // Store points if needed for GetTransformXM (not for Identity)
 {
     using namespace Bind;
 
     // --- 1. Prepare Geometry ---
+    // Layout: Position only for basic line
     Dvtx::VertexLayout layout = Dvtx::VertexLayout{}.Append(Dvtx::VertexLayout::Position3D);
     Dvtx::VertexBuffer vbuf{ layout };
-    vbuf.EmplaceBack(startPoint); // Vertex 0: start point in world space
-    vbuf.EmplaceBack(endPoint);   // Vertex 1: end point in world space
+    vbuf.EmplaceBack(startPoint); // Vertex 0: start point (in world space)
+    vbuf.EmplaceBack(endPoint);   // Vertex 1: end point (in world space)
 
-    std::vector<unsigned short> indices = { 0, 1 };
+    std::vector<unsigned short> indices = { 0, 1 }; // Indices for a single line segment
 
-    // For debug lines, we typically don't cache their geometry via Resolve
-    // because the start/end points change frequently. So, we create unique buffers.
-    pVertices = std::make_shared<VertexBuffer>(gfx, vbuf); // Create unique VB
-    pIndices = std::make_shared<IndexBuffer>(gfx, indices); // Create unique IB
-    pTopology = Topology::Resolve(gfx, D3D11_PRIMITIVE_TOPOLOGY_LINELIST); // LineList topology is shareable
+    // For debug lines, we usually don't cache geometry via Codex because points change constantly.
+    // So, we create unique vertex/index buffers directly.
+    pVertices = std::make_shared<VertexBuffer>(gfx, vbuf);
+    pIndices = std::make_shared<IndexBuffer>(gfx, indices);
+    pTopology = Topology::Resolve(gfx, D3D11_PRIMITIVE_TOPOLOGY_LINELIST); // Use LineList for lines
 
     // --- 2. Define Rendering Technique ---
     {
-        Technique lineTechnique("DebugLineSolid");
-        Step mainPass(0); // Assuming debug lines are drawn in the main pass (pass 0)
+        Technique lineTechnique("DebugLineSolid"); // Name the technique
+        Step mainPass(0); // Step targets rendering pass 0 (or a dedicated debug pass if you have one)
 
         // --- Vertex Shader ---
-        auto pvs = VertexShader::Resolve(gfx, "Solid_VS.cso"); // Simple VS
+        // Assuming Solid_VS.cso can handle simple position transformation
+        auto pvs = VertexShader::Resolve(gfx, "Solid_VS.cso");
         auto pvsbc = pvs->GetBytecode();
         mainPass.AddBindable(std::move(pvs));
 
         // --- Pixel Shader ---
-        mainPass.AddBindable(PixelShader::Resolve(gfx, "Solid_PS.cso")); // Simple PS
+        // Assuming Solid_PS.cso can use a color from a constant buffer
+        mainPass.AddBindable(PixelShader::Resolve(gfx, "Solid_PS.cso"));
 
-        // --- Pixel Constant Buffer for Color ---
+        // --- Pixel Constant Buffer for Line Color ---
         struct PSColorConstant { dx::XMFLOAT4 color; } colorConst;
-        static_assert((sizeof(PSColorConstant) % 16) == 0, "PSColorConstant size must be multiple of 16 bytes");
-        colorConst.color = color; // Use the passed color
-        mainPass.AddBindable(std::make_shared<PixelConstantBuffer<PSColorConstant>>(gfx, colorConst, 1u)); // Slot 1
+        static_assert(sizeof(PSColorConstant) % 16 == 0, "PSColorConstant size must be multiple of 16 bytes");
+        colorConst.color = color; // Use the passed-in color
+        // Create a unique constant buffer for this line instance, not shared
+        mainPass.AddBindable(std::make_shared<PixelConstantBuffer<PSColorConstant>>(gfx, colorConst, 1u)); // Slot 1 for material/object color
 
         // --- Input Layout ---
         mainPass.AddBindable(InputLayout::Resolve(gfx, layout, pvsbc));
 
-        // --- Transform Constant Buffer (unique to this drawable instance) ---
-        // GetTransformXM() will return Identity for DebugLine as vertices are world space.
-        mainPass.AddBindable(std::make_shared<TransformCbuf>(gfx, 0u));
+        // --- Transform Constant Buffer ---
+        // Since vertices are already in world space, GetTransformXM() returns Identity.
+        // This TransformCbuf will apply ViewProjection to the world-space vertices.
+        mainPass.AddBindable(std::make_shared<TransformCbuf>(gfx, 0u)); // Slot 0 for VS transform
 
-        // --- Blend State (Debug lines are usually opaque) ---
-        mainPass.AddBindable(Blender::Resolve(gfx, false, std::nullopt)); // false = no blending
+        // --- Blend State (Optional, lines are usually opaque) ---
+        // If you want transparent lines, enable blending with hasAlphaDiffuse=true for your line color
+        bool lineHasAlpha = color.w < 1.0f;
+        mainPass.AddBindable(Blender::Resolve(gfx, lineHasAlpha));
 
-        // --- Rasterizer State (Default is fine, or no culling for lines) ---
-        mainPass.AddBindable(Rasterizer::Resolve(gfx, false)); // false = default (cull back)
+        // --- Rasterizer State (Optional, default usually works) ---
+        // For lines, culling is often irrelevant, but default is fine.
+        // Wireframe mode doesn't make sense for a line list.
+        mainPass.AddBindable(Rasterizer::Resolve(gfx, false)); // false for default (cull back)
 
-        // --- Stencil State (Usually off) ---
+        // --- Stencil State (Usually off for debug lines) ---
         mainPass.AddBindable(Stencil::Resolve(gfx, Stencil::Mode::Off));
 
         lineTechnique.AddStep(std::move(mainPass));
@@ -80,35 +87,35 @@ DebugLine::DebugLine(Graphics& gfx, dx::XMFLOAT3 start, dx::XMFLOAT3 end, dx::XM
     }
 }
 
-// Optional: Update points if reusing the DebugLine object
-// This is more complex as it requires updating the GPU vertex buffer.
-// For debug lines created per-frame, this isn't typically used.
-void DebugLine::SetPoints(Graphics& gfx, DirectX::XMFLOAT3 start, DirectX::XMFLOAT3 end)
-{
-    startPoint = start;
-    endPoint = end;
-
-    // If you implement this, you need to:
-    // 1. Get the VertexBuffer bindable (e.g., using QueryBindable or storing a direct pointer)
-    // 2. Create a new Dvtx::VertexBuffer with the new points
-    // 3. Call a method on the GPU VertexBuffer bindable to update its contents (e.g., Map/Unmap)
-    // For example:
-    // if(pVertices) { // pVertices is std::shared_ptr<Bind::VertexBuffer>
-    //    Dvtx::VertexBuffer new_vbuf(Dvtx::VertexLayout{}.Append(Dvtx::VertexLayout::Position3D));
-    //    new_vbuf.EmplaceBack(startPoint);
-    //    new_vbuf.EmplaceBack(endPoint);
-    //    // VertexBuffer class would need an UpdateData(Graphics&, const Dvtx::VertexBuffer&) method
-    //    // This is non-trivial to add to the existing VertexBuffer bindable.
-    //    // For now, creating new DebugLine instances is simpler.
-    // }
-    OutputDebugStringA("DebugLine::SetPoints - Vertex buffer update not fully implemented for this example.\n");
-}
-
 
 DirectX::XMMATRIX DebugLine::GetTransformXM() const noexcept
 {
-    // Since the startPoint and endPoint used to create the vertex buffer
-    // are already in world space, the model transform for this line is Identity.
-    // The TransformCbuf will still apply View * Projection.
+    // The vertices for DebugLine are already defined in world space.
+    // Therefore, the "model" transform is identity. The TransformCbuf will still
+    // apply the view-projection matrix to these world-space vertices in the shader.
     return dx::XMMatrixIdentity();
+}
+
+void DebugLine::SetPoints(Graphics& gfx, DirectX::XMFLOAT3 start, DirectX::XMFLOAT3 end)
+{
+	startPoint = start;
+	endPoint = end;
+
+    using namespace Bind;
+
+    // --- 1. Prepare Geometry ---
+    // Layout: Position only for basic line
+    Dvtx::VertexLayout layout = Dvtx::VertexLayout{}.Append(Dvtx::VertexLayout::Position3D);
+    Dvtx::VertexBuffer vbuf{ layout };
+    vbuf.EmplaceBack(startPoint); // Vertex 0: start point (in world space)
+    vbuf.EmplaceBack(endPoint);   // Vertex 1: end point (in world space)
+
+    std::vector<unsigned short> indices = { 0, 1 }; // Indices for a single line segment
+
+    // For debug lines, we usually don't cache geometry via Codex because points change constantly.
+    // So, we create unique vertex/index buffers directly.
+    pVertices = std::make_shared<VertexBuffer>(gfx, vbuf);
+    pIndices = std::make_shared<IndexBuffer>(gfx, indices);
+    pTopology = Topology::Resolve(gfx, D3D11_PRIMITIVE_TOPOLOGY_LINELIST); // Use LineList for lines
+
 }

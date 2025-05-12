@@ -15,6 +15,7 @@
 #include "ColliderSphere.h"
 #include "SolidBox.h"
 #include "SolidCapsule.h"
+#include "DebugLine.h"
 
 // Forward declarations
 class PlayerController; // Forward declare
@@ -29,21 +30,27 @@ private:
     void DoFrame(float dt);
     void HandleInput(float dt);
     void ShowControlWindows();
+    void ForEnemyWalking();
 
 private:
     // Core App Systems
     std::string commandLine;
     ImguiManager imgui;
     Window wnd; // PlayerController needs access to this
-	ScriptCommander scriptCommander;
+    ScriptCommander scriptCommander;
     Timer timer;
     float speed_factor = 1.0f;
     PointLight pointLight;
     PhysicsEngine physicsEngine; // Physics engine instance
-	SoundDevice* soundDevice; // Sound device instance
+    SoundDevice* soundDevice; // Sound device instance
     std::unique_ptr<MusicBuffer> myMusic;
-	DirectX::BoundingFrustum cameraFrustum; // Frustum for the camera
+    DirectX::BoundingFrustum cameraFrustum; // Frustum for the camera
     FrameCommander fc{ wnd.Gfx() };
+
+    DebugLine* line1 = new DebugLine(wnd.Gfx(), {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, { 1.0f, 0.0f, 0.0f, 1.0f });    
+    DebugLine* line2 = new DebugLine(wnd.Gfx(), { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f, 0.0f, 1.0f });
+    DebugLine* line3 = new DebugLine(wnd.Gfx(), { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f, 0.0f, 1.0f });
+    DebugLine* line4 = new DebugLine(wnd.Gfx(), { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f, 0.0f, 1.0f });
 
     // --- Scene Graph ---
     std::unique_ptr<Node> pSceneRoot;

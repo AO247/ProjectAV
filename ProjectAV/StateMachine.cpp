@@ -23,34 +23,28 @@ StateMachine::StateMachine(Node* owner, StateType initialState)
 		currentStateType = StateType::IDLE; // Default fallback
 		ChangeState(StateType::IDLE); // Try changing to IDLE if initial faile
 	}
-	
+	//std::vector<std::unique_ptr<Component>> components = pOwner->GetComponents();
+	for (const auto& component : pOwner->GetComponents())
+	{
+		std::string tagName = "Movement";
+		std::string tagName2 = "Attack";
+
+		if (component->tag == tagName)
+		{
+			pMovementComponent = component.get();
+		}
+		else if (component->tag == tagName2)
+		{
+			attackComponents.push_back(component.get());
+		}
+	}
 	pPlayer = pOwner->GetRoot()->FindFirstChildByTag("Player");
 }
 StateMachine::~StateMachine()
 {
 
 }
-void StateMachine::UpdateComponents()
-{
-	for (const auto& component : components)
-	{
-		component->tag = "Movement";
-		std::string tagName = "Movement";
-		std::string tagName2 = "Attack";
 
-		if (component->tag == tagName)
-		{
-			pMovementComponent = component.get(); // Store the movement component
-			// Store a raw pointer to the component
-			movementComponents.push_back(component.get());
-		}
-		else if (component->tag == tagName2)
-		{
-			// Store a raw pointer to the component
-			attackComponents.push_back(component.get());
-		}
-	}
-}
 
 void StateMachine::Update(float dt)
 {
@@ -147,48 +141,9 @@ Node* StateMachine::GetOwnerNode() const
 	return GetOwner();
 }
 
-Component* StateMachine::AddComponent(std::unique_ptr<Component> pComponent) {
-    assert(pComponent);
-    components.push_back(std::move(pComponent));
-    return components.back().get();
-}
-const std::vector<std::unique_ptr<Component>>& StateMachine::GetComponents() const { return components; }
-
 void StateMachine::DrawImGuiControls()
 {
 	ImGui::Text("State Machine Properties:");
 	ImGui::InputFloat("Start Following distance", &followDistance);
 	ImGui::InputFloat("Attack Range", &attackRange);
-
-	if (ImGui::CollapsingHeader("Components", ImGuiTreeNodeFlags_DefaultOpen))
-	{
-		if (components.empty()) {
-			ImGui::TextDisabled("No components attached.");
-		}
-		else {
-			int compIndex = 0;
-			for (const auto& comp : components) {
-				if (comp) {
-					// Create a unique ID for the component header
-					std::string compLabel = typeid(*comp).name();
-					// Remove "class " prefix if present (platform dependent)
-					if (compLabel.rfind("class ", 0) == 0) {
-						compLabel = compLabel.substr(6);
-					}
-					compLabel += "##" + std::to_string(compIndex++); // Add unique ID
-
-					// Make each component collapsible
-					if (ImGui::TreeNode(compLabel.c_str()))
-					{
-						// --- Call the component's ImGui draw function ---
-						comp->DrawImGuiControls();
-						// --- End Call ---
-
-						ImGui::TreePop();
-					}
-				}
-			}
-		}
-	}
-	//ImGui::Checkbox("Jumped", &jumped); // Display jump status
 }

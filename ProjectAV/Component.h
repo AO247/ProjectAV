@@ -11,7 +11,8 @@ namespace DirectX { struct XMMATRIX; } // Use struct forward declaration
 class Component
 {
 public:
-    Component(Node* owner) : pOwner(owner) {}
+    Component(Node* owner, std::string tag = "") // Add tag with default
+        : pOwner(owner), tag(std::move(tag)){}
     virtual ~Component() = default;
 
     // Common methods components might override (optional for now)

@@ -12,21 +12,22 @@ class Node;
 class Walking : public Component
 {
 public:
-	Walking(Node* owner);
-	std::string tag;
+	Walking(Node* owner, std::string tag = "Movement");
+	//std::string tag = "Movement";
 
-	float maxSpeed;
-	float maxForce;
-	float rotationLerpFactor;
+	float maxSpeed = 40.0f;
+	float maxForce = 200.0f;
+	float rotationLerpFactor = 0.1f;
 	Vector3 targetPosition;
 	virtual void Follow(DirectX::XMFLOAT3 target);
 	virtual void DrawImGuiControls() override;
-	float avoidanceWeight = 150.0f;
+	float avoidanceWeight = 17.0f;
+	float avoidanceDistance = 8.0f;
 	float raycastDistance = 5.0f;
 	float raycastWidthOffset = 0.8f;
 private:
 	Rigidbody* rigidbody;
 
 	Vector3 CalculateAvoidanceForce();
-	bool rightHit, leftHit, centerHit;
+	bool rightHit, leftHit;
 };
