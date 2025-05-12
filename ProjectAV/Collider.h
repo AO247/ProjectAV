@@ -18,7 +18,8 @@ public:
 		SPHERE = 0,
 		AABB = 1,
 		TYPE_OBB = 2,
-		CAPSULE = 3
+		CAPSULE = 3,
+		MESH = 4
 	};
 
 	Collider(Node* owner, ColliderTypes colliderType, Rigidbody* rigidbody) :
@@ -27,6 +28,8 @@ public:
 	    Component(owner) {}
 	
 	void Update(float dt) override;
+
+	virtual Vector3 GetColliderTransformedCenter();
 
 	IntersectData Intersect(Collider* other);
 	virtual RaycastData IntersectRay(Raycast* ray);

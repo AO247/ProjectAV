@@ -205,6 +205,7 @@
     <ClCompile Include="LayoutCodex.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="MeshCollider.cpp" />
     <ClCompile Include="MiscMath.cpp" />
     <ClCompile Include="ModelComponent.cpp" />
     <ClCompile Include="Mouse.cpp" />
@@ -301,6 +302,7 @@
     <ClInclude Include="LayoutCodex.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="MeshCollider.h" />
     <ClInclude Include="ModelComponent.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="Node.h" />

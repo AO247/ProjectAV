@@ -39,7 +39,13 @@ void PhysicsEngine::Simulate(float delta)
 	{
 		rigidbodies[i]->Integrate(delta);
 	}
+
 	HandleCollisions();
+
+	for (int i = 0; i < rigidbodies.size(); i++)
+	{
+		rigidbodies[i]->UpdatePreviousStepPosition();
+	}
 }
 
 void PhysicsEngine::HandleCollisions()
@@ -172,8 +178,8 @@ void PhysicsEngine::HandleRigidbodyCollisions()
 				firstBody->SetVelocity(firstBodyNewVelocity);
 				secondBody->SetVelocity(secondBodyNewVelocity);
 
-				//firstBody->SetAngularVelocity(firstBodyNewAngularVelocity);
-				//secondBody->SetAngularVelocity(secondBodyNewAngularVelocity);
+				firstBody->SetAngularVelocity(firstBodyNewAngularVelocity);
+				secondBody->SetAngularVelocity(secondBodyNewAngularVelocity);
 
 				if (firstBody->GetIsStatic())
 				{
@@ -184,14 +190,14 @@ void PhysicsEngine::HandleRigidbodyCollisions()
 					secondBody->SetVelocity(Vector3(0, 0, 0));
 				}
 
-				/*if (firstBody->GetIsStatic())
+				if (firstBody->GetIsStatic())
 				{
 					firstBody->SetAngularVelocity(Vector3(0, 0, 0));
 				}
 				if (secondBody->GetIsStatic())
 				{
 					secondBody->SetAngularVelocity(Vector3(0, 0, 0));
-				}*/
+				}
 			}
 		}
 	}
@@ -274,8 +280,8 @@ void PhysicsEngine::HandleColliderCollisions()
 				Vector3 firstBodyNewVelocity = firstBody->GetVelocity() + ((factor / firstBody->GetMass()) * collisionNormal);
 				Vector3 secondBodyNewVelocity = secondBody->GetVelocity() - ((factor / secondBody->GetMass()) * collisionNormal);
 
-				Vector3 firstBodyNewAngularVelocity = firstBody->GetAngularVelocity() + (intersectData.GetCollisionPointRadiusForFirstBody().Cross(factor * collisionNormal) / i1);
-				Vector3 secondBodyNewAngularVelocity = secondBody->GetAngularVelocity() + (intersectData.GetCollisionPointRadiusForSecondBody().Cross(-factor * collisionNormal) / i2);
+				//Vector3 firstBodyNewAngularVelocity = firstBody->GetAngularVelocity() + (intersectData.GetCollisionPointRadiusForFirstBody().Cross(factor * collisionNormal) / i1);
+				//Vector3 secondBodyNewAngularVelocity = secondBody->GetAngularVelocity() + (intersectData.GetCollisionPointRadiusForSecondBody().Cross(-factor * collisionNormal) / i2);
 
 				firstBody->SetVelocity(firstBodyNewVelocity);
 				secondBody->SetVelocity(secondBodyNewVelocity);

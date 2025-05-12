@@ -35,6 +35,8 @@ App::App(const std::string& commandLine)
    
 	auto pCameraNodeOwner = std::make_unique<Node>("Camera", nullptr, "Camera");
 	pCamera = pCameraNodeOwner.get();
+    auto pTestBoxOwner = std::make_unique<Node>("TestBox", nullptr, "TestBox");
+    pTestBox = pTestBoxOwner.get();
 	auto pFreeViewCameraOwner = std::make_unique<Node>("FreeViewCamera");
 	pFreeViewCamera = pFreeViewCameraOwner.get();
     auto pPlayerOwner = std::make_unique<Node>("Player", nullptr, "Player");
@@ -75,6 +77,7 @@ App::App(const std::string& commandLine)
     pSceneRoot->AddChild(std::move(pPlayerOwner));
 	pSceneRoot ->AddChild(std::move(pAbility1Owner));
 	pSceneRoot->AddChild(std::move(pAbility2Owner));
+    pSceneRoot->AddChild(std::move(pTestBoxOwner));
     //pSceneRoot->AddChild(std::move(pNanosuitOwner));
     //pSceneRoot->AddChild(std::move(pEmptyNode));
     //pSceneRoot->AddChild(std::move(pBrickOwner));
@@ -93,6 +96,9 @@ App::App(const std::string& commandLine)
     // Adding Models
     pNanosuitNode->AddComponent(
         std::make_unique<ModelComponent>(pNanosuitNode, wnd.Gfx(), "Models\\nano_textured\\nanosuit.obj")
+    );
+    pTestBox->AddComponent(
+        std::make_unique<ModelComponent>(pTestBox, wnd.Gfx(), "Models\\Colliders\\Box.obj")
     );
     pBrick->AddComponent(
         std::make_unique<ModelComponent>(pBrick, wnd.Gfx(), "Models\\brick_wall\\brick_wall.obj")
@@ -171,6 +177,18 @@ App::App(const std::string& commandLine)
 	a2Sphere->SetLayer(Layers::PLAYER);
 	physicsEngine.AddCollider(a2Sphere);
     
+
+    pTestBox->AddComponent(
+        std::make_unique<Rigidbody>(pTestBox, Vector3(10.0f, 10.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f))
+    );
+    Rigidbody* tbRigidbody = pTestBox->GetComponent<Rigidbody>();
+    ModelComponent* tbModel = pTestBox->GetComponent<ModelComponent>();
+    pTestBox->AddComponent(
+        std::make_unique<MeshCollider>(pTestBox, tbRigidbody, tbModel)
+    );
+    MeshCollider* tbMC = pTestBox->GetComponent<MeshCollider>();
+    tbRigidbody->SetCollider(tbMC);
+    physicsEngine.AddRigidbody(tbRigidbody);
 
 
     pEnemy->AddComponent(
@@ -270,6 +288,7 @@ App::App(const std::string& commandLine)
     // Changing position scale etc.]
 	pFreeViewCamera->SetLocalPosition({ 4.0f, 11.0f, -28.0f });
     pPlayer->SetLocalPosition({ 0.0f, 35.0f, 0.0f });
+    pTestBox->SetLocalPosition({ 10.0f, 10.0f, 0.0f });
 	pBox->SetLocalPosition(DirectX::XMFLOAT3(-10.0f, 3.0f, 10.0f));
     pBrick->SetLocalScale(dx::XMFLOAT3(20.0f, 20.0f, 1.0f));
     pBrick->SetLocalRotation(dx::XMFLOAT3(DirectX::XMConvertToRadians(90), 0.0f, 0.0f));

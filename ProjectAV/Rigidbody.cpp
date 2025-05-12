@@ -2,7 +2,7 @@
 #include "Node.h"
 #include "DirectXMath.h"
 
-Vector3 Rigidbody::gravity = Vector3(0.0f, -98.0f, 0.0f);
+Vector3 Rigidbody::gravity = Vector3(0.0f, -5.0f, 0.0f);
 
 void Rigidbody::Update(float dt)
 {
@@ -104,6 +104,11 @@ void Rigidbody::SetAngularVelocity(Vector3 velocity)
 	angularVelocity = velocity;
 }
 
+void Rigidbody::UpdatePreviousStepPosition()
+{
+	previousStepPosition = position;
+}
+
 Vector3& Rigidbody::GetPosition()
 {
 	return position;
@@ -122,6 +127,11 @@ Vector3& Rigidbody::GetRotation()
 Vector3& Rigidbody::GetAngularVelocity()
 {
 	return angularVelocity;
+}
+
+Vector3& Rigidbody::GetPreviousStepPosition()
+{
+	return previousStepPosition;
 }
 
 Collider* Rigidbody::GetCollider()

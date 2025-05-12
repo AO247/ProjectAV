@@ -26,11 +26,13 @@ public:
 	void AddForce(Vector3 force);
 	void SetStatic(bool isStatic);
 	void SetAngularVelocity(Vector3 velocity);
+	void UpdatePreviousStepPosition();
 
 	Vector3& GetPosition();
 	Vector3& GetVelocity();
 	Vector3& GetRotation();
 	Vector3& GetAngularVelocity();
+	Vector3& GetPreviousStepPosition();
 	Collider* GetCollider();
 	DirectX::XMMATRIX GetTransformationMatrixFromNode();
 	DirectX::XMMATRIX GetBodyTransformationMatrix();
@@ -47,6 +49,7 @@ public:
 
 private:
 	Vector3 position;
+	Vector3 previousStepPosition;
 	Vector3 rotation;
 	Vector3 velocity;
 	Vector3 angularVelocity;

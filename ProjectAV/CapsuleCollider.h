@@ -4,6 +4,7 @@
 
 class BoundingSphere;
 class OBB;
+class MeshCollider;
 
 struct EndSphereIntersectionData
 {
@@ -24,10 +25,12 @@ public:
 	IntersectData IntersectCapsule(CapsuleCollider* other);
 	IntersectData IntersectSphere(BoundingSphere* other);
 	IntersectData IntersectOBB(OBB* other);
+	IntersectData IntersectMesh(MeshCollider* other);
 	RaycastData IntersectRay(Raycast* ray) override;
 
 	Vector3 GetTransformedBase();
 	Vector3 GetTransformedTip();
+	Vector3 GetColliderTransformedCenter() override;
 	float GetRadius();
 	Vector3 ClosestPointOnLineSegment(Vector3 a, Vector3 b, Vector3 point);
 private:

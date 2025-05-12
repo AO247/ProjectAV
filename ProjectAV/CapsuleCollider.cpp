@@ -99,6 +99,17 @@ IntersectData CapsuleCollider::IntersectOBB(OBB* other)
 	return IntersectData(dist < GetRadius(), -separationVector, collisionPoint, r1, r2);
 }
 
+IntersectData CapsuleCollider::IntersectMesh(MeshCollider* other)
+{
+	IntersectData data = other->IntersectCapsule(this);
+
+	return IntersectData(data.GetDoesIntersect(),
+						-data.GetDirection(),
+						Vector3(0, 0, 0),
+						Vector3(0, 0, 0),
+						Vector3(0, 0, 0));
+}
+
 RaycastData CapsuleCollider::IntersectRay(Raycast* ray)
 {
 	Vector3 a = (GetTransformedTip() - GetTransformedBase()) / ((GetTransformedTip() - GetTransformedBase()).Length());
@@ -223,6 +234,16 @@ Vector3 CapsuleCollider::GetTransformedTip()
 	return Vector3(DirectX::XMVectorGetX(e),
 		DirectX::XMVectorGetY(e),
 		DirectX::XMVectorGetZ(e));
+}
+
+Vector3 CapsuleCollider::GetColliderTransformedCenter()
+{
+	Vector3 fromBaseToTip = GetTransformedTip() - GetTransformedBase();
+	float distanceFromBaseToTip = fromBaseToTip.Length();
+	Vector3 fromBaseToTipDirection = fromBaseToTip / distanceFromBaseToTip;
+	Vector3 capsuleCenter = fromBaseToTipDirection * distanceFromBaseToTip;
+
+	return capsuleCenter;
 }
 
 float CapsuleCollider::GetRadius()

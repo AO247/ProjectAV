@@ -19,6 +19,8 @@ public:
 	std::vector<Collider*> colliders;
 	
 private:
+	std::vector<Vector3> previousStepRigidbodyPositions;
+
 	void HandleCollisions();
 	void HandleRigidbodyCollisions();
 	void HandleColliderCollisions();

@@ -64,6 +64,7 @@ private:
     Node* pNoxTurn = nullptr; // Node for the camera
     Node* pNoxTurnHair = nullptr; // Node for the camera
     Node* pEnemy = nullptr; // Node for the enemy
+    Node* pTestBox = nullptr;
 
     // --- UI State ---
     
