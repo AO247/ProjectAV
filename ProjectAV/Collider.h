@@ -12,6 +12,7 @@ class RaycastData;
 
 class Collider : public Component
 {
+
 public:
 	enum ColliderTypes
 	{
@@ -25,7 +26,8 @@ public:
 		colliderType(colliderType),
 		rigidbody(rigidbody),
 	    Component(owner) {}
-	
+	virtual ~Collider() = default;
+
 	void Update(float dt) override;
 
 	IntersectData Intersect(Collider* other);

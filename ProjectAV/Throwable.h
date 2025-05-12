@@ -11,6 +11,8 @@ class Throwable : public Component
 {
 public:
 	Throwable(Node* owner);
+	virtual ~Throwable() = default;
+
 	virtual void Update(float dt) override;
 	virtual void DrawImGuiControls() override;
 	BoundingSphere* damageArea;

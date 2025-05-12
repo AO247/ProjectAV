@@ -13,8 +13,7 @@ class Walking : public Component
 {
 public:
 	Walking(Node* owner, std::string tag = "Movement");
-	//std::string tag = "Movement";
-
+	virtual ~Walking() = default;
 	float maxSpeed = 40.0f;
 	float maxForce = 200.0f;
 	float rotationLerpFactor = 0.1f;

@@ -21,6 +21,7 @@ public:
     Node* GetChild(size_t index);
     Node* GetParent() const;
     const std::vector<std::unique_ptr<Node>>& GetChildren() const;
+    std::vector<std::unique_ptr<Node>>& GetChildren_NonConst();
     const std::string& GetName() const;
     Node* FindFirstChildByTag(const std::string& searchTag);
     std::vector<Node*> FindAllChildrenByTag(const std::string& searchTag);
@@ -31,6 +32,7 @@ public:
     template<typename T> T* GetComponent() const; // Keep declaration
     Component* AddComponent(std::unique_ptr<Component> pComponent); // Keep declaration
     const std::vector<std::unique_ptr<Component>>& GetComponents() const; // Keep declaration
+    void ClearComponents();
 
     // --- Transform ---
     // Local
@@ -64,6 +66,10 @@ public:
     std::string tag;
     Node* parent = nullptr;
 
+    bool isMarkedForDeletion = false;
+    void Destroy(); // Marks this node and its children for destruction
+    bool IsMarkedForDestruction() const;
+    void RemoveChild(Node* childToRemove); // Helper to remove a specific child
 private:
     void UpdateWorldTransform();
     void UpdateLocalTransformFromComponents(); // Helper to build matrix from stored pos/rot/scale
@@ -73,18 +79,19 @@ private:
 
     // --- Store transform components directly ---
     DirectX::XMFLOAT3 localPosition = { 0.0f, 0.0f, 0.0f };
-    DirectX::XMFLOAT3 localRotationEulerRad = { 0.0f, 0.0f, 0.0f }; // Store Pitch, Yaw, Roll in Radians
+    DirectX::XMFLOAT3 localRotationEulerRad = { 0.0f, 0.0f, 0.0f };
     DirectX::XMFLOAT3 localScale = { 1.0f, 1.0f, 1.0f };
 
     // --- Matrix caches ---
-    DirectX::XMFLOAT4X4 localTransform;  // Cache built from pos/rot/scale
-    DirectX::XMFLOAT4X4 worldTransform; // Cache built from local and parent
+    DirectX::XMFLOAT4X4 localTransform;
+    DirectX::XMFLOAT4X4 worldTransform;
 
     std::vector<std::unique_ptr<Node>> children;
     std::vector<std::unique_ptr<Component>> components;
 
     bool localTransformDirty = true; // Flag to rebuild local matrix
     bool worldTransformDirty = true; // Flag to recalculate world matrix
+    bool markedForDestruction = false;
 };
 
 // Template implementations if needed in header

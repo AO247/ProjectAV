@@ -11,6 +11,7 @@ class Camera : public Component
 public:
 	// Constructor takes owner (the camera position node), window, and the orientation node
 	Camera(Node* owner, Window& window);
+	virtual ~Camera() = default;
 
 	virtual void Update(float dt) override;
 

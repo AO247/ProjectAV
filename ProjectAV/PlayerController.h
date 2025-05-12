@@ -14,6 +14,8 @@ class PlayerController : public Component
 {
 public:
 	PlayerController(Node* owner, Window& window);
+	virtual ~PlayerController() = default;
+
 	virtual void Update(float dt) override;
 	virtual void DrawImGuiControls() override;
 

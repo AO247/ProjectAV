@@ -19,6 +19,7 @@ namespace AxisAligned
 			Collider(owner, Collider::ColliderTypes::AABB, rigidbody)
 		{
 		}
+		virtual ~AABB() = default;
 
 		IntersectData IntersectAABB(AABB* other);
 		IntersectData IntersectBoundingSphere(BoundingSphere* other);

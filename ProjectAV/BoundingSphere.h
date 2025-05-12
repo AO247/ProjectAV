@@ -22,6 +22,7 @@ public:
 		center(center),
 		radius(radius),
 		Collider(owner, Collider::ColliderTypes::SPHERE, rigidbody) {}
+	virtual ~BoundingSphere() = default;
 
 	IntersectData IntersectBoundingSphere(BoundingSphere* other);
 	IntersectData IntersectAABB(AxisAligned::AABB* other);

@@ -44,7 +44,7 @@ class ModelComponent : public Component
 public:
     // Constructor will take model file and scale
     ModelComponent(Node* owner, Graphics& gfx, const std::string& modelFile, float scale = 1.0f);
-    virtual ~ModelComponent() noexcept;
+    virtual ~ModelComponent() = default;
 
     // **** CHANGED Draw to Submit ****
     void Submit(FrameCommander& frame, Graphics& gfx, DirectX::FXMMATRIX worldTransform) const noxnd;

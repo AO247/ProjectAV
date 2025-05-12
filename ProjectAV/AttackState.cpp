@@ -13,8 +13,11 @@ AttackState::AttackState(StateMachine* pOwner) : State()
 void AttackState::Enter(StateMachine* pOwner)
 {
 	OutputDebugStringA("Entering ATTACK State\n");
-	time = 0.0f;
-
+	if (pOwner->attackComponents.size() > 0) {
+		int randI = rand() % pOwner->attackComponents.size();
+		pAttackComponent = pOwner->attackComponents[randI];
+		time = 0.0f;
+	}
 }
 
 void AttackState::Update(StateMachine* pOwner, float dt)

@@ -1,12 +1,12 @@
 #include "Throwable.h"
-
+#include <string>
 Throwable::Throwable(Node* owner) : Component(owner)
 {
 	rigidbody = owner->GetComponent<Rigidbody>();
 }
 void Throwable::Update(float dt)
 {
-	if (rigidbody->GetVelocity().Length() > 0.0f)
+	if (rigidbody->GetVelocity().Length() > 40.0f)
 	{
 		OnTriggerEnter();
 	}
@@ -22,7 +22,8 @@ void Throwable::OnTriggerEnter()
 		{
 			if (col->GetOwner()->tag == "Enemy")
 			{
-				OutputDebugStringA("\nHit Enemy\n");
+				//OutputDebugStringA(("\nSTONE VELOCITY: " + std::to_string(rigidbody->GetVelocity().Length())).c_str());
+				col->GetOwner()->Destroy();
 			}
 		}
 	}

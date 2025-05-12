@@ -332,7 +332,29 @@ App::App(const std::string& commandLine)
     cursorEnabled = false;
 }
 
-App::~App() = default;
+App::~App()
+{
+    for (auto& pair : sphereCollidersToDraw) {
+        delete pair.second; // Delete the ColliderSphere*
+    }
+    sphereCollidersToDraw.clear();
+
+    for (auto& pair : boxCollidersToDraw) {
+        delete pair.second; // Delete the SolidBox*
+    }
+    boxCollidersToDraw.clear();
+
+    for (auto& pair : capsuleCollidersToDraw) {
+        delete pair.second; // Delete the SolidCapsule*
+    }
+    capsuleCollidersToDraw.clear();
+
+    // Delete the member DebugLine pointers
+    delete line1; line1 = nullptr;
+    delete line2; line2 = nullptr;
+    delete line3; line3 = nullptr;
+    delete line4; line4 = nullptr;
+}
 
 int App::Go()
 {
@@ -440,10 +462,10 @@ void App::HandleInput(float dt)
     }
 
 }
-
 void App::DoFrame(float dt)
 {
     pSceneRoot->Update(dt);
+    CleanupDestroyedNodes(pSceneRoot.get());
 
     wnd.Gfx().BeginFrame(0.5f, 0.5f, 1.0f);
     //if (pPlayer->GetLocalPosition().y < -10.0f) {
@@ -763,10 +785,10 @@ void App::DrawSphereColliders(Graphics& gfx)
 {
     for (auto it = sphereCollidersToDraw.begin(); it != sphereCollidersToDraw.end(); ++it)
     {
-		it->second->SetPos(DirectX::XMFLOAT3(it->first->GetTransformedCenter().x,
-			it->first->GetTransformedCenter().y,
-			it->first->GetTransformedCenter().z));
-		it->second->Submit(fc);
+        it->second->SetPos(DirectX::XMFLOAT3(it->first->GetTransformedCenter().x,
+            it->first->GetTransformedCenter().y,
+            it->first->GetTransformedCenter().z));
+        it->second->Submit(fc);
     }
 }
 
@@ -785,14 +807,13 @@ void App::DrawBoxColliders(Graphics& gfx)
 {
     for (auto it = boxCollidersToDraw.begin(); it != boxCollidersToDraw.end(); ++it)
     {
-		it->second->SetPos(DirectX::XMFLOAT3(it->first->GetTransformedCenter().x,
-			it->first->GetTransformedCenter().y,
-			it->first->GetTransformedCenter().z));
-		it->second->SetSize(DirectX::XMFLOAT3(it->first->GetTransformedSize().x,
-			it->first->GetTransformedSize().y,
-			it->first->GetTransformedSize().z));
+        it->second->SetPos(DirectX::XMFLOAT3(it->first->GetTransformedCenter().x,
+            it->first->GetTransformedCenter().y,
+            it->first->GetTransformedCenter().z));
+        it->second->SetSize(DirectX::XMFLOAT3(it->first->GetTransformedSize().x,
+            it->first->GetTransformedSize().y,
+            it->first->GetTransformedSize().z));
         it->second->Submit(fc);
-        
     }
 
 }
@@ -807,11 +828,13 @@ void App::DrawCapsuleColliders(Graphics& gfx)
 {
     for (auto it = capsuleCollidersToDraw.begin(); it != capsuleCollidersToDraw.end(); ++it)
     {
-		it->second->SetBase(it->first->GetTransformedBase());
-		it->second->SetTip(it->first->GetTransformedTip());
-		it->second->SetRadius(it->first->GetRadius());
-        it->second->Update(gfx);
-		it->second->Submit(fc);
+        if (it->first != nullptr) {
+            it->second->SetBase(it->first->GetTransformedBase());
+            it->second->SetTip(it->first->GetTransformedTip());
+            it->second->SetRadius(it->first->GetRadius());
+            it->second->Update(gfx);
+            it->second->Submit(fc);
+        }
     }
 }
 
@@ -885,4 +908,78 @@ void App::ForEnemyWalking() {
 
     pEnemy->SetLocalRotation(previousRotation);
     pEnemy->TranslateLocal({ 0.0f, -1.0f, 0.0f });
+}
+
+void App::CleanupDestroyedNodes(Node* currentNode)
+{
+    if (!currentNode) return;
+
+    // 1. Recursively clean children first.
+    auto& children_ref = currentNode->GetChildren_NonConst();
+    for (size_t i = 0; i < children_ref.size(); ++i) {
+        if (children_ref[i]) {
+            CleanupDestroyedNodes(children_ref[i].get());
+        }
+    }
+
+    // 2. Now, remove any children of *this* currentNode that are marked.
+    auto& children = currentNode->GetChildren_NonConst();
+    children.erase(
+        std::remove_if(children.begin(), children.end(),
+            [&](std::unique_ptr<Node>& pChildNode) {
+                if (!pChildNode) return false;
+
+                if (pChildNode->IsMarkedForDestruction()) {
+                    OutputDebugStringA(("Cleanup: Preparing to remove node: " + pChildNode->GetName() + "\n").c_str());
+
+                    physicsEngine.RemoveRigidbody(pChildNode->GetComponent<Rigidbody>());
+                    
+                    const auto& components = pChildNode->GetComponents();
+                    for (const auto& compUniquePtr : components) {
+                        Component* comp = compUniquePtr.get();
+                        if (!comp) continue;
+                        physicsEngine.RemoveCollider(dynamic_cast<Collider*>(comp));
+
+
+                        // FOR DRAWING COLLIDERS
+                        if (auto* bs = dynamic_cast<BoundingSphere*>(comp)) {
+                            physicsEngine.RemoveCollider(bs); // Remove from physics
+                            auto mapIt = sphereCollidersToDraw.find(bs);
+                            if (mapIt != sphereCollidersToDraw.end()) {
+                                delete mapIt->second;
+                                sphereCollidersToDraw.erase(mapIt);
+                            }
+                        }
+                        else if (auto* obb = dynamic_cast<OBB*>(comp)) {
+                            auto mapIt = boxCollidersToDraw.find(obb);
+                            if (mapIt != boxCollidersToDraw.end()) {
+                                delete mapIt->second;
+                                boxCollidersToDraw.erase(mapIt);
+                            }
+                        }
+                        else if (auto* cap = dynamic_cast<CapsuleCollider*>(comp)) {
+                            auto mapIt = capsuleCollidersToDraw.find(cap);
+                            if (mapIt != capsuleCollidersToDraw.end()) {
+                                delete mapIt->second; // Delete the allocated SolidCapsule* drawable
+                                capsuleCollidersToDraw.erase(mapIt);
+                            }
+                        }
+						// END FOR DRAWING COLLIDERS
+
+                    }
+
+                    if (pSelectedSceneNode == pChildNode.get()) { pSelectedSceneNode = nullptr; }
+                    if (pEnemy == pChildNode.get()) { pEnemy = nullptr; }
+                    if (pPlayer == pChildNode.get()) { pPlayer = nullptr; }
+                    if (pAbility1 == pChildNode.get()) { pAbility1 = nullptr; }
+                    if (pAbility2 == pChildNode.get()) { pAbility2 = nullptr; }
+
+                    OutputDebugStringA(("Cleanup: Node removed from parent: " + pChildNode->GetName() + "\n").c_str());
+                    return true;
+                }
+                return false;
+            }
+        ),
+        children.end()
+    );
 }

@@ -16,6 +16,8 @@ public:
 		position(position),
 		velocity(velocity),
 		Component(owner) {}
+	virtual ~Rigidbody() = default;
+
 	void Update(float dt) override;
 	void Integrate(float delta);
 

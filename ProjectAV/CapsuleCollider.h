@@ -20,6 +20,7 @@ public:
 																								  base(base),
 																								  tip(tip)
 	{}
+	virtual ~CapsuleCollider() = default;
 
 	IntersectData IntersectCapsule(CapsuleCollider* other);
 	IntersectData IntersectSphere(BoundingSphere* other);

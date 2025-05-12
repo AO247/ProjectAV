@@ -90,10 +90,10 @@ private:
 	void DrawCapsuleColliders(Graphics& gfx);
     void FrustumCalculating();
     void DrawNodeRecursive(Graphics& gfx, Node& node);
-
+    void CleanupDestroyedNodes(Node* currentNode);
 
     bool showDemoWindow = false;
     bool cursorEnabled = false;
-    bool showControlWindow = true;
+    bool showControlWindow = false;
 	bool freeViewCamera = false;
 };
