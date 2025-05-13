@@ -114,6 +114,7 @@ void PlayerController::MovePlayer()
 
 void PlayerController::Ability1()
 {
+	if (!ability1Ready) return;
     CapsuleCollider* col = ability1->GetComponent<CapsuleCollider>();
     std::vector<Collider*> colliders = col->GetTriggerStay();
 	for (Collider* collider : colliders)
@@ -124,13 +125,14 @@ void PlayerController::Ability1()
 			collider->GetOwner()->GetComponent<Rigidbody>()->AddForce(ability1->Forward() * 100000.0f);
 		}
 	}
+	ability1CooldownTimer = ability1Cooldown;
+	ability1Ready = false;
 }
 
 void PlayerController::Ability2()
 {
-    
+	if (!ability2Ready) return;
 	BoundingSphere* col = ability2->GetComponent<BoundingSphere>();
-
     std::vector<Collider*> colliders = col->GetTriggerStay();
 
     for (Collider* collider : colliders)
@@ -142,8 +144,8 @@ void PlayerController::Ability2()
             collider->GetOwner()->GetComponent<Rigidbody>()->AddForce(Vector3(0.0f, 70000.0f, 0.0f));
         }
     }
-
-
+	ability2CooldownTimer = ability2Cooldown;
+    ability2Ready = false;
 }
 
 void PlayerController::Cooldowns(float dt)
@@ -165,6 +167,22 @@ void PlayerController::Cooldowns(float dt)
     {
         canDash = true;
     }
+	if (ability1CooldownTimer > 0.0f)
+	{
+		ability1CooldownTimer -= dt;
+	}
+	else
+	{
+		ability1Ready = true;
+	}
+	if (ability2CooldownTimer > 0.0f)
+	{
+		ability2CooldownTimer -= dt;
+	}
+	else
+	{
+		ability2Ready = true;
+	}
 }
 
 void PlayerController::Positioning()
@@ -261,4 +279,6 @@ void PlayerController::DrawImGuiControls()
 	ImGui::Checkbox("Grounded", &grounded);
 
 	ImGui::InputFloat("Dash Cooldown", &dashCooldown);
+	ImGui::InputFloat("Ability1 Cooldown", &ability1Cooldown);
+	ImGui::InputFloat("Ability2 Cooldown", &ability2Cooldown);
 }

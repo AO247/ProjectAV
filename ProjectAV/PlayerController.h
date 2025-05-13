@@ -24,6 +24,8 @@ public:
 	float dashForce = 1000.0f;
 	float height = 4.0f;
 	float dashCooldown = 1.0f;
+	float ability1Cooldown = 1.0f;
+	float ability2Cooldown = 1.0f;
 
 private:
 	Window& wnd;
@@ -39,9 +41,13 @@ private:
 	Vector3 moveDirection;
 	Vector3 dashDirection;
 	float dashCooldownTimer = 0.0f;
+	float ability1CooldownTimer = 0.0f;
+	float ability2CooldownTimer = 0.0f;
 	float dashTimer = 0.0f;
 	bool dashed = false;
 	bool doubleJumped = false;
+	bool ability1Ready = true;
+	bool ability2Ready = true;
 
 	void KeyboardInput();
 	void MovePlayer();
