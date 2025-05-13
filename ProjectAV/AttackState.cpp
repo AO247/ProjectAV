@@ -22,9 +22,9 @@ void AttackState::Enter(StateMachine* pOwner)
 
 void AttackState::Update(StateMachine* pOwner, float dt)
 {
-	time += dt;
-
-	if (time > 3.0f) {
+	pAttackComponent->Attack(dt);
+	if (pAttackComponent->endAttack) {
+		pAttackComponent->endAttack = false;
 		pOwner->EndState();
 		return;
 	}

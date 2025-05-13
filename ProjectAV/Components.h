@@ -12,3 +12,4 @@
 #include "Camera.h"
 #include "Throwable.h"
 #include "Health.h"
+#include "BasicAttack.h"

@@ -171,6 +171,7 @@
     <ClCompile Include="AIController.cpp" />
     <ClCompile Include="App.cpp" />
     <ClCompile Include="AttackState.cpp" />
+    <ClCompile Include="BasicAttack.cpp" />
     <ClCompile Include="Blender.cpp" />
     <ClCompile Include="BoundingSphere.cpp" />
     <ClCompile Include="Camera.cpp" />
@@ -258,6 +259,7 @@
     <ClInclude Include="AIController.h" />
     <ClInclude Include="App.h" />
     <ClInclude Include="AttackState.h" />
+    <ClInclude Include="BasicAttack.h" />
     <ClInclude Include="Bindable.h" />
     <ClInclude Include="BindableCodex.h" />
     <ClInclude Include="BindableCommon.h" />

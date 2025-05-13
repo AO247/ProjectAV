@@ -21,6 +21,8 @@ public:
     // For now, ModelComponent will have its own Draw with needed params.
 
     virtual void Follow(DirectX::XMFLOAT3 target) {}
+	virtual void Attack(float dt) {} // For components needing Graphics
+    bool endAttack;
     Node* GetOwner() const { return pOwner; }
     virtual void DrawImGuiControls() {};
     std::string tag;
