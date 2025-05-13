@@ -220,6 +220,8 @@
     <ClCompile Include="PixelShader.cpp" />
     <ClCompile Include="PlayerController.cpp" />
     <ClCompile Include="PointLight.cpp" />
+    <ClCompile Include="Prefab.cpp" />
+    <ClCompile Include="PrefabManager.cpp" />
     <ClCompile Include="Rasterizer.cpp" />
     <ClCompile Include="Raycast.cpp" />
     <ClCompile Include="RaycastData.cpp" />
@@ -331,6 +333,8 @@
     <ClInclude Include="Plane.h" />
     <ClInclude Include="PlayerController.h" />
     <ClInclude Include="PointLight.h" />
+    <ClInclude Include="Prefab.h" />
+    <ClInclude Include="PrefabManager.h" />
     <ClInclude Include="Rasterizer.h" />
     <ClInclude Include="Raycast.h" />
     <ClInclude Include="RaycastData.h" />

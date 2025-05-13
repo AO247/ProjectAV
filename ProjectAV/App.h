@@ -91,6 +91,7 @@ private:
     void FrustumCalculating();
     void DrawNodeRecursive(Graphics& gfx, Node& node);
     void CleanupDestroyedNodes(Node* currentNode);
+	Node* InstantiatePrefab(const std::string& prefabName, Node* parentNode = nullptr);
 
     bool showDemoWindow = false;
     bool cursorEnabled = false;
