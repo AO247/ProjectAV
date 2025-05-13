@@ -17,6 +17,14 @@ void AttackState::Enter(StateMachine* pOwner)
 		int randI = rand() % pOwner->attackComponents.size();
 		pAttackComponent = pOwner->attackComponents[randI];
 		time = 0.0f;
+		sm::Vector3 facingDirection = sm::Vector3(pOwner->pPlayer->GetWorldPosition())
+			- sm::Vector3(pOwner->GetOwner()->GetWorldPosition());
+		facingDirection.Normalize();
+
+		float targetYaw = atan2f(facingDirection.x, facingDirection.z);
+
+		pOwner->GetOwner()->SetLocalRotation({ 0.0f, targetYaw, 0.0f });
+
 	}
 }
 

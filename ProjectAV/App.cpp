@@ -191,7 +191,7 @@ App::App(const std::string& commandLine)
     );
     Rigidbody* eRigidbody = pEnemy->GetComponent<Rigidbody>();
 	pEnemy->AddComponent(
-		std::make_unique<CapsuleCollider>(pEnemy, eRigidbody, 1.0f, Vector3(-0.8f, 0.0f, -0.4f), Vector3(-0.8f, 4.0f, -0.4f))
+		std::make_unique<CapsuleCollider>(pEnemy, eRigidbody, 1.0f, Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 4.0f, 0.0f))
 	);
 	CapsuleCollider* eCapsule = pEnemy->GetComponent<CapsuleCollider>();
 	eCapsule->SetLayer(Layers::ENEMY);
