@@ -23,6 +23,8 @@ void ShootAttack::Attack(float dt)
 	if (timer < shootTime) {
 		return;
 	}
+	//OutputDebugStringA("\nShooting\n");
+	attacked = true;
 	// here we will create bullet
 }
 

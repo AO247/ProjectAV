@@ -275,6 +275,7 @@ App::App(const std::string& commandLine)
 	pEnemy->AddComponent(
 		std::make_unique<BasicAttack>(pEnemy)
 	);
+
     pEnemy->AddComponent(
         std::make_unique<OBB>(pEnemy, nullptr, Vector3(0.0f, 2.0f, 2.0f), Vector3(2.0f, 1.0f, 4.0f))
     );
@@ -289,6 +290,7 @@ App::App(const std::string& commandLine)
 		std::make_unique<StateMachine>(pEnemy, StateType::IDLE)
 	);
     pEnemy->GetComponent<StateMachine>()->attackRange = 4.0f;
+	pEnemy->GetComponent<StateMachine>()->followDistance = 25.0f;
     pEnemy->AddComponent(
         std::make_unique<Health>(pEnemy, 1.0f)
     );
@@ -499,8 +501,9 @@ void App::DoFrame(float dt)
         viewMatrix = pFreeViewCamera->GetComponent<Camera>()->GetViewMatrix();
     }
     wnd.Gfx().SetCamera(viewMatrix);
-    fc.ShowWindows(wnd.Gfx());
-
+    //fc.ShowWindows(wnd.Gfx());
+	/*DebugLine line(wnd.Gfx(), pEnemy->GetComponent<StateMachine>()->pos, pEnemy->GetComponent<StateMachine>()->cen, { 0.0f, 0.0f, 1.0f, 1.0f });
+    line.Submit(fc);*/ // for idle
     // --- Bind Lights ---
     pointLight.Bind(wnd.Gfx(), viewMatrix); // Bind point light (to slot 0)
 

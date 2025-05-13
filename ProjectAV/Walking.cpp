@@ -14,19 +14,19 @@ Walking::Walking(Node* owner, std::string tag)
 {
 	rigidbody = owner->GetComponent<Rigidbody>();
 }
-void Walking::Follow(DirectX::XMFLOAT3 targetPos)
+void Walking::Follow(DirectX::XMFLOAT3 targetPos, float sp)
 {
     if (!rigidbody || rigidbody->GetIsStatic()) { 
         return;
     }
 	targetPosition = targetPos;
-    Vector3 currentPos = rigidbody->GetPosition(); 
+    Vector3 currentPos = pOwner->GetWorldPosition(); 
     Vector3 currentVelocity = rigidbody->GetVelocity();
 
     Vector3 desiredDirection = targetPosition - currentPos;
 
     desiredDirection.Normalize();
-    Vector3 desiredVelocity = desiredDirection * maxSpeed;
+    Vector3 desiredVelocity = desiredDirection * maxSpeed / sp;
 
     Vector3 steeringForce = desiredVelocity - currentVelocity;
 
@@ -50,7 +50,7 @@ void Walking::Follow(DirectX::XMFLOAT3 targetPos)
 		float targetYaw = atan2f(facingDirection.x, facingDirection.z);
 
 		float yawDifference = targetYaw - currentYaw;
-
+		
 		targetYaw = currentYaw + yawDifference;
 
         pOwner->SetLocalRotation({ 0.0f, targetYaw, 0.0f });

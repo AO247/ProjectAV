@@ -6,9 +6,11 @@
 #include <unordered_map>    // For state factory
 #include <functional>       // For std::function
 #include "Node.h"
+#include <SimpleMath.h>
 
 // Forward declaration
 class State;
+namespace sm = DirectX::SimpleMath;
 
 class StateMachine : public Component
 {
@@ -23,6 +25,8 @@ public:
 	void RequestStateChange(StateType nextState);
 	StateType GetCurrentStateType() const;
 
+	sm::Vector3 pos;
+	sm::Vector3 cen;
 	// --- Accessors needed by States ---
 	Node* GetOwnerNode() const; // Convenience accessor
 	//std::vector<std::unique_ptr<Component>> movementComponents;

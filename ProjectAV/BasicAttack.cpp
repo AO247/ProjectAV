@@ -27,6 +27,7 @@ void BasicAttack::Attack(float dt)
 		return;
 	}
 	OnTriggerCheck();
+	//OutputDebugStringA("\nNormal Attack\n");
 }
 
 void BasicAttack::OnTriggerCheck()

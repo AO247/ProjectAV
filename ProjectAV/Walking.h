@@ -18,7 +18,7 @@ public:
 	float maxForce = 200.0f;
 	float rotationLerpFactor = 0.1f;
 	Vector3 targetPosition;
-	virtual void Follow(DirectX::XMFLOAT3 target);
+	virtual void Follow(DirectX::XMFLOAT3 target, float sp = 1.0f);
 	virtual void DrawImGuiControls() override;
 	float avoidanceWeight = 17.0f;
 	float avoidanceDistance = 8.0f;

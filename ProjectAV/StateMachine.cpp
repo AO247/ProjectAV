@@ -136,6 +136,7 @@ StateType StateMachine::GetCurrentStateType() const
 	return currentStateType;
 }
 
+
 Node* StateMachine::GetOwnerNode() const
 {
 	return GetOwner();

@@ -20,7 +20,7 @@ public:
     // Draw might need specific parameters depending on the component type
     // For now, ModelComponent will have its own Draw with needed params.
 
-    virtual void Follow(DirectX::XMFLOAT3 target) {}
+    virtual void Follow(DirectX::XMFLOAT3 target, float sp = 1.0f) {}
 	virtual void Attack(float dt) {} // For components needing Graphics
     bool endAttack;
     Node* GetOwner() const { return pOwner; }
