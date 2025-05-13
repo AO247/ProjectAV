@@ -71,8 +71,18 @@ public:
 	void EnableImgui() noexcept;
 	void DisableImgui() noexcept;
 	bool IsImguiEnabled() const noexcept;
+	//ID3D11Device* GetDevice() const noexcept
+	//{
+	//	return pDevice.Get();
+	//}
+
+	Microsoft::WRL::ComPtr<ID3D11Device> GetDevice() const noexcept
+	{
+		return pDevice;
+	}
 private:
 	DirectX::XMMATRIX projection;
+
 	DirectX::XMMATRIX camera;
 	bool imguiEnabled = true;
 #ifndef NDEBUG
