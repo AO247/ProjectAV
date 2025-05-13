@@ -1,5 +1,4 @@
 #pragma once
-
 #include "Component.h"
 #include "Window.h" // Needs access to Window for input
 #include <DirectXMath.h>

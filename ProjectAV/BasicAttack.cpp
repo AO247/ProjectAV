@@ -40,12 +40,12 @@ void BasicAttack::OnTriggerCheck()
 	{
 		for (Collider* col : cols)
 		{
-			OutputDebugStringA(("Hit: " + col->GetOwner()->GetName() + "\n").c_str());
+			if (col->GetIsTrigger()) continue;
 			if (col->GetOwner()->GetComponent<Health>() && col->GetOwner()->tag == "Player")
 			{
 				col->GetOwner()->GetComponent<Health>()->TakeDamage(1.0f);
 				Rigidbody* rb = col->GetOwner()->GetComponent<Rigidbody>();
-				Vector3 pos(pOwner->GetWorldPosition().x, pOwner->GetWorldPosition().y - 0.5f, pOwner->GetWorldPosition().z);
+				Vector3 pos(pOwner->GetWorldPosition().x, col->GetOwner()->GetWorldPosition().y - 0.5f, pOwner->GetWorldPosition().z);
 				Vector3 knockDirection = col->GetOwner()->GetWorldPosition() - pos;
 				knockDirection.Normalize();
 				rb->SetVelocity(Vector3(0.0f, 0.0f, 0.0f));

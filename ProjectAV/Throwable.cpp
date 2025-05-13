@@ -20,9 +20,10 @@ void Throwable::OnTriggerEnter()
 	{
 		for (Collider* col : cols)
 		{
+			if (col->GetIsTrigger()) continue;
 			if (col->GetOwner()->GetComponent<Health>())
 			{
-				col->GetOwner()->GetComponent<Health>()->TakeDamage(1.0f);
+				col->GetOwner()->GetComponent<Health>()->TakeDamage(damage);
 			}
 		}
 	}
@@ -31,7 +32,6 @@ void Throwable::OnTriggerEnter()
 
 void Throwable::DrawImGuiControls()
 {
-	/*ImGui::InputFloat("Move Speed", &moveSpeed);
-	ImGui::Checkbox("Jumped", &jumped);*/
+	ImGui::InputFloat("Damage", &damage);
 
 }

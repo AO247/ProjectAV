@@ -8,16 +8,21 @@
 #include "Components.h"
 class Node;
 
-class Throwable : public Component
+class Bullet : public Component
 {
 public:
-	Throwable(Node* owner);
-	virtual ~Throwable() = default;
-	float damage = 1.0f;
+	Bullet(Node* owner);
+	virtual ~Bullet() = default;
 	virtual void Update(float dt) override;
-	virtual void DrawImGuiControls() override;
+	float moveSpeed = 20.0f;
+	float damage = 1.0f;
+	float lifeTime = 5.0f;
+	float knockbackForce = 1500.0f;
 	BoundingSphere* damageArea;
+	virtual void DrawImGuiControls() override;
 private:
 	Rigidbody* rigidbody;
 	void OnTriggerEnter();
+	float timer = 0.0f;
+
 };
