@@ -28,7 +28,7 @@ public:
 	void AddForce(Vector3 force);
 	void SetStatic(bool isStatic);
 	void SetAngularVelocity(Vector3 velocity);
-
+	void GroundCheck();
 	Vector3& GetPosition();
 	Vector3& GetVelocity();
 	Vector3& GetRotation();

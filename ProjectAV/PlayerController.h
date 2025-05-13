@@ -26,7 +26,7 @@ public:
 	float dashCooldown = 1.0f;
 	float ability1Cooldown = 1.0f;
 	float ability2Cooldown = 1.0f;
-
+	bool alive = true;
 private:
 	Window& wnd;
 	Rigidbody* rigidbody;

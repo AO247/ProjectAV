@@ -5,6 +5,7 @@
 #include "Rigidbody.h"
 #include "Collider.h"
 #include "BoundingSphere.h"
+#include "Components.h"
 class Node;
 
 class Throwable : public Component

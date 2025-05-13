@@ -247,12 +247,14 @@ App::App(const std::string& commandLine)
 		std::make_unique<OBB>(pStone, sRigidbody, Vector3(0.0f, 0.6f, 0.0f), Vector3(1.2f, 1.1f, 1.7f))
 	);
 	OBB* sOBB = pStone->GetComponent<OBB>();
+	sOBB->SetLayer(Layers::THROWABLE);
 	sRigidbody->SetCollider(sOBB);
 	physicsEngine.AddRigidbody(sRigidbody);
     pStone->AddComponent(
         std::make_unique<BoundingSphere>(pStone, Vector3(0.0f, 0.6f, 0.0f), 1.5f, nullptr)
     );
 	BoundingSphere* sBoundingSphere = pStone->GetComponent<BoundingSphere>();
+    sBoundingSphere->SetLayer(Layers::THROWABLE);
 	sBoundingSphere->SetIsTrigger(true);
 	sBoundingSphere->SetTriggerEnabled(true);
 	pStone->GetComponent<Throwable>()->damageArea = sBoundingSphere;
@@ -274,7 +276,12 @@ App::App(const std::string& commandLine)
 	pEnemy->AddComponent(
 		std::make_unique<StateMachine>(pEnemy, StateType::IDLE)
 	);
-
+    pEnemy->AddComponent(
+        std::make_unique<Health>(pEnemy, 1.0f)
+    );
+    pPlayer->AddComponent(
+        std::make_unique<Health>(pPlayer, 3.0f)
+    );
 
 	pPlayer->AddComponent(
 		std::make_unique<SoundEffectsPlayer>(pPlayer)
@@ -469,14 +476,14 @@ void App::DoFrame(float dt)
 
     wnd.Gfx().BeginFrame(0.5f, 0.5f, 1.0f);
     //if (pPlayer->GetLocalPosition().y < -10.0f) {
-	//	pPlayer->SetLocalPosition({ -20.0f, 225.0f, -25.0f });
+    //	pPlayer->SetLocalPosition({ -20.0f, 225.0f, -25.0f });
     //    pEnemy->SetLocalPosition({ 15.0f, 225.0f, 0.0f });
     //}
-	dx::XMMATRIX viewMatrix = pCamera->GetComponent<Camera>()->GetViewMatrix();
-	if (freeViewCamera)
-	{
+    dx::XMMATRIX viewMatrix = pCamera->GetComponent<Camera>()->GetViewMatrix();
+    if (freeViewCamera)
+    {
         viewMatrix = pFreeViewCamera->GetComponent<Camera>()->GetViewMatrix();
-	}
+    }
     wnd.Gfx().SetCamera(viewMatrix);
     fc.ShowWindows(wnd.Gfx());
 
@@ -492,21 +499,22 @@ void App::DoFrame(float dt)
     {
         myMusic->UpdateBufferStream();
     }
+    if (pPlayer != nullptr) {
+        soundDevice->SetLocation(
+            pPlayer->GetLocalPosition().x,
+            pPlayer->GetLocalPosition().y,
+            pPlayer->GetLocalPosition().z
+        );
 
-	soundDevice->SetLocation(
-		pPlayer->GetLocalPosition().x,
-		pPlayer->GetLocalPosition().y,
-		pPlayer->GetLocalPosition().z
-	);
-
-	soundDevice->SetOrientation(
-		pCamera->Back().x,
-		pCamera->Back().y,
-		pCamera->Back().z,
-		pCamera->Up().x,
-		pCamera->Up().y,
-		pCamera->Up().z
-	);
+        soundDevice->SetOrientation(
+            pCamera->Back().x,
+            pCamera->Back().y,
+            pCamera->Back().z,
+            pCamera->Up().x,
+            pCamera->Up().y,
+            pCamera->Up().z
+        );
+    }
 	//pCamera->Forward();
 
     if (showControlWindow) {

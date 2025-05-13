@@ -6,7 +6,7 @@ Throwable::Throwable(Node* owner) : Component(owner)
 }
 void Throwable::Update(float dt)
 {
-	if (rigidbody->GetVelocity().Length() > 40.0f)
+	if (rigidbody->GetVelocity().Length() > 20.0f)
 	{
 		OnTriggerEnter();
 	}
@@ -20,10 +20,9 @@ void Throwable::OnTriggerEnter()
 	{
 		for (Collider* col : cols)
 		{
-			if (col->GetOwner()->tag == "Enemy")
+			if (col->GetOwner()->GetComponent<Health>())
 			{
-				//OutputDebugStringA(("\nSTONE VELOCITY: " + std::to_string(rigidbody->GetVelocity().Length())).c_str());
-				col->GetOwner()->Destroy();
+				col->GetOwner()->GetComponent<Health>()->TakeDamage(1.0f);
 			}
 		}
 	}

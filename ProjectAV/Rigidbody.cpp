@@ -16,26 +16,10 @@ void Rigidbody::Integrate(float delta)
 {
 	if (friction)
 	{
-		RaycastData rayData = Raycast::CastAtLayers(GetOwner()->GetWorldPosition(), Vector3(0.0f, -1.0f, 0.0f), std::vector<Layers>{GROUND});
-
-		if (rayData.hitCollider != nullptr)
-		{
-			if (rayData.hitCollider->GetOwner()->tag == "Ground")
-			{
-				if (GetOwner()->GetWorldPosition().y - rayData.hitPoint.y <= 0.01)
-				{
-					grounded = true;
-				}
-				else
-				{
-					grounded = false;
-				}
-			}
-		}
+		GroundCheck();
 		if (grounded)
 		{
 			velocity -= velocity * frictionDamping * delta;
-
 		}
 	}
 	//position += (velocity * delta);
@@ -170,4 +154,22 @@ bool Rigidbody::GetIsStatic()
 void Rigidbody::DrawImGuiControls()
 {
 	ImGui::Checkbox("Grounded", &grounded);
+}
+
+void Rigidbody::GroundCheck()
+{
+	RaycastData rayData = Raycast::CastThroughLayers(GetOwner()->GetWorldPosition(), Vector3(0.0f, -1.0f, 0.0f), std::vector<Layers>{PLAYER,ENEMY,THROWABLE});
+
+	if (rayData.hitCollider != nullptr)
+	{
+		if (GetOwner()->GetWorldPosition().y >= rayData.hitPoint.y - 0.01f && GetOwner()->GetWorldPosition().y - rayData.hitPoint.y <= 0.01)
+		{
+			grounded = true;
+		}
+		else
+		{
+			grounded = false;
+		}
+	}
+
 }

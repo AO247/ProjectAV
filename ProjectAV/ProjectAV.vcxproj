@@ -189,6 +189,7 @@
     <ClCompile Include="FollowState.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="GraphicsResource.cpp" />
+    <ClCompile Include="Health.cpp" />
     <ClCompile Include="IdleState.cpp" />
     <ClCompile Include="ImguiManager.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
@@ -290,6 +291,7 @@
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="GraphicsResource.h" />
     <ClInclude Include="GraphicsThrowMacros.h" />
+    <ClInclude Include="Health.h" />
     <ClInclude Include="IdleState.h" />
     <ClInclude Include="ImguiManager.h" />
     <ClInclude Include="imgui\imconfig.h" />

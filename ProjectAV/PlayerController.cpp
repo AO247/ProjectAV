@@ -25,7 +25,7 @@ PlayerController::PlayerController(Node* owner, Window& window)
 void PlayerController::Update(float dt)
 {
     Positioning();
-    if (!wnd.CursorEnabled())
+    if (!wnd.CursorEnabled() && alive)
     {
         GroundCheck();
         Cooldowns(dt);
@@ -274,11 +274,13 @@ void PlayerController::DrawImGuiControls()
     ImGui::InputFloat("Move Speed", &moveSpeed);
     ImGui::InputFloat("JumpForce", &jumpForce);
 	ImGui::InputFloat("Dash Force", &dashForce);
-    ImGui::Checkbox("Jumped", &jumped);
-	ImGui::Checkbox("CanDash", &canDash);
-	ImGui::Checkbox("Grounded", &grounded);
-
 	ImGui::InputFloat("Dash Cooldown", &dashCooldown);
 	ImGui::InputFloat("Ability1 Cooldown", &ability1Cooldown);
 	ImGui::InputFloat("Ability2 Cooldown", &ability2Cooldown);
+    ImGui::InputFloat("Height", &height);
+    ImGui::Checkbox("Jumped", &jumped);
+    ImGui::Checkbox("CanDash", &canDash);
+    ImGui::Checkbox("Grounded", &grounded);
+    ImGui::Checkbox("Double Jumped", &doubleJumped);
+	ImGui::Checkbox("Alive", &alive);
 }
