@@ -16,6 +16,7 @@
 #include "DebugLine.h"
 #include "Testing.h"
 
+
 namespace dx = DirectX;
 
 
@@ -35,6 +36,13 @@ App::App(const std::string& commandLine)
 	// Initialize Physics Engine
 	physicsEngine = PhysicsEngine();
 	Raycast::physicsEngine = &physicsEngine; // Set the physics engine for raycasting
+
+    btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
+    btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);
+    btBroadphaseInterface* overlappingPairCache = new btDbvtBroadphase();
+    btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
+    dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
+    dynamicsWorld->setGravity(btVector3(0, -10, 0));
     
     soundDevice = LISTENER->Get();
     ALint attentuation = AL_INVERSE_DISTANCE_CLAMPED;

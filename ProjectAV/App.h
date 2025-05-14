@@ -16,6 +16,7 @@
 #include "SolidBox.h"
 #include "SolidCapsule.h"
 #include "DebugLine.h"
+#include "bullet/btBulletDynamicsCommon.h"
 
 // Forward declarations
 class PlayerController; // Forward declare
@@ -42,6 +43,7 @@ private:
     float speed_factor = 1.0f;
     PointLight pointLight;
     PhysicsEngine physicsEngine; // Physics engine instance
+    btDiscreteDynamicsWorld* dynamicsWorld;
     SoundDevice* soundDevice; // Sound device instance
     std::unique_ptr<MusicBuffer> myMusic;
     DirectX::BoundingFrustum cameraFrustum; // Frustum for the camera
