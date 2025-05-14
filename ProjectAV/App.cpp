@@ -311,7 +311,7 @@ App::App(const std::string& commandLine)
     //    4,                         // int frameCountX
     //    4                          // int frameCountY
     //);
-
+    
     wnd.DisableCursor();
     wnd.mouse.EnableRaw();
     cursorEnabled = false;

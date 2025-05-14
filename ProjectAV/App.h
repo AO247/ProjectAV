@@ -91,6 +91,6 @@ private:
     bool freeViewCamera = false;
 
     std::unique_ptr<Button> myButton;
-   // std::unique_ptr<AnimatedSprite> mySprite;
+    std::unique_ptr<AnimatedSprite> mySprite;
 
 };

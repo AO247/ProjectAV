@@ -3,7 +3,7 @@
 #include <string>
 #include <optional>
 #include "ConditionalNoexcept.h"
-#include <dxtex/DirectXTex.h>
+#include <DirectXTex.h>
 
 
 class Surface

@@ -736,6 +736,5 @@
     <None Include="process.json">
       <Filter>Other</Filter>
     </None>
-    <None Include="packages.config" />
   </ItemGroup>
 </Project>
