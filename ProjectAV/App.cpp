@@ -301,8 +301,16 @@ App::App(const std::string& commandLine)
     AddCapsuleColliderToDraw(wnd.Gfx(), a1CapsuleCollider);
 
     this->myButton = std::make_unique<Button>(wnd.Gfx().GetDevice(), 110, 110, 200, 100, L"Click Me");
-
-
+    //mySprite = std::make_unique<AnimatedSprite>(
+    //    wnd.Gfx().GetDevice(),  // ID3D11Device*
+    //    200,                       // int x
+    //    200,                       // int y
+    //    64,                        // int width
+    //    64,                        // int height
+    //    L"Images\\Animations.png",  // const std::wstring& spriteSheetPath
+    //    4,                         // int frameCountX
+    //    4                          // int frameCountY
+    //);
 
     wnd.DisableCursor();
     wnd.mouse.EnableRaw();
@@ -480,6 +488,7 @@ void App::DoFrame(float dt)
   
     fc.Execute(wnd.Gfx());
     myButton->Draw(wnd.Gfx().GetContext());
+    //mySprite->Draw(wnd.Gfx().GetContext());
     wnd.Gfx().EndFrame();
     fc.Reset();
 }

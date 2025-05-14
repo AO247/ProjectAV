@@ -13,7 +13,8 @@
 #include "ColliderSphere.h"
 #include "SolidBox.h"
 #include "SolidCapsule.h"
-#include "Button.h" // [NEW] Include the Button header
+#include "Button.h"  
+#include "AnimatedSprite.h"
 
 // Forward declarations
 class PlayerController; // Forward declare
@@ -89,6 +90,7 @@ private:
     bool showControlWindow = true;
     bool freeViewCamera = false;
 
-    // [NEW] Button instance
     std::unique_ptr<Button> myButton;
+   // std::unique_ptr<AnimatedSprite> mySprite;
+
 };
