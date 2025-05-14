@@ -32,7 +32,7 @@ namespace Bind
 		textureDesc.CPUAccessFlags = 0;
 		textureDesc.MiscFlags = D3D11_RESOURCE_MISC_GENERATE_MIPS;
 		wrl::ComPtr<ID3D11Texture2D> pTexture;
-		GFX_THROW_INFO( GetDevice( gfx )->CreateTexture2D(
+		GFX_THROW_INFO( getDevice( gfx )->CreateTexture2D(
 			&textureDesc,nullptr,&pTexture
 		) );
 
@@ -47,7 +47,7 @@ namespace Bind
 		srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 		srvDesc.Texture2D.MostDetailedMip = 0;
 		srvDesc.Texture2D.MipLevels = -1;
-		GFX_THROW_INFO( GetDevice( gfx )->CreateShaderResourceView(
+		GFX_THROW_INFO( getDevice( gfx )->CreateShaderResourceView(
 			pTexture.Get(),&srvDesc,&pTextureView
 		) );
 

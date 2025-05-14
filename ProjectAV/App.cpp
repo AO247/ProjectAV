@@ -1,5 +1,5 @@
 #include "App.h"
-#include "Node.h"           
+#include "Node.h"
 #include "State.h"
 #include "CMath.h"
 #include "Surface.h"
@@ -12,6 +12,7 @@
 #include "SolidCapsule.h"
 #include "DebugLine.h"
 #include "Testing.h"
+#include "Button.h" // [NEW] Include the Button header
 
 namespace dx = DirectX;
 
@@ -19,8 +20,8 @@ namespace dx = DirectX;
 App::App(const std::string& commandLine)
     :
     commandLine(commandLine),
-    wnd(1280, 720, "Project AV"), // Pass window dimensions/title
-	scriptCommander(TokenizeQuoted(commandLine)),
+    wnd(1280, 720, "Project AV", this), // Pass window dimensions/title
+    scriptCommander(TokenizeQuoted(commandLine)),
     pointLight(wnd.Gfx()), // Initialize PointLight
     pSceneRoot(std::make_unique<Node>("Root"))
 {
@@ -28,21 +29,21 @@ App::App(const std::string& commandLine)
     // Set Projection Matrix (Far plane adjusted for larger scenes potentially)
     wnd.Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 2000.0f));
 
-	// Initialize Physics Engine
-	physicsEngine = PhysicsEngine();
-	Raycast::physicsEngine = &physicsEngine; // Set the physics engine for raycasting
+    // Initialize Physics Engine
+    physicsEngine = PhysicsEngine();
+    Raycast::physicsEngine = &physicsEngine; // Set the physics engine for raycasting
     // --- Create Nodes ---
-   
-	auto pCameraNodeOwner = std::make_unique<Node>("Camera", nullptr, "Camera");
-	pCamera = pCameraNodeOwner.get();
-	auto pFreeViewCameraOwner = std::make_unique<Node>("FreeViewCamera");
-	pFreeViewCamera = pFreeViewCameraOwner.get();
+
+    auto pCameraNodeOwner = std::make_unique<Node>("Camera", nullptr, "Camera");
+    pCamera = pCameraNodeOwner.get();
+    auto pFreeViewCameraOwner = std::make_unique<Node>("FreeViewCamera");
+    pFreeViewCamera = pFreeViewCameraOwner.get();
     auto pPlayerOwner = std::make_unique<Node>("Player", nullptr, "Player");
     pPlayer = pPlayerOwner.get();
-	auto pAbility1Owner = std::make_unique<Node>("Ability1", nullptr, "Ability1");
-	pAbility1 = pAbility1Owner.get();
-	auto pAbility2Owner = std::make_unique<Node>("Ability2", nullptr, "Ability2");
-	pAbility2 = pAbility2Owner.get();
+    auto pAbility1Owner = std::make_unique<Node>("Ability1", nullptr, "Ability1");
+    pAbility1 = pAbility1Owner.get();
+    auto pAbility2Owner = std::make_unique<Node>("Ability2", nullptr, "Ability2");
+    pAbility2 = pAbility2Owner.get();
     auto pNanosuitOwner = std::make_unique<Node>("Nanosuit");
     pNanosuitNode = pNanosuitOwner.get();
     auto pEmptyNode = std::make_unique<Node>("EmptyNode");
@@ -54,36 +55,36 @@ App::App(const std::string& commandLine)
     pStone = pStoneOwner.get();
     auto pColumnOwner = std::make_unique<Node>("Column", nullptr, "Wall");
     pColumn = pColumnOwner.get();
-	auto pColumn2Owner = std::make_unique<Node>("Column2", nullptr, "Wall");
-	pColumn2 = pColumn2Owner.get();
-	auto pColumn3Owner = std::make_unique<Node>("Column3", nullptr, "Wall");
-	pColumn3 = pColumn3Owner.get();
-	auto pColumn4Owner = std::make_unique<Node>("Column4", nullptr, "Wall");
-	pColumn4 = pColumn4Owner.get();
+    auto pColumn2Owner = std::make_unique<Node>("Column2", nullptr, "Wall");
+    pColumn2 = pColumn2Owner.get();
+    auto pColumn3Owner = std::make_unique<Node>("Column3", nullptr, "Wall");
+    pColumn3 = pColumn3Owner.get();
+    auto pColumn4Owner = std::make_unique<Node>("Column4", nullptr, "Wall");
+    pColumn4 = pColumn4Owner.get();
     auto pIslandOwner = std::make_unique<Node>("Island", nullptr, "Ground");
     pIsland = pIslandOwner.get();
-	auto pNoxTurnOwner = std::make_unique<Node>("NoxTurn");
-	pNoxTurn = pNoxTurnOwner.get();
-	auto pNoxTurnHairOwner = std::make_unique<Node>("NoxTurnHair");
-	pNoxTurnHair = pNoxTurnHairOwner.get();
-	auto pEnemyOwner = std::make_unique<Node>("Enemy", nullptr, "Enemy");
-	pEnemy = pEnemyOwner.get();
+    auto pNoxTurnOwner = std::make_unique<Node>("NoxTurn");
+    pNoxTurn = pNoxTurnOwner.get();
+    auto pNoxTurnHairOwner = std::make_unique<Node>("NoxTurnHair");
+    pNoxTurnHair = pNoxTurnHairOwner.get();
+    auto pEnemyOwner = std::make_unique<Node>("Enemy", nullptr, "Enemy");
+    pEnemy = pEnemyOwner.get();
 
     // Adding to Scene Graph
-	pSceneRoot->AddChild(std::move(pCameraNodeOwner));
-	pSceneRoot->AddChild(std::move(pFreeViewCameraOwner));
+    pSceneRoot->AddChild(std::move(pCameraNodeOwner));
+    pSceneRoot->AddChild(std::move(pFreeViewCameraOwner));
     pSceneRoot->AddChild(std::move(pPlayerOwner));
-	pSceneRoot ->AddChild(std::move(pAbility1Owner));
-	pSceneRoot->AddChild(std::move(pAbility2Owner));
+    pSceneRoot->AddChild(std::move(pAbility1Owner));
+    pSceneRoot->AddChild(std::move(pAbility2Owner));
     //pSceneRoot->AddChild(std::move(pNanosuitOwner));
     //pSceneRoot->AddChild(std::move(pEmptyNode));
     //pSceneRoot->AddChild(std::move(pBrickOwner));
     pSceneRoot->AddChild(std::move(pBoxOwner));
     pSceneRoot->AddChild(std::move(pStoneOwner));
     pSceneRoot->AddChild(std::move(pColumnOwner));
-	//pSceneRoot->AddChild(std::move(pColumn2Owner));
-	//pSceneRoot->AddChild(std::move(pColumn3Owner));
-	//pSceneRoot->AddChild(std::move(pColumn4Owner));
+    //pSceneRoot->AddChild(std::move(pColumn2Owner));
+    //pSceneRoot->AddChild(std::move(pColumn3Owner));
+    //pSceneRoot->AddChild(std::move(pColumn4Owner));
     pSceneRoot->AddChild(std::move(pIslandOwner));
     //pSceneRoot->AddChild(std::move(pNoxTurnOwner));
     //pNoxTurn->AddChild(std::move(pNoxTurnHairOwner));
@@ -101,7 +102,7 @@ App::App(const std::string& commandLine)
         std::make_unique<ModelComponent>(pBox, wnd.Gfx(), "Models\\box.glb")
     );
     pStone->AddComponent(
-		std::make_unique<ModelComponent>(pStone, wnd.Gfx(), "Models\\kamien\\kamien_6.obj")
+        std::make_unique<ModelComponent>(pStone, wnd.Gfx(), "Models\\kamien\\kamien_6.obj")
     );
     //pStone->AddComponent(
     //    std::make_unique<ModelComponent>(pStone, wnd.Gfx(), "Models\\stone\\stone.glb")
@@ -109,15 +110,15 @@ App::App(const std::string& commandLine)
     pColumn->AddComponent(
         std::make_unique<ModelComponent>(pColumn, wnd.Gfx(), "Models\\kolumna\\kolumna.obj")
     );
-	pColumn2->AddComponent(
-		std::make_unique<ModelComponent>(pColumn2, wnd.Gfx(), "Models\\kolumna\\kolumna.obj")
-	);
-	pColumn3->AddComponent(
-		std::make_unique<ModelComponent>(pColumn3, wnd.Gfx(), "Models\\kolumna\\kolumna.obj")
-	);
-	pColumn4->AddComponent(
-		std::make_unique<ModelComponent>(pColumn4, wnd.Gfx(), "Models\\kolumna\\kolumna.obj")
-	);
+    pColumn2->AddComponent(
+        std::make_unique<ModelComponent>(pColumn2, wnd.Gfx(), "Models\\kolumna\\kolumna.obj")
+    );
+    pColumn3->AddComponent(
+        std::make_unique<ModelComponent>(pColumn3, wnd.Gfx(), "Models\\kolumna\\kolumna.obj")
+    );
+    pColumn4->AddComponent(
+        std::make_unique<ModelComponent>(pColumn4, wnd.Gfx(), "Models\\kolumna\\kolumna.obj")
+    );
 
     pIsland->AddComponent(
         std::make_unique<ModelComponent>(pIsland, wnd.Gfx(), "Models\\wyspa\\wyspa_test.fbx")
@@ -136,7 +137,7 @@ App::App(const std::string& commandLine)
 
 
 
-	//Adding Rigidbody and Collider
+    //Adding Rigidbody and Collider
     pPlayer->AddComponent(
         std::make_unique<Rigidbody>(pPlayer, Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f))
     );
@@ -144,163 +145,164 @@ App::App(const std::string& commandLine)
     pPlayer->AddComponent(
         std::make_unique<PlayerController>(pPlayer, wnd) // Add controller first
     );
-	pPlayer->AddComponent(
-		std::make_unique<CapsuleCollider>(pPlayer, pRigidbody, 1.0f, Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, pPlayer->GetComponent<PlayerController>()->height, 0.0f))
-	);
-	CapsuleCollider* pCapsule = pPlayer->GetComponent<CapsuleCollider>();
-	pCapsule->SetLayer(Layers::PLAYER);
-	pRigidbody->SetCollider(pCapsule);
-	pRigidbody->SetMass(10.0f);
+    pPlayer->AddComponent(
+        std::make_unique<CapsuleCollider>(pPlayer, pRigidbody, 1.0f, Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, pPlayer->GetComponent<PlayerController>()->height, 0.0f))
+    );
+    CapsuleCollider* pCapsule = pPlayer->GetComponent<CapsuleCollider>();
+    pCapsule->SetLayer(Layers::PLAYER);
+    pRigidbody->SetCollider(pCapsule);
+    pRigidbody->SetMass(10.0f);
     physicsEngine.AddRigidbody(pRigidbody);
 
-	pAbility1->AddComponent(
+    pAbility1->AddComponent(
         std::make_unique<CapsuleCollider>(pAbility1, nullptr, 1.0f, Vector3(0.0f, -1.0f, 0.0f), Vector3(0.0f, 1.5f, 8.0f))
     );
     CapsuleCollider* a1CapsuleCollider = pAbility1->GetComponent<CapsuleCollider>();
     a1CapsuleCollider->SetIsTrigger(true);
     a1CapsuleCollider->SetTriggerEnabled(true);
-	a1CapsuleCollider->SetLayer(Layers::PLAYER);
-	physicsEngine.AddCollider(a1CapsuleCollider);
+    a1CapsuleCollider->SetLayer(Layers::PLAYER);
+    physicsEngine.AddCollider(a1CapsuleCollider);
 
-	pAbility2->AddComponent(
+    pAbility2->AddComponent(
         std::make_unique<BoundingSphere>(pAbility2, Vector3(0.0f, 0.0f, 0.0f), 2.0f, nullptr)
     );
     BoundingSphere* a2Sphere = pAbility2->GetComponent<BoundingSphere>();
     a2Sphere->SetIsTrigger(true);
     a2Sphere->SetTriggerEnabled(true);
-	a2Sphere->SetLayer(Layers::PLAYER);
-	physicsEngine.AddCollider(a2Sphere);
-    
+    a2Sphere->SetLayer(Layers::PLAYER);
+    physicsEngine.AddCollider(a2Sphere);
+
 
 
     pEnemy->AddComponent(
         std::make_unique<Rigidbody>(pEnemy, Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f))
     );
     Rigidbody* eRigidbody = pEnemy->GetComponent<Rigidbody>();
-	pEnemy->AddComponent(
-		std::make_unique<CapsuleCollider>(pEnemy, eRigidbody, 1.0f, Vector3(-0.8f, 0.0f, -0.4f), Vector3(-0.8f, 4.0f, -0.4f))
-	);
-	CapsuleCollider* eCapsule = pEnemy->GetComponent<CapsuleCollider>();
-	eCapsule->SetLayer(Layers::ENEMY);
-	eRigidbody->SetCollider(eCapsule);
+    pEnemy->AddComponent(
+        std::make_unique<CapsuleCollider>(pEnemy, eRigidbody, 1.0f, Vector3(-0.8f, 0.0f, -0.4f), Vector3(-0.8f, 4.0f, -0.4f))
+    );
+    CapsuleCollider* eCapsule = pEnemy->GetComponent<CapsuleCollider>();
+    eCapsule->SetLayer(Layers::ENEMY);
+    eRigidbody->SetCollider(eCapsule);
     physicsEngine.AddRigidbody(eRigidbody);
 
 
     pIsland->AddComponent(
         std::make_unique<OBB>(pIsland, nullptr, Vector3(0.0f, -0.3f, 0.0f), Vector3(50.0f, 1.0f, 50.0f))
     );
-	OBB* iOBB = pIsland->GetComponent<OBB>();
-	iOBB->SetLayer(Layers::GROUND);
-	physicsEngine.AddCollider(iOBB);
+    OBB* iOBB = pIsland->GetComponent<OBB>();
+    iOBB->SetLayer(Layers::GROUND);
+    physicsEngine.AddCollider(iOBB);
 
 
 
-	pBox->AddComponent(
-		std::make_unique<BoundingSphere>(pBox, Vector3(0.0f, 0.0f, 0.0f), 2.0f, nullptr)
-	);
-	BoundingSphere* bBoundingSphere = pBox->GetComponent<BoundingSphere>();
-	physicsEngine.AddCollider(bBoundingSphere);
+    pBox->AddComponent(
+        std::make_unique<BoundingSphere>(pBox, Vector3(0.0f, 0.0f, 0.0f), 2.0f, nullptr)
+    );
+    BoundingSphere* bBoundingSphere = pBox->GetComponent<BoundingSphere>();
+    physicsEngine.AddCollider(bBoundingSphere);
 
-	
-	pColumn->AddComponent(
-		std::make_unique<OBB>(pColumn, nullptr, Vector3(-0.6f, 5.0f, 0.0f), Vector3(2.9f, 10.0f, 2.9f))
-	);
-	OBB* cOBB = pColumn->GetComponent<OBB>();
-	physicsEngine.AddCollider(cOBB);
-	//pColumn2->AddComponent(
-	//	std::make_unique<OBB>(pColumn2, nullptr, Vector3(-0.6f, 5.0f, 0.0f), Vector3(2.9f, 10.0f, 2.9f))
-	//);
-	//OBB* cOBB2 = pColumn2->GetComponent<OBB>();
-	//physicsEngine.AddCollider(cOBB2);
-	//pColumn3->AddComponent(
-	//	std::make_unique<OBB>(pColumn3, nullptr, Vector3(-0.6f, 5.0f, 0.0f), Vector3(2.9f, 10.0f, 2.9f))
-	//);
-	//OBB* cOBB3 = pColumn3->GetComponent<OBB>();
-	//physicsEngine.AddCollider(cOBB3);
-	//pColumn4->AddComponent(
-	//	std::make_unique<OBB>(pColumn4, nullptr, Vector3(-0.6f, 5.0f, 0.0f), Vector3(2.9f, 10.0f, 2.9f))
-	//);
-	//OBB* cOBB4 = pColumn4->GetComponent<OBB>();
-	//physicsEngine.AddCollider(cOBB4);
-    
+
+    pColumn->AddComponent(
+        std::make_unique<OBB>(pColumn, nullptr, Vector3(-0.6f, 5.0f, 0.0f), Vector3(2.9f, 10.0f, 2.9f))
+    );
+    OBB* cOBB = pColumn->GetComponent<OBB>();
+    physicsEngine.AddCollider(cOBB);
+    //pColumn2->AddComponent(
+    //	std::make_unique<OBB>(pColumn2, nullptr, Vector3(-0.6f, 5.0f, 0.0f), Vector3(2.9f, 10.0f, 2.9f))
+    //);
+    //OBB* cOBB2 = pColumn2->GetComponent<OBB>();
+    //physicsEngine.AddCollider(cOBB2);
+    //pColumn3->AddComponent(
+    //	std::make_unique<OBB>(pColumn3, nullptr, Vector3(-0.6f, 5.0f, 0.0f), Vector3(2.9f, 10.0f, 2.9f))
+    //);
+    //OBB* cOBB3 = pColumn3->GetComponent<OBB>();
+    //physicsEngine.AddCollider(cOBB3);
+    //pColumn4->AddComponent(
+    //	std::make_unique<OBB>(pColumn4, nullptr, Vector3(-0.6f, 5.0f, 0.0f), Vector3(2.9f, 10.0f, 2.9f))
+    //);
+    //OBB* cOBB4 = pColumn4->GetComponent<OBB>();
+    //physicsEngine.AddCollider(cOBB4);
+
     pStone->AddComponent(
         std::make_unique<Rigidbody>(pStone, Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f))
     );
-	Rigidbody* sRigidbody = pStone->GetComponent<Rigidbody>();
+    Rigidbody* sRigidbody = pStone->GetComponent<Rigidbody>();
     pStone->AddComponent(
         std::make_unique<Throwable>(pStone)
     );
-	pStone->AddComponent(
-		std::make_unique<OBB>(pStone, sRigidbody, Vector3(0.0f, 0.6f, 0.0f), Vector3(1.2f, 1.1f, 1.7f))
-	);
-	OBB* sOBB = pStone->GetComponent<OBB>();
-	sRigidbody->SetCollider(sOBB);
-	physicsEngine.AddRigidbody(sRigidbody);
+    pStone->AddComponent(
+        std::make_unique<OBB>(pStone, sRigidbody, Vector3(0.0f, 0.6f, 0.0f), Vector3(1.2f, 1.1f, 1.7f))
+    );
+    OBB* sOBB = pStone->GetComponent<OBB>();
+    sRigidbody->SetCollider(sOBB);
+    physicsEngine.AddRigidbody(sRigidbody);
     pStone->AddComponent(
         std::make_unique<BoundingSphere>(pStone, Vector3(0.0f, 0.6f, 0.0f), 1.5f, nullptr)
     );
-	BoundingSphere* sBoundingSphere = pStone->GetComponent<BoundingSphere>();
-	sBoundingSphere->SetIsTrigger(true);
-	sBoundingSphere->SetTriggerEnabled(true);
-	pStone->GetComponent<Throwable>()->damageArea = sBoundingSphere;
-	physicsEngine.AddCollider(sBoundingSphere);
+    BoundingSphere* sBoundingSphere = pStone->GetComponent<BoundingSphere>();
+    sBoundingSphere->SetIsTrigger(true);
+    sBoundingSphere->SetTriggerEnabled(true);
+    pStone->GetComponent<Throwable>()->damageArea = sBoundingSphere;
+    physicsEngine.AddCollider(sBoundingSphere);
 
     //Adding Other Components
     pFreeViewCamera->AddComponent(
         std::make_unique<Camera>(pFreeViewCamera, wnd)
     );
-	pCamera->AddComponent(
-		std::make_unique<Camera>(pCamera, wnd)
-	);
-	pCamera->GetComponent<Camera>()->active = true;
+    pCamera->AddComponent(
+        std::make_unique<Camera>(pCamera, wnd)
+    );
+    pCamera->GetComponent<Camera>()->active = true;
 
 
-	pEnemy->AddComponent(
-		std::make_unique<StateMachine>(pEnemy, StateType::IDLE)
-	);
+    pEnemy->AddComponent(
+        std::make_unique<StateMachine>(pEnemy, StateType::IDLE)
+    );
     pEnemy->GetComponent<StateMachine>()->AddComponent(
         std::make_unique<Walking>(pEnemy)
     );
     pEnemy->GetComponent<StateMachine>()->UpdateComponents();
 
     
-
-
-
     // Changing position scale etc.]
-	pFreeViewCamera->SetLocalPosition({ 4.0f, 11.0f, -28.0f });
+    pFreeViewCamera->SetLocalPosition({ 4.0f, 11.0f, -28.0f });
     pPlayer->SetLocalPosition({ 0.0f, 35.0f, 0.0f });
-	pBox->SetLocalPosition(DirectX::XMFLOAT3(-10.0f, 3.0f, 10.0f));
+    pBox->SetLocalPosition(DirectX::XMFLOAT3(-10.0f, 3.0f, 10.0f));
     pBrick->SetLocalScale(dx::XMFLOAT3(20.0f, 20.0f, 1.0f));
     pBrick->SetLocalRotation(dx::XMFLOAT3(DirectX::XMConvertToRadians(90), 0.0f, 0.0f));
-	pStone->SetLocalPosition(DirectX::XMFLOAT3(10.0f, 1.0f, 10.0f));
-	pStone->SetLocalScale(dx::XMFLOAT3(1.5f, 1.5f, 1.5f));
+    pStone->SetLocalPosition(DirectX::XMFLOAT3(10.0f, 1.0f, 10.0f));
+    pStone->SetLocalScale(dx::XMFLOAT3(1.5f, 1.5f, 1.5f));
     pIsland->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
-	pIsland->SetLocalScale(dx::XMFLOAT3(1.3f, 1.3f, 1.3f));
-	pNoxTurn->SetLocalPosition(DirectX::XMFLOAT3(5.0f, 0.0f, 5.0f));
-	pNoxTurn->SetLocalScale(dx::XMFLOAT3(0.01f, 0.01f, 0.01f));
-	pEnemy->SetLocalPosition(DirectX::XMFLOAT3(15.0f, 10.0f, 0.0f));
-	pColumn->SetLocalPosition(DirectX::XMFLOAT3(-8.0f, 0.0f, -7.0f));
-	pColumn2->SetLocalPosition(DirectX::XMFLOAT3(-2.0f, 0.0f, 4.0f));
-	pColumn3->SetLocalPosition(DirectX::XMFLOAT3(-16.0f, 0.0f, -6.0f));
-	pColumn4->SetLocalPosition(DirectX::XMFLOAT3(10.0f, 0.0f, 6.0f));
+    pIsland->SetLocalScale(dx::XMFLOAT3(1.3f, 1.3f, 1.3f));
+    pNoxTurn->SetLocalPosition(DirectX::XMFLOAT3(5.0f, 0.0f, 5.0f));
+    pNoxTurn->SetLocalScale(dx::XMFLOAT3(0.01f, 0.01f, 0.01f));
+    pEnemy->SetLocalPosition(DirectX::XMFLOAT3(15.0f, 10.0f, 0.0f));
+    pColumn->SetLocalPosition(DirectX::XMFLOAT3(-8.0f, 0.0f, -7.0f));
+    pColumn2->SetLocalPosition(DirectX::XMFLOAT3(-2.0f, 0.0f, 4.0f));
+    pColumn3->SetLocalPosition(DirectX::XMFLOAT3(-16.0f, 0.0f, -6.0f));
+    pColumn4->SetLocalPosition(DirectX::XMFLOAT3(10.0f, 0.0f, 6.0f));
 
     //Adding colliders to draw
     AddBoxColliderToDraw(wnd.Gfx(), iOBB);
     AddBoxColliderToDraw(wnd.Gfx(), sOBB);
-	AddBoxColliderToDraw(wnd.Gfx(), cOBB);
-	/*AddBoxColliderToDraw(wnd.Gfx(), cOBB2);
-	AddBoxColliderToDraw(wnd.Gfx(), cOBB3);
-	AddBoxColliderToDraw(wnd.Gfx(), cOBB4);*/
+    AddBoxColliderToDraw(wnd.Gfx(), cOBB);
+    /*AddBoxColliderToDraw(wnd.Gfx(), cOBB2);
+    AddBoxColliderToDraw(wnd.Gfx(), cOBB3);
+    AddBoxColliderToDraw(wnd.Gfx(), cOBB4);*/
 
 
-	AddSphereColliderToDraw(wnd.Gfx(), bBoundingSphere);
-	AddSphereColliderToDraw(wnd.Gfx(), a2Sphere);
-	AddSphereColliderToDraw(wnd.Gfx(), sBoundingSphere);
+    AddSphereColliderToDraw(wnd.Gfx(), bBoundingSphere);
+    AddSphereColliderToDraw(wnd.Gfx(), a2Sphere);
+    AddSphereColliderToDraw(wnd.Gfx(), sBoundingSphere);
 
-	AddCapsuleColliderToDraw(wnd.Gfx(), pCapsule);
-	AddCapsuleColliderToDraw(wnd.Gfx(), eCapsule);
-	AddCapsuleColliderToDraw(wnd.Gfx(), a1CapsuleCollider);
+    AddCapsuleColliderToDraw(wnd.Gfx(), pCapsule);
+    AddCapsuleColliderToDraw(wnd.Gfx(), eCapsule);
+    AddCapsuleColliderToDraw(wnd.Gfx(), a1CapsuleCollider);
+
+    this->myButton = std::make_unique<Button>(wnd.Gfx().GetDevice(), 110, 110, 200, 100, L"Click Me");
+
+
 
     wnd.DisableCursor();
     wnd.mouse.EnableRaw();
@@ -329,7 +331,7 @@ int App::Go()
         }
         physicsEngine.Simulate(lag);
         lag = 0.0f;
-        
+
         HandleInput(dt);
         DoFrame(dt);
     }
@@ -408,17 +410,17 @@ void App::HandleInput(float dt)
 void App::DoFrame(float dt)
 {
     pSceneRoot->Update(dt);
-    
+
     wnd.Gfx().BeginFrame(0.5f, 0.5f, 1.0f);
     //if (pPlayer->GetLocalPosition().y < -10.0f) {
-	//	pPlayer->SetLocalPosition({ -20.0f, 225.0f, -25.0f });
+    //	pPlayer->SetLocalPosition({ -20.0f, 225.0f, -25.0f });
     //    pEnemy->SetLocalPosition({ 15.0f, 225.0f, 0.0f });
     //}
-	dx::XMMATRIX viewMatrix = pCamera->GetComponent<Camera>()->GetViewMatrix();
-	if (freeViewCamera)
-	{
+    dx::XMMATRIX viewMatrix = pCamera->GetComponent<Camera>()->GetViewMatrix();
+    if (freeViewCamera)
+    {
         viewMatrix = pFreeViewCamera->GetComponent<Camera>()->GetViewMatrix();
-	}
+    }
     wnd.Gfx().SetCamera(viewMatrix);
 
     // --- Bind Lights ---
@@ -437,7 +439,7 @@ void App::DoFrame(float dt)
     //Vector3 previousRotation = pEnemy->GetLocalRotationEuler();
 
  //   Vector3 targetPosition = pPlayer->GetWorldPosition();
-	//Rigidbody* rigidbody = pEnemy->GetComponent<Rigidbody>();
+    //Rigidbody* rigidbody = pEnemy->GetComponent<Rigidbody>();
 
  //   Vector3 temporaryDirection = targetPosition - rigidbody->GetPosition();
  //   temporaryDirection.Normalize();
@@ -471,12 +473,13 @@ void App::DoFrame(float dt)
     //ector3 secPos(pCamera->GetWorldPosition().x + pCamera->Forward().x, pCamera->GetWorldPosition().y + pCamera->Forward().y, pCamera->GetWorldPosition().z + pCamera->Forward().z);
     //DebugLine(wnd.Gfx(), pCamera->GetWorldPosition(), secPos).Draw(wnd.Gfx());
 
-
+    
     if (showControlWindow) {
         ShowControlWindows();
     }
-
+  
     fc.Execute(wnd.Gfx());
+    myButton->Draw(wnd.Gfx().GetContext());
     wnd.Gfx().EndFrame();
     fc.Reset();
 }
@@ -597,9 +600,9 @@ void App::ShowControlWindows()
 {
     // --- Existing Windows ---
 
-	DrawSphereColliders(wnd.Gfx()); // Call the updated function
+    DrawSphereColliders(wnd.Gfx()); // Call the updated function
     DrawBoxColliders(wnd.Gfx()); // Call the updated function
-	DrawCapsuleColliders(wnd.Gfx());
+    DrawCapsuleColliders(wnd.Gfx());
     pointLight.Submit(fc);
 
     pointLight.SpawnControlWindow(); // Control for Point Light
@@ -621,8 +624,8 @@ void App::ShowControlWindows()
     if (ImGui::Begin("Simulation Speed"))
     {
         ImGui::SliderFloat("Speed Factor", &speed_factor, 0.0f, 4.0f);
-		ImGui::Text("To change camera press 'C'");
-		ImGui::Text("To show/hide control window press 'H'");
+        ImGui::Text("To change camera press 'C'");
+        ImGui::Text("To show/hide control window press 'H'");
     }
     ImGui::End();
 
@@ -738,7 +741,7 @@ void App::ShowControlWindows()
 void App::AddSphereColliderToDraw(Graphics& gfx, BoundingSphere* boundingSphere)
 {
     // Using default constructor then initialize might be slightly cleaner if SolidSphere allows it
-	ColliderSphere* sphereCollider = new ColliderSphere(gfx, boundingSphere->GetRadius());
+    ColliderSphere* sphereCollider = new ColliderSphere(gfx, boundingSphere->GetRadius());
     sphereCollidersToDraw[boundingSphere] = sphereCollider;
 
 }
@@ -747,10 +750,10 @@ void App::DrawSphereColliders(Graphics& gfx)
 {
     for (auto it = sphereCollidersToDraw.begin(); it != sphereCollidersToDraw.end(); ++it)
     {
-		it->second->SetPos(DirectX::XMFLOAT3(it->first->GetTransformedCenter().x,
-			it->first->GetTransformedCenter().y,
-			it->first->GetTransformedCenter().z));
-		it->second->Submit(fc);
+        it->second->SetPos(DirectX::XMFLOAT3(it->first->GetTransformedCenter().x,
+            it->first->GetTransformedCenter().y,
+            it->first->GetTransformedCenter().z));
+        it->second->Submit(fc);
     }
 }
 
@@ -759,7 +762,7 @@ void App::DrawSphereColliders(Graphics& gfx)
 // Signature now takes OBB*
 void App::AddBoxColliderToDraw(Graphics& gfx, OBB* obb)
 {
-	SolidBox* box = new SolidBox(gfx, obb->GetTransformedCenter(), obb->GetTransformedSize());
+    SolidBox* box = new SolidBox(gfx, obb->GetTransformedCenter(), obb->GetTransformedSize());
     boxCollidersToDraw[obb] = box;
 
 }
@@ -769,31 +772,40 @@ void App::DrawBoxColliders(Graphics& gfx)
 {
     for (auto it = boxCollidersToDraw.begin(); it != boxCollidersToDraw.end(); ++it)
     {
-		it->second->SetPos(DirectX::XMFLOAT3(it->first->GetTransformedCenter().x,
-			it->first->GetTransformedCenter().y,
-			it->first->GetTransformedCenter().z));
-		it->second->SetSize(DirectX::XMFLOAT3(it->first->GetTransformedSize().x,
-			it->first->GetTransformedSize().y,
-			it->first->GetTransformedSize().z));
+        it->second->SetPos(DirectX::XMFLOAT3(it->first->GetTransformedCenter().x,
+            it->first->GetTransformedCenter().y,
+            it->first->GetTransformedCenter().z));
+        it->second->SetSize(DirectX::XMFLOAT3(it->first->GetTransformedSize().x,
+            it->first->GetTransformedSize().y,
+            it->first->GetTransformedSize().z));
         it->second->Submit(fc);
-        
+
     }
 
 }
 
 void App::AddCapsuleColliderToDraw(Graphics& gfx, CapsuleCollider* capsule)
 {
-	SolidCapsule* solidCapsule = new SolidCapsule(gfx, capsule->GetTransformedBase(), capsule->GetTransformedTip(), capsule->GetRadius());
-	capsuleCollidersToDraw[capsule] = solidCapsule;
+    SolidCapsule* solidCapsule = new SolidCapsule(gfx, capsule->GetTransformedBase(), capsule->GetTransformedTip(), capsule->GetRadius());
+    capsuleCollidersToDraw[capsule] = solidCapsule;
 }
 
 void App::DrawCapsuleColliders(Graphics& gfx)
 {
     for (auto it = capsuleCollidersToDraw.begin(); it != capsuleCollidersToDraw.end(); ++it)
     {
-		it->second->SetBase(it->first->GetTransformedBase());
-		it->second->SetTip(it->first->GetTransformedTip());
-		it->second->SetRadius(it->first->GetRadius());
-		it->second->Submit(fc);
+        it->second->SetBase(it->first->GetTransformedBase());
+        it->second->SetTip(it->first->GetTransformedTip());
+        it->second->SetRadius(it->first->GetRadius());
+        it->second->Submit(fc);
     }
 }
+
+// [NEW] Handle mouse click event
+void App::OnMouseClick(int xPos, int yPos) {
+    if (myButton->IsClicked(xPos, yPos)) {
+        // Button was clicked!
+        OutputDebugStringW(L"Button Clicked!\n");
+    }
+}
+

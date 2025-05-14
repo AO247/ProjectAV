@@ -38,7 +38,7 @@ namespace Bind
 				dsDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
 			}
 
-			GetDevice( gfx )->CreateDepthStencilState( &dsDesc,&pStencil );
+			getDevice( gfx )->CreateDepthStencilState( &dsDesc,&pStencil );
 		}
 		void Bind( Graphics& gfx ) noexcept override
 		{

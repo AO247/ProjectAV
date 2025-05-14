@@ -8,7 +8,7 @@ namespace Bind
 		return gfx.pContext.Get();
 	}
 
-	ID3D11Device* Bindable::GetDevice( Graphics& gfx ) noexcept
+	ID3D11Device* Bindable::getDevice( Graphics& gfx ) noexcept
 	{
 		return gfx.pDevice.Get();
 	}

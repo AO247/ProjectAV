@@ -14,7 +14,7 @@ namespace Bind
 		samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
 		samplerDesc.MaxAnisotropy = D3D11_REQ_MAXANISOTROPY;
 
-		GFX_THROW_INFO( GetDevice( gfx )->CreateSamplerState( &samplerDesc,&pSampler ) );
+		GFX_THROW_INFO( getDevice( gfx )->CreateSamplerState( &samplerDesc,&pSampler ) );
 	}
 
 	void Sampler::Bind( Graphics& gfx ) noexcept

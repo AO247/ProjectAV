@@ -38,7 +38,7 @@ namespace Bind
 
 			D3D11_SUBRESOURCE_DATA csd = {};
 			csd.pSysMem = &consts;
-			GFX_THROW_INFO( GetDevice( gfx )->CreateBuffer( &cbd,&csd,&pConstantBuffer ) );
+			GFX_THROW_INFO( getDevice( gfx )->CreateBuffer( &cbd,&csd,&pConstantBuffer ) );
 		}
 		ConstantBuffer( Graphics& gfx,UINT slot = 0u )
 			:
@@ -53,7 +53,7 @@ namespace Bind
 			cbd.MiscFlags = 0u;
 			cbd.ByteWidth = sizeof( C );
 			cbd.StructureByteStride = 0u;
-			GFX_THROW_INFO( GetDevice( gfx )->CreateBuffer( &cbd,nullptr,&pConstantBuffer ) );
+			GFX_THROW_INFO( getDevice( gfx )->CreateBuffer( &cbd,nullptr,&pConstantBuffer ) );
 		}
 	protected:
 		Microsoft::WRL::ComPtr<ID3D11Buffer> pConstantBuffer;

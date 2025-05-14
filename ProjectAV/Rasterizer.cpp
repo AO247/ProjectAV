@@ -13,7 +13,7 @@ namespace Bind
 		D3D11_RASTERIZER_DESC rasterDesc = CD3D11_RASTERIZER_DESC( CD3D11_DEFAULT{} );
 		rasterDesc.CullMode = twoSided ? D3D11_CULL_NONE : D3D11_CULL_BACK;
 
-		GFX_THROW_INFO( GetDevice( gfx )->CreateRasterizerState( &rasterDesc,&pRasterizer ) );
+		GFX_THROW_INFO( getDevice( gfx )->CreateRasterizerState( &rasterDesc,&pRasterizer ) );
 	}
 
 	void Rasterizer::Bind( Graphics& gfx ) noexcept

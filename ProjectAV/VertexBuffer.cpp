@@ -24,7 +24,7 @@ namespace Bind
 		bd.StructureByteStride = stride;
 		D3D11_SUBRESOURCE_DATA sd = {};
 		sd.pSysMem = vbuf.GetData();
-		GFX_THROW_INFO( GetDevice( gfx )->CreateBuffer( &bd,&sd,&pVertexBuffer ) );
+		GFX_THROW_INFO( getDevice( gfx )->CreateBuffer( &bd,&sd,&pVertexBuffer ) );
 	}
 
 	const Dvtx::VertexLayout& VertexBuffer::GetLayout() const noexcept

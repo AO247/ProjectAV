@@ -33,7 +33,7 @@ namespace Bind
 				brt.DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
 			}
 		}
-		GFX_THROW_INFO( GetDevice( gfx )->CreateBlendState( &blendDesc,&pBlender ) );
+		GFX_THROW_INFO( getDevice( gfx )->CreateBlendState( &blendDesc,&pBlender ) );
 	}
 
 	void Blender::Bind( Graphics& gfx ) noexcept

@@ -45,11 +45,11 @@ namespace Bind
 			{
 				D3D11_SUBRESOURCE_DATA csd = {};
 				csd.pSysMem = pBuf->GetData();
-				GFX_THROW_INFO( GetDevice( gfx )->CreateBuffer( &cbd,&csd,&pConstantBuffer ) );
+				GFX_THROW_INFO( getDevice( gfx )->CreateBuffer( &cbd,&csd,&pConstantBuffer ) );
 			}
 			else
 			{
-				GFX_THROW_INFO( GetDevice( gfx )->CreateBuffer( &cbd,nullptr,&pConstantBuffer ) );
+				GFX_THROW_INFO( getDevice( gfx )->CreateBuffer( &cbd,nullptr,&pConstantBuffer ) );
 			}
 		}
 	protected:

@@ -13,7 +13,7 @@ namespace Bind
 		INFOMAN( gfx );
 
 		GFX_THROW_INFO( D3DReadFileToBlob( ToWide( path ).c_str(),&pBytecodeBlob ) );
-		GFX_THROW_INFO( GetDevice( gfx )->CreateVertexShader(
+		GFX_THROW_INFO( getDevice( gfx )->CreateVertexShader(
 			pBytecodeBlob->GetBufferPointer(),
 			pBytecodeBlob->GetBufferSize(),
 			nullptr,

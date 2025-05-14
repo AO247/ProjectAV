@@ -15,7 +15,7 @@ namespace dx = DirectX;
 #pragma comment(lib,"D3DCompiler.lib")
 
 
-Graphics::Graphics( HWND hWnd,int width,int height )
+Graphics::Graphics( HWND hWnd,int width,int height ) : widthD(width), heightD(height)
 {
 	DXGI_SWAP_CHAIN_DESC sd = {};
 	sd.BufferDesc.Width = width;
