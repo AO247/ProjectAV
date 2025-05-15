@@ -189,7 +189,7 @@
     <ClCompile Include="MiscMath.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Collider.cpp">
+    <ClCompile Include="LegacyCollider.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
     <ClCompile Include="Rigidbody.cpp">
@@ -332,6 +332,9 @@
     </ClCompile>
     <ClCompile Include="SoundEffectsPlayer.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Collider.cpp">
+      <Filter>Source Files\Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -485,7 +488,7 @@
     <ClInclude Include="BindableCodex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Collider.h">
+    <ClInclude Include="LegacyCollider.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
     <ClInclude Include="Rigidbody.h">
@@ -676,6 +679,9 @@
     </ClInclude>
     <ClInclude Include="SoundEffectsPlayer.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Collider.h">
+      <Filter>Header Files\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

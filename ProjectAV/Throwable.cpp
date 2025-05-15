@@ -6,15 +6,15 @@ Throwable::Throwable(Node* owner) : Component(owner)
 }
 void Throwable::Update(float dt)
 {
-	if (rigidbody->GetVelocity().Length() > 0.0f)
+	/*if (rigidbody->GetVelocity().Length() > 0.0f)
 	{
 		OnTriggerEnter();
-	}
+	}*/
 }
 
 void Throwable::OnTriggerEnter()
 {
-	std::vector<Collider*> cols = damageArea->GetTriggerEnter();
+	/*std::vector<Collider*> cols = damageArea->GetTriggerEnter();
 
 	if (cols.size() > 0)
 	{
@@ -25,7 +25,7 @@ void Throwable::OnTriggerEnter()
 				OutputDebugStringA("\nHit Enemy\n");
 			}
 		}
-	}
+	}*/
 }
 
 

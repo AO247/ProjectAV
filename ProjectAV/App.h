@@ -16,7 +16,7 @@
 #include "SolidBox.h"
 #include "SolidCapsule.h"
 #include "DebugLine.h"
-#include "bullet/btBulletDynamicsCommon.h"
+#include "btBulletDynamicsCommon.h"
 
 // Forward declarations
 class PlayerController; // Forward declare
@@ -42,7 +42,7 @@ private:
     Timer timer;
     float speed_factor = 1.0f;
     PointLight pointLight;
-    PhysicsEngine physicsEngine; // Physics engine instance
+    //PhysicsEngine physicsEngine; // Physics engine instance
     btDiscreteDynamicsWorld* dynamicsWorld;
     SoundDevice* soundDevice; // Sound device instance
     std::unique_ptr<MusicBuffer> myMusic;
@@ -79,16 +79,16 @@ private:
 	Node* pSoundEffectsPlayer = nullptr; // Node for the sound effects player
     // --- UI State ---
     
-    std::map<BoundingSphere*, ColliderSphere*> sphereCollidersToDraw;
+    /*std::map<BoundingSphere*, ColliderSphere*> sphereCollidersToDraw;
 
     std::map<OBB*, SolidBox*> boxCollidersToDraw;
-	std::map<CapsuleCollider*, SolidCapsule*> capsuleCollidersToDraw;
+	std::map<CapsuleCollider*, SolidCapsule*> capsuleCollidersToDraw;*/
 
-    void AddSphereColliderToDraw(Graphics& gfx, BoundingSphere* boundingSphere);
+    /*void AddSphereColliderToDraw(Graphics& gfx, BoundingSphere* boundingSphere);
     void DrawSphereColliders(Graphics& gfx);
     void AddBoxColliderToDraw(Graphics& gfx, OBB* obb);
     void DrawBoxColliders(Graphics& gfx);
-	void AddCapsuleColliderToDraw(Graphics& gfx, CapsuleCollider* capsule);
+	void AddCapsuleColliderToDraw(Graphics& gfx, CapsuleCollider* capsule);*/
 	void DrawCapsuleColliders(Graphics& gfx);
     void FrustumCalculating();
     void DrawNodeRecursive(Graphics& gfx, Node& node);

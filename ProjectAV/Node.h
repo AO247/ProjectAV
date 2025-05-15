@@ -9,6 +9,8 @@
 class Graphics;
 class FrameCommander; // Forward declare
 
+using namespace DirectX::SimpleMath;
+
 class Node
 {
 public:

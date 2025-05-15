@@ -178,6 +178,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CapsuleCollider.cpp" />
     <ClCompile Include="Collider.cpp" />
+    <ClCompile Include="LegacyCollider.cpp" />
     <ClCompile Include="ColliderSphere.cpp" />
     <ClCompile Include="CUtil.cpp" />
     <ClCompile Include="DebugLine.cpp" />
@@ -272,6 +273,7 @@
     <ClInclude Include="CException.h" />
     <ClInclude Include="CMath.h" />
     <ClInclude Include="Collider.h" />
+    <ClInclude Include="LegacyCollider.h" />
     <ClInclude Include="ColliderSphere.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="Component.h" />

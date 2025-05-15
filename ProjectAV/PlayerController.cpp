@@ -14,7 +14,7 @@ PlayerController::PlayerController(Node* owner, Window& window)
     : Component(owner), wnd(window)  // Initialize reference member
 {
 	rigidbody = owner->GetComponent<Rigidbody>();
-    rigidbody->frictionDamping = 12.0f;
+    //rigidbody->frictionDamping = 12.0f;
 	camera = owner->GetRoot()->FindFirstChildByTag("Camera");
 	ability1 = owner->GetRoot()->FindFirstChildByTag("Ability1");
 	ability2 = owner->GetRoot()->FindFirstChildByTag("Ability2");
@@ -24,7 +24,11 @@ PlayerController::PlayerController(Node* owner, Window& window)
 
 void PlayerController::Update(float dt)
 {
-    Positioning();
+    camera->SetLocalPosition({ GetOwner()->GetLocalPosition().x, GetOwner()->GetLocalPosition().y + height * 9 / 10, GetOwner()->GetLocalPosition().z });
+    GetOwner()->SetLocalRotation({ 0.0f, camera->GetLocalRotationEuler().y, 0.0f });
+    KeyboardInput();
+    MovePlayer();
+    /*Positioning();
     if (!wnd.CursorEnabled())
     {
         GroundCheck();
@@ -32,13 +36,13 @@ void PlayerController::Update(float dt)
 		KeyboardInput();
 		SpeedControl();
 		MovePlayer();
-    }
+    }*/
 }
 
 
 void PlayerController::SpeedControl()
 {
-	if (dashed) return;
+	/*if (dashed) return;
     Vector3 velocity(rigidbody->GetVelocity().x, 0.0f, rigidbody->GetVelocity().z);
 
     if (velocity.Length() > moveSpeed) 
@@ -46,12 +50,14 @@ void PlayerController::SpeedControl()
 		velocity.Normalize();
         Vector3 limitedVel = velocity * moveSpeed;
 		rigidbody->SetVelocity(Vector3(limitedVel.x, rigidbody->GetVelocity().y, limitedVel.z));
-    }
+    }*/
 }
 
 void PlayerController::Jump()
 {
-    if ((grounded || !doubleJumped) && !jumped) {
+    //rigidbody->AddForce(Vector3(0.0f, jumpForce * 1000.0f, 0.0f));
+    rigidbody->GetBulletRigidbody()->applyForce(btVector3(0, jumpForce * 200.0f, 0), btVector3(0, 0, 0));
+    /*if ((grounded || !doubleJumped) && !jumped) {
         rigidbody->SetVelocity(Vector3(rigidbody->GetVelocity().x, 0.0f, rigidbody->GetVelocity().z));
         rigidbody->AddForce(Vector3(0.0f, jumpForce * 1000.0f, 0.0f));
         if (grounded) {
@@ -61,7 +67,7 @@ void PlayerController::Jump()
 			doubleJumped = true;
         }
 		jumped = true;
-    }
+    }*/
 }
 
 void PlayerController::Dash()
@@ -90,14 +96,14 @@ void PlayerController::Dash()
     dashTimer = 0.3f;
 	dashCooldownTimer = dashCooldown;
 
-	rigidbody->friction = false;
+	/*rigidbody->friction = false;
     rigidbody->SetVelocity({ 0.0f, 0.0f, 0.0f });
-    rigidbody->AddForce(dashDirection * dashForce * 100.0f);
+    rigidbody->AddForce(dashDirection * dashForce * 100.0f);*/
 }
 
 void PlayerController::GroundCheck()
 {
-    grounded = rigidbody->grounded;
+    //grounded = rigidbody->grounded;
     if (grounded)
     {
         doubleJumped = false;
@@ -108,13 +114,17 @@ void PlayerController::MovePlayer()
 {
     moveDirection.Normalize();
 
+    Vector3 movementVector = moveDirection * moveSpeed * 1000.0f;
 
-    rigidbody->AddForce(moveDirection * moveSpeed * 1000.0f);
+    //btVector3 newVelocity = rigidbody->GetBulletRigidbody()->getLinearVelocity() + btVector3(movementVector.x, movementVector.y, movementVector.z);
+    //rigidbody->GetBulletRigidbody()->setLinearVelocity(newVelocity);
+    rigidbody->GetBulletRigidbody()->applyForce(btVector3(movementVector.x, movementVector.y, movementVector.z), btVector3(0, 0, 0));
+    //rigidbody->AddForce(moveDirection * moveSpeed * 1000.0f);
 }
 
 void PlayerController::Ability1()
 {
-    CapsuleCollider* col = ability1->GetComponent<CapsuleCollider>();
+    /*CapsuleCollider* col = ability1->GetComponent<CapsuleCollider>();
     std::vector<Collider*> colliders = col->GetTriggerStay();
 	for (Collider* collider : colliders)
 	{
@@ -123,13 +133,13 @@ void PlayerController::Ability1()
 			collider->GetOwner()->GetComponent<Rigidbody>()->SetVelocity(Vector3(0.0f, 0.0f, 0.0f));
 			collider->GetOwner()->GetComponent<Rigidbody>()->AddForce(ability1->Forward() * 100000.0f);
 		}
-	}
+	}*/
 }
 
 void PlayerController::Ability2()
 {
     
-	BoundingSphere* col = ability2->GetComponent<BoundingSphere>();
+	/*BoundingSphere* col = ability2->GetComponent<BoundingSphere>();
 
     std::vector<Collider*> colliders = col->GetTriggerStay();
 
@@ -141,7 +151,7 @@ void PlayerController::Ability2()
                 0.0f, collider->GetOwner()->GetComponent<Rigidbody>()->GetVelocity().z));
             collider->GetOwner()->GetComponent<Rigidbody>()->AddForce(Vector3(0.0f, 70000.0f, 0.0f));
         }
-    }
+    }*/
 
 
 }
@@ -155,7 +165,7 @@ void PlayerController::Cooldowns(float dt)
     else
     {
         dashed = false;
-        rigidbody->friction = true;
+        //rigidbody->friction = true;
     }
     if (dashCooldownTimer > 0.0f)
     {
@@ -174,7 +184,7 @@ void PlayerController::Positioning()
     ability1->SetLocalPosition(camera->GetLocalPosition());
     ability1->SetLocalRotation(camera->GetLocalRotationEuler());
 
-    RaycastData rayData = Raycast::CastThroughLayers(camera->GetWorldPosition(), camera->Forward(), std::vector<Layers>{PLAYER});
+    /*RaycastData rayData = Raycast::CastThroughLayers(camera->GetWorldPosition(), camera->Forward(), std::vector<Layers>{PLAYER});
 
     if (rayData.hitCollider != nullptr)
     {
@@ -193,7 +203,7 @@ void PlayerController::Positioning()
                 }
 			}
         }
-    }
+    }*/
 
 
 }
