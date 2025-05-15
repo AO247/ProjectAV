@@ -11,17 +11,20 @@ constexpr auto sq( const T& x ) noexcept
 }
 
 template<typename T>
-T wrap_angle( T theta ) noexcept
+T wrap_angle(T theta) noexcept
 {
-	constexpr T twoPi = (T)2 * (T)PI_D;
-	const T mod = fmod(theta, twoPi);
-	if (mod > (T)PI_D)
+	constexpr T twoPi = static_cast<T>(2.0 * PI);
+	constexpr T pi = static_cast<T>(PI);
+
+	T mod = std::fmod(theta, twoPi);
+
+	if (mod > pi)
 	{
-		return mod - twoPi;
+		mod -= twoPi;
 	}
-	else if (mod < (T)PI_D)
+	else if (mod < -pi)
 	{
-		return mod + twoPi;
+		mod += twoPi;
 	}
 	return mod;
 }
