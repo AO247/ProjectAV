@@ -49,9 +49,9 @@ void Walking::Follow(DirectX::XMFLOAT3 targetPos, float sp)
 		float currentYaw = pOwner->GetLocalRotationEuler().y;
 		float targetYaw = atan2f(facingDirection.x, facingDirection.z);
 
-		float yawDifference = targetYaw - currentYaw;
+		float yawDifference = wrap_angle(targetYaw - currentYaw);
 		
-		targetYaw = currentYaw + yawDifference;
+		targetYaw = wrap_angle(currentYaw + yawDifference * rotationLerpFactor);
 
         pOwner->SetLocalRotation({ 0.0f, targetYaw, 0.0f });
     }

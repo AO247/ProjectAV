@@ -4,6 +4,7 @@
 
 #include <Windows.h> // For OutputDebugStringA
 #include <DirectXMath.h> // For DirectX::XMFLOAT3 operations
+#include "CMath.h"
 
 namespace dx = DirectX;
 namespace sm = DirectX::SimpleMath;
@@ -15,7 +16,7 @@ void IdleState::Enter(StateMachine* pOwner)
 {
     OutputDebugStringA("Entering IDLE State\n");
     time = 0.0f;
-    previousPos = pOwner->GetOwner()->GetWorldPosition();
+    wanderAngle = (((float)rand() / RAND_MAX) * 2.0f * PI) - PI;
 }
 void IdleState::Update(StateMachine* pOwner, float dt)
 {
@@ -28,23 +29,30 @@ void IdleState::Update(StateMachine* pOwner, float dt)
         return;
     }
 
-    sm::Vector3 center(pOwner->GetOwner()->GetWorldPosition());
-	sm::Vector3 forward(pOwner->GetOwner()->Forward());
-    center += forward * 3.0f;
-    sm::Vector3 newPos = center + previousPos * radius;
-    int randIx = (rand() % 3) - 1;
-    int randIz = (rand() % 3) - 1;
 
-	newPos.x += randIx / 5.0f;
-    newPos.z += randIz / 5.0f;
 
-    sm::Vector3 dir = newPos - center;
-    dir.Normalize();
-    newPos = center + dir * radius;
-    pOwner->pMovementComponent->Follow(newPos, 2.0f);
-	pOwner->pos = newPos;
-    pOwner->cen = center;
-	previousPos = dir;
+
+    sm::Vector3 circleCenter = pOwner->GetOwner()->GetWorldPosition();
+    circleCenter += pOwner->GetOwner()->Forward() * wanderCenterDistance; // Use StateMachine's member
+
+
+    float angleChangeThisFrame = (((float)rand() / RAND_MAX) - 0.5f) * 2.0f * wanderAngleChange * dt;
+    wanderAngle += angleChangeThisFrame;
+
+    sm::Vector3 displacement(cosf(wanderAngle), 0.0f, sinf(wanderAngle));
+    displacement *= wanderRradius;
+
+    dx::XMMATRIX agentYawRotation = dx::XMMatrixRotationY(pOwner->GetOwner()->GetLocalRotationEuler().y);
+    dx::XMVECTOR displacementVecDX = dx::XMLoadFloat3(&displacement);
+    displacementVecDX = dx::XMVector3TransformNormal(displacementVecDX, agentYawRotation);
+    sm::Vector3 worldDisplacement;
+    dx::XMStoreFloat3(&worldDisplacement, displacementVecDX);
+
+    sm::Vector3 wanderTarget = circleCenter + worldDisplacement;
+
+    pOwner->pMovementComponent->Follow(wanderTarget, 2.0f);
+    pOwner->pos = wanderTarget;
+    pOwner->cen = circleCenter;
 
 }
 
