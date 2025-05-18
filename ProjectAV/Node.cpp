@@ -3,170 +3,169 @@
 #include "Graphics.h"       
 #include <DirectXMath.h>
 #include "imgui/imgui.h"
-#include <cmath> // For math functions if needed elsewhere
+#include <cmath> // For std::atan2, std::asin, std::copysign
 
-#include "Collider.h"
+// Forward declare FrameCommander if it's only used as a reference/pointer type in Submit
+// class FrameCommander; 
+// No, Submit needs its definition if methods are called on it. Assume it's included elsewhere or defined.
+
 namespace dx = DirectX;
 
 Node::Node(std::string name, Node* parent, std::string tag)
-	: name(std::move(name)), parent(parent), tag(std::move(tag))
+    : name(std::move(name)), parent(parent), tag(std::move(tag)),
+    localPosition{ 0.0f, 0.0f, 0.0f },
+    localRotationQuaternion{ 0.0f, 0.0f, 0.0f, 1.0f }, // Identity quaternion
+    localScale{ 1.0f, 1.0f, 1.0f }
 {
-    // Initialize stored components (already done via member initializers)
-    // Initialize matrix caches
     dx::XMStoreFloat4x4(&localTransform, dx::XMMatrixIdentity());
     dx::XMStoreFloat4x4(&worldTransform, dx::XMMatrixIdentity());
-    localTransformDirty = true; // Needs initial build
-    worldTransformDirty = true; // Needs initial calculation
+    localTransformDirty = true;
+    worldTransformDirty = true;
 }
 
-// --- Hierarchy and Component methods remain the same ---
-void Node::AddChild(std::unique_ptr<Node> pChild) { /* ... same ... */
+// --- Hierarchy and Component methods (unchanged from original provided snippet) ---
+void Node::AddChild(std::unique_ptr<Node> pChild) {
     assert(pChild);
     pChild->parent = this;
     children.push_back(std::move(pChild));
 }
-Node* Node::GetChild(size_t index) { /* ... same ... */
+Node* Node::GetChild(size_t index) {
     if (index < children.size())
     {
         return children[index].get();
     }
     return nullptr;
 }
-Node* Node::GetParent() const { /* ... same ... */ return parent; }
-const std::vector<std::unique_ptr<Node>>& Node::GetChildren() const { /* ... same ... */ return children; }
-const std::string& Node::GetName() const { /* ... same ... */ return name; }
+Node* Node::GetParent() const { return parent; }
+const std::vector<std::unique_ptr<Node>>& Node::GetChildren() const { return children; }
+const std::string& Node::GetName() const { return name; }
 
-Component* Node::AddComponent(std::unique_ptr<Component> pComponent) { /* ... same ... */
+Component* Node::AddComponent(std::unique_ptr<Component> pComponent) {
     assert(pComponent);
     components.push_back(std::move(pComponent));
     return components.back().get();
 }
-const std::vector<std::unique_ptr<Component>>& Node::GetComponents() const { /* ... same ... */ return components; }
+const std::vector<std::unique_ptr<Component>>& Node::GetComponents() const { return components; }
 
-
-// --- Helper: Quaternion to Euler (needed ONLY for SetLocalTransform) ---
-// Keep this function local to Node.cpp or in a separate utility file
+// --- Helper: Quaternion to Euler (Pitch, Yaw, Roll) ---
+// Returns XMFLOAT3 {Pitch, Yaw, Roll} in radians
 DirectX::XMFLOAT3 QuaternionToEulerAnglesInternal(DirectX::XMFLOAT4 q)
 {
-    DirectX::XMFLOAT3 angles;
-    double sinr_cosp = 2 * (q.w * q.x + q.y * q.z);
-    double cosr_cosp = 1 - 2 * (q.x * q.x + q.y * q.y);
-    angles.z = static_cast<float>(std::atan2(sinr_cosp, cosr_cosp)); // Roll
+    DirectX::XMFLOAT3 angles; // Pitch, Yaw, Roll
 
-    double sinp = 2 * (q.w * q.y - q.z * q.x);
-    if (std::abs(sinp) >= 1)
-        angles.x = static_cast<float>(std::copysign(DirectX::XM_PI / 2, sinp));
+    // Roll (z-axis rotation)
+    double sinr_cosp = 2.0 * (q.w * q.z + q.x * q.y);
+    double cosr_cosp = 1.0 - 2.0 * (q.y * q.y + q.z * q.z);
+    angles.z = static_cast<float>(std::atan2(sinr_cosp, cosr_cosp));
+
+    // Pitch (x-axis rotation)
+    double sinp = 2.0 * (q.w * q.x - q.y * q.z);
+    if (std::abs(sinp) >= 1.0)
+        angles.x = static_cast<float>(std::copysign(DirectX::XM_PI / 2.0, sinp)); // Use 90 degrees if out of range
     else
-        angles.x = static_cast<float>(std::asin(sinp)); // Pitch
+        angles.x = static_cast<float>(std::asin(sinp));
 
-    double siny_cosp = 2 * (q.w * q.z + q.x * q.y);
-    double cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z);
-    angles.y = static_cast<float>(std::atan2(siny_cosp, cosy_cosp)); // Yaw
+    // Yaw (y-axis rotation)
+    double siny_cosp = 2.0 * (q.w * q.y + q.z * q.x);
+    double cosy_cosp = 1.0 - 2.0 * (q.x * q.x + q.y * q.y);
+    angles.y = static_cast<float>(std::atan2(siny_cosp, cosy_cosp));
 
-    return { angles.x, angles.y, angles.z }; // Pitch, Yaw, Roll
+    return { angles.x, angles.y, angles.z }; // {Pitch, Yaw, Roll}
 }
 
-// --- Helper: Build local matrix from stored components ---
+// --- Helper: Build local matrix from stored pos/quat/scale ---
 void Node::UpdateLocalTransformFromComponents()
 {
     if (localTransformDirty)
     {
-        dx::XMMATRIX T = dx::XMMatrixScaling(localScale.x, localScale.y, localScale.z) *
-            dx::XMMatrixRotationRollPitchYaw(localRotationEulerRad.x, localRotationEulerRad.y, localRotationEulerRad.z) *
-            dx::XMMatrixTranslation(localPosition.x, localPosition.y, localPosition.z);
-        dx::XMStoreFloat4x4(&localTransform, T);
-        localTransformDirty = false; // Mark as clean
-        worldTransformDirty = true;  // World transform depends on local, so mark it dirty
+        dx::XMMATRIX matS = dx::XMMatrixScaling(localScale.x, localScale.y, localScale.z);
+        dx::XMMATRIX matR = dx::XMMatrixRotationQuaternion(dx::XMLoadFloat4(&localRotationQuaternion));
+        dx::XMMATRIX matT = dx::XMMatrixTranslation(localPosition.x, localPosition.y, localPosition.z);
+
+        // Original order: Scale * Rotate * Translate
+        // This means operations applied to a vector v are: T*v, then R*(T*v), then S*(R*(T*v))
+        // So, Translation first, then Rotation, then Scaling.
+        dx::XMStoreFloat4x4(&localTransform, matS * matR * matT);
+
+        localTransformDirty = false;
+        worldTransformDirty = true;
     }
 }
 
-// --- Helper: Update stored Euler angles when the whole matrix is set ---
-void Node::UpdateStoredEulerFromMatrix()
+// --- Helper: Update stored pos/quat/scale when the whole matrix is set ---
+void Node::UpdateStoredComponentsFromMatrix()
 {
-    dx::XMMATRIX T = dx::XMLoadFloat4x4(&localTransform);
-    dx::XMVECTOR s, r, t;
-    dx::XMMatrixDecompose(&s, &r, &t, T);
-    DirectX::XMFLOAT4 quat;
-    dx::XMStoreFloat4(&quat, r);
-    localRotationEulerRad = QuaternionToEulerAnglesInternal(quat); // Update stored Euler
-    // Also update stored position and scale
-    dx::XMStoreFloat3(&localPosition, t);
-    dx::XMStoreFloat3(&localScale, s);
+    dx::XMMATRIX matrix = dx::XMLoadFloat4x4(&localTransform);
+    dx::XMVECTOR s_vec, r_quat_vec, t_vec;
+    dx::XMMatrixDecompose(&s_vec, &r_quat_vec, &t_vec, matrix);
+
+    dx::XMStoreFloat3(&localPosition, t_vec);
+    dx::XMStoreFloat4(&localRotationQuaternion, r_quat_vec);
+    dx::XMStoreFloat3(&localScale, s_vec);
 }
 
-// --- UPDATED SetLocal... Methods ---
+// --- SetLocal... Methods ---
 
-// This method now primarily exists if you need to set the transform directly via a matrix.
-// It will decompose the matrix and update the stored pos/rot/scale components.
 void Node::SetLocalTransform(DirectX::FXMMATRIX transform)
 {
     dx::XMStoreFloat4x4(&localTransform, transform);
-    UpdateStoredEulerFromMatrix(); // Update stored components from the new matrix
-    localTransformDirty = false; // Matrix is explicitly set, so it's "clean"
-    worldTransformDirty = true;  // World transform needs recalculation
+    UpdateStoredComponentsFromMatrix(); // Update stored pos, quat, scale from the new matrix
+    localTransformDirty = false;
+    worldTransformDirty = true;
 }
 
 void Node::SetLocalPosition(const DirectX::XMFLOAT3& pos)
 {
-    localPosition = pos;          // Update stored position
-    localTransformDirty = true; // Mark matrix for rebuild
-    worldTransformDirty = true; // Mark world matrix for rebuild
-}
-
-void Node::SetLocalRotation(const DirectX::XMFLOAT3& rotRad) // Input is Pitch, Yaw, Roll in Radians
-{
-    localRotationEulerRad = rotRad; // Update stored rotation
-    localTransformDirty = true;   // Mark matrix for rebuild
-    worldTransformDirty = true;   // Mark world matrix for rebuild
-}
-
-void Node::SetLocalScale(const DirectX::XMFLOAT3& scale)
-{
-    localScale = scale;           // Update stored scale
-    localTransformDirty = true; // Mark matrix for rebuild
-    worldTransformDirty = true; // Mark world matrix for rebuild
-}
-
-void Node::TranslateLocal(const DirectX::XMFLOAT3& translation)
-{
-    // 1. Get the current local rotation as a quaternion or matrix
-    //    Using the stored Euler angles is easiest here.
-    dx::XMMATRIX rotMatrix = dx::XMMatrixRotationRollPitchYaw(
-        localRotationEulerRad.x,
-        localRotationEulerRad.y,
-        localRotationEulerRad.z);
-
-    // 2. Load the translation vector to apply
-    dx::XMVECTOR translationVec = dx::XMLoadFloat3(&translation);
-
-    // 3. Transform the translation vector by the local rotation matrix
-    //    This rotates the translation amount to align with the node's orientation.
-    //    Use TransformNormal because it's a direction/offset vector.
-    dx::XMVECTOR rotatedTranslationVec = dx::XMVector3TransformNormal(translationVec, rotMatrix);
-
-    // 4. Load the current local position
-    dx::XMVECTOR currentPosVec = dx::XMLoadFloat3(&localPosition);
-
-    // 5. Add the rotated translation to the current position
-    dx::XMVECTOR newPosVec = dx::XMVectorAdd(currentPosVec, rotatedTranslationVec);
-
-    // 6. Store the new local position back into the member variable
-    dx::XMStoreFloat3(&localPosition, newPosVec);
-
-    // 7. Mark matrices as dirty
+    localPosition = pos;
     localTransformDirty = true;
     worldTransformDirty = true;
 }
 
+// rotRad is Pitch, Yaw, Roll in Radians
+void Node::SetLocalRotation(const DirectX::XMFLOAT3& rotRad)
+{
+    dx::XMVECTOR q = dx::XMQuaternionRotationRollPitchYaw(rotRad.x, rotRad.y, rotRad.z);
+    dx::XMStoreFloat4(&localRotationQuaternion, q);
+    localTransformDirty = true;
+    worldTransformDirty = true;
+}
 
-// --- UPDATED GetLocal... Methods ---
+void Node::SetLocalRotation(const DirectX::XMFLOAT4& quat)
+{
+    localRotationQuaternion = quat;
+    // It's good practice to normalize the quaternion if it's coming from an external source
+    // dx::XMStoreFloat4(&localRotationQuaternion, dx::XMQuaternionNormalize(dx::XMLoadFloat4(&quat)));
+    localTransformDirty = true;
+    worldTransformDirty = true;
+}
 
-// Constructs the matrix from components if dirty
+void Node::SetLocalScale(const DirectX::XMFLOAT3& scale)
+{
+    localScale = scale;
+    localTransformDirty = true;
+    worldTransformDirty = true;
+}
+
+void Node::TranslateLocal(const DirectX::XMFLOAT3& translation)
+{
+    dx::XMMATRIX rotMatrix = dx::XMMatrixRotationQuaternion(dx::XMLoadFloat4(&localRotationQuaternion));
+    dx::XMVECTOR translationVec = dx::XMLoadFloat3(&translation);
+    dx::XMVECTOR rotatedTranslationVec = dx::XMVector3TransformNormal(translationVec, rotMatrix);
+
+    dx::XMVECTOR currentPosVec = dx::XMLoadFloat3(&localPosition);
+    dx::XMVECTOR newPosVec = dx::XMVectorAdd(currentPosVec, rotatedTranslationVec);
+    dx::XMStoreFloat3(&localPosition, newPosVec);
+
+    localTransformDirty = true;
+    worldTransformDirty = true;
+}
+
+// --- GetLocal... Methods ---
+
 DirectX::XMMATRIX Node::GetLocalTransform() const
 {
     if (localTransformDirty)
     {
-        // Hacky const_cast or make localTransformDirty mutable
         const_cast<Node*>(this)->UpdateLocalTransformFromComponents();
     }
     return dx::XMLoadFloat4x4(&localTransform);
@@ -174,36 +173,32 @@ DirectX::XMMATRIX Node::GetLocalTransform() const
 
 DirectX::XMFLOAT3 Node::GetLocalPosition() const
 {
-    return localPosition; // Return stored value
+    return localPosition;
 }
 
 DirectX::XMFLOAT3 Node::GetLocalRotationEuler() const
 {
-    return localRotationEulerRad; // Return stored value
+    return QuaternionToEulerAnglesInternal(localRotationQuaternion); // Converts stored quaternion
+}
+
+DirectX::XMFLOAT4 Node::GetLocalRotationQuaternion() const
+{
+    return localRotationQuaternion;
 }
 
 DirectX::XMFLOAT3 Node::GetLocalScale() const
 {
-    return localScale; // Return stored value
+    return localScale;
 }
 
-
+// --- Directional Vectors (Forward, Right, Up, etc.) ---
+// These remain unchanged as they rely on GetWorldTransform(), which is now correct.
 Vector3 Node::Forward() const
 {
-    // Get the node's current world transform matrix
-    dx::XMMATRIX worldMat = GetWorldTransform(); // Ensures matrix is up-to-date
-
-    // Define the local forward vector (+Z)
-    dx::XMVECTOR localForward = dx::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
-
-    // Transform the local forward vector into world space using the world matrix
-    // Use TransformNormal as it's a direction (ignores translation)
+    dx::XMMATRIX worldMat = GetWorldTransform();
+    dx::XMVECTOR localForward = dx::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f); // +Z in local space
     dx::XMVECTOR worldForward = dx::XMVector3TransformNormal(localForward, worldMat);
-
-    // Normalize the result (important if scaling is non-uniform)
     worldForward = dx::XMVector3Normalize(worldForward);
-
-    // Store and return as SimpleMath::Vector3
     Vector3 result;
     dx::XMStoreFloat3(&result, worldForward);
     return result;
@@ -211,37 +206,21 @@ Vector3 Node::Forward() const
 
 Vector3 Node::Back() const
 {
-    // Get the node's current world transform matrix
     dx::XMMATRIX worldMat = GetWorldTransform();
-
-    // Define the local back vector (-Z)
-    dx::XMVECTOR localBack = dx::XMVectorSet(0.0f, 0.0f, -1.0f, 0.0f);
-
-    // Transform into world space
+    dx::XMVECTOR localBack = dx::XMVectorSet(0.0f, 0.0f, -1.0f, 0.0f); // -Z
     dx::XMVECTOR worldBack = dx::XMVector3TransformNormal(localBack, worldMat);
     worldBack = dx::XMVector3Normalize(worldBack);
-
-    // Store and return
     Vector3 result;
     dx::XMStoreFloat3(&result, worldBack);
     return result;
-
-    // Alternatively: return -Forward(); // Mathematically equivalent if Forward() is correct
 }
 
 Vector3 Node::Right() const
 {
-    // Get the node's current world transform matrix
     dx::XMMATRIX worldMat = GetWorldTransform();
-
-    // Define the local right vector (+X)
-    dx::XMVECTOR localRight = dx::XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
-
-    // Transform into world space
+    dx::XMVECTOR localRight = dx::XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f); // +X
     dx::XMVECTOR worldRight = dx::XMVector3TransformNormal(localRight, worldMat);
     worldRight = dx::XMVector3Normalize(worldRight);
-
-    // Store and return
     Vector3 result;
     dx::XMStoreFloat3(&result, worldRight);
     return result;
@@ -249,37 +228,21 @@ Vector3 Node::Right() const
 
 Vector3 Node::Left() const
 {
-    // Get the node's current world transform matrix
     dx::XMMATRIX worldMat = GetWorldTransform();
-
-    // Define the local left vector (-X)
-    dx::XMVECTOR localLeft = dx::XMVectorSet(-1.0f, 0.0f, 0.0f, 0.0f);
-
-    // Transform into world space
+    dx::XMVECTOR localLeft = dx::XMVectorSet(-1.0f, 0.0f, 0.0f, 0.0f); // -X
     dx::XMVECTOR worldLeft = dx::XMVector3TransformNormal(localLeft, worldMat);
     worldLeft = dx::XMVector3Normalize(worldLeft);
-
-    // Store and return
     Vector3 result;
     dx::XMStoreFloat3(&result, worldLeft);
     return result;
-
-    // Alternatively: return -Right();
 }
 
 Vector3 Node::Up() const
 {
-    // Get the node's current world transform matrix
     dx::XMMATRIX worldMat = GetWorldTransform();
-
-    // Define the local up vector (+Y)
-    dx::XMVECTOR localUp = dx::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-
-    // Transform into world space
+    dx::XMVECTOR localUp = dx::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f); // +Y
     dx::XMVECTOR worldUp = dx::XMVector3TransformNormal(localUp, worldMat);
     worldUp = dx::XMVector3Normalize(worldUp);
-
-    // Store and return
     Vector3 result;
     dx::XMStoreFloat3(&result, worldUp);
     return result;
@@ -287,28 +250,16 @@ Vector3 Node::Up() const
 
 Vector3 Node::Down() const
 {
-    // Get the node's current world transform matrix
     dx::XMMATRIX worldMat = GetWorldTransform();
-
-    // Define the local down vector (-Y)
-    dx::XMVECTOR localDown = dx::XMVectorSet(0.0f, -1.0f, 0.0f, 0.0f);
-
-    // Transform into world space
+    dx::XMVECTOR localDown = dx::XMVectorSet(0.0f, -1.0f, 0.0f, 0.0f); // -Y
     dx::XMVECTOR worldDown = dx::XMVector3TransformNormal(localDown, worldMat);
     worldDown = dx::XMVector3Normalize(worldDown);
-
-    // Store and return
     Vector3 result;
     dx::XMStoreFloat3(&result, worldDown);
     return result;
-
-    // Alternatively: return -Up();
 }
 
-// --- World Transform Methods (GetWorldTransform, GetWorldPosition, SetWorldPosition) ---
-// These rely on GetLocalTransform(), which now correctly rebuilds if needed.
-// Their implementations remain the same as before.
-
+// --- World Transform Methods ---
 DirectX::XMMATRIX Node::GetWorldTransform() const
 {
     if (worldTransformDirty)
@@ -320,8 +271,9 @@ DirectX::XMMATRIX Node::GetWorldTransform() const
 
 DirectX::XMFLOAT3 Node::GetWorldPosition() const
 {
-    DirectX::XMMATRIX worldMat = GetWorldTransform();
+    DirectX::XMMATRIX worldMat = GetWorldTransform(); // Ensures matrix is up-to-date
     DirectX::XMFLOAT3 worldPos;
+    // The position is in the 4th row (r[3]) of a DirectX matrix
     dx::XMStoreFloat3(&worldPos, worldMat.r[3]);
     return worldPos;
 }
@@ -330,84 +282,82 @@ void Node::SetWorldPosition(const DirectX::XMFLOAT3& worldPos)
 {
     if (parent == nullptr)
     {
-        SetLocalPosition(worldPos);
+        SetLocalPosition(worldPos); // For root node, world position is local position
     }
     else
     {
         dx::XMMATRIX parentWorldTransform = parent->GetWorldTransform();
         dx::XMMATRIX invParentWorldTransform = dx::XMMatrixInverse(nullptr, parentWorldTransform);
+
         dx::XMVECTOR worldPosVec = dx::XMLoadFloat3(&worldPos);
+        // Transform the desired world position into the parent's local space to find our new local position
         dx::XMVECTOR localPosVec = dx::XMVector3TransformCoord(worldPosVec, invParentWorldTransform);
-        DirectX::XMFLOAT3 localPos;
-        dx::XMStoreFloat3(&localPos, localPosVec);
-        SetLocalPosition(localPos); // SetLocalPosition now updates stored pos and flags matrix dirty
+
+        DirectX::XMFLOAT3 newLocalPos;
+        dx::XMStoreFloat3(&newLocalPos, localPosVec);
+        SetLocalPosition(newLocalPos);
     }
 }
 
-// --- UpdateWorldTransform - Depends on GetLocalTransform now ---
 void Node::UpdateWorldTransform()
 {
-    // GetLocalTransform() will ensure the local matrix is up-to-date before proceeding
-    dx::XMMATRIX local = GetLocalTransform();
+    dx::XMMATRIX finalLocalTransform = GetLocalTransform(); // Ensures local is up-to-date
 
     if (parent)
     {
         dx::XMMATRIX parentWorld = parent->GetWorldTransform(); // Ensures parent is up-to-date
-        dx::XMStoreFloat4x4(&worldTransform, dx::XMMatrixMultiply(local, parentWorld));
+        dx::XMStoreFloat4x4(&worldTransform, dx::XMMatrixMultiply(finalLocalTransform, parentWorld));
     }
     else
     {
-        dx::XMStoreFloat4x4(&worldTransform, local); // Root node's world is its local
+        dx::XMStoreFloat4x4(&worldTransform, finalLocalTransform); // Root node
     }
-    worldTransformDirty = false; // Mark world as clean
+    worldTransformDirty = false;
 
-    // Children's world transforms ARE now dirty because *this* node's world transform changed
+    // When this node's world transform changes, all its children's world transforms are now dirty
     for (auto& child : children)
     {
-        // Don't necessarily mark local dirty, just world
         child->worldTransformDirty = true;
     }
 }
 
-// --- Update - Update world first, then components/children ---
+// --- Update & Draw ---
 void Node::Update(float dt)
 {
-    // ... (Update transform logic as before) ...
-    if (worldTransformDirty) { UpdateWorldTransform(); }
-    else if (localTransformDirty) { UpdateWorldTransform(); }
+    // Ensure transforms are up-to-date before components or children use them
+    // If local is dirty, world will be updated by UpdateLocalTransformFromComponents -> UpdateWorldTransform path or by direct call.
+    if (localTransformDirty) { // This will also set worldTransformDirty = true
+        UpdateLocalTransformFromComponents(); // Rebuilds local, marks world dirty
+    }
+    if (worldTransformDirty) { // If local was clean but world was dirty (e.g. parent moved)
+        UpdateWorldTransform();         // Rebuilds world
+    }
+    // At this point, GetWorldTransform() will return an up-to-date matrix.
 
-    // Update components
     for (auto& comp : components) {
-        // Some components might need Graphics or FrameCommander in their Update
-        // For now, assuming Component::Update only needs dt
         comp->Update(dt);
     }
-    // Update children
     for (auto& child : children) {
         child->Update(dt);
     }
 }
-// --- Draw Method remains the same ---
+
 void Node::Submit(FrameCommander& frame, Graphics& gfx) const
 {
-    // 1. Submit components attached to this node that are "Submittable"
-    //    For now, only ModelComponent will be handled this way.
     if (auto* modelComp = GetComponent<ModelComponent>())
     {
-        modelComp->Submit(frame, gfx, GetWorldTransform()); // Pass gfx
+        modelComp->Submit(frame, gfx, GetWorldTransform());
     }
-
-    // 2. Submit children recursively
-	//for (const auto& child : children)   // Commented out for FRUSTUM !!!!
+    // Original Submit for children was commented out, keeping it that way:
+    //for (const auto& child : children)
     //{
-    //    child->Submit(frame, gfx); // Pass gfx
+    //    child->Submit(frame, gfx);
     //}
 }
 
-// --- ShowNodeTree remains the same ---
+// --- ShowNodeTree (unchanged from original provided snippet) ---
 void Node::ShowNodeTree(Node*& pSelectedNode) noexcept
 {
-    // ... (Implementation remains the same) ...
     const intptr_t nodeId = reinterpret_cast<intptr_t>(this);
     const auto node_flags = ImGuiTreeNodeFlags_OpenOnArrow |
         ((pSelectedNode == this) ? ImGuiTreeNodeFlags_Selected : 0) |
@@ -434,72 +384,62 @@ void Node::ShowNodeTree(Node*& pSelectedNode) noexcept
         ImGui::TreePop();
     }
 }
+
+// --- FindByTag and GetRoot (unchanged from original provided snippet) ---
 Node* Node::GetRoot() const
 {
-    // Start from the current node
     const Node* pCurrent = this;
-    // Traverse upwards using the parent pointer until we find a node with no parent
     while (pCurrent->parent != nullptr)
     {
-        pCurrent = pCurrent->parent; // Move up one level
+        pCurrent = pCurrent->parent;
     }
-
-    // pCurrent now points to the root node.
-    // We need to cast away the const-ness because the return type is Node*, 
-    // but the traversal itself didn't modify anything.
     return const_cast<Node*>(pCurrent);
 }
+
 Node* Node::FindFirstChildByTag(const std::string& searchTag)
 {
-    // 1. Check if *this* node has the tag
     if (this->tag == searchTag)
     {
-        return this; // Found it!
+        return this;
     }
-
-    // 2. Recursively search children
     for (const auto& child : children)
     {
-        if (child) // Ensure child is valid
+        if (child)
         {
             Node* found = child->FindFirstChildByTag(searchTag);
             if (found != nullptr)
             {
-                // If a child found it, return the result immediately
                 return found;
             }
         }
     }
-
-    // 3. Not found in this node or any descendants
     return nullptr;
 }
 
-void FindAllChildrenByTagRecursive(Node* currentNode, const std::string& searchTag, std::vector<Node*>& foundNodes)
+// Internal recursive helper (unchanged logic)
+void FindAllChildrenByTagRecursiveInternal(Node* currentNode, const std::string& searchTag, std::vector<Node*>& foundNodes)
 {
-    if (!currentNode) return; // Base case for safety
+    if (!currentNode) return;
 
-    // 1. Check if the current node has the tag
     if (currentNode->tag == searchTag)
     {
-        foundNodes.push_back(currentNode); // Add it to the results
+        foundNodes.push_back(currentNode);
     }
-
-    // 2. Recursively search children
-    for (const auto& child : currentNode->GetChildren()) // Use GetChildren() or direct member access
+    for (const auto& child : currentNode->GetChildren())
     {
-        FindAllChildrenByTagRecursive(child.get(), searchTag, foundNodes); // Pass vector by reference
+        FindAllChildrenByTagRecursiveInternal(child.get(), searchTag, foundNodes);
     }
 }
 
-// Public interface function
 std::vector<Node*> Node::FindAllChildrenByTag(const std::string& searchTag)
 {
-    std::vector<Node*> foundNodes; // Create the results vector
-
+    std::vector<Node*> foundNodes;
+    // The original implementation started searching from children of `this` node.
+    // If you want to include `this` node itself in the search if it matches the tag,
+    // and then its descendants, the recursive helper should be called on `this`.
+    // For now, matching the original behavior of only searching children:
     for (const auto& child : children) {
-        FindAllChildrenByTagRecursive(child.get(), searchTag, foundNodes);
+        FindAllChildrenByTagRecursiveInternal(child.get(), searchTag, foundNodes); // Call the renamed internal helper
     }
-
-    return foundNodes; // Return the collected nodes
+    return foundNodes;
 }

@@ -164,6 +164,7 @@ App::App(const std::string& commandLine)
         std::make_unique<Rigidbody>(pPlayer, Vector3(0.0f, 35.0f, 0.0f), 100.0f, new btCapsuleShape(1.0f, 5.0f))
     );
     Rigidbody* pRigidbody = pPlayer->GetComponent<Rigidbody>();
+    pRigidbody->GetBulletRigidbody()->setAngularFactor(btVector3(0,0,0));
     dynamicsWorld->addRigidBody(pRigidbody->GetBulletRigidbody());
     pPlayer->AddComponent(
         std::make_unique<PlayerController>(pPlayer, wnd) // Add controller first
@@ -195,12 +196,18 @@ App::App(const std::string& commandLine)
 	a2Sphere->SetLayer(Layers::PLAYER);*/
 	//physicsEngine.AddCollider(a2Sphere);
     
-
+    //btCompoundShape* ecShape = new btCompoundShape();
+    //btCapsuleShape* ebShape = new btCapsuleShape(1.0f, 2.0f);
+    //btTransform ebShapeTransform;
+    //ebShapeTransform.setIdentity();
+    //ebShapeTransform.setOrigin(btVector3(0.0f, -5.0f, 0.0f));
+    //ecShape->addChildShape(ebShapeTransform, ebShape);
 
     pEnemy->AddComponent(
-        std::make_unique<Rigidbody>(pEnemy, Vector3(15.0f, 50.0f, 0.0f), 5.0f, new btCapsuleShape(1.0f, 5.0f))
+        std::make_unique<Rigidbody>(pEnemy, Vector3(15.0f, 50.0f, 0.0f), 10.0f, new btCapsuleShape(1.0f, 3.0f))
     );
     Rigidbody* eRigidbody = pEnemy->GetComponent<Rigidbody>();
+    eRigidbody->GetBulletRigidbody()->setAngularFactor(btVector3(0, 0, 0));
     dynamicsWorld->addRigidBody(eRigidbody->GetBulletRigidbody());
 	//pEnemy->AddComponent(
 	//	std::make_unique<CapsuleCollider>(pEnemy, eRigidbody, 1.0f, Vector3(-0.8f, 0.0f, -0.4f), Vector3(-0.8f, 4.0f, -0.4f))
@@ -214,7 +221,7 @@ App::App(const std::string& commandLine)
     btBoxShape* bShape = new btBoxShape(btVector3(100.0f, 1.0f, 100.0f));
     btTransform bShapeTransform;
     bShapeTransform.setIdentity();
-    bShapeTransform.setOrigin(btVector3(0.0f, -5.0f, 0.0f));
+    bShapeTransform.setOrigin(btVector3(0.0f, 10.0f, 0.0f));
     cShape->addChildShape(bShapeTransform, bShape);
     pIsland->AddComponent(
         std::make_unique<Collider>(pIsland, cShape)
@@ -630,44 +637,36 @@ void App::DrawNodeRecursive(Graphics& gfx, Node& node)
 void App::ShowControlWindows()
 {
     // --- Existing Windows ---
-
-	//DrawSphereColliders(wnd.Gfx()); // Call the updated function
- //   DrawBoxColliders(wnd.Gfx()); // Call the updated function
-	//DrawCapsuleColliders(wnd.Gfx());
-    //ForEnemyWalking();
+    // ... (your other UI code like pointLight, demo window, etc.) ...
+    //DrawSphereColliders(wnd.Gfx()); 
+    //DrawBoxColliders(wnd.Gfx()); 
+    //DrawCapsuleColliders(wnd.Gfx());
     pointLight.Submit(fc);
-
-    pointLight.SpawnControlWindow(); // Control for Point Light
+    pointLight.SpawnControlWindow();
     if (showDemoWindow)
     {
         ImGui::ShowDemoWindow(&showDemoWindow);
     }
 
-    // --- Show Model Component Windows ---
-    //if (pNanosuitNode)
-    //{
-    //    if (auto* modelComp = pNanosuitNode->GetComponent<ModelComponent>())
-    //    {
-    //        modelComp->ShowWindow("Nanosuit Controls");
-    //    }
-    //}
-
-    // --- Simulation Speed Window ---
     if (ImGui::Begin("Simulation Speed"))
     {
         ImGui::SliderFloat("Speed Factor", &speed_factor, 0.0f, 4.0f);
-		ImGui::Text("To change camera press 'C'");
-		ImGui::Text("To show/hide control window press 'H'");
+        ImGui::Text("To change camera press 'V'"); // Corrected key from 'C' based on HandleInput
+        ImGui::Text("To show/hide control window press 'H'");
     }
     ImGui::End();
 
+    // --- Scene Hierarchy and Transform Editor ---
+    // Static variables to hold the Euler angles for editing.
+    // These persist across frames for the currently selected node.
+    static Node* s_pSelectedNodeForTransformEdit = nullptr;
+    static DirectX::XMFLOAT3 s_editableRotationEulerRad = { 0.0f, 0.0f, 0.0f }; // Store in Radians
 
-    // --- NEW: Scene Hierarchy Window ---
     if (ImGui::Begin("Scene Hierarchy"))
     {
         if (pSceneRoot)
         {
-            pSceneRoot->ShowNodeTree(pSelectedSceneNode);
+            pSceneRoot->ShowNodeTree(pSelectedSceneNode); // pSelectedSceneNode is your App member
         }
 
         ImGui::Separator();
@@ -680,53 +679,59 @@ void App::ShowControlWindows()
             // --- Transform Editor ---
             if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
             {
-                // Get current values
+                // Position and Scale can be read directly each frame
                 DirectX::XMFLOAT3 pos = pSelectedSceneNode->GetLocalPosition();
-                DirectX::XMFLOAT3 rotRad = pSelectedSceneNode->GetLocalRotationEuler();
                 DirectX::XMFLOAT3 scale = pSelectedSceneNode->GetLocalScale();
-
-                // Convert rotation to degrees for easier editing
-                DirectX::XMFLOAT3 rotDeg = {
-                    DirectX::XMConvertToDegrees(rotRad.x),
-                    DirectX::XMConvertToDegrees(rotRad.y),
-                    DirectX::XMConvertToDegrees(rotRad.z)
-                };
-
-                bool transformChanged = false;
+                // bool transformChanged = false; // You might use this if other systems need to know
 
                 ImGui::Text("Position"); ImGui::SameLine();
                 if (ImGui::DragFloat3("##Position", &pos.x, 0.1f))
                 {
                     pSelectedSceneNode->SetLocalPosition(pos);
-                    transformChanged = true;
+                    // transformChanged = true;
                 }
 
-                ImGui::Text("Rotation"); ImGui::SameLine();
-                if (ImGui::DragFloat3("##Rotation", &rotDeg.x, 1.0f)) // Edit degrees
+                // --- Rotation Handling ---
+                // If the selected node has changed, update our static editable Euler angles
+                // from the newly selected node.
+                if (pSelectedSceneNode != s_pSelectedNodeForTransformEdit)
                 {
-                    // Convert back to radians before setting
-                    rotRad = {
+                    s_editableRotationEulerRad = pSelectedSceneNode->GetLocalRotationEuler();
+                    s_pSelectedNodeForTransformEdit = pSelectedSceneNode;
+                }
+
+                // Convert our stable editable radians to degrees for the UI
+                DirectX::XMFLOAT3 rotDeg = {
+                    DirectX::XMConvertToDegrees(s_editableRotationEulerRad.x),
+                    DirectX::XMConvertToDegrees(s_editableRotationEulerRad.y),
+                    DirectX::XMConvertToDegrees(s_editableRotationEulerRad.z)
+                };
+
+                ImGui::Text("Rotation"); ImGui::SameLine();
+                // The DragFloat3 now manipulates rotDeg (our UI copy in degrees)
+                if (ImGui::DragFloat3("##Rotation", &rotDeg.x, 1.0f, -360.0f, 360.0f, "%.2f")) // Edit degrees
+                {
+                    // If changed, convert degrees back to radians for our stable copy
+                    s_editableRotationEulerRad = {
                         DirectX::XMConvertToRadians(rotDeg.x),
                         DirectX::XMConvertToRadians(rotDeg.y),
                         DirectX::XMConvertToRadians(rotDeg.z)
                     };
-                    pSelectedSceneNode->SetLocalRotation(rotRad); // Set radians
-                    transformChanged = true;
+                    // Then set the node's rotation using these stable radians.
+                    // The Node will convert this to its internal quaternion.
+                    pSelectedSceneNode->SetLocalRotation(s_editableRotationEulerRad);
+                    // transformChanged = true;
                 }
 
-                ImGui::Text("Scale   "); ImGui::SameLine(); // Extra spaces for alignment
-                if (ImGui::DragFloat3("##Scale", &scale.x, 0.01f, 0.01f, 100.0f)) // Add min/max scale
+                ImGui::Text("Scale   "); ImGui::SameLine();
+                if (ImGui::DragFloat3("##Scale", &scale.x, 0.01f, 0.001f, 100.0f))
                 {
-                    // Prevent zero scale if needed
                     scale.x = std::max(scale.x, 0.001f);
                     scale.y = std::max(scale.y, 0.001f);
                     scale.z = std::max(scale.z, 0.001f);
                     pSelectedSceneNode->SetLocalScale(scale);
-                    transformChanged = true;
+                    // transformChanged = true;
                 }
-
-                // Note: The Node's worldTransformDirty flag is already set by the SetLocal... methods.
-                // The Node::Update() call later will handle recalculating the world matrix.
             }
 
             // --- Component Viewer ---
@@ -740,32 +745,27 @@ void App::ShowControlWindows()
                     int compIndex = 0;
                     for (const auto& comp : components) {
                         if (comp) {
-                            // Create a unique ID for the component header
                             std::string compLabel = typeid(*comp).name();
-                            // Remove "class " prefix if present (platform dependent)
                             if (compLabel.rfind("class ", 0) == 0) {
                                 compLabel = compLabel.substr(6);
                             }
-                            compLabel += "##" + std::to_string(compIndex++); // Add unique ID
+                            compLabel += "##Comp" + std::to_string(reinterpret_cast<uintptr_t>(comp.get())) + std::to_string(compIndex++);
 
-                            // Make each component collapsible
+
                             if (ImGui::TreeNode(compLabel.c_str()))
                             {
-                                // --- Call the component's ImGui draw function ---
                                 comp->DrawImGuiControls();
-                                // --- End Call ---
-
                                 ImGui::TreePop();
                             }
                         }
                     }
                 }
             }
-
         }
         else
         {
             ImGui::Text("Selected: None");
+            s_pSelectedNodeForTransformEdit = nullptr; // Reset if nothing is selected
         }
     }
     ImGui::End(); // End Scene Hierarchy Window

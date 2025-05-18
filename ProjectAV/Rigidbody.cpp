@@ -11,9 +11,11 @@ void Rigidbody::Update(float dt)
 												float(trans.getOrigin().getY()),
 												float(trans.getOrigin().getZ())));
 
-	float rotX, rotY, rotZ;
-	trans.getRotation().getEulerZYX(rotZ, rotY, rotX);
-	pOwner->SetLocalRotation(DirectX::XMFLOAT3(rotX, rotY, rotZ));
+	btQuaternion rotationQuaternion = trans.getRotation();
+	pOwner->SetLocalRotation(DirectX::XMFLOAT4(rotationQuaternion.x(), 
+											   rotationQuaternion.y(),
+											   rotationQuaternion.z(),
+											   rotationQuaternion.w()));
 }
 
 btRigidBody* Rigidbody::GetBulletRigidbody()
