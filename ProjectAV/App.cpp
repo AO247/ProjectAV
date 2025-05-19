@@ -41,15 +41,13 @@ App::App(const std::string& commandLine)
     soundDevice = LISTENER->Get();
     ALint attentuation = AL_INVERSE_DISTANCE_CLAMPED;
 	soundDevice->SetAttenuation(attentuation);
-    //static SoundEffectsPlayer effectsPlayer1;
-    //uint32_t sound1 = SE_LOAD("..\\ProjectAV\\Models\\turn.ogg");
     myMusic = std::make_unique<MusicBuffer>("Models\\muza_full.wav");
 
 
     PrefabManager& prefabManager = PrefabManager::GetInstance();
 
     // Przyk³ad rejestracji prefabów
-    prefabManager.RegisterPrefab("Stone", Prefab("Models\\kamien\\kamien_6.obj"));
+    prefabManager.RegisterPrefab("Stone", Prefab("Models\\kamien\\kamien_6.obj", &physicsEngine, &wnd));
 
 
     // --- Create Nodes ---
@@ -271,11 +269,11 @@ App::App(const std::string& commandLine)
 	physicsEngine.AddCollider(sBoundingSphere);
 
 
-
-    Node* stone1 = InstantiatePrefab("Stone", pSceneRoot.get());
-    Node* stone2 = InstantiatePrefab("Stone", pSceneRoot.get());
-    Node* stone3 = InstantiatePrefab("Stone", pSceneRoot.get());
-    Node* stone5 = InstantiatePrefab("Stone", pSceneRoot.get());
+	Node* stone1 = prefabManager.GetPrefab("Stone")->InstantiatePrefab("Stone", pSceneRoot.get(), -10.0f, 1.0f, -10.0f, 1.5f);
+    Node* stone2 = prefabManager.GetPrefab("Stone")->InstantiatePrefab("Stone", pSceneRoot.get(), 10.0f, 1.0f, -10.0f, 1.5f);
+    Node* stone3 = prefabManager.GetPrefab("Stone")->InstantiatePrefab("Stone", pSceneRoot.get(), -10.0f, 1.0f, 10.0f, 1.5f);
+    Node* stone4 = prefabManager.GetPrefab("Stone")->InstantiatePrefab("Stone", pSceneRoot.get(), 10.0f, 1.0f, 10.0f, 1.5f);
+    Node* stone5 = prefabManager.GetPrefab("Stone")->InstantiatePrefab("Stone", pSceneRoot.get(), -5.0f, 1.0f, -5.0f, 1.5f);
 
     //Adding Other Components
     pFreeViewCamera->AddComponent(
@@ -345,14 +343,14 @@ App::App(const std::string& commandLine)
 	pColumn2->SetLocalPosition(DirectX::XMFLOAT3(-2.0f, 0.0f, 4.0f));
 	pColumn3->SetLocalPosition(DirectX::XMFLOAT3(-16.0f, 0.0f, -6.0f));
 	pColumn4->SetLocalPosition(DirectX::XMFLOAT3(10.0f, 0.0f, 6.0f));
-	stone1->SetLocalPosition(DirectX::XMFLOAT3(-10.0f, 1.0f, -10.0f));
-	stone1->SetLocalScale(dx::XMFLOAT3(1.5f, 1.5f, 1.5f));
-	stone2->SetLocalPosition(DirectX::XMFLOAT3(-10.0f, 1.0f, 10.0f));
+	/*stone1->SetLocalPosition(DirectX::XMFLOAT3(-10.0f, 1.0f, -10.0f));
+	stone1->SetLocalScale(dx::XMFLOAT3(1.5f, 1.5f, 1.5f));*/
+	/*stone2->SetLocalPosition(DirectX::XMFLOAT3(-10.0f, 1.0f, 10.0f));
 	stone2->SetLocalScale(dx::XMFLOAT3(1.5f, 1.5f, 1.5f));
 	stone3->SetLocalPosition(DirectX::XMFLOAT3(10.0f, 1.0f, -10.0f));
 	stone3->SetLocalScale(dx::XMFLOAT3(1.5f, 1.5f, 1.5f));
 	stone5->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f));
-	stone5->SetLocalScale(dx::XMFLOAT3(1.5f, 1.5f, 1.5f));
+	stone5->SetLocalScale(dx::XMFLOAT3(1.5f, 1.5f, 1.5f));*/
 	soundDevice->SetLocation(pPlayer->GetLocalPosition().x, pPlayer->GetLocalPosition().y, pPlayer->GetLocalPosition().z);
 
     //Adding colliders to draw
@@ -369,9 +367,9 @@ App::App(const std::string& commandLine)
 	AddSphereColliderToDraw(wnd.Gfx(), a2Sphere);
 	AddSphereColliderToDraw(wnd.Gfx(), sBoundingSphere);
 	AddSphereColliderToDraw(wnd.Gfx(), stone1->GetComponent<BoundingSphere>());
-    AddSphereColliderToDraw(wnd.Gfx(), stone2->GetComponent<BoundingSphere>());
+    /*AddSphereColliderToDraw(wnd.Gfx(), stone2->GetComponent<BoundingSphere>());
     AddSphereColliderToDraw(wnd.Gfx(), stone3->GetComponent<BoundingSphere>());
-    AddSphereColliderToDraw(wnd.Gfx(), stone5->GetComponent<BoundingSphere>());
+    AddSphereColliderToDraw(wnd.Gfx(), stone5->GetComponent<BoundingSphere>());*/
 
 	AddCapsuleColliderToDraw(wnd.Gfx(), pCapsule);
 	AddCapsuleColliderToDraw(wnd.Gfx(), eCapsule);
@@ -1039,51 +1037,51 @@ void App::CleanupDestroyedNodes(Node* currentNode)
 }
 
 
-Node* App::InstantiatePrefab(const std::string& prefabName, Node* parentNode) {
-    const Prefab* prefab = PrefabManager::GetInstance().GetPrefab(prefabName);
-    if (!prefab) {
-        OutputDebugStringA(("Prefab not found: " + prefabName).c_str());
-        return nullptr;
-    }
-
-    // Tworzenie nowego wêz³a
-    auto pNewNodeOwner = std::make_unique<Node>(prefabName, nullptr, "Stone");
-    //Node* pNewNode = pNewNodeOwner.get(); // Przechowaj wskaŸnik przed przeniesieniem
-
-    // £adowanie modelu
-    if (!prefab->GetModelPath().empty()) {
-        pNewNodeOwner->AddComponent(
-            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wnd.Gfx(), prefab->GetModelPath())
-        );
-    }
-
-    pNewNodeOwner->AddComponent(
-        std::make_unique<Rigidbody>(pNewNodeOwner.get(), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f))
-    );
-    Rigidbody* pRigidbody = pNewNodeOwner->GetComponent<Rigidbody>();
-    pNewNodeOwner->AddComponent(
-        std::make_unique<Throwable>(pNewNodeOwner.get())
-    );
-    pNewNodeOwner->AddComponent(
-        std::make_unique<OBB>(pNewNodeOwner.get(), pRigidbody, Vector3(0.0f, 0.6f, 0.0f), Vector3(1.2f, 1.1f, 1.7f))
-    );
-    OBB* pOBB = pNewNodeOwner->GetComponent<OBB>();
-    pOBB->SetLayer(Layers::THROWABLE);
-    pRigidbody->SetCollider(pOBB);
-    physicsEngine.AddRigidbody(pRigidbody);
-    pNewNodeOwner->AddComponent(
-        std::make_unique<BoundingSphere>(pNewNodeOwner.get(), Vector3(0.0f, 0.6f, 0.0f), 1.5f, nullptr)
-    );
-    BoundingSphere* pBoundingSphere = pNewNodeOwner->GetComponent<BoundingSphere>();
-    pBoundingSphere->SetLayer(Layers::THROWABLE);
-    pBoundingSphere->SetIsTrigger(true);
-    pBoundingSphere->SetTriggerEnabled(true);
-    pNewNodeOwner->GetComponent<Throwable>()->damageArea = pBoundingSphere;
-    physicsEngine.AddCollider(pBoundingSphere);
-
-    // Dodanie wêz³a do sceny
-	Node* pNewNode = pNewNodeOwner.get(); // Przechowaj wskaŸnik przed przeniesieniem
-    pSceneRoot->AddChild(std::move(pNewNodeOwner));
-
-    return pNewNode;
-}
+//Node* App::InstantiatePrefab(const std::string& prefabName, Node* parentNode) {
+//    const Prefab* prefab = PrefabManager::GetInstance().GetPrefab(prefabName);
+//    if (!prefab) {
+//        OutputDebugStringA(("Prefab not found: " + prefabName).c_str());
+//        return nullptr;
+//    }
+//
+//    // Tworzenie nowego wêz³a
+//    auto pNewNodeOwner = std::make_unique<Node>(prefabName, nullptr, "Stone");
+//    //Node* pNewNode = pNewNodeOwner.get(); // Przechowaj wskaŸnik przed przeniesieniem
+//
+//    // £adowanie modelu
+//    if (!prefab->GetModelPath().empty()) {
+//        pNewNodeOwner->AddComponent(
+//            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wnd.Gfx(), prefab->GetModelPath())
+//        );
+//    }
+//
+//    pNewNodeOwner->AddComponent(
+//        std::make_unique<Rigidbody>(pNewNodeOwner.get(), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f))
+//    );
+//    Rigidbody* pRigidbody = pNewNodeOwner->GetComponent<Rigidbody>();
+//    pNewNodeOwner->AddComponent(
+//        std::make_unique<Throwable>(pNewNodeOwner.get())
+//    );
+//    pNewNodeOwner->AddComponent(
+//        std::make_unique<OBB>(pNewNodeOwner.get(), pRigidbody, Vector3(0.0f, 0.6f, 0.0f), Vector3(1.2f, 1.1f, 1.7f))
+//    );
+//    OBB* pOBB = pNewNodeOwner->GetComponent<OBB>();
+//    pOBB->SetLayer(Layers::THROWABLE);
+//    pRigidbody->SetCollider(pOBB);
+//    physicsEngine.AddRigidbody(pRigidbody);
+//    pNewNodeOwner->AddComponent(
+//        std::make_unique<BoundingSphere>(pNewNodeOwner.get(), Vector3(0.0f, 0.6f, 0.0f), 1.5f, nullptr)
+//    );
+//    BoundingSphere* pBoundingSphere = pNewNodeOwner->GetComponent<BoundingSphere>();
+//    pBoundingSphere->SetLayer(Layers::THROWABLE);
+//    pBoundingSphere->SetIsTrigger(true);
+//    pBoundingSphere->SetTriggerEnabled(true);
+//    pNewNodeOwner->GetComponent<Throwable>()->damageArea = pBoundingSphere;
+//    physicsEngine.AddCollider(pBoundingSphere);
+//
+//    // Dodanie wêz³a do sceny
+//	Node* pNewNode = pNewNodeOwner.get(); // Przechowaj wskaŸnik przed przeniesieniem
+//    parentNode->AddChild(std::move(pNewNodeOwner));
+//
+//    return pNewNode;
+//}
