@@ -46,8 +46,8 @@ App::App(const std::string& commandLine)
 
     PrefabManager& prefabManager = PrefabManager::GetInstance();
 
-    // Przyk³ad rejestracji prefabów
     prefabManager.RegisterPrefab("Stone", Prefab("Models\\kamien\\kamien_6.obj", &physicsEngine, &wnd));
+
 
 
     // --- Create Nodes ---

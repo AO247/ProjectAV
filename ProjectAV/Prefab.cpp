@@ -34,8 +34,9 @@ void Prefab::SetModelPath(const std::string& path)
    modelPath = path;  
 }  
 
-Node* Prefab::InstantiatePrefab(const std::string& prefabName, Node* parentNode, float locX, float locY, float locZ, float scale) const {  
-   const Prefab* prefab = PrefabManager::GetInstance().GetPrefab(prefabName);  
+Node* Prefab::InstantiateStone(const std::string& prefabName, Node* parentNode, float locX, float locY, float locZ, float scale) const {  
+   
+    const Prefab* prefab = PrefabManager::GetInstance().GetPrefab(prefabName);  
    if (!prefab) {  
        OutputDebugStringA(("Prefab not found: " + prefabName).c_str());  
        return nullptr;  
