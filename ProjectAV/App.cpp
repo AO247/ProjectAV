@@ -18,6 +18,8 @@
 #include "BulletCollision/CollisionDispatch/btGhostObject.h"
 #include "PhysicsCommon.h"
 #include "btBulletCollisionCommon.h"
+#include "BulletCollision/Gimpact/btGImpactShape.h"
+#include "BulletCollision/Gimpact/btGImpactCollisionAlgorithm.h"
 
 
 namespace dx = DirectX;
@@ -42,6 +44,7 @@ App::App(const std::string& commandLine)
 
     btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
     btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);
+    btGImpactCollisionAlgorithm::registerAlgorithm(dispatcher);
     btBroadphaseInterface* overlappingPairCache = new btDbvtBroadphase();
     btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
     dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
@@ -163,8 +166,9 @@ App::App(const std::string& commandLine)
 
 
 	//Adding Rigidbody and Collider
+    btCapsuleShape* cshape = new btCapsuleShape(1.0f, 5.0f);
     pPlayer->AddComponent(
-        std::make_unique<Rigidbody>(pPlayer, Vector3(0.0f, 35.0f, 0.0f), 100.0f, new btCapsuleShape(1.0f, 5.0f))
+        std::make_unique<Rigidbody>(pPlayer, Vector3(0.0f, 35.0f, 0.0f), 100.0f, cshape)
     );
     Rigidbody* pRigidbody = pPlayer->GetComponent<Rigidbody>();
     pRigidbody->GetBulletRigidbody()->setAngularFactor(btVector3(0,0,0));
@@ -230,8 +234,9 @@ App::App(const std::string& commandLine)
     cShape->addChildShape(bShapeTransform, bShape);*/
     ModelComponent* imc = pIsland->GetComponent<ModelComponent>();
     std::vector<ModelComponent::Triangle> ts = imc->GetAllTriangles();
+    btGImpactMeshShape* ccshape = PhysicsCommon::MakeGImpactShape(imc->GetAllTriangles());
     pIsland->AddComponent(
-        std::make_unique<Collider>(pIsland, PhysicsCommon::MakeConcaveShape(imc->GetAllTriangles()))
+        std::make_unique<Collider>(pIsland, ccshape)
     );
     Collider* iCol = pIsland->GetComponent<Collider>();
     dynamicsWorld->addCollisionObject(iCol->GetBulletCollisionObject());
