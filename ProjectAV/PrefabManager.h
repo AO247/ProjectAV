@@ -1,15 +1,18 @@
 #pragma once
 #include "Prefab.h"
-#include <map>
+#include "Node.h"
 #include <string>
+
+class PhysicsEngine;
+class Window;
 
 class PrefabManager {
 public:
-    static PrefabManager& GetInstance();
-
-    void RegisterPrefab(const std::string& name, const Prefab& prefab);
-    const Prefab* GetPrefab(const std::string& name) const;
+    PrefabManager(PhysicsEngine* physicsEngine, Window* wnd);
+	~PrefabManager();  
+    Node* InstantiateStone(Node* parentNode = nullptr, float locX = 0, float locY = 0, float locZ = 0, float scale = 1) const;
 
 private:
-    std::map<std::string, Prefab> prefabs;
+    PhysicsEngine* physicsEngine;
+    Window* wnd;
 };

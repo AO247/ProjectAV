@@ -44,10 +44,7 @@ App::App(const std::string& commandLine)
     myMusic = std::make_unique<MusicBuffer>("Models\\muza_full.wav");
 
 
-    PrefabManager& prefabManager = PrefabManager::GetInstance();
-
-    prefabManager.RegisterPrefab("Stone", Prefab("Models\\kamien\\kamien_6.obj", &physicsEngine, &wnd));
-
+        PrefabManager prefabManager(&physicsEngine, &wnd);
 
 
     // --- Create Nodes ---
@@ -269,11 +266,11 @@ App::App(const std::string& commandLine)
 	physicsEngine.AddCollider(sBoundingSphere);
 
 
-	Node* stone1 = prefabManager.GetPrefab("Stone")->InstantiatePrefab("Stone", pSceneRoot.get(), -10.0f, 1.0f, -10.0f, 1.5f);
-    Node* stone2 = prefabManager.GetPrefab("Stone")->InstantiatePrefab("Stone", pSceneRoot.get(), 10.0f, 1.0f, -10.0f, 1.5f);
-    Node* stone3 = prefabManager.GetPrefab("Stone")->InstantiatePrefab("Stone", pSceneRoot.get(), -10.0f, 1.0f, 10.0f, 1.5f);
-    Node* stone4 = prefabManager.GetPrefab("Stone")->InstantiatePrefab("Stone", pSceneRoot.get(), 10.0f, 1.0f, 10.0f, 1.5f);
-    Node* stone5 = prefabManager.GetPrefab("Stone")->InstantiatePrefab("Stone", pSceneRoot.get(), -5.0f, 1.0f, -5.0f, 1.5f);
+	Node* stone1 = prefabManager.InstantiateStone(pSceneRoot.get(), -10.0f, 1.0f, -10.0f, 1.5f);
+    Node* stone2 = prefabManager.InstantiateStone(pSceneRoot.get(), 10.0f, 1.0f, -10.0f, 1.5f);
+    Node* stone3 = prefabManager.InstantiateStone(pSceneRoot.get(), -10.0f, 1.0f, 10.0f, 1.5f);
+    Node* stone4 = prefabManager.InstantiateStone(pSceneRoot.get(), 10.0f, 1.0f, 10.0f, 1.5f);
+    Node* stone5 = prefabManager.InstantiateStone(pSceneRoot.get(), -5.0f, 1.0f, -5.0f, 1.5f);
 
     //Adding Other Components
     pFreeViewCamera->AddComponent(
