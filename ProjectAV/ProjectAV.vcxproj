@@ -216,6 +216,7 @@
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="NullPixelShader.cpp" />
     <ClCompile Include="OBB.cpp" />
+    <ClCompile Include="PhysicsCommon.cpp" />
     <ClCompile Include="PhysicsEngine.cpp" />
     <ClCompile Include="PixelShader.cpp" />
     <ClCompile Include="PlayerController.cpp" />
@@ -246,6 +247,7 @@
     <ClCompile Include="Topology.cpp" />
     <ClCompile Include="TransformCbuf.cpp" />
     <ClCompile Include="TransformCbufDoubleboi.cpp" />
+    <ClCompile Include="Trigger.cpp" />
     <ClCompile Include="Vertex.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
     <ClCompile Include="VertexShader.cpp" />
@@ -322,6 +324,7 @@
     <ClInclude Include="OBB.h" />
     <ClInclude Include="Pass.h" />
     <ClInclude Include="PerfLog.h" />
+    <ClInclude Include="PhysicsCommon.h" />
     <ClInclude Include="PhysicsEngine.h" />
     <ClInclude Include="PhysicsLayers.h" />
     <ClInclude Include="PixelShader.h" />
@@ -360,6 +363,7 @@
     <ClInclude Include="Topology.h" />
     <ClInclude Include="TransformCbuf.h" />
     <ClInclude Include="TransformCbufDoubleboi.h" />
+    <ClInclude Include="Trigger.h" />
     <ClInclude Include="Vertex.h" />
     <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="VertexShader.h" />

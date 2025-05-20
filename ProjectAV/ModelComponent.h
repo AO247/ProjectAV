@@ -5,24 +5,40 @@
 #include <string>
 #include <DirectXMath.h>
 #include "ConditionalNoexcept.h"
+// #include "AggregateVertex.h" // No longer needed
+
+// Include DirectX Simple Math
+#include <SimpleMath.h>
+
+
 // Forward Declarations
-class Mesh; // Your Mesh class
+class Mesh;
 class Graphics;
-class FrameCommander; // For Submit method
-class ModelControlWindow; // Keep for ImGui
+class FrameCommander;
+class ModelControlWindow;
 namespace Assimp { class Importer; }
-struct aiNode; // Assimp internal node
+struct aiNode;
 struct aiMesh;
 struct aiMaterial;
 
-// This internal Node structure (ModelInternalNode) represents the hierarchy loaded FROM the model file
+struct XMFLOAT3Less {
+    bool operator()(const DirectX::XMFLOAT3& a, const DirectX::XMFLOAT3& b) const {
+        // Lexicographical comparison
+        if (a.x != b.x) return a.x < b.x;
+        if (a.y != b.y) return a.y < b.y;
+        return a.z < b.z;
+        // Alternative using std::tie (cleaner, include <tuple>):
+        // return std::tie(a.x, a.y, a.z) < std::tie(b.x, b.y, b.z);
+    }
+};
+
+
 class ModelInternalNode
 {
     friend class ModelComponent;
 public:
     ModelInternalNode(int id, const std::string& name, std::vector<Mesh*> meshPtrs, const DirectX::XMMATRIX& transform) noxnd;
     const std::string& GetName() const noexcept { return name; }
-    // **** CHANGED Draw to Submit ****
     void Submit(FrameCommander& frame, Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform) const noxnd;
     void ShowTree(int& nodeIndexTracker, ModelInternalNode*& pSelectedNode) const noexcept;
     void SetAppliedTransform(DirectX::FXMMATRIX transform) noexcept;
@@ -42,24 +58,34 @@ private:
 class ModelComponent : public Component
 {
 public:
-    // Constructor will take model file and scale
+
+    struct Triangle
+    {
+        DirectX::SimpleMath::Vector3 v0;
+        DirectX::SimpleMath::Vector3 v1;
+        DirectX::SimpleMath::Vector3 v2;
+
+        Triangle(const DirectX::SimpleMath::Vector3& p0,
+            const DirectX::SimpleMath::Vector3& p1,
+            const DirectX::SimpleMath::Vector3& p2)
+            : v0(p0), v1(p1), v2(p2) {
+        }
+    };
+
     ModelComponent(Node* owner, Graphics& gfx, const std::string& modelFile, float scale = 1.0f);
     virtual ~ModelComponent() noexcept;
 
-    // **** CHANGED Draw to Submit ****
     void Submit(FrameCommander& frame, Graphics& gfx, DirectX::FXMMATRIX worldTransform) const noxnd;
+    void ShowWindow(Graphics& gfx, const char* windowName = nullptr) noexcept;
 
-    void ShowWindow(Graphics& gfx, const char* windowName = nullptr) noexcept; // Pass Gfx if ImGui needs it
+    // **** MODIFIED METHOD DECLARATION ****
+    std::vector<DirectX::SimpleMath::Vector3> GetAllUniqueVertices() const;
+    std::vector<ModelComponent::Triangle> GetAllTriangles() const;
 
 private:
-    // ParseNodeRecursive no longer needs to create Mesh objects, just references them
-    std::unique_ptr<ModelInternalNode> ParseNodeRecursive(int& nextId, const aiNode& node, float scale); // Pass scale
-    // ParseMesh is removed, Material and Mesh constructor handle this
+    std::unique_ptr<ModelInternalNode> ParseNodeRecursive(int& nextId, const aiNode& node, float scale);
 
-    // --- Data ---
     std::unique_ptr<ModelInternalNode> pRootInternal;
-    std::vector<std::unique_ptr<Mesh>> meshPtrs; // Owns all the Mesh objects
-    // std::vector<Material> materials; // No longer needed here if Mesh handles it
-
+    std::vector<std::unique_ptr<Mesh>> meshPtrs;
     std::unique_ptr<ModelControlWindow> pControlWindow;
 };

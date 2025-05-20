@@ -16,6 +16,8 @@
 #include "DebugLine.h"
 #include "Testing.h"
 #include "BulletCollision/CollisionDispatch/btGhostObject.h"
+#include "PhysicsCommon.h"
+#include "btBulletCollisionCommon.h"
 
 
 namespace dx = DirectX;
@@ -45,6 +47,7 @@ App::App(const std::string& commandLine)
     dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
     dynamicsWorld->getPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
     dynamicsWorld->setGravity(btVector3(0, -10, 0));
+    PhysicsCommon::dynamicsWorld = dynamicsWorld;
 
     soundDevice = LISTENER->Get();
     ALint attentuation = AL_INVERSE_DISTANCE_CLAMPED;
@@ -217,22 +220,25 @@ App::App(const std::string& commandLine)
 	//eRigidbody->SetCollider(eCapsule);
     //physicsEngine.AddRigidbody(eRigidbody);
 
-    btCompoundShape* cShape = new btCompoundShape();
+
+
+    /*btCompoundShape* cShape = new btCompoundShape();
     btBoxShape* bShape = new btBoxShape(btVector3(100.0f, 1.0f, 100.0f));
     btTransform bShapeTransform;
     bShapeTransform.setIdentity();
     bShapeTransform.setOrigin(btVector3(0.0f, 10.0f, 0.0f));
-    cShape->addChildShape(bShapeTransform, bShape);
+    cShape->addChildShape(bShapeTransform, bShape);*/
+    ModelComponent* imc = pIsland->GetComponent<ModelComponent>();
+    std::vector<ModelComponent::Triangle> ts = imc->GetAllTriangles();
     pIsland->AddComponent(
-        std::make_unique<Collider>(pIsland, cShape)
+        std::make_unique<Collider>(pIsland, PhysicsCommon::MakeConcaveShape(imc->GetAllTriangles()))
     );
     Collider* iCol = pIsland->GetComponent<Collider>();
     dynamicsWorld->addCollisionObject(iCol->GetBulletCollisionObject());
+
 	//OBB* iOBB = pIsland->GetComponent<OBB>();
 	//iOBB->SetLayer(Layers::GROUND);
 	////physicsEngine.AddCollider(iOBB);
-
-
 
 	/*pBox->AddComponent(
 		std::make_unique<BoundingSphere>(pBox, Vector3(0.0f, 0.0f, 0.0f), 2.0f, nullptr)
@@ -301,7 +307,6 @@ App::App(const std::string& commandLine)
 		std::make_unique<StateMachine>(pEnemy, StateType::IDLE)
 	);
 
-
 	pPlayer->AddComponent(
 		std::make_unique<SoundEffectsPlayer>(pPlayer)
 	);
@@ -323,7 +328,7 @@ App::App(const std::string& commandLine)
 	pStone->SetLocalPosition(DirectX::XMFLOAT3(10.0f, 1.0f, 10.0f));
 	pStone->SetLocalScale(dx::XMFLOAT3(1.5f, 1.5f, 1.5f));
     pIsland->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
-	pIsland->SetLocalScale(dx::XMFLOAT3(1.3f, 1.3f, 1.3f));
+	//pIsland->SetLocalScale(dx::XMFLOAT3(1.3f, 1.3f, 1.3f));
 	pNoxTurn->SetLocalPosition(DirectX::XMFLOAT3(5.0f, 0.0f, 5.0f));
 	pNoxTurn->SetLocalScale(dx::XMFLOAT3(0.01f, 0.01f, 0.01f));
 	pEnemy->SetLocalPosition(DirectX::XMFLOAT3(15.0f, 10.0f, 0.0f));

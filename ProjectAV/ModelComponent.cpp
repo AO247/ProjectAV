@@ -13,6 +13,7 @@
 #include <sstream>
 #include <filesystem>
 #include <stdexcept>
+#include <set>
 
 namespace dx = DirectX;
 
@@ -275,4 +276,140 @@ void ModelComponent::ShowWindow(Graphics& gfx, const char* windowName) noexcept
 		// For now, let's just make it a simple transform editor for the root ModelInternalNode:
 		pControlWindow->Show(windowName, *pRootInternal, pControlWindow->pSelectedNode, pControlWindow->transforms);
 	}
+}
+
+std::vector<ModelComponent::Triangle> ModelComponent::GetAllTriangles() const
+{
+	std::vector<ModelComponent::Triangle> allTriangles;
+
+	if (meshPtrs.empty()) {
+		return allTriangles; // Early exit if no meshes
+	}
+
+	for (const auto& pMeshUniquePtr : meshPtrs)
+	{
+		if (!pMeshUniquePtr) {
+			continue; // Skip null mesh pointers
+		}
+		const Mesh* pMesh = pMeshUniquePtr.get();
+
+		std::shared_ptr<const Bind::VertexBuffer> pBindVertexBuffer = pMesh->GetVertexBuffer();
+		std::shared_ptr<const Bind::IndexBuffer> pBindIndexBuffer = pMesh->GetIndexBuffer();
+
+		if (!pBindVertexBuffer || !pBindIndexBuffer) {
+			// Mesh is missing necessary buffers, skip it
+			continue;
+		}
+
+		const Dvtx::VertexLayout& layout = pBindVertexBuffer->GetLayout();
+		bool hasPos3D = layout.Has(Dvtx::VertexLayout::Position3D);
+		bool hasPos2D = layout.Has(Dvtx::VertexLayout::Position2D);
+
+		if (!hasPos3D && !hasPos2D) {
+			// Mesh vertices have no position data, skip it
+			continue;
+		}
+
+		size_t numVerticesInMesh = pBindVertexBuffer->GetVertexCount();
+		if (numVerticesInMesh == 0) {
+			// No vertices in this mesh, skip it
+			continue;
+		}
+
+		// Pre-fetch all vertex positions for this mesh for efficient lookup
+		std::vector<DirectX::SimpleMath::Vector3> meshVertexPositions;
+		meshVertexPositions.reserve(numVerticesInMesh);
+		for (size_t i = 0; i < numVerticesInMesh; ++i)
+		{
+			Dvtx::ConstVertex constVertex = pBindVertexBuffer->GetVertex(i);
+			if (hasPos3D) {
+				meshVertexPositions.emplace_back(constVertex.Attr<Dvtx::VertexLayout::Position3D>());
+			}
+			else { // hasPos2D must be true if we reached here
+				const auto& pos2d = constVertex.Attr<Dvtx::VertexLayout::Position2D>();
+				meshVertexPositions.emplace_back(pos2d.x, pos2d.y, 0.0f);
+			}
+		}
+
+		// Process indices to form triangles
+		UINT numIndices = pBindIndexBuffer->GetCount();
+		if (numIndices == 0 || numIndices % 3 != 0) {
+			// Invalid number of indices for triangles, or no indices; skip this mesh's triangles
+			continue;
+		}
+
+		for (UINT i = 0; i < numIndices; i += 3)
+		{
+			unsigned short i0 = pBindIndexBuffer->GetIndex(i);
+			unsigned short i1 = pBindIndexBuffer->GetIndex(i + 1);
+			unsigned short i2 = pBindIndexBuffer->GetIndex(i + 2);
+
+			// Bounds check for indices against the fetched vertex positions for this specific mesh
+			if (i0 >= meshVertexPositions.size() ||
+				i1 >= meshVertexPositions.size() ||
+				i2 >= meshVertexPositions.size())
+			{
+				// Index out of bounds for this mesh's vertex data. This shouldn't happen
+				// if the model data is valid. Log an error or assert in a debug build if desired.
+				// For release, skipping the problematic triangle is a reasonable recovery.
+				// Consider: assert(false && "Triangle index out of bounds!");
+				continue;
+			}
+
+			allTriangles.emplace_back(
+				meshVertexPositions[i0],
+				meshVertexPositions[i1],
+				meshVertexPositions[i2]
+			);
+		}
+	}
+	return allTriangles;
+}
+
+std::vector<DirectX::SimpleMath::Vector3> ModelComponent::GetAllUniqueVertices() const
+{
+	// Remove or comment out: using namespace DXCompare;
+
+	// **** USE THE CUSTOM COMPARATOR HERE ****
+	std::set<DirectX::XMFLOAT3, XMFLOAT3Less> uniqueVertexPositionsSet;
+
+	for (const auto& pMeshUniquePtr : meshPtrs)
+	{
+		if (!pMeshUniquePtr) continue;
+		const Mesh* pMesh = pMeshUniquePtr.get();
+
+		std::shared_ptr<const Bind::VertexBuffer> pBindVertexBuffer = pMesh->GetVertexBuffer();
+		if (!pBindVertexBuffer) continue;
+
+		const Dvtx::VertexLayout& layout = pBindVertexBuffer->GetLayout();
+		size_t numVertices = pBindVertexBuffer->GetVertexCount();
+
+		bool hasPos3D = layout.Has(Dvtx::VertexLayout::Position3D);
+		bool hasPos2D = layout.Has(Dvtx::VertexLayout::Position2D);
+
+		if (!hasPos3D && !hasPos2D) {
+			continue;
+		}
+
+		for (size_t i = 0; i < numVertices; ++i)
+		{
+			Dvtx::ConstVertex constVertex = pBindVertexBuffer->GetVertex(i);
+
+			if (hasPos3D) {
+				uniqueVertexPositionsSet.insert(constVertex.Attr<Dvtx::VertexLayout::Position3D>());
+			}
+			else if (hasPos2D) {
+				const auto& pos2d = constVertex.Attr<Dvtx::VertexLayout::Position2D>();
+				uniqueVertexPositionsSet.insert(DirectX::XMFLOAT3(pos2d.x, pos2d.y, 0.0f));
+			}
+		}
+	}
+
+	std::vector<DirectX::SimpleMath::Vector3> resultVertices;
+	resultVertices.reserve(uniqueVertexPositionsSet.size());
+	for (const auto& pos : uniqueVertexPositionsSet)
+	{
+		resultVertices.emplace_back(pos);
+	}
+	return resultVertices;
 }
