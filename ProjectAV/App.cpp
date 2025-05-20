@@ -44,7 +44,7 @@ App::App(const std::string& commandLine)
 
     btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
     btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);
-    btGImpactCollisionAlgorithm::registerAlgorithm(dispatcher);
+    //btGImpactCollisionAlgorithm::registerAlgorithm(dispatcher);
     btBroadphaseInterface* overlappingPairCache = new btDbvtBroadphase();
     btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
     dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
@@ -234,7 +234,7 @@ App::App(const std::string& commandLine)
     cShape->addChildShape(bShapeTransform, bShape);*/
     ModelComponent* imc = pIsland->GetComponent<ModelComponent>();
     std::vector<ModelComponent::Triangle> ts = imc->GetAllTriangles();
-    btGImpactMeshShape* ccshape = PhysicsCommon::MakeGImpactShape(imc->GetAllTriangles());
+    btBvhTriangleMeshShape* ccshape = PhysicsCommon::MakeConcaveShape(imc->GetAllTriangles());
     pIsland->AddComponent(
         std::make_unique<Collider>(pIsland, ccshape)
     );
