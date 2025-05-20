@@ -188,6 +188,7 @@
     <ClCompile Include="DxgiInfoManager.cpp" />
     <ClCompile Include="CException.cpp" />
     <ClCompile Include="DynamicConstant.cpp" />
+    <ClCompile Include="Flying.cpp" />
     <ClCompile Include="FollowState.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="GraphicsResource.cpp" />
@@ -204,9 +205,11 @@
     <ClCompile Include="IndexBuffer.cpp" />
     <ClCompile Include="InputLayout.cpp" />
     <ClCompile Include="IntersectData.cpp" />
+    <ClCompile Include="Island.cpp" />
     <ClCompile Include="Job.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="LayoutCodex.cpp" />
+    <ClCompile Include="LevelGenerator.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MiscMath.cpp" />
@@ -293,6 +296,7 @@
     <ClInclude Include="dxerr.h" />
     <ClInclude Include="DxgiInfoManager.h" />
     <ClInclude Include="DynamicConstant.h" />
+    <ClInclude Include="Flying.h" />
     <ClInclude Include="FollowState.h" />
     <ClInclude Include="FrameCommander.h" />
     <ClInclude Include="Graphics.h" />
@@ -313,10 +317,12 @@
     <ClInclude Include="IndexedTriangleList.h" />
     <ClInclude Include="InputLayout.h" />
     <ClInclude Include="IntersectData.h" />
+    <ClInclude Include="Island.h" />
     <ClInclude Include="Job.h" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="LayoutCodex.h" />
+    <ClInclude Include="LevelGenerator.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="ModelComponent.h" />
