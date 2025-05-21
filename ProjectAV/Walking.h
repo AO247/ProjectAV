@@ -13,13 +13,12 @@ class Walking : public Component
 {
 public:
 	Walking(Node* owner, std::string tag = "Movement");
-	//std::string tag = "Movement";
-
+	virtual ~Walking() = default;
 	float maxSpeed = 40.0f;
 	float maxForce = 200.0f;
-	float rotationLerpFactor = 0.1f;
+	float rotationLerpFactor = 0.08f;
 	Vector3 targetPosition;
-	virtual void Follow(DirectX::XMFLOAT3 target);
+	virtual void Follow(DirectX::XMFLOAT3 target, float sp = 1.0f);
 	virtual void DrawImGuiControls() override;
 	float avoidanceWeight = 17.0f;
 	float avoidanceDistance = 8.0f;

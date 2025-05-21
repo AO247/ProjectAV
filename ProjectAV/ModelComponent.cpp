@@ -216,7 +216,6 @@ ModelComponent::ModelComponent(Node* owner, Graphics& gfx, const std::string& mo
 	pRootInternal = ParseNodeRecursive(nextId, *pScene->mRootNode, scale);
 }
 
-ModelComponent::~ModelComponent() noexcept = default;
 
 // **** CHANGED Draw to Submit ****
 void ModelComponent::Submit(FrameCommander& frame, Graphics& gfx, dx::FXMMATRIX worldTransform) const noxnd

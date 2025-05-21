@@ -89,13 +89,13 @@ private:
     void AddBoxColliderToDraw(Graphics& gfx, OBB* obb);
     void DrawBoxColliders(Graphics& gfx);
 	void AddCapsuleColliderToDraw(Graphics& gfx, CapsuleCollider* capsule);*/
-	void DrawCapsuleColliders(Graphics& gfx);
+	//void DrawCapsuleColliders(Graphics& gfx);
     void FrustumCalculating();
     void DrawNodeRecursive(Graphics& gfx, Node& node);
-
+    void CleanupDestroyedNodes(Node* currentNode);
 
     bool showDemoWindow = false;
     bool cursorEnabled = false;
-    bool showControlWindow = true;
+    bool showControlWindow = false;
 	bool freeViewCamera = false;
 };

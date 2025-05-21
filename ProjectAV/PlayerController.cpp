@@ -24,19 +24,15 @@ PlayerController::PlayerController(Node* owner, Window& window)
 
 void PlayerController::Update(float dt)
 {
-    camera->SetLocalPosition({ GetOwner()->GetLocalPosition().x, GetOwner()->GetLocalPosition().y + height * 9 / 10, GetOwner()->GetLocalPosition().z });
-    GetOwner()->SetLocalRotation({ 0.0f, camera->GetLocalRotationEuler().y, 0.0f });
-    KeyboardInput();
-    MovePlayer();
-    /*Positioning();
-    if (!wnd.CursorEnabled())
+    Positioning();
+    if (!wnd.CursorEnabled() && alive)
     {
         GroundCheck();
         Cooldowns(dt);
 		KeyboardInput();
 		SpeedControl();
 		MovePlayer();
-    }*/
+    }
 }
 
 
@@ -55,8 +51,7 @@ void PlayerController::SpeedControl()
 
 void PlayerController::Jump()
 {
-    //rigidbody->AddForce(Vector3(0.0f, jumpForce * 1000.0f, 0.0f));
-    rigidbody->GetBulletRigidbody()->applyForce(btVector3(0, jumpForce * 200.0f, 0), btVector3(0, 0, 0));
+    rigidbody->GetBulletRigidbody()->applyForce(btVector3(0, jumpForce * 20.0f, 0), btVector3(0, 0, 0));
     /*if ((grounded || !doubleJumped) && !jumped) {
         rigidbody->SetVelocity(Vector3(rigidbody->GetVelocity().x, 0.0f, rigidbody->GetVelocity().z));
         rigidbody->AddForce(Vector3(0.0f, jumpForce * 1000.0f, 0.0f));
@@ -72,59 +67,57 @@ void PlayerController::Jump()
 
 void PlayerController::Dash()
 {
-    if (!canDash) return;
-    dashed = true;
-	canDash = false;
-    
-    Vector3 dashDirection = moveDirection;
-    if (moveDirection == pOwner->Forward())
-    {
-		dashDirection = camera->Forward();
-    }
-    else if (moveDirection == pOwner->Back())
-    {
-        dashDirection = camera->Back();
-    }
+ //   if (!canDash) return;
+ //   dashed = true;
+	//canDash = false;
+ //   
+ //   Vector3 dashDirection = moveDirection;
+ //   if (moveDirection == pOwner->Forward())
+ //   {
+	//	dashDirection = camera->Forward();
+ //   }
+ //   else if (moveDirection == pOwner->Back())
+ //   {
+ //       dashDirection = camera->Back();
+ //   }
 
-    if (moveDirection == Vector3(0.0f, 0.0f, 0.0f))
-    {
-		dashDirection = camera->Forward();
-    }
-    //dashDirection = camera->Back();
-    dashDirection.Normalize();
+ //   if (moveDirection == Vector3(0.0f, 0.0f, 0.0f))
+ //   {
+	//	dashDirection = camera->Forward();
+ //   }
+ //   //dashDirection = camera->Back();
+ //   dashDirection.Normalize();
 
-    dashTimer = 0.3f;
-	dashCooldownTimer = dashCooldown;
+ //   dashTimer = 0.3f;
+	//dashCooldownTimer = dashCooldown;
 
-	/*rigidbody->friction = false;
-    rigidbody->SetVelocity({ 0.0f, 0.0f, 0.0f });
-    rigidbody->AddForce(dashDirection * dashForce * 100.0f);*/
+	//rigidbody->friction = false;
+ //   rigidbody->SetVelocity({ 0.0f, 0.0f, 0.0f });
+ //   rigidbody->AddForce(dashDirection * dashForce * 100.0f);
 }
 
 void PlayerController::GroundCheck()
 {
-    //grounded = rigidbody->grounded;
+    /*grounded = rigidbody->grounded;
     if (grounded)
     {
         doubleJumped = false;
-    }
+    }*/
 }
 
 void PlayerController::MovePlayer()
 {
     moveDirection.Normalize();
 
-    Vector3 movementVector = moveDirection * moveSpeed * 1000.0f;
-
-    //btVector3 newVelocity = rigidbody->GetBulletRigidbody()->getLinearVelocity() + btVector3(movementVector.x, movementVector.y, movementVector.z);
-    //rigidbody->GetBulletRigidbody()->setLinearVelocity(newVelocity);
-    rigidbody->GetBulletRigidbody()->applyForce(btVector3(movementVector.x, movementVector.y, movementVector.z), btVector3(0, 0, 0));
+    btVector3 movement(moveDirection.x, moveDirection.y, moveDirection.z);
+    rigidbody->GetBulletRigidbody()->applyForce(movement * moveSpeed * 100.0f, btVector3(0,0,0));
     //rigidbody->AddForce(moveDirection * moveSpeed * 1000.0f);
 }
 
 void PlayerController::Ability1()
 {
-    /*CapsuleCollider* col = ability1->GetComponent<CapsuleCollider>();
+	/*if (!ability1Ready) return;
+    CapsuleCollider* col = ability1->GetComponent<CapsuleCollider>();
     std::vector<Collider*> colliders = col->GetTriggerStay();
 	for (Collider* collider : colliders)
 	{
@@ -133,14 +126,15 @@ void PlayerController::Ability1()
 			collider->GetOwner()->GetComponent<Rigidbody>()->SetVelocity(Vector3(0.0f, 0.0f, 0.0f));
 			collider->GetOwner()->GetComponent<Rigidbody>()->AddForce(ability1->Forward() * 100000.0f);
 		}
-	}*/
+	}
+	ability1CooldownTimer = ability1Cooldown;
+	ability1Ready = false;*/
 }
 
 void PlayerController::Ability2()
 {
-    
-	/*BoundingSphere* col = ability2->GetComponent<BoundingSphere>();
-
+	/*if (!ability2Ready) return;
+	BoundingSphere* col = ability2->GetComponent<BoundingSphere>();
     std::vector<Collider*> colliders = col->GetTriggerStay();
 
     for (Collider* collider : colliders)
@@ -151,9 +145,9 @@ void PlayerController::Ability2()
                 0.0f, collider->GetOwner()->GetComponent<Rigidbody>()->GetVelocity().z));
             collider->GetOwner()->GetComponent<Rigidbody>()->AddForce(Vector3(0.0f, 70000.0f, 0.0f));
         }
-    }*/
-
-
+    }
+	ability2CooldownTimer = ability2Cooldown;
+    ability2Ready = false;*/
 }
 
 void PlayerController::Cooldowns(float dt)
@@ -175,6 +169,22 @@ void PlayerController::Cooldowns(float dt)
     {
         canDash = true;
     }
+	if (ability1CooldownTimer > 0.0f)
+	{
+		ability1CooldownTimer -= dt;
+	}
+	else
+	{
+		ability1Ready = true;
+	}
+	if (ability2CooldownTimer > 0.0f)
+	{
+		ability2CooldownTimer -= dt;
+	}
+	else
+	{
+		ability2Ready = true;
+	}
 }
 
 void PlayerController::Positioning()
@@ -266,9 +276,13 @@ void PlayerController::DrawImGuiControls()
     ImGui::InputFloat("Move Speed", &moveSpeed);
     ImGui::InputFloat("JumpForce", &jumpForce);
 	ImGui::InputFloat("Dash Force", &dashForce);
-    ImGui::Checkbox("Jumped", &jumped);
-	ImGui::Checkbox("CanDash", &canDash);
-	ImGui::Checkbox("Grounded", &grounded);
-
 	ImGui::InputFloat("Dash Cooldown", &dashCooldown);
+	ImGui::InputFloat("Ability1 Cooldown", &ability1Cooldown);
+	ImGui::InputFloat("Ability2 Cooldown", &ability2Cooldown);
+    ImGui::InputFloat("Height", &height);
+    ImGui::Checkbox("Jumped", &jumped);
+    ImGui::Checkbox("CanDash", &canDash);
+    ImGui::Checkbox("Grounded", &grounded);
+    ImGui::Checkbox("Double Jumped", &doubleJumped);
+	ImGui::Checkbox("Alive", &alive);
 }

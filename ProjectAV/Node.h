@@ -23,15 +23,18 @@ public:
     Node* GetChild(size_t index);
     Node* GetParent() const;
     const std::vector<std::unique_ptr<Node>>& GetChildren() const;
+    std::vector<std::unique_ptr<Node>>& GetChildren_NonConst();
     const std::string& GetName() const;
     Node* FindFirstChildByTag(const std::string& searchTag);
     std::vector<Node*> FindAllChildrenByTag(const std::string& searchTag);
     Node* GetRoot() const;
 
     // --- Components ---
-    template<typename T> T* GetComponent() const;
-    Component* AddComponent(std::unique_ptr<Component> pComponent);
-    const std::vector<std::unique_ptr<Component>>& GetComponents() const;
+    // ... (GetComponent, AddComponent remain the same) ...
+    template<typename T> T* GetComponent() const; // Keep declaration
+    Component* AddComponent(std::unique_ptr<Component> pComponent); // Keep declaration
+    const std::vector<std::unique_ptr<Component>>& GetComponents() const; // Keep declaration
+    void ClearComponents();
 
     // --- Transform ---
     // Local
@@ -66,6 +69,10 @@ public:
     std::string tag;
     Node* parent = nullptr;
 
+    bool isMarkedForDeletion = false;
+    void Destroy(); // Marks this node and its children for destruction
+    bool IsMarkedForDestruction() const;
+    void RemoveChild(Node* childToRemove); // Helper to remove a specific child
 private:
     void UpdateWorldTransform();
     void UpdateLocalTransformFromComponents();     // Helper to build matrix from stored pos/quat/scale
@@ -85,8 +92,9 @@ private:
     std::vector<std::unique_ptr<Node>> children;
     std::vector<std::unique_ptr<Component>> components;
 
-    bool localTransformDirty = true;
-    bool worldTransformDirty = true;
+    bool localTransformDirty = true; // Flag to rebuild local matrix
+    bool worldTransformDirty = true; // Flag to recalculate world matrix
+    bool markedForDestruction = false;
 };
 
 template<typename T> T* Node::GetComponent() const

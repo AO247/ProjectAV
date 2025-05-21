@@ -23,8 +23,9 @@ Node::Node(std::string name, Node* parent, std::string tag)
     worldTransformDirty = true;
 }
 
-// --- Hierarchy and Component methods (unchanged from original provided snippet) ---
-void Node::AddChild(std::unique_ptr<Node> pChild) {
+
+// --- Hierarchy and Component methods remain the same ---
+void Node::AddChild(std::unique_ptr<Node> pChild) { /* ... same ... */
     assert(pChild);
     pChild->parent = this;
     children.push_back(std::move(pChild));
@@ -441,5 +442,64 @@ std::vector<Node*> Node::FindAllChildrenByTag(const std::string& searchTag)
     for (const auto& child : children) {
         FindAllChildrenByTagRecursiveInternal(child.get(), searchTag, foundNodes); // Call the renamed internal helper
     }
-    return foundNodes;
+
+    return foundNodes; // Return the collected nodes
+}
+void Node::Destroy()
+{
+    markedForDestruction = true;
+    // Recursively mark all children for destruction as well
+    for (const auto& child : children)
+    {
+        if (child)
+        {
+            child->Destroy();
+        }
+    }
+
+    //ClearComponents();
+    // Note: This node itself doesn't get removed from its parent's list here.
+    // That needs to be handled by the parent or a scene manager.
+    // If it has a parent, it could notify the parent (more complex).
+    // if (parent) {
+    //    parent->RequestChildRemoval(this); // Would require new method in Node
+    // }
+
+}
+
+bool Node::IsMarkedForDestruction() const
+{
+    return markedForDestruction;
+}
+
+// Helper to get a non-const reference to children vector for removal
+std::vector<std::unique_ptr<Node>>& Node::GetChildren_NonConst()
+{
+    return children;
+}
+
+// Helper method for a parent to remove a specific child.
+// This would typically be called by a scene management system.
+void Node::RemoveChild(Node* childToRemove)
+{
+    children.erase(
+        std::remove_if(children.begin(), children.end(),
+            [&](const std::unique_ptr<Node>& pChild) {
+                return pChild.get() == childToRemove;
+            }
+        ),
+        children.end()
+    );
+    // The unique_ptr going out of scope will call the child's destructor.
+}
+
+void Node::ClearComponents() 
+{
+
+    for (auto& comp : components) {
+        if (comp) {
+            comp.reset(); // Explicitly destroy the component (calls destructor)
+        }
+    }
+    components.clear();
 }

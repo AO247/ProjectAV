@@ -73,7 +73,7 @@ public:
     };
 
     ModelComponent(Node* owner, Graphics& gfx, const std::string& modelFile, float scale = 1.0f);
-    virtual ~ModelComponent() noexcept;
+    virtual ~ModelComponent() = default;
 
     void Submit(FrameCommander& frame, Graphics& gfx, DirectX::FXMMATRIX worldTransform) const noxnd;
     void ShowWindow(Graphics& gfx, const char* windowName = nullptr) noexcept;

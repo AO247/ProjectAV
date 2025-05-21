@@ -5,13 +5,15 @@
 #include "Rigidbody.h"
 #include "Collider.h"
 #include "BoundingSphere.h"
-#include "Node.h"
+#include "Components.h"
 class Node;
 
 class Throwable : public Component
 {
 public:
 	Throwable(Node* owner);
+	virtual ~Throwable() = default;
+	float damage = 1.0f;
 	virtual void Update(float dt) override;
 	virtual void DrawImGuiControls() override;
 	//BoundingSphere* damageArea;

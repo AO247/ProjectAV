@@ -14,33 +14,33 @@ Walking::Walking(Node* owner, std::string tag)
 {
 	rigidbody = owner->GetComponent<Rigidbody>();
 }
-void Walking::Follow(DirectX::XMFLOAT3 targetPos)
+void Walking::Follow(DirectX::XMFLOAT3 targetPos, float sp)
 {
     /*if (!rigidbody || rigidbody->GetIsStatic()) { 
         return;
     }
 	targetPosition = targetPos;
-    Vector3 currentPos = rigidbody->GetPosition(); 
-    Vector3 currentVelocity = rigidbody->GetVelocity();*/
+    Vector3 currentPos = pOwner->GetWorldPosition(); 
+    Vector3 currentVelocity = rigidbody->GetVelocity();
 
-    //Vector3 desiredDirection = targetPosition - currentPos;
+    Vector3 desiredDirection = targetPosition - currentPos;
 
-    /*desiredDirection.Normalize();
-    Vector3 desiredVelocity = desiredDirection * maxSpeed;
+    desiredDirection.Normalize();
+    Vector3 desiredVelocity = desiredDirection * maxSpeed / sp;
 
-    Vector3 steeringForce = desiredVelocity - currentVelocity;*/
+    Vector3 steeringForce = desiredVelocity - currentVelocity;
 
-	//steeringForce = steeringForce + (CalculateAvoidanceForce());
+	steeringForce = steeringForce + (CalculateAvoidanceForce());
 
-    //float steeringMagnitude = steeringForce.Length();
-    /*if (steeringMagnitude > maxForce) {
+    float steeringMagnitude = steeringForce.Length();
+    if (steeringMagnitude > maxForce) {
         steeringForce = (steeringForce / steeringMagnitude) * maxForce; 
-    }*/
+    }
 
-	/*rigidbody->AddForce(steeringForce * 10.0f);
+	rigidbody->AddForce(steeringForce * 10.0f);
 
-	currentVelocity = rigidbody->GetVelocity();*/
-    /*if (currentVelocity.LengthSquared() > 0.01f) 
+	currentVelocity = rigidbody->GetVelocity();
+    if (currentVelocity.LengthSquared() > 0.01f) 
     {
         Vector3 facingDirection = currentVelocity; 
         facingDirection.Normalize();
@@ -49,9 +49,9 @@ void Walking::Follow(DirectX::XMFLOAT3 targetPos)
 		float currentYaw = pOwner->GetLocalRotationEuler().y;
 		float targetYaw = atan2f(facingDirection.x, facingDirection.z);
 
-		float yawDifference = targetYaw - currentYaw;
-
-		targetYaw = currentYaw + yawDifference;
+		float yawDifference = wrap_angle(targetYaw - currentYaw);
+		
+		targetYaw = wrap_angle(currentYaw + yawDifference * rotationLerpFactor);
 
         pOwner->SetLocalRotation({ 0.0f, targetYaw, 0.0f });
     }
@@ -63,7 +63,8 @@ void Walking::Follow(DirectX::XMFLOAT3 targetPos)
 
 Vector3 Walking::CalculateAvoidanceForce()
 {
-	Vector3 avoidanceForce(0.0f, 0.0f, 0.0f);
+	return Vector3(0, 0, 0);
+	/*Vector3 avoidanceForce(0.0f, 0.0f, 0.0f);
 
 	Vector3 previousRotation = pOwner->GetLocalRotationEuler();
 	pOwner->TranslateLocal({ 0.0f, 1.0f, 0.0f });
@@ -72,18 +73,18 @@ Vector3 Walking::CalculateAvoidanceForce()
 	float targetYaw = atan2f(temporaryDirection.x, temporaryDirection.z);
 	pOwner->SetLocalRotation({ 0.0f, targetYaw, 0.0f });
 
-	//float radius = pOwner->GetComponent<CapsuleCollider>()->GetRadius();
+	float radius = pOwner->GetComponent<CapsuleCollider>()->GetRadius();
 
-	//Vector3 pos = pOwner->GetComponent<CapsuleCollider>()->GetTransformedBase();
+	Vector3 pos = pOwner->GetComponent<CapsuleCollider>()->GetTransformedBase();
 	Vector3 forward = pOwner->Forward();
 	Vector3 right = pOwner->Right();
 
 	leftHit = false;
 	rightHit = false;
 
-	//Vector3 centerOrigin = pos + forward;
-	/*Vector3 leftOrigin = centerOrigin - right * radius;
-	Vector3 rightOrigin = centerOrigin + right * radius;*/
+	Vector3 centerOrigin = pos + forward;
+	Vector3 leftOrigin = centerOrigin - right * radius;
+	Vector3 rightOrigin = centerOrigin + right * radius;
 
 	Vector3 centerDir = forward;
 	
@@ -91,7 +92,7 @@ Vector3 Walking::CalculateAvoidanceForce()
 
 	Vector3 rightDir = (forward + right * 0.5f); rightDir.Normalize();
 
-	/*RaycastData hitLeft = Raycast::CastThroughLayers(leftOrigin, centerDir, std::vector<Layers>{ENEMY, PLAYER});
+	RaycastData hitLeft = Raycast::CastThroughLayers(leftOrigin, centerDir, std::vector<Layers>{ENEMY, PLAYER});
 
 
 	RaycastData hitRight = Raycast::CastThroughLayers(rightOrigin, centerDir, std::vector<Layers>{ENEMY, PLAYER});
@@ -123,12 +124,12 @@ Vector3 Walking::CalculateAvoidanceForce()
 			Vector3(moreRight.hitPoint - pos).Length() < avoidanceDistance) {
 			avoidanceForce = -right * avoidanceWeight;
 		}
-	}*/
+	}
 
 	pOwner->SetLocalRotation(previousRotation);
 	pOwner->TranslateLocal({ 0.0f, -1.0f, 0.0f });
 
-	return avoidanceForce;
+	return avoidanceForce;*/
 
 }
 

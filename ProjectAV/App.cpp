@@ -15,12 +15,14 @@
 #include "SoundEffectsPlayer.h"
 #include "DebugLine.h"
 #include "Testing.h"
+#include "Prefab.h"
+#include "PrefabManager.h"
+#include "LevelGenerator.h"
 #include "BulletCollision/CollisionDispatch/btGhostObject.h"
 #include "PhysicsCommon.h"
 #include "btBulletCollisionCommon.h"
 #include "BulletCollision/Gimpact/btGImpactShape.h"
 #include "BulletCollision/Gimpact/btGImpactCollisionAlgorithm.h"
-
 
 namespace dx = DirectX;
 
@@ -51,17 +53,21 @@ App::App(const std::string& commandLine)
     dynamicsWorld->getPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
     dynamicsWorld->setGravity(btVector3(0, -10, 0));
     PhysicsCommon::dynamicsWorld = dynamicsWorld;
-
+    
     soundDevice = LISTENER->Get();
     ALint attentuation = AL_INVERSE_DISTANCE_CLAMPED;
 	soundDevice->SetAttenuation(attentuation);
-    //static SoundEffectsPlayer effectsPlayer1;
-    //uint32_t sound1 = SE_LOAD("..\\ProjectAV\\Models\\turn.ogg");
     myMusic = std::make_unique<MusicBuffer>("Models\\muza_full.wav");
 
+	auto prefabManagerOwner = std::make_unique<PrefabManager>(dynamicsWorld, &wnd);
+	PrefabManager* prefabManager = prefabManagerOwner.get();
+
+	LevelGenerator levelGenerator(prefabManager, pSceneRoot.get());
+
+    //Node* island = prefabManager->InstantiateIsland(pSceneRoot.get(), 0.0f, -0.1f, 0.0f, 1.3f);
 
     // --- Create Nodes ---
-   
+
 	auto pCameraNodeOwner = std::make_unique<Node>("Camera", nullptr, "Camera");
 	pCamera = pCameraNodeOwner.get();
 	auto pFreeViewCameraOwner = std::make_unique<Node>("FreeViewCamera");
@@ -97,6 +103,8 @@ App::App(const std::string& commandLine)
 	pNoxTurnHair = pNoxTurnHairOwner.get();
 	auto pEnemyOwner = std::make_unique<Node>("Enemy", nullptr, "Enemy");
 	pEnemy = pEnemyOwner.get();
+
+	
 
     // Adding to Scene Graph
 	pSceneRoot->AddChild(std::move(pCameraNodeOwner));
@@ -148,9 +156,9 @@ App::App(const std::string& commandLine)
 		std::make_unique<ModelComponent>(pColumn4, wnd.Gfx(), "Models\\kolumna\\kolumna.obj")
 	);
 
-    pIsland->AddComponent(
-        std::make_unique<ModelComponent>(pIsland, wnd.Gfx(), "Models\\wyspa\\wyspa_test.fbx")
-    );
+    //pIsland->AddComponent(
+    //    std::make_unique<ModelComponent>(pIsland, wnd.Gfx(), "Models\\box.glb")
+    //);
 
 
     pNoxTurn->AddComponent(
@@ -166,9 +174,8 @@ App::App(const std::string& commandLine)
 
 
 	//Adding Rigidbody and Collider
-    btCapsuleShape* cshape = new btCapsuleShape(1.0f, 5.0f);
     pPlayer->AddComponent(
-        std::make_unique<Rigidbody>(pPlayer, Vector3(0.0f, 35.0f, 0.0f), 100.0f, cshape)
+        std::make_unique<Rigidbody>(pPlayer, Vector3(0.0f, 35.0f, 0.0f), 10.0f, new btCapsuleShape(1.0f, 2.0f))
     );
     Rigidbody* pRigidbody = pPlayer->GetComponent<Rigidbody>();
     pRigidbody->GetBulletRigidbody()->setAngularFactor(btVector3(0,0,0));
@@ -176,14 +183,14 @@ App::App(const std::string& commandLine)
     pPlayer->AddComponent(
         std::make_unique<PlayerController>(pPlayer, wnd) // Add controller first
     );
-	//pPlayer->AddComponent(
-	//	std::make_unique<CapsuleCollider>(pPlayer, pRigidbody, 1.0f, Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, pPlayer->GetComponent<PlayerController>()->height, 0.0f))
-	//);
-	//CapsuleCollider* pCapsule = pPlayer->GetComponent<CapsuleCollider>();
-	//pCapsule->SetLayer(Layers::PLAYER);
-	//pRigidbody->SetCollider(pCapsule);
-	//pRigidbody->SetMass(10.0f);
-    //physicsEngine.AddRigidbody(pRigidbody);
+	/*pPlayer->AddComponent(
+		std::make_unique<CapsuleCollider>(pPlayer, pRigidbody, 1.0f, Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, pPlayer->GetComponent<PlayerController>()->height, 0.0f))
+	);
+	CapsuleCollider* pCapsule = pPlayer->GetComponent<CapsuleCollider>();
+	pCapsule->SetLayer(Layers::PLAYER);
+	pRigidbody->SetCollider(pCapsule);
+	pRigidbody->SetMass(10.0f);
+    physicsEngine.AddRigidbody(pRigidbody);*/
 
 	/*pAbility1->AddComponent(
         std::make_unique<CapsuleCollider>(pAbility1, nullptr, 1.0f, Vector3(0.0f, -1.0f, 0.0f), Vector3(0.0f, 1.5f, 8.0f))
@@ -191,8 +198,8 @@ App::App(const std::string& commandLine)
     CapsuleCollider* a1CapsuleCollider = pAbility1->GetComponent<CapsuleCollider>();
     a1CapsuleCollider->SetIsTrigger(true);
     a1CapsuleCollider->SetTriggerEnabled(true);
-	a1CapsuleCollider->SetLayer(Layers::PLAYER);*/
-	//physicsEngine.AddCollider(a1CapsuleCollider);
+	a1CapsuleCollider->SetLayer(Layers::PLAYER);
+	physicsEngine.AddCollider(a1CapsuleCollider);*/
 
 	/*pAbility2->AddComponent(
         std::make_unique<BoundingSphere>(pAbility2, Vector3(0.0f, 0.0f, 0.0f), 2.0f, nullptr)
@@ -200,100 +207,93 @@ App::App(const std::string& commandLine)
     BoundingSphere* a2Sphere = pAbility2->GetComponent<BoundingSphere>();
     a2Sphere->SetIsTrigger(true);
     a2Sphere->SetTriggerEnabled(true);
-	a2Sphere->SetLayer(Layers::PLAYER);*/
-	//physicsEngine.AddCollider(a2Sphere);
+	a2Sphere->SetLayer(Layers::PLAYER);
+	physicsEngine.AddCollider(a2Sphere);*/
     
-    //btCompoundShape* ecShape = new btCompoundShape();
-    //btCapsuleShape* ebShape = new btCapsuleShape(1.0f, 2.0f);
-    //btTransform ebShapeTransform;
-    //ebShapeTransform.setIdentity();
-    //ebShapeTransform.setOrigin(btVector3(0.0f, -5.0f, 0.0f));
-    //ecShape->addChildShape(ebShapeTransform, ebShape);
+
 
     pEnemy->AddComponent(
-        std::make_unique<Rigidbody>(pEnemy, Vector3(15.0f, 50.0f, 0.0f), 10.0f, new btCapsuleShape(1.0f, 3.0f))
+        std::make_unique<Rigidbody>(pEnemy, Vector3(15.0f, 10.0f, 0.0f), 10.0f, new btCapsuleShape(1.0f, 2.0f))
     );
     Rigidbody* eRigidbody = pEnemy->GetComponent<Rigidbody>();
-    eRigidbody->GetBulletRigidbody()->setAngularFactor(btVector3(0, 0, 0));
     dynamicsWorld->addRigidBody(eRigidbody->GetBulletRigidbody());
-	//pEnemy->AddComponent(
-	//	std::make_unique<CapsuleCollider>(pEnemy, eRigidbody, 1.0f, Vector3(-0.8f, 0.0f, -0.4f), Vector3(-0.8f, 4.0f, -0.4f))
-	//);
-	//CapsuleCollider* eCapsule = pEnemy->GetComponent<CapsuleCollider>();
-	//eCapsule->SetLayer(Layers::ENEMY);
-	//eRigidbody->SetCollider(eCapsule);
-    //physicsEngine.AddRigidbody(eRigidbody);
+	/*pEnemy->AddComponent(
+		std::make_unique<CapsuleCollider>(pEnemy, eRigidbody, 1.0f, Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 4.0f, 0.0f))
+	);
+	CapsuleCollider* eCapsule = pEnemy->GetComponent<CapsuleCollider>();
+	eCapsule->SetLayer(Layers::ENEMY);
+	eRigidbody->SetCollider(eCapsule);
+    physicsEngine.AddRigidbody(eRigidbody);*/
 
 
-
-    /*btCompoundShape* cShape = new btCompoundShape();
-    btBoxShape* bShape = new btBoxShape(btVector3(100.0f, 1.0f, 100.0f));
-    btTransform bShapeTransform;
-    bShapeTransform.setIdentity();
-    bShapeTransform.setOrigin(btVector3(0.0f, 10.0f, 0.0f));
-    cShape->addChildShape(bShapeTransform, bShape);*/
-    ModelComponent* imc = pIsland->GetComponent<ModelComponent>();
-    std::vector<ModelComponent::Triangle> ts = imc->GetAllTriangles();
-    btBvhTriangleMeshShape* ccshape = PhysicsCommon::MakeConcaveShape(imc->GetAllTriangles());
-    pIsland->AddComponent(
-        std::make_unique<Collider>(pIsland, ccshape)
+  /*  pIsland->AddComponent(
+        std::make_unique<OBB>(pIsland, nullptr, Vector3(0.0f, -0.3f, 0.0f), Vector3(20.0f, 1.0f, 20.0f))
     );
-    Collider* iCol = pIsland->GetComponent<Collider>();
-    dynamicsWorld->addCollisionObject(iCol->GetBulletCollisionObject());
+	OBB* iOBB = pIsland->GetComponent<OBB>();
+	iOBB->SetLayer(Layers::GROUND);
+	physicsEngine.AddCollider(iOBB);*/
 
-	//OBB* iOBB = pIsland->GetComponent<OBB>();
-	//iOBB->SetLayer(Layers::GROUND);
-	////physicsEngine.AddCollider(iOBB);
+
 
 	/*pBox->AddComponent(
 		std::make_unique<BoundingSphere>(pBox, Vector3(0.0f, 0.0f, 0.0f), 2.0f, nullptr)
 	);
-	BoundingSphere* bBoundingSphere = pBox->GetComponent<BoundingSphere>();*/
-	//physicsEngine.AddCollider(bBoundingSphere);
+	BoundingSphere* bBoundingSphere = pBox->GetComponent<BoundingSphere>();
+	physicsEngine.AddCollider(bBoundingSphere);*/
 
 	
 	/*pColumn->AddComponent(
 		std::make_unique<OBB>(pColumn, nullptr, Vector3(-0.6f, 5.0f, 0.0f), Vector3(2.9f, 10.0f, 2.9f))
 	);
-	OBB* cOBB = pColumn->GetComponent<OBB>();*/
-	//physicsEngine.AddCollider(cOBB);
-	/*pColumn2->AddComponent(
+	OBB* cOBB = pColumn->GetComponent<OBB>();
+	physicsEngine.AddCollider(cOBB);
+	pColumn2->AddComponent(
 		std::make_unique<OBB>(pColumn2, nullptr, Vector3(-0.6f, 5.0f, 0.0f), Vector3(2.9f, 10.0f, 2.9f))
 	);
-	OBB* cOBB2 = pColumn2->GetComponent<OBB>();*/
-	//physicsEngine.AddCollider(cOBB2);
-	/*pColumn3->AddComponent(
+	OBB* cOBB2 = pColumn2->GetComponent<OBB>();
+	physicsEngine.AddCollider(cOBB2);
+	pColumn3->AddComponent(
 		std::make_unique<OBB>(pColumn3, nullptr, Vector3(-0.6f, 5.0f, 0.0f), Vector3(2.9f, 10.0f, 2.9f))
 	);
-	OBB* cOBB3 = pColumn3->GetComponent<OBB>();*/
-	//physicsEngine.AddCollider(cOBB3);
-	/*pColumn4->AddComponent(
+	OBB* cOBB3 = pColumn3->GetComponent<OBB>();
+	physicsEngine.AddCollider(cOBB3);
+	pColumn4->AddComponent(
 		std::make_unique<OBB>(pColumn4, nullptr, Vector3(-0.6f, 5.0f, 0.0f), Vector3(2.9f, 10.0f, 2.9f))
 	);
-	OBB* cOBB4 = pColumn4->GetComponent<OBB>();*/
-	//physicsEngine.AddCollider(cOBB4);
+	OBB* cOBB4 = pColumn4->GetComponent<OBB>();
+	physicsEngine.AddCollider(cOBB4);*/
     
     /*pStone->AddComponent(
         std::make_unique<Rigidbody>(pStone, Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f))
-    );*/
-	//Rigidbody* sRigidbody = pStone->GetComponent<Rigidbody>();
+    );
+	Rigidbody* sRigidbody = pStone->GetComponent<Rigidbody>();*/
     pStone->AddComponent(
         std::make_unique<Throwable>(pStone)
     );
 	/*pStone->AddComponent(
 		std::make_unique<OBB>(pStone, sRigidbody, Vector3(0.0f, 0.6f, 0.0f), Vector3(1.2f, 1.1f, 1.7f))
 	);
-	OBB* sOBB = pStone->GetComponent<OBB>();*/
-	//sRigidbody->SetCollider(sOBB);
-	//physicsEngine.AddRigidbody(sRigidbody);
-    /*pStone->AddComponent(
+	OBB* sOBB = pStone->GetComponent<OBB>();
+	sOBB->SetLayer(Layers::THROWABLE);
+	sRigidbody->SetCollider(sOBB);
+	physicsEngine.AddRigidbody(sRigidbody);
+    pStone->AddComponent(
         std::make_unique<BoundingSphere>(pStone, Vector3(0.0f, 0.6f, 0.0f), 1.5f, nullptr)
     );
 	BoundingSphere* sBoundingSphere = pStone->GetComponent<BoundingSphere>();
+    sBoundingSphere->SetLayer(Layers::THROWABLE);
 	sBoundingSphere->SetIsTrigger(true);
-	sBoundingSphere->SetTriggerEnabled(true);*/
-	//pStone->GetComponent<Throwable>()->damageArea = sBoundingSphere;
-	//physicsEngine.AddCollider(sBoundingSphere);
+	sBoundingSphere->SetTriggerEnabled(true);
+	pStone->GetComponent<Throwable>()->damageArea = sBoundingSphere;
+	physicsEngine.AddCollider(sBoundingSphere);*/
+
+
+	/*Node* stone1 = prefabManager->InstantiateStone(pSceneRoot.get(), -10.0f, 1.0f, -10.0f, 1.5f);
+    Node* stone2 = prefabManager->InstantiateStone(pSceneRoot.get(), 10.0f, 1.0f, -10.0f, 1.5f);
+    Node* stone3 = prefabManager->InstantiateStone(pSceneRoot.get(), -10.0f, 1.0f, 10.0f, 1.5f);
+    Node* stone4 = prefabManager->InstantiateStone(pSceneRoot.get(), 10.0f, 1.0f, 10.0f, 1.5f);
+    Node* stone5 = prefabManager->InstantiateStone(pSceneRoot.get(), -5.0f, 1.0f, -5.0f, 1.5f);*/
+
 
     //Adding Other Components
     pFreeViewCamera->AddComponent(
@@ -307,10 +307,31 @@ App::App(const std::string& commandLine)
     pEnemy->AddComponent(
         std::make_unique<Walking>(pEnemy)
     );
+	pEnemy->AddComponent(
+		std::make_unique<BasicAttack>(pEnemy)
+	);
+
+    /*pEnemy->AddComponent(
+        std::make_unique<OBB>(pEnemy, nullptr, Vector3(0.0f, 2.0f, 2.0f), Vector3(2.0f, 1.0f, 4.0f))
+    );
+	OBB* eDamageOBB = pEnemy->GetComponent<OBB>();
+	eDamageOBB->SetIsTrigger(true);
+	eDamageOBB->SetTriggerEnabled(true);
+	eDamageOBB->SetLayer(Layers::ENEMY);
+	physicsEngine.AddCollider(eDamageOBB);
+    pEnemy->GetComponent<BasicAttack>()->damageArea = eDamageOBB;*/
 
 	pEnemy->AddComponent(
 		std::make_unique<StateMachine>(pEnemy, StateType::IDLE)
 	);
+    pEnemy->GetComponent<StateMachine>()->attackRange = 4.0f;
+	pEnemy->GetComponent<StateMachine>()->followDistance = 25.0f;
+    pEnemy->AddComponent(
+        std::make_unique<Health>(pEnemy, 1.0f)
+    );
+    pPlayer->AddComponent(
+        std::make_unique<Health>(pPlayer, 3.0f)
+    );
 
 	pPlayer->AddComponent(
 		std::make_unique<SoundEffectsPlayer>(pPlayer)
@@ -333,7 +354,7 @@ App::App(const std::string& commandLine)
 	pStone->SetLocalPosition(DirectX::XMFLOAT3(10.0f, 1.0f, 10.0f));
 	pStone->SetLocalScale(dx::XMFLOAT3(1.5f, 1.5f, 1.5f));
     pIsland->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
-	//pIsland->SetLocalScale(dx::XMFLOAT3(1.3f, 1.3f, 1.3f));
+	pIsland->SetLocalScale(dx::XMFLOAT3(1.3f, 1.3f, 1.3f));
 	pNoxTurn->SetLocalPosition(DirectX::XMFLOAT3(5.0f, 0.0f, 5.0f));
 	pNoxTurn->SetLocalScale(dx::XMFLOAT3(0.01f, 0.01f, 0.01f));
 	pEnemy->SetLocalPosition(DirectX::XMFLOAT3(15.0f, 10.0f, 0.0f));
@@ -342,24 +363,35 @@ App::App(const std::string& commandLine)
 	pColumn2->SetLocalPosition(DirectX::XMFLOAT3(-2.0f, 0.0f, 4.0f));
 	pColumn3->SetLocalPosition(DirectX::XMFLOAT3(-16.0f, 0.0f, -6.0f));
 	pColumn4->SetLocalPosition(DirectX::XMFLOAT3(10.0f, 0.0f, 6.0f));
+	/*stone1->SetLocalPosition(DirectX::XMFLOAT3(-10.0f, 1.0f, -10.0f));
+	stone1->SetLocalScale(dx::XMFLOAT3(1.5f, 1.5f, 1.5f));*/
+	/*stone2->SetLocalPosition(DirectX::XMFLOAT3(-10.0f, 1.0f, 10.0f));
+	stone2->SetLocalScale(dx::XMFLOAT3(1.5f, 1.5f, 1.5f));
+	stone3->SetLocalPosition(DirectX::XMFLOAT3(10.0f, 1.0f, -10.0f));
+	stone3->SetLocalScale(dx::XMFLOAT3(1.5f, 1.5f, 1.5f));
+	stone5->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f));
+	stone5->SetLocalScale(dx::XMFLOAT3(1.5f, 1.5f, 1.5f));*/
 	soundDevice->SetLocation(pPlayer->GetLocalPosition().x, pPlayer->GetLocalPosition().y, pPlayer->GetLocalPosition().z);
-	//soundDevice->SetOrientation
-	//soundDevice->SetOrientation(0.f, 1.f, 0.f, 0.f, 0.f, 1.f);
 
     //Adding colliders to draw
-    /*AddBoxColliderToDraw(wnd.Gfx(), iOBB);
-    AddBoxColliderToDraw(wnd.Gfx(), sOBB);
+    //AddBoxColliderToDraw(wnd.Gfx(), island->GetComponent<OBB>());
+    /*AddBoxColliderToDraw(wnd.Gfx(), sOBB);
 	AddBoxColliderToDraw(wnd.Gfx(), cOBB);
 	AddBoxColliderToDraw(wnd.Gfx(), cOBB2);
 	AddBoxColliderToDraw(wnd.Gfx(), cOBB3);
-	AddBoxColliderToDraw(wnd.Gfx(), cOBB4);*/
+	AddBoxColliderToDraw(wnd.Gfx(), cOBB4);
+	AddBoxColliderToDraw(wnd.Gfx(), eDamageOBB);*/
 
 
 	/*AddSphereColliderToDraw(wnd.Gfx(), bBoundingSphere);
 	AddSphereColliderToDraw(wnd.Gfx(), a2Sphere);
-	AddSphereColliderToDraw(wnd.Gfx(), sBoundingSphere);
+	AddSphereColliderToDraw(wnd.Gfx(), sBoundingSphere);*/
+	//AddSphereColliderToDraw(wnd.Gfx(), stone1->GetComponent<BoundingSphere>());
+    /*AddSphereColliderToDraw(wnd.Gfx(), stone2->GetComponent<BoundingSphere>());
+    AddSphereColliderToDraw(wnd.Gfx(), stone3->GetComponent<BoundingSphere>());
+    AddSphereColliderToDraw(wnd.Gfx(), stone5->GetComponent<BoundingSphere>());*/
 
-	AddCapsuleColliderToDraw(wnd.Gfx(), pCapsule);
+	/*AddCapsuleColliderToDraw(wnd.Gfx(), pCapsule);
 	AddCapsuleColliderToDraw(wnd.Gfx(), eCapsule);
 	AddCapsuleColliderToDraw(wnd.Gfx(), a1CapsuleCollider);*/
 
@@ -368,12 +400,32 @@ App::App(const std::string& commandLine)
     cursorEnabled = false;
 }
 
-App::~App() = default;
+App::~App()
+{
+    //for (auto& pair : sphereCollidersToDraw) {
+    //    delete pair.second; // Delete the ColliderSphere*
+    //}
+    //sphereCollidersToDraw.clear();
+
+    //for (auto& pair : boxCollidersToDraw) {
+    //    delete pair.second; // Delete the SolidBox*
+    //}
+    //boxCollidersToDraw.clear();
+
+    //for (auto& pair : capsuleCollidersToDraw) {
+    //    delete pair.second; // Delete the SolidCapsule*
+    //}
+    //capsuleCollidersToDraw.clear();
+
+    // Delete the member DebugLine pointers
+    delete line1; line1 = nullptr;
+    delete line2; line2 = nullptr;
+    delete line3; line3 = nullptr;
+    delete line4; line4 = nullptr;
+}
 
 int App::Go()
 {
-    //float lag = 0.0f;
-    //const float FIXED_TIME_STEP = 0.01666f;
     while (true)
     {
         if (const auto ecode = Window::ProcessMessages())
@@ -381,15 +433,7 @@ int App::Go()
             return *ecode;
         }
         const auto dt = timer.Mark() * speed_factor;
-        //lag += dt;
 
-        /*while (lag >= FIXED_TIME_STEP)
-        {
-            physicsEngine.Simulate(FIXED_TIME_STEP);
-            lag -= FIXED_TIME_STEP;
-        }
-        physicsEngine.Simulate(lag);
-        lag = 0.0f;*/
         dynamicsWorld->stepSimulation(dt, 10);
         HandleInput(dt);
         DoFrame(dt);
@@ -476,24 +520,25 @@ void App::HandleInput(float dt)
     }
 
 }
-
 void App::DoFrame(float dt)
 {
     pSceneRoot->Update(dt);
+    CleanupDestroyedNodes(pSceneRoot.get());
 
     wnd.Gfx().BeginFrame(0.5f, 0.5f, 1.0f);
     //if (pPlayer->GetLocalPosition().y < -10.0f) {
-	//	pPlayer->SetLocalPosition({ -20.0f, 225.0f, -25.0f });
+    //	pPlayer->SetLocalPosition({ -20.0f, 225.0f, -25.0f });
     //    pEnemy->SetLocalPosition({ 15.0f, 225.0f, 0.0f });
     //}
-	dx::XMMATRIX viewMatrix = pCamera->GetComponent<Camera>()->GetViewMatrix();
-	if (freeViewCamera)
-	{
+    dx::XMMATRIX viewMatrix = pCamera->GetComponent<Camera>()->GetViewMatrix();
+    if (freeViewCamera)
+    {
         viewMatrix = pFreeViewCamera->GetComponent<Camera>()->GetViewMatrix();
-	}
+    }
     wnd.Gfx().SetCamera(viewMatrix);
-    fc.ShowWindows(wnd.Gfx());
-
+    //fc.ShowWindows(wnd.Gfx());
+	/*DebugLine line(wnd.Gfx(), pEnemy->GetComponent<StateMachine>()->pos, pEnemy->GetComponent<StateMachine>()->cen, { 0.0f, 0.0f, 1.0f, 1.0f });
+    line.Submit(fc);*/ // for idle
     // --- Bind Lights ---
     pointLight.Bind(wnd.Gfx(), viewMatrix); // Bind point light (to slot 0)
 
@@ -506,21 +551,22 @@ void App::DoFrame(float dt)
     {
         myMusic->UpdateBufferStream();
     }
+    if (pPlayer != nullptr) {
+        soundDevice->SetLocation(
+            pPlayer->GetLocalPosition().x,
+            pPlayer->GetLocalPosition().y,
+            pPlayer->GetLocalPosition().z
+        );
 
-	soundDevice->SetLocation(
-		pPlayer->GetLocalPosition().x,
-		pPlayer->GetLocalPosition().y,
-		pPlayer->GetLocalPosition().z
-	);
-
-	soundDevice->SetOrientation(
-		pCamera->Back().x,
-		pCamera->Back().y,
-		pCamera->Back().z,
-		pCamera->Up().x,
-		pCamera->Up().y,
-		pCamera->Up().z
-	);
+        soundDevice->SetOrientation(
+            pCamera->Back().x,
+            pCamera->Back().y,
+            pCamera->Back().z,
+            pCamera->Up().x,
+            pCamera->Up().y,
+            pCamera->Up().z
+        );
+    }
 	//pCamera->Forward();
 
     if (showControlWindow) {
@@ -601,27 +647,27 @@ void App::DrawNodeRecursive(Graphics& gfx, Node& node)
     //    DirectX::BoundingSphere sphere;
     //    DirectX::BoundingBox box;
     //    DirectX::ContainmentType containment = DirectX::DISJOINT;
-    //    //if (node.GetComponent<BoundingSphere>() != nullptr)
-    //    //{
-    //    //    sphere.Center = node.GetWorldPosition();
-    //    //    sphere.Radius = node.GetComponent<BoundingSphere>()->GetRadius();
-    //    //    containment = cameraFrustum.Contains(sphere);
-    //    //}
-    //    //else if (node.GetComponent<OBB>() != nullptr)
-    //    //{
-    //    //    box.Center = node.GetWorldPosition();
-    //    //    box.Extents = node.GetComponent<OBB>()->GetTransformedSize();
-    //    //    containment = cameraFrustum.Contains(box);
-    //    //}
-    //    //else if (node.GetComponent<CapsuleCollider>() != nullptr)
-    //    //{
-    //    //    // Assuming you have a method to get the capsule's bounding sphere
-    //    //    sphere.Center = DirectX::XMFLOAT3(node.GetWorldPosition().x,
-    //    //        (node.GetWorldPosition().y + 1.5f),
-    //    //        node.GetWorldPosition().z);
-    //    //    sphere.Radius = node.GetComponent<CapsuleCollider>()->GetRadius() * 2.5f;
-    //    //    containment = cameraFrustum.Contains(sphere);
-    //    //}
+    //    if (node.GetComponent<BoundingSphere>() != nullptr)
+    //    {
+    //        sphere.Center = node.GetWorldPosition();
+    //        sphere.Radius = node.GetComponent<BoundingSphere>()->GetRadius();
+    //        containment = cameraFrustum.Contains(sphere);
+    //    }
+    //    else if (node.GetComponent<OBB>() != nullptr)
+    //    {
+    //        box.Center = node.GetWorldPosition();
+    //        box.Extents = node.GetComponent<OBB>()->GetTransformedSize();
+    //        containment = cameraFrustum.Contains(box);
+    //    }
+    //    else if (node.GetComponent<CapsuleCollider>() != nullptr)
+    //    {
+    //        // Assuming you have a method to get the capsule's bounding sphere
+    //        sphere.Center = DirectX::XMFLOAT3(node.GetWorldPosition().x,
+    //            (node.GetWorldPosition().y + 1.5f),
+    //            node.GetWorldPosition().z);
+    //        sphere.Radius = node.GetComponent<CapsuleCollider>()->GetRadius() * 2.5f;
+    //        containment = cameraFrustum.Contains(sphere);
+    //    }
 
     //    if (containment == DirectX::DISJOINT) // DISJOINT means completely outside
     //    {
@@ -630,6 +676,7 @@ void App::DrawNodeRecursive(Graphics& gfx, Node& node)
 
     //}
 
+	shouldDraw = true; // Reset to true for the node itself
 
     if (shouldDraw)
     {
@@ -647,36 +694,44 @@ void App::DrawNodeRecursive(Graphics& gfx, Node& node)
 void App::ShowControlWindows()
 {
     // --- Existing Windows ---
-    // ... (your other UI code like pointLight, demo window, etc.) ...
-    //DrawSphereColliders(wnd.Gfx()); 
-    //DrawBoxColliders(wnd.Gfx()); 
-    //DrawCapsuleColliders(wnd.Gfx());
+
+	//DrawSphereColliders(wnd.Gfx()); // Call the updated function
+    //DrawBoxColliders(wnd.Gfx()); // Call the updated function
+	//DrawCapsuleColliders(wnd.Gfx());
+    //ForEnemyWalking();
     pointLight.Submit(fc);
-    pointLight.SpawnControlWindow();
+
+    pointLight.SpawnControlWindow(); // Control for Point Light
     if (showDemoWindow)
     {
         ImGui::ShowDemoWindow(&showDemoWindow);
     }
 
+    // --- Show Model Component Windows ---
+    //if (pNanosuitNode)
+    //{
+    //    if (auto* modelComp = pNanosuitNode->GetComponent<ModelComponent>())
+    //    {
+    //        modelComp->ShowWindow("Nanosuit Controls");
+    //    }
+    //}
+
+    // --- Simulation Speed Window ---
     if (ImGui::Begin("Simulation Speed"))
     {
         ImGui::SliderFloat("Speed Factor", &speed_factor, 0.0f, 4.0f);
-        ImGui::Text("To change camera press 'V'"); // Corrected key from 'C' based on HandleInput
-        ImGui::Text("To show/hide control window press 'H'");
+		ImGui::Text("To change camera press 'C'");
+		ImGui::Text("To show/hide control window press 'H'");
     }
     ImGui::End();
 
-    // --- Scene Hierarchy and Transform Editor ---
-    // Static variables to hold the Euler angles for editing.
-    // These persist across frames for the currently selected node.
-    static Node* s_pSelectedNodeForTransformEdit = nullptr;
-    static DirectX::XMFLOAT3 s_editableRotationEulerRad = { 0.0f, 0.0f, 0.0f }; // Store in Radians
 
+    // --- NEW: Scene Hierarchy Window ---
     if (ImGui::Begin("Scene Hierarchy"))
     {
         if (pSceneRoot)
         {
-            pSceneRoot->ShowNodeTree(pSelectedSceneNode); // pSelectedSceneNode is your App member
+            pSceneRoot->ShowNodeTree(pSelectedSceneNode);
         }
 
         ImGui::Separator();
@@ -689,59 +744,53 @@ void App::ShowControlWindows()
             // --- Transform Editor ---
             if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
             {
-                // Position and Scale can be read directly each frame
+                // Get current values
                 DirectX::XMFLOAT3 pos = pSelectedSceneNode->GetLocalPosition();
+                DirectX::XMFLOAT3 rotRad = pSelectedSceneNode->GetLocalRotationEuler();
                 DirectX::XMFLOAT3 scale = pSelectedSceneNode->GetLocalScale();
-                // bool transformChanged = false; // You might use this if other systems need to know
+
+                // Convert rotation to degrees for easier editing
+                DirectX::XMFLOAT3 rotDeg = {
+                    DirectX::XMConvertToDegrees(rotRad.x),
+                    DirectX::XMConvertToDegrees(rotRad.y),
+                    DirectX::XMConvertToDegrees(rotRad.z)
+                };
+
+                bool transformChanged = false;
 
                 ImGui::Text("Position"); ImGui::SameLine();
                 if (ImGui::DragFloat3("##Position", &pos.x, 0.1f))
                 {
                     pSelectedSceneNode->SetLocalPosition(pos);
-                    // transformChanged = true;
+                    transformChanged = true;
                 }
-
-                // --- Rotation Handling ---
-                // If the selected node has changed, update our static editable Euler angles
-                // from the newly selected node.
-                if (pSelectedSceneNode != s_pSelectedNodeForTransformEdit)
-                {
-                    s_editableRotationEulerRad = pSelectedSceneNode->GetLocalRotationEuler();
-                    s_pSelectedNodeForTransformEdit = pSelectedSceneNode;
-                }
-
-                // Convert our stable editable radians to degrees for the UI
-                DirectX::XMFLOAT3 rotDeg = {
-                    DirectX::XMConvertToDegrees(s_editableRotationEulerRad.x),
-                    DirectX::XMConvertToDegrees(s_editableRotationEulerRad.y),
-                    DirectX::XMConvertToDegrees(s_editableRotationEulerRad.z)
-                };
 
                 ImGui::Text("Rotation"); ImGui::SameLine();
-                // The DragFloat3 now manipulates rotDeg (our UI copy in degrees)
-                if (ImGui::DragFloat3("##Rotation", &rotDeg.x, 1.0f, -360.0f, 360.0f, "%.2f")) // Edit degrees
+                if (ImGui::DragFloat3("##Rotation", &rotDeg.x, 1.0f)) // Edit degrees
                 {
-                    // If changed, convert degrees back to radians for our stable copy
-                    s_editableRotationEulerRad = {
+                    // Convert back to radians before setting
+                    rotRad = {
                         DirectX::XMConvertToRadians(rotDeg.x),
                         DirectX::XMConvertToRadians(rotDeg.y),
                         DirectX::XMConvertToRadians(rotDeg.z)
                     };
-                    // Then set the node's rotation using these stable radians.
-                    // The Node will convert this to its internal quaternion.
-                    pSelectedSceneNode->SetLocalRotation(s_editableRotationEulerRad);
-                    // transformChanged = true;
+                    pSelectedSceneNode->SetLocalRotation(rotRad); // Set radians
+                    transformChanged = true;
                 }
 
-                ImGui::Text("Scale   "); ImGui::SameLine();
-                if (ImGui::DragFloat3("##Scale", &scale.x, 0.01f, 0.001f, 100.0f))
+                ImGui::Text("Scale   "); ImGui::SameLine(); // Extra spaces for alignment
+                if (ImGui::DragFloat3("##Scale", &scale.x, 0.01f, 0.01f, 100.0f)) // Add min/max scale
                 {
+                    // Prevent zero scale if needed
                     scale.x = std::max(scale.x, 0.001f);
                     scale.y = std::max(scale.y, 0.001f);
                     scale.z = std::max(scale.z, 0.001f);
                     pSelectedSceneNode->SetLocalScale(scale);
-                    // transformChanged = true;
+                    transformChanged = true;
                 }
+
+                // Note: The Node's worldTransformDirty flag is already set by the SetLocal... methods.
+                // The Node::Update() call later will handle recalculating the world matrix.
             }
 
             // --- Component Viewer ---
@@ -755,27 +804,32 @@ void App::ShowControlWindows()
                     int compIndex = 0;
                     for (const auto& comp : components) {
                         if (comp) {
+                            // Create a unique ID for the component header
                             std::string compLabel = typeid(*comp).name();
+                            // Remove "class " prefix if present (platform dependent)
                             if (compLabel.rfind("class ", 0) == 0) {
                                 compLabel = compLabel.substr(6);
                             }
-                            compLabel += "##Comp" + std::to_string(reinterpret_cast<uintptr_t>(comp.get())) + std::to_string(compIndex++);
+                            compLabel += "##" + std::to_string(compIndex++); // Add unique ID
 
-
+                            // Make each component collapsible
                             if (ImGui::TreeNode(compLabel.c_str()))
                             {
+                                // --- Call the component's ImGui draw function ---
                                 comp->DrawImGuiControls();
+                                // --- End Call ---
+
                                 ImGui::TreePop();
                             }
                         }
                     }
                 }
             }
+
         }
         else
         {
             ImGui::Text("Selected: None");
-            s_pSelectedNodeForTransformEdit = nullptr; // Reset if nothing is selected
         }
     }
     ImGui::End(); // End Scene Hierarchy Window
@@ -787,131 +841,208 @@ void App::ShowControlWindows()
 //    sphereCollidersToDraw[boundingSphere] = sphereCollider;
 //
 //}
-
+//
 //void App::DrawSphereColliders(Graphics& gfx)
 //{
 //    for (auto it = sphereCollidersToDraw.begin(); it != sphereCollidersToDraw.end(); ++it)
 //    {
-//		it->second->SetPos(DirectX::XMFLOAT3(it->first->GetTransformedCenter().x,
-//			it->first->GetTransformedCenter().y,
-//			it->first->GetTransformedCenter().z));
-//		it->second->Submit(fc);
+//        it->second->SetPos(DirectX::XMFLOAT3(it->first->GetTransformedCenter().x,
+//            it->first->GetTransformedCenter().y,
+//            it->first->GetTransformedCenter().z));
+//        it->second->Submit(fc);
 //    }
 //}
-
-
-
-// Signature now takes OBB*
+//
+//
+//
+//// Signature now takes OBB*
 //void App::AddBoxColliderToDraw(Graphics& gfx, OBB* obb)
 //{
 //	SolidBox* box = new SolidBox(gfx, obb->GetTransformedCenter(), obb->GetTransformedSize());
 //    boxCollidersToDraw[obb] = box;
 //
 //}
-
-// Logic now uses Rigidbody's world transform for OBB
+//
+//// Logic now uses Rigidbody's world transform for OBB
 //void App::DrawBoxColliders(Graphics& gfx)
 //{
 //    for (auto it = boxCollidersToDraw.begin(); it != boxCollidersToDraw.end(); ++it)
 //    {
-//		it->second->SetPos(DirectX::XMFLOAT3(it->first->GetTransformedCenter().x,
-//			it->first->GetTransformedCenter().y,
-//			it->first->GetTransformedCenter().z));
-//		it->second->SetSize(DirectX::XMFLOAT3(it->first->GetTransformedSize().x,
-//			it->first->GetTransformedSize().y,
-//			it->first->GetTransformedSize().z));
+//        it->second->SetPos(DirectX::XMFLOAT3(it->first->GetTransformedCenter().x,
+//            it->first->GetTransformedCenter().y,
+//            it->first->GetTransformedCenter().z));
+//        it->second->SetSize(DirectX::XMFLOAT3(it->first->GetTransformedSize().x,
+//            it->first->GetTransformedSize().y,
+//            it->first->GetTransformedSize().z));
 //        it->second->Submit(fc);
-//        
 //    }
 //
 //}
-
+//
 //void App::AddCapsuleColliderToDraw(Graphics& gfx, CapsuleCollider* capsule)
 //{
 //	SolidCapsule* solidCapsule = new SolidCapsule(gfx, capsule->GetTransformedBase(), capsule->GetTransformedTip(), capsule->GetRadius());
 //	capsuleCollidersToDraw[capsule] = solidCapsule;
 //}
-
+//
 //void App::DrawCapsuleColliders(Graphics& gfx)
 //{
 //    for (auto it = capsuleCollidersToDraw.begin(); it != capsuleCollidersToDraw.end(); ++it)
 //    {
-//		it->second->SetBase(it->first->GetTransformedBase());
-//		it->second->SetTip(it->first->GetTransformedTip());
-//		it->second->SetRadius(it->first->GetRadius());
-//        it->second->Update(gfx);
-//		it->second->Submit(fc);
+//        if (it->first != nullptr) {
+//            it->second->SetBase(it->first->GetTransformedBase());
+//            it->second->SetTip(it->first->GetTransformedTip());
+//            it->second->SetRadius(it->first->GetRadius());
+//            it->second->Update(gfx);
+//            it->second->Submit(fc);
+//        }
 //    }
 //}
 
 void App::ForEnemyWalking() {
-    Vector3 previousRotation = pEnemy->GetLocalRotationEuler();
-	pEnemy->TranslateLocal({ 0.0f, 1.0f, 0.0f });
+ //   Vector3 previousRotation = pEnemy->GetLocalRotationEuler();
+	//pEnemy->TranslateLocal({ 0.0f, 1.0f, 0.0f });
 
-    Vector3 temporaryDirection = pPlayer->GetWorldPosition() - pEnemy->GetWorldPosition();
+ //   Vector3 temporaryDirection = pPlayer->GetWorldPosition() - pEnemy->GetWorldPosition();
 
-    temporaryDirection.Normalize();
-    float targetYaw = atan2f(temporaryDirection.x, temporaryDirection.z);
-    pEnemy->SetLocalRotation({ 0.0f, targetYaw, 0.0f });
+ //   temporaryDirection.Normalize();
+ //   float targetYaw = atan2f(temporaryDirection.x, temporaryDirection.z);
+ //   pEnemy->SetLocalRotation({ 0.0f, targetYaw, 0.0f });
 
-    //float radius = pEnemy->GetComponent<CapsuleCollider>()->GetRadius();
+ //   //float radius = pEnemy->GetComponent<CapsuleCollider>()->GetRadius();
 
-    Vector3 pos = pEnemy->GetWorldPosition();
-    Vector3 forward = pEnemy->Forward();
-    Vector3 right = pEnemy->Right();
-    Vector3 down = pEnemy->Down();
+ //   Vector3 pos = pEnemy->GetWorldPosition();
+ //   Vector3 forward = pEnemy->Forward();
+ //   Vector3 right = pEnemy->Right();
+ //   Vector3 down = pEnemy->Down();
 
-    Vector3 centerOrigin = pos + forward;
-    /*Vector3 leftOrigin = centerOrigin - right * radius;
-    Vector3 rightOrigin = centerOrigin + right * radius;*/
+ //   Vector3 centerOrigin = pos + forward;
+ //   Vector3 leftOrigin = centerOrigin - right * radius;
+ //   Vector3 rightOrigin = centerOrigin + right * radius;
 
-    Vector3 centerDir = forward;
+ //   Vector3 centerDir = forward;
 
-    Vector3 leftDir = (forward - right * 0.5f); leftDir.Normalize();
+ //   Vector3 leftDir = (forward - right * 0.5f); leftDir.Normalize();
 
-    Vector3 rightDir = (forward + right * 0.5f); rightDir.Normalize();
+ //   Vector3 rightDir = (forward + right * 0.5f); rightDir.Normalize();
 
-    /*RaycastData hitLeft = Raycast::CastThroughLayers(leftOrigin, centerDir, std::vector<Layers>{ENEMY, PLAYER});
-    if (hitLeft.hitCollider != nullptr) {
-        line1->SetPoints(wnd.Gfx(), leftOrigin, hitLeft.hitPoint);
-        line1->Submit(fc);
+ //   RaycastData hitLeft = Raycast::CastThroughLayers(leftOrigin, centerDir, std::vector<Layers>{ENEMY, PLAYER});
+ //   if (hitLeft.hitCollider != nullptr) {
+ //       line1->SetPoints(wnd.Gfx(), leftOrigin, hitLeft.hitPoint);
+ //       line1->Submit(fc);
+ //   }
+ //   else
+ //   {
+ //       line1->SetPoints(wnd.Gfx(), leftOrigin, { pos.x, pos.y - 5.0f, pos.z });
+ //       line1->Submit(fc);
+ //   }
+ //   RaycastData moreLeft = Raycast::CastThroughLayers(leftOrigin, leftDir, std::vector<Layers>{ENEMY, PLAYER});
+ //   if (moreLeft.hitCollider != nullptr) {
+ //       line2->SetPoints(wnd.Gfx(), leftOrigin, moreLeft.hitPoint);
+ //       line2->Submit(fc);
+ //   }
+ //   else
+ //   {
+ //       line2->SetPoints(wnd.Gfx(), leftOrigin, { pos.x, pos.y - 5.0f, pos.z });
+ //       line2->Submit(fc);
+ //   }
+ //   RaycastData hitRight = Raycast::CastThroughLayers(rightOrigin, centerDir, std::vector<Layers>{ENEMY, PLAYER});
+ //   if (hitRight.hitCollider != nullptr) {
+ //       line3->SetPoints(wnd.Gfx(), rightOrigin, hitRight.hitPoint);
+ //       line3->Submit(fc);
+ //   }
+ //   else
+ //   {
+ //       line3->SetPoints(wnd.Gfx(), leftOrigin, { pos.x, pos.y - 5.0f, pos.z });
+ //       line3->Submit(fc);
+ //   }
+ //   RaycastData moreRight = Raycast::CastThroughLayers(rightOrigin, rightDir, std::vector<Layers>{ENEMY, PLAYER});
+ //   if (moreRight.hitCollider != nullptr) {
+ //       line4->SetPoints(wnd.Gfx(), rightOrigin, moreRight.hitPoint);
+ //       line4->Submit(fc);
+ //   }
+ //   else
+ //   {
+ //       line4->SetPoints(wnd.Gfx(), leftOrigin, { pos.x, pos.y - 5.0f, pos.z });
+ //       line4->Submit(fc);
+ //   }
+
+ //   pEnemy->SetLocalRotation(previousRotation);
+ //   pEnemy->TranslateLocal({ 0.0f, -1.0f, 0.0f });
+}
+
+void App::CleanupDestroyedNodes(Node* currentNode)
+{
+    if (!currentNode) return;
+
+    // 1. Recursively clean children first.
+    auto& children_ref = currentNode->GetChildren_NonConst();
+    for (size_t i = 0; i < children_ref.size(); ++i) {
+        if (children_ref[i]) {
+            CleanupDestroyedNodes(children_ref[i].get());
+        }
     }
-    else
-    {
-        line1->SetPoints(wnd.Gfx(), leftOrigin, { pos.x, pos.y - 5.0f, pos.z });
-        line1->Submit(fc);
-    }*/
-    /*RaycastData moreLeft = Raycast::CastThroughLayers(leftOrigin, leftDir, std::vector<Layers>{ENEMY, PLAYER});
-    if (moreLeft.hitCollider != nullptr) {
-        line2->SetPoints(wnd.Gfx(), leftOrigin, moreLeft.hitPoint);
-        line2->Submit(fc);
-    }
-    else
-    {
-        line2->SetPoints(wnd.Gfx(), leftOrigin, { pos.x, pos.y - 5.0f, pos.z });
-        line2->Submit(fc);
-    }
-    RaycastData hitRight = Raycast::CastThroughLayers(rightOrigin, centerDir, std::vector<Layers>{ENEMY, PLAYER});
-    if (hitRight.hitCollider != nullptr) {
-        line3->SetPoints(wnd.Gfx(), rightOrigin, hitRight.hitPoint);
-        line3->Submit(fc);
-    }*/
-    /*else
-    {
-        line3->SetPoints(wnd.Gfx(), leftOrigin, { pos.x, pos.y - 5.0f, pos.z });
-        line3->Submit(fc);
-    }
-    RaycastData moreRight = Raycast::CastThroughLayers(rightOrigin, rightDir, std::vector<Layers>{ENEMY, PLAYER});
-    if (moreRight.hitCollider != nullptr) {
-        line4->SetPoints(wnd.Gfx(), rightOrigin, moreRight.hitPoint);
-        line4->Submit(fc);
-    }
-    else
-    {
-        line4->SetPoints(wnd.Gfx(), leftOrigin, { pos.x, pos.y - 5.0f, pos.z });
-        line4->Submit(fc);
-    }*/
 
-    pEnemy->SetLocalRotation(previousRotation);
-    pEnemy->TranslateLocal({ 0.0f, -1.0f, 0.0f });
+    // 2. Now, remove any children of *this* currentNode that are marked.
+    auto& children = currentNode->GetChildren_NonConst();
+    children.erase(
+        std::remove_if(children.begin(), children.end(),
+            [&](std::unique_ptr<Node>& pChildNode) {
+                if (!pChildNode) return false;
+
+                if (pChildNode->IsMarkedForDestruction()) {
+                    OutputDebugStringA(("Cleanup: Preparing to remove node: " + pChildNode->GetName() + "\n").c_str());
+
+                    //physicsEngine.RemoveRigidbody(pChildNode->GetComponent<Rigidbody>());
+                    
+                    const auto& components = pChildNode->GetComponents();
+                    for (const auto& compUniquePtr : components) {
+                        Component* comp = compUniquePtr.get();
+                        if (!comp) continue;
+                        //physicsEngine.RemoveCollider(dynamic_cast<Collider*>(comp));
+
+
+                        // FOR DRAWING COLLIDERS
+                        //if (auto* bs = dynamic_cast<BoundingSphere*>(comp)) {
+                        //    physicsEngine.RemoveCollider(bs); // Remove from physics
+                        //    auto mapIt = sphereCollidersToDraw.find(bs);
+                        //    if (mapIt != sphereCollidersToDraw.end()) {
+                        //        delete mapIt->second;
+                        //        sphereCollidersToDraw.erase(mapIt);
+                        //    }
+                        //}
+                        //else if (auto* obb = dynamic_cast<OBB*>(comp)) {
+                        //    auto mapIt = boxCollidersToDraw.find(obb);
+                        //    if (mapIt != boxCollidersToDraw.end()) {
+                        //        delete mapIt->second;
+                        //        boxCollidersToDraw.erase(mapIt);
+                        //    }
+                        //}
+                        //else if (auto* cap = dynamic_cast<CapsuleCollider*>(comp)) {
+                        //    auto mapIt = capsuleCollidersToDraw.find(cap);
+                        //    if (mapIt != capsuleCollidersToDraw.end()) {
+                        //        delete mapIt->second; // Delete the allocated SolidCapsule* drawable
+                        //        capsuleCollidersToDraw.erase(mapIt);
+                        //    }
+                        //}
+						// END FOR DRAWING COLLIDERS
+
+                    }
+
+                    if (pSelectedSceneNode == pChildNode.get()) { pSelectedSceneNode = nullptr; }
+                    if (pEnemy == pChildNode.get()) { pEnemy = nullptr; }
+                    if (pPlayer == pChildNode.get()) { pPlayer = nullptr; }
+                    if (pAbility1 == pChildNode.get()) { pAbility1 = nullptr; }
+                    if (pAbility2 == pChildNode.get()) { pAbility2 = nullptr; }
+
+                    OutputDebugStringA(("Cleanup: Node removed from parent: " + pChildNode->GetName() + "\n").c_str());
+                    return true;
+                }
+                return false;
+            }
+        ),
+        children.end()
+    );
+
+    
 }

@@ -11,3 +11,8 @@
 #include "CapsuleCollider.h"
 #include "Camera.h"
 #include "Throwable.h"
+#include "Health.h"
+#include "BasicAttack.h"
+#include "ShootAttack.h"
+#include "Flying.h"
+#include "Island.h"

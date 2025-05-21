@@ -1,6 +1,7 @@
 #pragma once
 
 #include "State.h" // Include the interface
+#include "Component.h"
 
 class AttackState : public State
 {
@@ -15,4 +16,6 @@ public:
 	virtual StateType GetType() const override { return StateType::IDLE; }
 
 	float time;
+	Component* pAttackComponent = nullptr;
+
 };

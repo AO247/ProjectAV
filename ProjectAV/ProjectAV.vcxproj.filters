@@ -189,7 +189,7 @@
     <ClCompile Include="MiscMath.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LegacyCollider.cpp">
+    <ClCompile Include="Collider.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
     <ClCompile Include="Rigidbody.cpp">
@@ -333,14 +333,20 @@
     <ClCompile Include="SoundEffectsPlayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Collider.cpp">
+    <ClCompile Include="Health.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
-    <ClCompile Include="Trigger.cpp">
+    <ClCompile Include="BasicAttack.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
-    <ClCompile Include="PhysicsCommon.cpp">
-      <Filter>Source Files\Physics</Filter>
+    <ClCompile Include="ShootAttack.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Flying.cpp">
+      <Filter>Source Files\Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -494,7 +500,7 @@
     <ClInclude Include="BindableCodex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LegacyCollider.h">
+    <ClInclude Include="Collider.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
     <ClInclude Include="Rigidbody.h">
@@ -686,14 +692,20 @@
     <ClInclude Include="SoundEffectsPlayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Collider.h">
+    <ClInclude Include="Health.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
-    <ClInclude Include="Trigger.h">
+    <ClInclude Include="BasicAttack.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
-    <ClInclude Include="PhysicsCommon.h">
-      <Filter>Header Files\Physics</Filter>
+    <ClInclude Include="ShootAttack.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Bullet.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Flying.h">
+      <Filter>Header Files\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

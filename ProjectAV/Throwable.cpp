@@ -1,12 +1,12 @@
 #include "Throwable.h"
-
+#include <string>
 Throwable::Throwable(Node* owner) : Component(owner)
 {
 	rigidbody = owner->GetComponent<Rigidbody>();
 }
 void Throwable::Update(float dt)
 {
-	/*if (rigidbody->GetVelocity().Length() > 0.0f)
+	/*if (rigidbody->GetVelocity().Length() > 20.0f)
 	{
 		OnTriggerEnter();
 	}*/
@@ -20,9 +20,10 @@ void Throwable::OnTriggerEnter()
 	{
 		for (Collider* col : cols)
 		{
-			if (col->GetOwner()->tag == "Enemy")
+			if (col->GetIsTrigger()) continue;
+			if (col->GetOwner()->GetComponent<Health>())
 			{
-				OutputDebugStringA("\nHit Enemy\n");
+				col->GetOwner()->GetComponent<Health>()->TakeDamage(damage);
 			}
 		}
 	}*/
@@ -31,7 +32,6 @@ void Throwable::OnTriggerEnter()
 
 void Throwable::DrawImGuiControls()
 {
-	/*ImGui::InputFloat("Move Speed", &moveSpeed);
-	ImGui::Checkbox("Jumped", &jumped);*/
+	ImGui::InputFloat("Damage", &damage);
 
 }
