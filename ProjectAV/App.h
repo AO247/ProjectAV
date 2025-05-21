@@ -15,7 +15,7 @@
 #include "SolidCapsule.h"
 #include "Button.h"  
 #include "AnimatedSprite.h"
-
+#include "Sprite.h"
 // Forward declarations
 class PlayerController; // Forward declare
 
@@ -92,5 +92,5 @@ private:
 
     std::unique_ptr<Button> myButton;
     std::unique_ptr<AnimatedSprite> mySprite;
-
+    std::unique_ptr<Sprite> myPlusSprite;
 };

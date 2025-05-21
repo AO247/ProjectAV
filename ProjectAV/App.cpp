@@ -1,3 +1,5 @@
+// --- START OF FILE App.cpp ---
+
 #include "App.h"
 #include "Node.h"
 #include "State.h"
@@ -12,7 +14,8 @@
 #include "SolidCapsule.h"
 #include "DebugLine.h"
 #include "Testing.h"
-#include "Button.h" // [NEW] Include the Button header
+#include "Button.h"
+#include "Sprite.h" // [NEW] Include the Sprite header
 
 namespace dx = DirectX;
 
@@ -264,7 +267,7 @@ App::App(const std::string& commandLine)
     );
     pEnemy->GetComponent<StateMachine>()->UpdateComponents();
 
-    
+
     // Changing position scale etc.]
     pFreeViewCamera->SetLocalPosition({ 4.0f, 11.0f, -28.0f });
     pPlayer->SetLocalPosition({ 0.0f, 35.0f, 0.0f });
@@ -300,18 +303,30 @@ App::App(const std::string& commandLine)
     AddCapsuleColliderToDraw(wnd.Gfx(), eCapsule);
     AddCapsuleColliderToDraw(wnd.Gfx(), a1CapsuleCollider);
 
+    // --- Initialize UI Elements ---
     this->myButton = std::make_unique<Button>(wnd.Gfx().GetDevice(), 110, 110, 200, 100, L"Click Me");
-    //mySprite = std::make_unique<AnimatedSprite>(
-    //    wnd.Gfx().GetDevice(),  // ID3D11Device*
-    //    200,                       // int x
-    //    200,                       // int y
-    //    64,                        // int width
-    //    64,                        // int height
-    //    L"Images\\Animations.png",  // const std::wstring& spriteSheetPath
-    //    4,                         // int frameCountX
-    //    4                          // int frameCountY
-    //);
-    
+
+    // [NEW] Initialize the plus sprite
+    // Assuming your window is 1280x720
+    // And you want the plus sprite to be, for example, 64x64 pixels
+    const int screenWidth = 1280;
+    const int screenHeight = 720;
+    const int plusSpriteWidth = 64;
+    const int plusSpriteHeight = 64;
+    const int plusSpriteX = (screenWidth / 2) - (plusSpriteWidth / 2);
+    const int plusSpriteY = (screenHeight / 2) - (plusSpriteHeight / 2);
+
+    myPlusSprite = std::make_unique<Sprite>(
+        wnd.Gfx().GetDevice(),      // ID3D11Device*
+        plusSpriteX,                // int x (center X)
+        plusSpriteY,                // int y (center Y)
+        plusSpriteWidth,            // int width
+        plusSpriteHeight,           // int height
+        L"Images\\plus.png"         // const std::wstring& spritePath 
+        // (Ensure this path is correct and the image exists)
+    );
+    // --- End UI Elements Initialization ---
+
     wnd.DisableCursor();
     wnd.mouse.EnableRaw();
     cursorEnabled = false;
@@ -481,14 +496,23 @@ void App::DoFrame(float dt)
     //ector3 secPos(pCamera->GetWorldPosition().x + pCamera->Forward().x, pCamera->GetWorldPosition().y + pCamera->Forward().y, pCamera->GetWorldPosition().z + pCamera->Forward().z);
     //DebugLine(wnd.Gfx(), pCamera->GetWorldPosition(), secPos).Draw(wnd.Gfx());
 
-    
+
     if (showControlWindow) {
         ShowControlWindows();
     }
-  
+
     fc.Execute(wnd.Gfx());
-    myButton->Draw(wnd.Gfx().GetContext());
-    //mySprite->Draw(wnd.Gfx().GetContext());
+
+    // --- Draw UI Elements ---
+    if (myButton) { // [MODIFIED] Check if button exists
+        myButton->Draw(wnd.Gfx().GetContext());
+    }
+    //mySprite->Draw(wnd.Gfx().GetContext()); // This was the animated sprite
+    if (myPlusSprite) { // [NEW] Draw the plus sprite if it exists
+        myPlusSprite->Draw(wnd.Gfx().GetContext());
+    }
+    // --- End Draw UI Elements ---
+
     wnd.Gfx().EndFrame();
     fc.Reset();
 }
@@ -812,9 +836,9 @@ void App::DrawCapsuleColliders(Graphics& gfx)
 
 // [NEW] Handle mouse click event
 void App::OnMouseClick(int xPos, int yPos) {
-    if (myButton->IsClicked(xPos, yPos)) {
+    if (myButton && myButton->IsClicked(xPos, yPos)) { // [MODIFIED] Check if button exists
         // Button was clicked!
         OutputDebugStringW(L"Button Clicked!\n");
     }
 }
-
+// --- END OF FILE App.cpp ---
