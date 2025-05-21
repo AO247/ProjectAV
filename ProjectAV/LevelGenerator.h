@@ -11,7 +11,10 @@ public:
 	LevelGenerator(PrefabManager* prefabManager, Node* root);
 	~LevelGenerator() = default;
 
-	float islandCount = 20.0f;
+	int bigIslandCount = 2;
+	int mediumIslandCount = 8;
+	int smallIslandCount = 2;
+
 
 private:
 	float distance = 1.0f;

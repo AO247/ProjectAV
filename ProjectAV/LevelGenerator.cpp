@@ -24,18 +24,39 @@ void LevelGenerator::GenerateIslands()
             time = 0.0f;
             break;
         }
-        int randIsland = rand() % 2;
+        int randIsland = rand() % 3;
 		Node* islandPrefab = nullptr;
-        if (randIsland == 0) 
-        {
-            islandPrefab = prefabManager->InstantiateIsland1(pSceneRoot, 0.0f, 0.0f, 0.0f, 1.3f);
-        }
-        else 
-        {
-            islandPrefab = prefabManager->InstantiateIsland2(pSceneRoot, 0.0f, 0.0f, 0.0f, 1.5f);
 
+        while (true) {
+
+            if (randIsland == 0 && bigIslandCount > 0)
+            {
+                islandPrefab = prefabManager->InstantiateIslandBig1(pSceneRoot, 0.0f, 0.0f, 0.0f, 1.3f);
+				bigIslandCount--;
+                break;
+            }
+            else if (randIsland == 1 && mediumIslandCount > 0)
+            {
+				int randMedium = rand() % 2;
+                if (randMedium == 0) {
+                    islandPrefab = prefabManager->InstantiateIslandMedium1(pSceneRoot, 0.0f, 0.0f, 0.0f, 2.3f);
+                }
+                else {
+					islandPrefab = prefabManager->InstantiateIslandMedium2(pSceneRoot, 0.0f, 0.0f, 0.0f, 1.3f);
+                }
+				mediumIslandCount--;
+                break;
+            }
+            else if (randIsland == 2 && smallIslandCount > 0)
+            {
+                islandPrefab = prefabManager->InstantiateIslandSmall1(pSceneRoot, 0.0f, 0.0f, 0.0f, 1.5f);
+				smallIslandCount--;
+                break;
+            }
+            else {
+				randIsland = rand() % 3;
+            }
         }
-        islandCount--;
 
         if (islandPrefab != nullptr && islandPrefab->GetComponent<Island>())
         {
@@ -89,7 +110,7 @@ void LevelGenerator::GenerateIslands()
                 }
             }
             else {
-                //island->Rotate();
+                island->Rotate();
                 float stepSize = 1.0f;
                 bool calculated = false;
                 Vector3 currentPos = Vector3(0.0f, 0.0f, 0.0f);
@@ -220,7 +241,7 @@ void LevelGenerator::GenerateIslands()
                 }
             }
         }
-        if (islandCount <= 0)
+        if (bigIslandCount <= 0 && mediumIslandCount <= 0 && smallIslandCount <= 0)
         {
 			OutputDebugStringA("\nAll islands generated\n");
             time = 0.0f;
