@@ -49,7 +49,7 @@ App::App(const std::string& commandLine)
 
 	LevelGenerator levelGenerator(prefabManager, pSceneRoot.get());
 
-    //Node* island = prefabManager->InstantiateIsland(pSceneRoot.get(), 0.0f, -0.1f, 0.0f, 1.3f);
+    Node* island = prefabManager->InstantiateIsland2(pSceneRoot.get(), 0.0f, -0.1f, 0.0f, 1.0f);
 
     // --- Create Nodes ---
 
@@ -138,7 +138,7 @@ App::App(const std::string& commandLine)
 		std::make_unique<ModelComponent>(pColumn3, wnd.Gfx(), "Models\\kolumna\\kolumna.obj")
 	);
 	pColumn4->AddComponent(
-		std::make_unique<ModelComponent>(pColumn4, wnd.Gfx(), "Models\\kolumna\\kolumna.obj")
+		std::make_unique<ModelComponent>(pColumn4, wnd.Gfx(), "Models\\objects\\sciany.obj")
 	);
 
     //pIsland->AddComponent(
