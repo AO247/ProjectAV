@@ -18,7 +18,6 @@ PlayerController::PlayerController(Node* owner, Window& window)
 	camera = owner->GetRoot()->FindFirstChildByTag("Camera");
 	ability1 = owner->GetRoot()->FindFirstChildByTag("Ability1");
 	ability2 = owner->GetRoot()->FindFirstChildByTag("Ability2");
-
 }
 
 
@@ -38,15 +37,17 @@ void PlayerController::Update(float dt)
 
 void PlayerController::SpeedControl()
 {
-	/*if (dashed) return;
-    Vector3 velocity(rigidbody->GetVelocity().x, 0.0f, rigidbody->GetVelocity().z);
+	if (dashed) return;
+	Vec3 velocity = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
+	velocity.SetY(0.0f);
 
     if (velocity.Length() > moveSpeed) 
     {
-		velocity.Normalize();
-        Vector3 limitedVel = velocity * moveSpeed;
-		rigidbody->SetVelocity(Vector3(limitedVel.x, rigidbody->GetVelocity().y, limitedVel.z));
-    }*/
+        velocity = velocity.Normalized();
+        Vec3 limitedVel = velocity * moveSpeed;
+		limitedVel.SetY(PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID()).GetY());
+		PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rigidbody->GetBodyID(), limitedVel);
+    }
 }
 
 void PlayerController::Jump()
@@ -108,10 +109,6 @@ void PlayerController::GroundCheck()
 void PlayerController::MovePlayer()
 {
     moveDirection.Normalize();
-
-    //btVector3 movement(moveDirection.x, moveDirection.y, moveDirection.z);
-    //rigidbody->GetBulletRigidbody()->applyForce(movement * moveSpeed * 100.0f, btVector3(0,0,0));
-    //rigidbody->AddForce(moveDirection * moveSpeed * 1000.0f);
 
     PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * moveSpeed * 1000.0f);
 }
