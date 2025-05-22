@@ -55,12 +55,6 @@ Node* PrefabManager::InstantiateIslandBig1(Node* parentNode, float locX, float l
     pNewNodeOwner->AddComponent(
         std::make_unique<ModelComponent>(pNewNodeOwner.get(), wnd->Gfx(), "Models\\wyspa\\wyspa_test.fbx")
     );
-    /*pNewNodeOwner->AddComponent(
-        std::make_unique<OBB>(pNewNodeOwner.get(), nullptr, Vector3(0.0f, -0.3f, 0.0f), Vector3(40.0f, 1.0f, 40.0f))
-    );
-    OBB* pOBB = pNewNodeOwner->GetComponent<OBB>();
-    pOBB->SetLayer(Layers::GROUND);
-    physicsEngine->AddCollider(pOBB);*/
     ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
     TriangleList islandTriangles = PhysicsCommon::MakeTriangleList(islandModel->GetAllTriangles());
     MeshShapeSettings islandMeshSettings(islandTriangles);
@@ -68,8 +62,8 @@ Node* PrefabManager::InstantiateIslandBig1(Node* parentNode, float locX, float l
     ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
     ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
     islandMeshShape = islandScaling.Create().Get();
-    BodyCreationSettings bodySettings(islandMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::NON_MOVING);
-    bodySettings.mFriction = 10.0f;
+    BodyCreationSettings bodySettings(islandMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+    bodySettings.mFriction = 1.0f;
     pNewNodeOwner->AddComponent(
         std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
     );
@@ -114,12 +108,18 @@ Node* PrefabManager::InstantiateIslandMedium1(Node* parentNode, float locX, floa
     pNewNodeOwner->AddComponent(
         std::make_unique<ModelComponent>(pNewNodeOwner.get(), wnd->Gfx(), "Models\\objects\\wyspa_wycieta.obj")
     );
-    /*pNewNodeOwner->AddComponent(
-        std::make_unique<OBB>(pNewNodeOwner.get(), nullptr, Vector3(0.0f, -0.3f, 0.0f), Vector3(20.0f, 1.0f, 20.0f))
+    ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
+    TriangleList islandTriangles = PhysicsCommon::MakeTriangleList(islandModel->GetAllTriangles());
+    MeshShapeSettings islandMeshSettings(islandTriangles);
+    Shape::ShapeResult islandMeshCreationResult = islandMeshSettings.Create();
+    ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
+    ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
+    islandMeshShape = islandScaling.Create().Get();
+    BodyCreationSettings bodySettings(islandMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+    bodySettings.mFriction = 1.0f;
+    pNewNodeOwner->AddComponent(
+        std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
     );
-    OBB* pOBB = pNewNodeOwner->GetComponent<OBB>();
-    pOBB->SetLayer(Layers::GROUND);
-    physicsEngine->AddCollider(pOBB);*/
 
     pNewNodeOwner->AddComponent(
         std::make_unique<Island>(pNewNodeOwner.get())
@@ -163,12 +163,18 @@ Node* PrefabManager::InstantiateIslandMedium2(Node* parentNode, float locX, floa
     pNewNodeOwner->AddComponent(
         std::make_unique<ModelComponent>(pNewNodeOwner.get(), wnd->Gfx(), "Models\\objects\\wyspa_srednia_1.obj")
     );
-    /*pNewNodeOwner->AddComponent(
-        std::make_unique<OBB>(pNewNodeOwner.get(), nullptr, Vector3(0.0f, -0.3f, 0.0f), Vector3(20.0f, 1.0f, 20.0f))
+    ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
+    TriangleList islandTriangles = PhysicsCommon::MakeTriangleList(islandModel->GetAllTriangles());
+    MeshShapeSettings islandMeshSettings(islandTriangles);
+    Shape::ShapeResult islandMeshCreationResult = islandMeshSettings.Create();
+    ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
+    ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
+    islandMeshShape = islandScaling.Create().Get();
+    BodyCreationSettings bodySettings(islandMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+    bodySettings.mFriction = 1.0f;
+    pNewNodeOwner->AddComponent(
+        std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
     );
-    OBB* pOBB = pNewNodeOwner->GetComponent<OBB>();
-    pOBB->SetLayer(Layers::GROUND);
-    physicsEngine->AddCollider(pOBB);*/
 
     pNewNodeOwner->AddComponent(
         std::make_unique<Island>(pNewNodeOwner.get())
@@ -211,12 +217,18 @@ Node* PrefabManager::InstantiateIslandSmall1(Node* parentNode, float locX, float
     pNewNodeOwner->AddComponent(
         std::make_unique<ModelComponent>(pNewNodeOwner.get(), wnd->Gfx(), "Models\\objects\\wyspa_mala_1.obj")
     );
-    /*pNewNodeOwner->AddComponent(
-        std::make_unique<OBB>(pNewNodeOwner.get(), nullptr, Vector3(0.0f, -0.3f, 0.0f), Vector3(20.0f, 1.0f, 20.0f))
+    ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
+    TriangleList islandTriangles = PhysicsCommon::MakeTriangleList(islandModel->GetAllTriangles());
+    MeshShapeSettings islandMeshSettings(islandTriangles);
+    Shape::ShapeResult islandMeshCreationResult = islandMeshSettings.Create();
+    ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
+    ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
+    islandMeshShape = islandScaling.Create().Get();
+    BodyCreationSettings bodySettings(islandMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+    bodySettings.mFriction = 1.0f;
+    pNewNodeOwner->AddComponent(
+        std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
     );
-    OBB* pOBB = pNewNodeOwner->GetComponent<OBB>();
-    pOBB->SetLayer(Layers::GROUND);
-    physicsEngine->AddCollider(pOBB);*/
 
     pNewNodeOwner->AddComponent(
         std::make_unique<Island>(pNewNodeOwner.get())

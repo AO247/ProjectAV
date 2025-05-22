@@ -105,6 +105,7 @@ void LevelGenerator::GenerateIslands()
                             }
                         }*/
                         time = 0.0f;
+                        PhysicsCommon::physicsSystem->GetBodyInterface().SetPosition(islandPrefab->GetComponent<Rigidbody>()->GetBodyID(), Vec3(pos.x, pos.y, pos.z), EActivation::Activate);
                         break;
                     }
                 }
@@ -142,6 +143,7 @@ void LevelGenerator::GenerateIslands()
                         // sprawdŸ, czy ju¿ jesteœ blisko:
                         if ((island->upPoint->GetWorldPosition() - pos).Length() <= distance)
                         {
+                            OutputDebugStringA("\nZnaleziono miejsce dla wyspy\n");
                             if (randPoint >= 0 && randPoint < static_cast<int>(points.size())) {
                                 points.erase(points.begin() + randPoint);
                             }
@@ -149,6 +151,7 @@ void LevelGenerator::GenerateIslands()
                             points.push_back(Vector4(island->leftPoint->GetWorldPosition().x, island->leftPoint->GetWorldPosition().y, island->leftPoint->GetWorldPosition().z, 1.0f));
                             points.push_back(Vector4(island->rightPoint->GetWorldPosition().x, island->rightPoint->GetWorldPosition().y, island->rightPoint->GetWorldPosition().z, 3.0f));
                             time = 0.0f;
+                            PhysicsCommon::physicsSystem->GetBodyInterface().SetPosition(islandPrefab->GetComponent<Rigidbody>()->GetBodyID(), Vec3(pos.x, pos.y, pos.z), EActivation::Activate);
                             break;
 
                         }
@@ -168,6 +171,7 @@ void LevelGenerator::GenerateIslands()
                         // sprawdŸ, czy ju¿ jesteœ blisko:
                         if ((island->rightPoint->GetWorldPosition() - pos).Length() <= distance)
                         {
+                            OutputDebugStringA("\nZnaleziono miejsce dla wyspy\n");
                             if (randPoint >= 0 && randPoint < static_cast<int>(points.size())) {
                                 points.erase(points.begin() + randPoint);
                             }
@@ -175,6 +179,7 @@ void LevelGenerator::GenerateIslands()
                             points.push_back(Vector4(island->leftPoint->GetWorldPosition().x, island->leftPoint->GetWorldPosition().y, island->leftPoint->GetWorldPosition().z, 1.0f));
                             points.push_back(Vector4(island->upPoint->GetWorldPosition().x, island->upPoint->GetWorldPosition().y, island->upPoint->GetWorldPosition().z, 2.0f));
                             time = 0.0f;
+                            PhysicsCommon::physicsSystem->GetBodyInterface().SetPosition(islandPrefab->GetComponent<Rigidbody>()->GetBodyID(), Vec3(pos.x, pos.y, pos.z), EActivation::Activate);
                             break;
 
                         }
@@ -196,6 +201,7 @@ void LevelGenerator::GenerateIslands()
                         // sprawdŸ, czy ju¿ jesteœ blisko:
                         if ((island->downPoint->GetWorldPosition() - pos).Length() <= distance)
                         {
+                            OutputDebugStringA("\nZnaleziono miejsce dla wyspy\n");
                             if (randPoint >= 0 && randPoint < static_cast<int>(points.size())) {
                                 points.erase(points.begin() + randPoint);
                             }
@@ -203,6 +209,7 @@ void LevelGenerator::GenerateIslands()
                             points.push_back(Vector4(island->upPoint->GetWorldPosition().x, island->upPoint->GetWorldPosition().y, island->upPoint->GetWorldPosition().z, 2.0f));
                             points.push_back(Vector4(island->rightPoint->GetWorldPosition().x, island->rightPoint->GetWorldPosition().y, island->rightPoint->GetWorldPosition().z, 3.0f));
                             time = 0.0f;
+                            PhysicsCommon::physicsSystem->GetBodyInterface().SetPosition(islandPrefab->GetComponent<Rigidbody>()->GetBodyID(), Vec3(pos.x, pos.y, pos.z), EActivation::Activate);
                             break;
 
                         }
@@ -223,6 +230,7 @@ void LevelGenerator::GenerateIslands()
                         // sprawdŸ, czy ju¿ jesteœ blisko:
                         if ((island->leftPoint->GetWorldPosition() - pos).Length() <= distance)
                         {
+                            OutputDebugStringA("\nZnaleziono miejsce dla wyspy\n");
                             if (randPoint >= 0 && randPoint < static_cast<int>(points.size())) {
                                 points.erase(points.begin() + randPoint);
                             }
@@ -230,8 +238,9 @@ void LevelGenerator::GenerateIslands()
                             points.push_back(Vector4(island->upPoint->GetWorldPosition().x, island->upPoint->GetWorldPosition().y, island->upPoint->GetWorldPosition().z, 2.0f));
                             points.push_back(Vector4(island->rightPoint->GetWorldPosition().x, island->rightPoint->GetWorldPosition().y, island->rightPoint->GetWorldPosition().z, 3.0f));
                             time = 0.0f;
+							Vector3 pos = Vector3(island->leftPoint->GetWorldPosition().x, island->leftPoint->GetWorldPosition().y, island->leftPoint->GetWorldPosition().z);
+							PhysicsCommon::physicsSystem->GetBodyInterface().SetPosition(islandPrefab->GetComponent<Rigidbody>()->GetBodyID(), Vec3(pos.x, pos.y, pos.z), EActivation::Activate);
                             break;
-
                         }
                     }
                     else

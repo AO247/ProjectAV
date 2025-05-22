@@ -48,14 +48,28 @@ void PlayerController::SpeedControl()
 		limitedVel.SetY(PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID()).GetY());
 		PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rigidbody->GetBodyID(), limitedVel);
     }
+
+	if (moveDirection == Vector3(0.0f, 0.0f, 0.0f))
+	{
+		Vec3 vel = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
+        if (grounded) {
+            vel.SetX(vel.GetX() / 1.1f);
+            vel.SetZ(vel.GetZ() / 1.1f);
+        }
+        else {
+            vel.SetX(vel.GetX() / 1.05f);
+            vel.SetZ(vel.GetZ() / 1.05f);
+        }
+		PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rigidbody->GetBodyID(), vel);
+	}
 }
 
 void PlayerController::Jump()
 {
-    //rigidbody->GetBulletRigidbody()->applyForce(btVector3(0, jumpForce * 20.0f, 0), btVector3(0, 0, 0));
-    /*if ((grounded || !doubleJumped) && !jumped) {
-        rigidbody->SetVelocity(Vector3(rigidbody->GetVelocity().x, 0.0f, rigidbody->GetVelocity().z));
-        rigidbody->AddForce(Vector3(0.0f, jumpForce * 1000.0f, 0.0f));
+    if ((grounded || !doubleJumped) && !jumped) {
+		Vec3 velocity = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
+        velocity.SetY(0.0f);
+		PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(rigidbody->GetBodyID(), Vec3(0.0f, jumpForce, 0.0f));
         if (grounded) {
 			grounded = false;
         }
@@ -63,54 +77,76 @@ void PlayerController::Jump()
 			doubleJumped = true;
         }
 		jumped = true;
-    }*/
+    }
 }
 
 void PlayerController::Dash()
 {
- //   if (!canDash) return;
- //   dashed = true;
-	//canDash = false;
- //   
- //   Vector3 dashDirection = moveDirection;
- //   if (moveDirection == pOwner->Forward())
- //   {
-	//	dashDirection = camera->Forward();
- //   }
- //   else if (moveDirection == pOwner->Back())
- //   {
- //       dashDirection = camera->Back();
- //   }
+    if (!canDash) return;
+    dashed = true;
+	canDash = false;
+    
+    Vector3 dashDirection = moveDirection;
+    if (moveDirection == pOwner->Forward())
+    {
+		dashDirection = camera->Forward();
+    }
+    else if (moveDirection == pOwner->Back())
+    {
+        dashDirection = camera->Back();
+    }
 
- //   if (moveDirection == Vector3(0.0f, 0.0f, 0.0f))
- //   {
-	//	dashDirection = camera->Forward();
- //   }
- //   //dashDirection = camera->Back();
- //   dashDirection.Normalize();
+    if (moveDirection == Vector3(0.0f, 0.0f, 0.0f))
+    {
+		dashDirection = camera->Forward();
+    }
 
- //   dashTimer = 0.3f;
-	//dashCooldownTimer = dashCooldown;
+    dashDirection.Normalize();
+    Vec3 dir = Vec3(dashDirection.x, dashDirection.y, dashDirection.z);
+    dashTimer = 0.3f;
+	dashCooldownTimer = dashCooldown;
 
-	//rigidbody->friction = false;
- //   rigidbody->SetVelocity({ 0.0f, 0.0f, 0.0f });
- //   rigidbody->AddForce(dashDirection * dashForce * 100.0f);
+	/*rigidbody->friction = false;
+    rigidbody->SetVelocity({ 0.0f, 0.0f, 0.0f });
+    rigidbody->AddForce(dashDirection * dashForce * 100.0f);*/
+	PhysicsCommon::physicsSystem->GetBodyInterface().SetFriction(rigidbody->GetBodyID(), 0.0f);
+    PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(rigidbody->GetBodyID(), dir * dashForce);
+
 }
 
 void PlayerController::GroundCheck()
 {
-    /*grounded = rigidbody->grounded;
+    RRayCast ray = RRayCast(
+        RVec3(GetOwner()->GetWorldPosition().x, GetOwner()->GetWorldPosition().y, GetOwner()->GetWorldPosition().z),
+        Vec3(0.0f, -5.0f, 0.0f)
+	);
+    RayCastResult result;
+    if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(ray, result, SpecifiedBroadPhaseLayerFilter(BroadPhaseLayers::GROUND),SpecifiedObjectLayerFilter(Layers::GROUND)))
+    {
+		grounded = true;
+    }
+    else
+    {
+		grounded = false;
+    }
+
     if (grounded)
     {
         doubleJumped = false;
-    }*/
+    }
 }
 
 void PlayerController::MovePlayer()
 {
     moveDirection.Normalize();
-
-    PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * moveSpeed * 1000.0f);
+	if (grounded)
+	{
+        PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * moveSpeed * 1000.0f);
+    }
+	else
+	{
+        PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * moveSpeed * 200.0f);
+    }
 }
 
 void PlayerController::Ability1()
@@ -159,6 +195,7 @@ void PlayerController::Cooldowns(float dt)
     {
         dashed = false;
         //rigidbody->friction = true;
+        PhysicsCommon::physicsSystem->GetBodyInterface().SetFriction(rigidbody->GetBodyID(), 1.0f);
     }
     if (dashCooldownTimer > 0.0f)
     {

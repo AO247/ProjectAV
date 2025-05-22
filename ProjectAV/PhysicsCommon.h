@@ -19,6 +19,8 @@
 #include <Jolt/Physics/Collision/PhysicsMaterial.h>
 #include <Jolt/Physics/Collision/PhysicsMaterialSimple.h>
 #include <Jolt/Physics/Collision/Shape/Shape.h>
+#include <Jolt/Physics/Collision/Raycast.h>
+#include <Jolt/Physics/Collision/CastResult.h>
 
 using namespace DirectX::SimpleMath;
 using namespace JPH;
@@ -86,7 +88,8 @@ namespace Layers
 {
     static constexpr ObjectLayer NON_MOVING = 0;
     static constexpr ObjectLayer MOVING = 1;
-    static constexpr ObjectLayer NUM_LAYERS = 2;
+    static constexpr ObjectLayer GROUND = 2;
+    static constexpr ObjectLayer NUM_LAYERS = 3;
 };
 
 class ObjectLayerPairFilterImpl : public ObjectLayerPairFilter
@@ -110,7 +113,8 @@ namespace BroadPhaseLayers
 {
     static constexpr BroadPhaseLayer NON_MOVING(0);
     static constexpr BroadPhaseLayer MOVING(1);
-    static constexpr uint NUM_LAYERS(2);
+	static constexpr BroadPhaseLayer GROUND(2);
+    static constexpr uint NUM_LAYERS(3);
 };
 
 class BPLayerInterfaceImpl final : public BroadPhaseLayerInterface
@@ -121,6 +125,7 @@ public:
         // Create a mapping table from object to broad phase layer
         mObjectToBroadPhase[Layers::NON_MOVING] = BroadPhaseLayers::NON_MOVING;
         mObjectToBroadPhase[Layers::MOVING] = BroadPhaseLayers::MOVING;
+		mObjectToBroadPhase[Layers::GROUND] = BroadPhaseLayers::GROUND;
     }
 
     virtual uint GetNumBroadPhaseLayers() const override
@@ -141,6 +146,7 @@ public:
         {
         case (BroadPhaseLayer::Type)BroadPhaseLayers::NON_MOVING:	return "NON_MOVING";
         case (BroadPhaseLayer::Type)BroadPhaseLayers::MOVING:		return "MOVING";
+		case (BroadPhaseLayer::Type)BroadPhaseLayers::GROUND:		return "GROUND";
         default:													JPH_ASSERT(false); return "INVALID";
         }
     }

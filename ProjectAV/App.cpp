@@ -59,7 +59,7 @@ App::App(const std::string& commandLine)
     physicsSystem = new PhysicsSystem();
     physicsSystem->Init(cMaxBodies, cNumBodyMutexes, cMaxBodyPairs, cMaxContactConstraints, *broad_phase_layer_interface, *object_vs_broadphase_layer_filter, *object_vs_object_layer_filter);
     PhysicsCommon::physicsSystem = physicsSystem;
-    physicsSystem->SetGravity(Vec3(0.0f, -9.8f, 0.0f));
+    physicsSystem->SetGravity(Vec3(0.0f, -50.0f, 0.0f));
    
 
     soundDevice = LISTENER->Get();
@@ -191,8 +191,8 @@ App::App(const std::string& commandLine)
     BodyCreationSettings bodySettings(new JPH::CapsuleShape(2.0f, 1.0f), RVec3(0.0f, 35.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::MOVING);
     bodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
     //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
-    bodySettings.mMassPropertiesOverride.mMass = 100.0f;
-    bodySettings.mFriction = 10.0f;
+    bodySettings.mMassPropertiesOverride.mMass = 10.0f;
+    bodySettings.mFriction = 1.0f;
     bodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
     pPlayer->AddComponent(
         std::make_unique<Rigidbody>(pPlayer, bodySettings)
@@ -453,7 +453,7 @@ int App::Go()
         }
         const auto dt = timer.Mark() * speed_factor;
 
-        physicsSystem->Update(cDeltaTime, 1, temp_allocator, job_system);
+        physicsSystem->Update(dt, 1, temp_allocator, job_system);
         //dynamicsWorld->stepSimulation(dt, 10);
         HandleInput(dt);
         DoFrame(dt);
