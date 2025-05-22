@@ -1,9 +1,7 @@
 #pragma once
-#include "btBulletDynamicsCommon.h"
 #include "vector"
 #include "SimpleMath.h"
 #include "ModelComponent.h"
-#include "BulletCollision/Gimpact/btGImpactShape.h"
 #include <Jolt/Jolt.h>
 #include <Jolt/RegisterTypes.h>
 #include <Jolt/Core/Factory.h>

@@ -1,4 +1,5 @@
 #include "Island.h"
+#include "CMath.h"
 
 
 Island::Island(Node* owner)
@@ -11,7 +12,7 @@ void Island::Rotate()
 {
     int randomRotate = rand()% 4;
     randomRotate = randomRotate * 90;
-	pOwner->SetLocalRotation(DirectX::XMFLOAT3(0.0f, randomRotate, 0.0f));
+	pOwner->SetLocalRotation(DirectX::XMFLOAT3(0.0f, to_rad(randomRotate), 0.0f));
 
     if (randomRotate == 90)
     {

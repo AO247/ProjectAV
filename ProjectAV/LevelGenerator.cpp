@@ -14,6 +14,7 @@ LevelGenerator::LevelGenerator(PrefabManager* prefabManager, Node* root)
 void LevelGenerator::GenerateIslands()
 {
 	float time = 0.0f;
+	int lastPointW = 1;
     while (true)
     {
 
@@ -23,15 +24,50 @@ void LevelGenerator::GenerateIslands()
             time = 0.0f;
             break;
         }
-        //int randIsland = rand() % islands.size();
-		Node* islandPrefab = prefabManager->InstantiateIsland(pSceneRoot, 0.0f, 0.0f, 0.0f, 1.3f);
-        islandCount--;
+        int randIsland = rand() % 3;
+		Node* islandPrefab = nullptr;
+
+        while (true) {
+
+            if (randIsland == 0 && bigIslandCount > 0)
+            {
+                islandPrefab = prefabManager->InstantiateIslandBig1(pSceneRoot, 0.0f, 0.0f, 0.0f, 1.3f);
+				bigIslandCount--;
+                break;
+            }
+            else if (randIsland == 1 && mediumIslandCount > 0)
+            {
+				int randMedium = rand() % 2;
+                if (randMedium == 0) {
+                    islandPrefab = prefabManager->InstantiateIslandMedium1(pSceneRoot, 0.0f, 0.0f, 0.0f, 2.3f);
+                }
+                else {
+					islandPrefab = prefabManager->InstantiateIslandMedium2(pSceneRoot, 0.0f, 0.0f, 0.0f, 1.3f);
+                }
+				mediumIslandCount--;
+                break;
+            }
+            else if (randIsland == 2 && smallIslandCount > 0)
+            {
+                islandPrefab = prefabManager->InstantiateIslandSmall1(pSceneRoot, 0.0f, 0.0f, 0.0f, 1.5f);
+				smallIslandCount--;
+                break;
+            }
+            else {
+				randIsland = rand() % 3;
+            }
+        }
 
         if (islandPrefab != nullptr && islandPrefab->GetComponent<Island>())
         {
             Island* island = islandPrefab->GetComponent<Island>();
 
             int randPoint = rand() % points.size();
+			if (randPoint == lastPointW)
+			{
+				randPoint = (randPoint + 1) % points.size();
+			}
+			lastPointW = randPoint;
 			//OutputDebugStringA(("\nRandPoint: " + std::to_string(randPoint) + "Point w: " + std::to_string(points[randPoint].w)).c_str());
 			Vector4 point = points[randPoint];
             Vector3 pos = Vector3(point.x, point.y, point.z);
@@ -74,7 +110,7 @@ void LevelGenerator::GenerateIslands()
                 }
             }
             else {
-                //island->Rotate();
+                island->Rotate();
                 float stepSize = 1.0f;
                 bool calculated = false;
                 Vector3 currentPos = Vector3(0.0f, 0.0f, 0.0f);
@@ -205,7 +241,7 @@ void LevelGenerator::GenerateIslands()
                 }
             }
         }
-        if (islandCount <= 0)
+        if (bigIslandCount <= 0 && mediumIslandCount <= 0 && smallIslandCount <= 0)
         {
 			OutputDebugStringA("\nAll islands generated\n");
             time = 0.0f;

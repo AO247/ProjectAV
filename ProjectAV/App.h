@@ -16,7 +16,6 @@
 #include "SolidBox.h"
 #include "SolidCapsule.h"
 #include "DebugLine.h"
-#include "btBulletDynamicsCommon.h"
 #include "PhysicsCommon.h"
 
 // Forward declarations

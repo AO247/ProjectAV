@@ -72,7 +72,7 @@ App::App(const std::string& commandLine)
 
 	LevelGenerator levelGenerator(prefabManager, pSceneRoot.get());
 
-    //Node* island = prefabManager->InstantiateIsland(pSceneRoot.get(), 0.0f, -0.1f, 0.0f, 1.3f);
+    Node* island = prefabManager->InstantiateIslandBig1(pSceneRoot.get(), 0.0f, -0.1f, 0.0f, 1.0f);
 
     // --- Create Nodes ---
 
@@ -136,21 +136,21 @@ App::App(const std::string& commandLine)
 
 
     // Adding Models
-    pNanosuitNode->AddComponent(
-        std::make_unique<ModelComponent>(pNanosuitNode, wnd.Gfx(), "Models\\nano_textured\\nanosuit.obj")
-    );
-    pBrick->AddComponent(
-        std::make_unique<ModelComponent>(pBrick, wnd.Gfx(), "Models\\brick_wall\\brick_wall.obj")
-    );
-    pBox->AddComponent(
-        std::make_unique<ModelComponent>(pBox, wnd.Gfx(), "Models\\box.glb")
-    );
-    pStone->AddComponent(
-		std::make_unique<ModelComponent>(pStone, wnd.Gfx(), "Models\\kamien\\kamien_6.obj")
-    );
-    //pStone->AddComponent(
-    //    std::make_unique<ModelComponent>(pStone, wnd.Gfx(), "Models\\stone\\stone.glb")
-    //);
+ //   pNanosuitNode->AddComponent(
+ //       std::make_unique<ModelComponent>(pNanosuitNode, wnd.Gfx(), "Models\\nano_textured\\nanosuit.obj")
+ //   );
+ //   pBrick->AddComponent(
+ //       std::make_unique<ModelComponent>(pBrick, wnd.Gfx(), "Models\\brick_wall\\brick_wall.obj")
+ //   );
+ //   pBox->AddComponent(
+ //       std::make_unique<ModelComponent>(pBox, wnd.Gfx(), "Models\\box.glb")
+ //   );
+ //   pStone->AddComponent(
+	//	std::make_unique<ModelComponent>(pStone, wnd.Gfx(), "Models\\kamien\\kamien_6.obj")
+ //   );
+ //   //pStone->AddComponent(
+ //   //    std::make_unique<ModelComponent>(pStone, wnd.Gfx(), "Models\\stone\\stone.glb")
+ //   //);
     pColumn->AddComponent(
         std::make_unique<ModelComponent>(pColumn, wnd.Gfx(), "Models\\kolumna\\kolumna.obj")
     );
@@ -161,23 +161,23 @@ App::App(const std::string& commandLine)
 		std::make_unique<ModelComponent>(pColumn3, wnd.Gfx(), "Models\\kolumna\\kolumna.obj")
 	);
 	pColumn4->AddComponent(
-		std::make_unique<ModelComponent>(pColumn4, wnd.Gfx(), "Models\\kolumna\\kolumna.obj")
+		std::make_unique<ModelComponent>(pColumn4, wnd.Gfx(), "Models\\objects\\sciany.obj")
 	);
 
-    //pIsland->AddComponent(
-    //    std::make_unique<ModelComponent>(pIsland, wnd.Gfx(), "Models\\box.glb")
-    //);
+ //   //pIsland->AddComponent(
+ //   //    std::make_unique<ModelComponent>(pIsland, wnd.Gfx(), "Models\\box.glb")
+ //   //);
 
 
-    pNoxTurn->AddComponent(
-        std::make_unique<ModelComponent>(pNoxTurn, wnd.Gfx(), "Models\\stone\\char.fbx")
-    );
-    pNoxTurnHair->AddComponent(
-        std::make_unique<ModelComponent>(pNoxTurnHair, wnd.Gfx(), "Models\\stone\\hair.fbx")
-    );
-    pEnemy->AddComponent(
-        std::make_unique<ModelComponent>(pEnemy, wnd.Gfx(), "Models\\enemy\\basic.obj")
-    );
+ //   pNoxTurn->AddComponent(
+ //       std::make_unique<ModelComponent>(pNoxTurn, wnd.Gfx(), "Models\\stone\\char.fbx")
+ //   );
+ //   pNoxTurnHair->AddComponent(
+ //       std::make_unique<ModelComponent>(pNoxTurnHair, wnd.Gfx(), "Models\\stone\\hair.fbx")
+ //   );
+ //   pEnemy->AddComponent(
+ //       std::make_unique<ModelComponent>(pEnemy, wnd.Gfx(), "Models\\enemy\\basic.obj")
+ //   );
 
 
 
@@ -520,25 +520,24 @@ void App::HandleInput(float dt)
     // FreeCamera Movement
     if (freeViewCamera) {
         if (wnd.kbd.KeyIsPressed('I')) {
-            pFreeViewCamera->TranslateLocal({ 0.0f, 0.0f, 0.1f });
+            pFreeViewCamera->TranslateLocal({ 0.0f, 0.0f, 0.4f });
         }
         if (wnd.kbd.KeyIsPressed('K')) {
-            pFreeViewCamera->TranslateLocal({ 0.0f, 0.0f, -0.1f });
+            pFreeViewCamera->TranslateLocal({ 0.0f, 0.0f, -0.4f });
         }
         if (wnd.kbd.KeyIsPressed('J')) {
-            pFreeViewCamera->TranslateLocal({ -0.1f, 0.0f, 0.0f });
+            pFreeViewCamera->TranslateLocal({ -0.4f, 0.0f, 0.0f });
         }
         if (wnd.kbd.KeyIsPressed('L')) {
-            pFreeViewCamera->TranslateLocal({ 0.1f, 0.0f, 0.0f });
+            pFreeViewCamera->TranslateLocal({ 0.4f, 0.0f, 0.0f });
         }
         if (wnd.kbd.KeyIsPressed('U')) {
-            pFreeViewCamera->TranslateLocal({ 0.0f, -0.1f, 0.0f });
+            pFreeViewCamera->TranslateLocal({ 0.0f, -0.4f, 0.0f });
         }
         if (wnd.kbd.KeyIsPressed('O')) {
-            pFreeViewCamera->TranslateLocal({ 0.0f, 0.1f, 0.0f });
+            pFreeViewCamera->TranslateLocal({ 0.0f, 0.4f, 0.0f });
         }
     }
-
 }
 void App::DoFrame(float dt)
 {

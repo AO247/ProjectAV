@@ -2,7 +2,6 @@
 #include <SimpleMath.h>
 #include "Component.h"
 #include "Collider.h"
-#include "btBulletDynamicsCommon.h"
 #include "PhysicsCommon.h"
 
 using namespace DirectX::SimpleMath;
