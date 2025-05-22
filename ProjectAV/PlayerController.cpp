@@ -109,9 +109,11 @@ void PlayerController::MovePlayer()
 {
     moveDirection.Normalize();
 
-    btVector3 movement(moveDirection.x, moveDirection.y, moveDirection.z);
-    rigidbody->GetBulletRigidbody()->applyForce(movement * moveSpeed * 100.0f, btVector3(0,0,0));
+    //btVector3 movement(moveDirection.x, moveDirection.y, moveDirection.z);
+    //rigidbody->GetBulletRigidbody()->applyForce(movement * moveSpeed * 100.0f, btVector3(0,0,0));
     //rigidbody->AddForce(moveDirection * moveSpeed * 1000.0f);
+
+    PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * moveSpeed * 1000.0f);
 }
 
 void PlayerController::Ability1()

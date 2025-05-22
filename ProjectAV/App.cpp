@@ -19,10 +19,12 @@
 #include "PrefabManager.h"
 #include "LevelGenerator.h"
 #include "BulletCollision/CollisionDispatch/btGhostObject.h"
-#include "PhysicsCommon.h"
 #include "btBulletCollisionCommon.h"
 #include "BulletCollision/Gimpact/btGImpactShape.h"
 #include "BulletCollision/Gimpact/btGImpactCollisionAlgorithm.h"
+#include <Jolt/Jolt.h>
+#include <Jolt/ConfigurationString.h>
+#include <Jolt/Physics/Collision/Shape/CapsuleShape.h>
 
 namespace dx = DirectX;
 
@@ -53,7 +55,27 @@ App::App(const std::string& commandLine)
     dynamicsWorld->getPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
     dynamicsWorld->setGravity(btVector3(0, -10, 0));
     PhysicsCommon::dynamicsWorld = dynamicsWorld;
-    
+
+    RegisterDefaultAllocator();
+    Trace = TraceImpl;
+    JPH_IF_ENABLE_ASSERTS(AssertFailed = AssertFailedImpl;)
+    Factory::sInstance = new JPH::Factory();
+    RegisterTypes();
+    temp_allocator = new TempAllocatorImpl(10 * 1024 * 1024);
+    job_system = new JobSystemThreadPool(cMaxPhysicsJobs, cMaxPhysicsBarriers, thread::hardware_concurrency() - 1);
+    const uint cMaxBodies = 1024;
+    const uint cNumBodyMutexes = 0;
+    const uint cMaxBodyPairs = 1024;
+    const uint cMaxContactConstraints = 1024;
+    BPLayerInterfaceImpl* broad_phase_layer_interface = new BPLayerInterfaceImpl();
+    ObjectVsBroadPhaseLayerFilterImpl* object_vs_broadphase_layer_filter = new ObjectVsBroadPhaseLayerFilterImpl();
+    ObjectLayerPairFilterImpl* object_vs_object_layer_filter = new ObjectLayerPairFilterImpl();
+    physicsSystem = new PhysicsSystem();
+    physicsSystem->Init(cMaxBodies, cNumBodyMutexes, cMaxBodyPairs, cMaxContactConstraints, *broad_phase_layer_interface, *object_vs_broadphase_layer_filter, *object_vs_object_layer_filter);
+    PhysicsCommon::physicsSystem = physicsSystem;
+    physicsSystem->SetGravity(Vec3(0.0f, -9.8f, 0.0f));
+   
+
     soundDevice = LISTENER->Get();
     ALint attentuation = AL_INVERSE_DISTANCE_CLAMPED;
 	soundDevice->SetAttenuation(attentuation);
@@ -174,12 +196,24 @@ App::App(const std::string& commandLine)
 
 
 	//Adding Rigidbody and Collider
-    pPlayer->AddComponent(
+    /*pPlayer->AddComponent(
         std::make_unique<Rigidbody>(pPlayer, Vector3(0.0f, 35.0f, 0.0f), 10.0f, new btCapsuleShape(1.0f, 2.0f))
     );
     Rigidbody* pRigidbody = pPlayer->GetComponent<Rigidbody>();
     pRigidbody->GetBulletRigidbody()->setAngularFactor(btVector3(0,0,0));
-    dynamicsWorld->addRigidBody(pRigidbody->GetBulletRigidbody());
+    dynamicsWorld->addRigidBody(pRigidbody->GetBulletRigidbody());*/
+    BodyCreationSettings bodySettings(new JPH::CapsuleShape(2.0f, 1.0f), RVec3(0.0f, 35.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::MOVING);
+    bodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
+    //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
+    bodySettings.mMassPropertiesOverride.mMass = 100.0f;
+    bodySettings.mMassPropertiesOverride.mInertia = Mat44::sZero();
+    bodySettings.mFriction = 10.0f;
+    bodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
+    pPlayer->AddComponent(
+        std::make_unique<Rigidbody>(pPlayer, bodySettings)
+    );
+    Rigidbody* pRigidbody = pPlayer->GetComponent<Rigidbody>();
+
     pPlayer->AddComponent(
         std::make_unique<PlayerController>(pPlayer, wnd) // Add controller first
     );
@@ -426,6 +460,7 @@ App::~App()
 
 int App::Go()
 {
+    const float cDeltaTime = 1.0f / 60.0f;
     while (true)
     {
         if (const auto ecode = Window::ProcessMessages())
@@ -434,7 +469,8 @@ int App::Go()
         }
         const auto dt = timer.Mark() * speed_factor;
 
-        dynamicsWorld->stepSimulation(dt, 10);
+        physicsSystem->Update(cDeltaTime, 1, temp_allocator, job_system);
+        //dynamicsWorld->stepSimulation(dt, 10);
         HandleInput(dt);
         DoFrame(dt);
     }

@@ -70,6 +70,21 @@ Node* PrefabManager::InstantiateIsland(Node* parentNode, float locX, float locY,
     Collider* islandCollider = pNewNodeOwner->GetComponent<Collider>();
     physicsWorld->addCollisionObject(islandCollider->GetBulletCollisionObject());
 
+    TriangleList l = PhysicsCommon::MakeTriangleList(islandModel->GetAllTriangles());
+    MeshShapeSettings msettings(l);
+    Shape::ShapeResult res;
+    MeshShape* mshape = new MeshShape(msettings,res);
+    ShapeRefC meshshape = res.Get();
+    ScaledShapeSettings scaleset(meshshape, Vec3Arg(scale, scale, scale));
+    meshshape = scaleset.Create().Get();
+    BodyCreationSettings bodySettings(meshshape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::NON_MOVING);
+    bodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
+    bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
+    bodySettings.mFriction = 10.0f;
+    pNewNodeOwner->AddComponent(
+        std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
+    );
+
 	pNewNodeOwner->AddComponent(
 		std::make_unique<Island>(pNewNodeOwner.get())
 	);

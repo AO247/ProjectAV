@@ -17,6 +17,7 @@
 #include "SolidCapsule.h"
 #include "DebugLine.h"
 #include "btBulletDynamicsCommon.h"
+#include "PhysicsCommon.h"
 
 // Forward declarations
 class PlayerController; // Forward declare
@@ -44,6 +45,13 @@ private:
     PointLight pointLight;
     //PhysicsEngine physicsEngine; // Physics engine instance
     btDiscreteDynamicsWorld* dynamicsWorld;
+
+
+    PhysicsSystem* physicsSystem;
+    TempAllocatorImpl* temp_allocator;
+    JobSystemThreadPool* job_system;
+
+
     SoundDevice* soundDevice; // Sound device instance
     std::unique_ptr<MusicBuffer> myMusic;
     DirectX::BoundingFrustum cameraFrustum; // Frustum for the camera
