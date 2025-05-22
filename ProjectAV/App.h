@@ -44,7 +44,6 @@ private:
     float speed_factor = 1.0f;
     PointLight pointLight;
     //PhysicsEngine physicsEngine; // Physics engine instance
-    btDiscreteDynamicsWorld* dynamicsWorld;
 
 
     PhysicsSystem* physicsSystem;

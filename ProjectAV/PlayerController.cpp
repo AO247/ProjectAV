@@ -51,7 +51,7 @@ void PlayerController::SpeedControl()
 
 void PlayerController::Jump()
 {
-    rigidbody->GetBulletRigidbody()->applyForce(btVector3(0, jumpForce * 20.0f, 0), btVector3(0, 0, 0));
+    //rigidbody->GetBulletRigidbody()->applyForce(btVector3(0, jumpForce * 20.0f, 0), btVector3(0, 0, 0));
     /*if ((grounded || !doubleJumped) && !jumped) {
         rigidbody->SetVelocity(Vector3(rigidbody->GetVelocity().x, 0.0f, rigidbody->GetVelocity().z));
         rigidbody->AddForce(Vector3(0.0f, jumpForce * 1000.0f, 0.0f));

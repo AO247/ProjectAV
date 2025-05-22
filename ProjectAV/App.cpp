@@ -18,10 +18,6 @@
 #include "Prefab.h"
 #include "PrefabManager.h"
 #include "LevelGenerator.h"
-#include "BulletCollision/CollisionDispatch/btGhostObject.h"
-#include "btBulletCollisionCommon.h"
-#include "BulletCollision/Gimpact/btGImpactShape.h"
-#include "BulletCollision/Gimpact/btGImpactCollisionAlgorithm.h"
 #include <Jolt/Jolt.h>
 #include <Jolt/ConfigurationString.h>
 #include <Jolt/Physics/Collision/Shape/CapsuleShape.h>
@@ -45,16 +41,6 @@ App::App(const std::string& commandLine)
 	// Initialize Physics Engine
 	//physicsEngine = PhysicsEngine();
 	//Raycast::physicsEngine = &physicsEngine; // Set the physics engine for raycasting
-
-    btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
-    btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);
-    //btGImpactCollisionAlgorithm::registerAlgorithm(dispatcher);
-    btBroadphaseInterface* overlappingPairCache = new btDbvtBroadphase();
-    btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
-    dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
-    dynamicsWorld->getPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
-    dynamicsWorld->setGravity(btVector3(0, -10, 0));
-    PhysicsCommon::dynamicsWorld = dynamicsWorld;
 
     RegisterDefaultAllocator();
     Trace = TraceImpl;
@@ -81,7 +67,7 @@ App::App(const std::string& commandLine)
 	soundDevice->SetAttenuation(attentuation);
     myMusic = std::make_unique<MusicBuffer>("Models\\muza_full.wav");
 
-	auto prefabManagerOwner = std::make_unique<PrefabManager>(dynamicsWorld, &wnd);
+	auto prefabManagerOwner = std::make_unique<PrefabManager>(&wnd);
 	PrefabManager* prefabManager = prefabManagerOwner.get();
 
 	LevelGenerator levelGenerator(prefabManager, pSceneRoot.get());
@@ -206,7 +192,6 @@ App::App(const std::string& commandLine)
     bodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
     //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
     bodySettings.mMassPropertiesOverride.mMass = 100.0f;
-    bodySettings.mMassPropertiesOverride.mInertia = Mat44::sZero();
     bodySettings.mFriction = 10.0f;
     bodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
     pPlayer->AddComponent(
@@ -246,11 +231,10 @@ App::App(const std::string& commandLine)
     
 
 
-    pEnemy->AddComponent(
+    /*pEnemy->AddComponent(
         std::make_unique<Rigidbody>(pEnemy, Vector3(15.0f, 10.0f, 0.0f), 10.0f, new btCapsuleShape(1.0f, 2.0f))
     );
-    Rigidbody* eRigidbody = pEnemy->GetComponent<Rigidbody>();
-    dynamicsWorld->addRigidBody(eRigidbody->GetBulletRigidbody());
+    Rigidbody* eRigidbody = pEnemy->GetComponent<Rigidbody>();*/
 	/*pEnemy->AddComponent(
 		std::make_unique<CapsuleCollider>(pEnemy, eRigidbody, 1.0f, Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 4.0f, 0.0f))
 	);

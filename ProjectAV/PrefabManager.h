@@ -2,14 +2,13 @@
 #include "Prefab.h"
 #include "Node.h"
 #include <string>
-#include "btBulletDynamicsCommon.h"
 
 //class PhysicsEngine;
 class Window;
 
 class PrefabManager {
 public:
-    PrefabManager(btDiscreteDynamicsWorld* physicsWorld, Window* wnd) : physicsWorld(physicsWorld), wnd(wnd)
+    PrefabManager(Window* wnd) : wnd(wnd)
     {
 
     }
@@ -19,6 +18,5 @@ public:
 
 
 private:
-    btDiscreteDynamicsWorld* physicsWorld;
     Window* wnd;
 };
