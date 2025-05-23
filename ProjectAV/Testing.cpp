@@ -53,7 +53,7 @@ void TestMaterialSystemLoading( Graphics& gfx )
 		aiProcess_GenNormals |
 		aiProcess_CalcTangentSpace
 	);
-	Material mat{ gfx,*pScene->mMaterials[1],path };
+	//Material mat{ gfx,*pScene->mMaterials[1],path };
 	//Mesh mesh{ gfx,mat,*pScene->mMeshes[0] };
 }
 

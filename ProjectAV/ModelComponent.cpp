@@ -16,6 +16,9 @@
 #include <scene.h>
 #include "Bone.h"
 #include "Vertex.h"
+ 
+#include <DirectXMath.h>  // For DirectX::XMMATRIX, etc.
+#include <algorithm> 
 
 namespace dx = DirectX;
 
@@ -214,6 +217,10 @@ ModelComponent::ModelComponent(Node* owner, Graphics& gfx, const std::string& mo
 	for (unsigned int i = 0; i < pScene->mNumMeshes; ++i)
 	{
 		const auto& assimpMesh = *pScene->mMeshes[i];
+
+		//Material material(gfx, *pScene->mMaterials[assimpMesh.mMaterialIndex], &assimpMesh, filePath);
+
+
 		const auto& material = materials[assimpMesh.mMaterialIndex]; // Get the material for this mesh
 
 		// 2a. Determine the vertex layout required by this material for this mesh
@@ -338,20 +345,7 @@ void ModelComponent::ShowWindow(Graphics& gfx, const char* windowName) noexcept
 	}
 }
 
-// ModelComponent.cpp
-
-#include "ModelComponent.h"
-#include "Vertex.h" // For Dvtx::VertexBuffer, Dvtx::VertexLayout, MAX_BONES_PER_VERTEX
-#include "Bone.h"   // For BoneInfo
-#include <assimp/scene.h> // For aiMesh, aiBone, aiVertexWeight
-#include <DirectXMath.h>  // For DirectX::XMMATRIX, etc.
-#include <algorithm>      // For std::fill, std::sort (optional for advanced weight replacement)
-
-// Make sure MAX_BONES_PER_VERTEX is accessible here.
-// If it's in Vertex.h within the Dvtx namespace, you might need Dvtx::MAX_BONES_PER_VERTEX
-// or ensure it's globally defined. For simplicity, assuming it's a global const or #define.
-// const int MAX_BONES_PER_VERTEX = 4; // Or from your Vertex.h
-
+ 
 void ModelComponent::ExtractBoneWeightForVertices(
 	Dvtx::VertexBuffer& dvtxBuffer, // The CPU-side vertex buffer to fill
 	const aiMesh& mesh,             // The Assimp mesh containing bone data

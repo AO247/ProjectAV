@@ -15,6 +15,8 @@ Material::Material( Graphics& gfx,const aiMaterial& material,const std::filesyst
 		material.Get( AI_MATKEY_NAME,tempName );
 		name = tempName.C_Str();
 	}
+
+
 	// phong technique
 	{
 		Technique phong{ "Phong" };
