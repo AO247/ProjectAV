@@ -188,8 +188,12 @@ App::App(const std::string& commandLine)
     Rigidbody* pRigidbody = pPlayer->GetComponent<Rigidbody>();
     pRigidbody->GetBulletRigidbody()->setAngularFactor(btVector3(0,0,0));
     dynamicsWorld->addRigidBody(pRigidbody->GetBulletRigidbody());*/
-    BodyCreationSettings bodySettings(new JPH::CapsuleShape(2.0f, 1.0f), RVec3(0.0f, 35.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::MOVING);
+    //Heeeej Bracie zaczê³ooo padaæ choodŸ zmieniiæ gacieee
+    //Heeeej Siostro uciekaajmyy zanim bêêdzieee mookroooo
+
+    BodyCreationSettings bodySettings(new JPH::CapsuleShape(1.0f, 1.0f), RVec3(0.0f, 35.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::MOVING);
     bodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
+
     //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
     bodySettings.mMassPropertiesOverride.mMass = 10.0f;
     bodySettings.mFriction = 1.0f;

@@ -116,7 +116,7 @@ void PlayerController::Dash()
 
     dashDirection.Normalize();
     Vec3 dir = Vec3(dashDirection.x, dashDirection.y, dashDirection.z);
-    dashTimer = 0.3f;
+    dashTimer = 0.2f;
 	dashCooldownTimer = dashCooldown;
 
 
