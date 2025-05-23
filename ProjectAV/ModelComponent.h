@@ -1,10 +1,14 @@
 #pragma once
+#include "Vertex.h"
 #include "Component.h"
 #include <vector>
 #include <memory>
 #include <string>
 #include <DirectXMath.h>
 #include "ConditionalNoexcept.h"
+#include "Bone.h"
+#include <unordered_map>
+
 // Forward Declarations
 class Mesh; // Your Mesh class
 class Graphics;
@@ -51,6 +55,8 @@ public:
 
     void ShowWindow(Graphics& gfx, const char* windowName = nullptr) noexcept; // Pass Gfx if ImGui needs it
 
+    int GetBoneCount() const { return m_BoneCounter; }
+
 private:
     // ParseNodeRecursive no longer needs to create Mesh objects, just references them
     std::unique_ptr<ModelInternalNode> ParseNodeRecursive(int& nextId, const aiNode& node, float scale); // Pass scale
@@ -62,4 +68,15 @@ private:
     // std::vector<Material> materials; // No longer needed here if Mesh handles it
 
     std::unique_ptr<ModelControlWindow> pControlWindow;
+
+    std::unordered_map<std::string, BoneInfo> m_BoneInfoMap;
+    int m_BoneCounter = 0;
+
+    void ExtractBoneWeightForVertices(
+        Dvtx::VertexBuffer& vertices, // Note: it's Dvtx::VertexBuffer&
+        const aiMesh& mesh,
+        const DirectX::XMMATRIX& meshGlobalInverseTransform // Or however you named this last parameter
+    );
+
+
 };

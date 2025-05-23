@@ -16,17 +16,32 @@ void Drawable::Submit( FrameCommander& frame ) const noexcept
 	}
 }
 
-Drawable::Drawable( Graphics& gfx,const Material& mat,const aiMesh& mesh,float scale ) noexcept
+Drawable::Drawable(
+    Graphics& gfx,
+    std::shared_ptr<Bind::VertexBuffer> pVB,
+    std::shared_ptr<Bind::IndexBuffer> pIB,
+    const Material& mat // Make sure Material::GetTechniques() is const or mat is non-const
+) noexcept
+    : pVertices(std::move(pVB)), pIndices(std::move(pIB)) // Initialize members with passed-in smart pointers
 {
-	pVertices = mat.MakeVertexBindable( gfx,mesh,scale );
-	pIndices = mat.MakeIndexBindable( gfx,mesh );
-	pTopology = Bind::Topology::Resolve( gfx );
+    pTopology = Bind::Topology::Resolve(gfx); // This can remain
 
-	for( auto& t : mat.GetTechniques() )
-	{
-		AddTechnique( std::move( t ) );
-	}
+    // Handle techniques - ensure mat.GetTechniques() is callable and types match
+    // This assumes Material::GetTechniques() returns something iterable (like std::vector<Technique>)
+    // and that Technique is movable.
+    // If Material::GetTechniques() returns by const ref, you might need to copy.
+    const auto& matTechniques = mat.GetTechniques(); // Assuming: const std::vector<Technique>& GetTechniques() const;
+    for (const auto& const_tech_ref : matTechniques)
+    {
+        Technique tech_copy = const_tech_ref; // Make a copy because AddTechnique takes by value and moves
+        AddTechnique(std::move(tech_copy));
+    }
+    // Or, if AddTechnique took by const ref and copied internally, or if Technique was cheap to copy:
+    // for (const auto& tech_to_add : mat.GetTechniques()) {
+    //    AddTechnique(tech_to_add);
+    // }
 }
+
 
 void Drawable::AddTechnique( Technique tech_in ) noexcept
 {

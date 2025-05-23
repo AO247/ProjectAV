@@ -1,6 +1,8 @@
 #include "Material.h"
 #include "DynamicConstant.h"
 #include "ConstantBuffersEx.h"
+#include <scene.h>
+#include "Vertex.h"
 
 Material::Material( Graphics& gfx,const aiMaterial& material,const std::filesystem::path& path ) noxnd
 	:
@@ -191,20 +193,15 @@ std::vector<unsigned short> Material::ExtractIndices( const aiMesh& mesh ) const
 	}
 	return indices;
 }
-std::shared_ptr<Bind::VertexBuffer> Material::MakeVertexBindable( Graphics& gfx,const aiMesh& mesh,float scale ) const noxnd
+// In Material.cpp
+std::shared_ptr<Bind::VertexBuffer> Material::MakeVertexBindable(
+	Graphics& gfx,
+	const aiMesh& mesh, 
+	const Dvtx::VertexBuffer& dvtxBuffer
+) const
 {
-	auto vtc = ExtractVertices( mesh );
-	if( scale != 1.0f )
-	{
-		for( auto i = 0u; i < vtc.Size(); i++ )
-		{
-			DirectX::XMFLOAT3& pos = vtc[i].Attr<Dvtx::VertexLayout::ElementType::Position3D>();
-			pos.x *= scale;
-			pos.y *= scale;
-			pos.z *= scale;
-		}
-	}
-	return Bind::VertexBuffer::Resolve( gfx,MakeMeshTag( mesh ),std::move( vtc ) );
+	std::string uid = "$vb." + std::string(mesh.mName.C_Str()) + "." + dvtxBuffer.GetLayout().GetCode();
+	return Bind::VertexBuffer::Resolve(gfx, uid, dvtxBuffer); // This now matches your VertexBuffer.h
 }
 std::shared_ptr<Bind::IndexBuffer> Material::MakeIndexBindable( Graphics& gfx,const aiMesh& mesh ) const noxnd
 {
@@ -217,4 +214,55 @@ std::string Material::MakeMeshTag( const aiMesh& mesh ) const noexcept
 std::vector<Technique> Material::GetTechniques() const noexcept
 {
 	return techniques;
+}
+
+Dvtx::VertexLayout Material::GetRequiredVertexLayout(const aiMesh& mesh) const
+{
+	Dvtx::VertexLayout layout;
+	layout.Append(Dvtx::VertexLayout::Position3D); // Assuming all your renderable meshes use 3D positions
+
+	if (mesh.HasNormals()) {
+		layout.Append(Dvtx::VertexLayout::Normal);
+	}
+	if (mesh.HasTextureCoords(0)) { // Check for the first UV channel
+		layout.Append(Dvtx::VertexLayout::Texture2D);
+	}
+	// Add other standard attributes based on aiMesh properties and material needs
+	if (mesh.HasTangentsAndBitangents()) {
+		// Check if your material's techniques actually USE tangents/bitangents
+		// For now, let's assume if they exist, we add them.
+		layout.Append(Dvtx::VertexLayout::Tangent);
+		layout.Append(Dvtx::VertexLayout::Bitangent);
+	}
+	// Example for vertex colors:
+	// if (mesh.HasVertexColors(0)) { // Check for first vertex color channel
+	//     layout.Append(Dvtx::VertexLayout::BGRAColor); // Or Float3Color/Float4Color
+	// }
+
+
+	// --- Logic for Bone Data ---
+	bool materialActuallyUsesSkinning = false;
+
+	// TODO: Implement a robust way to check if THIS material instance's techniques
+	//       are designed for skinned animation.
+	// This could involve:
+	//  - A boolean flag in the Material class itself (e.g., `bool m_isSkinnedMaterial;`)
+	//  - Checking the shaders used by its Techniques (e.g., do they have a "SKINNED" permutation,
+	//    or do they bind a bone matrix constant buffer?)
+	//  - Checking if any Technique has a Step that requires BLENDINDICES/BLENDWEIGHT semantics.
+
+	// For now, we'll use a simplified approach: if the mesh has bones,
+	// we'll assume this material *might* want to use them.
+	// This is not ideal long-term, as a static material might be applied to a skinned mesh
+	// without intending to skin it.
+	if (mesh.HasBones()) {
+		materialActuallyUsesSkinning = true; // Placeholder logic
+	}
+
+	if (materialActuallyUsesSkinning) {
+		layout.Append(Dvtx::VertexLayout::BoneIDs);
+		layout.Append(Dvtx::VertexLayout::BoneWeights);
+	}
+
+	return layout;
 }

@@ -18,6 +18,7 @@
 #include "Prefab.h"
 #include "PrefabManager.h"
 #include "LevelGenerator.h"
+#include "AnimationComponent.h"
 
 namespace dx = DirectX;
 
@@ -138,7 +139,7 @@ App::App(const std::string& commandLine)
 		std::make_unique<ModelComponent>(pColumn3, wnd.Gfx(), "Models\\kolumna\\kolumna.obj")
 	);
 	pColumn4->AddComponent(
-		std::make_unique<ModelComponent>(pColumn4, wnd.Gfx(), "Models\\kolumna\\kolumna.obj")
+		std::make_unique<ModelComponent>(pColumn4, wnd.Gfx(), "Models\\char.fbx")
 	);
 
     //pIsland->AddComponent(
@@ -327,6 +328,29 @@ App::App(const std::string& commandLine)
 	pEnemySoundEffectsPlayer->AddSound("Models\\sci-fidrone.ogg");
 
 
+    if (pColumn4) {
+        auto pAnimCompOwner = std::make_unique<AnimationComponent>(pColumn4);
+        AnimationComponent* pAnimComp = pAnimCompOwner.get();  
+        pPlayer->AddComponent(std::move(pAnimCompOwner));
+
+        pAnimComp->Initialize();
+
+        bool animsLoaded = pAnimComp->LoadAnimationsFromFile(
+            "Models\\char.fbx", // Path to file containing animations
+            "Models\\char.fbx"             // Path to model whose skeleton these anims target (can be same file)
+        );
+
+        if (animsLoaded) {
+            OutputDebugStringA("Animations loaded successfully for pPlayer.\n");
+            // You could try playing an animation here later:
+            // pAnimComp->PlayAnimation("Walk"); // Assuming "Walk" is an animation name in the file
+        }
+        else {
+            OutputDebugStringA("Failed to load animations for pPlayer.\n");
+        }
+    }
+
+
     // Changing position scale etc.]
 	pFreeViewCamera->SetLocalPosition({ 4.0f, 11.0f, -28.0f });
     pPlayer->SetLocalPosition({ 0.0f, 35.0f, 0.0f });
@@ -345,6 +369,7 @@ App::App(const std::string& commandLine)
 	pColumn2->SetLocalPosition(DirectX::XMFLOAT3(-2.0f, 0.0f, 4.0f));
 	pColumn3->SetLocalPosition(DirectX::XMFLOAT3(-16.0f, 0.0f, -6.0f));
 	pColumn4->SetLocalPosition(DirectX::XMFLOAT3(10.0f, 0.0f, 6.0f));
+    pColumn4->SetLocalScale(DirectX::XMFLOAT3(0.05f, 0.05f, 0.05f));
 	/*stone1->SetLocalPosition(DirectX::XMFLOAT3(-10.0f, 1.0f, -10.0f));
 	stone1->SetLocalScale(dx::XMFLOAT3(1.5f, 1.5f, 1.5f));*/
 	/*stone2->SetLocalPosition(DirectX::XMFLOAT3(-10.0f, 1.0f, 10.0f));

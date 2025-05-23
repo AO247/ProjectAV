@@ -157,14 +157,59 @@ namespace Dvtx
 	template<VertexLayout::ElementType type>
 	struct AttributeAiMeshFill
 	{
-		static constexpr void Exec( VertexBuffer* pBuf,const aiMesh& mesh ) noxnd
+		static constexpr void Exec(VertexBuffer* pBuf, const aiMesh& mesh) noxnd
 		{
-			for( auto end = mesh.mNumVertices,i = 0u; i < end; i++ )
+			// Add a condition to skip bone types
+			if constexpr (type == VertexLayout::BoneIDs || type == VertexLayout::BoneWeights)
 			{
-				(*pBuf)[i].Attr<type>() = VertexLayout::Map<type>::Extract( mesh,i );
+				// Do nothing for bone types here; they will be filled manually later.
+				// You could optionally zero out the memory for these attributes here if desired,
+				// though ModelComponent will overwrite it.
+				if constexpr (type == VertexLayout::BoneIDs) {
+					for (auto end = mesh.mNumVertices, i = 0u; i < end; i++) {
+						auto& ids = (*pBuf)[i].Attr<VertexLayout::BoneIDs>();
+						for (int j = 0; j < MAX_BONES_PER_VERTEX; ++j) ids[j] = 0; // Default init
+					}
+				}
+				else if constexpr (type == VertexLayout::BoneWeights) {
+					for (auto end = mesh.mNumVertices, i = 0u; i < end; i++) {
+						auto& weights = (*pBuf)[i].Attr<VertexLayout::BoneWeights>();
+						for (int j = 0; j < MAX_BONES_PER_VERTEX; ++j) weights[j] = 0.0f; // Default init
+						// Optionally, set weights[0] = 1.0f if no bones assigned yet for static meshes
+						if (mesh.mNumBones == 0 && MAX_BONES_PER_VERTEX > 0) {
+							weights[0] = 1.0f;
+						}
+					}
+				}
+				return;
+			}
+			else // For all other types, proceed as before
+			{
+				// Check if the source mesh actually has the data for non-bone types
+				// This requires a way to check if, e.g., mesh.mNormals is non-null
+				// The Map<type>::Extract macro doesn't inherently do this check.
+				// For example:
+				if constexpr (type == VertexLayout::Normal) {
+					if (!mesh.HasNormals()) return;
+				}
+				else if constexpr (type == VertexLayout::Texture2D) {
+					if (!mesh.HasTextureCoords(0)) return;
+				}
+				else if constexpr (type == VertexLayout::Tangent) {
+					if (!mesh.HasTangentsAndBitangents()) return; // Tangents often imply Bitangents
+				}
+				else if constexpr (type == VertexLayout::Bitangent) {
+					if (!mesh.HasTangentsAndBitangents()) return;
+				} // Add similar checks for mColors if you use them
+
+				for (auto end = mesh.mNumVertices, i = 0u; i < end; i++)
+				{
+					(*pBuf)[i].Attr<type>() = VertexLayout::Map<type>::Extract(mesh, i);
+				}
 			}
 		}
 	};
+
 	VertexBuffer::VertexBuffer( VertexLayout layout_in,const aiMesh& mesh )
 		:
 		layout( std::move( layout_in ) )

@@ -8,6 +8,7 @@
 #include <utility>
 
 #define DVTX_ELEMENT_AI_EXTRACTOR(member) static SysType Extract( const aiMesh& mesh,size_t i ) noexcept {return *reinterpret_cast<const SysType*>(&mesh.member[i]);}
+#define MAX_BONES_PER_VERTEX 4
 
 #define LAYOUT_ELEMENT_TYPES \
 	X( Position2D ) \
@@ -19,6 +20,8 @@
 	X( Float3Color ) \
 	X( Float4Color ) \
 	X( BGRAColor ) \
+	X( BoneIDs ) \
+	X( BoneWeights ) \
 	X( Count )
 
 namespace Dvtx
@@ -105,6 +108,22 @@ namespace Dvtx
 			static constexpr const char* semantic = "Color";
 			static constexpr const char* code = "C8";
 			DVTX_ELEMENT_AI_EXTRACTOR( mColors[0] )
+		};
+		template<> struct Map<BoneIDs>
+		{
+			using SysType = int[MAX_BONES_PER_VERTEX];
+			static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32B32A32_SINT;
+			static constexpr const char* semantic = "BLENDINDICES"; // Or "BLENDINDICES0" if your system needs index
+			static constexpr const char* code = "BI4";
+			// No DVTX_ELEMENT_AI_EXTRACTOR here
+		};
+		template<> struct Map<BoneWeights>
+		{
+			using SysType = float[MAX_BONES_PER_VERTEX];
+			static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32B32A32_FLOAT;
+			static constexpr const char* semantic = "BLENDWEIGHT"; // Or "BLENDWEIGHT0"
+			static constexpr const char* code = "BW4";
+			// No DVTX_ELEMENT_AI_EXTRACTOR here
 		};
 		template<> struct Map<Count>
 		{

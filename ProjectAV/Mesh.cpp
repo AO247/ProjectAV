@@ -46,12 +46,19 @@ const std::string& ModelException::GetNote() const noexcept
 
 // --- Mesh Implementation ---
 
-Mesh::Mesh(Graphics& gfx, const Material& mat, const aiMesh& mesh, float scale) noxnd
-    : Drawable(gfx, mat, mesh, scale) // Call base Drawable constructor
+Mesh::Mesh(
+    Graphics& gfx,
+    std::shared_ptr<Bind::VertexBuffer> pVB,
+    std::shared_ptr<Bind::IndexBuffer> pIB,
+    const Material& mat
+) noxnd
+    : Drawable(gfx, std::move(pVB), std::move(pIB), mat) // Call the NEW Drawable constructor
 {
-    // Drawable constructor now handles pVertices, pIndices, pTopology, and techniques
+    // Initialize Mesh-specific members here
+    // For example, your worldTransformMatrix:
     dx::XMStoreFloat4x4(&transform, dx::XMMatrixIdentity());
 }
+
 
 // **** NEW SUBMIT METHOD ****
 void Mesh::Submit(FrameCommander& frame, dx::FXMMATRIX accumulatedTransform) const noxnd

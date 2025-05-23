@@ -54,7 +54,7 @@ void TestMaterialSystemLoading( Graphics& gfx )
 		aiProcess_CalcTangentSpace
 	);
 	Material mat{ gfx,*pScene->mMaterials[1],path };
-	Mesh mesh{ gfx,mat,*pScene->mMeshes[0] };
+	//Mesh mesh{ gfx,mat,*pScene->mMeshes[0] };
 }
 
 void TestScaleMatrixTranslation()

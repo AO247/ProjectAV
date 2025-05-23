@@ -31,8 +31,12 @@ class Mesh : public Drawable
 {
 public:
     // **** MODIFIED CONSTRUCTOR ****
-    Mesh(Graphics& gfx, const Material& mat, const aiMesh& mesh, float scale = 1.0f) noxnd;
-
+    Mesh(
+        Graphics& gfx,
+        std::shared_ptr<Bind::VertexBuffer> pVB,
+        std::shared_ptr<Bind::IndexBuffer> pIB,
+        const Material& mat // To pass to Drawable for techniques
+    ) noxnd;
     DirectX::XMMATRIX GetTransformXM() const noexcept override;
 
     // **** NEW SUBMIT METHOD ****
