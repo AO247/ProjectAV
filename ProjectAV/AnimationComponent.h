@@ -8,6 +8,8 @@
 #include <unordered_map>
 #include <DirectXMath.h>
 #include <types.h>
+#include <cassert> 
+#include <wtypes.h>
 
 // Forward declarations for Assimp types (if not fully included via other headers)
 struct aiNode;
@@ -90,7 +92,8 @@ public:
     // Placeholder for ImGui
     void ShowAnimationControls();
 
-    // More methods will be added later (Play, Pause, GetBoneTransforms, etc.)
+    void PlayAnimation(const std::string& animationName, bool loop = true);
+    bool IsPlaying() const { return mIsPlaying; } // Getter for playing state
 
 private:
     // Helper to parse aiAnimation structures from an aiScene
@@ -112,4 +115,42 @@ private:
     // Moved MAX_SHADER_BONES from here to be a global const or part of a config if shared
     // For now, AnimationComponent can define its own limit if needed.
     static const int MAX_ANIM_COMPONENT_BONES = 128; // Max bones this component will manage matrices for (can match shader)
+
+
+
+    template<typename KeyType> // Works for PositionKeyframe, RotationKeyframe, ScalingKeyframe
+    UINT FindKeyframeIndex(float animationTimeTicks, const std::vector<KeyType>& keys) const;
+
+    // Interpolation helpers
+    dx::XMMATRIX InterpolatePosition(float animationTimeTicks, const AnimationChannel& channel) const;
+    dx::XMMATRIX InterpolateRotation(float animationTimeTicks, const AnimationChannel& channel) const; // Returns rotation matrix
+    dx::XMMATRIX InterpolateScaling(float animationTimeTicks, const AnimationChannel& channel) const;   // Returns scaling matrix
+    // Optional: If you prefer to work with quaternions directly before converting to matrix:
+    // dx::XMVECTOR InterpolateQuaternion(float animationTimeTicks, const AnimationChannel& channel) const;
+
+
+    void CalculateBoneTransformsRecursive(
+        const ModelInternalNode* modelNode, // Current node in ModelComponent's hierarchy
+        const Animation* pCurrentAnim,      // Pointer to the current Animation being played
+        const dx::XMMATRIX& parentGlobalTransform // Accumulated transform from parent nodes
+    );
+
+
 };
+
+template<typename KeyType>
+UINT AnimationComponent::FindKeyframeIndex(float animationTimeTicks, const std::vector<KeyType>& keys) const
+{
+    assert(!keys.empty() && "Cannot find keyframe index in an empty key set.");
+
+    auto it = std::lower_bound(keys.begin(), keys.end(), animationTimeTicks,
+        [](const KeyType& key, float time) {
+            return key.time < time;
+        }
+    );
+
+    if (it == keys.begin()) {
+        return 0;
+    }
+    return static_cast<UINT>(std::distance(keys.begin(), std::prev(it)));
+}

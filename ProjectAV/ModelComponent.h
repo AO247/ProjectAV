@@ -31,9 +31,15 @@ public:
     void ShowTree(int& nodeIndexTracker, ModelInternalNode*& pSelectedNode) const noexcept;
     void SetAppliedTransform(DirectX::FXMMATRIX transform) noexcept;
     int GetId() const noexcept;
+
+    const DirectX::XMFLOAT4X4& GetOriginalTransformMatrixF4X4() const noexcept { return transform; } // Returns the stored XMFLOAT4X4 by const ref
+    DirectX::XMMATRIX GetOriginalTransformXM() const noexcept { return DirectX::XMLoadFloat4x4(&transform); } // Returns an XMMATRIX
+
+    const std::vector<std::unique_ptr<ModelInternalNode>>& GetChildren() const noexcept { return childPtrs; }
+    const DirectX::XMFLOAT4X4& GetBindPoseTransform() const noexcept { return transform; }
+
 private:
     void AddChild(std::unique_ptr<ModelInternalNode> pChild) noxnd;
-private:
     std::string name;
     int id;
     std::vector<std::unique_ptr<ModelInternalNode>> childPtrs;
@@ -57,13 +63,17 @@ public:
 
     int GetBoneCount() const { return m_BoneCounter; }
 
+    ModelInternalNode* GetRootInternalNode() const { return pRootInternal.get(); }
+    std::unique_ptr<ModelInternalNode> pRootInternal;
+    const std::unordered_map<std::string, BoneInfo>& GetBoneInfoMap() const { return m_BoneInfoMap; }
+
 private:
     // ParseNodeRecursive no longer needs to create Mesh objects, just references them
     std::unique_ptr<ModelInternalNode> ParseNodeRecursive(int& nextId, const aiNode& node, float scale); // Pass scale
     // ParseMesh is removed, Material and Mesh constructor handle this
 
     // --- Data ---
-    std::unique_ptr<ModelInternalNode> pRootInternal;
+    
     std::vector<std::unique_ptr<Mesh>> meshPtrs; // Owns all the Mesh objects
     // std::vector<Material> materials; // No longer needed here if Mesh handles it
 

@@ -344,6 +344,9 @@ App::App(const std::string& commandLine)
             OutputDebugStringA("Animations loaded successfully for pPlayer.\n");
             // You could try playing an animation here later:
             // pAnimComp->PlayAnimation("Walk"); // Assuming "Walk" is an animation name in the file
+
+
+            pAnimComp->PlayAnimation("jog.001", true);
         }
         else {
             OutputDebugStringA("Failed to load animations for pPlayer.\n");

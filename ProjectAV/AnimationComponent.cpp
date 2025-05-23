@@ -1,4 +1,4 @@
-// AnimationComponent.cpp
+ï»¿// AnimationComponent.cpp
 #include "AnimationComponent.h"
 #include "Node.h"
 #include "ModelComponent.h" // To verify skeleton compatibility eventually
@@ -7,6 +7,7 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>       // For aiScene, aiAnimation, aiNodeAnim
 #include <assimp/postprocess.h> // For aiProcess flags (though fewer are typically needed for anim-only loading)
+#include <filesystem>
 
 AnimationComponent::AnimationComponent(Node* owner)
     : Component(owner, "AnimationComponent") 
@@ -14,125 +15,146 @@ AnimationComponent::AnimationComponent(Node* owner)
 }
 bool AnimationComponent::LoadAnimationsFromFile(const std::string& animationFilePath, const std::string& modelFilePathForSkeleton)
 {
+    std::ostringstream oss; // Create a string stream for logging
+
     if (!mCachedModelComponent) {
-        // Initialize() must be called first to link with ModelComponent.
-        // However, ModelComponent is mainly for the *target skeleton*.
-        // The animation file might be different from the model file,
-        // but its animation data must target a compatible skeleton.
-        // For now, we'll proceed, but later you might add checks.
-        OutputDebugStringA("AnimationComponent Warning: Initialize() not called or ModelComponent missing. Skeleton compatibility cannot be fully verified yet.\n");
+        oss << "AnimationComponent Warning: Initialize() not called or ModelComponent missing. Skeleton compatibility cannot be fully verified yet.\n";
+        OutputDebugStringA(oss.str().c_str()); oss.str(""); oss.clear(); // Output and clear
     }
 
     Assimp::Importer importer;
-    // Flags for loading animations:
-    // aiProcess_PopulateArmatureData can be useful if the animation file ALSO contains a skeleton
-    // that needs to be understood by Assimp for node naming, but often animation files
-    // might be separate and only contain animation data.
-    // aiProcess_ConvertToLeftHanded is important if the node transforms in the animation
-    // data are right-handed and need to be used with a left-handed system.
-    unsigned int flags = aiProcess_ConvertToLeftHanded; // A good default
-    // If you removed aiProcess_PopulateArmatureData from ModelComponent loading due to old Assimp,
-    // you might not have it here either. It's less critical for just parsing animation keyframes.
-
+    unsigned int flags = aiProcess_ConvertToLeftHanded;
     const aiScene* scene = importer.ReadFile(animationFilePath, flags);
 
     if (!scene || !scene->HasAnimations()) {
-        OutputDebugStringA(("AnimationComponent: No animations found or error loading animation file: " +
-            animationFilePath + ". Assimp: " + importer.GetErrorString() + "\n").c_str());
+        oss << "AnimationComponent: No animations found or error loading animation file: "
+            << animationFilePath << ". Assimp: " << importer.GetErrorString() << "\n";
+        OutputDebugStringA(oss.str().c_str());
         return false;
     }
 
-    OutputDebugStringA(("AnimationComponent: Found %d animation(s) in file: %s\n", scene->mNumAnimations, animationFilePath.c_str()));
+    oss << "AnimationComponent: Found " << scene->mNumAnimations << " animation(s) in file: " << animationFilePath << "\n";
+    OutputDebugStringA(oss.str().c_str()); oss.str(""); oss.clear();
+
     ProcessAnimations(scene);
 
-    // TODO: Later, you might want to verify that the node names in the loaded animations
-    // actually exist in the mCachedModelComponent->m_BoneInfoMap or its node hierarchy.
-    // This ensures the animation can actually drive the target skeleton.
+    bool success = !mAnimations.empty();
+    if (success) {
+        oss << "AnimationComponent: Successfully loaded " << mAnimations.size() << " animation(s) into map.\n";
+    }
+    else {
+        oss << "AnimationComponent: ProcessAnimations resulted in an empty animation map.\n";
+    }
+    OutputDebugStringA(oss.str().c_str());
 
-    return !mAnimations.empty(); // Return true if at least one animation was loaded
+    return success;
 }
 
 void AnimationComponent::ProcessAnimations(const aiScene* scene)
 {
-    // mAnimations.clear(); // Clear previous animations if loading additively is not desired.
-                           // For now, let's assume additive loading, or clear before calling LoadAnimationsFromFile.
+    std::ostringstream oss; // Create a string stream for logging within this function
 
     for (unsigned int i = 0; i < scene->mNumAnimations; ++i)
     {
         const aiAnimation* pAIAnim = scene->mAnimations[i];
-        Animation newAnim; // Our custom Animation struct
+        Animation newAnimLocal;
 
-        newAnim.name = pAIAnim->mName.C_Str();
-        // If animation has no name, generate one
-        if (newAnim.name.empty()) {
-            newAnim.name = "Anim_" + std::to_string(mAnimations.size()) + "_" + std::to_string(i);
+        std::string originalNameFromFile = (pAIAnim->mName.C_Str() && strlen(pAIAnim->mName.C_Str()) > 0) ?
+            pAIAnim->mName.C_Str() :
+            "UnnamedAssimpAnim_" + std::to_string(i);
+
+        oss << "--- Processing Assimp Animation: '" << originalNameFromFile
+            << "', NumChannels in aiAnimation: " << pAIAnim->mNumChannels << "\n";
+        OutputDebugStringA(oss.str().c_str()); oss.str(""); oss.clear();
+
+
+        newAnimLocal.name = originalNameFromFile;
+        // If it was unnamed by Assimp, ensure our internal name is unique enough
+        if (originalNameFromFile.rfind("UnnamedAssimpAnim_", 0) == 0 && mAnimations.count(newAnimLocal.name)) {
+            newAnimLocal.name += "_inst" + std::to_string(mAnimations.size());
         }
-        OutputDebugStringA(("Processing animation: %s\n", newAnim.name.c_str()));
 
 
-        newAnim.durationTicks = static_cast<float>(pAIAnim->mDuration);
-        newAnim.ticksPerSecond = (pAIAnim->mTicksPerSecond != 0) ?
+        newAnimLocal.durationTicks = static_cast<float>(pAIAnim->mDuration);
+        newAnimLocal.ticksPerSecond = (pAIAnim->mTicksPerSecond != 0) ?
             static_cast<float>(pAIAnim->mTicksPerSecond) :
-            25.0f; // Default to 25 TPS if not specified in file
+            25.0f;
 
-        // Process all channels (bone/node animations) in this aiAnimation
         for (unsigned int j = 0; j < pAIAnim->mNumChannels; ++j)
         {
-            const aiNodeAnim* pAINodeAnim = pAIAnim->mChannels[j]; // Animation data for a single node
-            AnimationChannel channel; // Our custom AnimationChannel struct
+            const aiNodeAnim* pAINodeAnim = pAIAnim->mChannels[j];
+            AnimationChannel channel;
             channel.nodeName = pAINodeAnim->mNodeName.C_Str();
 
-            // Copy position keyframes
             for (unsigned int k = 0; k < pAINodeAnim->mNumPositionKeys; ++k) {
                 channel.positionKeys.emplace_back(
                     static_cast<float>(pAINodeAnim->mPositionKeys[k].mTime),
-                    pAINodeAnim->mPositionKeys[k].mValue // Constructor handles aiVector3D -> XMFLOAT3
+                    pAINodeAnim->mPositionKeys[k].mValue
                 );
             }
-
-            // Copy rotation keyframes
             for (unsigned int k = 0; k < pAINodeAnim->mNumRotationKeys; ++k) {
                 channel.rotationKeys.emplace_back(
                     static_cast<float>(pAINodeAnim->mRotationKeys[k].mTime),
-                    pAINodeAnim->mRotationKeys[k].mValue // Constructor handles aiQuaternion -> XMFLOAT4
+                    pAINodeAnim->mRotationKeys[k].mValue
                 );
             }
-
-            // Copy scaling keyframes
             for (unsigned int k = 0; k < pAINodeAnim->mNumScalingKeys; ++k) {
                 channel.scalingKeys.emplace_back(
                     static_cast<float>(pAINodeAnim->mScalingKeys[k].mTime),
-                    pAINodeAnim->mScalingKeys[k].mValue // Constructor handles aiVector3D -> XMFLOAT3
+                    pAINodeAnim->mScalingKeys[k].mValue
                 );
             }
 
             if (!channel.positionKeys.empty() || !channel.rotationKeys.empty() || !channel.scalingKeys.empty()) {
-                newAnim.channels.push_back(std::move(channel));
-                newAnim.channelMap[channel.nodeName] = newAnim.channels.size() - 1; // Store index for quick lookup
+                newAnimLocal.channels.push_back(std::move(channel));
+                // We'll build the channelMap after all channels for newAnimLocal are collected,
+                // to ensure indices are correct if some pAINodeAnim channels were empty.
             }
+        } // End loop through pAINodeAnim channels
+
+        // Rebuild channelMap for newAnimLocal
+        newAnimLocal.channelMap.clear();
+        for (size_t chIdx = 0; chIdx < newAnimLocal.channels.size(); ++chIdx) {
+            newAnimLocal.channelMap[newAnimLocal.channels[chIdx].nodeName] = chIdx;
         }
-        if (!newAnim.channels.empty()) {
-            if (mAnimations.find(newAnim.name) != mAnimations.end()) {
-                // Format this debug string too if needed
-                std::string warningMsg = "Warning: Duplicate animation name '" + newAnim.name + "' found. Appending unique ID.\n";
-                OutputDebugStringA(warningMsg.c_str());
-                newAnim.name += "_dup" + std::to_string(mAnimations.size());
+
+
+        if (!newAnimLocal.channels.empty()) {
+            std::string finalAnimationName = newAnimLocal.name;
+
+            if (mAnimations.count(finalAnimationName)) {
+                std::string baseName = newAnimLocal.name;
+                int attempt = 1;
+                oss.str(""); oss.clear(); // Clear oss before using for this specific log
+                oss << "Warning: Duplicate animation name '" << newAnimLocal.name << "' found. ";
+                do {
+                    finalAnimationName = baseName + "_dup" + std::to_string(attempt++);
+                } while (mAnimations.count(finalAnimationName));
+                oss << "Renaming to '" << finalAnimationName << "'.\n";
+                OutputDebugStringA(oss.str().c_str());
+                newAnimLocal.name = finalAnimationName;
             }
-            mAnimations[newAnim.name] = std::move(newAnim);
-             
-            std::ostringstream oss;
-            oss << "Successfully processed and stored animation: " << newAnim.name
-                << " with " << newAnim.channels.size() << " channels. "
-                << "Duration: " << newAnim.durationTicks << " ticks @ "
-                << newAnim.ticksPerSecond << " TPS.\n";
+
+            size_t numChannelsForLog = newAnimLocal.channels.size();
+            float durationForLog = newAnimLocal.durationTicks;
+            float tpsForLog = newAnimLocal.ticksPerSecond;
+
+            mAnimations[finalAnimationName] = std::move(newAnimLocal);
+
+            oss.str(""); oss.clear();
+            oss << "Successfully processed and stored animation: " << finalAnimationName
+                << " with " << numChannelsForLog << " channels. Duration: " << durationForLog
+                << " ticks @ " << tpsForLog << " TPS.\n";
             OutputDebugStringA(oss.str().c_str());
- 
         }
         else {
-            std::string warningMsg = "Warning: Animation '" + newAnim.name + "' had no valid channels.\n";
-            OutputDebugStringA(warningMsg.c_str());
+            oss.str(""); oss.clear();
+            oss << "Warning: Animation '" << newAnimLocal.name
+                << "' (from file original: '" << originalNameFromFile
+                << "') had no valid channels and was not stored.\n";
+            OutputDebugStringA(oss.str().c_str());
         }
-    }
+    } // End loop through pAIAnim
 }
 
 void AnimationComponent::Initialize()
@@ -235,17 +257,217 @@ void AnimationComponent::Update(float dt)
     }
 
     // 3. Calculate final bone transforms (This will be a call to a more complex function)
-    // CalculateBoneTransformsRecursive(mCachedModelComponent->GetRootInternalNode(), ¤tAnim, DirectX::XMMatrixIdentity());
-    // For now, this call is commented out as CalculateBoneTransformsRecursive isn't fully implemented/debugged.
-    // We'll add it in the next phase.
-
-    // If you want to test that mFinalBoneMatrices is being updated, you could temporarily
-    // set one of them here, e.g., a slight rotation on bone 0:
-    /*
-    if (!mFinalBoneMatrices.empty()) {
-        DirectX::XMStoreFloat4x4(&mFinalBoneMatrices[0],
-            DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(mCurrentTimeTicks * 0.1f)) // Example simple animation
-        );
+    ModelInternalNode* rootModelNode = mCachedModelComponent->GetRootInternalNode();
+    if (rootModelNode) {
+        CalculateBoneTransformsRecursive(rootModelNode, &currentAnim, dx::XMMatrixIdentity());
     }
-    */
+    else {
+        // This shouldn't happen if Initialize() succeeded and ModelComponent is valid
+        OutputDebugStringA("AnimationComponent::Update - Error: Root node from ModelComponent is null.\n");
+        mIsPlaying = false; // Stop trying to animate
+    }
+
+}
+ 
+
+// --- Explicit Instantiations (Optional, but good practice if definition is in .cpp) ---
+// If you keep the template definition in the .cpp, you might need these for the linker
+// to generate code for the specific types you'll use.
+template UINT AnimationComponent::FindKeyframeIndex<PositionKeyframe>(float, const std::vector<PositionKeyframe>&) const;
+template UINT AnimationComponent::FindKeyframeIndex<RotationKeyframe>(float, const std::vector<RotationKeyframe>&) const;
+template UINT AnimationComponent::FindKeyframeIndex<ScalingKeyframe>(float, const std::vector<ScalingKeyframe>&) const;
+
+dx::XMMATRIX AnimationComponent::InterpolatePosition(float animationTimeTicks, const AnimationChannel& channel) const
+{
+    if (channel.positionKeys.empty()) {
+        return dx::XMMatrixIdentity(); // No position data, return identity
+    }
+    if (channel.positionKeys.size() == 1) {
+        // Only one key, use its value directly
+        return dx::XMMatrixTranslationFromVector(dx::XMLoadFloat3(&channel.positionKeys[0].value));
+    }
+
+    UINT p0Index = FindKeyframeIndex(animationTimeTicks, channel.positionKeys);
+    UINT p1Index = p0Index + 1;
+
+    // If animationTimeTicks is at or after the last keyframe, use the last keyframe's value
+    if (p1Index >= channel.positionKeys.size()) {
+        return dx::XMMatrixTranslationFromVector(dx::XMLoadFloat3(&channel.positionKeys.back().value));
+    }
+
+    const PositionKeyframe& p0 = channel.positionKeys[p0Index];
+    const PositionKeyframe& p1 = channel.positionKeys[p1Index];
+
+    float deltaTime = p1.time - p0.time;
+    float factor = 0.0f;
+    if (deltaTime > 0.00001f) { // Avoid division by zero
+        factor = (animationTimeTicks - p0.time) / deltaTime;
+    }
+    factor = std::clamp(factor, 0.0f, 1.0f); // Ensure factor is [0, 1]
+
+    dx::XMVECTOR pos0 = dx::XMLoadFloat3(&p0.value);
+    dx::XMVECTOR pos1 = dx::XMLoadFloat3(&p1.value);
+    dx::XMVECTOR interpolatedPosition = dx::XMVectorLerp(pos0, pos1, factor);
+
+    return dx::XMMatrixTranslationFromVector(interpolatedPosition);
+}
+
+dx::XMMATRIX AnimationComponent::InterpolateRotation(float animationTimeTicks, const AnimationChannel& channel) const
+{
+    if (channel.rotationKeys.empty()) {
+        return dx::XMMatrixIdentity(); // No rotation data
+    }
+    if (channel.rotationKeys.size() == 1) {
+        return dx::XMMatrixRotationQuaternion(dx::XMLoadFloat4(&channel.rotationKeys[0].value));
+    }
+
+    UINT r0Index = FindKeyframeIndex(animationTimeTicks, channel.rotationKeys);
+    UINT r1Index = r0Index + 1;
+
+    if (r1Index >= channel.rotationKeys.size()) {
+        return dx::XMMatrixRotationQuaternion(dx::XMLoadFloat4(&channel.rotationKeys.back().value));
+    }
+
+    const RotationKeyframe& r0 = channel.rotationKeys[r0Index];
+    const RotationKeyframe& r1 = channel.rotationKeys[r1Index];
+
+    float deltaTime = r1.time - r0.time;
+    float factor = 0.0f;
+    if (deltaTime > 0.00001f) {
+        factor = (animationTimeTicks - r0.time) / deltaTime;
+    }
+    factor = std::clamp(factor, 0.0f, 1.0f);
+
+    dx::XMVECTOR rot0 = dx::XMLoadFloat4(&r0.value);
+    dx::XMVECTOR rot1 = dx::XMLoadFloat4(&r1.value);
+    // Ensure quaternions are normalized before slerp for stability, though Assimp usually provides normalized ones.
+    // rot0 = dx::XMQuaternionNormalize(rot0);
+    // rot1 = dx::XMQuaternionNormalize(rot1);
+    dx::XMVECTOR interpolatedRotation = dx::XMQuaternionSlerp(rot0, rot1, factor);
+
+    return dx::XMMatrixRotationQuaternion(interpolatedRotation);
+}
+
+dx::XMMATRIX AnimationComponent::InterpolateScaling(float animationTimeTicks, const AnimationChannel& channel) const
+{
+    if (channel.scalingKeys.empty()) {
+        return dx::XMMatrixIdentity(); // Or XMMatrixScaling(1.0f, 1.0f, 1.0f)
+    }
+    if (channel.scalingKeys.size() == 1) {
+        return dx::XMMatrixScalingFromVector(dx::XMLoadFloat3(&channel.scalingKeys[0].value));
+    }
+
+    UINT s0Index = FindKeyframeIndex(animationTimeTicks, channel.scalingKeys);
+    UINT s1Index = s0Index + 1;
+
+    if (s1Index >= channel.scalingKeys.size()) {
+        return dx::XMMatrixScalingFromVector(dx::XMLoadFloat3(&channel.scalingKeys.back().value));
+    }
+
+    const ScalingKeyframe& s0 = channel.scalingKeys[s0Index];
+    const ScalingKeyframe& s1 = channel.scalingKeys[s1Index];
+
+    float deltaTime = s1.time - s0.time;
+    float factor = 0.0f;
+    if (deltaTime > 0.00001f) {
+        factor = (animationTimeTicks - s0.time) / deltaTime;
+    }
+    factor = std::clamp(factor, 0.0f, 1.0f);
+
+    dx::XMVECTOR scale0 = dx::XMLoadFloat3(&s0.value);
+    dx::XMVECTOR scale1 = dx::XMLoadFloat3(&s1.value);
+    dx::XMVECTOR interpolatedScaling = dx::XMVectorLerp(scale0, scale1, factor);
+
+    return dx::XMMatrixScalingFromVector(interpolatedScaling);
+}
+
+
+void AnimationComponent::CalculateBoneTransformsRecursive(
+    const ModelInternalNode* modelNode,
+    const Animation* pCurrentAnim,
+    const dx::XMMATRIX& parentGlobalTransform
+) {
+    if (!modelNode || !pCurrentAnim || !mCachedModelComponent) { // Basic safety checks
+        return;
+    }
+
+    std::string nodeName = modelNode->GetName(); // Assuming ModelInternalNode has GetName()
+
+    // Start with the node's original bind-pose transform from the model file
+    dx::XMMATRIX nodeLocalAnimatedTransform = modelNode->GetOriginalTransformXM();
+
+    // Check if this node has an animation channel in the current animation
+    auto channelMapEntry = pCurrentAnim->channelMap.find(nodeName);
+    if (channelMapEntry != pCurrentAnim->channelMap.end()) {
+        const AnimationChannel& animChannel = pCurrentAnim->channels[channelMapEntry->second];
+
+        // Get interpolated S, R, T matrices
+        dx::XMMATRIX scalingMatrix = InterpolateScaling(mCurrentTimeTicks, animChannel);
+        dx::XMMATRIX rotationMatrix = InterpolateRotation(mCurrentTimeTicks, animChannel);
+        dx::XMMATRIX translationMatrix = InterpolatePosition(mCurrentTimeTicks, animChannel);
+
+        // Combine: Scale -> Rotate -> Translate for the local animated transform
+        nodeLocalAnimatedTransform = scalingMatrix * rotationMatrix * translationMatrix;
+    }
+    // If no animation channel for this node, nodeLocalAnimatedTransform remains its bind-pose transform.
+
+    // Global transform for this node: local animated transform * parent's global transform
+    dx::XMMATRIX globalNodeTransform = nodeLocalAnimatedTransform * parentGlobalTransform;
+
+    // If this node corresponds to a bone in our m_BoneInfoMap, calculate its final skinning matrix
+    const auto& boneInfoMap = mCachedModelComponent->GetBoneInfoMap(); // Get from cached ModelComponent
+    auto boneInfoIt = boneInfoMap.find(nodeName);
+
+    if (boneInfoIt != boneInfoMap.end()) {
+        const BoneInfo& boneInfo = boneInfoIt->second;
+        if (boneInfo.id >= 0 && static_cast<size_t>(boneInfo.id) < mFinalBoneMatrices.size()) {
+            // Final skinning matrix = OffsetMatrix * GlobalAnimatedNodeTransform
+            // Assimp's offsetMatrix is row-major. GlobalNodeTransform is likely row-major from DirectXMath.
+            // Shader usually expects column-major.
+            dx::XMMATRIX offsetMat = dx::XMLoadFloat4x4(&boneInfo.offsetMatrix); // Load as is (row-major)
+
+            // The result of (offsetMat * globalNodeTransform) transforms from bind-pose mesh space to final animated pose.
+            // Then, this matrix is applied to vertices in the shader.
+            // Transpose the final result for HLSL constant buffers (which expect column-major by default).
+            dx::XMStoreFloat4x4(
+                &mFinalBoneMatrices[boneInfo.id],
+                dx::XMMatrixTranspose(offsetMat * globalNodeTransform)
+            );
+        }
+    }
+
+    // Recursively call for all children of this modelNode
+    // Assuming ModelInternalNode has a way to access its children, e.g., a GetChildren() method
+    // or if childPtrs is public (less ideal) or AnimationComponent is a friend.
+    // For now, using the structure from your ModelComponent.h where childPtrs was:
+    // std::vector<std::unique_ptr<ModelInternalNode>> childPtrs;
+    // And ModelInternalNode has a friend class ModelComponent.
+    // To access children from AnimationComponent, ModelInternalNode needs a getter or friend status.
+    // Let's assume a getter: const auto& children = modelNode->GetChildren();
+    for (const auto& childUPtr : modelNode->GetChildren()) { // Replace GetChildren_ForAnim with actual getter
+        if (childUPtr) {
+            CalculateBoneTransformsRecursive(childUPtr.get(), pCurrentAnim, globalNodeTransform);
+        }
+    }
+
+}
+
+void AnimationComponent::PlayAnimation(const std::string& animationName, bool loop /*= true*/)
+{
+    auto animIt = mAnimations.find(animationName);
+    if (animIt != mAnimations.end()) {
+        mCurrentAnimationName = animationName;
+        mCurrentTimeTicks = 0.0f; // Reset time to start of animation
+        mIsPlaying = true;
+        mLoop = loop;
+        std::ostringstream oss;
+        oss << "AnimationComponent: Playing animation '" << animationName << "'. Loop: " << (loop ? "Yes" : "No") << "\n";
+        OutputDebugStringA(oss.str().c_str());
+    }
+    else {
+        std::ostringstream oss;
+        oss << "AnimationComponent Warning: Attempted to play unknown animation '" << animationName << "'.\n";
+        OutputDebugStringA(oss.str().c_str());
+        mIsPlaying = false; // Ensure it's not playing if anim not found
+    }
 }
