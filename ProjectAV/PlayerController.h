@@ -19,9 +19,9 @@ public:
 	virtual void Update(float dt) override;
 	virtual void DrawImGuiControls() override;
 
-	float moveSpeed = 20.0f;
-	float jumpForce = 200.0f;
-	float dashForce = 2000.0f;
+	float moveSpeed = 23.0f;
+	float jumpForce = 300.0f;
+	float dashForce = 600.0f;
 	float height = 4.0f;
 	float dashCooldown = 1.0f;
 	float ability1Cooldown = 1.0f;
@@ -36,7 +36,7 @@ private:
 	bool jumped = false;
 	bool grounded = false;
 	bool canDash = true;
-	float airMultiplier = 1.2f;
+	float airMultiplier = 1.6f;
 
 	Vector3 moveDirection;
 	Vector3 dashDirection;

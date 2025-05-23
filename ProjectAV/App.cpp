@@ -59,7 +59,7 @@ App::App(const std::string& commandLine)
     physicsSystem = new PhysicsSystem();
     physicsSystem->Init(cMaxBodies, cNumBodyMutexes, cMaxBodyPairs, cMaxContactConstraints, *broad_phase_layer_interface, *object_vs_broadphase_layer_filter, *object_vs_object_layer_filter);
     PhysicsCommon::physicsSystem = physicsSystem;
-    physicsSystem->SetGravity(Vec3(0.0f, -50.0f, 0.0f));
+    physicsSystem->SetGravity(Vec3(0.0f, -80.0f, 0.0f));
    
 
     soundDevice = LISTENER->Get();
@@ -365,7 +365,8 @@ App::App(const std::string& commandLine)
 
     // Changing position scale etc.]
 	pFreeViewCamera->SetLocalPosition({ 4.0f, 11.0f, -28.0f });
-    pPlayer->SetLocalPosition({ 0.0f, 35.0f, 0.0f });
+    pPlayer->SetLocalPosition({ 0.0f, 0.0f, 0.0f });
+	PhysicsCommon::physicsSystem->GetBodyInterface().SetPosition(pRigidbody->GetBodyID(), RVec3(0.0f, 100.0f, 5.0f), EActivation::Activate);
 	pBox->SetLocalPosition(DirectX::XMFLOAT3(-10.0f, 3.0f, 10.0f));
     pBrick->SetLocalScale(dx::XMFLOAT3(20.0f, 20.0f, 1.0f));
     pBrick->SetLocalRotation(dx::XMFLOAT3(DirectX::XMConvertToRadians(90), 0.0f, 0.0f));

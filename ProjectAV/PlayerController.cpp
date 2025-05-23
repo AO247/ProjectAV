@@ -40,25 +40,37 @@ void PlayerController::SpeedControl()
 	if (dashed) return;
 	Vec3 velocity = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
 	velocity.SetY(0.0f);
-
-    if (velocity.Length() > moveSpeed) 
-    {
-        velocity = velocity.Normalized();
-        Vec3 limitedVel = velocity * moveSpeed;
-		limitedVel.SetY(PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID()).GetY());
-		PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rigidbody->GetBodyID(), limitedVel);
+	if (grounded) {
+        if (velocity.Length() > moveSpeed)
+        {
+            velocity = velocity.Normalized();
+            velocity *= moveSpeed;
+            Vec3 limitedVel = velocity;
+            limitedVel.SetY(PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID()).GetY());
+            PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rigidbody->GetBodyID(), limitedVel);
+        }
     }
+	else {
+        if (velocity.Length() > (moveSpeed * airMultiplier))
+        {
+            velocity = velocity.Normalized();
+            velocity *= moveSpeed * airMultiplier;
+            Vec3 limitedVel = velocity;
+            limitedVel.SetY(PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID()).GetY());
+            PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rigidbody->GetBodyID(), limitedVel);
+        }
+	}
 
 	if (moveDirection == Vector3(0.0f, 0.0f, 0.0f))
 	{
 		Vec3 vel = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
         if (grounded) {
-            vel.SetX(vel.GetX() / 1.1f);
-            vel.SetZ(vel.GetZ() / 1.1f);
+            vel.SetX(vel.GetX() * 0.90f);
+            vel.SetZ(vel.GetZ() * 0.90f);
         }
         else {
-            vel.SetX(vel.GetX() / 1.05f);
-            vel.SetZ(vel.GetZ() / 1.05f);
+            vel.SetX(vel.GetX() * 0.95f);
+            vel.SetZ(vel.GetZ() * 0.95f);
         }
 		PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rigidbody->GetBodyID(), vel);
 	}
@@ -68,7 +80,8 @@ void PlayerController::Jump()
 {
     if ((grounded || !doubleJumped) && !jumped) {
 		Vec3 velocity = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
-        velocity.SetY(0.0f);
+        PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rigidbody->GetBodyID(), Vec3(velocity.GetX(), 0.0f, velocity.GetZ()));
+
 		PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(rigidbody->GetBodyID(), Vec3(0.0f, jumpForce, 0.0f));
         if (grounded) {
 			grounded = false;
@@ -106,9 +119,7 @@ void PlayerController::Dash()
     dashTimer = 0.3f;
 	dashCooldownTimer = dashCooldown;
 
-	/*rigidbody->friction = false;
-    rigidbody->SetVelocity({ 0.0f, 0.0f, 0.0f });
-    rigidbody->AddForce(dashDirection * dashForce * 100.0f);*/
+
 	PhysicsCommon::physicsSystem->GetBodyInterface().SetFriction(rigidbody->GetBodyID(), 0.0f);
     PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(rigidbody->GetBodyID(), dir * dashForce);
 
@@ -139,14 +150,57 @@ void PlayerController::GroundCheck()
 void PlayerController::MovePlayer()
 {
     moveDirection.Normalize();
-	if (grounded)
-	{
+//    PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * moveSpeed * 200.0f);
+    if (grounded)
+    {
         PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * moveSpeed * 1000.0f);
     }
-	else
-	{
-        PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * moveSpeed * 200.0f);
+    else
+    {
+        PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * moveSpeed * 50.0f);
     }
+    //auto& bodyIf = PhysicsCommon::physicsSystem->GetBodyInterface();
+    //Vec3 currVel = bodyIf.GetLinearVelocity(rigidbody->GetBodyID());
+
+    //// 1) Zachowaj Y i zeruj poziome
+    //float velY = currVel.GetY();
+    //currVel.SetY(0.0f);
+
+    //// 2) Desired velocity
+    //Vector3 desiredDir = moveDirection;
+    //if (desiredDir.LengthSquared() > 1e-6f) desiredDir.Normalize();
+    //float targetSpeed = moveSpeed * (grounded ? 1.0f : airMultiplier);
+    //Vec3 desiredVel{ desiredDir.x * targetSpeed,
+    //                 0.0f,
+    //                 desiredDir.z * targetSpeed };
+
+    //// 3) Sprawdü dot(currVel, desiredVel)
+    //float dot = currVel.Dot(desiredVel);
+
+    //if (grounded)
+    //{
+    //    // ziemia: natychmiast
+    //    currVel = desiredVel;
+    //}
+    //else
+    //{
+    //    if (dot < 0.0f)
+    //    {
+    //        // hamujemy poziomπ prÍdkoúÊ do zera szybciej, gdy chcemy odwrÛciÊ
+    //        constexpr float airBrake = 0.99f; // im bliøej 0, tym wolniej
+    //        currVel *= airBrake;
+    //    }
+    //    else
+    //    {
+    //        // normalna powietrzna kontrola
+    //        constexpr float airControl = 0.99f;
+    //        currVel = currVel + (desiredVel - currVel) * airControl;
+    //    }
+    //}
+
+    //// 4) PrzywrÛÊ Y i ustaw
+    //currVel.SetY(velY);
+    //bodyIf.SetLinearVelocity(rigidbody->GetBodyID(), currVel);
 }
 
 void PlayerController::Ability1()
@@ -195,7 +249,7 @@ void PlayerController::Cooldowns(float dt)
     {
         dashed = false;
         //rigidbody->friction = true;
-        PhysicsCommon::physicsSystem->GetBodyInterface().SetFriction(rigidbody->GetBodyID(), 1.0f);
+        PhysicsCommon::physicsSystem->GetBodyInterface().SetFriction(rigidbody->GetBodyID(), 0.1f);
     }
     if (dashCooldownTimer > 0.0f)
     {
