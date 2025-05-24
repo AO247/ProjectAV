@@ -176,3 +176,30 @@ public:
         }
     }
 };
+
+class MultipleBroadPhaseLayerFilter : public BroadPhaseLayerFilter
+{
+public:
+
+    MultipleBroadPhaseLayerFilter(std::vector<BroadPhaseLayer> inLayer) :
+        mLayer(inLayer)
+    {
+    }
+
+    virtual bool ShouldCollide(BroadPhaseLayer inLayer) const override
+    {
+        bool layerFound = false;
+        for (BroadPhaseLayer layer : mLayer)
+        {
+            if (inLayer == layer)
+            {
+                layerFound = true;
+                break;
+            }
+        }
+        return layerFound;
+    }
+
+private:
+    std::vector<BroadPhaseLayer> mLayer;
+};
