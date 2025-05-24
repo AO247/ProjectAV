@@ -203,3 +203,120 @@ public:
 private:
     std::vector<BroadPhaseLayer> mLayer;
 };
+
+class IgnoreSpecifiedBroadPhaseLayerFilter : public BroadPhaseLayerFilter
+{
+public:
+
+    IgnoreSpecifiedBroadPhaseLayerFilter(BroadPhaseLayer inLayer) :
+        mLayer(inLayer)
+    {
+    }
+
+    virtual bool ShouldCollide(BroadPhaseLayer inLayer) const override
+    {
+        return mLayer != inLayer;
+    }
+
+private:
+    BroadPhaseLayer	mLayer;
+};
+
+class IgnoreMultipleBroadPhaseLayerFilter : public BroadPhaseLayerFilter
+{
+public:
+
+    IgnoreMultipleBroadPhaseLayerFilter(std::vector<BroadPhaseLayer> inLayer) :
+        mLayer(inLayer)
+    {
+    }
+
+    virtual bool ShouldCollide(BroadPhaseLayer inLayer) const override
+    {
+        bool layerFound = false;
+        for (BroadPhaseLayer layer : mLayer)
+        {
+            if (inLayer == layer)
+            {
+                layerFound = true;
+                break;
+            }
+        }
+        return !layerFound;
+    }
+
+private:
+    std::vector<BroadPhaseLayer> mLayer;
+};
+
+class MultipleObjectLayerFilter : public ObjectLayerFilter
+{
+public:
+
+    MultipleObjectLayerFilter(ObjectLayer inLayer) :
+        mLayer(inLayer)
+    {
+    }
+
+    virtual bool ShouldCollide(ObjectLayer inLayer) const override
+    {
+        bool layerFound = false;
+        for (ObjectLayer layer : mLayer)
+        {
+            if (inLayer == layer)
+            {
+                layerFound = true;
+                break;
+            }
+        }
+        return layerFound;
+    }
+
+private:
+    std::vector<ObjectLayer> mLayer;
+};
+
+class IgnoreSpecifiedObjectLayerFilter : public ObjectLayerFilter
+{
+public:
+
+    IgnoreSpecifiedObjectLayerFilter(ObjectLayer inLayer) :
+        mLayer(inLayer)
+    {
+    }
+
+    virtual bool ShouldCollide(ObjectLayer inLayer) const override
+    {
+        return mLayer != inLayer;
+    }
+
+private:
+    ObjectLayer	mLayer;
+};
+
+class IgnoreMultipleObjectLayerFilter : public ObjectLayerFilter
+{
+public:
+
+    IgnoreMultipleObjectLayerFilter(std::vector<ObjectLayer> inLayer) :
+        mLayer(inLayer)
+    {
+    }
+
+    virtual bool ShouldCollide(ObjectLayer inLayer) const override
+    {
+        bool layerFound = false;
+        for (ObjectLayer layer : mLayer)
+        {
+            if (inLayer == layer)
+            {
+                layerFound = true;
+                break;
+            }
+        }
+        return !layerFound;
+    }
+
+private:
+    std::vector<ObjectLayer> mLayer;
+};
