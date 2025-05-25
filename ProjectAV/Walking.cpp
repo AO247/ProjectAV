@@ -61,6 +61,11 @@ void Walking::Follow(DirectX::XMFLOAT3 targetPos, float sp)
 	}*/
 }
 
+void Walking::OnTriggerEnter(Node* object)
+{
+	OutputDebugString("heeeej bracie zaaaczeloo paadaac choodz zmieeenic gacieeeeee\n");
+}
+
 Vector3 Walking::CalculateAvoidanceForce()
 {
 	return Vector3(0, 0, 0);

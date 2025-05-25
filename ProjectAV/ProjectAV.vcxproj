@@ -180,6 +180,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CapsuleCollider.cpp" />
     <ClCompile Include="Collider.cpp" />
+    <ClCompile Include="Component.cpp" />
     <ClCompile Include="LegacyCollider.cpp" />
     <ClCompile Include="ColliderSphere.cpp" />
     <ClCompile Include="CUtil.cpp" />
@@ -219,6 +220,8 @@
     <ClCompile Include="ModelComponent.cpp" />
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="MusicBuffer.cpp" />
+    <ClCompile Include="MyContactListener.cpp" />
+    <ClCompile Include="MyContactListener.h" />
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="NullPixelShader.cpp" />
     <ClCompile Include="OBB.cpp" />

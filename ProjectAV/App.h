@@ -48,6 +48,7 @@ private:
     PhysicsSystem* physicsSystem;
     TempAllocatorImpl* temp_allocator;
     JobSystemThreadPool* job_system;
+    MyContactListener* contactListener;
 
 
     SoundDevice* soundDevice; // Sound device instance

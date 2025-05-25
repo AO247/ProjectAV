@@ -24,6 +24,7 @@ public:
 	float avoidanceDistance = 8.0f;
 	float raycastDistance = 5.0f;
 	float raycastWidthOffset = 0.8f;
+	void OnTriggerEnter(Node* object) override;
 private:
 	Rigidbody* rigidbody;
 

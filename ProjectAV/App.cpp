@@ -58,6 +58,8 @@ App::App(const std::string& commandLine)
     ObjectLayerPairFilterImpl* object_vs_object_layer_filter = new ObjectLayerPairFilterImpl();
     physicsSystem = new PhysicsSystem();
     physicsSystem->Init(cMaxBodies, cNumBodyMutexes, cMaxBodyPairs, cMaxContactConstraints, *broad_phase_layer_interface, *object_vs_broadphase_layer_filter, *object_vs_object_layer_filter);
+    contactListener = new MyContactListener();
+    physicsSystem->SetContactListener(contactListener);
     PhysicsCommon::physicsSystem = physicsSystem;
     physicsSystem->SetGravity(Vec3(0.0f, -80.0f, 0.0f));
    
@@ -175,9 +177,9 @@ App::App(const std::string& commandLine)
  //   pNoxTurnHair->AddComponent(
  //       std::make_unique<ModelComponent>(pNoxTurnHair, wnd.Gfx(), "Models\\stone\\hair.fbx")
  //   );
- //   pEnemy->AddComponent(
- //       std::make_unique<ModelComponent>(pEnemy, wnd.Gfx(), "Models\\enemy\\basic.obj")
- //   );
+    pEnemy->AddComponent(
+        std::make_unique<ModelComponent>(pEnemy, wnd.Gfx(), "Models\\enemy\\basic.obj")
+    );
 
 
 
@@ -233,7 +235,11 @@ App::App(const std::string& commandLine)
 	a2Sphere->SetLayer(Layers::PLAYER);
 	physicsEngine.AddCollider(a2Sphere);*/
     
-
+    BodyCreationSettings eBodySettings(new JPH::SphereShape(2.0f), RVec3(0.0f, 15.0f, 50.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
+    eBodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
+    pEnemy->AddComponent(
+        std::make_unique<Trigger>(pEnemy, eBodySettings, false)
+    );
 
     /*pEnemy->AddComponent(
         std::make_unique<Rigidbody>(pEnemy, Vector3(15.0f, 10.0f, 0.0f), 10.0f, new btCapsuleShape(1.0f, 2.0f))
@@ -369,8 +375,8 @@ App::App(const std::string& commandLine)
 
     // Changing position scale etc.]
 	pFreeViewCamera->SetLocalPosition({ 4.0f, 11.0f, -28.0f });
-    pPlayer->SetLocalPosition({ 0.0f, 0.0f, 0.0f });
-	PhysicsCommon::physicsSystem->GetBodyInterface().SetPosition(pRigidbody->GetBodyID(), RVec3(0.0f, 100.0f, 5.0f), EActivation::Activate);
+    //pPlayer->SetLocalPosition({ 0.0f, 0.0f, 0.0f });
+	//PhysicsCommon::physicsSystem->GetBodyInterface().SetPosition(pRigidbody->GetBodyID(), RVec3(0.0f, 100.0f, 5.0f), EActivation::Activate);
 	pBox->SetLocalPosition(DirectX::XMFLOAT3(-10.0f, 3.0f, 10.0f));
     pBrick->SetLocalScale(dx::XMFLOAT3(20.0f, 20.0f, 1.0f));
     pBrick->SetLocalRotation(dx::XMFLOAT3(DirectX::XMConvertToRadians(90), 0.0f, 0.0f));
@@ -380,7 +386,7 @@ App::App(const std::string& commandLine)
 	pIsland->SetLocalScale(dx::XMFLOAT3(1.3f, 1.3f, 1.3f));
 	pNoxTurn->SetLocalPosition(DirectX::XMFLOAT3(5.0f, 0.0f, 5.0f));
 	pNoxTurn->SetLocalScale(dx::XMFLOAT3(0.01f, 0.01f, 0.01f));
-	pEnemy->SetLocalPosition(DirectX::XMFLOAT3(15.0f, 10.0f, 0.0f));
+	//pEnemy->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 50.0f, 0.0f));
 	//pEnemySoundEffectsPlayer->SetPosition(0.0f, 0.0f, 0.0f);
 	pColumn->SetLocalPosition(DirectX::XMFLOAT3(-8.0f, 0.0f, -7.0f));
 	pColumn2->SetLocalPosition(DirectX::XMFLOAT3(-2.0f, 0.0f, 4.0f));
@@ -449,7 +455,8 @@ App::~App()
 
 int App::Go()
 {
-    const float cDeltaTime = 1.0f / 60.0f;
+    const float FIXED_TIME_STEP = 1.0f / 60.0f;
+    float lag = 0.0f;
     while (true)
     {
         if (const auto ecode = Window::ProcessMessages())
@@ -457,11 +464,18 @@ int App::Go()
             return *ecode;
         }
         const auto dt = timer.Mark() * speed_factor;
-
-        physicsSystem->Update(dt, 1, temp_allocator, job_system);
+        lag += dt;
+        while (lag >= FIXED_TIME_STEP)
+        {
+            physicsSystem->Update(FIXED_TIME_STEP, 1, temp_allocator, job_system);
+            lag -= FIXED_TIME_STEP;
+        }
+        physicsSystem->Update(lag, 1, temp_allocator, job_system);
+        dynamic_cast<MyContactListener*>(physicsSystem->GetContactListener())->ExecuteTriggerActivationQueue();
         //dynamicsWorld->stepSimulation(dt, 10);
         HandleInput(dt);
         DoFrame(dt);
+        lag = 0.0f;
     }
 }
 
