@@ -64,7 +64,7 @@ void SoundDevice::SetAttenuation(int key)
 	if (key < 0xD001 || key > 0xD006)
 		throw ("Invalid key for attenuation");
 
-	alListeneri(AL_DISTANCE_MODEL, key);
+	alDistanceModel(key);
 }
 
 /// <summary>
