@@ -14,9 +14,9 @@ class Walking : public Component
 public:
 	Walking(Node* owner, std::string tag = "Movement");
 	virtual ~Walking() = default;
-	float maxSpeed = 40.0f;
-	float maxForce = 200.0f;
-	float rotationLerpFactor = 0.08f;
+	float maxSpeed = 100.0f;
+	float maxForce = 500.0f;
+	float rotationLerpFactor = 0.15f;
 	Vector3 targetPosition;
 	virtual void Follow(DirectX::XMFLOAT3 target, float sp = 1.0f);
 	virtual void DrawImGuiControls() override;
@@ -24,6 +24,7 @@ public:
 	float avoidanceDistance = 8.0f;
 	float raycastDistance = 5.0f;
 	float raycastWidthOffset = 0.8f;
+	float height = 4.0f;
 private:
 	Rigidbody* rigidbody;
 

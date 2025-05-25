@@ -129,7 +129,7 @@ void PlayerController::GroundCheck()
 {
     RRayCast ray = RRayCast(
         RVec3(GetOwner()->GetWorldPosition().x, GetOwner()->GetWorldPosition().y, GetOwner()->GetWorldPosition().z),
-        Vec3(0.0f, -5.0f, 0.0f)
+        Vec3(0.0f, -(height/2 + 0.0f), 0.0f)
 	);
     RayCastResult result;
     if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(ray, result, SpecifiedBroadPhaseLayerFilter(BroadPhaseLayers::GROUND),SpecifiedObjectLayerFilter(Layers::GROUND)))

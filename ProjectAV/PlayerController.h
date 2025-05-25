@@ -20,8 +20,10 @@ public:
 	virtual void DrawImGuiControls() override;
 
 	float moveSpeed = 23.0f;
-	float jumpForce = 300.0f;
-	float dashForce = 600.0f;
+	//float jumpForce = 300.0f;
+	//float dashForce = 600.0f;
+	float jumpForce = 500.0f;
+	float dashForce = 1000.0f;
 	float height = 4.0f;
 	float dashCooldown = 1.0f;
 	float ability1Cooldown = 1.0f;

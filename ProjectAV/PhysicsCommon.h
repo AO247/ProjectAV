@@ -93,7 +93,8 @@ namespace Layers
     static constexpr ObjectLayer NON_MOVING = 0;
     static constexpr ObjectLayer MOVING = 1;
     static constexpr ObjectLayer GROUND = 2;
-    static constexpr ObjectLayer NUM_LAYERS = 3;
+	static constexpr ObjectLayer WALL = 3;
+    static constexpr ObjectLayer NUM_LAYERS = 4;
 };
 
 class ObjectLayerPairFilterImpl : public ObjectLayerPairFilter
@@ -118,7 +119,8 @@ namespace BroadPhaseLayers
     static constexpr BroadPhaseLayer NON_MOVING(0);
     static constexpr BroadPhaseLayer MOVING(1);
 	static constexpr BroadPhaseLayer GROUND(2);
-    static constexpr uint NUM_LAYERS(3);
+	static constexpr BroadPhaseLayer WALL(3);
+    static constexpr uint NUM_LAYERS(4);
 };
 
 class BPLayerInterfaceImpl final : public BroadPhaseLayerInterface
@@ -130,6 +132,7 @@ public:
         mObjectToBroadPhase[Layers::NON_MOVING] = BroadPhaseLayers::NON_MOVING;
         mObjectToBroadPhase[Layers::MOVING] = BroadPhaseLayers::MOVING;
 		mObjectToBroadPhase[Layers::GROUND] = BroadPhaseLayers::GROUND;
+		mObjectToBroadPhase[Layers::WALL] = BroadPhaseLayers::WALL;
     }
 
     virtual uint GetNumBroadPhaseLayers() const override
@@ -151,6 +154,7 @@ public:
         case (BroadPhaseLayer::Type)BroadPhaseLayers::NON_MOVING:	return "NON_MOVING";
         case (BroadPhaseLayer::Type)BroadPhaseLayers::MOVING:		return "MOVING";
 		case (BroadPhaseLayer::Type)BroadPhaseLayers::GROUND:		return "GROUND";
+		case (BroadPhaseLayer::Type)BroadPhaseLayers::WALL:		    return "WALL";
         default:													JPH_ASSERT(false); return "INVALID";
         }
     }
@@ -163,7 +167,7 @@ private:
 class ObjectVsBroadPhaseLayerFilterImpl : public ObjectVsBroadPhaseLayerFilter
 {
 public:
-    virtual bool				ShouldCollide(ObjectLayer inLayer1, BroadPhaseLayer inLayer2) const override
+    virtual bool ShouldCollide(ObjectLayer inLayer1, BroadPhaseLayer inLayer2) const override
     {
         switch (inLayer1)
         {

@@ -151,18 +151,18 @@ App::App(const std::string& commandLine)
  //   //pStone->AddComponent(
  //   //    std::make_unique<ModelComponent>(pStone, wnd.Gfx(), "Models\\stone\\stone.glb")
  //   //);
-    pColumn->AddComponent(
-        std::make_unique<ModelComponent>(pColumn, wnd.Gfx(), "Models\\kolumna\\kolumna.obj")
-    );
-	pColumn2->AddComponent(
-		std::make_unique<ModelComponent>(pColumn2, wnd.Gfx(), "Models\\kolumna\\kolumna.obj")
-	);
-	pColumn3->AddComponent(
-		std::make_unique<ModelComponent>(pColumn3, wnd.Gfx(), "Models\\kolumna\\kolumna.obj")
-	);
-	pColumn4->AddComponent(
-		std::make_unique<ModelComponent>(pColumn4, wnd.Gfx(), "Models\\objects\\sciany.obj")
-	);
+ //   pColumn->AddComponent(
+ //       std::make_unique<ModelComponent>(pColumn, wnd.Gfx(), "Models\\kolumna\\kolumna.obj")
+ //   );
+	//pColumn2->AddComponent(
+	//	std::make_unique<ModelComponent>(pColumn2, wnd.Gfx(), "Models\\kolumna\\kolumna.obj")
+	//);
+	//pColumn3->AddComponent(
+	//	std::make_unique<ModelComponent>(pColumn3, wnd.Gfx(), "Models\\kolumna\\kolumna.obj")
+	//);
+	//pColumn4->AddComponent(
+	//	std::make_unique<ModelComponent>(pColumn4, wnd.Gfx(), "Models\\objects\\sciany.obj")
+	//);
 
  //   //pIsland->AddComponent(
  //   //    std::make_unique<ModelComponent>(pIsland, wnd.Gfx(), "Models\\box.glb")
@@ -175,19 +175,12 @@ App::App(const std::string& commandLine)
  //   pNoxTurnHair->AddComponent(
  //       std::make_unique<ModelComponent>(pNoxTurnHair, wnd.Gfx(), "Models\\stone\\hair.fbx")
  //   );
- //   pEnemy->AddComponent(
- //       std::make_unique<ModelComponent>(pEnemy, wnd.Gfx(), "Models\\enemy\\basic.obj")
- //   );
-
-
-
-	//Adding Rigidbody and Collider
-    /*pPlayer->AddComponent(
-        std::make_unique<Rigidbody>(pPlayer, Vector3(0.0f, 35.0f, 0.0f), 10.0f, new btCapsuleShape(1.0f, 2.0f))
+    pEnemy->AddComponent(
+        std::make_unique<ModelComponent>(pEnemy, wnd.Gfx(), "Models\\enemy\\basic.obj")
     );
-    Rigidbody* pRigidbody = pPlayer->GetComponent<Rigidbody>();
-    pRigidbody->GetBulletRigidbody()->setAngularFactor(btVector3(0,0,0));
-    dynamicsWorld->addRigidBody(pRigidbody->GetBulletRigidbody());*/
+
+
+
     //Heeeej Bracie zaczê³ooo padaæ choodŸ zmieniiæ gacieee
     //Heeeej Siostro uciekaajmyy zanim bêêdzieee mookroooo
 
@@ -206,14 +199,7 @@ App::App(const std::string& commandLine)
     pPlayer->AddComponent(
         std::make_unique<PlayerController>(pPlayer, wnd) // Add controller first
     );
-	/*pPlayer->AddComponent(
-		std::make_unique<CapsuleCollider>(pPlayer, pRigidbody, 1.0f, Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, pPlayer->GetComponent<PlayerController>()->height, 0.0f))
-	);
-	CapsuleCollider* pCapsule = pPlayer->GetComponent<CapsuleCollider>();
-	pCapsule->SetLayer(Layers::PLAYER);
-	pRigidbody->SetCollider(pCapsule);
-	pRigidbody->SetMass(10.0f);
-    physicsEngine.AddRigidbody(pRigidbody);*/
+	
 
 	/*pAbility1->AddComponent(
         std::make_unique<CapsuleCollider>(pAbility1, nullptr, 1.0f, Vector3(0.0f, -1.0f, 0.0f), Vector3(0.0f, 1.5f, 8.0f))
@@ -234,18 +220,17 @@ App::App(const std::string& commandLine)
 	physicsEngine.AddCollider(a2Sphere);*/
     
 
+    BodyCreationSettings eBodySettings(new JPH::CapsuleShape(1.0f, 1.0f), RVec3(2.0f, 100.0f, 5.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::MOVING);
+    eBodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
 
-    /*pEnemy->AddComponent(
-        std::make_unique<Rigidbody>(pEnemy, Vector3(15.0f, 10.0f, 0.0f), 10.0f, new btCapsuleShape(1.0f, 2.0f))
+    //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
+    eBodySettings.mMassPropertiesOverride.mMass = 10.0f;
+    eBodySettings.mFriction = 1.0f;
+    eBodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
+    pEnemy->AddComponent(
+        std::make_unique<Rigidbody>(pEnemy, eBodySettings)
     );
-    Rigidbody* eRigidbody = pEnemy->GetComponent<Rigidbody>();*/
-	/*pEnemy->AddComponent(
-		std::make_unique<CapsuleCollider>(pEnemy, eRigidbody, 1.0f, Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 4.0f, 0.0f))
-	);
-	CapsuleCollider* eCapsule = pEnemy->GetComponent<CapsuleCollider>();
-	eCapsule->SetLayer(Layers::ENEMY);
-	eRigidbody->SetCollider(eCapsule);
-    physicsEngine.AddRigidbody(eRigidbody);*/
+    //Rigidbody* pRigidbody = pEnemy->GetComponent<Rigidbody>();
 
 
   /*  pIsland->AddComponent(

@@ -16,13 +16,13 @@ Walking::Walking(Node* owner, std::string tag)
 }
 void Walking::Follow(DirectX::XMFLOAT3 targetPos, float sp)
 {
-    /*if (!rigidbody || rigidbody->GetIsStatic()) { 
+    if (!rigidbody) { 
         return;
     }
 	targetPosition = targetPos;
     Vector3 currentPos = pOwner->GetWorldPosition(); 
-    Vector3 currentVelocity = rigidbody->GetVelocity();
-
+	Vec3 currentVelocityJPH = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
+	Vector3 currentVelocity = { currentVelocityJPH.GetX(), currentVelocityJPH.GetY(), currentVelocityJPH.GetZ()};
     Vector3 desiredDirection = targetPosition - currentPos;
 
     desiredDirection.Normalize();
@@ -37,10 +37,10 @@ void Walking::Follow(DirectX::XMFLOAT3 targetPos, float sp)
         steeringForce = (steeringForce / steeringMagnitude) * maxForce; 
     }
 
-	rigidbody->AddForce(steeringForce * 10.0f);
-
-	currentVelocity = rigidbody->GetVelocity();
-    if (currentVelocity.LengthSquared() > 0.01f) 
+	PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(steeringForce.x, steeringForce.y, steeringForce.z) * 10.0f);
+	currentVelocityJPH = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
+	currentVelocity = { currentVelocityJPH.GetX(), currentVelocityJPH.GetY(), currentVelocityJPH.GetZ() };
+	if (currentVelocity.LengthSquared() > 0.01f)
     {
         Vector3 facingDirection = currentVelocity; 
         facingDirection.Normalize();
@@ -51,31 +51,31 @@ void Walking::Follow(DirectX::XMFLOAT3 targetPos, float sp)
 
 		float yawDifference = wrap_angle(targetYaw - currentYaw);
 		
-		targetYaw = wrap_angle(currentYaw + yawDifference * rotationLerpFactor);
+		//targetYaw = wrap_angle(currentYaw + yawDifference * rotationLerpFactor);
 
         pOwner->SetLocalRotation({ 0.0f, targetYaw, 0.0f });
     }
 
 	if (pOwner->GetComponent<SoundEffectsPlayer>()->isPlaying() == false) {
 		pOwner->GetComponent<SoundEffectsPlayer>()->Play(0);
-	}*/
+	}
 }
 
 Vector3 Walking::CalculateAvoidanceForce()
 {
-	return Vector3(0, 0, 0);
-	/*Vector3 avoidanceForce(0.0f, 0.0f, 0.0f);
+	Vector3 avoidanceForce(0.0f, 0.0f, 0.0f);
 
 	Vector3 previousRotation = pOwner->GetLocalRotationEuler();
-	pOwner->TranslateLocal({ 0.0f, 1.0f, 0.0f });
+	//pOwner->TranslateLocal({ 0.0f, 1.0f, 0.0f });
 	Vector3 temporaryDirection = targetPosition - pOwner->GetWorldPosition();
 	temporaryDirection.Normalize();
 	float targetYaw = atan2f(temporaryDirection.x, temporaryDirection.z);
 	pOwner->SetLocalRotation({ 0.0f, targetYaw, 0.0f });
 
-	float radius = pOwner->GetComponent<CapsuleCollider>()->GetRadius();
+	float radius = 1.0f;
 
-	Vector3 pos = pOwner->GetComponent<CapsuleCollider>()->GetTransformedBase();
+	Vector3 pos = pOwner->GetWorldPosition();
+	pos.y += (-height/2.0f) + 1.0f;
 	Vector3 forward = pOwner->Forward();
 	Vector3 right = pOwner->Right();
 
@@ -92,44 +92,68 @@ Vector3 Walking::CalculateAvoidanceForce()
 
 	Vector3 rightDir = (forward + right * 0.5f); rightDir.Normalize();
 
-	RaycastData hitLeft = Raycast::CastThroughLayers(leftOrigin, centerDir, std::vector<Layers>{ENEMY, PLAYER});
-
-
-	RaycastData hitRight = Raycast::CastThroughLayers(rightOrigin, centerDir, std::vector<Layers>{ENEMY, PLAYER});
+	centerDir *= avoidanceDistance;
+	leftDir *= avoidanceDistance;
+	rightDir *= avoidanceDistance;
 
 	float targetDistance = Vector3(pos - targetPosition).Length();
-	float distance = Vector3(pos - hitLeft.hitPoint).Length();
-	if (hitLeft.hitCollider != nullptr && Vector3(hitLeft.hitPoint - pos).Length() < targetDistance && 
-		Vector3(hitLeft.hitPoint - pos).Length() < avoidanceDistance) {
+	RRayCast rayLeft = RRayCast(
+		RVec3(leftOrigin.x, leftOrigin.y, leftOrigin.z),
+		RVec3(centerDir.x, centerDir.y, centerDir.z)
+	);
+	RayCastResult resultLeft;
+	if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(rayLeft, resultLeft, SpecifiedBroadPhaseLayerFilter(BroadPhaseLayers::WALL), SpecifiedObjectLayerFilter(Layers::WALL)))
+	{
 		leftHit = true;
-		
+		//float distance = Vector3(pos - hitLeft.hitPoint).Length();
+		//if(distance < targetDistance)
 		avoidanceForce = right * avoidanceWeight;
 	}
 
-	if (hitRight.hitCollider != nullptr && Vector3(hitRight.hitPoint - pos).Length() < targetDistance && 
-		Vector3(hitRight.hitPoint - pos).Length() < avoidanceDistance) {
+
+	RRayCast rayRight = RRayCast(
+		RVec3(rightOrigin.x, rightOrigin.y, rightOrigin.z),
+		RVec3(centerDir.x, centerDir.y, centerDir.z)
+	);
+	RayCastResult resultRight;
+	if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(rayRight, resultRight, SpecifiedBroadPhaseLayerFilter(BroadPhaseLayers::WALL), SpecifiedObjectLayerFilter(Layers::WALL)))
+	{
 		rightHit = true;
+		//float distance = Vector3(pos - hitLeft.hitPoint).Length();
+		//if(distance < targetDistance)
 		avoidanceForce = -right * avoidanceWeight;
 	}
 
-	if (leftHit && rightHit) {
-		RaycastData moreLeft = Raycast::CastThroughLayers(leftOrigin, leftDir, std::vector<Layers>{ENEMY, PLAYER});
-		RaycastData moreRight = Raycast::CastThroughLayers(rightOrigin, rightDir, std::vector<Layers>{ENEMY, PLAYER});
 
-		if (moreLeft.hitCollider != nullptr && Vector3(moreLeft.hitPoint - pos).Length() < targetDistance && 
-			Vector3(moreLeft.hitPoint - pos).Length() < avoidanceDistance) {
-			avoidanceForce = right * avoidanceWeight;
-		}
-		else if (moreRight.hitCollider != nullptr && Vector3(moreRight.hitPoint - pos).Length() < targetDistance && 
-			Vector3(moreRight.hitPoint - pos).Length() < avoidanceDistance) {
+	if (leftHit && rightHit) {
+		RRayCast rayMoreLeft = RRayCast(
+			RVec3(leftOrigin.x, leftOrigin.y, leftOrigin.z),
+			RVec3(leftDir.x, leftDir.y, leftDir.z)
+		);
+		RRayCast rayMoreRight = RRayCast(
+			RVec3(leftOrigin.x, leftOrigin.y, leftOrigin.z),
+			RVec3(rightDir.x, rightDir.y, rightDir.z)
+		);
+		RayCastResult resultMoreLeft;
+		RayCastResult resultMoreRight;
+
+		if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(rayMoreLeft, resultMoreLeft, SpecifiedBroadPhaseLayerFilter(BroadPhaseLayers::WALL), SpecifiedObjectLayerFilter(Layers::WALL)))
+		{
+			//float distance = Vector3(pos - hitLeft.hitPoint).Length();
+			//if(distance < targetDistance)
 			avoidanceForce = -right * avoidanceWeight;
+		}
+		else if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(rayMoreRight, resultMoreRight, SpecifiedBroadPhaseLayerFilter(BroadPhaseLayers::WALL), SpecifiedObjectLayerFilter(Layers::WALL)))
+		{
+			//float distance = Vector3(pos - hitLeft.hitPoint).Length();
+			avoidanceForce = right * avoidanceWeight;
 		}
 	}
 
 	pOwner->SetLocalRotation(previousRotation);
-	pOwner->TranslateLocal({ 0.0f, -1.0f, 0.0f });
+	//pOwner->TranslateLocal({ 0.0f, -1.0f, 0.0f });
 
-	return avoidanceForce;*/
+	return avoidanceForce;
 
 }
 

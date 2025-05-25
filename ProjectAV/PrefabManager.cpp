@@ -6,6 +6,34 @@ PrefabManager::~PrefabManager()
 {
 }
 
+
+Node* PrefabManager::InstantiateColumn(Node* parentNode, float locX, float locY, float locZ, float scale) const {
+
+
+    auto pNewNodeOwner = std::make_unique<Node>("Stone", nullptr, "Stone");
+
+    pNewNodeOwner->AddComponent(
+        std::make_unique<ModelComponent>(pNewNodeOwner.get(), wnd->Gfx(), "Models\\kolumna\\kolumna.obj")
+    );
+    BodyCreationSettings BodySettings(new JPH::CapsuleShape(1.0f, 1.0f), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::WALL);
+    BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
+
+    //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
+    BodySettings.mMassPropertiesOverride.mMass = 50.0f;
+    BodySettings.mFriction = 1.0f;
+    BodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
+    pNewNodeOwner->AddComponent(
+        std::make_unique<Rigidbody>(pNewNodeOwner.get(), BodySettings)
+    );
+
+    pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+    pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+
+    Node* pNewNode = pNewNodeOwner.get();
+    parentNode->AddChild(std::move(pNewNodeOwner));
+    return pNewNode;
+}
+
 Node* PrefabManager::InstantiateStone(Node* parentNode, float locX, float locY, float locZ, float scale) const {
 
 
@@ -91,6 +119,8 @@ Node* PrefabManager::InstantiateIslandBig1(Node* parentNode, float locX, float l
     Node* pNewNode = pNewNodeOwner.get();
 
     //Node* stone = InstantiateStone(pNewNode, pNewNode->GetWorldPosition().x + 5.0f, 30.0f, 0.0f, 1.5f);
+	Node* column1 = InstantiateColumn(pNewNode, pNewNode->GetWorldPosition().x + 5.0f, pNewNode->GetWorldPosition().y + 0.0f, pNewNode->GetWorldPosition().z + 5.0f, 1.0f);
+	Node* column2 = InstantiateColumn(pNewNode, pNewNode->GetWorldPosition().x - 5.0f, pNewNode->GetWorldPosition().y + 0.0f, pNewNode->GetWorldPosition().z - 5.0f, 1.0f);
 
 	pNewNode->AddChild(std::move(leftPoint));
 	pNewNode->AddChild(std::move(rightPoint));
@@ -145,6 +175,8 @@ Node* PrefabManager::InstantiateIslandMedium1(Node* parentNode, float locX, floa
     Node* pNewNode = pNewNodeOwner.get();
 
     //Node* stone = InstantiateStone(pNewNode, pNewNode->GetWorldPosition().x + 5.0f, 30.0f, 0.0f, 1.5f);
+    Node* column3 = InstantiateColumn(pNewNode, pNewNode->GetWorldPosition().x + 5.0f, pNewNode->GetWorldPosition().y + 0.0f, pNewNode->GetWorldPosition().z + 5.0f, 1.0f);
+    Node* column4 = InstantiateColumn(pNewNode, pNewNode->GetWorldPosition().x - 5.0f, pNewNode->GetWorldPosition().y + 0.0f, pNewNode->GetWorldPosition().z - 5.0f, 1.0f);
 
     pNewNode->AddChild(std::move(leftPoint));
     pNewNode->AddChild(std::move(rightPoint));
@@ -200,6 +232,8 @@ Node* PrefabManager::InstantiateIslandMedium2(Node* parentNode, float locX, floa
     Node* pNewNode = pNewNodeOwner.get();
 
     //Node* stone = InstantiateStone(pNewNode, pNewNode->GetWorldPosition().x + 5.0f, 30.0f, 0.0f, 1.5f);
+    Node* column5 = InstantiateColumn(pNewNode, pNewNode->GetWorldPosition().x + 5.0f, pNewNode->GetWorldPosition().y + 0.0f, pNewNode->GetWorldPosition().z + 5.0f, 1.0f);
+    Node* column6 = InstantiateColumn(pNewNode, pNewNode->GetWorldPosition().x - 5.0f, pNewNode->GetWorldPosition().y + 0.0f, pNewNode->GetWorldPosition().z - 5.0f, 1.0f);
 
     pNewNode->AddChild(std::move(leftPoint));
     pNewNode->AddChild(std::move(rightPoint));
@@ -254,6 +288,8 @@ Node* PrefabManager::InstantiateIslandSmall1(Node* parentNode, float locX, float
     Node* pNewNode = pNewNodeOwner.get();
 
     //Node* stone = InstantiateStone(pNewNode, pNewNode->GetWorldPosition().x + 5.0f, 30.0f, 0.0f, 1.5f);
+    Node* column7 = InstantiateColumn(pNewNode, pNewNode->GetWorldPosition().x + 5.0f, pNewNode->GetWorldPosition().y + 0.0f, pNewNode->GetWorldPosition().z + 5.0f, 1.0f);
+    Node* column8 = InstantiateColumn(pNewNode, pNewNode->GetWorldPosition().x - 5.0f, pNewNode->GetWorldPosition().y + 0.0f, pNewNode->GetWorldPosition().z - 5.0f, 1.0f);
 
     pNewNode->AddChild(std::move(leftPoint));
     pNewNode->AddChild(std::move(rightPoint));
