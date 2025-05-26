@@ -4,6 +4,7 @@
 #include <DirectXMath.h>
 #include "imgui/imgui.h"
 #include <cmath> // For std::atan2, std::asin, std::copysign
+#include "Rigidbody.h"
 
 // Forward declare FrameCommander if it's only used as a reference/pointer type in Submit
 // class FrameCommander; 
@@ -117,6 +118,33 @@ void Node::SetLocalTransform(DirectX::FXMMATRIX transform)
 
 void Node::SetLocalPosition(const DirectX::XMFLOAT3& pos)
 {
+    if (GetComponent<Rigidbody>() != nullptr)
+    {
+        dx::XMMATRIX matS = dx::XMMatrixScaling(localScale.x, localScale.y, localScale.z);
+        dx::XMMATRIX matR = dx::XMMatrixRotationQuaternion(dx::XMLoadFloat4(&localRotationQuaternion));
+        dx::XMMATRIX matT = dx::XMMatrixTranslation(pos.x, pos.y, pos.z);
+
+        dx::XMMATRIX newComputedLocalTransform = matS * matR * matT;
+
+        dx::XMMATRIX newComputedWorldTransform;
+        if (parent)
+        {
+            dx::XMMATRIX parentWorldMatrix = parent->GetWorldTransform();
+            newComputedWorldTransform = dx::XMMatrixMultiply(newComputedLocalTransform, parentWorldMatrix);
+        }
+        else
+        {
+            newComputedWorldTransform = newComputedLocalTransform;
+        }
+
+        DirectX::XMFLOAT3 newWorldPosFloat3;
+        dx::XMStoreFloat3(&newWorldPosFloat3, newComputedWorldTransform.r[3]);
+
+        RVec3Arg joltPhysicsPosition(newWorldPosFloat3.x, newWorldPosFloat3.y, newWorldPosFloat3.z);
+
+        JPH::BodyInterface& bodyInterface = PhysicsCommon::physicsSystem->GetBodyInterface();
+        bodyInterface.SetPosition(GetComponent<Rigidbody>()->GetBodyID(), joltPhysicsPosition, JPH::EActivation::Activate);
+    }
     localPosition = pos;
     localTransformDirty = true;
     worldTransformDirty = true;
@@ -281,6 +309,10 @@ DirectX::XMFLOAT3 Node::GetWorldPosition() const
 
 void Node::SetWorldPosition(const DirectX::XMFLOAT3& worldPos)
 {
+    if (GetComponent<Rigidbody>() != nullptr)
+    {
+        PhysicsCommon::physicsSystem->GetBodyInterface().SetPosition(GetComponent<Rigidbody>()->GetBodyID(), RVec3Arg(worldPos.x, worldPos.y, worldPos.z), EActivation::Activate);
+    }
     if (parent == nullptr)
     {
         SetLocalPosition(worldPos); // For root node, world position is local position
