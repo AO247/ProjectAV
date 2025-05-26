@@ -78,7 +78,7 @@ Node* PrefabManager::InstantiateStone(Node* parentNode, float locX, float locY, 
 Node* PrefabManager::InstantiateIslandBig1(Node* parentNode, float locX, float locY, float locZ, float scale) const {
 
 
-    auto pNewNodeOwner = std::make_unique<Node>("Island", nullptr, "Ground");
+    auto pNewNodeOwner = std::make_unique<Node>("Island B1", nullptr, "Ground");
 
     pNewNodeOwner->AddComponent(
         std::make_unique<ModelComponent>(pNewNodeOwner.get(), wnd->Gfx(), "Models\\wyspa\\wyspa_test.fbx")
@@ -133,7 +133,7 @@ Node* PrefabManager::InstantiateIslandBig1(Node* parentNode, float locX, float l
 Node* PrefabManager::InstantiateIslandMedium1(Node* parentNode, float locX, float locY, float locZ, float scale) const {
 
 
-    auto pNewNodeOwner = std::make_unique<Node>("Island", nullptr, "Ground");
+    auto pNewNodeOwner = std::make_unique<Node>("Island M1", nullptr, "Ground");
 
     pNewNodeOwner->AddComponent(
         std::make_unique<ModelComponent>(pNewNodeOwner.get(), wnd->Gfx(), "Models\\objects\\wyspa_wycieta.obj")
@@ -190,7 +190,7 @@ Node* PrefabManager::InstantiateIslandMedium1(Node* parentNode, float locX, floa
 Node* PrefabManager::InstantiateIslandMedium2(Node* parentNode, float locX, float locY, float locZ, float scale) const {
 
 
-    auto pNewNodeOwner = std::make_unique<Node>("Island", nullptr, "Ground");
+    auto pNewNodeOwner = std::make_unique<Node>("Island M2", nullptr, "Ground");
 
     pNewNodeOwner->AddComponent(
         std::make_unique<ModelComponent>(pNewNodeOwner.get(), wnd->Gfx(), "Models\\objects\\wyspa_srednia_1.obj")
@@ -246,7 +246,7 @@ Node* PrefabManager::InstantiateIslandMedium2(Node* parentNode, float locX, floa
 Node* PrefabManager::InstantiateIslandSmall1(Node* parentNode, float locX, float locY, float locZ, float scale) const {
 
 
-    auto pNewNodeOwner = std::make_unique<Node>("Island", nullptr, "Ground");
+    auto pNewNodeOwner = std::make_unique<Node>("Island S1", nullptr, "Ground");
 
     pNewNodeOwner->AddComponent(
         std::make_unique<ModelComponent>(pNewNodeOwner.get(), wnd->Gfx(), "Models\\objects\\wyspa_mala_1.obj")

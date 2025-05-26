@@ -72,7 +72,7 @@ App::App(const std::string& commandLine)
 
 	LevelGenerator levelGenerator(prefabManager, pSceneRoot.get());
 
-    Node* island = prefabManager->InstantiateIslandBig1(pSceneRoot.get(), 0.0f, -0.1f, 0.0f, 1.0f);
+    //Node* island = prefabManager->InstantiateIslandBig1(pSceneRoot.get(), 0.0f, -0.1f, 0.0f, 1.0f);
 
     // --- Create Nodes ---
 
@@ -152,7 +152,8 @@ App::App(const std::string& commandLine)
  //   //    std::make_unique<ModelComponent>(pStone, wnd.Gfx(), "Models\\stone\\stone.glb")
  //   //);
  //   pColumn->AddComponent(
- //       std::make_unique<ModelComponent>(pColumn, wnd.Gfx(), "Models\\kolumna\\kolumna.obj")
+ //       std::make_unique<ModelComponent>(pColumn, wnd.Gfx(), "
+ // )
  //   );
 	//pColumn2->AddComponent(
 	//	std::make_unique<ModelComponent>(pColumn2, wnd.Gfx(), "Models\\kolumna\\kolumna.obj")
@@ -189,7 +190,7 @@ App::App(const std::string& commandLine)
 
     //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
     bodySettings.mMassPropertiesOverride.mMass = 10.0f;
-    bodySettings.mFriction = 1.0f;
+    bodySettings.mFriction = 0.0f;
     bodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
     pPlayer->AddComponent(
         std::make_unique<Rigidbody>(pPlayer, bodySettings)
@@ -402,6 +403,8 @@ App::App(const std::string& commandLine)
 	/*AddCapsuleColliderToDraw(wnd.Gfx(), pCapsule);
 	AddCapsuleColliderToDraw(wnd.Gfx(), eCapsule);
 	AddCapsuleColliderToDraw(wnd.Gfx(), a1CapsuleCollider);*/
+
+
 
     wnd.DisableCursor();
     wnd.mouse.EnableRaw();
