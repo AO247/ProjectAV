@@ -41,29 +41,21 @@ Node* PrefabManager::InstantiateStone(Node* parentNode, float locX, float locY, 
         std::make_unique<ModelComponent>(pNewNodeOwner.get(), wnd->Gfx(), "Models\\kamien\\kamien_6.obj")
     );
 
-    /*pNewNodeOwner->AddComponent(
-        std::make_unique<Rigidbody>(pNewNodeOwner.get(), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f))
+    BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(1.0f, 1.0f, 1.0f)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+    BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
+
+    BodySettings.mMassPropertiesOverride.mMass = 5.0f;
+    BodySettings.mFriction = 0.5f;
+    //BodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
+
+
+    pNewNodeOwner->AddComponent(
+        std::make_unique<Rigidbody>(pNewNodeOwner.get(), BodySettings)
     );
-    Rigidbody* pRigidbody = pNewNodeOwner->GetComponent<Rigidbody>();*/
+    Rigidbody* pRigidbody = pNewNodeOwner->GetComponent<Rigidbody>();
     pNewNodeOwner->AddComponent(
         std::make_unique<Throwable>(pNewNodeOwner.get())
     );
-    /*pNewNodeOwner->AddComponent(
-        std::make_unique<OBB>(pNewNodeOwner.get(), pRigidbody, Vector3(0.0f, 0.6f, 0.0f), Vector3(1.2f, 1.1f, 1.7f))
-    );*/
-    /*OBB* pOBB = pNewNodeOwner->GetComponent<OBB>();
-    pOBB->SetLayer(Layers::THROWABLE);
-    pRigidbody->SetCollider(pOBB);
-    physicsEngine->AddRigidbody(pRigidbody);
-    pNewNodeOwner->AddComponent(
-        std::make_unique<BoundingSphere>(pNewNodeOwner.get(), Vector3(0.0f, 0.6f, 0.0f), 1.5f, nullptr)
-    );
-    BoundingSphere* pBoundingSphere = pNewNodeOwner->GetComponent<BoundingSphere>();
-    pBoundingSphere->SetLayer(Layers::THROWABLE);
-    pBoundingSphere->SetIsTrigger(true);
-    pBoundingSphere->SetTriggerEnabled(true);
-    pNewNodeOwner->GetComponent<Throwable>()->damageArea = pBoundingSphere;
-    physicsEngine->AddCollider(pBoundingSphere);*/
 
     pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
     pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
@@ -136,7 +128,7 @@ Node* PrefabManager::InstantiateIslandBig1(Node* parentNode, float locX, float l
     
     Node* pNewNode = pNewNodeOwner.get();
 
-    //Node* stone = InstantiateStone(pNewNode, pNewNode->GetWorldPosition().x + 5.0f, 30.0f, 0.0f, 1.5f);
+    Node* stone = InstantiateStone(pNewNode, 5.2f, 30.0f, -5.2f, 1.5f);
 	Node* column1 = InstantiateColumn(pNewNode, 5.0f, 0.0f, -5.0f, 1.0f);
 	Node* column2 = InstantiateColumn(pNewNode, -5.0f, 0.0f, 5.0f, 1.0f);
 

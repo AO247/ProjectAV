@@ -187,7 +187,7 @@ App::App(const std::string& commandLine)
     //Heeeej Bracie zaczê³ooo padaæ choodŸ zmieniiæ gacieee
     //Heeeej Siostro uciekaajmyy zanim bêêdzieee mookroooo
 
-    BodyCreationSettings bodySettings(new JPH::CapsuleShape(1.0f, 1.0f), RVec3(0.0f, 35.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::MOVING);
+    BodyCreationSettings bodySettings(new JPH::CapsuleShape(1.0f, 1.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::MOVING);
     bodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
 
     //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
@@ -223,7 +223,7 @@ App::App(const std::string& commandLine)
 	physicsEngine.AddCollider(a2Sphere);*/
     
 
-    BodyCreationSettings eBodySettings(new JPH::CapsuleShape(1.0f, 1.0f), RVec3(2.0f, 100.0f, 5.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::MOVING);
+    BodyCreationSettings eBodySettings(new JPH::CapsuleShape(1.0f, 1.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::MOVING);
     eBodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
 
     //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
@@ -357,7 +357,7 @@ App::App(const std::string& commandLine)
 
     // Changing position scale etc.]
 	pFreeViewCamera->SetLocalPosition({ 4.0f, 11.0f, -28.0f });
-    pPlayer->SetLocalPosition({ 0.0f, 150.0f, 10.0f });
+    pPlayer->SetLocalPosition({ 0.0f, 50.0f, 15.0f });
 	//PhysicsCommon::physicsSystem->GetBodyInterface().SetPosition(pRigidbody->GetBodyID(), RVec3(0.0f, 100.0f, 5.0f), EActivation::Activate);
 	pBox->SetLocalPosition(DirectX::XMFLOAT3(-10.0f, 3.0f, 10.0f));
     pBrick->SetLocalScale(dx::XMFLOAT3(20.0f, 20.0f, 1.0f));
@@ -368,7 +368,8 @@ App::App(const std::string& commandLine)
 	pIsland->SetLocalScale(dx::XMFLOAT3(1.3f, 1.3f, 1.3f));
 	pNoxTurn->SetLocalPosition(DirectX::XMFLOAT3(5.0f, 0.0f, 5.0f));
 	pNoxTurn->SetLocalScale(dx::XMFLOAT3(0.01f, 0.01f, 0.01f));
-	pEnemy->SetLocalPosition(DirectX::XMFLOAT3(3.0f, 150.0f, 10.0f));
+	pEnemy->SetLocalPosition(DirectX::XMFLOAT3(3.0f, 50.0f, 15.0f));
+	pEnemy->SetLocalScale(dx::XMFLOAT3(1.6f, 1.6f, 1.6f));
 	//pEnemySoundEffectsPlayer->SetPosition(0.0f, 0.0f, 0.0f);
 	pColumn->SetLocalPosition(DirectX::XMFLOAT3(-8.0f, 0.0f, -7.0f));
 	pColumn2->SetLocalPosition(DirectX::XMFLOAT3(-2.0f, 0.0f, 4.0f));

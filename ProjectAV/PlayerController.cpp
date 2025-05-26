@@ -152,7 +152,6 @@ void PlayerController::GroundCheck()
 void PlayerController::MovePlayer()
 {
     moveDirection.Normalize();
-//    PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * moveSpeed * 200.0f);
     if (grounded)
     {
         PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * moveSpeed * 1000.0f);
@@ -161,48 +160,6 @@ void PlayerController::MovePlayer()
     {
         PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * moveSpeed * 50.0f);
     }
-    //auto& bodyIf = PhysicsCommon::physicsSystem->GetBodyInterface();
-    //Vec3 currVel = bodyIf.GetLinearVelocity(rigidbody->GetBodyID());
-
-    //// 1) Zachowaj Y i zeruj poziome
-    //float velY = currVel.GetY();
-    //currVel.SetY(0.0f);
-
-    //// 2) Desired velocity
-    //Vector3 desiredDir = moveDirection;
-    //if (desiredDir.LengthSquared() > 1e-6f) desiredDir.Normalize();
-    //float targetSpeed = moveSpeed * (grounded ? 1.0f : airMultiplier);
-    //Vec3 desiredVel{ desiredDir.x * targetSpeed,
-    //                 0.0f,
-    //                 desiredDir.z * targetSpeed };
-
-    //// 3) Sprawdü dot(currVel, desiredVel)
-    //float dot = currVel.Dot(desiredVel);
-
-    //if (grounded)
-    //{
-    //    // ziemia: natychmiast
-    //    currVel = desiredVel;
-    //}
-    //else
-    //{
-    //    if (dot < 0.0f)
-    //    {
-    //        // hamujemy poziomπ prÍdkoúÊ do zera szybciej, gdy chcemy odwrÛciÊ
-    //        constexpr float airBrake = 0.99f; // im bliøej 0, tym wolniej
-    //        currVel *= airBrake;
-    //    }
-    //    else
-    //    {
-    //        // normalna powietrzna kontrola
-    //        constexpr float airControl = 0.99f;
-    //        currVel = currVel + (desiredVel - currVel) * airControl;
-    //    }
-    //}
-
-    //// 4) PrzywrÛÊ Y i ustaw
-    //currVel.SetY(velY);
-    //bodyIf.SetLinearVelocity(rigidbody->GetBodyID(), currVel);
 }
 
 void PlayerController::Ability1()
