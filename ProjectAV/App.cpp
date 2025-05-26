@@ -58,6 +58,8 @@ App::App(const std::string& commandLine)
     ObjectLayerPairFilterImpl* object_vs_object_layer_filter = new ObjectLayerPairFilterImpl();
     physicsSystem = new PhysicsSystem();
     physicsSystem->Init(cMaxBodies, cNumBodyMutexes, cMaxBodyPairs, cMaxContactConstraints, *broad_phase_layer_interface, *object_vs_broadphase_layer_filter, *object_vs_object_layer_filter);
+    contactListener = new MyContactListener();
+    physicsSystem->SetContactListener(contactListener);
     PhysicsCommon::physicsSystem = physicsSystem;
     physicsSystem->SetGravity(Vec3(0.0f, -80.0f, 0.0f));
    
@@ -437,7 +439,8 @@ App::~App()
 
 int App::Go()
 {
-    const float cDeltaTime = 1.0f / 60.0f;
+    const float FIXED_TIME_STEP = 1.0f / 60.0f;
+    float lag = 0.0f;
     while (true)
     {
         if (const auto ecode = Window::ProcessMessages())
@@ -445,11 +448,18 @@ int App::Go()
             return *ecode;
         }
         const auto dt = timer.Mark() * speed_factor;
-
-        physicsSystem->Update(dt, 1, temp_allocator, job_system);
+        lag += dt;
+        while (lag >= FIXED_TIME_STEP)
+        {
+            physicsSystem->Update(FIXED_TIME_STEP, 1, temp_allocator, job_system);
+            lag -= FIXED_TIME_STEP;
+        }
+        physicsSystem->Update(lag, 1, temp_allocator, job_system);
+        dynamic_cast<MyContactListener*>(physicsSystem->GetContactListener())->ExecuteTriggerActivationQueue();
         //dynamicsWorld->stepSimulation(dt, 10);
         HandleInput(dt);
         DoFrame(dt);
+        lag = 0.0f;
     }
 }
 

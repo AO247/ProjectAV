@@ -3,6 +3,7 @@
 #include "imgui/imgui.h"
 #include <string>
 #include <DirectXMath.h>
+#include "Node.h"
 // Forward declarations
 class Node;
 class Graphics;
@@ -19,6 +20,9 @@ public:
     virtual void Update(float dt) {}
     // Draw might need specific parameters depending on the component type
     // For now, ModelComponent will have its own Draw with needed params.
+
+    virtual void OnTriggerEnter(Node* object);
+    virtual void OnTriggerExit(Node* object);
 
     virtual void Follow(DirectX::XMFLOAT3 target, float sp = 1.0f) {}
 	virtual void Attack(float dt) {} // For components needing Graphics

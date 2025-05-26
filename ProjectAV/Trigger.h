@@ -1,38 +1,30 @@
-//#pragma once
-//#include "Component.h"
-//#include "SimpleMath.h"
-//#include "Node.h"
-//
-//using namespace DirectX::SimpleMath;
-//
-//class Trigger : public Component
-//{
-//public:
-//	Trigger(Node* owner, btCollisionShape* shape) : Component(owner)
-//	{
-//		bulletGhostObject = new btGhostObject();
-//		bulletGhostObject->setCollisionShape(shape);
-//		btTransform transform;
-//		transform.setIdentity();
-//		transform.setOrigin(btVector3(pOwner->GetWorldPosition().x,
-//										pOwner->GetWorldPosition().y,
-//										pOwner->GetWorldPosition().z));
-//		bulletGhostObject->setWorldTransform(transform);
-//		bulletGhostObject->setUserPointer(owner);
-//	}
-//
-//	std::vector<Node*> GetTriggerEnter();
-//	std::vector<Node*> GetTriggerExit();
-//	std::vector<Node*> GetTriggerStay();
-//
-//	void Update(float dt) override;
-//
-//private:
-//	btGhostObject* bulletGhostObject;
-//
-//	std::vector<btCollisionObject*> objectsThatEnteredThisFrame;
-//	std::vector<btCollisionObject*> objectsThatExitedThisFrame;
-//	std::vector<btCollisionObject*> objectsPresentThisFrame;
-//	std::vector<btCollisionObject*> objectsPresentLastFrame;
-//};
-//
+#pragma once
+
+#include "Rigidbody.h"
+#include "PhysicsCommon.h"
+//#include <map>
+
+class Rigidbody;
+class PhysicsCommon;
+
+using namespace JPH;
+
+//JPH::PhysicsSystem* PhysicsCommon::physicsSystem = nullptr;
+
+class Trigger : public Component
+{
+public:
+	Trigger(Node* owner);
+
+	Trigger(Node* owner, BodyCreationSettings bodySettings, bool parentHasRigidbody);
+
+	void Update(float dt) override;
+	/*void AddContactPoint(Node* object);
+	void RemoveContactPoint(Node* object);*/
+
+private:
+	BodyID bodyID;
+	bool rigidbodyAssigned = false;
+	/*int contactPointCounter = 0;
+	std::map<Node*, int> contacts;*/
+};

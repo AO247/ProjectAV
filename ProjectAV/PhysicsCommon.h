@@ -1,7 +1,4 @@
 #pragma once
-#include "vector"
-#include "SimpleMath.h"
-#include "ModelComponent.h"
 #include <Jolt/Jolt.h>
 #include <Jolt/RegisterTypes.h>
 #include <Jolt/Core/Factory.h>
@@ -24,10 +21,21 @@
 #include <Jolt/Physics/Collision/NarrowPhaseQuery.h>
 #include <Jolt/Physics/Collision/CollisionGroup.h>
 #include <Jolt/Physics/Collision/Shape/RotatedTranslatedShape.h>
+#include <Jolt/Physics/Constraints/FixedConstraint.h>
+#include "vector"
+#include "SimpleMath.h"
+#include "ModelComponent.h"
+#include "Node.h"
+#include "Trigger.h"
+#include "MyContactListener.h"
 
 
 using namespace DirectX::SimpleMath;
 using namespace JPH;
+
+class Trigger;
+class Rigidbody;
+class MyContactListener;
 
 class PhysicsCommon
 {
@@ -93,8 +101,9 @@ namespace Layers
     static constexpr ObjectLayer NON_MOVING = 0;
     static constexpr ObjectLayer MOVING = 1;
     static constexpr ObjectLayer GROUND = 2;
-	static constexpr ObjectLayer WALL = 3;
-    static constexpr ObjectLayer NUM_LAYERS = 4;
+    static constexpr ObjectLayer TRIGGER = 3;
+	static constexpr ObjectLayer WALL = 4;
+    static constexpr ObjectLayer NUM_LAYERS = 5;
 };
 
 class ObjectLayerPairFilterImpl : public ObjectLayerPairFilter
@@ -108,6 +117,12 @@ public:
             return inObject2 == Layers::MOVING; // Non moving only collides with moving
         case Layers::MOVING:
             return true; // Moving collides with everything
+        case Layers::TRIGGER:
+            return true;
+        case Layers::GROUND:
+            return true;
+        case Layers::WALL:
+            return true;
         default:
             return false;
         }
@@ -119,8 +134,9 @@ namespace BroadPhaseLayers
     static constexpr BroadPhaseLayer NON_MOVING(0);
     static constexpr BroadPhaseLayer MOVING(1);
 	static constexpr BroadPhaseLayer GROUND(2);
-	static constexpr BroadPhaseLayer WALL(3);
-    static constexpr uint NUM_LAYERS(4);
+    static constexpr BroadPhaseLayer TRIGGER(3);
+	static constexpr BroadPhaseLayer WALL(4);
+    static constexpr uint NUM_LAYERS(5);
 };
 
 class BPLayerInterfaceImpl final : public BroadPhaseLayerInterface
@@ -132,6 +148,7 @@ public:
         mObjectToBroadPhase[Layers::NON_MOVING] = BroadPhaseLayers::NON_MOVING;
         mObjectToBroadPhase[Layers::MOVING] = BroadPhaseLayers::MOVING;
 		mObjectToBroadPhase[Layers::GROUND] = BroadPhaseLayers::GROUND;
+        mObjectToBroadPhase[Layers::TRIGGER] = BroadPhaseLayers::TRIGGER;
 		mObjectToBroadPhase[Layers::WALL] = BroadPhaseLayers::WALL;
     }
 
@@ -154,6 +171,7 @@ public:
         case (BroadPhaseLayer::Type)BroadPhaseLayers::NON_MOVING:	return "NON_MOVING";
         case (BroadPhaseLayer::Type)BroadPhaseLayers::MOVING:		return "MOVING";
 		case (BroadPhaseLayer::Type)BroadPhaseLayers::GROUND:		return "GROUND";
+        case (BroadPhaseLayer::Type)BroadPhaseLayers::TRIGGER:		return "TRIGGER";
 		case (BroadPhaseLayer::Type)BroadPhaseLayers::WALL:		    return "WALL";
         default:													JPH_ASSERT(false); return "INVALID";
         }
@@ -174,6 +192,12 @@ public:
         case Layers::NON_MOVING:
             return inLayer2 == BroadPhaseLayers::MOVING;
         case Layers::MOVING:
+            return true;
+        case Layers::TRIGGER:
+            return true;
+        case Layers::GROUND:
+            return true;
+        case Layers::WALL:
             return true;
         default:
             return false;

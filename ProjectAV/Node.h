@@ -9,6 +9,7 @@
 
 class Graphics;
 class FrameCommander; // Forward declare
+class Component;
 
 using namespace DirectX::SimpleMath; // For Vector3 return types
 
