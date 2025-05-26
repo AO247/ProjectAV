@@ -11,17 +11,18 @@ public:
 	LevelGenerator(PrefabManager* prefabManager, Node* root);
 	~LevelGenerator() = default;
 
-	int bigIslandCount = 7;
-	int mediumIslandCount = 0;
-	int smallIslandCount = 0;
+	int bigIslandCount = 5;
+	int mediumIslandCount = 5;
+	int smallIslandCount = 5;
 
 
 private:
 	float distance = 1.0f;
 	PrefabManager* prefabManager;
 	Node* pSceneRoot;
-	std::vector<std::string> islands;
+	std::vector<Node*> islands;
 	std::vector<Vector4> points;
 	void GenerateIslands();
 	void ChangePosition(Node* island, Vector3 pointPos, Vector3 startPos);
+	bool Collide(Node* island1, Node* island2);
 };

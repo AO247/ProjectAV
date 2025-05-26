@@ -6,7 +6,6 @@ LevelGenerator::LevelGenerator(PrefabManager* prefabManager, Node* root)
 {
     std::srand(static_cast<unsigned>(std::time(nullptr)));
 
-    islands.push_back("large_1");
     points.push_back(Vector4(0.0f, 0.0f, 0.0f, 0.0f));
     GenerateIslands();
 }
@@ -92,13 +91,13 @@ void LevelGenerator::GenerateIslands()
                     points.push_back(Vector4(island->upPoint->GetWorldPosition().x, island->upPoint->GetWorldPosition().y, island->upPoint->GetWorldPosition().z, 2.0f));
                     points.push_back(Vector4(island->rightPoint->GetWorldPosition().x, island->rightPoint->GetWorldPosition().y, island->rightPoint->GetWorldPosition().z, 3.0f));
                     time = 0.0f;
-
+					islands.push_back(islandPrefab);
                     //dodaæ warunek sprawdzenia czy nie wchodzi w kolizje
                     break;
                 }
             }
             else {
-                //island->Rotate();
+                island->Rotate();
                 while (true)
                 {
                     time += 0.01f;
@@ -111,21 +110,21 @@ void LevelGenerator::GenerateIslands()
                     if (point.w == 0.0f)
                     {
                         ChangePosition(islandPrefab, pointPos, island->upPoint->GetWorldPosition());
-                        Vec3 jPos = Vec3(islandPrefab->GetWorldPosition().x, islandPrefab->GetWorldPosition().y, islandPrefab->GetWorldPosition().z);
-                        Vec3 jExtents = Vec3(1.0f, 2.0f, 1.f);
+                        /*Vec3 jPos = Vec3(islandPrefab->GetWorldPosition().x, islandPrefab->GetWorldPosition().y, islandPrefab->GetWorldPosition().z);
+                        Vec3 jExtents = Vec3(10.0f, 2.0f, 10.f);
                         Quat quat = Quat(Vec4Arg(islandPrefab->GetLocalRotationQuaternion().x, islandPrefab->GetLocalRotationQuaternion().y, islandPrefab->GetLocalRotationQuaternion().z, islandPrefab->GetLocalRotationQuaternion().w));
-                        BodyIDVector bodies = PhysicsCommon::OverlapBox(jPos, jExtents, quat);
+                        BodyIDVector bodies = PhysicsCommon::OverlapBox(jPos, jExtents, quat);*/
                         bool flag = true;
-                        for (int i = 0; i < bodies.size(); i++)
+                        for (int i = 0; i < islands.size(); i++)
                         {
-                            if (PhysicsCommon::physicsSystem->GetBodyInterface().GetObjectLayer(bodies[i]) == Layers::GROUND && bodies[i] != islandPrefab->GetComponent<Rigidbody>()->GetBodyID())
-                            {
-                                OutputDebugStringA(("\nCollides with: \n" + std::to_string(bodies[i].GetIndex()) + " current body: " + std::to_string(islandPrefab->GetComponent<Rigidbody>()->GetBodyID().GetIndex())).c_str());
-
+							if (Collide(islandPrefab, islands[i]) && islands[i] != islandPrefab)
+							{
+								OutputDebugStringA(("\nCollides with: \n" + islands[i]->GetName() + " current body: " + islandPrefab->GetName()).c_str());
                                 flag = false;
                             }
+
                         }
-                        /*if (!flag)
+                        if (!flag)
                         {
                             OutputDebugStringA("\nCollides\n");
                             randPoint = rand() % points.size();
@@ -137,7 +136,7 @@ void LevelGenerator::GenerateIslands()
                             point = points[randPoint];
                             pointPos = Vector3(point.x, point.y, point.z);
                             continue;
-                        }*/
+                        }
                         OutputDebugStringA(("\nZnaleziono miejsce dla wyspy: " + islandPrefab->GetName()).c_str());
                         OutputDebugString("\nPolaczono punkt gorny z dolem\n");
                         if (randPoint >= 0 && randPoint < static_cast<int>(points.size())) {
@@ -147,26 +146,23 @@ void LevelGenerator::GenerateIslands()
                         points.push_back(Vector4(island->leftPoint->GetWorldPosition().x, island->leftPoint->GetWorldPosition().y, island->leftPoint->GetWorldPosition().z, 1.0f));
                         points.push_back(Vector4(island->rightPoint->GetWorldPosition().x, island->rightPoint->GetWorldPosition().y, island->rightPoint->GetWorldPosition().z, 3.0f));
                         time = 0.0f;
+                        islands.push_back(islandPrefab);
                         break;
                     }
                     else if (point.w == 1)
                     {
                         ChangePosition(islandPrefab, pointPos, island->rightPoint->GetWorldPosition());
-                        Vec3 jPos = Vec3(islandPrefab->GetWorldPosition().x, islandPrefab->GetWorldPosition().y, islandPrefab->GetWorldPosition().z);
-                        Vec3 jExtents = Vec3(island->halfExtents.x, island->halfExtents.y, island->halfExtents.z);
-                        Quat quat = Quat(Vec4Arg(islandPrefab->GetLocalRotationQuaternion().x, islandPrefab->GetLocalRotationQuaternion().y, islandPrefab->GetLocalRotationQuaternion().z, islandPrefab->GetLocalRotationQuaternion().w));
-                        BodyIDVector bodies = PhysicsCommon::OverlapBox(jPos, jExtents, quat);
                         bool flag = true;
-                        for (int i = 0; i < bodies.size(); i++)
+                        for (int i = 0; i < islands.size(); i++)
                         {
-                            if (PhysicsCommon::physicsSystem->GetBodyInterface().GetObjectLayer(bodies[i]) == Layers::GROUND && bodies[i] != islandPrefab->GetComponent<Rigidbody>()->GetBodyID())
+                            if (Collide(islandPrefab, islands[i]) && islands[i] != islandPrefab)
                             {
-                                OutputDebugStringA(("\nCollides with: \n" + std::to_string(bodies[i].GetIndex()) + " current body: " + std::to_string(islandPrefab->GetComponent<Rigidbody>()->GetBodyID().GetIndex())).c_str());
-
+                                OutputDebugStringA(("\nCollides with: \n" + islands[i]->GetName() + " current body: " + islandPrefab->GetName()).c_str());
                                 flag = false;
                             }
+
                         }
-                        /*if (!flag)
+                        if (!flag)
                         {
                             OutputDebugStringA("\nCollides\n");
                             randPoint = rand() % points.size();
@@ -178,7 +174,7 @@ void LevelGenerator::GenerateIslands()
                             point = points[randPoint];
                             pointPos = Vector3(point.x, point.y, point.z);
                             continue;
-                        }*/
+                        }
                         OutputDebugStringA(("\nZnaleziono miejsce dla wyspy: " + islandPrefab->GetName()).c_str());
                         OutputDebugString("\nPolaczono punkt prawy z lewym\n");
 
@@ -189,26 +185,23 @@ void LevelGenerator::GenerateIslands()
                         points.push_back(Vector4(island->leftPoint->GetWorldPosition().x, island->leftPoint->GetWorldPosition().y, island->leftPoint->GetWorldPosition().z, 1.0f));
                         points.push_back(Vector4(island->upPoint->GetWorldPosition().x, island->upPoint->GetWorldPosition().y, island->upPoint->GetWorldPosition().z, 2.0f));
                         time = 0.0f;
+                        islands.push_back(islandPrefab);
                         break;
                     }
                     else if (point.w == 2)
                     {
                         ChangePosition(islandPrefab, pointPos, island->downPoint->GetWorldPosition());
-                        Vec3 jPos = Vec3(islandPrefab->GetWorldPosition().x, islandPrefab->GetWorldPosition().y, islandPrefab->GetWorldPosition().z);
-                        Vec3 jExtents = Vec3(island->halfExtents.x, island->halfExtents.y, island->halfExtents.z);
-                        Quat quat = Quat(Vec4Arg(islandPrefab->GetLocalRotationQuaternion().x, islandPrefab->GetLocalRotationQuaternion().y, islandPrefab->GetLocalRotationQuaternion().z, islandPrefab->GetLocalRotationQuaternion().w));
-                        BodyIDVector bodies = PhysicsCommon::OverlapBox(jPos, jExtents, quat);
                         bool flag = true;
-                        for (int i = 0; i < bodies.size(); i++)
+                        for (int i = 0; i < islands.size(); i++)
                         {
-                            if (PhysicsCommon::physicsSystem->GetBodyInterface().GetObjectLayer(bodies[i]) == Layers::GROUND && bodies[i] != islandPrefab->GetComponent<Rigidbody>()->GetBodyID())
+                            if (Collide(islandPrefab, islands[i]) && islands[i] != islandPrefab)
                             {
-                                OutputDebugStringA(("\nCollides with: \n" + std::to_string(bodies[i].GetIndex()) + " current body: " + std::to_string(islandPrefab->GetComponent<Rigidbody>()->GetBodyID().GetIndex())).c_str());
-
+                                OutputDebugStringA(("\nCollides with: \n" + islands[i]->GetName() + " current body: " + islandPrefab->GetName()).c_str());
                                 flag = false;
                             }
+
                         }
-                        /*if (!flag)
+                        if (!flag)
                         {
                             OutputDebugStringA("\nCollides\n");
                             randPoint = rand() % points.size();
@@ -220,7 +213,7 @@ void LevelGenerator::GenerateIslands()
                             point = points[randPoint];
                             pointPos = Vector3(point.x, point.y, point.z);
                             continue;
-                        }*/
+                        }
                         OutputDebugStringA(("\nZnaleziono miejsce dla wyspy: " + islandPrefab->GetName()).c_str());
                         OutputDebugString("\nPolaczono punkt dolny z gornym\n");
 
@@ -231,25 +224,23 @@ void LevelGenerator::GenerateIslands()
                         points.push_back(Vector4(island->upPoint->GetWorldPosition().x, island->upPoint->GetWorldPosition().y, island->upPoint->GetWorldPosition().z, 2.0f));
                         points.push_back(Vector4(island->rightPoint->GetWorldPosition().x, island->rightPoint->GetWorldPosition().y, island->rightPoint->GetWorldPosition().z, 3.0f));
                         time = 0.0f;
+                        islands.push_back(islandPrefab);
                         break;
                     }
                     else if (point.w == 3)
                     {
                         ChangePosition(islandPrefab, pointPos, island->leftPoint->GetWorldPosition());
-                        Vec3 jPos = Vec3(islandPrefab->GetWorldPosition().x, islandPrefab->GetWorldPosition().y, islandPrefab->GetWorldPosition().z);
-                        Vec3 jExtents = Vec3(island->halfExtents.x, island->halfExtents.y, island->halfExtents.z);
-                        Quat quat = Quat(Vec4Arg(islandPrefab->GetLocalRotationQuaternion().x, islandPrefab->GetLocalRotationQuaternion().y, islandPrefab->GetLocalRotationQuaternion().z, islandPrefab->GetLocalRotationQuaternion().w));
-                        BodyIDVector bodies = PhysicsCommon::OverlapBox(jPos, jExtents, quat);
                         bool flag = true;
-                        for (int i = 0; i < bodies.size(); i++)
+                        for (int i = 0; i < islands.size(); i++)
                         {
-                            if (PhysicsCommon::physicsSystem->GetBodyInterface().GetObjectLayer(bodies[i]) == Layers::GROUND && bodies[i] != islandPrefab->GetComponent<Rigidbody>()->GetBodyID())
+                            if (Collide(islandPrefab, islands[i]) && islands[i] != islandPrefab)
                             {
-                                OutputDebugStringA(("\nCollides with: \n" + std::to_string(bodies[i].GetIndex()) + " current body: " + std::to_string(islandPrefab->GetComponent<Rigidbody>()->GetBodyID().GetIndex())).c_str());
+                                OutputDebugStringA(("\nCollides with: \n" + islands[i]->GetName() + " current body: " + islandPrefab->GetName()).c_str());
                                 flag = false;
                             }
+
                         }
-                        /*if (!flag)
+                        if (!flag)
                         {
                             OutputDebugStringA("\nCollides\n");
                             randPoint = rand() % points.size();
@@ -261,7 +252,7 @@ void LevelGenerator::GenerateIslands()
                             point = points[randPoint];
                             pointPos = Vector3(point.x, point.y, point.z);
                             continue;
-                        }*/
+                        }
                         OutputDebugStringA(("\nZnaleziono miejsce dla wyspy: " + islandPrefab->GetName()).c_str());
                         OutputDebugString("\nPolaczono punkt lewy z prawym\n");
 
@@ -272,6 +263,7 @@ void LevelGenerator::GenerateIslands()
                         points.push_back(Vector4(island->upPoint->GetWorldPosition().x, island->upPoint->GetWorldPosition().y, island->upPoint->GetWorldPosition().z, 2.0f));
                         points.push_back(Vector4(island->rightPoint->GetWorldPosition().x, island->rightPoint->GetWorldPosition().y, island->rightPoint->GetWorldPosition().z, 3.0f));
                         time = 0.0f;
+                        islands.push_back(islandPrefab);
                         break;
                     }
                     else
@@ -285,6 +277,12 @@ void LevelGenerator::GenerateIslands()
         {
             OutputDebugStringA("\nAll islands generated\n");
             time = 0.0f;
+
+			for (int i = 0; i < islands.size(); i++)
+			{
+                float randY = -5.0f + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX) / 10.0f);
+                islands[i]->SetLocalPosition(DirectX::XMFLOAT3(islands[i]->GetLocalPosition().x, islands[i]->GetLocalPosition().y + randY, islands[i]->GetLocalPosition().z));
+			}
             break;
         }
     }
@@ -303,4 +301,18 @@ void LevelGenerator::ChangePosition(Node* island, Vector3 pointPos, Vector3 star
     pos = island->GetWorldPosition();
     OutputDebugStringA(("\nIsland New Position: " + std::to_string(pos.x) + ", " + std::to_string(pos.y) + ", " + std::to_string(pos.z)).c_str());
 
+}
+
+bool LevelGenerator::Collide(Node* island1, Node* island2) 
+{
+    Vector3 pos1 = island1->GetWorldPosition();
+    Vector3 pos2 = island2->GetWorldPosition();
+    Vector3 extents1 = island1->GetComponent<Island>()->halfExtents;
+    Vector3 extents2 = island2->GetComponent<Island>()->halfExtents;
+
+    // Axis-Aligned Bounding Box (AABB) collision check
+    if (std::abs(pos1.x - pos2.x) > (extents1.x + extents2.x)) return false;
+    if (std::abs(pos1.y - pos2.y) > (extents1.y + extents2.y)) return false;
+    if (std::abs(pos1.z - pos2.z) > (extents1.z + extents2.z)) return false;
+    return true;
 }

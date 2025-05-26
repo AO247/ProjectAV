@@ -98,7 +98,8 @@ public:
     }
     static BodyIDVector OverlapBox(Vec3 center, Vec3 halfExtent, Quat rotation)
     {
-		AABox aabb = ComputeAABBFromOrientedBox(halfExtent, Mat44::sRotationTranslation(rotation, center));
+        AABox aabb(center - halfExtent, center + halfExtent);
+		//AABox aabb = ComputeAABBFromOrientedBox(halfExtent, Mat44::sRotationTranslation(rotation, center));
         AllHitCollisionCollector<CollideShapeBodyCollector> collector;
         // Lambda-callback do zbierania wyników
         physicsSystem->GetBroadPhaseQuery().CollideAABox(aabb, collector);
