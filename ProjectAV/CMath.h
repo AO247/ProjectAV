@@ -36,9 +36,9 @@ constexpr T interpolate( const T& src,const T& dst,float alpha ) noexcept
 }
 
 template<typename T>
-constexpr T to_rad( T deg ) noexcept
+constexpr float to_rad(T deg) noexcept
 {
-	return deg * PI / (T)180.0;
+    return static_cast<float>(deg) * static_cast<float>(PI_D) / 180.0f;
 }
 
 template<typename T>

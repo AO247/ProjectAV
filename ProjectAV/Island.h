@@ -22,6 +22,7 @@ public:
 	Node* rightPoint;
 	Node* upPoint;
 	Node* downPoint;
+	Vector3 halfExtents;
 private:
 
 };

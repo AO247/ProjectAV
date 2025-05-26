@@ -228,7 +228,7 @@ App::App(const std::string& commandLine)
 
     //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
     eBodySettings.mMassPropertiesOverride.mMass = 10.0f;
-    eBodySettings.mFriction = 1.0f;
+    eBodySettings.mFriction = 0.2f;
     eBodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
     pEnemy->AddComponent(
         std::make_unique<Rigidbody>(pEnemy, eBodySettings)
@@ -357,8 +357,8 @@ App::App(const std::string& commandLine)
 
     // Changing position scale etc.]
 	pFreeViewCamera->SetLocalPosition({ 4.0f, 11.0f, -28.0f });
-    pPlayer->SetLocalPosition({ 0.0f, 0.0f, 0.0f });
-	PhysicsCommon::physicsSystem->GetBodyInterface().SetPosition(pRigidbody->GetBodyID(), RVec3(0.0f, 100.0f, 5.0f), EActivation::Activate);
+    pPlayer->SetLocalPosition({ 0.0f, 150.0f, 10.0f });
+	//PhysicsCommon::physicsSystem->GetBodyInterface().SetPosition(pRigidbody->GetBodyID(), RVec3(0.0f, 100.0f, 5.0f), EActivation::Activate);
 	pBox->SetLocalPosition(DirectX::XMFLOAT3(-10.0f, 3.0f, 10.0f));
     pBrick->SetLocalScale(dx::XMFLOAT3(20.0f, 20.0f, 1.0f));
     pBrick->SetLocalRotation(dx::XMFLOAT3(DirectX::XMConvertToRadians(90), 0.0f, 0.0f));
@@ -368,7 +368,7 @@ App::App(const std::string& commandLine)
 	pIsland->SetLocalScale(dx::XMFLOAT3(1.3f, 1.3f, 1.3f));
 	pNoxTurn->SetLocalPosition(DirectX::XMFLOAT3(5.0f, 0.0f, 5.0f));
 	pNoxTurn->SetLocalScale(dx::XMFLOAT3(0.01f, 0.01f, 0.01f));
-	pEnemy->SetLocalPosition(DirectX::XMFLOAT3(15.0f, 10.0f, 0.0f));
+	pEnemy->SetLocalPosition(DirectX::XMFLOAT3(3.0f, 150.0f, 10.0f));
 	//pEnemySoundEffectsPlayer->SetPosition(0.0f, 0.0f, 0.0f);
 	pColumn->SetLocalPosition(DirectX::XMFLOAT3(-8.0f, 0.0f, -7.0f));
 	pColumn2->SetLocalPosition(DirectX::XMFLOAT3(-2.0f, 0.0f, 4.0f));

@@ -11,16 +11,15 @@ public:
 	LevelGenerator(PrefabManager* prefabManager, Node* root);
 	~LevelGenerator() = default;
 
-	int bigIslandCount = 2;
-	int mediumIslandCount = 2;
-	int smallIslandCount = 2;
+	int bigIslandCount = 7;
+	int mediumIslandCount = 0;
+	int smallIslandCount = 0;
 
 
 private:
 	float distance = 1.0f;
 	PrefabManager* prefabManager;
 	Node* pSceneRoot;
-	Vector3 islandSize = { 10.0f, 1.0f, 10.0f };
 	std::vector<std::string> islands;
 	std::vector<Vector4> points;
 	void GenerateIslands();

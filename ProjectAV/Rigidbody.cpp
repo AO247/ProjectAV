@@ -24,12 +24,17 @@ void Rigidbody::Update(float dt)
 	RVec3 pos = PhysicsCommon::physicsSystem->GetBodyInterface().GetPosition(bodyID);
 	Quat rot = PhysicsCommon::physicsSystem->GetBodyInterface().GetRotation(bodyID);
 	pOwner->SetWorldPosition(DirectX::XMFLOAT3(pos.GetX(),
-												pos.GetY(),
-												pos.GetZ()));
-	pOwner->SetLocalRotation(DirectX::XMFLOAT4(rot.GetX(),
-												rot.GetY(),
-												rot.GetZ(),
-												rot.GetW()));
+		pos.GetY(),
+		pos.GetZ()));
+
+	if (PhysicsCommon::physicsSystem->GetBodyInterface().GetMotionType(bodyID) != EMotionType::Static)
+	{
+		pOwner->SetLocalRotation(DirectX::XMFLOAT4(rot.GetX(),
+			rot.GetY(),
+			rot.GetZ(),
+			rot.GetW()));
+	}
+
 }
 
 BodyID& Rigidbody::GetBodyID()

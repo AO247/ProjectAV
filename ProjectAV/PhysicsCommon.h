@@ -28,6 +28,10 @@
 #include "Node.h"
 #include "Trigger.h"
 #include "MyContactListener.h"
+#include <Jolt/Physics/Collision/CollisionCollectorImpl.h>
+#include <Jolt/Physics/Collision/BroadPhase/BroadPhaseQuery.h>
+#include <Jolt/Math/Vec3.h>
+#include <Jolt/Geometry/OrientedBox.h>
 
 
 using namespace DirectX::SimpleMath;
@@ -65,6 +69,43 @@ public:
 
         return result;
     }
+    static AABox ComputeAABBFromOrientedBox(const Vec3& halfExtent, const Mat44& transform)
+    {
+        // 8 naro¿ników w lokalnych wspó³rzêdnych
+        std::vector<Vec3> corners = {
+            Vec3(-halfExtent.GetX(), -halfExtent.GetY(), -halfExtent.GetZ()),
+            Vec3(halfExtent.GetX(), -halfExtent.GetY(), -halfExtent.GetZ()),
+            Vec3(-halfExtent.GetX(),  halfExtent.GetY(), -halfExtent.GetZ()),
+            Vec3(halfExtent.GetX(),  halfExtent.GetY(), -halfExtent.GetZ()),
+            Vec3(-halfExtent.GetX(), -halfExtent.GetY(),  halfExtent.GetZ()),
+            Vec3(halfExtent.GetX(), -halfExtent.GetY(),  halfExtent.GetZ()),
+            Vec3(-halfExtent.GetX(),  halfExtent.GetY(),  halfExtent.GetZ()),
+            Vec3(halfExtent.GetX(),  halfExtent.GetY(),  halfExtent.GetZ())
+        };
+
+        // Transformuj naro¿niki do œwiata
+        Vec3 min = transform * corners[0];
+        Vec3 max = min;
+
+        for (size_t i = 1; i < corners.size(); ++i)
+        {
+            Vec3 worldCorner = transform * corners[i];
+			min = Vec3::sMin(min, worldCorner);
+			max = Vec3::sMax(max, worldCorner);
+        }
+
+        return AABox(min, max);
+    }
+    static BodyIDVector OverlapBox(Vec3 center, Vec3 halfExtent, Quat rotation)
+    {
+		AABox aabb = ComputeAABBFromOrientedBox(halfExtent, Mat44::sRotationTranslation(rotation, center));
+        AllHitCollisionCollector<CollideShapeBodyCollector> collector;
+        // Lambda-callback do zbierania wyników
+        physicsSystem->GetBroadPhaseQuery().CollideAABox(aabb, collector);
+        return collector.mHits;
+    }
+
+
 };
 JPH_SUPPRESS_WARNINGS
 

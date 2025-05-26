@@ -98,7 +98,9 @@ void PlayerController::Dash()
     if (!canDash) return;
     dashed = true;
 	canDash = false;
-    
+    if (!pOwner->GetComponent<SoundEffectsPlayer>()->isPlaying()) {
+        pOwner->GetComponent<SoundEffectsPlayer>()->Play(0);
+    }
     Vector3 dashDirection = moveDirection;
     if (moveDirection == pOwner->Forward())
     {
@@ -338,9 +340,6 @@ void PlayerController::KeyboardInput()
     if (wnd.kbd.KeyIsPressed('W'))
     {
         moveDirection += GetOwner()->Forward();
-        if (!pOwner->GetComponent<SoundEffectsPlayer>()->isPlaying()) {
-            pOwner->GetComponent<SoundEffectsPlayer>()->Play(0);
-        }
     }
     if (wnd.kbd.KeyIsPressed('S'))
     {

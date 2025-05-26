@@ -75,38 +75,34 @@ DirectX::XMFLOAT3 QuaternionToEulerAnglesInternal(DirectX::XMFLOAT4 q)
     return { angles.x, angles.y, angles.z }; // {Pitch, Yaw, Roll}
 }
 
-// --- Helper: Build local matrix from stored pos/quat/scale ---
-void Node::UpdateLocalTransformFromComponents()
-{
-    if (localTransformDirty)
-    {
-        dx::XMMATRIX matS = dx::XMMatrixScaling(localScale.x, localScale.y, localScale.z);
-        dx::XMMATRIX matR = dx::XMMatrixRotationQuaternion(dx::XMLoadFloat4(&localRotationQuaternion));
-        dx::XMMATRIX matT = dx::XMMatrixTranslation(localPosition.x, localPosition.y, localPosition.z);
 
-        // Original order: Scale * Rotate * Translate
-        // This means operations applied to a vector v are: T*v, then R*(T*v), then S*(R*(T*v))
-        // So, Translation first, then Rotation, then Scaling.
-        dx::XMStoreFloat4x4(&localTransform, matS * matR * matT);
-
-        localTransformDirty = false;
-        worldTransformDirty = true;
-    }
-}
-
-// --- Helper: Update stored pos/quat/scale when the whole matrix is set ---
-void Node::UpdateStoredComponentsFromMatrix()
-{
-    dx::XMMATRIX matrix = dx::XMLoadFloat4x4(&localTransform);
-    dx::XMVECTOR s_vec, r_quat_vec, t_vec;
-    dx::XMMatrixDecompose(&s_vec, &r_quat_vec, &t_vec, matrix);
-
-    dx::XMStoreFloat3(&localPosition, t_vec);
-    dx::XMStoreFloat4(&localRotationQuaternion, r_quat_vec);
-    dx::XMStoreFloat3(&localScale, s_vec);
-}
 
 // --- SetLocal... Methods ---
+
+void Node::SetWorldPosition(const DirectX::XMFLOAT3& worldPos)
+{
+    if (GetComponent<Rigidbody>() != nullptr)
+    {
+        PhysicsCommon::physicsSystem->GetBodyInterface().SetPosition(GetComponent<Rigidbody>()->GetBodyID(), RVec3Arg(worldPos.x, worldPos.y, worldPos.z), EActivation::Activate);
+    }
+    if (parent == nullptr)
+    {
+        SetLocalPosition(worldPos); // For root node, world position is local position
+    }
+    else
+    {
+        dx::XMMATRIX parentWorldTransform = parent->GetWorldTransform();
+        dx::XMMATRIX invParentWorldTransform = dx::XMMatrixInverse(nullptr, parentWorldTransform);
+
+        dx::XMVECTOR worldPosVec = dx::XMLoadFloat3(&worldPos);
+        // Transform the desired world position into the parent's local space to find our new local position
+        dx::XMVECTOR localPosVec = dx::XMVector3TransformCoord(worldPosVec, invParentWorldTransform);
+
+        DirectX::XMFLOAT3 newLocalPos;
+        dx::XMStoreFloat3(&newLocalPos, localPosVec);
+        SetLocalPosition(newLocalPos);
+    }
+}
 
 void Node::SetLocalTransform(DirectX::FXMMATRIX transform)
 {
@@ -118,36 +114,39 @@ void Node::SetLocalTransform(DirectX::FXMMATRIX transform)
 
 void Node::SetLocalPosition(const DirectX::XMFLOAT3& pos)
 {
-    if (GetComponent<Rigidbody>() != nullptr)
+    if (Vector3(pos) != Vector3(localPosition))
     {
-        dx::XMMATRIX matS = dx::XMMatrixScaling(localScale.x, localScale.y, localScale.z);
-        dx::XMMATRIX matR = dx::XMMatrixRotationQuaternion(dx::XMLoadFloat4(&localRotationQuaternion));
-        dx::XMMATRIX matT = dx::XMMatrixTranslation(pos.x, pos.y, pos.z);
-
-        dx::XMMATRIX newComputedLocalTransform = matS * matR * matT;
-
-        dx::XMMATRIX newComputedWorldTransform;
-        if (parent)
+        if (GetComponent<Rigidbody>() != nullptr)
         {
-            dx::XMMATRIX parentWorldMatrix = parent->GetWorldTransform();
-            newComputedWorldTransform = dx::XMMatrixMultiply(newComputedLocalTransform, parentWorldMatrix);
+            dx::XMMATRIX matS = dx::XMMatrixScaling(localScale.x, localScale.y, localScale.z);
+            dx::XMMATRIX matR = dx::XMMatrixRotationQuaternion(dx::XMLoadFloat4(&localRotationQuaternion));
+            dx::XMMATRIX matT = dx::XMMatrixTranslation(pos.x, pos.y, pos.z);
+
+            dx::XMMATRIX newComputedLocalTransform = matS * matR * matT;
+
+            dx::XMMATRIX newComputedWorldTransform;
+            if (parent)
+            {
+                dx::XMMATRIX parentWorldMatrix = parent->GetWorldTransform();
+                newComputedWorldTransform = dx::XMMatrixMultiply(newComputedLocalTransform, parentWorldMatrix);
+            }
+            else
+            {
+                newComputedWorldTransform = newComputedLocalTransform;
+            }
+
+            DirectX::XMFLOAT3 newWorldPosFloat3;
+            dx::XMStoreFloat3(&newWorldPosFloat3, newComputedWorldTransform.r[3]);
+
+            RVec3Arg joltPhysicsPosition(newWorldPosFloat3.x, newWorldPosFloat3.y, newWorldPosFloat3.z);
+
+            JPH::BodyInterface& bodyInterface = PhysicsCommon::physicsSystem->GetBodyInterface();
+            bodyInterface.SetPosition(GetComponent<Rigidbody>()->GetBodyID(), joltPhysicsPosition, JPH::EActivation::Activate);
         }
-        else
-        {
-            newComputedWorldTransform = newComputedLocalTransform;
-        }
-
-        DirectX::XMFLOAT3 newWorldPosFloat3;
-        dx::XMStoreFloat3(&newWorldPosFloat3, newComputedWorldTransform.r[3]);
-
-        RVec3Arg joltPhysicsPosition(newWorldPosFloat3.x, newWorldPosFloat3.y, newWorldPosFloat3.z);
-
-        JPH::BodyInterface& bodyInterface = PhysicsCommon::physicsSystem->GetBodyInterface();
-        bodyInterface.SetPosition(GetComponent<Rigidbody>()->GetBodyID(), joltPhysicsPosition, JPH::EActivation::Activate);
+        localPosition = pos;
+        localTransformDirty = true;
+        worldTransformDirty = true;
     }
-    localPosition = pos;
-    localTransformDirty = true;
-    worldTransformDirty = true;
 }
 
 // rotRad is Pitch, Yaw, Roll in Radians
@@ -307,30 +306,7 @@ DirectX::XMFLOAT3 Node::GetWorldPosition() const
     return worldPos;
 }
 
-void Node::SetWorldPosition(const DirectX::XMFLOAT3& worldPos)
-{
-    if (GetComponent<Rigidbody>() != nullptr)
-    {
-        PhysicsCommon::physicsSystem->GetBodyInterface().SetPosition(GetComponent<Rigidbody>()->GetBodyID(), RVec3Arg(worldPos.x, worldPos.y, worldPos.z), EActivation::Activate);
-    }
-    if (parent == nullptr)
-    {
-        SetLocalPosition(worldPos); // For root node, world position is local position
-    }
-    else
-    {
-        dx::XMMATRIX parentWorldTransform = parent->GetWorldTransform();
-        dx::XMMATRIX invParentWorldTransform = dx::XMMatrixInverse(nullptr, parentWorldTransform);
 
-        dx::XMVECTOR worldPosVec = dx::XMLoadFloat3(&worldPos);
-        // Transform the desired world position into the parent's local space to find our new local position
-        dx::XMVECTOR localPosVec = dx::XMVector3TransformCoord(worldPosVec, invParentWorldTransform);
-
-        DirectX::XMFLOAT3 newLocalPos;
-        dx::XMStoreFloat3(&newLocalPos, localPosVec);
-        SetLocalPosition(newLocalPos);
-    }
-}
 
 void Node::UpdateWorldTransform()
 {
@@ -345,6 +321,21 @@ void Node::UpdateWorldTransform()
     {
         dx::XMStoreFloat4x4(&worldTransform, finalLocalTransform); // Root node
     }
+    if (GetComponent<Rigidbody>() != nullptr)
+    {
+        // Wyci¹gnij pozycjê i rotacjê z worldTransform
+        DirectX::XMMATRIX worldMat = dx::XMLoadFloat4x4(&worldTransform);
+        DirectX::XMFLOAT3 pos;
+        DirectX::XMFLOAT4 rot;
+        dx::XMVECTOR s, r, t;
+        dx::XMMatrixDecompose(&s, &r, &t, worldMat);
+        dx::XMStoreFloat3(&pos, t);
+        dx::XMStoreFloat4(&rot, r);
+
+        auto& bodyInterface = PhysicsCommon::physicsSystem->GetBodyInterface();
+        bodyInterface.SetPosition(GetComponent<Rigidbody>()->GetBodyID(), JPH::RVec3(pos.x, pos.y, pos.z), JPH::EActivation::Activate);
+        bodyInterface.SetRotation(GetComponent<Rigidbody>()->GetBodyID(), JPH::Quat(rot.x, rot.y, rot.z, rot.w), JPH::EActivation::Activate);
+    }
     worldTransformDirty = false;
 
     // When this node's world transform changes, all its children's world transforms are now dirty
@@ -352,6 +343,36 @@ void Node::UpdateWorldTransform()
     {
         child->worldTransformDirty = true;
     }
+}
+
+void Node::UpdateLocalTransformFromComponents()
+{
+    if (localTransformDirty)
+    {
+        dx::XMMATRIX matS = dx::XMMatrixScaling(localScale.x, localScale.y, localScale.z);
+        dx::XMMATRIX matR = dx::XMMatrixRotationQuaternion(dx::XMLoadFloat4(&localRotationQuaternion));
+        dx::XMMATRIX matT = dx::XMMatrixTranslation(localPosition.x, localPosition.y, localPosition.z);
+
+        // Original order: Scale * Rotate * Translate
+        // This means operations applied to a vector v are: T*v, then R*(T*v), then S*(R*(T*v))
+        // So, Translation first, then Rotation, then Scaling.
+        dx::XMStoreFloat4x4(&localTransform, matS * matR * matT);
+
+        localTransformDirty = false;
+        worldTransformDirty = true;
+    }
+}
+
+// --- Helper: Update stored pos/quat/scale when the whole matrix is set ---
+void Node::UpdateStoredComponentsFromMatrix()
+{
+    dx::XMMATRIX matrix = dx::XMLoadFloat4x4(&localTransform);
+    dx::XMVECTOR s_vec, r_quat_vec, t_vec;
+    dx::XMMatrixDecompose(&s_vec, &r_quat_vec, &t_vec, matrix);
+
+    dx::XMStoreFloat3(&localPosition, t_vec);
+    dx::XMStoreFloat4(&localRotationQuaternion, r_quat_vec);
+    dx::XMStoreFloat3(&localScale, s_vec);
 }
 
 // --- Update & Draw ---
