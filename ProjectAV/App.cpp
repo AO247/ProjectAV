@@ -72,9 +72,9 @@ App::App(const std::string& commandLine)
 	auto prefabManagerOwner = std::make_unique<PrefabManager>(&wnd);
 	PrefabManager* prefabManager = prefabManagerOwner.get();
 
-	LevelGenerator levelGenerator(prefabManager, pSceneRoot.get());
+	//LevelGenerator levelGenerator(prefabManager, pSceneRoot.get());
 
-    //Node* island = prefabManager->InstantiateIslandBig1(pSceneRoot.get(), 0.0f, -0.1f, 0.0f, 1.0f);
+    Node* island = prefabManager->InstantiateIslandBig1(pSceneRoot.get(), 0.0f, -0.1f, 0.0f, 1.0f);
 
     // --- Create Nodes ---
 

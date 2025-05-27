@@ -1,0 +1,24 @@
+# Blender 4.4.3 MTL File: 'wyspa_grid.blend'
+# www.blender.org
+
+newmtl wyspa_1
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd wyspa_1_Base_color.png
+map_Bump -bm 1.000000 wyspa_1_Normal.png
+
+newmtl ziemia
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd ziemia_Base_color.png
+map_Bump -bm 1.000000 ziemia_Normal.png
