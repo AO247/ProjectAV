@@ -24,7 +24,7 @@ void MyContactListener::OnContactAdded(const Body& inBody1, const Body& inBody2,
     }
 
     // RIGIDBODIES
-    if (collisionContacts.count(body1ID) != 0)
+    /*if (collisionContacts.count(body1ID) != 0)
     {
         collisionContacts[body1ID][body2ID]++;
         if (collisionContacts[body1ID][body2ID] == 1)
@@ -39,7 +39,7 @@ void MyContactListener::OnContactAdded(const Body& inBody1, const Body& inBody2,
         {
             collisionActivationQueue.push_back(TriggerActivationEvent(body2ID, body1ID, ENTER));
         }
-    }
+    }*/
 
     /*if (inBody1.IsSensor() || inBody2.IsSensor())
     {
@@ -82,24 +82,24 @@ void MyContactListener::OnContactRemoved(const SubShapeIDPair& inSubShapePair)
     }
 
     // RIGIDBODIES
-    if (collisionContacts.count(body1ID) != 0)
-    {
-        collisionContacts[body1ID][body2ID]--;
-        if (collisionContacts[body1ID][body2ID] == 0)
-        {
-            collisionActivationQueue.push_back(TriggerActivationEvent(body1ID, body2ID, EXIT));
-            //collisionContacts[body1ID].erase(body2ID);
-        }
-    }
-    if (collisionContacts.count(body2ID) != 0)
-    {
-        collisionContacts[body2ID][body1ID]--;
-        if (collisionContacts[body2ID][body1ID] == 0)
-        {
-            collisionActivationQueue.push_back(TriggerActivationEvent(body2ID, body1ID, EXIT));
-            //collisionContacts[body2ID].erase(body1ID);
-        }
-    }
+    //if (collisionContacts.count(body1ID) != 0)
+    //{
+    //    collisionContacts[body1ID][body2ID]--;
+    //    if (collisionContacts[body1ID][body2ID] == 0)
+    //    {
+    //        collisionActivationQueue.push_back(TriggerActivationEvent(body1ID, body2ID, EXIT));
+    //        //collisionContacts[body1ID].erase(body2ID);
+    //    }
+    //}
+    //if (collisionContacts.count(body2ID) != 0)
+    //{
+    //    collisionContacts[body2ID][body1ID]--;
+    //    if (collisionContacts[body2ID][body1ID] == 0)
+    //    {
+    //        collisionActivationQueue.push_back(TriggerActivationEvent(body2ID, body1ID, EXIT));
+    //        //collisionContacts[body2ID].erase(body1ID);
+    //    }
+    //}
 
     /*BodyID body1ID = inSubShapePair.GetBody1ID();
     BodyID body2ID = inSubShapePair.GetBody2ID();
