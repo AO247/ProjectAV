@@ -16,3 +16,6 @@
 #include "ShootAttack.h"
 #include "Flying.h"
 #include "Island.h"
+#include "Trigger.h"
+#include "Ability1.h"
+#include "Ability2.h"

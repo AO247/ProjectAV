@@ -29,12 +29,13 @@ public:
 	float ability1Cooldown = 1.0f;
 	float ability2Cooldown = 1.0f;
 	bool alive = true;
+	Node* ability1;
+	Node* ability2;
 private:
 	Window& wnd;
 	Rigidbody* rigidbody;
 	Node* camera;
-	Node* ability1;
-	Node* ability2;
+
 	bool jumped = false;
 	bool grounded = false;
 	bool canDash = true;
@@ -57,8 +58,6 @@ private:
 	void GroundCheck();
 	void Jump();
 	void Dash();
-	void Ability1();
-	void Ability2();
 	void Cooldowns(float dt);
 	void Positioning();
 

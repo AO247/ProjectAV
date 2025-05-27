@@ -145,7 +145,8 @@ namespace Layers
     static constexpr ObjectLayer GROUND = 2;
     static constexpr ObjectLayer TRIGGER = 3;
 	static constexpr ObjectLayer WALL = 4;
-    static constexpr ObjectLayer NUM_LAYERS = 5;
+    static constexpr ObjectLayer PLAYER = 5;
+    static constexpr ObjectLayer NUM_LAYERS = 6;
 };
 
 class ObjectLayerPairFilterImpl : public ObjectLayerPairFilter
@@ -158,12 +159,14 @@ public:
         case Layers::NON_MOVING:
             return inObject2 == Layers::MOVING; // Non moving only collides with moving
         case Layers::MOVING:
-            return true; // Moving collides with everything
+            return true;
         case Layers::TRIGGER:
             return true;
         case Layers::GROUND:
             return true;
         case Layers::WALL:
+            return true;
+		case Layers::PLAYER:
             return true;
         default:
             return false;
@@ -178,7 +181,9 @@ namespace BroadPhaseLayers
 	static constexpr BroadPhaseLayer GROUND(2);
     static constexpr BroadPhaseLayer TRIGGER(3);
 	static constexpr BroadPhaseLayer WALL(4);
-    static constexpr uint NUM_LAYERS(5);
+    static constexpr BroadPhaseLayer PLAYER(5);
+
+    static constexpr uint NUM_LAYERS(6);
 };
 
 class BPLayerInterfaceImpl final : public BroadPhaseLayerInterface
@@ -192,6 +197,7 @@ public:
 		mObjectToBroadPhase[Layers::GROUND] = BroadPhaseLayers::GROUND;
         mObjectToBroadPhase[Layers::TRIGGER] = BroadPhaseLayers::TRIGGER;
 		mObjectToBroadPhase[Layers::WALL] = BroadPhaseLayers::WALL;
+        mObjectToBroadPhase[Layers::PLAYER] = BroadPhaseLayers::PLAYER;
     }
 
     virtual uint GetNumBroadPhaseLayers() const override
@@ -215,6 +221,7 @@ public:
 		case (BroadPhaseLayer::Type)BroadPhaseLayers::GROUND:		return "GROUND";
         case (BroadPhaseLayer::Type)BroadPhaseLayers::TRIGGER:		return "TRIGGER";
 		case (BroadPhaseLayer::Type)BroadPhaseLayers::WALL:		    return "WALL";
+		case (BroadPhaseLayer::Type)BroadPhaseLayers::PLAYER:		return "PLAYER";
         default:													JPH_ASSERT(false); return "INVALID";
         }
     }
@@ -241,6 +248,8 @@ public:
             return true;
         case Layers::WALL:
             return true;
+		case Layers::PLAYER:
+			return true;
         default:
             return false;
         }

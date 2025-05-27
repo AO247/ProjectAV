@@ -170,6 +170,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AABB.cpp" />
+    <ClCompile Include="Ability1.cpp" />
+    <ClCompile Include="Ability2.cpp" />
     <ClCompile Include="AIController.cpp" />
     <ClCompile Include="App.cpp" />
     <ClCompile Include="AttackState.cpp" />
@@ -221,6 +223,8 @@
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="MusicBuffer.cpp" />
     <ClCompile Include="MyContactListener.cpp" />
+    <ClInclude Include="Ability1.h" />
+    <ClInclude Include="Ability2.h" />
     <ClInclude Include="MyContactListener.h" />
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="NullPixelShader.cpp" />

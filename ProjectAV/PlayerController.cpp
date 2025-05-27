@@ -8,6 +8,7 @@
 #include <string>
 #include "CapsuleCollider.h"
 #include "BoundingSphere.h"
+#include "Components.h"
 
 namespace dx = DirectX;
 PlayerController::PlayerController(Node* owner, Window& window)
@@ -121,7 +122,7 @@ void PlayerController::Dash()
     dashTimer = 0.2f;
 	dashCooldownTimer = dashCooldown;
 
-
+	PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rigidbody->GetBodyID(), Vec3(0.0f, 0.0f, 0.0f));
 	PhysicsCommon::physicsSystem->GetBodyInterface().SetFriction(rigidbody->GetBodyID(), 0.0f);
     PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(rigidbody->GetBodyID(), dir * dashForce);
 
@@ -131,7 +132,7 @@ void PlayerController::GroundCheck()
 {
     RRayCast ray = RRayCast(
         RVec3(GetOwner()->GetWorldPosition().x, GetOwner()->GetWorldPosition().y, GetOwner()->GetWorldPosition().z),
-        Vec3(0.0f, -(height/2 + 0.0f), 0.0f)
+        Vec3(0.0f, -(height/2 + 0.1f), 0.0f)
 	);
     RayCastResult result;
     if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(ray, result, SpecifiedBroadPhaseLayerFilter(BroadPhaseLayers::GROUND),SpecifiedObjectLayerFilter(Layers::GROUND)))
@@ -160,42 +161,6 @@ void PlayerController::MovePlayer()
     {
         PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * moveSpeed * 50.0f);
     }
-}
-
-void PlayerController::Ability1()
-{
-	/*if (!ability1Ready) return;
-    CapsuleCollider* col = ability1->GetComponent<CapsuleCollider>();
-    std::vector<Collider*> colliders = col->GetTriggerStay();
-	for (Collider* collider : colliders)
-	{
-		if (collider->GetOwner()->tag == "Enemy" || collider->GetOwner()->tag == "Stone")
-		{
-			collider->GetOwner()->GetComponent<Rigidbody>()->SetVelocity(Vector3(0.0f, 0.0f, 0.0f));
-			collider->GetOwner()->GetComponent<Rigidbody>()->AddForce(ability1->Forward() * 100000.0f);
-		}
-	}
-	ability1CooldownTimer = ability1Cooldown;
-	ability1Ready = false;*/
-}
-
-void PlayerController::Ability2()
-{
-	/*if (!ability2Ready) return;
-	BoundingSphere* col = ability2->GetComponent<BoundingSphere>();
-    std::vector<Collider*> colliders = col->GetTriggerStay();
-
-    for (Collider* collider : colliders)
-    {
-        if (collider->GetOwner()->tag == "Enemy" || collider->GetOwner()->tag == "Stone")
-        {
-            collider->GetOwner()->GetComponent<Rigidbody>()->SetVelocity(Vector3(collider->GetOwner()->GetComponent<Rigidbody>()->GetVelocity().x,
-                0.0f, collider->GetOwner()->GetComponent<Rigidbody>()->GetVelocity().z));
-            collider->GetOwner()->GetComponent<Rigidbody>()->AddForce(Vector3(0.0f, 70000.0f, 0.0f));
-        }
-    }
-	ability2CooldownTimer = ability2Cooldown;
-    ability2Ready = false;*/
 }
 
 void PlayerController::Cooldowns(float dt)
@@ -240,51 +205,26 @@ void PlayerController::Positioning()
 {
     camera->SetLocalPosition({ GetOwner()->GetLocalPosition().x, GetOwner()->GetLocalPosition().y + height * 9 / 10, GetOwner()->GetLocalPosition().z });
     GetOwner()->SetLocalRotation({ 0.0f, camera->GetLocalRotationEuler().y, 0.0f });
-    ability1->SetLocalPosition(camera->GetLocalPosition());
-    ability1->SetLocalRotation(camera->GetLocalRotationEuler());
-
-    /*RaycastData rayData = Raycast::CastThroughLayers(camera->GetWorldPosition(), camera->Forward(), std::vector<Layers>{PLAYER});
-
-    if (rayData.hitCollider != nullptr)
-    {
-        if (rayData.hitCollider->GetOwner()->tag == "Ground")
-        {
-            ability2->SetLocalPosition(rayData.hitPoint);
-        }
-        else
-        {
-            RaycastData rayData2 = Raycast::CastAtLayers(rayData.hitCollider->GetOwner()->GetWorldPosition(), Vector3(0.0f, -1.0f, 0.0f), std::vector<Layers>{GROUND});
-			if (rayData2.hitCollider)
-			{
-                if (rayData2.hitCollider->GetOwner()->tag == "Ground")
-                {
-                    ability2->SetLocalPosition(rayData2.hitPoint);
-                }
-			}
-        }
-    }*/
-
-
 }
 
 
 void PlayerController::KeyboardInput()
 {
-    moveDirection = Vector3(0.0f, 0.0f, 0.0f);
-
     while (const auto e = wnd.mouse.Read()) // Read events from the queue
     {
         switch (e->GetType())
         {
         case Mouse::Event::Type::LPress:
-            Ability1();
+            ability1->GetComponent<Ability1>()->Active();
             break;
 
         case Mouse::Event::Type::RPress:
-            Ability2();
+            ability2->GetComponent<Ability2>()->Active();
             break;
         }
     }
+
+    moveDirection = Vector3(0.0f, 0.0f, 0.0f);
     if (wnd.kbd.KeyIsPressed(VK_SPACE))
     {
         Jump();

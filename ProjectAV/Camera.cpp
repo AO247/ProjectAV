@@ -42,8 +42,11 @@ void Camera::HandleMouseLook(float dt)
     xRotation = std::clamp(xRotation, -pitchLimit, pitchLimit);
     // Wrap Yaw (optional, but good practice)
     yRotation = wrap_angle(yRotation);
+    DirectX::XMVECTOR quat = DirectX::XMQuaternionRotationRollPitchYaw(xRotation, yRotation, 0.0f);
+    DirectX::XMFLOAT4 quatFloat4;
+    DirectX::XMStoreFloat4(&quatFloat4, quat);
 
-    GetOwner()->SetLocalRotation({xRotation, yRotation, 0.0f});          // Apply Pitch to camera node's X axis
+    GetOwner()->SetLocalRotation(quatFloat4);      // Apply Pitch to camera node's X axis
 }
 
 

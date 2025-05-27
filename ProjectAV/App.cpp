@@ -120,8 +120,8 @@ App::App(const std::string& commandLine)
 	pSceneRoot->AddChild(std::move(pCameraNodeOwner));
 	pSceneRoot->AddChild(std::move(pFreeViewCameraOwner));
     pSceneRoot->AddChild(std::move(pPlayerOwner));
-	pSceneRoot ->AddChild(std::move(pAbility1Owner));
-	pSceneRoot->AddChild(std::move(pAbility2Owner));
+    pSceneRoot->AddChild(std::move(pAbility1Owner));
+    pSceneRoot->AddChild(std::move(pAbility2Owner));
     //pSceneRoot->AddChild(std::move(pNanosuitOwner));
     //pSceneRoot->AddChild(std::move(pEmptyNode));
     //pSceneRoot->AddChild(std::move(pBrickOwner));
@@ -187,7 +187,7 @@ App::App(const std::string& commandLine)
     //Heeeej Bracie zaczê³ooo padaæ choodŸ zmieniiæ gacieee
     //Heeeej Siostro uciekaajmyy zanim bêêdzieee mookroooo
 
-    BodyCreationSettings bodySettings(new JPH::CapsuleShape(1.0f, 1.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::MOVING);
+    BodyCreationSettings bodySettings(new JPH::CapsuleShape(1.0f, 1.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::PLAYER);
     bodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
 
     //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
@@ -203,25 +203,28 @@ App::App(const std::string& commandLine)
         std::make_unique<PlayerController>(pPlayer, wnd) // Add controller first
     );
 	
-
-	/*pAbility1->AddComponent(
-        std::make_unique<CapsuleCollider>(pAbility1, nullptr, 1.0f, Vector3(0.0f, -1.0f, 0.0f), Vector3(0.0f, 1.5f, 8.0f))
+    BodyCreationSettings a1BodySettings(new JPH::CapsuleShape(5.0f, 3.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
+    pAbility1->AddComponent(
+        std::make_unique<Trigger>(pAbility1, a1BodySettings, false)
     );
-    CapsuleCollider* a1CapsuleCollider = pAbility1->GetComponent<CapsuleCollider>();
-    a1CapsuleCollider->SetIsTrigger(true);
-    a1CapsuleCollider->SetTriggerEnabled(true);
-	a1CapsuleCollider->SetLayer(Layers::PLAYER);
-	physicsEngine.AddCollider(a1CapsuleCollider);*/
-
-	/*pAbility2->AddComponent(
-        std::make_unique<BoundingSphere>(pAbility2, Vector3(0.0f, 0.0f, 0.0f), 2.0f, nullptr)
+    pAbility1->AddComponent(
+        std::make_unique<Ability1>(pAbility1, wnd, pCamera)
     );
-    BoundingSphere* a2Sphere = pAbility2->GetComponent<BoundingSphere>();
-    a2Sphere->SetIsTrigger(true);
-    a2Sphere->SetTriggerEnabled(true);
-	a2Sphere->SetLayer(Layers::PLAYER);
-	physicsEngine.AddCollider(a2Sphere);*/
-    
+	pAbility1->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 0.0f, 8.0f));
+    pPlayer->GetComponent<PlayerController>()->ability1 = pAbility1;
+
+
+    BodyCreationSettings a2odySettings(new JPH::SphereShape(2.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
+	pAbility2->AddComponent(
+        std::make_unique<Trigger>(pAbility2, a2odySettings, false)
+    );
+    pAbility2->AddComponent(
+        std::make_unique<Ability2>(pAbility2, wnd, pCamera)
+	);
+    pAbility2->AddComponent(
+        std::make_unique<ModelComponent>(pAbility2, wnd.Gfx(), "Models\\box.glb")
+    );
+    pPlayer->GetComponent<PlayerController>()->ability2 = pAbility2;
 
     BodyCreationSettings eBodySettings(new JPH::CapsuleShape(1.0f, 1.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::MOVING);
     eBodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
@@ -364,6 +367,7 @@ App::App(const std::string& commandLine)
     pBrick->SetLocalRotation(dx::XMFLOAT3(DirectX::XMConvertToRadians(90), 0.0f, 0.0f));
 	pStone->SetLocalPosition(DirectX::XMFLOAT3(10.0f, 1.0f, 10.0f));
 	pStone->SetLocalScale(dx::XMFLOAT3(1.5f, 1.5f, 1.5f));
+
     pIsland->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 	pIsland->SetLocalScale(dx::XMFLOAT3(1.3f, 1.3f, 1.3f));
 	pNoxTurn->SetLocalPosition(DirectX::XMFLOAT3(5.0f, 0.0f, 5.0f));

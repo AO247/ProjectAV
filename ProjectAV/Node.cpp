@@ -156,15 +156,73 @@ void Node::SetLocalRotation(const DirectX::XMFLOAT3& rotRad)
     dx::XMStoreFloat4(&localRotationQuaternion, q);
     localTransformDirty = true;
     worldTransformDirty = true;
+
+    // Ustaw rotacjê rigidbody, jeœli istnieje
+    if (GetComponent<Rigidbody>() != nullptr)
+    {
+        // Przelicz na world transform, aby uzyskaæ rotacjê w œwiecie
+        dx::XMMATRIX matS = dx::XMMatrixScaling(localScale.x, localScale.y, localScale.z);
+        dx::XMMATRIX matR = dx::XMMatrixRotationQuaternion(q);
+        dx::XMMATRIX matT = dx::XMMatrixTranslation(localPosition.x, localPosition.y, localPosition.z);
+
+        dx::XMMATRIX newComputedLocalTransform = matS * matR * matT;
+        dx::XMMATRIX newComputedWorldTransform;
+        if (parent)
+        {
+            dx::XMMATRIX parentWorldMatrix = parent->GetWorldTransform();
+            newComputedWorldTransform = dx::XMMatrixMultiply(newComputedLocalTransform, parentWorldMatrix);
+        }
+        else
+        {
+            newComputedWorldTransform = newComputedLocalTransform;
+        }
+
+        // Wyci¹gnij rotacjê z macierzy œwiata
+        dx::XMVECTOR s, r, t;
+        dx::XMMatrixDecompose(&s, &r, &t, newComputedWorldTransform);
+        DirectX::XMFLOAT4 worldQuat;
+        dx::XMStoreFloat4(&worldQuat, r);
+
+        auto& bodyInterface = PhysicsCommon::physicsSystem->GetBodyInterface();
+        bodyInterface.SetRotation(GetComponent<Rigidbody>()->GetBodyID(), JPH::Quat(worldQuat.x, worldQuat.y, worldQuat.z, worldQuat.w), JPH::EActivation::Activate);
+    }
 }
 
 void Node::SetLocalRotation(const DirectX::XMFLOAT4& quat)
 {
     localRotationQuaternion = quat;
-    // It's good practice to normalize the quaternion if it's coming from an external source
-    // dx::XMStoreFloat4(&localRotationQuaternion, dx::XMQuaternionNormalize(dx::XMLoadFloat4(&quat)));
     localTransformDirty = true;
     worldTransformDirty = true;
+
+    // Ustaw rotacjê rigidbody, jeœli istnieje
+    if (GetComponent<Rigidbody>() != nullptr)
+    {
+        dx::XMVECTOR q = dx::XMLoadFloat4(&quat);
+
+        dx::XMMATRIX matS = dx::XMMatrixScaling(localScale.x, localScale.y, localScale.z);
+        dx::XMMATRIX matR = dx::XMMatrixRotationQuaternion(q);
+        dx::XMMATRIX matT = dx::XMMatrixTranslation(localPosition.x, localPosition.y, localPosition.z);
+
+        dx::XMMATRIX newComputedLocalTransform = matS * matR * matT;
+        dx::XMMATRIX newComputedWorldTransform;
+        if (parent)
+        {
+            dx::XMMATRIX parentWorldMatrix = parent->GetWorldTransform();
+            newComputedWorldTransform = dx::XMMatrixMultiply(newComputedLocalTransform, parentWorldMatrix);
+        }
+        else
+        {
+            newComputedWorldTransform = newComputedLocalTransform;
+        }
+
+        dx::XMVECTOR s, r, t;
+        dx::XMMatrixDecompose(&s, &r, &t, newComputedWorldTransform);
+        DirectX::XMFLOAT4 worldQuat;
+        dx::XMStoreFloat4(&worldQuat, r);
+
+        auto& bodyInterface = PhysicsCommon::physicsSystem->GetBodyInterface();
+        bodyInterface.SetRotation(GetComponent<Rigidbody>()->GetBodyID(), JPH::Quat(worldQuat.x, worldQuat.y, worldQuat.z, worldQuat.w), JPH::EActivation::Activate);
+    }
 }
 
 void Node::SetLocalScale(const DirectX::XMFLOAT3& scale)
