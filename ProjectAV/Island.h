@@ -23,6 +23,8 @@ public:
 	Node* upPoint;
 	Node* downPoint;
 	Vector3 halfExtents;
+
+	std::vector<Node*> spawnPoints;
 private:
 
 };

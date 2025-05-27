@@ -22,6 +22,7 @@ public:
     Node* InstantiateIslandMedium2(Node* parentNode = nullptr, float locX = 0, float locY = 0, float locZ = 0, float scale = 1) const;
     Node* InstantiateIslandSmall1(Node* parentNode = nullptr, float locX = 0, float locY = 0, float locZ = 0, float scale = 1) const;
 
+    Node* InstantiateEnemy(Node* parentNode = nullptr, float locX = 0, float locY = 0, float locZ = 0, float scale = 1, Node* pPlayer = nullptr) const;
 
 private:
     Window* wnd;

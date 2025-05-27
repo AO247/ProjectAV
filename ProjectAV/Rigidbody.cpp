@@ -10,6 +10,7 @@ Rigidbody::Rigidbody(Node* owner, Vector3 position, float mass, Shape* shape) : 
 	//bodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
 	//bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(2.0f * Vec3(cTorusRadius, cTubeRadius, cTorusRadius), 1000.0f);
 	bodyID = bodyInterface.CreateAndAddBody(bodySettings, EActivation::Activate);
+	dynamic_cast<MyContactListener*>(PhysicsCommon::physicsSystem->GetContactListener())->AddRigidbody(bodyID);
 }
 
 Rigidbody::Rigidbody(Node* owner, BodyCreationSettings bodySettings) : Component(owner)
@@ -17,6 +18,7 @@ Rigidbody::Rigidbody(Node* owner, BodyCreationSettings bodySettings) : Component
 	BodyInterface& bodyInterface = PhysicsCommon::physicsSystem->GetBodyInterface();
 	bodySettings.mUserData = reinterpret_cast<uint64>(owner);
 	bodyID = bodyInterface.CreateAndAddBody(bodySettings, EActivation::Activate);
+	dynamic_cast<MyContactListener*>(PhysicsCommon::physicsSystem->GetContactListener())->AddRigidbody(bodyID);
 }
 
 void Rigidbody::Update(float dt)

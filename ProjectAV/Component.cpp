@@ -18,3 +18,13 @@ void Component::OnTriggerExit(Node* object)
 	//OutputDebugString(object->GetName().c_str());
 	//OutputDebugString("\n");
 }
+
+void Component::OnCollisionEnter(Node* object)
+{
+
+}
+
+void Component::OnCollisionExit(Node* object)
+{
+
+}

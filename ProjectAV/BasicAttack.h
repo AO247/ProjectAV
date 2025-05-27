@@ -11,7 +11,7 @@ class Node;
 class BasicAttack : public Component
 {
 public:
-	BasicAttack(Node* owner, std::string tag = "Attack");
+	BasicAttack(Node* owner, std::string tag = "ATTACK");
 	virtual ~BasicAttack() = default;
 	float damage = 1.0f;
 	float wholeAttackTime = 1.5f;
