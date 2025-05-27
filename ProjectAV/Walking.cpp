@@ -16,7 +16,8 @@ Walking::Walking(Node* owner, std::string tag)
 }
 void Walking::Follow(DirectX::XMFLOAT3 targetPos, float sp)
 {
-	PhysicsCommon::physicsSystem->GetBodyInterface().SetFriction(rigidbody->GetBodyID(), 0.1f);
+	GroundCheck();
+	PhysicsCommon::physicsSystem->GetBodyInterface().SetFriction(rigidbody->GetBodyID(), 0.5f);
 
     if (!rigidbody) { 
         return;
@@ -26,10 +27,16 @@ void Walking::Follow(DirectX::XMFLOAT3 targetPos, float sp)
 	Vec3 currentVelocityJPH = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
 	Vector3 currentVelocity = { currentVelocityJPH.GetX(), currentVelocityJPH.GetY(), currentVelocityJPH.GetZ()};
     Vector3 desiredDirection = targetPosition - currentPos;
-
-    desiredDirection.Normalize();
-    Vector3 desiredVelocity = desiredDirection * maxSpeed / sp;
-
+	desiredDirection.Normalize();
+	Vector3 desiredVelocity;
+	if (!grounded) 
+	{
+		desiredVelocity = desiredDirection * maxSpeed * 0.1f;
+	}
+	else 
+	{
+		desiredVelocity = desiredDirection * maxSpeed / sp;
+	}
     Vector3 steeringForce = desiredVelocity - currentVelocity;
 
 	steeringForce = steeringForce + (CalculateAvoidanceForce());
@@ -43,20 +50,28 @@ void Walking::Follow(DirectX::XMFLOAT3 targetPos, float sp)
 	currentVelocityJPH = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
 	currentVelocity = { currentVelocityJPH.GetX(), currentVelocityJPH.GetY(), currentVelocityJPH.GetZ() };
 	if (currentVelocity.LengthSquared() > 0.01f)
-    {
-        Vector3 facingDirection = currentVelocity; 
-        facingDirection.Normalize();
+	{
+		Vector3 toTarget = targetPosition - currentPos;
+		toTarget.Normalize();
+		float dot = currentVelocity.Dot(toTarget); // zak³adam, ¿e masz metodê Dot
+		float angle = acosf(std::clamp(dot, -1.0f, 1.0f)); // w radianach
 
+		Vector3 facingDirection = currentVelocity;
+		facingDirection.Normalize();
 
 		float currentYaw = pOwner->GetLocalRotationEuler().y;
 		float targetYaw = atan2f(facingDirection.x, facingDirection.z);
 
 		float yawDifference = wrap_angle(targetYaw - currentYaw);
-		
-		//targetYaw = wrap_angle(currentYaw + yawDifference * rotationLerpFactor);
 
-        pOwner->SetLocalRotation({ 0.0f, targetYaw, 0.0f });
-    }
+		targetYaw = wrap_angle(currentYaw + yawDifference * rotationLerpFactor);
+		if (angle < maxAllowedAngle) {
+			DirectX::XMVECTOR quat = DirectX::XMQuaternionRotationRollPitchYaw(0.0f, targetYaw, 0.0f);
+			DirectX::XMFLOAT4 quatFloat4;
+			DirectX::XMStoreFloat4(&quatFloat4, quat);
+			pOwner->SetLocalRotation(quatFloat4);
+		}
+	}
 
 	if (pOwner->GetComponent<SoundEffectsPlayer>()->isPlaying() == false) {
 		pOwner->GetComponent<SoundEffectsPlayer>()->Play(0);
@@ -181,5 +196,5 @@ void Walking::DrawImGuiControls()
    ImGui::InputFloat("Max Force", &maxForce);
    ImGui::InputFloat("Avoidance Weight", &avoidanceWeight);
    ImGui::InputFloat("Avoidance Distance", &avoidanceDistance);
-
+   ImGui::Checkbox("Grounded", &grounded);
 }
