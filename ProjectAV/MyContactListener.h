@@ -53,8 +53,10 @@ public:
     virtual void OnContactRemoved(const SubShapeIDPair& inSubShapePair) override;
 
     void AddTrigger(BodyID id);
+    void AddRigidbody(BodyID id);
 
     void ExecuteTriggerActivationQueue();
+    void ExecuteCollisionActivationQueue();
 private:
     enum ActivationType
     {
@@ -75,5 +77,7 @@ private:
     };
 
     std::map<BodyID, std::map<BodyID, int>> contacts;
+    std::map<BodyID, std::map<BodyID, int>> collisionContacts;
     std::vector<TriggerActivationEvent> triggerActivationQueue;
+    std::vector<TriggerActivationEvent> collisionActivationQueue;
 };
