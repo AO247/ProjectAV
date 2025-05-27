@@ -23,6 +23,8 @@ public:
 
     virtual void OnTriggerEnter(Node* object);
     virtual void OnTriggerExit(Node* object);
+    virtual void OnCollisionEnter(Node* object);
+    virtual void OnCollisionExit(Node* object);
 
     virtual void Follow(DirectX::XMFLOAT3 target, float sp = 1.0f) {}
 	virtual void Attack(float dt) {} // For components needing Graphics
