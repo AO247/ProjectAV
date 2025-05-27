@@ -30,7 +30,7 @@ void LevelGenerator::GenerateIslands()
 
             if (randIsland == 0 && bigIslandCount > 0)
             {
-                islandPrefab = prefabManager->InstantiateIslandBig1(pSceneRoot, 0.0f, 0.0f, 0.0f, 1.3f);
+                islandPrefab = prefabManager->InstantiateIslandBig1(pSceneRoot, 0.0f, 0.0f, 0.0f, 10.3f);
                 bigIslandCount--;
                 break;
             }

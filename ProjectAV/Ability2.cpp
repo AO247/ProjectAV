@@ -63,7 +63,7 @@ void Ability2::Active()
             PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), Vec3(0.0f, 0.0f, 0.0f));
             Vec3 direction = Vec3(0.0f, 1.0f, 0.0f);
             PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), direction * force * 100.0f);
-            OutputDebugStringA(("Ability1 hit: " + objects[i]->GetName() + "\n").c_str());
+            OutputDebugStringA(("Ability2 hit: " + objects[i]->GetName() + "\n").c_str());
         }
     }
     cooldownTimer = cooldown;

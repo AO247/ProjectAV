@@ -16,6 +16,8 @@ Walking::Walking(Node* owner, std::string tag)
 }
 void Walking::Follow(DirectX::XMFLOAT3 targetPos, float sp)
 {
+	PhysicsCommon::physicsSystem->GetBodyInterface().SetFriction(rigidbody->GetBodyID(), 0.1f);
+
     if (!rigidbody) { 
         return;
     }
@@ -60,7 +62,22 @@ void Walking::Follow(DirectX::XMFLOAT3 targetPos, float sp)
 		pOwner->GetComponent<SoundEffectsPlayer>()->Play(0);
 	}
 }
-
+void Walking::GroundCheck()
+{
+	RRayCast ray = RRayCast(
+		RVec3(pOwner->GetWorldPosition().x, pOwner->GetWorldPosition().y, pOwner->GetWorldPosition().z),
+		Vec3(0.0f, -(height / 2 + 0.1f), 0.0f)
+	);
+	RayCastResult result;
+	if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(ray, result, SpecifiedBroadPhaseLayerFilter(BroadPhaseLayers::GROUND), SpecifiedObjectLayerFilter(Layers::GROUND)))
+	{
+		grounded = true;
+	}
+	else
+	{
+		grounded = false;
+	}
+}
 Vector3 Walking::CalculateAvoidanceForce()
 {
 	Vector3 avoidanceForce(0.0f, 0.0f, 0.0f);
