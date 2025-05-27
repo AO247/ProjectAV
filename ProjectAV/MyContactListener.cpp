@@ -5,6 +5,8 @@ void MyContactListener::OnContactAdded(const Body& inBody1, const Body& inBody2,
     BodyID body1ID = inBody1.GetID();
     BodyID body2ID = inBody2.GetID();
 
+    lock_guard lock(mMutex);
+
     // TRIGGERS
     if (contacts.count(body1ID) != 0)
     {
@@ -61,6 +63,8 @@ void MyContactListener::OnContactRemoved(const SubShapeIDPair& inSubShapePair)
     BodyID body1ID = inSubShapePair.GetBody1ID();
     BodyID body2ID = inSubShapePair.GetBody2ID();
 
+    lock_guard lock(mMutex);
+
     // TRIGGERS
     if (contacts.count(body1ID) != 0)
     {
@@ -88,7 +92,7 @@ void MyContactListener::OnContactRemoved(const SubShapeIDPair& inSubShapePair)
         if (collisionContacts[body1ID][body2ID] == 0)
         {
             collisionActivationQueue.push_back(TriggerActivationEvent(body1ID, body2ID, EXIT));
-            //collisionContacts[body1ID].erase(body2ID);
+            collisionContacts[body1ID].erase(body2ID);
         }
     }
     if (collisionContacts.count(body2ID) != 0)
@@ -97,7 +101,7 @@ void MyContactListener::OnContactRemoved(const SubShapeIDPair& inSubShapePair)
         if (collisionContacts[body2ID][body1ID] == 0)
         {
             collisionActivationQueue.push_back(TriggerActivationEvent(body2ID, body1ID, EXIT));
-            //collisionContacts[body2ID].erase(body1ID);
+            collisionContacts[body2ID].erase(body1ID);
         }
     }
 
@@ -151,7 +155,8 @@ void MyContactListener::ExecuteTriggerActivationQueue()
             }
         }
     }
-    triggerActivationQueue.clear();
+    //triggerActivationQueue.clear();
+    triggerActivationQueue = std::vector<TriggerActivationEvent>();
 }
 
 void MyContactListener::ExecuteCollisionActivationQueue()
@@ -175,5 +180,6 @@ void MyContactListener::ExecuteCollisionActivationQueue()
             }
         }
     }
-    collisionActivationQueue.clear();
+    //collisionActivationQueue.clear();
+    collisionActivationQueue = std::vector<TriggerActivationEvent>();
 }
