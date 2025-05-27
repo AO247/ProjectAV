@@ -369,6 +369,9 @@
     <ClCompile Include="Trigger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FrameCommander.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowsMessageMap.h">
@@ -824,6 +827,8 @@
     <FxCompile Include="BlurOutline_PS.hlsl" />
     <FxCompile Include="Blur_PS.hlsl" />
     <FxCompile Include="Fullscreen_VS.hlsl" />
+    <FxCompile Include="MotionBlurApply_PS.hlsl" />
+    <FxCompile Include="VelocityGen_PS.hlsl.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DXGetErrorDescription.inl">

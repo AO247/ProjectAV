@@ -32,7 +32,9 @@ App::App(const std::string& commandLine)
     wnd(1280, 720, "Project AV"), // Pass window dimensions/title
 	scriptCommander(TokenizeQuoted(commandLine)),
     pointLight(wnd.Gfx()), // Initialize PointLight
-    pSceneRoot(std::make_unique<Node>("Root"))
+    pSceneRoot(std::make_unique<Node>("Root")),
+    m_previousViewProjectionMatrix(DirectX::XMMatrixIdentity()),
+    m_currentViewProjectionMatrix(DirectX::XMMatrixIdentity())
 {
     TestDynamicConstant();
     // Set Projection Matrix (Far plane adjusted for larger scenes potentially)
@@ -550,16 +552,30 @@ void App::DoFrame(float dt)
     CleanupDestroyedNodes(pSceneRoot.get());
 
     wnd.Gfx().BeginFrame(0.5f, 0.5f, 1.0f);
-    //if (pPlayer->GetLocalPosition().y < -10.0f) {
-    //	pPlayer->SetLocalPosition({ -20.0f, 225.0f, -25.0f });
-    //    pEnemy->SetLocalPosition({ 15.0f, 225.0f, 0.0f });
-    //}
-    dx::XMMATRIX viewMatrix = pCamera->GetComponent<Camera>()->GetViewMatrix();
-    if (freeViewCamera)
-    {
+
+    // Determine active camera and get its view matrix
+    dx::XMMATRIX viewMatrix;
+    if (freeViewCamera && pFreeViewCamera && pFreeViewCamera->GetComponent<Camera>()) {
         viewMatrix = pFreeViewCamera->GetComponent<Camera>()->GetViewMatrix();
     }
-    wnd.Gfx().SetCamera(viewMatrix);
+    else if (pCamera && pCamera->GetComponent<Camera>()) {
+        viewMatrix = pCamera->GetComponent<Camera>()->GetViewMatrix();
+    }
+    else {
+        // Fallback or error: ensure viewMatrix is initialized
+        viewMatrix = DirectX::XMMatrixIdentity(); // Or some default camera view
+    }
+
+    // Get projection matrix
+    dx::XMMATRIX projectionMatrix = wnd.Gfx().GetProjection();
+
+    // Update current and previous VP matrices
+    // The 'current' from last frame becomes 'previous' for this frame
+    m_previousViewProjectionMatrix = m_currentViewProjectionMatrix;
+    m_currentViewProjectionMatrix = viewMatrix * projectionMatrix;
+
+
+    wnd.Gfx().SetCamera(viewMatrix); // This still sets the view matrix for general rendering constants if your shaders use it directly from Graphics
     //fc.ShowWindows(wnd.Gfx());
 	/*DebugLine line(wnd.Gfx(), pEnemy->GetComponent<StateMachine>()->pos, pEnemy->GetComponent<StateMachine>()->cen, { 0.0f, 0.0f, 1.0f, 1.0f });
     line.Submit(fc);*/ // for idle
@@ -597,7 +613,7 @@ void App::DoFrame(float dt)
         ShowControlWindows();
     }
 
-    fc.Execute(wnd.Gfx());
+    fc.Execute(wnd.Gfx(), m_currentViewProjectionMatrix, m_previousViewProjectionMatrix);
     wnd.Gfx().EndFrame();
     fc.Reset();
 }

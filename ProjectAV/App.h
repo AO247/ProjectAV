@@ -44,6 +44,8 @@ private:
     PointLight pointLight;
     //PhysicsEngine physicsEngine; // Physics engine instance
 
+    DirectX::XMMATRIX m_previousViewProjectionMatrix;
+    DirectX::XMMATRIX m_currentViewProjectionMatrix; // Good to store this too for consistency
 
     PhysicsSystem* physicsSystem;
     TempAllocatorImpl* temp_allocator;

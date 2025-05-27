@@ -7,7 +7,7 @@ class DepthStencil;
 class RenderTarget : public GraphicsResource
 {
 public:
-	RenderTarget( Graphics& gfx,UINT width,UINT height );
+	RenderTarget(Graphics& gfx, UINT width, UINT height, DXGI_FORMAT format = DXGI_FORMAT_B8G8R8A8_UNORM);
 	void BindAsTexture( Graphics& gfx,UINT slot ) const noexcept;
 	void BindAsTarget( Graphics& gfx ) const noexcept;
 	void BindAsTarget( Graphics& gfx,const DepthStencil& depthStencil ) const noexcept;
