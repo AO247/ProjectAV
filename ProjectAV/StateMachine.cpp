@@ -26,8 +26,8 @@ StateMachine::StateMachine(Node* owner, StateType initialState)
 	//std::vector<std::unique_ptr<Component>> components = pOwner->GetComponents();
 	for (const auto& component : pOwner->GetComponents())
 	{
-		std::string tagName = "Movement";
-		std::string tagName2 = "Attack";
+		std::string tagName = "MOVEMENT";
+		std::string tagName2 = "ATTACK";
 
 		if (component->tag == tagName)
 		{
@@ -38,7 +38,7 @@ StateMachine::StateMachine(Node* owner, StateType initialState)
 			attackComponents.push_back(component.get());
 		}
 	}
-	pPlayer = pOwner->GetRoot()->FindFirstChildByTag("Player");
+	pPlayer = pOwner->GetRoot()->FindFirstChildByTag("PLAYER");
 }
 StateMachine::~StateMachine()
 {

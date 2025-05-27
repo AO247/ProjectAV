@@ -1,13 +1,14 @@
 #include "LevelGenerator.h"
 #include "Components.h"
 
-LevelGenerator::LevelGenerator(PrefabManager* prefabManager, Node* root)
-    : prefabManager(prefabManager), pSceneRoot(root)
+LevelGenerator::LevelGenerator(PrefabManager* prefabManager, Node* root, Node* pPlayer)
+    : prefabManager(prefabManager), pSceneRoot(root), pPlayer(pPlayer)
 {
     std::srand(static_cast<unsigned>(std::time(nullptr)));
 
     points.push_back(Vector4(0.0f, 0.0f, 0.0f, 0.0f));
     GenerateIslands();
+    SpawnEnemies();
 }
 
 void LevelGenerator::GenerateIslands()
@@ -315,4 +316,83 @@ bool LevelGenerator::Collide(Node* island1, Node* island2)
     if (std::abs(pos1.y - pos2.y) > (extents1.y + extents2.y)) return false;
     if (std::abs(pos1.z - pos2.z) > (extents1.z + extents2.z)) return false;
     return true;
+}
+
+
+void LevelGenerator::SpawnEnemies() 
+{
+    OutputDebugStringA("\n\n\nRozpoczynamy spawn enemies\n\n\n");
+
+    int islandNumber = 0;
+    float time = 0.0f;
+	Vector3 startPos = Vector3(0.0f, 0.0f, 15.0f);
+    while (numberOfEasyEnemies > 0 || numberOfMediumEnemies > 0 || numberOfHardEnemies > 0) {
+		int randEnemy = rand() % 1; // 0 - hard, 1 - medium, 2 - easy
+		randEnemy = 0; // Force hard enemy for now
+        Node* enemy = nullptr;
+        if (randEnemy == 0 && numberOfHardEnemies > 0)
+        {
+            Vector3 pos = Vector3(0.0f, 0.0f, 0.0f);
+            int pIslandNumber = islandNumber;
+			std::vector<Node*> spawnPoints;
+			spawnPoints = islands[islandNumber]->GetComponent<Island>()->spawnPoints;
+            while (true)
+            {
+                if (time > 20.0f)
+                {
+                    OutputDebugStringA("\nBrak czasu\n");
+                    time = 0.0f;
+                    break;
+                }
+                if (spawnPoints.size() > 0)
+                {
+					int randSpot = rand() % spawnPoints.size();
+                    pos = spawnPoints[randSpot]->GetWorldPosition();
+                    // Replace this line:
+
+                    if (randSpot >= 0 && randSpot < static_cast<int>(spawnPoints.size())) {
+                        spawnPoints.erase(spawnPoints.begin() + randSpot);
+                        islands[islandNumber]->GetComponent<Island>()->spawnPoints = spawnPoints;
+                    }
+                    if ((pos - startPos).Length() > 7.0f)
+                    {
+                        OutputDebugStringA("\nZa blisko\n");
+                        islandNumber++;
+                        time = 0.0f;
+                        break;
+                    }
+                }
+                else
+                {
+                    islandNumber++;
+                    if (islandNumber == pIslandNumber)
+                    {
+                        return;
+                    }
+                    spawnPoints = islands[islandNumber]->GetComponent<Island>()->spawnPoints;
+                }
+
+            }
+			int randEnemy = rand() % 1;
+			randEnemy = 0; // Force hard enemy for now
+
+            if(randEnemy == 0)
+            {
+                OutputDebugStringA("\nDodajemy\n");
+                enemy = prefabManager->InstantiateEnemy(pSceneRoot, pos.x, pos.y, pos.z, 1.6f, pPlayer);
+            }
+            numberOfHardEnemies--;
+        }
+        if (islandNumber == islands.size())
+        {
+            islandNumber = 0;
+        }
+
+        if (numberOfEasyEnemies <= 0 && numberOfMediumEnemies <= 0 && numberOfHardEnemies <= 0)
+        {
+            OutputDebugStringA("\nAll enemies spawned\n");
+            break;
+        }
+
+    }
 }

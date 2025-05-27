@@ -72,46 +72,45 @@ App::App(const std::string& commandLine)
 	auto prefabManagerOwner = std::make_unique<PrefabManager>(&wnd);
 	PrefabManager* prefabManager = prefabManagerOwner.get();
 
-	LevelGenerator levelGenerator(prefabManager, pSceneRoot.get());
 
     //Node* island = prefabManager->InstantiateIslandBig1(pSceneRoot.get(), 0.0f, -0.1f, 0.0f, 1.0f);
 
     // --- Create Nodes ---
 
-	auto pCameraNodeOwner = std::make_unique<Node>("Camera", nullptr, "Camera");
+	auto pCameraNodeOwner = std::make_unique<Node>("Camera", nullptr, "CAMERA");
 	pCamera = pCameraNodeOwner.get();
 	auto pFreeViewCameraOwner = std::make_unique<Node>("FreeViewCamera");
 	pFreeViewCamera = pFreeViewCameraOwner.get();
-    auto pPlayerOwner = std::make_unique<Node>("Player", nullptr, "Player");
+    auto pPlayerOwner = std::make_unique<Node>("Player", nullptr, "PLAYER");
     pPlayer = pPlayerOwner.get();
-	auto pAbility1Owner = std::make_unique<Node>("Ability1", nullptr, "Ability1");
+	auto pAbility1Owner = std::make_unique<Node>("Ability1", nullptr, "ABILITY1");
 	pAbility1 = pAbility1Owner.get();
-	auto pAbility2Owner = std::make_unique<Node>("Ability2", nullptr, "Ability2");
+	auto pAbility2Owner = std::make_unique<Node>("Ability2", nullptr, "ABILITY2");
 	pAbility2 = pAbility2Owner.get();
     auto pNanosuitOwner = std::make_unique<Node>("Nanosuit");
     pNanosuitNode = pNanosuitOwner.get();
     auto pEmptyNode = std::make_unique<Node>("EmptyNode");
     auto pBrickOwner = std::make_unique<Node>("Brick");
     pBrick = pBrickOwner.get();
-    auto pBoxOwner = std::make_unique<Node>("Box", nullptr, "Wall");
+    auto pBoxOwner = std::make_unique<Node>("Box", nullptr, "WALL");
     pBox = pBoxOwner.get();
-    auto pStoneOwner = std::make_unique<Node>("Stone", nullptr, "Stone");
+    auto pStoneOwner = std::make_unique<Node>("Stone", nullptr, "STONE");
     pStone = pStoneOwner.get();
-    auto pColumnOwner = std::make_unique<Node>("Column", nullptr, "Wall");
+    auto pColumnOwner = std::make_unique<Node>("Column", nullptr, "WALL");
     pColumn = pColumnOwner.get();
-	auto pColumn2Owner = std::make_unique<Node>("Column2", nullptr, "Wall");
+	auto pColumn2Owner = std::make_unique<Node>("Column2", nullptr, "WALL");
 	pColumn2 = pColumn2Owner.get();
-	auto pColumn3Owner = std::make_unique<Node>("Column3", nullptr, "Wall");
+	auto pColumn3Owner = std::make_unique<Node>("Column3", nullptr, "WALL");
 	pColumn3 = pColumn3Owner.get();
-	auto pColumn4Owner = std::make_unique<Node>("Column4", nullptr, "Wall");
+	auto pColumn4Owner = std::make_unique<Node>("Column4", nullptr, "WALL");
 	pColumn4 = pColumn4Owner.get();
-    auto pIslandOwner = std::make_unique<Node>("Island", nullptr, "Ground");
+    auto pIslandOwner = std::make_unique<Node>("Island", nullptr, "GROUND");
     pIsland = pIslandOwner.get();
 	auto pNoxTurnOwner = std::make_unique<Node>("NoxTurn");
 	pNoxTurn = pNoxTurnOwner.get();
 	auto pNoxTurnHairOwner = std::make_unique<Node>("NoxTurnHair");
 	pNoxTurnHair = pNoxTurnHairOwner.get();
-	auto pEnemyOwner = std::make_unique<Node>("Enemy", nullptr, "Enemy");
+	auto pEnemyOwner = std::make_unique<Node>("Enemy", nullptr, "ENEMY");
 	pEnemy = pEnemyOwner.get();
 
 	
@@ -194,6 +193,7 @@ App::App(const std::string& commandLine)
     bodySettings.mMassPropertiesOverride.mMass = 10.0f;
     bodySettings.mFriction = 0.0f;
     bodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
+    bodySettings.mMotionQuality = EMotionQuality::LinearCast;
     pPlayer->AddComponent(
         std::make_unique<Rigidbody>(pPlayer, bodySettings)
     );
@@ -338,7 +338,7 @@ App::App(const std::string& commandLine)
 		std::make_unique<StateMachine>(pEnemy, StateType::IDLE)
 	);
     pEnemy->GetComponent<StateMachine>()->attackRange = 4.0f;
-	pEnemy->GetComponent<StateMachine>()->followDistance = 25.0f;
+	pEnemy->GetComponent<StateMachine>()->followDistance = 40.0f;
     pEnemy->AddComponent(
         std::make_unique<Health>(pEnemy, 1.0f)
     );
@@ -411,6 +411,7 @@ App::App(const std::string& commandLine)
 	AddCapsuleColliderToDraw(wnd.Gfx(), eCapsule);
 	AddCapsuleColliderToDraw(wnd.Gfx(), a1CapsuleCollider);*/
 
+    LevelGenerator levelGenerator(prefabManager, pSceneRoot.get(), pPlayer);
 
 
     wnd.DisableCursor();
