@@ -37,9 +37,8 @@ void Ability1::Active()
     {
         if (objects[i]->tag == "Enemy" || objects[i]->tag == "Stone")
         {
-			PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), Vec3(0.0f, 0.0f, 0.0f));
 			Vec3 direction = Vec3(pOwner->Forward().x, pOwner->Forward().y, pOwner->Forward().z);
-            PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), direction * force * 100.0f);
+            PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), direction * force);
 			OutputDebugStringA(("Ability1 hit: " + objects[i]->GetName() + "\n").c_str());
         }
     }

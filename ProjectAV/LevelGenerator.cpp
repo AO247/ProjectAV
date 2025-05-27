@@ -20,7 +20,7 @@ void LevelGenerator::GenerateIslands()
         if (time > 15.0f)
         {
             OutputDebugStringA("\nNie uda³o siê\n");
-            time = 0.0f;
+            //time = 0.0f;
             break;
         }
         int randIsland = rand() % 3;
@@ -30,7 +30,7 @@ void LevelGenerator::GenerateIslands()
 
             if (randIsland == 0 && bigIslandCount > 0)
             {
-                islandPrefab = prefabManager->InstantiateIslandBig1(pSceneRoot, 0.0f, 0.0f, 0.0f, 10.3f);
+                islandPrefab = prefabManager->InstantiateIslandBig1(pSceneRoot, 0.0f, 0.0f, 0.0f, 1.3f);
                 bigIslandCount--;
                 break;
             }

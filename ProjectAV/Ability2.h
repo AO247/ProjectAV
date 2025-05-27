@@ -22,7 +22,7 @@ public:
 	void OnTriggerExit(Node* other) override;
 	void Active();
 	float cooldown = 0.5f; // Cooldown for ability 1
-	float force = 500.0f;
+	float force = 200.0f;
 	bool abilityReady = true; // Is the ability ready to be used?
 private:
 	Window& wnd;

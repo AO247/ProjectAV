@@ -60,9 +60,9 @@ void Ability2::Active()
     {
         if (objects[i]->tag == "Enemy" || objects[i]->tag == "Stone")
         {
-            PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), Vec3(0.0f, 0.0f, 0.0f));
+            //PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), Vec3(0.0f, 0.0f, 0.0f));
             Vec3 direction = Vec3(0.0f, 1.0f, 0.0f);
-            PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), direction * force * 100.0f);
+            PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), direction * force * 1.0f);
             OutputDebugStringA(("Ability2 hit: " + objects[i]->GetName() + "\n").c_str());
         }
     }
@@ -121,16 +121,8 @@ void Ability2::OnTriggerExit(Node* object) {
 
 void Ability2::DrawImGuiControls()
 {
-    //ImGui::InputFloat("Move Speed", &moveSpeed);
-    //ImGui::InputFloat("JumpForce", &jumpForce);
-    //ImGui::InputFloat("Dash Force", &dashForce);
-    //ImGui::InputFloat("Dash Cooldown", &dashCooldown);
-    //ImGui::InputFloat("Ability1 Cooldown", &ability1Cooldown);
-    //ImGui::InputFloat("Ability2 Cooldown", &ability2Cooldown);
-    //ImGui::InputFloat("Height", &height);
-    //ImGui::Checkbox("Jumped", &jumped);
-    //ImGui::Checkbox("CanDash", &canDash);
-    //ImGui::Checkbox("Grounded", &grounded);
-    //ImGui::Checkbox("Double Jumped", &doubleJumped);
-    //ImGui::Checkbox("Alive", &alive);
+
+    ImGui::InputFloat("Force", &force);
+    ImGui::InputFloat("Cooldown", &cooldown);
+
 }
