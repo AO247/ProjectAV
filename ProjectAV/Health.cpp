@@ -18,7 +18,7 @@ void Health::TakeDamage(float damage)
 	currentHealth -= damage;
 	if (currentHealth <= 0.0f)
 	{
-		if (pOwner->tag != "Player") {
+		if (pOwner->tag != "PLAYER") {
 			GetOwner()->Destroy();
 		}
 		else {

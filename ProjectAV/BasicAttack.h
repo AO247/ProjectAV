@@ -18,12 +18,15 @@ public:
 	float startDmgTime = 0.5f;
 	float stopDmgTime = 1.0f;
 	float knockbackForce = 1500.0f;
+	void OnTriggerEnter(Node* object) override;
+	void OnTriggerExit(Node* object) override;
 	//OBB* damageArea;
 
 	virtual void Attack(float dt);
 	virtual void DrawImGuiControls() override;
 private:
-	//void OnTriggerCheck();
+	void CheckAttack();
+	std::vector<Node*> objects;
 	bool attacked = false;
 	float timer = 0.0f;
 };

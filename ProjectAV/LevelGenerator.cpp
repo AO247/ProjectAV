@@ -366,7 +366,7 @@ void LevelGenerator::SpawnEnemies()
                         spawnPoints.erase(spawnPoints.begin() + randSpot);
                         islands[islandNumber]->GetComponent<Island>()->spawnPoints = spawnPoints;
                     }
-                    if ((pos - startPos).Length() > 7.0f)
+                    if ((pos - startPos).Length() > 10.0f)
                     {
                         OutputDebugStringA("\nZa blisko\n");
                         islandNumber++;

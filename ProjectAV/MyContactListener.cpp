@@ -183,3 +183,41 @@ void MyContactListener::ExecuteCollisionActivationQueue()
     //collisionActivationQueue.clear();
     collisionActivationQueue = std::vector<TriggerActivationEvent>();
 }
+
+void MyContactListener::RemoveTriggerData(BodyID id)
+{
+    for (int i = 0; i < triggerActivationQueue.size(); i++)
+    {
+        if (triggerActivationQueue[i].trigger == id)
+        {
+            triggerActivationQueue.erase(triggerActivationQueue.begin() + i);
+        }
+    }
+
+    contacts.erase(id);
+    std::map<BodyID, std::map<BodyID, int>>::iterator it;
+    for (it = contacts.begin(); it != contacts.end(); it++)
+    {
+        it->second.erase(id);
+        triggerActivationQueue.push_back(TriggerActivationEvent(it->first, id, EXIT));
+    }
+}
+
+void MyContactListener::RemoveRigidbodyData(BodyID id)
+{
+    for (int i = 0; i < collisionActivationQueue.size(); i++)
+    {
+        if (collisionActivationQueue[i].trigger == id)
+        {
+            collisionActivationQueue.erase(collisionActivationQueue.begin() + i);
+        }
+    }
+
+    collisionContacts.erase(id);
+    std::map<BodyID, std::map<BodyID, int>>::iterator it;
+    for (it = collisionContacts.begin(); it != collisionContacts.end(); it++)
+    {
+        it->second.erase(id);
+        collisionActivationQueue.push_back(TriggerActivationEvent(it->first, id, EXIT));
+    }
+}

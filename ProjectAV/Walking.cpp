@@ -89,7 +89,7 @@ void Walking::GroundCheck()
 {
 	RRayCast ray = RRayCast(
 		RVec3(pOwner->GetWorldPosition().x, pOwner->GetWorldPosition().y, pOwner->GetWorldPosition().z),
-		Vec3(0.0f, -(height / 2 + 0.1f), 0.0f)
+		Vec3(0.0f, -(height / 2 + 0.2f), 0.0f)
 	);
 	RayCastResult result;
 	if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(ray, result, SpecifiedBroadPhaseLayerFilter(BroadPhaseLayers::GROUND), SpecifiedObjectLayerFilter(Layers::GROUND)))
