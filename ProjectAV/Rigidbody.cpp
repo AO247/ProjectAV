@@ -2,6 +2,8 @@
 #include "Node.h"
 #include "DirectXMath.h"
 
+BodyID Rigidbody::testowanie = BodyID();
+
 Rigidbody::Rigidbody(Node* owner, Vector3 position, float mass, Shape* shape) : Component(owner)
 {
 	BodyInterface& bodyInterface = PhysicsCommon::physicsSystem->GetBodyInterface();
@@ -28,6 +30,40 @@ void Rigidbody::Update(float dt)
 	pOwner->SetWorldPosition(DirectX::XMFLOAT3(pos.GetX(),
 		pos.GetY(),
 		pos.GetZ()));
+
+	if (pOwner->GetName() == "Stone")
+	{
+		if (firstRun)
+		{
+			lastTest = rot.GetW();
+			firstRun = false;
+			testowanie = bodyID;
+		}
+		else
+		{
+			if (lastTest != rot.GetW())
+			{
+				if (bodyID == testowanie)
+				{
+					OutputDebugString("mowi: ");
+					OutputDebugString(std::to_string(bodyID.GetIndex()).c_str());
+					OutputDebugString("\n");
+					OutputDebugString(std::to_string(rot.GetX()).c_str());
+					OutputDebugString("\n");
+					OutputDebugString(std::to_string(rot.GetY()).c_str());
+					OutputDebugString("\n");
+					OutputDebugString(std::to_string(rot.GetZ()).c_str());
+					OutputDebugString("\n");
+					OutputDebugString(std::to_string(rot.GetW()).c_str());
+					OutputDebugString("\n");
+					OutputDebugString("\n");
+				}
+
+				lastTest = rot.GetW();
+			}
+		}
+	}
+	
 
 	if (PhysicsCommon::physicsSystem->GetBodyInterface().GetMotionType(bodyID) != EMotionType::Static)
 	{

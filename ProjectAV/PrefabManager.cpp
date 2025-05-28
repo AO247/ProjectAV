@@ -41,11 +41,12 @@ Node* PrefabManager::InstantiateStone(Node* parentNode, float locX, float locY, 
         std::make_unique<ModelComponent>(pNewNodeOwner.get(), wnd->Gfx(), "Models\\kamien\\kamien_6.obj")
     );
 
-    BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(1.0f, 1.0f, 1.0f)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
-    BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
-
+    BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(1.0f * scale, 1.0f * scale, 1.0f * scale)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+    BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
     BodySettings.mMassPropertiesOverride.mMass = 5.0f;
     BodySettings.mFriction = 0.5f;
+    BodySettings.mMotionQuality = EMotionQuality::LinearCast;
+    BodySettings.mAngularDamping = 10.0f;
     //BodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
 
 
@@ -128,7 +129,7 @@ Node* PrefabManager::InstantiateIslandBig1(Node* parentNode, float locX, float l
     
     Node* pNewNode = pNewNodeOwner.get();
 
-    Node* stone = InstantiateStone(pNewNode, 5.2f, 30.0f, -5.2f, 1.5f);
+    Node* stone = InstantiateStone(pNewNode, 10.2f, 30.0f, -5.2f, 1.5f);
 	Node* column1 = InstantiateColumn(pNewNode, 5.0f, 0.0f, -5.0f, 1.0f);
 	Node* column2 = InstantiateColumn(pNewNode, -5.0f, 0.0f, 5.0f, 1.0f);
 

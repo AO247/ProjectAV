@@ -22,6 +22,10 @@ public:
 
 	BodyID& GetBodyID();
 
+	static BodyID testowanie;
+
 private:
 	BodyID bodyID;
+	float lastTest = 0.0f;
+	bool firstRun = true;
 };
