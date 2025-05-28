@@ -18,6 +18,7 @@
 #include "Prefab.h"
 #include "PrefabManager.h"
 #include "LevelGenerator.h"
+#include "WindTunnelEffect.h"
 #include <Jolt/Jolt.h>
 #include <Jolt/ConfigurationString.h>
 #include <Jolt/Physics/Collision/Shape/CapsuleShape.h>
@@ -363,6 +364,22 @@ void App::DoFrame(float dt)
     cube.Submit(fc);
 	cube2.Submit(fc);
     pointLight.Bind(wnd.Gfx(), viewMatrix); // Bind point light (to slot 0)
+
+    std::vector<Node*> columns = pSceneRoot->FindAllChildrenByTag("WALL");
+    for (Node* column : columns) {
+        // Perform operations on each column (Node*)
+        if (auto* effect = column->GetComponent<WindTunnelEffect>()) {
+            effect->Update(dt, wnd.Gfx());
+        }
+    }
+    //Node* columns = pSceneRoot->FindAllChildrenByTag("WALL");
+    //columns->GetComponent<WindTunnelEffect>()->Update(dt, wnd.Gfx());
+
+    //for (Node* node : allNodes) {
+    //    if (auto* effect = node->GetComponent<WindTunnelEffect>()) {
+    //        effect->Update(dt, gfx); // dt = delta time, gfx = Graphics&
+    //    }
+    //}
 
     FrustumCalculating(); // Draw with FRUSTUM CULLING
     //pSceneRoot->Submit(fc, wnd.Gfx()); // Draw without FRUSTUM CULLING you have to also uncomment the draw method in Node.cpp

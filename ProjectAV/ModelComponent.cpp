@@ -412,3 +412,8 @@ std::vector<DirectX::SimpleMath::Vector3> ModelComponent::GetAllUniqueVertices()
 	}
 	return resultVertices;
 }
+
+void ModelComponent::AddTechnique(Technique technique)
+{
+	techniques.push_back(std::move(technique));
+}

@@ -9,6 +9,7 @@
 
 // Include DirectX Simple Math
 #include <SimpleMath.h>
+#include "Technique.h"
 
 
 // Forward Declarations
@@ -82,10 +83,13 @@ public:
     std::vector<DirectX::SimpleMath::Vector3> GetAllUniqueVertices() const;
     std::vector<ModelComponent::Triangle> GetAllTriangles() const;
 
+    std::vector<std::unique_ptr<Mesh>> meshPtrs;
+    void AddTechnique(Technique technique);
+    std::vector<Technique> techniques;
 private:
     std::unique_ptr<ModelInternalNode> ParseNodeRecursive(int& nextId, const aiNode& node, float scale);
 
     std::unique_ptr<ModelInternalNode> pRootInternal;
-    std::vector<std::unique_ptr<Mesh>> meshPtrs;
+    
     std::unique_ptr<ModelControlWindow> pControlWindow;
 };

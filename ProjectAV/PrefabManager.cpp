@@ -1,6 +1,12 @@
 #include "PrefabManager.h"
 #include "Components.h"
 #include "PhysicsCommon.h"
+#include "BindableCommon.h"
+#include "Technique.h"
+#include "Step.h"
+#include "Mesh.h"
+#include "WindTunnelEffect.h"
+
 
 PrefabManager::~PrefabManager()
 {
@@ -97,12 +103,42 @@ Node* PrefabManager::InstantiateMushroom3(Node* parentNode, float locX, float lo
 
 Node* PrefabManager::InstantiateColumn(Node* parentNode, float locX, float locY, float locZ, float scale) const {
 
-
     auto pNewNodeOwner = std::make_unique<Node>("Column", nullptr, "WALL");
 
     pNewNodeOwner->AddComponent(
         std::make_unique<ModelComponent>(pNewNodeOwner.get(), wnd->Gfx(), "Models\\kolumna\\kolumna.obj")
     );
+
+     // 0 = numer passa, dostosuj jeœli trzeba
+    Step windTunnelStep(0);
+
+    auto pVs = Bind::VertexShader::Resolve(wnd->Gfx(), "WindTunnel_VS.cso");
+    auto pPs = Bind::PixelShader::Resolve(wnd->Gfx(), "WindTunnel_PS.cso");
+
+    // Pobierz layout z ModelComponent (lub zdefiniuj odpowiedni)
+    auto* model = pNewNodeOwner->GetComponent<ModelComponent>();
+    auto& vertexBuffer = *model->meshPtrs[0]->GetVertexBuffer();
+    const auto& layout = vertexBuffer.GetLayout();
+
+    auto pLayout = Bind::InputLayout::Resolve(wnd->Gfx(), layout, pVs->GetBytecode());
+    auto pCbTime = std::make_shared<Bind::PixelConstantBuffer<TimeBuffer>>(wnd->Gfx(), TimeBuffer{ 0.0f }, 0u);
+    auto pTexture = Bind::Texture::Resolve(wnd->Gfx(), "Models/kolumna/kamien.png", 0u); // œcie¿ka i slot dostosuj do swojego projektu
+    auto pSampler = Bind::Sampler::Resolve(wnd->Gfx());
+
+    pNewNodeOwner->AddComponent(std::make_unique<WindTunnelEffect>(pNewNodeOwner.get(), pCbTime));
+    // Dodaj bindable do stepa
+    windTunnelStep.AddBindable(pVs);
+    windTunnelStep.AddBindable(pPs);
+    windTunnelStep.AddBindable(pLayout);
+    windTunnelStep.AddBindable(pCbTime);
+    windTunnelStep.AddBindable(pTexture);
+    windTunnelStep.AddBindable(pSampler);
+
+    // Dodaj Step do Technique
+    Technique windTunnelTech("WindTunnel", 0); // 0 = numer passa
+    windTunnelTech.AddStep(std::move(windTunnelStep));
+    model->AddTechnique(std::move(windTunnelTech));
+
     BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(2.0f, 10.0f, 2.0f)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::WALL);
     BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
 
