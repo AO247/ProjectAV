@@ -6,6 +6,94 @@ PrefabManager::~PrefabManager()
 {
 }
 
+Node* PrefabManager::InstantiateMushroom1(Node* parentNode, float locX, float locY, float locZ, float scale) const {
+
+
+    auto pNewNodeOwner = std::make_unique<Node>("Mushroom1", nullptr, "Wall");
+
+    pNewNodeOwner->AddComponent(
+        std::make_unique<ModelComponent>(pNewNodeOwner.get(), wnd->Gfx(), "Models\\enviro_male_2\\grzyb_1.2.obj")
+    );
+    ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
+    TriangleList islandTriangles = PhysicsCommon::MakeTriangleList(islandModel->GetAllTriangles());
+    MeshShapeSettings islandMeshSettings(islandTriangles);
+    Shape::ShapeResult islandMeshCreationResult = islandMeshSettings.Create();
+    ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
+    ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
+    islandMeshShape = islandScaling.Create().Get();
+    BodyCreationSettings bodySettings(islandMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+    bodySettings.mFriction = 1.0f;
+    pNewNodeOwner->AddComponent(
+        std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
+    );
+
+    pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+    pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+
+    Node* pNewNode = pNewNodeOwner.get();
+    parentNode->AddChild(std::move(pNewNodeOwner));
+    return pNewNode;
+}
+
+Node* PrefabManager::InstantiateMushroom2(Node* parentNode, float locX, float locY, float locZ, float scale) const {
+
+
+    auto pNewNodeOwner = std::make_unique<Node>("Stone", nullptr, "Stone");
+
+    pNewNodeOwner->AddComponent(
+        std::make_unique<ModelComponent>(pNewNodeOwner.get(), wnd->Gfx(), "Models\\enviro_male_2\\grzyb_2.2.obj")
+    );
+    ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
+    TriangleList islandTriangles = PhysicsCommon::MakeTriangleList(islandModel->GetAllTriangles());
+    MeshShapeSettings islandMeshSettings(islandTriangles);
+    Shape::ShapeResult islandMeshCreationResult = islandMeshSettings.Create();
+    ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
+    ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
+    islandMeshShape = islandScaling.Create().Get();
+    BodyCreationSettings bodySettings(islandMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+    bodySettings.mFriction = 1.0f;
+    pNewNodeOwner->AddComponent(
+        std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
+    );
+
+
+    pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+    pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+
+    Node* pNewNode = pNewNodeOwner.get();
+    parentNode->AddChild(std::move(pNewNodeOwner));
+    return pNewNode;
+}
+
+Node* PrefabManager::InstantiateMushroom3(Node* parentNode, float locX, float locY, float locZ, float scale) const {
+
+
+    auto pNewNodeOwner = std::make_unique<Node>("Stone", nullptr, "Stone");
+
+    pNewNodeOwner->AddComponent(
+        std::make_unique<ModelComponent>(pNewNodeOwner.get(), wnd->Gfx(), "Models\\enviro_male_2\\grzyb_3.2.obj")
+    );
+    ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
+    TriangleList islandTriangles = PhysicsCommon::MakeTriangleList(islandModel->GetAllTriangles());
+    MeshShapeSettings islandMeshSettings(islandTriangles);
+    Shape::ShapeResult islandMeshCreationResult = islandMeshSettings.Create();
+    ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
+    ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
+    islandMeshShape = islandScaling.Create().Get();
+    BodyCreationSettings bodySettings(islandMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+    bodySettings.mFriction = 1.0f;
+    pNewNodeOwner->AddComponent(
+        std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
+    );
+
+
+    pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+    pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+
+    Node* pNewNode = pNewNodeOwner.get();
+    parentNode->AddChild(std::move(pNewNodeOwner));
+    return pNewNode;
+}
 
 Node* PrefabManager::InstantiateColumn(Node* parentNode, float locX, float locY, float locZ, float scale) const {
 
@@ -65,39 +153,140 @@ Node* PrefabManager::InstantiateWall(Node* parentNode, float locX, float locY, f
 }
 
 Node* PrefabManager::InstantiateStone1(Node* parentNode, float locX, float locY, float locZ, float scale) const {
-    auto pNewNodeOwner = std::make_unique<Node>("Stone", nullptr, "Stone");
+    auto pNewNodeOwner = std::make_unique<Node>("Stone", nullptr, "STONE");
 
     pNewNodeOwner->AddComponent(
-        std::make_unique<ModelComponent>(pNewNodeOwner.get(), wnd->Gfx(), "Models\\platformy_glazy_2\\platforma_3.3.obj")
+        std::make_unique<ModelComponent>(pNewNodeOwner.get(), wnd->Gfx(), "Models\\enviro_male_2\\kamien_1.2.obj")
     );
 
-    /*BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(1.0f, 1.0f, 1.0f)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+    BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(1.0f, 1.0f, 1.0f)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
     BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
 
     BodySettings.mMassPropertiesOverride.mMass = 7.0f;
-    BodySettings.mFriction = 0.5f;*/
-    //BodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
-
-
-   /* pNewNodeOwner->AddComponent(
+    BodySettings.mFriction = 0.5f;
+    BodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
+    pNewNodeOwner->AddComponent(
         std::make_unique<Rigidbody>(pNewNodeOwner.get(), BodySettings)
     );
     Rigidbody* pRigidbody = pNewNodeOwner->GetComponent<Rigidbody>();
     pNewNodeOwner->AddComponent(
         std::make_unique<Throwable>(pNewNodeOwner.get())
-    );*/
+    );
 
-    ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
-    TriangleList islandTriangles = PhysicsCommon::MakeTriangleList(islandModel->GetAllTriangles());
-    MeshShapeSettings islandMeshSettings(islandTriangles);
-    Shape::ShapeResult islandMeshCreationResult = islandMeshSettings.Create();
-    ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
-    ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
-    islandMeshShape = islandScaling.Create().Get();
-    BodyCreationSettings bodySettings(islandMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
-    bodySettings.mFriction = 1.0f;
+    pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+    pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+
+    Node* pNewNode = pNewNodeOwner.get();
+    parentNode->AddChild(std::move(pNewNodeOwner));
+    return pNewNode;
+}
+
+Node* PrefabManager::InstantiateStone2(Node* parentNode, float locX, float locY, float locZ, float scale) const {
+    auto pNewNodeOwner = std::make_unique<Node>("Stone", nullptr, "STONE");
+
     pNewNodeOwner->AddComponent(
-        std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
+        std::make_unique<ModelComponent>(pNewNodeOwner.get(), wnd->Gfx(), "Models\\enviro_male_2\\kamien_2.2.obj")
+    );
+
+    BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(1.0f, 1.0f, 1.0f)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+    BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
+
+    BodySettings.mMassPropertiesOverride.mMass = 7.0f;
+    BodySettings.mFriction = 0.5f;
+    BodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
+    pNewNodeOwner->AddComponent(
+        std::make_unique<Rigidbody>(pNewNodeOwner.get(), BodySettings)
+    );
+    Rigidbody* pRigidbody = pNewNodeOwner->GetComponent<Rigidbody>();
+    pNewNodeOwner->AddComponent(
+        std::make_unique<Throwable>(pNewNodeOwner.get())
+    );
+
+    pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+    pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+
+    Node* pNewNode = pNewNodeOwner.get();
+    parentNode->AddChild(std::move(pNewNodeOwner));
+    return pNewNode;
+}
+
+Node* PrefabManager::InstantiateStone3(Node* parentNode, float locX, float locY, float locZ, float scale) const {
+    auto pNewNodeOwner = std::make_unique<Node>("Stone", nullptr, "STONE");
+
+    pNewNodeOwner->AddComponent(
+        std::make_unique<ModelComponent>(pNewNodeOwner.get(), wnd->Gfx(), "Models\\enviro_male_2\\kamien_3.2.obj")
+    );
+
+    BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(1.0f, 1.0f, 1.0f)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+    BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
+
+    BodySettings.mMassPropertiesOverride.mMass = 7.0f;
+    BodySettings.mFriction = 0.5f;
+    BodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
+    pNewNodeOwner->AddComponent(
+        std::make_unique<Rigidbody>(pNewNodeOwner.get(), BodySettings)
+    );
+    Rigidbody* pRigidbody = pNewNodeOwner->GetComponent<Rigidbody>();
+    pNewNodeOwner->AddComponent(
+        std::make_unique<Throwable>(pNewNodeOwner.get())
+    );
+
+    pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+    pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+
+    Node* pNewNode = pNewNodeOwner.get();
+    parentNode->AddChild(std::move(pNewNodeOwner));
+    return pNewNode;
+}
+
+Node* PrefabManager::InstantiateStone4(Node* parentNode, float locX, float locY, float locZ, float scale) const {
+    auto pNewNodeOwner = std::make_unique<Node>("Stone", nullptr, "STONE");
+
+    pNewNodeOwner->AddComponent(
+        std::make_unique<ModelComponent>(pNewNodeOwner.get(), wnd->Gfx(), "Models\\enviro_male_2\\kamien_4.2.obj")
+    );
+
+    BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(1.0f, 1.0f, 1.0f)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+    BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
+
+    BodySettings.mMassPropertiesOverride.mMass = 7.0f;
+    BodySettings.mFriction = 0.5f;
+    BodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
+    pNewNodeOwner->AddComponent(
+        std::make_unique<Rigidbody>(pNewNodeOwner.get(), BodySettings)
+    );
+    Rigidbody* pRigidbody = pNewNodeOwner->GetComponent<Rigidbody>();
+    pNewNodeOwner->AddComponent(
+        std::make_unique<Throwable>(pNewNodeOwner.get())
+    );
+
+    pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+    pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+
+    Node* pNewNode = pNewNodeOwner.get();
+    parentNode->AddChild(std::move(pNewNodeOwner));
+    return pNewNode;
+}
+
+Node* PrefabManager::InstantiateStone5(Node* parentNode, float locX, float locY, float locZ, float scale) const {
+    auto pNewNodeOwner = std::make_unique<Node>("Stone", nullptr, "STONE");
+
+    pNewNodeOwner->AddComponent(
+        std::make_unique<ModelComponent>(pNewNodeOwner.get(), wnd->Gfx(), "Models\\enviro_male_2\\kamien_5.2.obj")
+    );
+
+    BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(1.0f, 1.0f, 1.0f)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+    BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
+
+    BodySettings.mMassPropertiesOverride.mMass = 7.0f;
+    BodySettings.mFriction = 0.5f;
+    BodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
+    pNewNodeOwner->AddComponent(
+        std::make_unique<Rigidbody>(pNewNodeOwner.get(), BodySettings)
+    );
+    Rigidbody* pRigidbody = pNewNodeOwner->GetComponent<Rigidbody>();
+    pNewNodeOwner->AddComponent(
+        std::make_unique<Throwable>(pNewNodeOwner.get())
     );
 
     pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
@@ -114,7 +303,7 @@ Node* PrefabManager::InstantiatePlatform1(Node* parentNode, float locX, float lo
     auto pNewNodeOwner = std::make_unique<Node>("Platform1", nullptr, "Wall");
 
     pNewNodeOwner->AddComponent(
-        std::make_unique<ModelComponent>(pNewNodeOwner.get(), wnd->Gfx(), "Models\\platformy_glazy\\platforma_1.obj")
+        std::make_unique<ModelComponent>(pNewNodeOwner.get(), wnd->Gfx(), "Models\\platformy_glazy_2\\platforma_1.2.obj")
     );
     ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
     TriangleList islandTriangles = PhysicsCommon::MakeTriangleList(islandModel->GetAllTriangles());
@@ -130,6 +319,156 @@ Node* PrefabManager::InstantiatePlatform1(Node* parentNode, float locX, float lo
     );
 
     
+    pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+    pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+
+    Node* pNewNode = pNewNodeOwner.get();
+    parentNode->AddChild(std::move(pNewNodeOwner));
+    return pNewNode;
+}
+
+Node* PrefabManager::InstantiatePlatform2(Node* parentNode, float locX, float locY, float locZ, float scale) const {
+
+
+    auto pNewNodeOwner = std::make_unique<Node>("Platform1", nullptr, "Wall");
+
+    pNewNodeOwner->AddComponent(
+        std::make_unique<ModelComponent>(pNewNodeOwner.get(), wnd->Gfx(), "Models\\platformy_glazy_2\\platforma_2.2.obj")
+    );
+    ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
+    TriangleList islandTriangles = PhysicsCommon::MakeTriangleList(islandModel->GetAllTriangles());
+    MeshShapeSettings islandMeshSettings(islandTriangles);
+    Shape::ShapeResult islandMeshCreationResult = islandMeshSettings.Create();
+    ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
+    ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
+    islandMeshShape = islandScaling.Create().Get();
+    BodyCreationSettings bodySettings(islandMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+    bodySettings.mFriction = 1.0f;
+    pNewNodeOwner->AddComponent(
+        std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
+    );
+
+
+    pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+    pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+
+    Node* pNewNode = pNewNodeOwner.get();
+    parentNode->AddChild(std::move(pNewNodeOwner));
+    return pNewNode;
+}
+
+Node* PrefabManager::InstantiatePlatform3(Node* parentNode, float locX, float locY, float locZ, float scale) const {
+
+
+    auto pNewNodeOwner = std::make_unique<Node>("Platform1", nullptr, "Wall");
+
+    pNewNodeOwner->AddComponent(
+        std::make_unique<ModelComponent>(pNewNodeOwner.get(), wnd->Gfx(), "Models\\platformy_glazy_2\\platforma_3.3.obj")
+    );
+    ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
+    TriangleList islandTriangles = PhysicsCommon::MakeTriangleList(islandModel->GetAllTriangles());
+    MeshShapeSettings islandMeshSettings(islandTriangles);
+    Shape::ShapeResult islandMeshCreationResult = islandMeshSettings.Create();
+    ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
+    ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
+    islandMeshShape = islandScaling.Create().Get();
+    BodyCreationSettings bodySettings(islandMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+    bodySettings.mFriction = 1.0f;
+    pNewNodeOwner->AddComponent(
+        std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
+    );
+
+
+    pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+    pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+
+    Node* pNewNode = pNewNodeOwner.get();
+    parentNode->AddChild(std::move(pNewNodeOwner));
+    return pNewNode;
+}
+
+Node* PrefabManager::InstantiatePlatform4(Node* parentNode, float locX, float locY, float locZ, float scale) const {
+
+
+    auto pNewNodeOwner = std::make_unique<Node>("Platform1", nullptr, "Wall");
+
+    pNewNodeOwner->AddComponent(
+        std::make_unique<ModelComponent>(pNewNodeOwner.get(), wnd->Gfx(), "Models\\platformy_glazy_2\\platforma_4.3.obj")
+    );
+    ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
+    TriangleList islandTriangles = PhysicsCommon::MakeTriangleList(islandModel->GetAllTriangles());
+    MeshShapeSettings islandMeshSettings(islandTriangles);
+    Shape::ShapeResult islandMeshCreationResult = islandMeshSettings.Create();
+    ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
+    ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
+    islandMeshShape = islandScaling.Create().Get();
+    BodyCreationSettings bodySettings(islandMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+    bodySettings.mFriction = 1.0f;
+    pNewNodeOwner->AddComponent(
+        std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
+    );
+
+
+    pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+    pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+
+    Node* pNewNode = pNewNodeOwner.get();
+    parentNode->AddChild(std::move(pNewNodeOwner));
+    return pNewNode;
+}
+
+Node* PrefabManager::InstantiatePlatform5(Node* parentNode, float locX, float locY, float locZ, float scale) const {
+
+
+    auto pNewNodeOwner = std::make_unique<Node>("Platform1", nullptr, "Wall");
+
+    pNewNodeOwner->AddComponent(
+        std::make_unique<ModelComponent>(pNewNodeOwner.get(), wnd->Gfx(), "Models\\platformy_glazy_2\\platforma_5.3.obj")
+    );
+    ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
+    TriangleList islandTriangles = PhysicsCommon::MakeTriangleList(islandModel->GetAllTriangles());
+    MeshShapeSettings islandMeshSettings(islandTriangles);
+    Shape::ShapeResult islandMeshCreationResult = islandMeshSettings.Create();
+    ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
+    ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
+    islandMeshShape = islandScaling.Create().Get();
+    BodyCreationSettings bodySettings(islandMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+    bodySettings.mFriction = 1.0f;
+    pNewNodeOwner->AddComponent(
+        std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
+    );
+
+
+    pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+    pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+
+    Node* pNewNode = pNewNodeOwner.get();
+    parentNode->AddChild(std::move(pNewNodeOwner));
+    return pNewNode;
+}
+
+Node* PrefabManager::InstantiatePlatform6(Node* parentNode, float locX, float locY, float locZ, float scale) const {
+
+
+    auto pNewNodeOwner = std::make_unique<Node>("Platform1", nullptr, "Wall");
+
+    pNewNodeOwner->AddComponent(
+        std::make_unique<ModelComponent>(pNewNodeOwner.get(), wnd->Gfx(), "Models\\platformy_glazy_2\\platforma_6.2.obj")
+    );
+   /* ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
+    TriangleList islandTriangles = PhysicsCommon::MakeTriangleList(islandModel->GetAllTriangles());
+    MeshShapeSettings islandMeshSettings(islandTriangles);
+    Shape::ShapeResult islandMeshCreationResult = islandMeshSettings.Create();
+    ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
+    ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
+    islandMeshShape = islandScaling.Create().Get();
+    BodyCreationSettings bodySettings(islandMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+    bodySettings.mFriction = 1.0f;
+    pNewNodeOwner->AddComponent(
+        std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
+    );*/
+
+
     pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
     pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
@@ -202,11 +541,18 @@ Node* PrefabManager::InstantiateIslandBig1(Node* parentNode, float locX, float l
     Node* pNewNode = pNewNodeOwner.get();
 
 	
-    //Node* stone = InstantiateStone1(pNewNode, 5.2f, 30.0f, -5.2f, 3.0f);
-	//Node* column1 = InstantiateColumn(pNewNode, 5.0f, 0.0f, -5.0f, 1.0f);
-	//Node* column2 = InstantiateColumn(pNewNode, -5.0f, 0.0f, 5.0f, 1.0f);
-	//Node* wall1 = InstantiateWall(pNewNode, 0.0f, 0.0f, -3.0f, 1.0f);
-    //Node* platform1 = InstantiatePlatform1(pNewNode, 0.0f, 0.0f, 0.0f, 2.0f);
+    Node* stone1 = InstantiateStone1(pNewNode, 22.2f, 30.0f, 32.2f, 2.0f);
+    Node* stone2 = InstantiateStone2(pNewNode, 4.2f, 30.0f, 17.2f, 2.0f);
+    Node* stone3 = InstantiateStone2(pNewNode, -10.2f, 30.0f, -2.2f, 2.0f);
+    Node* stone4 = InstantiateStone3(pNewNode, 22.2f, 30.0f, -18.2f, 2.0f);
+    Node* stone5 = InstantiateStone4(pNewNode, -17.2f, 30.0f, 22.2f, 2.0f);
+    Node* stone6 = InstantiateStone5(pNewNode, 11.2f, 30.0f, -8.2f, 2.0f);
+	Node* column1 = InstantiateColumn(pNewNode, 20.0f, 0.0f, 25.0f, 1.0f);
+	Node* column2 = InstantiateColumn(pNewNode, -5.0f, 0.0f, 25.0f, 1.0f); 
+    Node* column3 = InstantiateColumn(pNewNode, 20.0f, 0.0f, -12.0f, 1.0f);
+    Node* column4 = InstantiateColumn(pNewNode, -5.0f, 0.0f, -12.0f, 1.0f);
+    Node* platform1 = InstantiatePlatform1(pNewNode, 41.0f, 0.0f, 6.0f, 1.0f);
+    Node* platform3 = InstantiatePlatform3(pNewNode, -19.0f, 0.0f, -26.0f, 1.0f);
 
 
     auto spawnPoint1 = std::make_unique<Node>("SpawnPoint 1", pNewNodeOwner.get());
@@ -294,11 +640,18 @@ Node* PrefabManager::InstantiateIslandBig2(Node* parentNode, float locX, float l
     Node* pNewNode = pNewNodeOwner.get();
 
 
-    Node* stone = InstantiateStone1(pNewNode, -25.2f, 0.0f, -5.2f, 0.5f);
-    //Node* column1 = InstantiateColumn(pNewNode, 5.0f, 0.0f, -5.0f, 1.0f);
-    //Node* column2 = InstantiateColumn(pNewNode, -5.0f, 0.0f, 5.0f, 1.0f);
-    Node* wall1 = InstantiateWall(pNewNode, 20.0f, 0.0f, -20.0f, 0.5f);
-    //Node* platform1 = InstantiatePlatform1(pNewNode, 0.0f, 0.0f, 0.0f, 2.0f);
+    Node* stone1 = InstantiateStone1(pNewNode, 22.2f, 30.0f, 32.2f, 2.0f);
+    Node* stone2 = InstantiateStone2(pNewNode, 27.0f, 30.0f, 17.2f, 2.0f);
+    Node* stone3 = InstantiateStone2(pNewNode, 27.2f, 30.0f, -2.2f, 2.0f);
+    Node* stone4 = InstantiateStone3(pNewNode, -8.2f, 30.0f, -18.2f, 2.0f);
+    Node* stone5 = InstantiateStone4(pNewNode, 15.2f, 30.0f, 4.2f, 2.0f);
+    Node* stone6 = InstantiateStone5(pNewNode, 11.2f, 30.0f, -8.2f, 2.0f);
+    Node* column1 = InstantiateColumn(pNewNode, 45.0f, 0.0f, -25.0f, 1.0f);
+    Node* column2 = InstantiateColumn(pNewNode, 10.0f, 0.0f, 25.0f, 1.0f);
+    Node* column3 = InstantiateColumn(pNewNode, 29.0f, 0.0f, -20.0f, 1.0f);
+    Node* column4 = InstantiateColumn(pNewNode, 2.0f, 0.0f, -16.0f, 1.0f);
+    Node* platform1 = InstantiatePlatform1(pNewNode, 50.0f, 0.0f, 0.0f, 1.0f);
+    Node* platform2 = InstantiatePlatform5(pNewNode, -28.0f, 0.0f, 6.0f, 1.0f);
 
 
     auto spawnPoint1 = std::make_unique<Node>("SpawnPoint 1", pNewNodeOwner.get());
@@ -382,9 +735,17 @@ Node* PrefabManager::InstantiateIslandMedium1(Node* parentNode, float locX, floa
 
     Node* pNewNode = pNewNodeOwner.get();
 
-    //Node* stone = InstantiateStone(pNewNode, pNewNode->GetWorldPosition().x + 5.0f, 30.0f, 0.0f, 1.5f);
-    //Node* column1 = InstantiateColumn(pNewNode, -2.5f, 0.0f, 4.0f, 0.65f);
-    //Node* column2 = InstantiateColumn(pNewNode, pNewNode->GetWorldPosition().x - 5.0f, pNewNode->GetWorldPosition().y + 0.0f, pNewNode->GetWorldPosition().z - 5.0f, 1.0f);
+    Node* stone1 = InstantiateStone1(pNewNode, -7.2f, 15.0f, 23.2f, 2.0f);
+    Node* stone2 = InstantiateStone2(pNewNode, 31.0f, 30.0f, 15.2f, 2.0f);
+    Node* stone3 = InstantiateStone2(pNewNode, 17.2f, 30.0f, -2.2f, 2.0f);
+    Node* stone4 = InstantiateStone3(pNewNode, -15.2f, 30.0f, -25.2f, 2.0f);
+    Node* stone5 = InstantiateStone4(pNewNode, 10.2f, 30.0f, -22.2f, 2.0f);
+    Node* stone6 = InstantiateStone5(pNewNode, -15.2f, 30.0f, -8.2f, 2.0f);
+    Node* column1 = InstantiateColumn(pNewNode, 24.5f, 0.0f, -7.0f, 1.0f);
+    Node* column2 = InstantiateColumn(pNewNode, -4.5f, 0.0f, -20.0f, 1.0f);
+    Node* column3 = InstantiateColumn(pNewNode, -18.5f, 8.4f, 15.0f, 1.0f);
+	Node* platform1 = InstantiatePlatform2(pNewNode, -17.0f, 0.0f, 10.0f, 1.0f);
+
     auto spawnPoint1 = std::make_unique<Node>("SpawnPoint 1", pNewNodeOwner.get());
     spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(3.0f, 2.0f, -3.0f));
     pIsland->spawnPoints.push_back(spawnPoint1.get());
@@ -539,9 +900,15 @@ Node* PrefabManager::InstantiateIslandSmall1(Node* parentNode, float locX, float
 
     Node* pNewNode = pNewNodeOwner.get();
 
-    //Node* stone = InstantiateStone(pNewNode, pNewNode->GetWorldPosition().x + 5.0f, 30.0f, 0.0f, 1.5f);
-    //Node* column1 = InstantiateColumn(pNewNode, 3.0f, 0.0f, 0.5f, 0.85f);
-    //Node* column8 = InstantiateColumn(pNewNode, pNewNode->GetWorldPosition().x - 5.0f, pNewNode->GetWorldPosition().y + 0.0f, pNewNode->GetWorldPosition().z - 5.0f, 1.0f);
+    Node* stone1 = InstantiateStone1(pNewNode, -7.2f, 15.0f, 8.2f, 2.0f);
+    Node* stone2 = InstantiateStone2(pNewNode, -2.0f, 30.0f, 0.0f, 2.0f);
+    Node* stone3 = InstantiateStone2(pNewNode, 12.2f, 30.0f, 4.2f, 2.0f);
+    Node* stone4 = InstantiateStone3(pNewNode, -12.2f, 30.0f, -21.2f, 2.0f);
+    Node* stone5 = InstantiateStone4(pNewNode, 12.2f, 30.0f, -20.2f, 2.0f);
+    Node* stone6 = InstantiateStone5(pNewNode, -16.2f, 30.0f, 1.2f, 2.0f);
+    Node* column1 = InstantiateColumn(pNewNode, 17.5f, 0.0f, -7.0f, 1.0f);
+    Node* column2 = InstantiateColumn(pNewNode, -6.5f, 0.0f, -15.0f, 1.0f);
+    Node* column3 = InstantiateColumn(pNewNode, 7.5f, 0.0f, 10.0f, 1.0f);
 
     auto spawnPoint1 = std::make_unique<Node>("SpawnPoint 1", pNewNodeOwner.get());
     spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(3.0f, 2.0f, -3.0f));
@@ -615,10 +982,16 @@ Node* PrefabManager::InstantiateIslandSmall2(Node* parentNode, float locX, float
 
     Node* pNewNode = pNewNodeOwner.get();
 
-    //Node* stone = InstantiateStone(pNewNode, pNewNode->GetWorldPosition().x + 5.0f, 30.0f, 0.0f, 1.5f);
-    //Node* column1 = InstantiateColumn(pNewNode, 3.0f, 0.0f, 0.5f, 0.85f);
-    //Node* column8 = InstantiateColumn(pNewNode, pNewNode->GetWorldPosition().x - 5.0f, pNewNode->GetWorldPosition().y + 0.0f, pNewNode->GetWorldPosition().z - 5.0f, 1.0f);
-
+    Node* stone1 = InstantiateStone1(pNewNode, -10.2f, 15.0f, 8.2f, 2.0f);
+    Node* stone2 = InstantiateStone2(pNewNode, 3.0f, 30.0f, -8.0f, 2.0f);
+    Node* stone3 = InstantiateStone2(pNewNode, 20.2f, 30.0f, 4.2f, 2.0f);
+    Node* stone4 = InstantiateStone3(pNewNode, 15.2f, 30.0f, 21.2f, 2.0f);
+    Node* stone5 = InstantiateStone4(pNewNode, 12.2f, 30.0f, -3.2f, 2.0f);
+    Node* stone6 = InstantiateStone5(pNewNode, -15.2f, 30.0f, -8.2f, 2.0f);
+    Node* column1 = InstantiateColumn(pNewNode, 17.5f, 0.0f, -7.0f, 1.0f);
+    Node* column2 = InstantiateColumn(pNewNode, -4.5f, 0.0f, 1.0f, 1.0f);
+    Node* column3 = InstantiateColumn(pNewNode, 16.5f, 0.0f, 10.0f, 1.0f);
+    
     auto spawnPoint1 = std::make_unique<Node>("SpawnPoint 1", pNewNodeOwner.get());
     spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(3.0f, 2.0f, -3.0f));
     pIsland->spawnPoints.push_back(spawnPoint1.get());
