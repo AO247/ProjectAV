@@ -164,7 +164,7 @@ Node* PrefabManager::InstantiateStone1(Node* parentNode, float locX, float locY,
 
     BodySettings.mMassPropertiesOverride.mMass = 7.0f;
     BodySettings.mFriction = 0.5f;
-    BodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
+    BodySettings.mMotionQuality = EMotionQuality::LinearCast; 
     pNewNodeOwner->AddComponent(
         std::make_unique<Rigidbody>(pNewNodeOwner.get(), BodySettings)
     );
@@ -193,7 +193,7 @@ Node* PrefabManager::InstantiateStone2(Node* parentNode, float locX, float locY,
 
     BodySettings.mMassPropertiesOverride.mMass = 7.0f;
     BodySettings.mFriction = 0.5f;
-    BodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
+    BodySettings.mMotionQuality = EMotionQuality::LinearCast;
     pNewNodeOwner->AddComponent(
         std::make_unique<Rigidbody>(pNewNodeOwner.get(), BodySettings)
     );
@@ -222,7 +222,7 @@ Node* PrefabManager::InstantiateStone3(Node* parentNode, float locX, float locY,
 
     BodySettings.mMassPropertiesOverride.mMass = 7.0f;
     BodySettings.mFriction = 0.5f;
-    BodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
+    BodySettings.mMotionQuality = EMotionQuality::LinearCast; 
     pNewNodeOwner->AddComponent(
         std::make_unique<Rigidbody>(pNewNodeOwner.get(), BodySettings)
     );
@@ -251,7 +251,7 @@ Node* PrefabManager::InstantiateStone4(Node* parentNode, float locX, float locY,
 
     BodySettings.mMassPropertiesOverride.mMass = 7.0f;
     BodySettings.mFriction = 0.5f;
-    BodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
+    BodySettings.mMotionQuality = EMotionQuality::LinearCast;
     pNewNodeOwner->AddComponent(
         std::make_unique<Rigidbody>(pNewNodeOwner.get(), BodySettings)
     );
@@ -280,7 +280,7 @@ Node* PrefabManager::InstantiateStone5(Node* parentNode, float locX, float locY,
 
     BodySettings.mMassPropertiesOverride.mMass = 7.0f;
     BodySettings.mFriction = 0.5f;
-    BodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
+    BodySettings.mMotionQuality = EMotionQuality::LinearCast; 
     pNewNodeOwner->AddComponent(
         std::make_unique<Rigidbody>(pNewNodeOwner.get(), BodySettings)
     );
