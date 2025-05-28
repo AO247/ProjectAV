@@ -35,6 +35,7 @@ void ShootAttack::Attack(float dt)
 	Vector3 playerPos = player->GetWorldPosition();
 	playerPos.y += 2.0f;
 	Vector3 dir = playerPos - pos;
+	dir.Normalize();
 	dir *= bulletSpeed;
 	PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(bullet->GetComponent<Rigidbody>()->GetBodyID(), Vec3(dir.x, dir.y, dir.z));
 }

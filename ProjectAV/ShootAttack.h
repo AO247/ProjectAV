@@ -16,7 +16,7 @@ public:
 	float wholeAttackTime = 1.5f;
 	float shootTime = 0.5f;
 	float knockbackForce = 1500.0f;
-	float bulletSpeed = 1.0f;
+	float bulletSpeed = 13.0f;
 	virtual void Attack(float dt);
 	virtual void DrawImGuiControls() override;
 
