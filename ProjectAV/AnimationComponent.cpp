@@ -8,6 +8,7 @@
 #include <assimp/scene.h>       // For aiScene, aiAnimation, aiNodeAnim
 #include <assimp/postprocess.h> // For aiProcess flags (though fewer are typically needed for anim-only loading)
 #include <filesystem>
+#include <sstream> 
 
 AnimationComponent::AnimationComponent(Node* owner)
     : Component(owner, "AnimationComponent") 
@@ -237,6 +238,43 @@ void AnimationComponent::Update(float dt)
         // Potentially advance mCurrentTimeTicks by a fixed amount or handle as error
     }
 
+    if (mIsPlaying && !mCurrentAnimationName.empty()) // Only log if actually attempting to play
+    {
+        // TEMPORARY LOGGING - REMOVE LATER
+        std::ostringstream oss;
+        if (!mFinalBoneMatrices.empty()) {
+            oss << "  Matrices updated this frame. Count: " << mFinalBoneMatrices.size() << "\n";
+            // Log first few bones and maybe a middle one if many bones
+            for (size_t i = 0; i < std::min((size_t)5, mFinalBoneMatrices.size()); ++i) { // Log up to first 5
+                const auto& mat_s = mFinalBoneMatrices[i]; // mat_s for 'stored matrix'
+                // Quick check if it's roughly identity (for quick visual scan in logs)
+                bool isIdentityIsh = (fabs(mat_s._11 - 1.0f) < 0.01f && fabs(mat_s._22 - 1.0f) < 0.01f &&
+                    fabs(mat_s._33 - 1.0f) < 0.01f && fabs(mat_s._44 - 1.0f) < 0.01f &&
+                    fabs(mat_s._41) < 0.01f && fabs(mat_s._42) < 0.01f && fabs(mat_s._43) < 0.01f);
+
+                oss << "    Bone[" << i << "] (row1): "
+                    << mat_s._11 << " " << mat_s._12 << " " << mat_s._13 << " " << mat_s._14
+                    << (isIdentityIsh ? " (Looks Identity-ish)" : " (Looks Animated)") << "\n";
+            }
+            if (mFinalBoneMatrices.size() > 10) { // Example: log a middle bone if there are many
+                size_t mid_idx = mFinalBoneMatrices.size() / 2;
+                const auto& mat_s_mid = mFinalBoneMatrices[mid_idx];
+                bool isIdentityIshMid = (fabs(mat_s_mid._11 - 1.0f) < 0.01f && fabs(mat_s_mid._22 - 1.0f) < 0.01f &&
+                    fabs(mat_s_mid._33 - 1.0f) < 0.01f && fabs(mat_s_mid._44 - 1.0f) < 0.01f &&
+                    fabs(mat_s_mid._41) < 0.01f && fabs(mat_s_mid._42) < 0.01f && fabs(mat_s_mid._43) < 0.01f);
+                oss << "    Bone[" << mid_idx << "] (row1): "
+                    << mat_s_mid._11 << " " << mat_s_mid._12 << " " << mat_s_mid._13 << " " << mat_s_mid._14
+                    << (isIdentityIshMid ? " (Looks Identity-ish)" : " (Looks Animated)") << "\n";
+            }
+        }
+        OutputDebugStringA(oss.str().c_str());
+    }
+
+    ModelInternalNode* rootModelNode = mCachedModelComponent->GetRootInternalNode();
+    if (mIsPlaying && rootModelNode && animIt != mAnimations.end()) { // Ensure animIt is valid
+        const Animation& currentAnim = animIt->second;
+        CalculateBoneTransformsRecursive(rootModelNode, &currentAnim, DirectX::XMMatrixIdentity());
+    }
 
     // 2. Handle looping or end of animation
     if (mCurrentTimeTicks >= currentAnim.durationTicks)
@@ -257,9 +295,11 @@ void AnimationComponent::Update(float dt)
     }
 
     // 3. Calculate final bone transforms (This will be a call to a more complex function)
-    ModelInternalNode* rootModelNode = mCachedModelComponent->GetRootInternalNode();
+   // ModelInternalNode* rootModelNode = mCachedModelComponent->GetRootInternalNode();
     if (rootModelNode) {
         CalculateBoneTransformsRecursive(rootModelNode, &currentAnim, dx::XMMatrixIdentity());
+
+
     }
     else {
         // This shouldn't happen if Initialize() succeeded and ModelComponent is valid
@@ -351,7 +391,8 @@ dx::XMMATRIX AnimationComponent::InterpolateRotation(float animationTimeTicks, c
 dx::XMMATRIX AnimationComponent::InterpolateScaling(float animationTimeTicks, const AnimationChannel& channel) const
 {
     if (channel.scalingKeys.empty()) {
-        return dx::XMMatrixIdentity(); // Or XMMatrixScaling(1.0f, 1.0f, 1.0f)
+       // return dx::XMMatrixIdentity(); // Or XMMatrixScaling(1.0f, 1.0f, 1.0f)
+        return dx::XMMatrixScaling(1.0f, 1.0f, 1.0f);
     }
     if (channel.scalingKeys.size() == 1) {
         return dx::XMMatrixScalingFromVector(dx::XMLoadFloat3(&channel.scalingKeys[0].value));
@@ -402,12 +443,75 @@ void AnimationComponent::CalculateBoneTransformsRecursive(
         const AnimationChannel& animChannel = pCurrentAnim->channels[channelMapEntry->second];
 
         // Get interpolated S, R, T matrices
+        // Print original keyframe values before interpolation
+        if (!animChannel.scalingKeys.empty()) {
+            const auto& firstScale = animChannel.scalingKeys.front().value;
+            const auto& lastScale = animChannel.scalingKeys.back().value;
+            std::ostringstream oss;
+            oss << "Node: " << nodeName << " ScalingKeyframes: "
+                << "First: [" << firstScale.x << ", " << firstScale.y << ", " << firstScale.z << "] "
+                << "Last: [" << lastScale.x << ", " << lastScale.y << ", " << lastScale.z << "]\n";
+            OutputDebugStringA(oss.str().c_str());
+        }
+        if (!animChannel.rotationKeys.empty()) {
+            const auto& firstRot = animChannel.rotationKeys.front().value;
+            const auto& lastRot = animChannel.rotationKeys.back().value;
+            std::ostringstream oss;
+            oss << "Node: " << nodeName << " RotationKeyframes: "
+                << "First: [" << firstRot.x << ", " << firstRot.y << ", " << firstRot.z << ", " << firstRot.w << "] "
+                << "Last: [" << lastRot.x << ", " << lastRot.y << ", " << lastRot.z << ", " << lastRot.w << "]\n";
+            OutputDebugStringA(oss.str().c_str());
+        }
+        if (!animChannel.positionKeys.empty()) {
+            const auto& firstPos = animChannel.positionKeys.front().value;
+            const auto& lastPos = animChannel.positionKeys.back().value;
+            std::ostringstream oss;
+            oss << "Node: " << nodeName << " PositionKeyframes: "
+                << "First: [" << firstPos.x << ", " << firstPos.y << ", " << firstPos.z << "] "
+                << "Last: [" << lastPos.x << ", " << lastPos.y << ", " << lastPos.z << "]\n";
+            OutputDebugStringA(oss.str().c_str());
+        }
+
         dx::XMMATRIX scalingMatrix = InterpolateScaling(mCurrentTimeTicks, animChannel);
         dx::XMMATRIX rotationMatrix = InterpolateRotation(mCurrentTimeTicks, animChannel);
         dx::XMMATRIX translationMatrix = InterpolatePosition(mCurrentTimeTicks, animChannel);
 
+        //if (nodeName == "Armature") { // Or your armature root name
+        //    scalingMatrix = DirectX::XMMatrixScaling(1.0f, 1.0f, 1.0f); // Force scale to 1
+        //}
+        // Debug: Print the S, R, T matrices for this node/channel
+        {
+            std::ostringstream oss;
+            oss << "Node: " << nodeName << " Animation Matrices at t=" << mCurrentTimeTicks << "\n";
+            DirectX::XMFLOAT4X4 matData;
+
+            DirectX::XMStoreFloat4x4(&matData, scalingMatrix);
+            oss << "  ScalingMatrix:\n";
+            oss << "    [" << matData._11 << ", " << matData._12 << ", " << matData._13 << ", " << matData._14 << "]\n";
+            oss << "    [" << matData._21 << ", " << matData._22 << ", " << matData._23 << ", " << matData._24 << "]\n";
+            oss << "    [" << matData._31 << ", " << matData._32 << ", " << matData._33 << ", " << matData._34 << "]\n";
+            oss << "    [" << matData._41 << ", " << matData._42 << ", " << matData._43 << ", " << matData._44 << "]\n";
+
+            DirectX::XMStoreFloat4x4(&matData, rotationMatrix);
+            oss << "  RotationMatrix:\n";
+            oss << "    [" << matData._11 << ", " << matData._12 << ", " << matData._13 << ", " << matData._14 << "]\n";
+            oss << "    [" << matData._21 << ", " << matData._22 << ", " << matData._23 << ", " << matData._24 << "]\n";
+            oss << "    [" << matData._31 << ", " << matData._32 << ", " << matData._33 << ", " << matData._34 << "]\n";
+            oss << "    [" << matData._41 << ", " << matData._42 << ", " << matData._43 << ", " << matData._44 << "]\n";
+
+            DirectX::XMStoreFloat4x4(&matData, translationMatrix);
+            oss << "  TranslationMatrix:\n";
+            oss << "    [" << matData._11 << ", " << matData._12 << ", " << matData._13 << ", " << matData._14 << "]\n";
+            oss << "    [" << matData._21 << ", " << matData._22 << ", " << matData._23 << ", " << matData._24 << "]\n";
+            oss << "    [" << matData._31 << ", " << matData._32 << ", " << matData._33 << ", " << matData._34 << "]\n";
+            oss << "    [" << matData._41 << ", " << matData._42 << ", " << matData._43 << ", " << matData._44 << "]\n";
+
+            OutputDebugStringA(oss.str().c_str());
+        }
+
         // Combine: Scale -> Rotate -> Translate for the local animated transform
-        nodeLocalAnimatedTransform = scalingMatrix * rotationMatrix * translationMatrix;
+        nodeLocalAnimatedTransform = scalingMatrix *   rotationMatrix * translationMatrix;
+        //nodeLocalAnimatedTransform = translationMatrix;
     }
     // If no animation channel for this node, nodeLocalAnimatedTransform remains its bind-pose transform.
 
@@ -450,6 +554,18 @@ void AnimationComponent::CalculateBoneTransformsRecursive(
         }
     }
 
+}
+
+void PrintMatrix(const std::string& matrixName, const DirectX::XMMATRIX& matrix) {
+    std::ostringstream oss;
+    oss << "Matrix: " << matrixName << std::fixed << std::setprecision(3) << "\n";
+    DirectX::XMFLOAT4X4 matData;
+    DirectX::XMStoreFloat4x4(&matData, matrix);
+    oss << "[" << matData._11 << ", " << matData._12 << ", " << matData._13 << ", " << matData._14 << "]\n";
+    oss << "[" << matData._21 << ", " << matData._22 << ", " << matData._23 << ", " << matData._24 << "]\n";
+    oss << "[" << matData._31 << ", " << matData._32 << ", " << matData._33 << ", " << matData._34 << "]\n";
+    oss << "[" << matData._41 << ", " << matData._42 << ", " << matData._43 << ", " << matData._44 << "]\n\n";
+    OutputDebugStringA(oss.str().c_str());
 }
 
 void AnimationComponent::PlayAnimation(const std::string& animationName, bool loop /*= true*/)

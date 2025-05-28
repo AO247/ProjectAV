@@ -47,12 +47,13 @@ const std::string& ModelException::GetNote() const noexcept
 // --- Mesh Implementation ---
 
 Mesh::Mesh(
+    Node* pOwner,
     Graphics& gfx,
     std::shared_ptr<Bind::VertexBuffer> pVB,
     std::shared_ptr<Bind::IndexBuffer> pIB,
     const Material& mat
 ) noxnd
-    : Drawable(gfx, std::move(pVB), std::move(pIB), mat) // Call the NEW Drawable constructor
+    : Drawable(pOwner, gfx, std::move(pVB), std::move(pIB), mat)
 {
     // Initialize Mesh-specific members here
     // For example, your worldTransformMatrix:

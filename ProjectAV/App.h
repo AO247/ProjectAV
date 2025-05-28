@@ -52,6 +52,7 @@ private:
     DebugLine* line3 = new DebugLine(wnd.Gfx(), { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f, 0.0f, 1.0f });
     DebugLine* line4 = new DebugLine(wnd.Gfx(), { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f, 0.0f, 1.0f });
 
+
     // --- Scene Graph ---
     std::unique_ptr<Node> pSceneRoot;
     Node* pCamera = nullptr;
@@ -68,7 +69,7 @@ private:
     Node* pColumn = nullptr;
 	Node* pColumn2 = nullptr;
     Node* pColumn3 = nullptr;
-    Node* pColumn4 = nullptr;
+    Node* pChar = nullptr;
     Node* pIsland = nullptr;
     Node* pSelectedSceneNode = nullptr;
     Node* pNoxTurn = nullptr; // Node for the camera

@@ -15,6 +15,7 @@ class FrameCommander
 public:
 	FrameCommander( Graphics& gfx )
 		:
+		gfx(gfx),
 		ds( gfx,gfx.GetWidth(),gfx.GetHeight() ),
 		rt1( { gfx,gfx.GetWidth() / downFactor,gfx.GetHeight() / downFactor } ),
 		rt2( { gfx,gfx.GetWidth() / downFactor,gfx.GetHeight() / downFactor } ),
@@ -108,7 +109,14 @@ public:
 		}
 		ImGui::End();
 	}
+
+	Graphics& GetGfx() noexcept
+	{
+		return gfx;
+	}
+
 private:
+	Graphics& gfx;
 	std::array<Pass,3> passes;
 	int downFactor = 1;
 	DepthStencil ds;

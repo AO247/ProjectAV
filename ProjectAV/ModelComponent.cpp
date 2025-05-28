@@ -270,6 +270,7 @@ ModelComponent::ModelComponent(Node* owner, Graphics& gfx, const std::string& mo
 
 		// 2g. NOW, create the Mesh object using its NEW constructor
 		meshPtrs.push_back(std::make_unique<Mesh>(
+			this->pOwner,
 			gfx,
 			pD3DVertexBuffer,  // Pass the GPU vertex buffer
 			pD3DIndexBuffer, // Pass the GPU index buffer
@@ -444,9 +445,9 @@ void ModelComponent::ExtractBoneWeightForVertices(
 			// Assimp's aiProcess_LimitBoneWeights should ideally handle this before we get here,
 			// ensuring each vertex has at most MAX_BONES_PER_VERTEX influences.
 			if (!slotFound) {
-				// OutputDebugStringA(("Warning: Vertex " + std::to_string(vertexId) +
-				//                     " has more than MAX_BONES_PER_VERTEX influences. Bone '" +
-				//                     boneName + "' weight not added.\n").c_str());
+				 OutputDebugStringA(("Warning: Vertex " + std::to_string(vertexId) +
+				                     " has more than MAX_BONES_PER_VERTEX influences. Bone '" +
+				                     boneName + "' weight not added.\n").c_str());
 			}
 		}
 	} // End of loop through pAIBone in mesh

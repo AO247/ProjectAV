@@ -50,7 +50,7 @@ App::App(const std::string& commandLine)
 
 	LevelGenerator levelGenerator(prefabManager, pSceneRoot.get());
 
-    //Node* island = prefabManager->InstantiateIsland(pSceneRoot.get(), 0.0f, -0.1f, 0.0f, 1.3f);
+    Node* island = prefabManager->InstantiateIsland(pSceneRoot.get(), 0.0f, -0.1f, 0.0f, 1.3f);
 
     // --- Create Nodes ---
 
@@ -79,8 +79,9 @@ App::App(const std::string& commandLine)
 	pColumn2 = pColumn2Owner.get();
 	auto pColumn3Owner = std::make_unique<Node>("Column3", nullptr, "Wall");
 	pColumn3 = pColumn3Owner.get();
-	auto pColumn4Owner = std::make_unique<Node>("Column4", nullptr, "Wall");
-	pColumn4 = pColumn4Owner.get();
+	
+    auto pColumn4Owner = std::make_unique<Node>("pChar", nullptr, "Wall");
+    pChar = pColumn4Owner.get();
     auto pIslandOwner = std::make_unique<Node>("Island", nullptr, "Ground");
     pIsland = pIslandOwner.get();
 	auto pNoxTurnOwner = std::make_unique<Node>("NoxTurn");
@@ -138,8 +139,8 @@ App::App(const std::string& commandLine)
 	pColumn3->AddComponent(
 		std::make_unique<ModelComponent>(pColumn3, wnd.Gfx(), "Models\\kolumna\\kolumna.obj")
 	);
-	pColumn4->AddComponent(
-		std::make_unique<ModelComponent>(pColumn4, wnd.Gfx(), "Models\\char.fbx")
+    pChar->AddComponent(
+		std::make_unique<ModelComponent>(pChar, wnd.Gfx(), "Models\\charBox.fbx")
 	);
 
     //pIsland->AddComponent(
@@ -147,14 +148,14 @@ App::App(const std::string& commandLine)
     //);
 
 
-    pNoxTurn->AddComponent(
+    /*pNoxTurn->AddComponent(
         std::make_unique<ModelComponent>(pNoxTurn, wnd.Gfx(), "Models\\stone\\char.fbx")
     );
     pNoxTurnHair->AddComponent(
         std::make_unique<ModelComponent>(pNoxTurnHair, wnd.Gfx(), "Models\\stone\\hair.fbx")
-    );
+    );*/
     pEnemy->AddComponent(
-        std::make_unique<ModelComponent>(pEnemy, wnd.Gfx(), "Models\\enemy\\basic.obj")
+        std::make_unique<ModelComponent>(pEnemy, wnd.Gfx(), "Models\\rBox.fbx")
     );
 
 
@@ -240,11 +241,7 @@ App::App(const std::string& commandLine)
 	);
 	OBB* cOBB3 = pColumn3->GetComponent<OBB>();
 	physicsEngine.AddCollider(cOBB3);
-	pColumn4->AddComponent(
-		std::make_unique<OBB>(pColumn4, nullptr, Vector3(-0.6f, 5.0f, 0.0f), Vector3(2.9f, 10.0f, 2.9f))
-	);
-	OBB* cOBB4 = pColumn4->GetComponent<OBB>();
-	physicsEngine.AddCollider(cOBB4);
+     
     
     pStone->AddComponent(
         std::make_unique<Rigidbody>(pStone, Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f))
@@ -327,31 +324,28 @@ App::App(const std::string& commandLine)
 	SoundEffectsPlayer* pEnemySoundEffectsPlayer = pEnemy->GetComponent<SoundEffectsPlayer>();
 	pEnemySoundEffectsPlayer->AddSound("Models\\sci-fidrone.ogg");
 
+    
+    pChar->AddComponent(std::make_unique<AnimationComponent>(pChar));
+    AnimationComponent* pAnimComp = pChar->GetComponent<AnimationComponent>();
+    pAnimComp->Initialize();
 
-    if (pColumn4) {
-        auto pAnimCompOwner = std::make_unique<AnimationComponent>(pColumn4);
-        AnimationComponent* pAnimComp = pAnimCompOwner.get();  
-        pPlayer->AddComponent(std::move(pAnimCompOwner));
+    bool animsLoaded = pAnimComp->LoadAnimationsFromFile(
+        "Models\\charBox.fbx", // Path to file containing animations
+        "Models\\charBox.fbx"             // Path to model whose skeleton these anims target (can be same file)
+    );
 
-        pAnimComp->Initialize();
+    //if (animsLoaded) {
+    //    OutputDebugStringA("Animations loaded successfully for pPlayer.\n");
+    //    // You could try playing an animation here later:
+    //    // pAnimComp->PlayAnimation("Walk"); // Assuming "Walk" is an animation name in the file
 
-        bool animsLoaded = pAnimComp->LoadAnimationsFromFile(
-            "Models\\char.fbx", // Path to file containing animations
-            "Models\\char.fbx"             // Path to model whose skeleton these anims target (can be same file)
-        );
-
-        if (animsLoaded) {
-            OutputDebugStringA("Animations loaded successfully for pPlayer.\n");
-            // You could try playing an animation here later:
-            // pAnimComp->PlayAnimation("Walk"); // Assuming "Walk" is an animation name in the file
-
-
-            pAnimComp->PlayAnimation("jog.001", true);
-        }
-        else {
-            OutputDebugStringA("Failed to load animations for pPlayer.\n");
-        }
-    }
+    pAnimComp->PlayAnimation("Armature|ArmatureAction", true);
+    //pAnimComp->PlayAnimation("jog.001", true);
+    //}
+    //else {
+    //    OutputDebugStringA("Failed to load animations for pPlayer.\n");
+    //}
+    
 
 
     // Changing position scale etc.]
@@ -371,8 +365,8 @@ App::App(const std::string& commandLine)
 	pColumn->SetLocalPosition(DirectX::XMFLOAT3(-8.0f, 0.0f, -7.0f));
 	pColumn2->SetLocalPosition(DirectX::XMFLOAT3(-2.0f, 0.0f, 4.0f));
 	pColumn3->SetLocalPosition(DirectX::XMFLOAT3(-16.0f, 0.0f, -6.0f));
-	pColumn4->SetLocalPosition(DirectX::XMFLOAT3(10.0f, 0.0f, 6.0f));
-    pColumn4->SetLocalScale(DirectX::XMFLOAT3(0.05f, 0.05f, 0.05f));
+    pChar->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+    //pChar->SetLocalScale(DirectX::XMFLOAT3(0.05f, 0.05f, 0.05f));
 	/*stone1->SetLocalPosition(DirectX::XMFLOAT3(-10.0f, 1.0f, -10.0f));
 	stone1->SetLocalScale(dx::XMFLOAT3(1.5f, 1.5f, 1.5f));*/
 	/*stone2->SetLocalPosition(DirectX::XMFLOAT3(-10.0f, 1.0f, 10.0f));
@@ -389,7 +383,7 @@ App::App(const std::string& commandLine)
 	AddBoxColliderToDraw(wnd.Gfx(), cOBB);
 	AddBoxColliderToDraw(wnd.Gfx(), cOBB2);
 	AddBoxColliderToDraw(wnd.Gfx(), cOBB3);
-	AddBoxColliderToDraw(wnd.Gfx(), cOBB4);
+	//AddBoxColliderToDraw(wnd.Gfx(), cOBB4);
 	AddBoxColliderToDraw(wnd.Gfx(), eDamageOBB);
 
 
@@ -715,11 +709,11 @@ void App::ShowControlWindows()
 {
     // --- Existing Windows ---
 
-	DrawSphereColliders(wnd.Gfx()); // Call the updated function
-    DrawBoxColliders(wnd.Gfx()); // Call the updated function
-	DrawCapsuleColliders(wnd.Gfx());
+	//DrawSphereColliders(wnd.Gfx()); // Call the updated function
+    //DrawBoxColliders(wnd.Gfx()); // Call the updated function
+	//DrawCapsuleColliders(wnd.Gfx());
     //ForEnemyWalking();
-    pointLight.Submit(fc);
+    //pointLight.Submit(fc);
 
     pointLight.SpawnControlWindow(); // Control for Point Light
     if (showDemoWindow)

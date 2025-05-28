@@ -130,6 +130,12 @@ void Graphics::BindSwapBuffer() noexcept
 	vp.TopLeftY = 0.0f;
 	pContext->RSSetViewports( 1u,&vp );
 }
+ID3D11Device* Graphics::GetDevice() const noexcept
+{
+	return pDevice.Get();
+}
+
+
 
 void Graphics::BindSwapBuffer( const DepthStencil& ds ) noexcept
 {

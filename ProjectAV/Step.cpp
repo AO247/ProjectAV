@@ -14,3 +14,6 @@ void Step::InitializeParentReferences( const Drawable& parent ) noexcept
 		b->InitializeParentReference( parent );
 	}
 }
+const std::vector<std::shared_ptr<Bind::Bindable>>& Step::GetBindables() const noexcept {
+	return bindables;
+}

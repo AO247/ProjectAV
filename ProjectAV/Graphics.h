@@ -77,6 +77,10 @@ public:
 	bool IsImguiEnabled() const noexcept;
 	UINT GetWidth() const noexcept;
 	UINT GetHeight() const noexcept;
+
+	ID3D11Device* GetDevice() const noexcept;
+
+
 private:
 	UINT width;
 	UINT height;

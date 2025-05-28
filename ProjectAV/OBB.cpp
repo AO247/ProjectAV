@@ -311,7 +311,7 @@ IntervalPair OBB::GetInterval(Vector3 axis)
 		dot = v.Dot(GetTransformedVertex(vertices[i]));
 		if (imax == dot)
 		{
-			result.verticesClosestToTheAxis[closestVertexIndex] = GetTransformedVertex(vertices[i]);
+			//result.verticesClosestToTheAxis[closestVertexIndex] = GetTransformedVertex(vertices[i]);
 			closestVertexIndex++;
 		}
 	}

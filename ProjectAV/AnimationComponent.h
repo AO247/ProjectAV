@@ -91,7 +91,8 @@ public:
 
     // Placeholder for ImGui
     void ShowAnimationControls();
-
+    int GetBoneCount() const { return static_cast<int>(mFinalBoneMatrices.size()); }
+    const std::vector<dx::XMFLOAT4X4>& GetFinalBoneMatrices() const { return mFinalBoneMatrices; }
     void PlayAnimation(const std::string& animationName, bool loop = true);
     bool IsPlaying() const { return mIsPlaying; } // Getter for playing state
 

@@ -8,6 +8,7 @@
 class TechniqueProbe;
 class Material;
 struct aiMesh;
+class Node;
 
 namespace Bind
 {
@@ -22,6 +23,7 @@ class Drawable
 public:
 	Drawable() = default;
 	Drawable(
+		Node* pOwnerNode,
 		Graphics& gfx, // For pTopology
 		std::shared_ptr<Bind::VertexBuffer> pVB,
 		std::shared_ptr<Bind::IndexBuffer> pIB,
@@ -35,9 +37,16 @@ public:
 	void Accept( TechniqueProbe& probe );
 	UINT GetIndexCount() const noxnd;
 	virtual ~Drawable();
+
+	Node* GetParentNode() const noexcept;  
+
+
+
 protected:
 	std::shared_ptr<Bind::IndexBuffer> pIndices;
 	std::shared_ptr<Bind::VertexBuffer> pVertices;
 	std::shared_ptr<Bind::Topology> pTopology;
 	std::vector<Technique> techniques;
+
+	Node* pOwnerNode = nullptr;
 };

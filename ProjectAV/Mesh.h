@@ -11,7 +11,7 @@ class Graphics;
 class Material; // Forward declare the new Material class
 struct aiMesh;   // Forward declare Assimp mesh
 class FrameCommander; // Forward declare for Submit
-
+class Node;
 
 class ModelException : public CException
 {
@@ -32,6 +32,7 @@ class Mesh : public Drawable
 public:
     // **** MODIFIED CONSTRUCTOR ****
     Mesh(
+        Node* pOwner,
         Graphics& gfx,
         std::shared_ptr<Bind::VertexBuffer> pVB,
         std::shared_ptr<Bind::IndexBuffer> pIB,

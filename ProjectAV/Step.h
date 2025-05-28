@@ -72,6 +72,9 @@ public:
 			pb->Accept( probe );
 		}
 	}
+
+	const std::vector<std::shared_ptr<Bind::Bindable>>& GetBindables() const noexcept;
+
 private:
 	size_t targetPass;
 	std::vector<std::shared_ptr<Bind::Bindable>> bindables;

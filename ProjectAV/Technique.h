@@ -39,6 +39,13 @@ public:
 	{
 		return name;
 	}
+
+	void SetName(const std::string& newName) noexcept
+	{
+		name = newName;
+	}
+
+
 private:
 	bool active = true;
 	std::vector<Step> steps;
