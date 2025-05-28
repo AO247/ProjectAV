@@ -11,7 +11,7 @@ public:
 	LevelGenerator(PrefabManager* prefabManager, Node* root, Node* pPlayer);
 	~LevelGenerator() = default;
 
-	int bigIslandCount = 3;
+	int bigIslandCount = 1;
 	int mediumIslandCount = 0;
 	int smallIslandCount = 0;
 
