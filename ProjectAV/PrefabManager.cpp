@@ -396,9 +396,9 @@ Node* PrefabManager::InstantiateEnemy(Node* parentNode, float locX, float locY, 
     auto pNewNodeOwner = std::make_unique<Node>("Enemy", nullptr, "ENEMY");
 
     pNewNodeOwner->AddComponent(
-        std::make_unique<ModelComponent>(pNewNodeOwner.get(), wnd->Gfx(), "Models\\enemy\\basic.obj")
+        std::make_unique<ModelComponent>(pNewNodeOwner.get(), wnd->Gfx(), "Models\\enemy\\basic2.obj")
     );
-    BodyCreationSettings eBodySettings(new JPH::CapsuleShape(1.0f, 1.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::MOVING);
+    BodyCreationSettings eBodySettings(new JPH::CapsuleShape(2.1f, 1.5f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::MOVING);
     eBodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
 
     //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
@@ -410,7 +410,10 @@ Node* PrefabManager::InstantiateEnemy(Node* parentNode, float locX, float locY, 
         std::make_unique<Rigidbody>(pNewNodeOwner.get(), eBodySettings)
     );
 
-
+    BodyCreationSettings a1BodySettings(new JPH::CapsuleShape(5.0f, 3.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
+    pNewNodeOwner->AddComponent(
+        std::make_unique<Trigger>(pNewNodeOwner.get(), a1BodySettings, false)
+    );
     pNewNodeOwner->AddComponent(
         std::make_unique<Walking>(pNewNodeOwner.get())
     );

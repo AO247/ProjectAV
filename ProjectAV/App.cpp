@@ -88,30 +88,7 @@ App::App(const std::string& commandLine)
 	auto pAbility2Owner = std::make_unique<Node>("Ability2", nullptr, "ABILITY2");
 	pAbility2 = pAbility2Owner.get();
     auto pNanosuitOwner = std::make_unique<Node>("Nanosuit");
-    pNanosuitNode = pNanosuitOwner.get();
-    auto pEmptyNode = std::make_unique<Node>("EmptyNode");
-    auto pBrickOwner = std::make_unique<Node>("Brick");
-    pBrick = pBrickOwner.get();
-    auto pBoxOwner = std::make_unique<Node>("Box", nullptr, "WALL");
-    pBox = pBoxOwner.get();
-    auto pStoneOwner = std::make_unique<Node>("Stone", nullptr, "STONE");
-    pStone = pStoneOwner.get();
-    auto pColumnOwner = std::make_unique<Node>("Column", nullptr, "WALL");
-    pColumn = pColumnOwner.get();
-	auto pColumn2Owner = std::make_unique<Node>("Column2", nullptr, "WALL");
-	pColumn2 = pColumn2Owner.get();
-	auto pColumn3Owner = std::make_unique<Node>("Column3", nullptr, "WALL");
-	pColumn3 = pColumn3Owner.get();
-	auto pColumn4Owner = std::make_unique<Node>("Column4", nullptr, "WALL");
-	pColumn4 = pColumn4Owner.get();
-    auto pIslandOwner = std::make_unique<Node>("Island", nullptr, "GROUND");
-    pIsland = pIslandOwner.get();
-	auto pNoxTurnOwner = std::make_unique<Node>("NoxTurn");
-	pNoxTurn = pNoxTurnOwner.get();
-	auto pNoxTurnHairOwner = std::make_unique<Node>("NoxTurnHair");
-	pNoxTurnHair = pNoxTurnHairOwner.get();
-	auto pEnemyOwner = std::make_unique<Node>("Enemy", nullptr, "ENEMY");
-	pEnemy = pEnemyOwner.get();
+
 
 	
 
@@ -121,65 +98,6 @@ App::App(const std::string& commandLine)
     pSceneRoot->AddChild(std::move(pPlayerOwner));
     pSceneRoot->AddChild(std::move(pAbility1Owner));
     pSceneRoot->AddChild(std::move(pAbility2Owner));
-    //pSceneRoot->AddChild(std::move(pNanosuitOwner));
-    //pSceneRoot->AddChild(std::move(pEmptyNode));
-    //pSceneRoot->AddChild(std::move(pBrickOwner));
-    pSceneRoot->AddChild(std::move(pBoxOwner));
-    pSceneRoot->AddChild(std::move(pStoneOwner));
-    pSceneRoot->AddChild(std::move(pColumnOwner));
-	pSceneRoot->AddChild(std::move(pColumn2Owner));
-	pSceneRoot->AddChild(std::move(pColumn3Owner));
-	pSceneRoot->AddChild(std::move(pColumn4Owner));
-    pSceneRoot->AddChild(std::move(pIslandOwner));
-    //pSceneRoot->AddChild(std::move(pNoxTurnOwner));
-    //pNoxTurn->AddChild(std::move(pNoxTurnHairOwner));
-    pSceneRoot->AddChild(std::move(pEnemyOwner));
-
-
-    // Adding Models
- //   pNanosuitNode->AddComponent(
- //       std::make_unique<ModelComponent>(pNanosuitNode, wnd.Gfx(), "Models\\nano_textured\\nanosuit.obj")
- //   );
- //   pBrick->AddComponent(
- //       std::make_unique<ModelComponent>(pBrick, wnd.Gfx(), "Models\\brick_wall\\brick_wall.obj")
- //   );
- //   pBox->AddComponent(
- //       std::make_unique<ModelComponent>(pBox, wnd.Gfx(), "Models\\box.glb")
- //   );
- //   pStone->AddComponent(
-	//	std::make_unique<ModelComponent>(pStone, wnd.Gfx(), "Models\\kamien\\kamien_6.obj")
- //   );
- //   //pStone->AddComponent(
- //   //    std::make_unique<ModelComponent>(pStone, wnd.Gfx(), "Models\\stone\\stone.glb")
- //   //);
- //   pColumn->AddComponent(
- //       std::make_unique<ModelComponent>(pColumn, wnd.Gfx(), "
- // )
- //   );
-	//pColumn2->AddComponent(
-	//	std::make_unique<ModelComponent>(pColumn2, wnd.Gfx(), "Models\\kolumna\\kolumna.obj")
-	//);
-	//pColumn3->AddComponent(
-	//	std::make_unique<ModelComponent>(pColumn3, wnd.Gfx(), "Models\\kolumna\\kolumna.obj")
-	//);
-	//pColumn4->AddComponent(
-	//	std::make_unique<ModelComponent>(pColumn4, wnd.Gfx(), "Models\\objects\\sciany.obj")
-	//);
-
- //   //pIsland->AddComponent(
- //   //    std::make_unique<ModelComponent>(pIsland, wnd.Gfx(), "Models\\box.glb")
- //   //);
-
-
- //   pNoxTurn->AddComponent(
- //       std::make_unique<ModelComponent>(pNoxTurn, wnd.Gfx(), "Models\\stone\\char.fbx")
- //   );
- //   pNoxTurnHair->AddComponent(
- //       std::make_unique<ModelComponent>(pNoxTurnHair, wnd.Gfx(), "Models\\stone\\hair.fbx")
- //   );
-    pEnemy->AddComponent(
-        std::make_unique<ModelComponent>(pEnemy, wnd.Gfx(), "Models\\enemy\\basic.obj")
-    );
 
 
 
@@ -226,86 +144,6 @@ App::App(const std::string& commandLine)
     );
     pPlayer->GetComponent<PlayerController>()->ability2 = pAbility2;
 
-    BodyCreationSettings eBodySettings(new JPH::CapsuleShape(1.0f, 1.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::MOVING);
-    eBodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
-
-    //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
-    eBodySettings.mMassPropertiesOverride.mMass = 10.0f;
-    eBodySettings.mFriction = 0.2f;
-    eBodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
-    pEnemy->AddComponent(
-        std::make_unique<Rigidbody>(pEnemy, eBodySettings)
-    );
-    //Rigidbody* pRigidbody = pEnemy->GetComponent<Rigidbody>();
-
-
-  /*  pIsland->AddComponent(
-        std::make_unique<OBB>(pIsland, nullptr, Vector3(0.0f, -0.3f, 0.0f), Vector3(20.0f, 1.0f, 20.0f))
-    );
-	OBB* iOBB = pIsland->GetComponent<OBB>();
-	iOBB->SetLayer(Layers::GROUND);
-	physicsEngine.AddCollider(iOBB);*/
-
-
-
-	/*pBox->AddComponent(
-		std::make_unique<BoundingSphere>(pBox, Vector3(0.0f, 0.0f, 0.0f), 2.0f, nullptr)
-	);
-	BoundingSphere* bBoundingSphere = pBox->GetComponent<BoundingSphere>();
-	physicsEngine.AddCollider(bBoundingSphere);*/
-
-	
-	/*pColumn->AddComponent(
-		std::make_unique<OBB>(pColumn, nullptr, Vector3(-0.6f, 5.0f, 0.0f), Vector3(2.9f, 10.0f, 2.9f))
-	);
-	OBB* cOBB = pColumn->GetComponent<OBB>();
-	physicsEngine.AddCollider(cOBB);
-	pColumn2->AddComponent(
-		std::make_unique<OBB>(pColumn2, nullptr, Vector3(-0.6f, 5.0f, 0.0f), Vector3(2.9f, 10.0f, 2.9f))
-	);
-	OBB* cOBB2 = pColumn2->GetComponent<OBB>();
-	physicsEngine.AddCollider(cOBB2);
-	pColumn3->AddComponent(
-		std::make_unique<OBB>(pColumn3, nullptr, Vector3(-0.6f, 5.0f, 0.0f), Vector3(2.9f, 10.0f, 2.9f))
-	);
-	OBB* cOBB3 = pColumn3->GetComponent<OBB>();
-	physicsEngine.AddCollider(cOBB3);
-	pColumn4->AddComponent(
-		std::make_unique<OBB>(pColumn4, nullptr, Vector3(-0.6f, 5.0f, 0.0f), Vector3(2.9f, 10.0f, 2.9f))
-	);
-	OBB* cOBB4 = pColumn4->GetComponent<OBB>();
-	physicsEngine.AddCollider(cOBB4);*/
-    
-    /*pStone->AddComponent(
-        std::make_unique<Rigidbody>(pStone, Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f))
-    );
-	Rigidbody* sRigidbody = pStone->GetComponent<Rigidbody>();*/
-    pStone->AddComponent(
-        std::make_unique<Throwable>(pStone)
-    );
-	/*pStone->AddComponent(
-		std::make_unique<OBB>(pStone, sRigidbody, Vector3(0.0f, 0.6f, 0.0f), Vector3(1.2f, 1.1f, 1.7f))
-	);
-	OBB* sOBB = pStone->GetComponent<OBB>();
-	sOBB->SetLayer(Layers::THROWABLE);
-	sRigidbody->SetCollider(sOBB);
-	physicsEngine.AddRigidbody(sRigidbody);
-    pStone->AddComponent(
-        std::make_unique<BoundingSphere>(pStone, Vector3(0.0f, 0.6f, 0.0f), 1.5f, nullptr)
-    );
-	BoundingSphere* sBoundingSphere = pStone->GetComponent<BoundingSphere>();
-    sBoundingSphere->SetLayer(Layers::THROWABLE);
-	sBoundingSphere->SetIsTrigger(true);
-	sBoundingSphere->SetTriggerEnabled(true);
-	pStone->GetComponent<Throwable>()->damageArea = sBoundingSphere;
-	physicsEngine.AddCollider(sBoundingSphere);*/
-
-
-	/*Node* stone1 = prefabManager->InstantiateStone(pSceneRoot.get(), -10.0f, 1.0f, -10.0f, 1.5f);
-    Node* stone2 = prefabManager->InstantiateStone(pSceneRoot.get(), 10.0f, 1.0f, -10.0f, 1.5f);
-    Node* stone3 = prefabManager->InstantiateStone(pSceneRoot.get(), -10.0f, 1.0f, 10.0f, 1.5f);
-    Node* stone4 = prefabManager->InstantiateStone(pSceneRoot.get(), 10.0f, 1.0f, 10.0f, 1.5f);
-    Node* stone5 = prefabManager->InstantiateStone(pSceneRoot.get(), -5.0f, 1.0f, -5.0f, 1.5f);*/
 
 
     //Adding Other Components
@@ -317,31 +155,7 @@ App::App(const std::string& commandLine)
 	);
 	pCamera->GetComponent<Camera>()->active = true;
 
-    pEnemy->AddComponent(
-        std::make_unique<Walking>(pEnemy)
-    );
-	pEnemy->AddComponent(
-		std::make_unique<BasicAttack>(pEnemy)
-	);
 
-    /*pEnemy->AddComponent(
-        std::make_unique<OBB>(pEnemy, nullptr, Vector3(0.0f, 2.0f, 2.0f), Vector3(2.0f, 1.0f, 4.0f))
-    );
-	OBB* eDamageOBB = pEnemy->GetComponent<OBB>();
-	eDamageOBB->SetIsTrigger(true);
-	eDamageOBB->SetTriggerEnabled(true);
-	eDamageOBB->SetLayer(Layers::ENEMY);
-	physicsEngine.AddCollider(eDamageOBB);
-    pEnemy->GetComponent<BasicAttack>()->damageArea = eDamageOBB;*/
-
-	pEnemy->AddComponent(
-		std::make_unique<StateMachine>(pEnemy, StateType::IDLE)
-	);
-    pEnemy->GetComponent<StateMachine>()->attackRange = 4.0f;
-	pEnemy->GetComponent<StateMachine>()->followDistance = 40.0f;
-    pEnemy->AddComponent(
-        std::make_unique<Health>(pEnemy, 1.0f)
-    );
     pPlayer->AddComponent(
         std::make_unique<Health>(pPlayer, 3.0f)
     );
@@ -351,42 +165,18 @@ App::App(const std::string& commandLine)
 	);
 	SoundEffectsPlayer* pSoundEffectsPlayer = pPlayer->GetComponent<SoundEffectsPlayer>();
     pSoundEffectsPlayer->AddSound("Models\\turn.ogg");
-	pEnemy->AddComponent(
-		std::make_unique<SoundEffectsPlayer>(pEnemy)
-	);
-	SoundEffectsPlayer* pEnemySoundEffectsPlayer = pEnemy->GetComponent<SoundEffectsPlayer>();
-	pEnemySoundEffectsPlayer->AddSound("Models\\sci-fidrone.ogg");
+	//pEnemy->AddComponent(
+	//	std::make_unique<SoundEffectsPlayer>(pEnemy)
+	//);
+	//SoundEffectsPlayer* pEnemySoundEffectsPlayer = pEnemy->GetComponent<SoundEffectsPlayer>();
+	//pEnemySoundEffectsPlayer->AddSound("Models\\sci-fidrone.ogg");
 
 
     // Changing position scale etc.]
 	pFreeViewCamera->SetLocalPosition({ 4.0f, 11.0f, -28.0f });
     pPlayer->SetLocalPosition({ 0.0f, 50.0f, 15.0f });
-	//PhysicsCommon::physicsSystem->GetBodyInterface().SetPosition(pRigidbody->GetBodyID(), RVec3(0.0f, 100.0f, 5.0f), EActivation::Activate);
-	pBox->SetLocalPosition(DirectX::XMFLOAT3(-10.0f, 3.0f, 10.0f));
-    pBrick->SetLocalScale(dx::XMFLOAT3(20.0f, 20.0f, 1.0f));
-    pBrick->SetLocalRotation(dx::XMFLOAT3(DirectX::XMConvertToRadians(90), 0.0f, 0.0f));
-	pStone->SetLocalPosition(DirectX::XMFLOAT3(10.0f, 1.0f, 10.0f));
-	pStone->SetLocalScale(dx::XMFLOAT3(1.5f, 1.5f, 1.5f));
 
-    pIsland->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
-	pIsland->SetLocalScale(dx::XMFLOAT3(1.3f, 1.3f, 1.3f));
-	pNoxTurn->SetLocalPosition(DirectX::XMFLOAT3(5.0f, 0.0f, 5.0f));
-	pNoxTurn->SetLocalScale(dx::XMFLOAT3(0.01f, 0.01f, 0.01f));
-	pEnemy->SetLocalPosition(DirectX::XMFLOAT3(3.0f, 50.0f, 15.0f));
-	pEnemy->SetLocalScale(dx::XMFLOAT3(1.6f, 1.6f, 1.6f));
 	//pEnemySoundEffectsPlayer->SetPosition(0.0f, 0.0f, 0.0f);
-	pColumn->SetLocalPosition(DirectX::XMFLOAT3(-8.0f, 0.0f, -7.0f));
-	pColumn2->SetLocalPosition(DirectX::XMFLOAT3(-2.0f, 0.0f, 4.0f));
-	pColumn3->SetLocalPosition(DirectX::XMFLOAT3(-16.0f, 0.0f, -6.0f));
-	pColumn4->SetLocalPosition(DirectX::XMFLOAT3(10.0f, 0.0f, 6.0f));
-	/*stone1->SetLocalPosition(DirectX::XMFLOAT3(-10.0f, 1.0f, -10.0f));
-	stone1->SetLocalScale(dx::XMFLOAT3(1.5f, 1.5f, 1.5f));*/
-	/*stone2->SetLocalPosition(DirectX::XMFLOAT3(-10.0f, 1.0f, 10.0f));
-	stone2->SetLocalScale(dx::XMFLOAT3(1.5f, 1.5f, 1.5f));
-	stone3->SetLocalPosition(DirectX::XMFLOAT3(10.0f, 1.0f, -10.0f));
-	stone3->SetLocalScale(dx::XMFLOAT3(1.5f, 1.5f, 1.5f));
-	stone5->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f));
-	stone5->SetLocalScale(dx::XMFLOAT3(1.5f, 1.5f, 1.5f));*/
 	soundDevice->SetLocation(pPlayer->GetLocalPosition().x, pPlayer->GetLocalPosition().y, pPlayer->GetLocalPosition().z);
 
     //Adding colliders to draw
@@ -1022,8 +812,9 @@ void App::CleanupDestroyedNodes(Node* currentNode)
                 if (pChildNode->IsMarkedForDestruction()) {
                     OutputDebugStringA(("Cleanup: Preparing to remove node: " + pChildNode->GetName() + "\n").c_str());
 
-                    //physicsEngine.RemoveRigidbody(pChildNode->GetComponent<Rigidbody>());
-                    
+					PhysicsCommon::physicsSystem->GetBodyInterface().DeactivateBody(pChildNode->GetComponent<Rigidbody>()->GetBodyID());
+					PhysicsCommon::physicsSystem->GetBodyInterface().RemoveBody(pChildNode->GetComponent<Rigidbody>()->GetBodyID());
+
                     const auto& components = pChildNode->GetComponents();
                     for (const auto& compUniquePtr : components) {
                         Component* comp = compUniquePtr.get();
@@ -1059,7 +850,6 @@ void App::CleanupDestroyedNodes(Node* currentNode)
                     }
 
                     if (pSelectedSceneNode == pChildNode.get()) { pSelectedSceneNode = nullptr; }
-                    if (pEnemy == pChildNode.get()) { pEnemy = nullptr; }
                     if (pPlayer == pChildNode.get()) { pPlayer = nullptr; }
                     if (pAbility1 == pChildNode.get()) { pAbility1 = nullptr; }
                     if (pAbility2 == pChildNode.get()) { pAbility2 = nullptr; }

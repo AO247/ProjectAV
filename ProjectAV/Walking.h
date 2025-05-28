@@ -23,7 +23,7 @@ public:
 	float avoidanceDistance = 14.0f;
 	float raycastDistance = 5.0f;
 	float raycastWidthOffset = 0.8f;
-	float height = 4.0f;
+	float height = 7.2f;
 	bool grounded = false;
 	bool voidNear = false;
 private:

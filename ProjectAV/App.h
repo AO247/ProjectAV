@@ -68,21 +68,7 @@ private:
     Node* pPlayer = nullptr; // Node representing the player capsule/origin
 	Node* pAbility1 = nullptr; // Node for the first ability
 	Node* pAbility2 = nullptr; // Node for the second ability
-    // --- Pointers to other nodes (keep as is) ---
-    Node* pNanosuitNode = nullptr;
-    Node* pBox = nullptr;
-    Node* pEmptyNode = nullptr;
-    Node* pBrick = nullptr;
-    Node* pStone = nullptr;
-    Node* pColumn = nullptr;
-	Node* pColumn2 = nullptr;
-    Node* pColumn3 = nullptr;
-    Node* pColumn4 = nullptr;
-    Node* pIsland = nullptr;
-    Node* pSelectedSceneNode = nullptr;
-    Node* pNoxTurn = nullptr; // Node for the camera
-    Node* pNoxTurnHair = nullptr; // Node for the camera
-    Node* pEnemy = nullptr; // Node for the enemy
+	Node* pSelectedSceneNode = nullptr; // Node representing the selected scene node
 	Node* pSoundEffectsPlayer = nullptr; // Node for the sound effects player
     // --- UI State ---
     
