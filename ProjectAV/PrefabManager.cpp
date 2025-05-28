@@ -541,9 +541,9 @@ Node* PrefabManager::InstantiateIslandBig1(Node* parentNode, float locX, float l
     Node* pNewNode = pNewNodeOwner.get();
 
 	
-    Node* stone1 = InstantiateStone1(pNewNode, 22.2f, 30.0f, 32.2f, 2.0f);
-    Node* stone2 = InstantiateStone2(pNewNode, 4.2f, 30.0f, 17.2f, 2.0f);
-    Node* stone3 = InstantiateStone2(pNewNode, -10.2f, 30.0f, -2.2f, 2.0f);
+    //Node* stone1 = InstantiateStone1(pNewNode, 22.2f, 30.0f, 32.2f, 2.0f);
+    //Node* stone2 = InstantiateStone2(pNewNode, 4.2f, 30.0f, 17.2f, 2.0f);
+    //Node* stone3 = InstantiateStone2(pNewNode, -10.2f, 30.0f, -2.2f, 2.0f);
     Node* stone4 = InstantiateStone3(pNewNode, 22.2f, 30.0f, -18.2f, 2.0f);
     Node* stone5 = InstantiateStone4(pNewNode, -17.2f, 30.0f, 22.2f, 2.0f);
     Node* stone6 = InstantiateStone5(pNewNode, 11.2f, 30.0f, -8.2f, 2.0f);
@@ -558,9 +558,9 @@ Node* PrefabManager::InstantiateIslandBig1(Node* parentNode, float locX, float l
     auto spawnPoint1 = std::make_unique<Node>("SpawnPoint 1", pNewNodeOwner.get());
     auto spawnPoint2 = std::make_unique<Node>("SpawnPoint 2", pNewNodeOwner.get());
     auto spawnPoint3 = std::make_unique<Node>("SpawnPoint 2", pNewNodeOwner.get());
-    spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(3.0f, 2.0f, -3.0f));
-    spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(-3.0f, 2.0f, 3.0f));
-	spawnPoint3->SetLocalPosition(DirectX::XMFLOAT3(8.0f, 2.0f, -8.0f));
+    spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(23.0f, 2.0f, 33.0f));
+    spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(5.0f, 2.0f, 18.0f));
+	spawnPoint3->SetLocalPosition(DirectX::XMFLOAT3(-11.0f, 2.0f, -3.0f));
     pIsland->spawnPoints.push_back(spawnPoint1.get());
     pIsland->spawnPoints.push_back(spawnPoint2.get());
 	pIsland->spawnPoints.push_back(spawnPoint3.get());
@@ -640,9 +640,9 @@ Node* PrefabManager::InstantiateIslandBig2(Node* parentNode, float locX, float l
     Node* pNewNode = pNewNodeOwner.get();
 
 
-    Node* stone1 = InstantiateStone1(pNewNode, 22.2f, 30.0f, 32.2f, 2.0f);
-    Node* stone2 = InstantiateStone2(pNewNode, 27.0f, 30.0f, 17.2f, 2.0f);
-    Node* stone3 = InstantiateStone2(pNewNode, 27.2f, 30.0f, -2.2f, 2.0f);
+    //Node* stone1 = InstantiateStone1(pNewNode, 22.2f, 30.0f, 32.2f, 2.0f);
+    //Node* stone2 = InstantiateStone2(pNewNode, 27.0f, 30.0f, 17.2f, 2.0f);
+    //Node* stone3 = InstantiateStone2(pNewNode, 27.2f, 30.0f, -2.2f, 2.0f);
     Node* stone4 = InstantiateStone3(pNewNode, -8.2f, 30.0f, -18.2f, 2.0f);
     Node* stone5 = InstantiateStone4(pNewNode, 15.2f, 30.0f, 4.2f, 2.0f);
     Node* stone6 = InstantiateStone5(pNewNode, 11.2f, 30.0f, -8.2f, 2.0f);
@@ -657,9 +657,9 @@ Node* PrefabManager::InstantiateIslandBig2(Node* parentNode, float locX, float l
     auto spawnPoint1 = std::make_unique<Node>("SpawnPoint 1", pNewNodeOwner.get());
     auto spawnPoint2 = std::make_unique<Node>("SpawnPoint 2", pNewNodeOwner.get());
     auto spawnPoint3 = std::make_unique<Node>("SpawnPoint 2", pNewNodeOwner.get());
-    spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(3.0f, 2.0f, -3.0f));
-    spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(-3.0f, 2.0f, 3.0f));
-    spawnPoint3->SetLocalPosition(DirectX::XMFLOAT3(8.0f, 2.0f, -8.0f));
+    spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(23.0f, 2.0f, 33.0f));
+    spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(28.0f, 2.0f, 18.0f));
+    spawnPoint3->SetLocalPosition(DirectX::XMFLOAT3(28.0f, 2.0f, -1.0f));
     pIsland->spawnPoints.push_back(spawnPoint1.get());
     pIsland->spawnPoints.push_back(spawnPoint2.get());
     pIsland->spawnPoints.push_back(spawnPoint3.get());
@@ -735,7 +735,7 @@ Node* PrefabManager::InstantiateIslandMedium1(Node* parentNode, float locX, floa
 
     Node* pNewNode = pNewNodeOwner.get();
 
-    Node* stone1 = InstantiateStone1(pNewNode, -7.2f, 15.0f, 23.2f, 2.0f);
+    //Node* stone1 = InstantiateStone1(pNewNode, -7.2f, 15.0f, 23.2f, 2.0f);
     Node* stone2 = InstantiateStone2(pNewNode, 31.0f, 30.0f, 15.2f, 2.0f);
     Node* stone3 = InstantiateStone2(pNewNode, 17.2f, 30.0f, -2.2f, 2.0f);
     Node* stone4 = InstantiateStone3(pNewNode, -15.2f, 30.0f, -25.2f, 2.0f);
@@ -747,7 +747,7 @@ Node* PrefabManager::InstantiateIslandMedium1(Node* parentNode, float locX, floa
 	Node* platform1 = InstantiatePlatform2(pNewNode, -17.0f, 0.0f, 10.0f, 1.0f);
 
     auto spawnPoint1 = std::make_unique<Node>("SpawnPoint 1", pNewNodeOwner.get());
-    spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(3.0f, 2.0f, -3.0f));
+    spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(15.0f, 2.0f, 2.0f));
     pIsland->spawnPoints.push_back(spawnPoint1.get());
     pNewNode->AddChild(std::move(spawnPoint1));
 
@@ -900,7 +900,7 @@ Node* PrefabManager::InstantiateIslandSmall1(Node* parentNode, float locX, float
 
     Node* pNewNode = pNewNodeOwner.get();
 
-    Node* stone1 = InstantiateStone1(pNewNode, -7.2f, 15.0f, 8.2f, 2.0f);
+    //Node* stone1 = InstantiateStone1(pNewNode, -7.2f, 15.0f, 8.2f, 2.0f);
     Node* stone2 = InstantiateStone2(pNewNode, -2.0f, 30.0f, 0.0f, 2.0f);
     Node* stone3 = InstantiateStone2(pNewNode, 12.2f, 30.0f, 4.2f, 2.0f);
     Node* stone4 = InstantiateStone3(pNewNode, -12.2f, 30.0f, -21.2f, 2.0f);
@@ -911,7 +911,7 @@ Node* PrefabManager::InstantiateIslandSmall1(Node* parentNode, float locX, float
     Node* column3 = InstantiateColumn(pNewNode, 7.5f, 0.0f, 10.0f, 1.0f);
 
     auto spawnPoint1 = std::make_unique<Node>("SpawnPoint 1", pNewNodeOwner.get());
-    spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(3.0f, 2.0f, -3.0f));
+    spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(-8.0f, 2.0f, 9.0f));
     pIsland->spawnPoints.push_back(spawnPoint1.get());
     pNewNode->AddChild(std::move(spawnPoint1));
 
@@ -982,7 +982,7 @@ Node* PrefabManager::InstantiateIslandSmall2(Node* parentNode, float locX, float
 
     Node* pNewNode = pNewNodeOwner.get();
 
-    Node* stone1 = InstantiateStone1(pNewNode, -10.2f, 15.0f, 8.2f, 2.0f);
+    //Node* stone1 = InstantiateStone1(pNewNode, -10.2f, 15.0f, 8.2f, 2.0f);
     Node* stone2 = InstantiateStone2(pNewNode, 3.0f, 30.0f, -8.0f, 2.0f);
     Node* stone3 = InstantiateStone2(pNewNode, 20.2f, 30.0f, 4.2f, 2.0f);
     Node* stone4 = InstantiateStone3(pNewNode, 15.2f, 30.0f, 21.2f, 2.0f);
@@ -993,7 +993,7 @@ Node* PrefabManager::InstantiateIslandSmall2(Node* parentNode, float locX, float
     Node* column3 = InstantiateColumn(pNewNode, 16.5f, 0.0f, 10.0f, 1.0f);
     
     auto spawnPoint1 = std::make_unique<Node>("SpawnPoint 1", pNewNodeOwner.get());
-    spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(3.0f, 2.0f, -3.0f));
+    spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(-11.0f, 2.0f, 3.0f));
     pIsland->spawnPoints.push_back(spawnPoint1.get());
     pNewNode->AddChild(std::move(spawnPoint1));
 
