@@ -28,10 +28,11 @@ public:
 
     virtual void Follow(DirectX::XMFLOAT3 target, float sp = 1.0f) {}
 	virtual void Attack(float dt) {} // For components needing Graphics
-    bool endAttack;
     Node* GetOwner() const { return pOwner; }
     virtual void DrawImGuiControls() {};
     std::string tag;
+    float attackRange;
+    bool endAttack;
 
 protected:
     Node* pOwner; // Non-owning pointer to the Node this component is attached to

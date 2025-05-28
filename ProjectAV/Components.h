@@ -14,6 +14,7 @@
 #include "Health.h"
 #include "BasicAttack.h"
 #include "ShootAttack.h"
+#include "Bullet.h"
 #include "Flying.h"
 #include "Island.h"
 #include "Trigger.h"

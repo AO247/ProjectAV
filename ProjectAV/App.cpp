@@ -61,8 +61,8 @@ App::App(const std::string& commandLine)
     contactListener = new MyContactListener();
     physicsSystem->SetContactListener(contactListener);
     PhysicsCommon::physicsSystem = physicsSystem;
+    PrefabManager::wind = &wnd;
     physicsSystem->SetGravity(Vec3(0.0f, -80.0f, 0.0f));
-   
 
     soundDevice = LISTENER->Get();
     ALint attentuation = AL_INVERSE_DISTANCE_CLAMPED;
@@ -88,8 +88,8 @@ App::App(const std::string& commandLine)
 	pAbility1 = pAbility1Owner.get();
 	auto pAbility2Owner = std::make_unique<Node>("Ability2", nullptr, "ABILITY2");
 	pAbility2 = pAbility2Owner.get();
-    auto pNanosuitOwner = std::make_unique<Node>("Nanosuit");
-
+    auto pPrefabsOwner = std::make_unique<Node>("Prefabs", nullptr, "PREFABS");
+    pPrefabs = pPrefabsOwner.get();
 
 	
 
@@ -99,7 +99,9 @@ App::App(const std::string& commandLine)
     pSceneRoot->AddChild(std::move(pPlayerOwner));
     pSceneRoot->AddChild(std::move(pAbility1Owner));
     pSceneRoot->AddChild(std::move(pAbility2Owner));
+    pSceneRoot->AddChild(std::move(pPrefabsOwner));
 
+    PrefabManager::root = pPrefabs;
 
 
     //Heeeej Bracie zacz�ooo pada� chood� zmienii� gacieee
@@ -109,7 +111,7 @@ App::App(const std::string& commandLine)
     bodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
 
     //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
-    bodySettings.mMassPropertiesOverride.mMass = 10.0f;
+    bodySettings.mMassPropertiesOverride.mMass = 1.0f;
     bodySettings.mFriction = 0.0f;
     bodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
     bodySettings.mMotionQuality = EMotionQuality::LinearCast;
@@ -122,7 +124,7 @@ App::App(const std::string& commandLine)
         std::make_unique<PlayerController>(pPlayer, wnd) // Add controller first
     );
 	
-    BodyCreationSettings a1BodySettings(new JPH::CapsuleShape(5.0f, 3.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
+    BodyCreationSettings a1BodySettings(new JPH::CapsuleShape(4.0f, 4.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
     pAbility1->AddComponent(
         std::make_unique<Trigger>(pAbility1, a1BodySettings, false)
     );
@@ -133,7 +135,7 @@ App::App(const std::string& commandLine)
     pPlayer->GetComponent<PlayerController>()->ability1 = pAbility1;
 
 
-    BodyCreationSettings a2odySettings(new JPH::SphereShape(2.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
+    BodyCreationSettings a2odySettings(new JPH::SphereShape(4.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
 	pAbility2->AddComponent(
         std::make_unique<Trigger>(pAbility2, a2odySettings, false)
     );
@@ -246,12 +248,12 @@ int App::Go()
         }
         const auto dt = timer.Mark() * speed_factor;
         lag += dt;
-        while (lag >= FIXED_TIME_STEP)
+        do
         {
             physicsSystem->Update(FIXED_TIME_STEP, 1, temp_allocator, job_system);
             lag -= FIXED_TIME_STEP;
-        }
-        physicsSystem->Update(lag, 1, temp_allocator, job_system);
+        } while (lag >= FIXED_TIME_STEP);
+        //physicsSystem->Update(lag, 1, temp_allocator, job_system);
         dynamic_cast<MyContactListener*>(physicsSystem->GetContactListener())->ExecuteTriggerActivationQueue();
         dynamic_cast<MyContactListener*>(physicsSystem->GetContactListener())->ExecuteCollisionActivationQueue();
         //dynamicsWorld->stepSimulation(dt, 10);
@@ -516,7 +518,6 @@ void App::DrawNodeRecursive(Graphics& gfx, Node& node)
 void App::ShowControlWindows()
 {
     // --- Existing Windows ---
-
 	//DrawSphereColliders(wnd.Gfx()); // Call the updated function
     //DrawBoxColliders(wnd.Gfx()); // Call the updated function
 	//DrawCapsuleColliders(wnd.Gfx());

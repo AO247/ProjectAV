@@ -14,9 +14,7 @@ void AttackState::Enter(StateMachine* pOwner)
 {
 	std::srand(static_cast<unsigned>(std::time(nullptr)));
 	OutputDebugStringA("Entering ATTACK State\n");
-	if (pOwner->attackComponents.size() > 0) {
-		int randI = rand() % pOwner->attackComponents.size();
-		pAttackComponent = pOwner->attackComponents[randI];
+	if (pOwner->pAttackComponent != nullptr) {
 		time = 0.0f;
 		sm::Vector3 facingDirection = sm::Vector3(pOwner->pPlayer->GetWorldPosition())
 			- sm::Vector3(pOwner->GetOwner()->GetWorldPosition());
@@ -31,9 +29,9 @@ void AttackState::Enter(StateMachine* pOwner)
 
 void AttackState::Update(StateMachine* pOwner, float dt)
 {
-	pAttackComponent->Attack(dt);
-	if (pAttackComponent->endAttack) {
-		pAttackComponent->endAttack = false;
+	pOwner->pAttackComponent->Attack(dt);
+	if (pOwner->pAttackComponent->endAttack) {
+		pOwner->pAttackComponent->endAttack = false;
 		pOwner->EndState();
 		return;
 	}

@@ -6,6 +6,7 @@ namespace dx = DirectX;
 BasicAttack::BasicAttack(Node* owner, std::string tag)
 	: Component(owner, std::move(tag))
 {
+	attackRange = 5.0f;
 }
 
 void BasicAttack::Attack(float dt)
@@ -27,7 +28,6 @@ void BasicAttack::Attack(float dt)
 		return;
 	}
 	CheckAttack();
-	OutputDebugStringA("\nNormal Attack\n");
 }
 
 void BasicAttack::CheckAttack()
@@ -41,6 +41,7 @@ void BasicAttack::CheckAttack()
 	PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rb->GetBodyID(), Vec3(0.0f, 0.0f, 0.0f));
 	PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(rb->GetBodyID(), knockDirection * knockbackForce);
 	attacked = true;
+	OutputDebugStringA("\nNormal Attack\n");
 }
 
 void BasicAttack::OnTriggerEnter(Node* object) {

@@ -391,7 +391,7 @@ void LevelGenerator::SpawnEnemies()
             if(randEnemy == 0)
             {
                 OutputDebugStringA("\nDodajemy\n");
-                enemy = prefabManager->InstantiateEnemy(pSceneRoot, pos.x, pos.y, pos.z, 1.6f, pPlayer);
+                enemy = prefabManager->InstantiateShootingEnemy(pSceneRoot, pos.x, pos.y, pos.z, 1.6f, pPlayer);
             }
             numberOfHardEnemies--;
         }

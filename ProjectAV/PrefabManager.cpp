@@ -2,6 +2,9 @@
 #include "Components.h"
 #include "PhysicsCommon.h"
 
+Window* PrefabManager::wind = nullptr;
+Node* PrefabManager::root = nullptr;
+
 PrefabManager::~PrefabManager()
 {
 }
@@ -1051,5 +1054,58 @@ Node* PrefabManager::InstantiateEnemy(Node* parentNode, float locX, float locY, 
 
     Node* pNewNode = pNewNodeOwner.get();
     parentNode->AddChild(std::move(pNewNodeOwner));
+    return pNewNode;
+}
+
+
+Node* PrefabManager::InstantiateShootingEnemy(Node* parentNode, float locX, float locY, float locZ, float scale, Node* pPlayer) const {
+
+
+    auto pNewNodeOwner = std::make_unique<Node>("Enemy", nullptr, "ENEMY");
+    Node* pNewNode = pNewNodeOwner.get();
+    parentNode->AddChild(std::move(pNewNodeOwner));
+
+    pNewNode->AddComponent(
+        std::make_unique<ModelComponent>(pNewNode, wnd->Gfx(), "Models\\enemy\\basic2.obj")
+    );
+    BodyCreationSettings eBodySettings(new JPH::CapsuleShape(2.1f, 1.5f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::MOVING);
+    eBodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
+
+    //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
+    eBodySettings.mMassPropertiesOverride.mMass = 10.0f;
+    eBodySettings.mFriction = 0.2f;
+    eBodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
+    eBodySettings.mMotionQuality = EMotionQuality::LinearCast;
+    pNewNode->AddComponent(
+        std::make_unique<Rigidbody>(pNewNode, eBodySettings)
+    );
+
+    BodyCreationSettings a1BodySettings(new JPH::CapsuleShape(5.0f, 3.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
+    pNewNode->AddComponent(
+        std::make_unique<Trigger>(pNewNode, a1BodySettings, false)
+    );
+    pNewNode->AddComponent(
+        std::make_unique<Walking>(pNewNode)
+    );
+    pNewNode->AddComponent(
+        std::make_unique<ShootAttack>(pNewNode)
+    );
+    pNewNode->AddComponent(
+        std::make_unique<BasicAttack>(pNewNode)
+    );
+    pNewNode->AddComponent(
+        std::make_unique<StateMachine>(pNewNode, StateType::IDLE)
+    );
+    pNewNode->GetComponent<StateMachine>()->attackRange = 35.0f;
+    pNewNode->GetComponent<StateMachine>()->followDistance = 60.0f;
+    pNewNode->GetComponent<StateMachine>()->pPlayer = pPlayer;
+    pNewNode->AddComponent(
+        std::make_unique<Health>(pNewNode, 1.0f)
+    );
+
+    pNewNode->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+    pNewNode->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+
+
     return pNewNode;
 }

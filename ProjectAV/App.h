@@ -71,6 +71,7 @@ private:
 	Node* pAbility2 = nullptr; // Node for the second ability
 	Node* pSelectedSceneNode = nullptr; // Node representing the selected scene node
 	Node* pSoundEffectsPlayer = nullptr; // Node for the sound effects player
+    Node* pPrefabs = nullptr;
 
     TestCube cube{ wnd.Gfx(),4.0f };
     TestCube cube2{ wnd.Gfx(),4.0f };

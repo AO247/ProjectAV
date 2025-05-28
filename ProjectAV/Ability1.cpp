@@ -28,7 +28,7 @@ void Ability1::Update(float dt)
 }
 void Ability1::Positioning() {
 	pOwner->SetLocalTransform(camera->GetLocalTransform());
-	pOwner->TranslateLocal(Vector3(0.0f, 0.0f, 6.0f));
+	pOwner->TranslateLocal(Vector3(0.0f, 0.0f, 8.0f));
 }
 void Ability1::Active()
 {
