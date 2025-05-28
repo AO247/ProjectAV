@@ -57,6 +57,9 @@ public:
 
     void ExecuteTriggerActivationQueue();
     void ExecuteCollisionActivationQueue();
+
+    void RemoveTriggerData(BodyID id);
+    void RemoveRigidbodyData(BodyID id);
 private:
     enum ActivationType
     {
