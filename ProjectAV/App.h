@@ -17,6 +17,7 @@
 #include "SolidCapsule.h"
 #include "DebugLine.h"
 #include "PhysicsCommon.h"
+#include "TestCube.h"
 
 // Forward declarations
 class PlayerController; // Forward declare
@@ -70,6 +71,9 @@ private:
 	Node* pAbility2 = nullptr; // Node for the second ability
 	Node* pSelectedSceneNode = nullptr; // Node representing the selected scene node
 	Node* pSoundEffectsPlayer = nullptr; // Node for the sound effects player
+
+    TestCube cube{ wnd.Gfx(),4.0f };
+    TestCube cube2{ wnd.Gfx(),4.0f };
     // --- UI State ---
     
     /*std::map<BoundingSphere*, ColliderSphere*> sphereCollidersToDraw;

@@ -15,6 +15,7 @@ class Trigger : public Component
 {
 public:
 	Trigger(Node* owner);
+	
 
 	Trigger(Node* owner, BodyCreationSettings bodySettings, bool parentHasRigidbody);
 

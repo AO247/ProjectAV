@@ -38,9 +38,9 @@ App::App(const std::string& commandLine)
     // Set Projection Matrix (Far plane adjusted for larger scenes potentially)
     wnd.Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 2000.0f));
 
-	// Initialize Physics Engine
-	//physicsEngine = PhysicsEngine();
-	//Raycast::physicsEngine = &physicsEngine; // Set the physics engine for raycasting
+    cube.SetPos({ 4.0f,2.0f,0.0f });
+    cube2.SetPos({ 0.0f,6.0f,0.0f });
+
 
     RegisterDefaultAllocator();
     Trace = TraceImpl;
@@ -359,6 +359,8 @@ void App::DoFrame(float dt)
 	/*DebugLine line(wnd.Gfx(), pEnemy->GetComponent<StateMachine>()->pos, pEnemy->GetComponent<StateMachine>()->cen, { 0.0f, 0.0f, 1.0f, 1.0f });
     line.Submit(fc);*/ // for idle
     // --- Bind Lights ---
+    cube.Submit(fc);
+	cube2.Submit(fc);
     pointLight.Bind(wnd.Gfx(), viewMatrix); // Bind point light (to slot 0)
 
     FrustumCalculating(); // Draw with FRUSTUM CULLING
@@ -518,6 +520,8 @@ void App::ShowControlWindows()
     //DrawBoxColliders(wnd.Gfx()); // Call the updated function
 	//DrawCapsuleColliders(wnd.Gfx());
     //ForEnemyWalking();
+    cube.SpawnControlWindow(wnd.Gfx(), "Cube 1");
+	cube2.SpawnControlWindow(wnd.Gfx(), "Cube 2");
     pointLight.Submit(fc);
 
     pointLight.SpawnControlWindow(); // Control for Point Light
@@ -814,6 +818,8 @@ void App::CleanupDestroyedNodes(Node* currentNode)
 
 					PhysicsCommon::physicsSystem->GetBodyInterface().DeactivateBody(pChildNode->GetComponent<Rigidbody>()->GetBodyID());
 					PhysicsCommon::physicsSystem->GetBodyInterface().RemoveBody(pChildNode->GetComponent<Rigidbody>()->GetBodyID());
+                    dynamic_cast<MyContactListener*>(PhysicsCommon::physicsSystem->GetContactListener())->RemoveRigidbodyData(pChildNode->GetComponent<Rigidbody>()->GetBodyID());
+
 
                     const auto& components = pChildNode->GetComponents();
                     for (const auto& compUniquePtr : components) {

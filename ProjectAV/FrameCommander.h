@@ -18,7 +18,7 @@ public:
 		ds( gfx,gfx.GetWidth(),gfx.GetHeight() ),
 		rt1( { gfx,gfx.GetWidth() / downFactor,gfx.GetHeight() / downFactor } ),
 		rt2( { gfx,gfx.GetWidth() / downFactor,gfx.GetHeight() / downFactor } ),
-		blur( gfx,7,2.6f,"BlurOutline_PS.cso" )
+		blur( gfx,15,100.6f,"BlurOutline_PS.cso" )
 	{
 		namespace dx = DirectX;
 
