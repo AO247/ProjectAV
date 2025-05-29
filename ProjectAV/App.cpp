@@ -227,6 +227,12 @@ int App::Go()
         lag += dt;
         do
         {
+            if (lag < FIXED_TIME_STEP)
+            {
+                physicsSystem->Update(lag, 1, temp_allocator, job_system);
+                lag -= dt;
+                break;
+            }
             physicsSystem->Update(FIXED_TIME_STEP, 1, temp_allocator, job_system);
             lag -= FIXED_TIME_STEP;
         } while (lag >= FIXED_TIME_STEP);
@@ -236,7 +242,7 @@ int App::Go()
         //dynamicsWorld->stepSimulation(dt, 10);
         HandleInput(dt);
         DoFrame(dt);
-        lag = 0.0f;
+        //lag = 0.0f;
     }
 }
 

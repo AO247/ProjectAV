@@ -76,7 +76,8 @@ void Walking::Follow(DirectX::XMFLOAT3 targetPos, float sp)
 			DirectX::XMVECTOR quat = DirectX::XMQuaternionRotationRollPitchYaw(0.0f, targetYaw, 0.0f);
 			DirectX::XMFLOAT4 quatFloat4;
 			DirectX::XMStoreFloat4(&quatFloat4, quat);
-			pOwner->SetLocalRotation(quatFloat4);
+			//pOwner->SetLocalRotation(quatFloat4);
+			PhysicsCommon::physicsSystem->GetBodyInterface().SetRotation(rigidbody->GetBodyID(), Quat(quatFloat4.x, quatFloat4.y, quatFloat4.z, quatFloat4.w), EActivation::Activate);
 		}
 	}
 
@@ -110,7 +111,8 @@ Vector3 Walking::CalculateAvoidanceForce()
 	Vector3 temporaryDirection = targetPosition - pOwner->GetWorldPosition();
 	temporaryDirection.Normalize();
 	float targetYaw = atan2f(temporaryDirection.x, temporaryDirection.z);
-	pOwner->SetLocalRotation({ 0.0f, targetYaw, 0.0f });
+	//pOwner->SetLocalRotation({ 0.0f, targetYaw, 0.0f });
+	PhysicsCommon::physicsSystem->GetBodyInterface().SetRotation(rigidbody->GetBodyID(), Quat::sEulerAngles(Vec3(0.0f, targetYaw, 0.0f)), EActivation::Activate);
 
 	float radius = 1.0f;
 
@@ -194,7 +196,9 @@ Vector3 Walking::CalculateAvoidanceForce()
 		}
 	}
 
-	pOwner->SetLocalRotation(previousRotation);
+
+	//pOwner->SetLocalRotation(previousRotation);
+	PhysicsCommon::physicsSystem->GetBodyInterface().SetRotation(rigidbody->GetBodyID(), Quat::sEulerAngles(Vec3(previousRotation.x, previousRotation.y, previousRotation.z)), EActivation::Activate);
 	//pOwner->TranslateLocal({ 0.0f, -1.0f, 0.0f });
 
 	return avoidanceForce;
