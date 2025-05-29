@@ -98,32 +98,6 @@ Node* PrefabManager::InstantiateMushroom3(Node* parentNode, float locX, float lo
     return pNewNode;
 }
 
-Node* PrefabManager::InstantiateColumn(Node* parentNode, float locX, float locY, float locZ, float scale) const {
-
-
-    auto pNewNodeOwner = std::make_unique<Node>("Column", nullptr, "WALL");
-
-    pNewNodeOwner->AddComponent(
-        std::make_unique<ModelComponent>(pNewNodeOwner.get(), wnd->Gfx(), "Models\\kolumna\\kolumna.obj")
-    );
-    BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(2.0f, 10.0f, 2.0f)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::WALL);
-    BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
-
-    //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
-    BodySettings.mMassPropertiesOverride.mMass = 50.0f;
-    BodySettings.mFriction = 0.0f;
-    BodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
-    pNewNodeOwner->AddComponent(
-        std::make_unique<Rigidbody>(pNewNodeOwner.get(), BodySettings)
-    );
-
-    pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
-    pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
-
-    Node* pNewNode = pNewNodeOwner.get();
-    parentNode->AddChild(std::move(pNewNodeOwner));
-    return pNewNode;
-}
 
 Node* PrefabManager::InstantiateWall(Node* parentNode, float locX, float locY, float locZ, float scale) const {
 
@@ -146,35 +120,6 @@ Node* PrefabManager::InstantiateWall(Node* parentNode, float locX, float locY, f
         std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
     );
 
-
-    pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
-    pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
-
-    Node* pNewNode = pNewNodeOwner.get();
-    parentNode->AddChild(std::move(pNewNodeOwner));
-    return pNewNode;
-}
-
-Node* PrefabManager::InstantiateStone1(Node* parentNode, float locX, float locY, float locZ, float scale) const {
-    auto pNewNodeOwner = std::make_unique<Node>("Stone", nullptr, "STONE");
-
-    pNewNodeOwner->AddComponent(
-        std::make_unique<ModelComponent>(pNewNodeOwner.get(), wnd->Gfx(), "Models\\enviro_male_2\\kamien_1.2.obj")
-    );
-
-    BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(1.0f, 1.0f, 1.0f)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
-    BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
-
-    BodySettings.mMassPropertiesOverride.mMass = 7.0f;
-    BodySettings.mFriction = 0.5f;
-    BodySettings.mMotionQuality = EMotionQuality::LinearCast; 
-    pNewNodeOwner->AddComponent(
-        std::make_unique<Rigidbody>(pNewNodeOwner.get(), BodySettings)
-    );
-    Rigidbody* pRigidbody = pNewNodeOwner->GetComponent<Rigidbody>();
-    pNewNodeOwner->AddComponent(
-        std::make_unique<Throwable>(pNewNodeOwner.get())
-    );
 
     pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
     pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
@@ -480,104 +425,7 @@ Node* PrefabManager::InstantiatePlatform6(Node* parentNode, float locX, float lo
     return pNewNode;
 }
 
-Node* PrefabManager::InstantiateIslandBig1(Node* parentNode, float locX, float locY, float locZ, float scale) const {
 
-
-    auto pNewNodeOwner = std::make_unique<Node>("Island B1", nullptr, "GROUND");
-
-    pNewNodeOwner->AddComponent(
-        std::make_unique<ModelComponent>(pNewNodeOwner.get(), wnd->Gfx(), "Models\\wyspy_2\\wyspa_duza_okragla_2.obj")
-    );
-    ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
-    TriangleList islandTriangles = PhysicsCommon::MakeTriangleList(islandModel->GetAllTriangles());
-    MeshShapeSettings islandMeshSettings(islandTriangles);
-    Shape::ShapeResult islandMeshCreationResult = islandMeshSettings.Create();
-    ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
-    ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
-    islandMeshShape = islandScaling.Create().Get();
-    BodyCreationSettings bodySettings(islandMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
-    bodySettings.mFriction = 1.0f;
-    pNewNodeOwner->AddComponent(
-        std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
-    );
-
-
-
-	pNewNodeOwner->AddComponent(
-		std::make_unique<Island>(pNewNodeOwner.get())
-	);
-	Island* pIsland = pNewNodeOwner->GetComponent<Island>();
-    auto leftPoint = std::make_unique<Node>("Left Point", pNewNodeOwner.get());
-	auto rightPoint = std::make_unique<Node>("Right Point", pNewNodeOwner.get());
-	auto upPoint = std::make_unique<Node>("Up Point", pNewNodeOwner.get());
-	auto downPoint = std::make_unique<Node>("Down Point", pNewNodeOwner.get());
-
-	leftPoint->SetLocalPosition(DirectX::XMFLOAT3(-61.0f, 0.0f, 5.0f));
-	rightPoint->SetLocalPosition(DirectX::XMFLOAT3(69.0f, 0.0f, -10.0f));
-	upPoint->SetLocalPosition(DirectX::XMFLOAT3(10.0f, 0.0f, 64.0f));
-	downPoint->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 0.0f, -64.0f));
-    //pIsland->halfExtents = { 24.0f, 2.0f, 24.0f };
-    //pIsland->halfExtents = { 10.0f, 2.0f, 10.0f };
-
-	pIsland->halfExtents = { (rightPoint->GetLocalPosition().x - leftPoint->GetLocalPosition().x)/2.0f - 1.0f,
-							2.0f,
-							(upPoint->GetLocalPosition().z - downPoint->GetLocalPosition().z)/2.0f - 1.0f };
-    //upPoint->AddComponent(
-    //    std::make_unique<ModelComponent>(upPoint.get(), wnd->Gfx(), "Models\\kolumna\\kolumna.obj")
-    //);
-    //downPoint->AddComponent(
-    //    std::make_unique<ModelComponent>(downPoint.get(), wnd->Gfx(), "Models\\kolumna\\kolumna.obj")
-    //);
-    //leftPoint->AddComponent(
-    //    std::make_unique<ModelComponent>(leftPoint.get(), wnd->Gfx(), "Models\\kolumna\\kolumna.obj")
-    //);
-    //rightPoint->AddComponent(
-    //    std::make_unique<ModelComponent>(rightPoint.get(), wnd->Gfx(), "Models\\kolumna\\kolumna.obj")
-    //);
-    pIsland->leftPoint = leftPoint.get();
-	pIsland->rightPoint = rightPoint.get();
-	pIsland->upPoint = upPoint.get();
-	pIsland->downPoint = downPoint.get();
-    pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
-    pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
-    
-    Node* pNewNode = pNewNodeOwner.get();
-
-	
-    //Node* stone1 = InstantiateStone1(pNewNode, 22.2f, 30.0f, 32.2f, 2.0f);
-    //Node* stone2 = InstantiateStone2(pNewNode, 4.2f, 30.0f, 17.2f, 2.0f);
-    //Node* stone3 = InstantiateStone2(pNewNode, -10.2f, 30.0f, -2.2f, 2.0f);
-    Node* stone4 = InstantiateStone3(pNewNode, 22.2f, 30.0f, -18.2f, 2.0f);
-    Node* stone5 = InstantiateStone4(pNewNode, -17.2f, 30.0f, 22.2f, 2.0f);
-    Node* stone6 = InstantiateStone5(pNewNode, 11.2f, 30.0f, -8.2f, 2.0f);
-	Node* column1 = InstantiateColumn(pNewNode, 20.0f, 0.0f, 25.0f, 1.0f);
-	Node* column2 = InstantiateColumn(pNewNode, -5.0f, 0.0f, 25.0f, 1.0f); 
-    Node* column3 = InstantiateColumn(pNewNode, 20.0f, 0.0f, -12.0f, 1.0f);
-    Node* column4 = InstantiateColumn(pNewNode, -5.0f, 0.0f, -12.0f, 1.0f);
-    Node* platform1 = InstantiatePlatform1(pNewNode, 41.0f, 0.0f, 6.0f, 1.0f);
-    Node* platform3 = InstantiatePlatform3(pNewNode, -19.0f, 0.0f, -26.0f, 1.0f);
-
-
-    auto spawnPoint1 = std::make_unique<Node>("SpawnPoint 1", pNewNodeOwner.get());
-    auto spawnPoint2 = std::make_unique<Node>("SpawnPoint 2", pNewNodeOwner.get());
-    auto spawnPoint3 = std::make_unique<Node>("SpawnPoint 2", pNewNodeOwner.get());
-    spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(23.0f, 2.0f, 33.0f));
-    spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(5.0f, 2.0f, 18.0f));
-	spawnPoint3->SetLocalPosition(DirectX::XMFLOAT3(-11.0f, 2.0f, -3.0f));
-    pIsland->spawnPoints.push_back(spawnPoint1.get());
-    pIsland->spawnPoints.push_back(spawnPoint2.get());
-	pIsland->spawnPoints.push_back(spawnPoint3.get());
-    pNewNode->AddChild(std::move(spawnPoint1));
-    pNewNode->AddChild(std::move(spawnPoint2));
-	pNewNode->AddChild(std::move(spawnPoint3));
-
-	pNewNode->AddChild(std::move(leftPoint));
-	pNewNode->AddChild(std::move(rightPoint));
-	pNewNode->AddChild(std::move(upPoint));
-	pNewNode->AddChild(std::move(downPoint));
-    parentNode->AddChild(std::move(pNewNodeOwner));
-    return pNewNode;
-}
 
 Node* PrefabManager::InstantiateIslandBig2(Node* parentNode, float locX, float locY, float locZ, float scale) const {
 
@@ -1007,6 +855,7 @@ Node* PrefabManager::InstantiateIslandSmall2(Node* parentNode, float locX, float
     parentNode->AddChild(std::move(pNewNodeOwner));
     return pNewNode;
 }
+
 
 
 Node* PrefabManager::InstantiateEnemy(Node* parentNode, float locX, float locY, float locZ, float scale, Node* pPlayer) const {

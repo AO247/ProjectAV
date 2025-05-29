@@ -47,12 +47,12 @@ App::App(const std::string& commandLine)
     JPH_IF_ENABLE_ASSERTS(AssertFailed = AssertFailedImpl;)
     Factory::sInstance = new JPH::Factory();
     RegisterTypes();
-    temp_allocator = new TempAllocatorImpl(10 * 1024 * 1024);
+    temp_allocator = new TempAllocatorImpl(10 * 2024 * 1024);
     job_system = new JobSystemThreadPool(cMaxPhysicsJobs, cMaxPhysicsBarriers, thread::hardware_concurrency() - 1);
-    const uint cMaxBodies = 1024;
+    const uint cMaxBodies = 2048;
     const uint cNumBodyMutexes = 0;
-    const uint cMaxBodyPairs = 1024;
-    const uint cMaxContactConstraints = 1024;
+    const uint cMaxBodyPairs = 4096;
+    const uint cMaxContactConstraints = 2048;
     BPLayerInterfaceImpl* broad_phase_layer_interface = new BPLayerInterfaceImpl();
     ObjectVsBroadPhaseLayerFilterImpl* object_vs_broadphase_layer_filter = new ObjectVsBroadPhaseLayerFilterImpl();
     ObjectLayerPairFilterImpl* object_vs_object_layer_filter = new ObjectLayerPairFilterImpl();
@@ -70,11 +70,7 @@ App::App(const std::string& commandLine)
     myMusic = std::make_unique<MusicBuffer>("Models\\muza_full.wav");
 
 	auto prefabManagerOwner = std::make_unique<PrefabManager>(&wnd);
-	PrefabManager* prefabManager = prefabManagerOwner.get();
-
-	//LevelGenerator levelGenerator(prefabManager, pSceneRoot.get(), pPlayer);
-
-    //Node* island = prefabManager->InstantiateIslandSmall2(pSceneRoot.get(), 0.0f, -0.1f, 0.0f, 1.0f);
+	prefabManager = prefabManagerOwner.get();
 
     // --- Create Nodes ---
 
@@ -99,9 +95,6 @@ App::App(const std::string& commandLine)
     pSceneRoot->AddChild(std::move(pPlayerOwner));
     pSceneRoot->AddChild(std::move(pAbility1Owner));
     pSceneRoot->AddChild(std::move(pAbility2Owner));
-    pSceneRoot->AddChild(std::move(pPrefabsOwner));
-
-    PrefabManager::root = pPrefabs;
 
 
     //Heeeej Bracie zacz�ooo pada� chood� zmienii� gacieee
@@ -123,7 +116,7 @@ App::App(const std::string& commandLine)
     pPlayer->AddComponent(
         std::make_unique<PlayerController>(pPlayer, wnd) // Add controller first
     );
-	
+
     BodyCreationSettings a1BodySettings(new JPH::CapsuleShape(4.0f, 4.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
     pAbility1->AddComponent(
         std::make_unique<Trigger>(pAbility1, a1BodySettings, false)
@@ -131,17 +124,17 @@ App::App(const std::string& commandLine)
     pAbility1->AddComponent(
         std::make_unique<Ability1>(pAbility1, wnd, pCamera)
     );
-	pAbility1->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 0.0f, 8.0f));
+    pAbility1->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 0.0f, 8.0f));
     pPlayer->GetComponent<PlayerController>()->ability1 = pAbility1;
 
 
     BodyCreationSettings a2odySettings(new JPH::SphereShape(4.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
-	pAbility2->AddComponent(
+    pAbility2->AddComponent(
         std::make_unique<Trigger>(pAbility2, a2odySettings, false)
     );
     pAbility2->AddComponent(
         std::make_unique<Ability2>(pAbility2, wnd, pCamera)
-	);
+    );
     pAbility2->AddComponent(
         std::make_unique<ModelComponent>(pAbility2, wnd.Gfx(), "Models\\box.glb")
     );
@@ -153,21 +146,33 @@ App::App(const std::string& commandLine)
     pFreeViewCamera->AddComponent(
         std::make_unique<Camera>(pFreeViewCamera, wnd)
     );
-	pCamera->AddComponent(
-		std::make_unique<Camera>(pCamera, wnd)
-	);
-	pCamera->GetComponent<Camera>()->active = true;
+    pCamera->AddComponent(
+        std::make_unique<Camera>(pCamera, wnd)
+    );
+    pCamera->GetComponent<Camera>()->active = true;
 
 
     pPlayer->AddComponent(
         std::make_unique<Health>(pPlayer, 3.0f)
     );
 
-	pPlayer->AddComponent(
-		std::make_unique<SoundEffectsPlayer>(pPlayer)
-	);
-	SoundEffectsPlayer* pSoundEffectsPlayer = pPlayer->GetComponent<SoundEffectsPlayer>();
+    pPlayer->AddComponent(
+        std::make_unique<SoundEffectsPlayer>(pPlayer)
+    );
+    SoundEffectsPlayer* pSoundEffectsPlayer = pPlayer->GetComponent<SoundEffectsPlayer>();
     pSoundEffectsPlayer->AddSound("Models\\turn.ogg");
+
+    // Changing position scale etc.]
+    pFreeViewCamera->SetLocalPosition({ 4.0f, 11.0f, -28.0f });
+    pPlayer->SetLocalPosition({ 0.0f, 50.0f, -24.0f });
+
+    //pEnemySoundEffectsPlayer->SetPosition(0.0f, 0.0f, 0.0f);
+    soundDevice->SetLocation(pPlayer->GetLocalPosition().x, pPlayer->GetLocalPosition().y, pPlayer->GetLocalPosition().z);
+
+    pSceneRoot->AddComponent(
+        std::make_unique<Global>(pSceneRoot.get(), wnd, prefabManager, pPlayer)
+    );
+    
 	//pEnemy->AddComponent(
 	//	std::make_unique<SoundEffectsPlayer>(pEnemy)
 	//);
@@ -175,36 +180,8 @@ App::App(const std::string& commandLine)
 	//pEnemySoundEffectsPlayer->AddSound("Models\\sci-fidrone.ogg");
 
 
-    // Changing position scale etc.]
-	pFreeViewCamera->SetLocalPosition({ 4.0f, 11.0f, -28.0f });
-    pPlayer->SetLocalPosition({ 0.0f, 50.0f, 15.0f });
 
-	//pEnemySoundEffectsPlayer->SetPosition(0.0f, 0.0f, 0.0f);
-	soundDevice->SetLocation(pPlayer->GetLocalPosition().x, pPlayer->GetLocalPosition().y, pPlayer->GetLocalPosition().z);
-
-    //Adding colliders to draw
-    //AddBoxColliderToDraw(wnd.Gfx(), island->GetComponent<OBB>());
-    /*AddBoxColliderToDraw(wnd.Gfx(), sOBB);
-	AddBoxColliderToDraw(wnd.Gfx(), cOBB);
-	AddBoxColliderToDraw(wnd.Gfx(), cOBB2);
-	AddBoxColliderToDraw(wnd.Gfx(), cOBB3);
-	AddBoxColliderToDraw(wnd.Gfx(), cOBB4);
-	AddBoxColliderToDraw(wnd.Gfx(), eDamageOBB);*/
-
-
-	/*AddSphereColliderToDraw(wnd.Gfx(), bBoundingSphere);
-	AddSphereColliderToDraw(wnd.Gfx(), a2Sphere);
-	AddSphereColliderToDraw(wnd.Gfx(), sBoundingSphere);*/
-	//AddSphereColliderToDraw(wnd.Gfx(), stone1->GetComponent<BoundingSphere>());
-    /*AddSphereColliderToDraw(wnd.Gfx(), stone2->GetComponent<BoundingSphere>());
-    AddSphereColliderToDraw(wnd.Gfx(), stone3->GetComponent<BoundingSphere>());
-    AddSphereColliderToDraw(wnd.Gfx(), stone5->GetComponent<BoundingSphere>());*/
-
-	/*AddCapsuleColliderToDraw(wnd.Gfx(), pCapsule);
-	AddCapsuleColliderToDraw(wnd.Gfx(), eCapsule);
-	AddCapsuleColliderToDraw(wnd.Gfx(), a1CapsuleCollider);*/
-
-    LevelGenerator levelGenerator(prefabManager, pSceneRoot.get(), pPlayer);
+    //LevelGenerator levelGenerator(prefabManager, pSceneRoot.get(), pPlayer);
 
 
     wnd.DisableCursor();
@@ -274,6 +251,12 @@ void App::HandleInput(float dt)
 
         switch (e->GetCode())
         {
+        case 'O':
+        {
+            pSceneRoot->GetComponent<Global>()->AddSpecialLevel();
+            break;
+        }
+
 		case 'M': // Toggle Music
 			if (myMusic->isPlaying())
 			{

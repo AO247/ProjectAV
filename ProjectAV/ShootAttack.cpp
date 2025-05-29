@@ -6,7 +6,7 @@ namespace dx = DirectX;
 ShootAttack::ShootAttack(Node* owner, std::string tag)
 	: Component(owner, std::move(tag))
 {
-	player = pOwner->GetParent()->FindFirstChildByTag("PLAYER");
+	player = pOwner->GetRoot()->FindFirstChildByTag("PLAYER");
 	attackRange = 45.0f;
 }
 

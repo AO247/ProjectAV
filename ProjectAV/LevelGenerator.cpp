@@ -1,14 +1,236 @@
 #include "LevelGenerator.h"
 #include "Components.h"
 
-LevelGenerator::LevelGenerator(PrefabManager* prefabManager, Node* root, Node* pPlayer)
+LevelGenerator::LevelGenerator(PrefabManager* prefabManager, Node* root, Node* pPlayer, bool isNew)
     : prefabManager(prefabManager), pSceneRoot(root), pPlayer(pPlayer)
 {
-    std::srand(static_cast<unsigned>(std::time(nullptr)));
+    if (prefabManager != nullptr)
+    {
+        std::srand(static_cast<unsigned>(std::time(nullptr)));
 
-    points.push_back(Vector4(0.0f, 0.0f, 0.0f, 0.0f));
-    GenerateIslands();
-    SpawnEnemies();
+        points.push_back(Vector4(0.0f, 0.0f, 0.0f, 0.0f));
+        islandGenerated = false;
+        enemiesSpawned = false;
+        isFinished = false;
+
+        if (!isNew)
+        {
+            GenerateIslands();
+            SpawnEnemies();
+        }
+    }
+}
+
+void LevelGenerator::Update()
+{
+
+    if (!islandGenerated)
+    {
+        GenerateIslandsNew();
+    }
+
+    if(islandGenerated)
+    {
+		isFinished = true;
+    }
+}
+void LevelGenerator::GenerateIslandsNew()
+{
+    int randIsland = rand() % 3;
+    Node* islandPrefab = nullptr;
+    if (spawned) {
+        spawned = false;
+        if (islands.size() > 0)
+        {
+            while (true) {
+
+                if (randIsland == 0 && bigIslandCount > 0)
+                {
+                    int randLarge = rand() % 2;
+                    if (randLarge == 0) {
+                        islandPrefab = PrefabManager::InstantiateIslandBig1(pSceneRoot, 0.0f, 0.0f, 0.0f, 1.0f);
+                    }
+                    else {
+                       // islandPrefab = prefabManager->InstantiateIslandBig2(pSceneRoot, 0.0f, 0.0f, 0.0f, 1.0f);
+                    }
+                    bigIslandCount--;
+                    break;
+                }
+                else if (randIsland == 1 && mediumIslandCount > 0)
+                {
+                    int randMedium = rand() % 2;
+                    if (randMedium == 0) {
+                        //islandPrefab = prefabManager->InstantiateIslandMedium1(pSceneRoot, 0.0f, 0.0f, 0.0f, 1.0f);
+                    }
+                    else {
+                        //islandPrefab = prefabManager->InstantiateIslandMedium1(pSceneRoot, 0.0f, 0.0f, 0.0f, 1.0f);
+                    }
+                    mediumIslandCount--;
+                    break;
+                }
+                else if (randIsland == 2 && smallIslandCount > 0)
+                {
+                    int randSmall = rand() % 2;
+                    if (randSmall == 0) {
+                        //islandPrefab = prefabManager->InstantiateIslandSmall1(pSceneRoot, 0.0f, 0.0f, 0.0f, 1.5f);
+                    }
+                    else {
+                        //islandPrefab = prefabManager->InstantiateIslandSmall2(pSceneRoot, 0.0f, 0.0f, 0.0f, 1.5f);
+                    }
+                    smallIslandCount--;
+                    break;
+                }
+                else {
+                    randIsland = rand() % 3;
+                }
+            }
+        }
+        else {
+            islandPrefab = PrefabManager::InstantiateFirstIsland(pSceneRoot, 0.0f, 0.0f, 0.0f, 1.0f);
+        }
+    }
+
+    if (islandPrefab != nullptr && islandPrefab->GetComponent<Island>())
+    {
+        Island* island = islandPrefab->GetComponent<Island>();
+
+        int randPoint = rand() % points.size();
+
+        Vector4 point = points[randPoint];
+        Vector3 pointPos = Vector3(point.x, point.y, point.z);
+        islandPrefab->SetWorldPosition(pointPos);
+
+        if (pointPos == Vector3(0.0f, 0.0f, 0.0f))
+        {
+
+            ChangePosition(islandPrefab, pointPos, island->downPoint->GetWorldPosition());
+            if (randPoint >= 0 && randPoint < static_cast<int>(points.size())) {
+                points.erase(points.begin() + randPoint);
+            }
+            points.push_back(Vector4(island->leftPoint->GetWorldPosition().x, island->leftPoint->GetWorldPosition().y, island->leftPoint->GetWorldPosition().z, 1.0f));
+            points.push_back(Vector4(island->upPoint->GetWorldPosition().x, island->upPoint->GetWorldPosition().y, island->upPoint->GetWorldPosition().z, 2.0f));
+            points.push_back(Vector4(island->rightPoint->GetWorldPosition().x, island->rightPoint->GetWorldPosition().y, island->rightPoint->GetWorldPosition().z, 3.0f));
+            islands.push_back(islandPrefab);
+			spawned = true;
+        }
+        else {
+            island->Rotate();
+            if (point.w == 0.0f)
+            {
+                ChangePosition(islandPrefab, pointPos, island->upPoint->GetWorldPosition());
+                bool flag = true;
+                for (int i = 0; i < islands.size(); i++)
+                {
+                    if (Collide(islandPrefab, islands[i]) && islands[i] != islandPrefab)
+                    {
+                        flag = false;
+                    }
+
+                }
+                if (flag)
+                {
+                    if (randPoint >= 0 && randPoint < static_cast<int>(points.size())) {
+                        points.erase(points.begin() + randPoint);
+                    }
+                    points.push_back(Vector4(island->downPoint->GetWorldPosition().x, island->downPoint->GetWorldPosition().y, island->downPoint->GetWorldPosition().z, 0.0f));
+                    points.push_back(Vector4(island->leftPoint->GetWorldPosition().x, island->leftPoint->GetWorldPosition().y, island->leftPoint->GetWorldPosition().z, 1.0f));
+                    points.push_back(Vector4(island->rightPoint->GetWorldPosition().x, island->rightPoint->GetWorldPosition().y, island->rightPoint->GetWorldPosition().z, 3.0f));
+                    islands.push_back(islandPrefab);
+                    spawned = true;
+                }
+
+            }
+            else if (point.w == 1)
+            {
+                ChangePosition(islandPrefab, pointPos, island->rightPoint->GetWorldPosition());
+                bool flag = true;
+                for (int i = 0; i < islands.size(); i++)
+                {
+                    if (Collide(islandPrefab, islands[i]) && islands[i] != islandPrefab)
+                    {
+                        flag = false;
+                    }
+
+                }
+                if (flag)
+                {
+                    if (randPoint >= 0 && randPoint < static_cast<int>(points.size())) {
+                        points.erase(points.begin() + randPoint);
+                    }
+                    points.push_back(Vector4(island->downPoint->GetWorldPosition().x, island->downPoint->GetWorldPosition().y, island->downPoint->GetWorldPosition().z, 0.0f));
+                    points.push_back(Vector4(island->leftPoint->GetWorldPosition().x, island->leftPoint->GetWorldPosition().y, island->leftPoint->GetWorldPosition().z, 1.0f));
+                    points.push_back(Vector4(island->upPoint->GetWorldPosition().x, island->upPoint->GetWorldPosition().y, island->upPoint->GetWorldPosition().z, 2.0f));
+                    islands.push_back(islandPrefab);
+                    spawned = true;
+                }
+            }
+            else if (point.w == 2)
+            {
+                ChangePosition(islandPrefab, pointPos, island->downPoint->GetWorldPosition());
+                bool flag = true;
+                for (int i = 0; i < islands.size(); i++)
+                {
+                    if (Collide(islandPrefab, islands[i]) && islands[i] != islandPrefab)
+                    {
+                        flag = false;
+                    }
+
+                }
+                if (flag)
+                {
+                    if (randPoint >= 0 && randPoint < static_cast<int>(points.size())) {
+                        points.erase(points.begin() + randPoint);
+                    }
+                    points.push_back(Vector4(island->leftPoint->GetWorldPosition().x, island->leftPoint->GetWorldPosition().y, island->leftPoint->GetWorldPosition().z, 1.0f));
+                    points.push_back(Vector4(island->upPoint->GetWorldPosition().x, island->upPoint->GetWorldPosition().y, island->upPoint->GetWorldPosition().z, 2.0f));
+                    points.push_back(Vector4(island->rightPoint->GetWorldPosition().x, island->rightPoint->GetWorldPosition().y, island->rightPoint->GetWorldPosition().z, 3.0f));
+                    islands.push_back(islandPrefab);
+					spawned = true;
+                }
+
+            }
+            else if (point.w == 3)
+            {
+                ChangePosition(islandPrefab, pointPos, island->leftPoint->GetWorldPosition());
+                bool flag = true;
+                for (int i = 0; i < islands.size(); i++)
+                {
+                    if (Collide(islandPrefab, islands[i]) && islands[i] != islandPrefab)
+                    {
+                        flag = false;
+                    }
+
+                }
+                if (flag)
+                {
+                    if (randPoint >= 0 && randPoint < static_cast<int>(points.size())) {
+                        points.erase(points.begin() + randPoint);
+                    }
+                    points.push_back(Vector4(island->downPoint->GetWorldPosition().x, island->downPoint->GetWorldPosition().y, island->downPoint->GetWorldPosition().z, 0.0f));
+                    points.push_back(Vector4(island->upPoint->GetWorldPosition().x, island->upPoint->GetWorldPosition().y, island->upPoint->GetWorldPosition().z, 2.0f));
+                    points.push_back(Vector4(island->rightPoint->GetWorldPosition().x, island->rightPoint->GetWorldPosition().y, island->rightPoint->GetWorldPosition().z, 3.0f));
+                    islands.push_back(islandPrefab);
+                    spawned = true;
+                }
+            }
+            else
+            {
+                OutputDebugStringA("\nNie prawidlowy punkt\n");
+            }
+
+        }
+    }
+    if (bigIslandCount <= 0 && mediumIslandCount <= 0 && smallIslandCount <= 0)
+    {
+        OutputDebugStringA("\nAll islands generated\n");
+
+        for (int i = 0; i < islands.size(); i++)
+        {
+            float randY = -5.0f + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX) / 10.0f);
+            islands[i]->SetLocalPosition(DirectX::XMFLOAT3(islands[i]->GetLocalPosition().x, islands[i]->GetLocalPosition().y + randY, islands[i]->GetLocalPosition().z));
+        }
+		islandGenerated = true;
+    }
 }
 
 void LevelGenerator::GenerateIslands()
@@ -26,48 +248,53 @@ void LevelGenerator::GenerateIslands()
         }
         int randIsland = rand() % 3;
         Node* islandPrefab = nullptr;
+        if (islands.size() > 0)
+        {
+            while (true) {
 
-        while (true) {
-
-            if (randIsland == 0 && bigIslandCount > 0)
-            {
-                int randLarge = rand() % 2;
-                if (randLarge == 0) {
-                    islandPrefab = prefabManager->InstantiateIslandBig1(pSceneRoot, 0.0f, 0.0f, 0.0f, 1.0f);
+                if (randIsland == 0 && bigIslandCount > 0)
+                {
+                    int randLarge = rand() % 2;
+                    if (randLarge == 0) {
+                        islandPrefab = prefabManager->InstantiateIslandBig1(pSceneRoot, 0.0f, 0.0f, 0.0f, 1.0f);
+                    }
+                    else {
+                        islandPrefab = prefabManager->InstantiateIslandBig2(pSceneRoot, 0.0f, 0.0f, 0.0f, 1.0f);
+                    }
+                    bigIslandCount--;
+                    break;
+                }
+                else if (randIsland == 1 && mediumIslandCount > 0)
+                {
+                    int randMedium = rand() % 2;
+                    if (randMedium == 0) {
+                        islandPrefab = prefabManager->InstantiateIslandMedium1(pSceneRoot, 0.0f, 0.0f, 0.0f, 1.0f);
+                    }
+                    else {
+                        islandPrefab = prefabManager->InstantiateIslandMedium1(pSceneRoot, 0.0f, 0.0f, 0.0f, 1.0f);
+                    }
+                    mediumIslandCount--;
+                    break;
+                }
+                else if (randIsland == 2 && smallIslandCount > 0)
+                {
+                    int randSmall = rand() % 2;
+                    if (randSmall == 0) {
+                        islandPrefab = prefabManager->InstantiateIslandSmall1(pSceneRoot, 0.0f, 0.0f, 0.0f, 1.5f);
+                    }
+                    else {
+                        islandPrefab = prefabManager->InstantiateIslandSmall2(pSceneRoot, 0.0f, 0.0f, 0.0f, 1.5f);
+                    }
+                    smallIslandCount--;
+                    break;
                 }
                 else {
-                    islandPrefab = prefabManager->InstantiateIslandBig2(pSceneRoot, 0.0f, 0.0f, 0.0f, 1.0f);
+                    randIsland = rand() % 3;
                 }
-				bigIslandCount--;
-				break;
             }
-            else if (randIsland == 1 && mediumIslandCount > 0)
-            {
-                int randMedium = rand() % 2;
-                if (randMedium == 0) {
-                    islandPrefab = prefabManager->InstantiateIslandMedium1(pSceneRoot, 0.0f, 0.0f, 0.0f, 1.0f);
-                }
-                else {
-                    islandPrefab = prefabManager->InstantiateIslandMedium1(pSceneRoot, 0.0f, 0.0f, 0.0f, 1.0f);
-                }
-                mediumIslandCount--;
-                break;
-            }
-            else if (randIsland == 2 && smallIslandCount > 0)
-            {
-				int randSmall = rand() % 2;
-				if (randSmall == 0) {
-                    islandPrefab = prefabManager->InstantiateIslandSmall1(pSceneRoot, 0.0f, 0.0f, 0.0f, 1.5f);
-				}
-				else {
-					islandPrefab = prefabManager->InstantiateIslandSmall2(pSceneRoot, 0.0f, 0.0f, 0.0f, 1.5f);
-				}
-                smallIslandCount--;
-                break;
-            }
-            else {
-                randIsland = rand() % 3;
-            }
+        }
+        else {
+			islandPrefab = prefabManager->InstantiateFirstIsland(pSceneRoot, 0.0f, 0.0f, 0.0f, 1.0f);
         }
 
         if (islandPrefab != nullptr && islandPrefab->GetComponent<Island>())
@@ -101,7 +328,7 @@ void LevelGenerator::GenerateIslands()
                         points.erase(points.begin() + randPoint);
                     }
                     points.push_back(Vector4(island->leftPoint->GetWorldPosition().x, island->leftPoint->GetWorldPosition().y, island->leftPoint->GetWorldPosition().z, 1.0f));
-                    points.push_back(Vector4(island->upPoint->GetWorldPosition().x, island->upPoint->GetWorldPosition().y, island->upPoint->GetWorldPosition().z, 2.0f));
+                    //points.push_back(Vector4(island->upPoint->GetWorldPosition().x, island->upPoint->GetWorldPosition().y, island->upPoint->GetWorldPosition().z, 2.0f));
                     points.push_back(Vector4(island->rightPoint->GetWorldPosition().x, island->rightPoint->GetWorldPosition().y, island->rightPoint->GetWorldPosition().z, 3.0f));
                     time = 0.0f;
 					islands.push_back(islandPrefab);
@@ -155,7 +382,7 @@ void LevelGenerator::GenerateIslands()
                         if (randPoint >= 0 && randPoint < static_cast<int>(points.size())) {
                             points.erase(points.begin() + randPoint);
                         }
-                        points.push_back(Vector4(island->downPoint->GetWorldPosition().x, island->downPoint->GetWorldPosition().y, island->downPoint->GetWorldPosition().z, 0.0f));
+                        //points.push_back(Vector4(island->downPoint->GetWorldPosition().x, island->downPoint->GetWorldPosition().y, island->downPoint->GetWorldPosition().z, 0.0f));
                         points.push_back(Vector4(island->leftPoint->GetWorldPosition().x, island->leftPoint->GetWorldPosition().y, island->leftPoint->GetWorldPosition().z, 1.0f));
                         points.push_back(Vector4(island->rightPoint->GetWorldPosition().x, island->rightPoint->GetWorldPosition().y, island->rightPoint->GetWorldPosition().z, 3.0f));
                         time = 0.0f;
@@ -195,7 +422,7 @@ void LevelGenerator::GenerateIslands()
                             points.erase(points.begin() + randPoint);
                         }
                         points.push_back(Vector4(island->downPoint->GetWorldPosition().x, island->downPoint->GetWorldPosition().y, island->downPoint->GetWorldPosition().z, 0.0f));
-                        points.push_back(Vector4(island->leftPoint->GetWorldPosition().x, island->leftPoint->GetWorldPosition().y, island->leftPoint->GetWorldPosition().z, 1.0f));
+                        //points.push_back(Vector4(island->leftPoint->GetWorldPosition().x, island->leftPoint->GetWorldPosition().y, island->leftPoint->GetWorldPosition().z, 1.0f));
                         points.push_back(Vector4(island->upPoint->GetWorldPosition().x, island->upPoint->GetWorldPosition().y, island->upPoint->GetWorldPosition().z, 2.0f));
                         time = 0.0f;
                         islands.push_back(islandPrefab);
@@ -234,7 +461,7 @@ void LevelGenerator::GenerateIslands()
                             points.erase(points.begin() + randPoint);
                         }
                         points.push_back(Vector4(island->leftPoint->GetWorldPosition().x, island->leftPoint->GetWorldPosition().y, island->leftPoint->GetWorldPosition().z, 1.0f));
-                        points.push_back(Vector4(island->upPoint->GetWorldPosition().x, island->upPoint->GetWorldPosition().y, island->upPoint->GetWorldPosition().z, 2.0f));
+                        //points.push_back(Vector4(island->upPoint->GetWorldPosition().x, island->upPoint->GetWorldPosition().y, island->upPoint->GetWorldPosition().z, 2.0f));
                         points.push_back(Vector4(island->rightPoint->GetWorldPosition().x, island->rightPoint->GetWorldPosition().y, island->rightPoint->GetWorldPosition().z, 3.0f));
                         time = 0.0f;
                         islands.push_back(islandPrefab);
@@ -274,7 +501,7 @@ void LevelGenerator::GenerateIslands()
                         }
                         points.push_back(Vector4(island->downPoint->GetWorldPosition().x, island->downPoint->GetWorldPosition().y, island->downPoint->GetWorldPosition().z, 0.0f));
                         points.push_back(Vector4(island->upPoint->GetWorldPosition().x, island->upPoint->GetWorldPosition().y, island->upPoint->GetWorldPosition().z, 2.0f));
-                        points.push_back(Vector4(island->rightPoint->GetWorldPosition().x, island->rightPoint->GetWorldPosition().y, island->rightPoint->GetWorldPosition().z, 3.0f));
+                        //points.push_back(Vector4(island->rightPoint->GetWorldPosition().x, island->rightPoint->GetWorldPosition().y, island->rightPoint->GetWorldPosition().z, 3.0f));
                         time = 0.0f;
                         islands.push_back(islandPrefab);
                         break;
@@ -303,17 +530,13 @@ void LevelGenerator::GenerateIslands()
 
 void LevelGenerator::ChangePosition(Node* island, Vector3 pointPos, Vector3 startPos)
 {
-    OutputDebugStringA(("\n\nChanging position of island: " + island->GetName()).c_str());
-    OutputDebugStringA(("\nPoint Position: " + std::to_string(pointPos.x) + ", " + std::to_string(pointPos.y) + ", " + std::to_string(pointPos.z)).c_str());
     Vector3 pos = island->GetWorldPosition();
 
     Vector3 dir = pointPos - startPos;
     float length = dir.Length();
     dir.Normalize();
-    island->SetWorldPosition(island->GetWorldPosition() + (dir * length));
+    island->SetLocalPosition(island->GetLocalPosition() + (dir * length));
     pos = island->GetWorldPosition();
-    OutputDebugStringA(("\nIsland New Position: " + std::to_string(pos.x) + ", " + std::to_string(pos.y) + ", " + std::to_string(pos.z)).c_str());
-
 }
 
 bool LevelGenerator::Collide(Node* island1, Node* island2) 

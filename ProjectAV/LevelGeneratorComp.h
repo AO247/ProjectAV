@@ -1,19 +1,20 @@
 #pragma once
 #include "Node.h"
+#include "Component.h"
 #include "PrefabManager.h"
 #include <DirectXMath.h>
 
 using namespace DirectX::SimpleMath;
 class PrefabManager;
 
-class LevelGenerator
+class LevelGeneratorComp : public Component
 {
 public:
-	LevelGenerator(PrefabManager* prefabManager, Node* root, Node* pPlayer, bool isNew);
-	~LevelGenerator() = default;
+	LevelGeneratorComp(Node* owner, PrefabManager* prefabManager, Node* pPlayer);
+	virtual ~LevelGeneratorComp() = default;
 
-	int bigIslandCount = 0;
-	int mediumIslandCount = 0;
+	int bigIslandCount = 2;
+	int mediumIslandCount = 1;
 	int smallIslandCount = 0;
 
 	int numberOfHardEnemies = 0;
@@ -21,13 +22,14 @@ public:
 	int numberOfEasyEnemies = 0;
 
 
-	void Update();
+	virtual void Update(float dt) override;
+	virtual void DrawImGuiControls() override;
+
 	bool islandGenerated = false;
 	bool enemiesSpawned = false;
 	bool isFinished = false;
 private:
 	PrefabManager* prefabManager;
-	Node* pSceneRoot;
 	Node* pPlayer;
 	float distance = 1.0f;
 	std::vector<Node*> islands;
@@ -40,6 +42,7 @@ private:
 	void SpawnEnemiesNew();
 
 	bool spawned = true;
+	Node* islandPrefab = nullptr;
 
 
 	void ChangePosition(Node* island, Vector3 pointPos, Vector3 startPos);

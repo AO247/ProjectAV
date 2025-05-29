@@ -129,10 +129,12 @@ void PlayerController::GroundCheck()
 {
     RRayCast ray = RRayCast(
         RVec3(GetOwner()->GetWorldPosition().x, GetOwner()->GetWorldPosition().y, GetOwner()->GetWorldPosition().z),
-        Vec3(0.0f, -(height/2 + 0.2f), 0.0f)
-	);
+        Vec3(0.0f, -(height / 2 + 0.2f), 0.0f)
+    );
     RayCastResult result;
-    if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(ray, result, IgnoreSpecifiedBroadPhaseLayerFilter(BroadPhaseLayers::PLAYER), IgnoreSpecifiedObjectLayerFilter(Layers::PLAYER)))
+    if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(ray, result, 
+        IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::PLAYER, BroadPhaseLayers::TRIGGER }), 
+        IgnoreMultipleObjectLayerFilter({Layers::PLAYER, Layers::TRIGGER})))
     {
 		grounded = true;
     }
