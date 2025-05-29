@@ -20,7 +20,7 @@ class LevelGenerator;
 class Global : public Component
 {
 public:
-	Global(Node* owner, Window& window, PrefabManager* prefabMan, Node* player);
+	Global(Node* owner, Window& window, Node* player);
 	virtual ~Global() = default;
 
 	virtual void Update(float dt) override;
@@ -31,10 +31,9 @@ public:
 	std::vector<Node*> levels;
 	int levelCount = 0;
 	void AddSpecialLevel();
-
+	bool yey = true;
 private:
 	Window& wnd;
-	PrefabManager* prefabManager;
 	std::unique_ptr<LevelGenerator> currentLevelGenerator;
 	void AddLevel();
 };

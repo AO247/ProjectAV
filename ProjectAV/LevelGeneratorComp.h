@@ -10,14 +10,14 @@ class PrefabManager;
 class LevelGeneratorComp : public Component
 {
 public:
-	LevelGeneratorComp(Node* owner, PrefabManager* prefabManager, Node* pPlayer);
+	LevelGeneratorComp(Node* owner, Node* pPlayer);
 	virtual ~LevelGeneratorComp() = default;
 
-	int bigIslandCount = 2;
+	int bigIslandCount = 3;
 	int mediumIslandCount = 1;
 	int smallIslandCount = 0;
 
-	int numberOfHardEnemies = 0;
+	int numberOfHardEnemies = 1;
 	int numberOfMediumEnemies = 0;
 	int numberOfEasyEnemies = 0;
 
@@ -29,21 +29,23 @@ public:
 	bool enemiesSpawned = false;
 	bool isFinished = false;
 private:
-	PrefabManager* prefabManager;
 	Node* pPlayer;
 	float distance = 1.0f;
 	std::vector<Node*> islands;
 	std::vector<Vector4> points;
 	std::vector<Vector3> spawnPoints;
+
 	void GenerateIslands();
 	void SpawnEnemies();
 
-	void GenerateIslandsNew();
-	void SpawnEnemiesNew();
-
 	bool spawned = true;
 	Node* islandPrefab = nullptr;
+	Node* enemy = nullptr;
+	int islandNumber = 1;
+	int pIslandNumber = 1;
+	Island* island = nullptr;
 
+	int counterToRotate = 0;
 
 	void ChangePosition(Node* island, Vector3 pointPos, Vector3 startPos);
 	bool Collide(Node* island1, Node* island2);

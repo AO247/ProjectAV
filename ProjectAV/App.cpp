@@ -37,9 +37,7 @@ App::App(const std::string& commandLine)
     TestDynamicConstant();
     // Set Projection Matrix (Far plane adjusted for larger scenes potentially)
     wnd.Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 2000.0f));
-
-    cube.SetPos({ 4.0f,2.0f,0.0f });
-    cube2.SetPos({ 0.0f,6.0f,0.0f });
+\
 
 
     RegisterDefaultAllocator();
@@ -69,9 +67,6 @@ App::App(const std::string& commandLine)
 	soundDevice->SetAttenuation(attentuation);
     myMusic = std::make_unique<MusicBuffer>("Models\\muza_full.wav");
 
-	auto prefabManagerOwner = std::make_unique<PrefabManager>(&wnd);
-	prefabManager = prefabManagerOwner.get();
-
     // --- Create Nodes ---
 
 	auto pCameraNodeOwner = std::make_unique<Node>("Camera", nullptr, "CAMERA");
@@ -95,7 +90,9 @@ App::App(const std::string& commandLine)
     pSceneRoot->AddChild(std::move(pPlayerOwner));
     pSceneRoot->AddChild(std::move(pAbility1Owner));
     pSceneRoot->AddChild(std::move(pAbility2Owner));
+	pSceneRoot->AddChild(std::move(pPrefabsOwner));
 
+	PrefabManager::root = pPrefabs;
 
     //Heeeej Bracie zacz�ooo pada� chood� zmienii� gacieee
     //Heeeej Siostro uciekaajmyy zanim b��dzieee mookroooo
@@ -170,7 +167,7 @@ App::App(const std::string& commandLine)
     soundDevice->SetLocation(pPlayer->GetLocalPosition().x, pPlayer->GetLocalPosition().y, pPlayer->GetLocalPosition().z);
 
     pSceneRoot->AddComponent(
-        std::make_unique<Global>(pSceneRoot.get(), wnd, prefabManager, pPlayer)
+        std::make_unique<Global>(pSceneRoot.get(), wnd, pPlayer)
     );
     
 	//pEnemy->AddComponent(
@@ -351,8 +348,6 @@ void App::DoFrame(float dt)
 	/*DebugLine line(wnd.Gfx(), pEnemy->GetComponent<StateMachine>()->pos, pEnemy->GetComponent<StateMachine>()->cen, { 0.0f, 0.0f, 1.0f, 1.0f });
     line.Submit(fc);*/ // for idle
     // --- Bind Lights ---
-    cube.Submit(fc);
-	cube2.Submit(fc);
     pointLight.Bind(wnd.Gfx(), viewMatrix); // Bind point light (to slot 0)
 
     FrustumCalculating(); // Draw with FRUSTUM CULLING
@@ -511,8 +506,6 @@ void App::ShowControlWindows()
     //DrawBoxColliders(wnd.Gfx()); // Call the updated function
 	//DrawCapsuleColliders(wnd.Gfx());
     //ForEnemyWalking();
-    cube.SpawnControlWindow(wnd.Gfx(), "Cube 1");
-	cube2.SpawnControlWindow(wnd.Gfx(), "Cube 2");
     pointLight.Submit(fc);
 
     pointLight.SpawnControlWindow(); // Control for Point Light
@@ -807,9 +800,13 @@ void App::CleanupDestroyedNodes(Node* currentNode)
                 if (pChildNode->IsMarkedForDestruction()) {
                     OutputDebugStringA(("Cleanup: Preparing to remove node: " + pChildNode->GetName() + "\n").c_str());
 
-					PhysicsCommon::physicsSystem->GetBodyInterface().DeactivateBody(pChildNode->GetComponent<Rigidbody>()->GetBodyID());
-					PhysicsCommon::physicsSystem->GetBodyInterface().RemoveBody(pChildNode->GetComponent<Rigidbody>()->GetBodyID());
-                    dynamic_cast<MyContactListener*>(PhysicsCommon::physicsSystem->GetContactListener())->RemoveRigidbodyData(pChildNode->GetComponent<Rigidbody>()->GetBodyID());
+                    if (pChildNode->GetComponent<Rigidbody>() != nullptr) {
+                        PhysicsCommon::physicsSystem->GetBodyInterface().DeactivateBody(pChildNode->GetComponent<Rigidbody>()->GetBodyID());
+                        PhysicsCommon::physicsSystem->GetBodyInterface().RemoveBody(pChildNode->GetComponent<Rigidbody>()->GetBodyID());
+                        if (pChildNode->GetComponent<Trigger>() != nullptr) {
+                            dynamic_cast<MyContactListener*>(PhysicsCommon::physicsSystem->GetContactListener())->RemoveRigidbodyData(pChildNode->GetComponent<Rigidbody>()->GetBodyID());
+                        }
+                    }
 
 
                     const auto& components = pChildNode->GetComponents();

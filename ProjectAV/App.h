@@ -73,9 +73,7 @@ private:
 	Node* pSelectedSceneNode = nullptr; // Node representing the selected scene node
 	Node* pSoundEffectsPlayer = nullptr; // Node for the sound effects player
     Node* pPrefabs = nullptr;
-    PrefabManager* prefabManager = nullptr;
-    TestCube cube{ wnd.Gfx(),4.0f };
-    TestCube cube2{ wnd.Gfx(),4.0f };
+
     // --- UI State ---
     
     /*std::map<BoundingSphere*, ColliderSphere*> sphereCollidersToDraw;
