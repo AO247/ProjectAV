@@ -140,7 +140,7 @@ App::App(const std::string& commandLine)
 		std::make_unique<ModelComponent>(pColumn3, wnd.Gfx(), "Models\\kolumna\\kolumna.obj")
 	);
     pChar->AddComponent(
-		std::make_unique<ModelComponent>(pChar, wnd.Gfx(), "Models\\charBox.fbx")
+		std::make_unique<ModelComponent>(pChar, wnd.Gfx(), "Models\\charBox2.fbx")
 	);
 
     //pIsland->AddComponent(
@@ -330,17 +330,15 @@ App::App(const std::string& commandLine)
     pAnimComp->Initialize();
 
     bool animsLoaded = pAnimComp->LoadAnimationsFromFile(
-        "Models\\charBox.fbx", // Path to file containing animations
-        "Models\\charBox.fbx"             // Path to model whose skeleton these anims target (can be same file)
+        "Models\\charBox2.fbx", // Path to file containing animations
+        "Models\\charBox2.fbx"             // Path to model whose skeleton these anims target (can be same file)
     );
 
     //if (animsLoaded) {
-    //    OutputDebugStringA("Animations loaded successfully for pPlayer.\n");
-    //    // You could try playing an animation here later:
-    //    // pAnimComp->PlayAnimation("Walk"); // Assuming "Walk" is an animation name in the file
+    //    OutputDebugStringA("Animations loaded successfully for pPlayer.\n"); 
 
     pAnimComp->PlayAnimation("Armature|ArmatureAction", true);
-    //pAnimComp->PlayAnimation("jog.001", true);
+    //pAnimComp->PlayAnimation("Action", true);
     //}
     //else {
     //    OutputDebugStringA("Failed to load animations for pPlayer.\n");
@@ -365,7 +363,7 @@ App::App(const std::string& commandLine)
 	pColumn->SetLocalPosition(DirectX::XMFLOAT3(-8.0f, 0.0f, -7.0f));
 	pColumn2->SetLocalPosition(DirectX::XMFLOAT3(-2.0f, 0.0f, 4.0f));
 	pColumn3->SetLocalPosition(DirectX::XMFLOAT3(-16.0f, 0.0f, -6.0f));
-    pChar->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+    pChar->SetLocalPosition(DirectX::XMFLOAT3(5.0f, 5.0f, 5.0f));
     //pChar->SetLocalScale(DirectX::XMFLOAT3(0.05f, 0.05f, 0.05f));
 	/*stone1->SetLocalPosition(DirectX::XMFLOAT3(-10.0f, 1.0f, -10.0f));
 	stone1->SetLocalScale(dx::XMFLOAT3(1.5f, 1.5f, 1.5f));*/

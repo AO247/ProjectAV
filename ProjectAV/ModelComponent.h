@@ -37,7 +37,11 @@ public:
 
     const std::vector<std::unique_ptr<ModelInternalNode>>& GetChildren() const noexcept { return childPtrs; }
     const DirectX::XMFLOAT4X4& GetBindPoseTransform() const noexcept { return transform; }
+    
+    //const std::string& GetName() const noexcept { return name; }
 
+    const DirectX::XMFLOAT4X4& GetOriginalTransform_ForAnim() const { return transform; } // 'transform' stores the node's original local matrix
+    const std::vector<std::unique_ptr<ModelInternalNode>>& GetChildren_ForAnim() const { return childPtrs; }
 private:
     void AddChild(std::unique_ptr<ModelInternalNode> pChild) noxnd;
     std::string name;

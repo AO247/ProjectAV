@@ -140,18 +140,10 @@ private:
 };
 
 template<typename KeyType>
-UINT AnimationComponent::FindKeyframeIndex(float animationTimeTicks, const std::vector<KeyType>& keys) const
-{
-    assert(!keys.empty() && "Cannot find keyframe index in an empty key set.");
-
+UINT AnimationComponent::FindKeyframeIndex(float animationTimeTicks, const std::vector<KeyType>& keys) const {
+    assert(!keys.empty());
     auto it = std::lower_bound(keys.begin(), keys.end(), animationTimeTicks,
-        [](const KeyType& key, float time) {
-            return key.time < time;
-        }
-    );
-
-    if (it == keys.begin()) {
-        return 0;
-    }
+        [](const KeyType& key, float time) { return key.time < time; });
+    if (it == keys.begin()) return 0;
     return static_cast<UINT>(std::distance(keys.begin(), std::prev(it)));
 }

@@ -183,10 +183,34 @@ void ModelInternalNode::ShowTree(int& nodeIndexTracker, ModelInternalNode*& pSel
 
 // --- ModelComponent Implementation ---
 
+void LogAssimpNodeHierarchy(const aiNode* pNode, const std::unordered_map<std::string, BoneInfo>& boneInfoMap, int indentLevel = 0) {
+	if (!pNode) return;
+
+	std::ostringstream oss;
+	for (int i = 0; i < indentLevel; ++i) oss << "  "; // Indentation
+
+	oss << "- Node: '" << pNode->mName.C_Str() << "'";
+	if (boneInfoMap.count(pNode->mName.C_Str())) {
+		oss << " (BONE ID: " << boneInfoMap.at(pNode->mName.C_Str()).id << ")";
+	}
+	// You could also print pNode->mTransformation here if desired
+	oss << "\n";
+	OutputDebugStringA(oss.str().c_str());
+
+	for (unsigned int i = 0; i < pNode->mNumChildren; ++i) {
+		LogAssimpNodeHierarchy(pNode->mChildren[i], boneInfoMap, indentLevel + 1);
+	}
+}
+
+
 ModelComponent::ModelComponent(Node* owner, Graphics& gfx, const std::string& modelFile, float scale)
-	: Component(owner, "ModelComponent"), // Corrected base Component constructor call
-	pControlWindow(std::make_unique<ModelControlWindow>()) // Assuming ModelControlWindow still exists
+	: Component(owner, "ModelComponent"),
+	pControlWindow(std::make_unique<ModelControlWindow>())
 {
+	std::ostringstream oss_constructor; // For logging within constructor
+	oss_constructor << "ModelComponent: Loading model '" << modelFile << "' with scale " << scale << "\n";
+	OutputDebugStringA(oss_constructor.str().c_str());
+
 	Assimp::Importer importer;
 	const auto pScene = importer.ReadFile(modelFile.c_str(),
 		aiProcess_Triangulate |
@@ -194,98 +218,105 @@ ModelComponent::ModelComponent(Node* owner, Graphics& gfx, const std::string& mo
 		aiProcess_ConvertToLeftHanded |
 		aiProcess_GenNormals |
 		aiProcess_CalcTangentSpace |
-		aiProcess_LimitBoneWeights       // Important for skeletal animation
-		//aiProcess_PopulateArmatureData    // Helpful for armature/bone info		
+		aiProcess_LimitBoneWeights
 	);
 
 	if (!pScene || !pScene->mRootNode || pScene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) {
-		// Use your ModelException or a std::runtime_error
 		throw ModelException(__LINE__, __FILE__, "Assimp error: " + std::string(importer.GetErrorString()));
 	}
 
-	std::filesystem::path filePath(modelFile); // For material texture paths
-
-	// 1. Parse materials from the scene (your existing logic for this)
-	std::vector<Material> materials; // Assuming Material can be constructed and stored like this
+	std::filesystem::path filePath(modelFile);
+	std::vector<Material> materials;
 	materials.reserve(pScene->mNumMaterials);
 	for (size_t i = 0; i < pScene->mNumMaterials; ++i) {
-		materials.emplace_back(gfx, *pScene->mMaterials[i], filePath); // Your Material constructor
+		materials.emplace_back(gfx, *pScene->mMaterials[i], filePath);
 	}
 
-	// 2. Process each mesh in the scene
-	meshPtrs.reserve(pScene->mNumMeshes); // meshPtrs is std::vector<std::unique_ptr<Mesh>>
+	oss_constructor.str(""); oss_constructor.clear();
+	oss_constructor << "ModelComponent: Processing " << pScene->mNumMeshes << " meshes...\n";
+	OutputDebugStringA(oss_constructor.str().c_str());
+
+	meshPtrs.reserve(pScene->mNumMeshes);
 	for (unsigned int i = 0; i < pScene->mNumMeshes; ++i)
 	{
 		const auto& assimpMesh = *pScene->mMeshes[i];
+		const auto& material = materials[assimpMesh.mMaterialIndex];
 
-		//Material material(gfx, *pScene->mMaterials[assimpMesh.mMaterialIndex], &assimpMesh, filePath);
+		oss_constructor.str(""); oss_constructor.clear();
+		oss_constructor << "  Mesh " << i << ": '" << assimpMesh.mName.C_Str()
+			 
+			<< "', NumVertices: " << assimpMesh.mNumVertices
+			<< ", NumBones: " << assimpMesh.mNumBones << "\n";
+		OutputDebugStringA(oss_constructor.str().c_str());
 
-
-		const auto& material = materials[assimpMesh.mMaterialIndex]; // Get the material for this mesh
-
-		// 2a. Determine the vertex layout required by this material for this mesh
 		Dvtx::VertexLayout dvtxLayout = material.GetRequiredVertexLayout(assimpMesh);
-
-		// 2b. Create the CPU-side Dvtx::VertexBuffer using this layout.
-		// The Dvtx::VertexBuffer constructor (the one taking aiMesh) will populate
-		// standard attributes (Position, Normal, TexCoord) based on its DVTX_ELEMENT_AI_EXTRACTOR logic.
-		// Bone attributes will be default-initialized (e.g., to 0) by the fix in AttributeAiMeshFill.
 		Dvtx::VertexBuffer dvtxBuffer(dvtxLayout, assimpMesh);
 
-		// 2c. Apply scaling to vertex positions within the dvtxBuffer
-		// (if the layout actually contains positions)
 		if (dvtxLayout.Has(Dvtx::VertexLayout::Position3D)) {
 			for (size_t vIdx = 0; vIdx < dvtxBuffer.Size(); ++vIdx) {
 				auto& pos = dvtxBuffer[vIdx].Attr<Dvtx::VertexLayout::Position3D>();
-				pos.x *= scale;
-				pos.y *= scale;
-				pos.z *= scale;
+				pos.x *= scale; pos.y *= scale; pos.z *= scale;
 			}
 		}
-		// Also scale normals if scale is non-uniform and you're not using inverse transpose world matrix.
-		// For uniform scale, normals don't need rescaling here if they are just directions.
 
-		// 2d. Extract bone weights and populate m_BoneInfoMap and bone data in dvtxBuffer
-		// This happens ONLY if the layout determined by the material actually includes bone attributes.
 		if (dvtxLayout.Has(Dvtx::VertexLayout::BoneIDs) && dvtxLayout.Has(Dvtx::VertexLayout::BoneWeights)) {
 			if (assimpMesh.HasBones()) {
-				// The mesh has bones, and the material wants bone data. Populate it.
-				// The 'meshGlobalInverseTransform' argument is for advanced scenarios;
-				// pass identity for now as aiBone::mOffsetMatrix is usually sufficient.
 				ExtractBoneWeightForVertices(dvtxBuffer, assimpMesh, DirectX::XMMatrixIdentity());
+
+				// --- DEBUG: Log Vertex Weights for this mesh (can be very verbose) ---
+#ifdef _DEBUG // Only compile this verbose logging in debug builds
+				if (i == 0) { // Example: Only log for the first mesh to reduce spam
+					std::ostringstream oss_weights;
+					oss_weights << "    Vertex Bone Weights for Mesh '" << assimpMesh.mName.C_Str() << "':\n";
+					// Limit to a few vertices to avoid excessive logging
+					for (size_t vIdx = 0; vIdx < std::min((size_t)5, dvtxBuffer.Size()); ++vIdx) {
+						oss_weights << "      Vertex " << vIdx << ": ";
+						const auto& ids = dvtxBuffer[vIdx].Attr<Dvtx::VertexLayout::BoneIDs>();
+						const auto& weights = dvtxBuffer[vIdx].Attr<Dvtx::VertexLayout::BoneWeights>();
+						for (int slot = 0; slot < MAX_BONES_PER_VERTEX; ++slot) {
+							if (weights[slot] > 0.0001f) {
+								oss_weights << "(ID: " << ids[slot] << ", Wt: " << std::fixed << std::setprecision(3) << weights[slot] << ") ";
+							}
+						}
+						oss_weights << "\n";
+					}
+					if (dvtxBuffer.Size() > 5) oss_weights << "      ... (and " << dvtxBuffer.Size() - 5 << " more vertices)\n";
+					OutputDebugStringA(oss_weights.str().c_str());
+				}
+#endif
+				// --- END DEBUG Vertex Weights ---
 			}
-			// If layout Has BoneIDs/Weights but assimpMesh HasNObones, the default
-			// initialization in AttributeAiMeshFill (e.g. boneID 0, weight 1.0) is used.
 		}
 
-		// 2e. Create the GPU-side Bind::VertexBuffer using the populated dvtxBuffer
-		// ModelComponent calls Material::MakeVertexBindable to do this.
-		// The 'scale' argument here can be 1.0f because we've already scaled dvtxBuffer.
-		std::shared_ptr<Bind::VertexBuffer> pD3DVertexBuffer = material.MakeVertexBindable(
-			gfx, assimpMesh, dvtxBuffer
-		);
-
-		// 2f. Create the GPU-side Bind::IndexBuffer
+		std::shared_ptr<Bind::VertexBuffer> pD3DVertexBuffer = material.MakeVertexBindable(gfx, assimpMesh, dvtxBuffer);
 		std::shared_ptr<Bind::IndexBuffer> pD3DIndexBuffer = material.MakeIndexBindable(gfx, assimpMesh);
+		meshPtrs.push_back(std::make_unique<Mesh>(this->pOwner, gfx, pD3DVertexBuffer, pD3DIndexBuffer, material));
+	}
 
-		// 2g. NOW, create the Mesh object using its NEW constructor
-		meshPtrs.push_back(std::make_unique<Mesh>(
-			this->pOwner,
-			gfx,
-			pD3DVertexBuffer,  // Pass the GPU vertex buffer
-			pD3DIndexBuffer, // Pass the GPU index buffer
-			material           // Pass the material (for techniques)
-		));
-	} // End of loop through meshes
+	// --- DEBUG: Log Bone Hierarchy and final m_BoneInfoMap ---
+#ifdef _DEBUG
+	std::ostringstream oss_bones;
+	oss_bones << "\nModelComponent: Final Bone Information (m_BoneInfoMap):\n";
+	for (const auto& pair : m_BoneInfoMap) {
+		oss_bones << "  Bone Name: '" << pair.first << "', Assigned ID: " << pair.second.id << "\n";
+		// Optionally print offset matrix here if needed, using your PrintMatrix helper
+	}
+	oss_bones << "Total unique bones (m_BoneCounter): " << m_BoneCounter << "\n";
+	OutputDebugStringA(oss_bones.str().c_str());
 
-	// 3. Parse the node hierarchy (your existing pRootInternal = ParseNodeRecursive(...))
+	OutputDebugStringA("\nModelComponent: Assimp Node Hierarchy (bones identified):\n");
+	LogAssimpNodeHierarchy(pScene->mRootNode, m_BoneInfoMap); // Pass populated m_BoneInfoMap
+	OutputDebugStringA("--- End Assimp Node Hierarchy ---\n\n");
+#endif
+	// --- END DEBUG Bone Hierarchy ---
+
 	int nextId = 0;
-	// The 'scale' passed to ParseNodeRecursive is for the transforms of ModelInternalNode,
-	// not for individual vertex positions (which we've already scaled).
 	pRootInternal = ParseNodeRecursive(nextId, *pScene->mRootNode, scale);
 
+	oss_constructor.str(""); oss_constructor.clear();
+	oss_constructor << "ModelComponent: Finished loading model '" << modelFile << "'\n";
+	OutputDebugStringA(oss_constructor.str().c_str());
 }
-
 // **** CHANGED Draw to Submit ****
 void ModelComponent::Submit(FrameCommander& frame, Graphics& gfx, dx::FXMMATRIX worldTransform) const noxnd
 {
@@ -440,6 +471,7 @@ void ModelComponent::ExtractBoneWeightForVertices(
 				}
 			}
 
+            
 			// Optional: If no slot found (vertex is already influenced by MAX_BONES_PER_VERTEX)
 			// You could implement a strategy to replace the smallest weight if the new weight is larger.
 			// Assimp's aiProcess_LimitBoneWeights should ideally handle this before we get here,
@@ -450,6 +482,11 @@ void ModelComponent::ExtractBoneWeightForVertices(
 				                     boneName + "' weight not added.\n").c_str());
 			}
 		}
+
+
+
+
+
 	} // End of loop through pAIBone in mesh
 
 	// --- Step 4: Normalize bone weights for each vertex ---
@@ -487,3 +524,6 @@ void ModelComponent::ExtractBoneWeightForVertices(
 		}
 	}
 }
+
+
+
