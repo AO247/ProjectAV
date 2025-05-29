@@ -32,7 +32,8 @@ public:
     Node* GetOwner() const { return pOwner; }
     virtual void DrawImGuiControls() {};
     std::string tag;
-
+    bool isRigidbody = false;
 protected:
+   
     Node* pOwner; // Non-owning pointer to the Node this component is attached to
 };
