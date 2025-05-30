@@ -12,7 +12,7 @@ class PhysicsCommon;
 class Rigidbody : public Component
 {
 public:
-	Rigidbody() : Component(nullptr) {}
+	Rigidbody() : Component(nullptr) { isRigidbody = true; }
 
 	Rigidbody(Node* owner, Vector3 position, float mass, Shape* shape);
 
@@ -22,6 +22,10 @@ public:
 
 	BodyID& GetBodyID();
 
+	static BodyID testowanie;
+
 private:
 	BodyID bodyID;
+	float lastTest = 0.0f;
+	bool firstRun = true;
 };
