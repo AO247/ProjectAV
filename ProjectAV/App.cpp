@@ -61,6 +61,7 @@ App::App(const std::string& commandLine)
     physicsSystem->SetContactListener(contactListener);
     PhysicsCommon::physicsSystem = physicsSystem;
     PrefabManager::wind = &wnd;
+    PrefabManager::rg = &rg;
     physicsSystem->SetGravity(Vec3(0.0f, -80.0f, 0.0f));
 
     soundDevice = LISTENER->Get();
@@ -70,7 +71,6 @@ App::App(const std::string& commandLine)
 
 	auto prefabManagerOwner = std::make_unique<PrefabManager>(&wnd);
 	prefabManager = prefabManagerOwner.get();
-	PrefabManager::rg = &rg; // Set the render graph for prefab manager
 
     // --- Create Nodes ---
 

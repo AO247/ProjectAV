@@ -16,6 +16,7 @@ namespace Rgph {
             AddBind(Stencil::Resolve(gfx, Stencil::Mode::Off));
         }
         void Execute(Graphics& gfx) const override {
+            renderTarget->BindAsBuffer(gfx, depthStencil.get());
             ImGui::Render();
             ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
         }
