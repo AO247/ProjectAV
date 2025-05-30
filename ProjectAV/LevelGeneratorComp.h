@@ -13,11 +13,11 @@ public:
 	LevelGeneratorComp(Node* owner, Node* pPlayer, bool rot);
 	virtual ~LevelGeneratorComp() = default;
 
-	int bigIslandCount = 3;
+	int bigIslandCount = 1;
 	int mediumIslandCount = 1;
 	int smallIslandCount = 0;
 
-	int numberOfHardEnemies = 1;
+	int numberOfHardEnemies = 3;
 	int numberOfMediumEnemies = 0;
 	int numberOfEasyEnemies = 0;
 

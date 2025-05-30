@@ -294,43 +294,47 @@ void LevelGeneratorComp::SpawnEnemies()
     {
         OutputDebugStringA("\nAll enemies spawned\n");
         enemiesSpawned = true;
+        return;
     }
 
     int randSpot = 0;
     std::vector<Node*> spawnPoints;
     Vector3 pos = Vector3(0.0f, 0.0f, 0.0f);
+    pIslandNumber = islandNumber;
     while (true) // wybor miejsca
     {
+        spawnPoints.clear();
         spawnPoints = islands[islandNumber]->GetComponent<Island>()->spawnPoints;
-        pIslandNumber = islandNumber;
         if (spawnPoints.size() > 0)
         {
             randSpot = rand() % spawnPoints.size();
             pos = spawnPoints[randSpot]->GetWorldPosition();
-            //pos.y = islands[islandNumber]->GetLocalPosition().y;
-            //pos.y += spawnPoints[randSpot]->GetLocalPosition().y;
 
             if (randSpot >= 0 && randSpot < static_cast<int>(spawnPoints.size())) {
                 spawnPoints.erase(spawnPoints.begin() + randSpot);
                 islands[islandNumber]->GetComponent<Island>()->spawnPoints = spawnPoints;
             }
             islandNumber++;
+            if (islandNumber >= islands.size())
+            {
+                islandNumber = 0;
+            }
             break;
         }
         else
         {
             islandNumber++;
-            if (islandNumber == pIslandNumber)
+            if (islandNumber >= islands.size())
             {
-                enemiesSpawned = true; // kiedy nie ma wystarczaj¹co miejsc dla enemy
+                islandNumber = 0;
             }
-            spawnPoints = islands[islandNumber]->GetComponent<Island>()->spawnPoints;
+        }
+        if (islandNumber == pIslandNumber)
+        {
+            enemiesSpawned = true;
+            break;
         }
 
-    }
-    if (islandNumber == islands.size())
-    {
-        islandNumber = 0;
     }
 
     if (pos != Vector3(0.0f, 0.0f, 0.0f))
