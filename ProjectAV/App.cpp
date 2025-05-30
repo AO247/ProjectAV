@@ -515,7 +515,7 @@ void App::ShowControlWindows()
 	cube2.SpawnControlWindow(wnd.Gfx(), "Cube 2");
     pointLight.Submit();
 
-    pointLight.SpawnControlWindow(); // Control for Point Light
+    //pointLight.SpawnControlWindow(); // Control for Point Light
     if (showDemoWindow)
     {
         ImGui::ShowDemoWindow(&showDemoWindow);
