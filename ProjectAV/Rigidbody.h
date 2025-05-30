@@ -14,7 +14,7 @@ class Rigidbody : public Component
 public:
 	Rigidbody() : Component(nullptr) { isRigidbody = true; }
 
-	Rigidbody(Node* owner, Vector3 position, float mass, Shape* shape);
+	//Rigidbody(Node* owner, Vector3 position, float mass, Shape* shape);
 
 	Rigidbody(Node* owner, BodyCreationSettings bodySettings);
 

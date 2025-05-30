@@ -51,6 +51,11 @@ void Trigger::Update(float dt)
 	}
 }
 
+BodyID Trigger::GetBodyID()
+{
+	return bodyID;
+}
+
 //void Trigger::AddContactPoint(Node* object)
 //{
 //	contacts[object]++;

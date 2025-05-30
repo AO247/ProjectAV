@@ -184,8 +184,8 @@ App::App(const std::string& commandLine)
 
 
 
-    //Heeeej Bracie zaczê³ooo padaæ choodŸ zmieniiæ gacieee
-    //Heeeej Siostro uciekaajmyy zanim bêêdzieee mookroooo
+    //Heeeej Bracie zaczÄ™Å‚ooo padaÄ‡ choodÅº zmieniiÄ‡ gacieee
+    //Heeeej Siostro uciekaajmyy zanim bÄ™Ä™dzieee mookroooo
 
     BodyCreationSettings bodySettings(new JPH::CapsuleShape(1.0f, 1.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::PLAYER);
     bodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
@@ -1027,8 +1027,15 @@ void App::CleanupDestroyedNodes(Node* currentNode)
                 if (pChildNode->IsMarkedForDestruction()) {
                     OutputDebugStringA(("Cleanup: Preparing to remove node: " + pChildNode->GetName() + "\n").c_str());
 
-                    //physicsEngine.RemoveRigidbody(pChildNode->GetComponent<Rigidbody>());
-                    
+                    if (pChildNode->GetComponent<Rigidbody>() != nullptr) {
+                        PhysicsCommon::physicsSystem->GetBodyInterface().DeactivateBody(pChildNode->GetComponent<Rigidbody>()->GetBodyID());
+                        PhysicsCommon::physicsSystem->GetBodyInterface().RemoveBody(pChildNode->GetComponent<Rigidbody>()->GetBodyID());
+                        /*if (pChildNode->GetComponent<Trigger>() != nullptr) {
+                            dynamic_cast<MyContactListener*>(PhysicsCommon::physicsSystem->GetContactListener())->RemoveRigidbodyData(pChildNode->GetComponent<Rigidbody>()->GetBodyID());
+                        }*/
+                    }
+
+
                     const auto& components = pChildNode->GetComponents();
                     for (const auto& compUniquePtr : components) {
                         Component* comp = compUniquePtr.get();

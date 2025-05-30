@@ -273,6 +273,78 @@ void Node::SetLocalRotation(const DirectX::XMFLOAT4& quat)
     }*/
 }
 
+void Node::SetWorldRotation(const DirectX::XMFLOAT4& worldQuat)
+{
+    transformationOutsidePhysicsTriggered = true; // This is a manual override
+
+    if (parent == nullptr)
+    {
+        // For a root node, world rotation is local rotation
+        SetLocalRotation(worldQuat);
+    }
+    else
+    {
+        // We want: DesiredWorldRotation = NewLocalRotation * ParentWorldRotation
+        // So: NewLocalRotation = DesiredWorldRotation * Inverse(ParentWorldRotation)
+
+        // Get parent's world rotation
+        dx::XMFLOAT4 parentWorldRotationQuat = parent->GetWorldRotationQuaternion();
+        dx::XMVECTOR parentWorldRotVec = dx::XMLoadFloat4(&parentWorldRotationQuat);
+
+        // Calculate inverse of parent's world rotation
+        dx::XMVECTOR invParentWorldRotVec = dx::XMQuaternionInverse(parentWorldRotVec);
+
+        // Load desired world rotation
+        dx::XMVECTOR desiredWorldRotVec = dx::XMLoadFloat4(&worldQuat);
+
+        // Calculate new local rotation
+        // Order: R_local = R_world_target * R_parent_world_inverse
+        dx::XMVECTOR newLocalRotVec = dx::XMQuaternionMultiply(desiredWorldRotVec, invParentWorldRotVec);
+        newLocalRotVec = dx::XMQuaternionNormalize(newLocalRotVec); // Ensure it's a unit quaternion
+
+        DirectX::XMFLOAT4 newLocalQuat;
+        dx::XMStoreFloat4(&newLocalQuat, newLocalRotVec);
+        SetLocalRotation(newLocalQuat); // This will mark dirty flags and handle physics trigger
+    }
+    // SetLocalRotation already sets localTransformDirty, worldTransformDirty,
+    // and transformationOutsidePhysicsTriggered appropriately.
+}
+
+void Node::PhysicsSetWorldRotation(const DirectX::XMFLOAT4& worldQuat)
+{
+    if (parent == nullptr)
+    {
+        // For a root node, world rotation is local rotation
+        PhysicsSetLocalRotation(worldQuat);
+    }
+    else
+    {
+        // We want: DesiredWorldRotation = NewLocalRotation * ParentWorldRotation
+        // So: NewLocalRotation = DesiredWorldRotation * Inverse(ParentWorldRotation)
+
+        // Get parent's world rotation
+        dx::XMFLOAT4 parentWorldRotationQuat = parent->GetWorldRotationQuaternion();
+        dx::XMVECTOR parentWorldRotVec = dx::XMLoadFloat4(&parentWorldRotationQuat);
+
+        // Calculate inverse of parent's world rotation
+        dx::XMVECTOR invParentWorldRotVec = dx::XMQuaternionInverse(parentWorldRotVec);
+
+        // Load desired world rotation
+        dx::XMVECTOR desiredWorldRotVec = dx::XMLoadFloat4(&worldQuat);
+
+        // Calculate new local rotation
+        // Order: R_local = R_world_target * R_parent_world_inverse
+        dx::XMVECTOR newLocalRotVec = dx::XMQuaternionMultiply(desiredWorldRotVec, invParentWorldRotVec);
+        newLocalRotVec = dx::XMQuaternionNormalize(newLocalRotVec); // Ensure it's a unit quaternion
+
+        DirectX::XMFLOAT4 newLocalQuat;
+        dx::XMStoreFloat4(&newLocalQuat, newLocalRotVec);
+        PhysicsSetLocalRotation(newLocalQuat); // This will mark dirty flags and handle physics trigger
+    }
+    // SetLocalRotation already sets localTransformDirty, worldTransformDirty,
+    // and transformationOutsidePhysicsTriggered appropriately.
+}
+
 void Node::SetLocalScale(const DirectX::XMFLOAT3& scale)
 {
     localScale = scale;
@@ -319,6 +391,35 @@ DirectX::XMFLOAT3 Node::GetLocalRotationEuler() const
 DirectX::XMFLOAT4 Node::GetLocalRotationQuaternion() const
 {
     return localRotationQuaternion;
+}
+
+DirectX::XMFLOAT4 Node::GetWorldRotationQuaternion() const
+{
+    // Ensure world transform is up-to-date
+    dx::XMMATRIX worldMat = GetWorldTransform();
+
+    // Decompose the world transform matrix
+    dx::XMVECTOR scaleVec;
+    dx::XMVECTOR rotationQuatVec;
+    dx::XMVECTOR translationVec;
+
+    // XMMatrixDecompose extracts scale, rotation quaternion, and translation.
+    // It's important that the matrix doesn't have shear, or decomposition might not be perfectly accurate
+    // or might fail for some interpretations of "rotation". For standard SRT transforms, this is fine.
+    if (!dx::XMMatrixDecompose(&scaleVec, &rotationQuatVec, &translationVec, worldMat))
+    {
+        // Decomposition can fail if the matrix is not representable as S*R*T,
+        // e.g., if it includes shear or a non-invertible scale.
+        // Return identity or log an error as a fallback.
+        // For simplicity, returning identity quaternion.
+        // OutputDebugStringA("Warning: XMMatrixDecompose failed in GetGlobalRotation. Returning identity quaternion.\n");
+        return { 0.0f, 0.0f, 0.0f, 1.0f };
+    }
+
+    DirectX::XMFLOAT4 worldRotationQuat;
+    dx::XMStoreFloat4(&worldRotationQuat, rotationQuatVec);
+
+    return worldRotationQuat;
 }
 
 DirectX::XMFLOAT3 Node::GetLocalScale() const
@@ -506,9 +607,28 @@ void Node::Update(float dt)
         {
             if (comp->isRigidbody)
             {
+                /*if (parent != nullptr && parent->GetName() == "Level 2")
+                {
+                    OutputDebugString("\n");
+                    OutputDebugString("Nazywam sie ");
+                    OutputDebugString(GetName().c_str());
+                    OutputDebugString("\n");
+                    OutputDebugString("a moj rodzic to ");
+                    if (parent != nullptr)
+                    {
+                        OutputDebugString(parent->GetName().c_str());
+                    }
+                    else
+                    {
+                        OutputDebugString("brak");
+                    }
+                    OutputDebugString("\n");
+                }*/
+                
+
                 auto& bodyInterface = PhysicsCommon::physicsSystem->GetBodyInterface();
                 bodyInterface.SetPosition(GetComponent<Rigidbody>()->GetBodyID(), JPH::RVec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z), JPH::EActivation::Activate);
-                bodyInterface.SetRotation(GetComponent<Rigidbody>()->GetBodyID(), JPH::Quat(GetLocalRotationQuaternion().x, GetLocalRotationQuaternion().y, GetLocalRotationQuaternion().z, GetLocalRotationQuaternion().w), JPH::EActivation::Activate);
+                bodyInterface.SetRotation(GetComponent<Rigidbody>()->GetBodyID(), JPH::Quat(GetWorldRotationQuaternion().x, GetWorldRotationQuaternion().y, GetWorldRotationQuaternion().z, GetWorldRotationQuaternion().w), JPH::EActivation::Activate);
                 continue;
             }
         }
@@ -668,6 +788,14 @@ std::vector<Node*> Node::FindAllChildrenByTag(const std::string& searchTag)
 void Node::Destroy()
 {
     markedForDestruction = true;
+    if (GetComponent<Rigidbody>() != nullptr)
+    {
+        dynamic_cast<MyContactListener*>(PhysicsCommon::physicsSystem->GetContactListener())->RemoveRigidbodyData(GetComponent<Rigidbody>()->GetBodyID());
+    }
+    if (GetComponent<Trigger>() != nullptr)
+    {
+        dynamic_cast<MyContactListener*>(PhysicsCommon::physicsSystem->GetContactListener())->RemoveTriggerData(GetComponent<Trigger>()->GetBodyID());
+    }
     // Recursively mark all children for destruction as well
     for (const auto& child : children)
     {
