@@ -14,10 +14,9 @@ public:
 	Throwable(Node* owner);
 	virtual ~Throwable() = default;
 	float damage = 1.0f;
-	virtual void Update(float dt) override;
 	virtual void DrawImGuiControls() override;
+	void OnCollisionEnter(Node* object) override;
 	//BoundingSphere* damageArea;
 private:
 	Rigidbody* rigidbody;
-	void OnTriggerEnter();
 };

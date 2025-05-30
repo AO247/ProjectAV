@@ -15,10 +15,7 @@ PlayerController::PlayerController(Node* owner, Window& window)
     : Component(owner), wnd(window)  // Initialize reference member
 {
 	rigidbody = owner->GetComponent<Rigidbody>();
-    //rigidbody->frictionDamping = 12.0f;
-	camera = owner->GetRoot()->FindFirstChildByTag("Camera");
-	ability1 = owner->GetRoot()->FindFirstChildByTag("Ability1");
-	ability2 = owner->GetRoot()->FindFirstChildByTag("Ability2");
+	camera = owner->GetRoot()->FindFirstChildByTag("CAMERA");
 }
 
 
@@ -81,8 +78,6 @@ void PlayerController::Jump()
 {
     if ((grounded || !doubleJumped) && !jumped) {
 		Vec3 velocity = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
-        PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rigidbody->GetBodyID(), Vec3(velocity.GetX(), 0.0f, velocity.GetZ()));
-
 		PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(rigidbody->GetBodyID(), Vec3(0.0f, jumpForce, 0.0f));
         if (grounded) {
 			grounded = false;
@@ -132,10 +127,12 @@ void PlayerController::GroundCheck()
 {
     RRayCast ray = RRayCast(
         RVec3(GetOwner()->GetWorldPosition().x, GetOwner()->GetWorldPosition().y, GetOwner()->GetWorldPosition().z),
-        Vec3(0.0f, -(height/2 + 0.1f), 0.0f)
-	);
+        Vec3(0.0f, -(height / 2 + 0.2f), 0.0f)
+    );
     RayCastResult result;
-    if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(ray, result, SpecifiedBroadPhaseLayerFilter(BroadPhaseLayers::GROUND),SpecifiedObjectLayerFilter(Layers::GROUND)))
+    if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(ray, result, 
+        IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::PLAYER, BroadPhaseLayers::TRIGGER }), 
+        IgnoreMultipleObjectLayerFilter({Layers::PLAYER, Layers::TRIGGER})))
     {
 		grounded = true;
     }
@@ -155,11 +152,11 @@ void PlayerController::MovePlayer()
     moveDirection.Normalize();
     if (grounded)
     {
-        PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * moveSpeed * 1000.0f);
+        PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * moveSpeed * 100.0f);
     }
     else
     {
-        PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * moveSpeed * 50.0f);
+        PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * moveSpeed * 10.0f);
     }
 }
 

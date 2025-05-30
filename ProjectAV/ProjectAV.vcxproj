@@ -183,6 +183,7 @@
     <ClCompile Include="CapsuleCollider.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="Component.cpp" />
+    <ClCompile Include="Global.cpp" />
     <ClCompile Include="LegacyCollider.cpp" />
     <ClCompile Include="ColliderSphere.cpp" />
     <ClCompile Include="CUtil.cpp" />
@@ -216,6 +217,7 @@
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="LayoutCodex.cpp" />
     <ClCompile Include="LevelGenerator.cpp" />
+    <ClCompile Include="LevelGeneratorComp.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MiscMath.cpp" />
@@ -225,6 +227,9 @@
     <ClCompile Include="MyContactListener.cpp" />
     <ClInclude Include="Ability1.h" />
     <ClInclude Include="Ability2.h" />
+    <ClInclude Include="Cube.h" />
+    <ClInclude Include="Global.h" />
+    <ClInclude Include="LevelGeneratorComp.h" />
     <ClInclude Include="MyContactListener.h" />
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="NullPixelShader.cpp" />
@@ -255,6 +260,7 @@
     <ClCompile Include="Step.cpp" />
     <ClCompile Include="Surface.cpp" />
     <ClCompile Include="Technique.cpp" />
+    <ClCompile Include="TestCube.cpp" />
     <ClCompile Include="Testing.cpp" />
     <ClCompile Include="TestPlane.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -381,6 +387,7 @@
     <ClInclude Include="Surface.h" />
     <ClInclude Include="Technique.h" />
     <ClInclude Include="TechniqueProbe.h" />
+    <ClInclude Include="TestCube.h" />
     <ClInclude Include="Testing.h" />
     <ClInclude Include="TestPlane.h" />
     <ClInclude Include="Texture.h" />

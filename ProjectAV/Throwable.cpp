@@ -2,36 +2,26 @@
 #include <string>
 Throwable::Throwable(Node* owner) : Component(owner)
 {
-	rigidbody = owner->GetComponent<Rigidbody>();
-}
-void Throwable::Update(float dt)
-{
-	/*if (rigidbody->GetVelocity().Length() > 20.0f)
-	{
-		OnTriggerEnter();
-	}*/
+	rigidbody = pOwner->GetComponent<Rigidbody>();
 }
 
-void Throwable::OnTriggerEnter()
+void Throwable::OnCollisionEnter(Node* object)
 {
-	/*std::vector<Collider*> cols = damageArea->GetTriggerEnter();
-
-	if (cols.size() > 0)
+	Vec3 position = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
+	float l = position.Length();
+	if (l < 35.0f) return;
+	if (object->GetComponent<Health>())
 	{
-		for (Collider* col : cols)
-		{
-			if (col->GetIsTrigger()) continue;
-			if (col->GetOwner()->GetComponent<Health>())
-			{
-				col->GetOwner()->GetComponent<Health>()->TakeDamage(damage);
-			}
-		}
-	}*/
+		object->GetComponent<Health>()->TakeDamage(damage);
+	}
 }
 
 
 void Throwable::DrawImGuiControls()
 {
+	Vec3 position = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
+	float l = position.Length();
 	ImGui::InputFloat("Damage", &damage);
+	ImGui::InputFloat("Velocity", &l);
 
 }

@@ -17,36 +17,43 @@ Walking::Walking(Node* owner, std::string tag)
 void Walking::Follow(DirectX::XMFLOAT3 targetPos, float sp)
 {
 	GroundCheck();
-	PhysicsCommon::physicsSystem->GetBodyInterface().SetFriction(rigidbody->GetBodyID(), 0.5f);
+	PhysicsCommon::physicsSystem->GetBodyInterface().SetFriction(rigidbody->GetBodyID(), 0.0f);
 
-    if (!rigidbody) { 
-        return;
-    }
+	if (!rigidbody) {
+		return;
+	}
 	targetPosition = targetPos;
-    Vector3 currentPos = pOwner->GetWorldPosition(); 
+	Vector3 currentPos = pOwner->GetWorldPosition();
 	Vec3 currentVelocityJPH = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
-	Vector3 currentVelocity = { currentVelocityJPH.GetX(), currentVelocityJPH.GetY(), currentVelocityJPH.GetZ()};
-    Vector3 desiredDirection = targetPosition - currentPos;
+	Vector3 currentVelocity = { currentVelocityJPH.GetX(), currentVelocityJPH.GetY(), currentVelocityJPH.GetZ() };
+	Vector3 desiredDirection = targetPosition - currentPos;
 	desiredDirection.Normalize();
 	Vector3 desiredVelocity;
-	if (!grounded) 
+	if (!grounded)
 	{
 		desiredVelocity = desiredDirection * maxSpeed * 0.1f;
 	}
-	else 
+	else
 	{
 		desiredVelocity = desiredDirection * maxSpeed / sp;
 	}
-    Vector3 steeringForce = desiredVelocity - currentVelocity;
+	Vector3 steeringForce = desiredVelocity - currentVelocity;
 
 	steeringForce = steeringForce + (CalculateAvoidanceForce());
 
-    float steeringMagnitude = steeringForce.Length();
-    if (steeringMagnitude > maxForce) {
-        steeringForce = (steeringForce / steeringMagnitude) * maxForce; 
-    }
-
-	PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(steeringForce.x, steeringForce.y, steeringForce.z) * 10.0f);
+	float steeringMagnitude = steeringForce.Length();
+	if (steeringMagnitude > maxSpeed) {
+		steeringForce = (steeringForce / steeringMagnitude) * maxSpeed;
+	}
+	if (!VoidCheck()) 
+	{
+		PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(steeringForce.x, steeringForce.y, steeringForce.z) * 10.0f);
+	}
+	else 
+	{
+		steeringForce = -steeringForce;
+		PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(steeringForce.x, steeringForce.y, steeringForce.z) * 10.0f);
+	}
 	currentVelocityJPH = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
 	currentVelocity = { currentVelocityJPH.GetX(), currentVelocityJPH.GetY(), currentVelocityJPH.GetZ() };
 	if (currentVelocity.LengthSquared() > 0.01f)
@@ -66,23 +73,21 @@ void Walking::Follow(DirectX::XMFLOAT3 targetPos, float sp)
 
 		targetYaw = wrap_angle(currentYaw + yawDifference * rotationLerpFactor);
 		if (angle < maxAllowedAngle) {
-			DirectX::XMVECTOR quat = DirectX::XMQuaternionRotationRollPitchYaw(0.0f, targetYaw, 0.0f);
-			DirectX::XMFLOAT4 quatFloat4;
-			DirectX::XMStoreFloat4(&quatFloat4, quat);
-			//pOwner->SetLocalRotation(quatFloat4);
-			PhysicsCommon::physicsSystem->GetBodyInterface().SetRotation(rigidbody->GetBodyID(), Quat(quatFloat4.x, quatFloat4.y, quatFloat4.z, quatFloat4.w), EActivation::Activate);
+			Quat q = Quat::sEulerAngles(Vec3(0.0f, targetYaw, 0.0f));
+			PhysicsCommon::physicsSystem->GetBodyInterface().SetRotation(rigidbody->GetBodyID(), q, EActivation::Activate);
 		}
 	}
 
-	if (pOwner->GetComponent<SoundEffectsPlayer>()->isPlaying() == false) {
+	/*if (pOwner->GetComponent<SoundEffectsPlayer>()->isPlaying() == false) {
 		pOwner->GetComponent<SoundEffectsPlayer>()->Play(0);
-	}
+	}*/
+	PhysicsCommon::physicsSystem->GetBodyInterface().SetFriction(rigidbody->GetBodyID(), 0.5f);
 }
 void Walking::GroundCheck()
 {
 	RRayCast ray = RRayCast(
 		RVec3(pOwner->GetWorldPosition().x, pOwner->GetWorldPosition().y, pOwner->GetWorldPosition().z),
-		Vec3(0.0f, -(height / 2 + 0.1f), 0.0f)
+		Vec3(0.0f, -(height / 2 + 0.2f), 0.0f)
 	);
 	RayCastResult result;
 	if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(ray, result, SpecifiedBroadPhaseLayerFilter(BroadPhaseLayers::GROUND), SpecifiedObjectLayerFilter(Layers::GROUND)))
@@ -98,23 +103,21 @@ Vector3 Walking::CalculateAvoidanceForce()
 {
 	Vector3 avoidanceForce(0.0f, 0.0f, 0.0f);
 
-	Vector3 previousRotation = pOwner->GetLocalRotationEuler();
-	//pOwner->TranslateLocal({ 0.0f, 1.0f, 0.0f });
 	Vector3 temporaryDirection = targetPosition - pOwner->GetWorldPosition();
 	temporaryDirection.Normalize();
-	float targetYaw = atan2f(temporaryDirection.x, temporaryDirection.z);
-	//pOwner->SetLocalRotation({ 0.0f, targetYaw, 0.0f });
-	PhysicsCommon::physicsSystem->GetBodyInterface().SetRotation(rigidbody->GetBodyID(), Quat::sEulerAngles(Vec3(0.0f, targetYaw, 0.0f)), EActivation::Activate);
 
 	float radius = 1.0f;
 
 	Vector3 pos = pOwner->GetWorldPosition();
 	pos.y += (-height/2.0f) + 1.0f;
-	Vector3 forward = pOwner->Forward();
-	Vector3 right = pOwner->Right();
+	Vector3 forward = temporaryDirection;
+	Vector3 right = Vector3(forward.z, 0.0f, -forward.x);
+	right.Normalize();
 
 	leftHit = false;
 	rightHit = false;
+	moreLeft = false;
+	moreRight = false;
 
 	Vector3 centerOrigin = pos + forward;
 	Vector3 leftOrigin = centerOrigin - right * radius;
@@ -175,30 +178,62 @@ Vector3 Walking::CalculateAvoidanceForce()
 		{
 			//float distance = Vector3(pos - hitLeft.hitPoint).Length();
 			//if(distance < targetDistance)
-			avoidanceForce = -right * avoidanceWeight;
+			moreLeft = true;
+			avoidanceForce = right * avoidanceWeight * 1.5f;
 		}
 		else if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(rayMoreRight, resultMoreRight, SpecifiedBroadPhaseLayerFilter(BroadPhaseLayers::WALL), SpecifiedObjectLayerFilter(Layers::WALL)))
 		{
 			//float distance = Vector3(pos - hitLeft.hitPoint).Length();
-			avoidanceForce = right * avoidanceWeight;
+			moreRight = true;
+			avoidanceForce = -right * avoidanceWeight * 1.5f;
 		}
 	}
 
-
-	//pOwner->SetLocalRotation(previousRotation);
-	PhysicsCommon::physicsSystem->GetBodyInterface().SetRotation(rigidbody->GetBodyID(), Quat::sEulerAngles(Vec3(previousRotation.x, previousRotation.y, previousRotation.z)), EActivation::Activate);
-	//pOwner->TranslateLocal({ 0.0f, -1.0f, 0.0f });
-
 	return avoidanceForce;
-
 }
+bool Walking::VoidCheck() 
+{
+	bool flag = true;
+	Vector3 avoidanceForce(0.0f, 0.0f, 0.0f);
+	Vector3 temporaryDirection = targetPosition - pOwner->GetWorldPosition();
+	temporaryDirection.Normalize();
+
+	float radius = 1.0f;
+
+	Vector3 pos = pOwner->GetWorldPosition();
+
+	Vector3 centerOrigin = pos + temporaryDirection * 3.0f;
+
+	RRayCast rayLeft = RRayCast(
+		RVec3(centerOrigin.x, centerOrigin.y, centerOrigin.z),
+		RVec3(0.0f, -10.0f, 0.0f)
+	);
+	RayCastResult resultLeft;
+	if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(rayLeft, resultLeft, SpecifiedBroadPhaseLayerFilter(BroadPhaseLayers::GROUND), SpecifiedObjectLayerFilter(Layers::GROUND)))
+	{
+		flag = false;
+	}
+
+	voidNear = flag;
+	return flag;
+}
+
 
 void Walking::DrawImGuiControls()
 {
-   ImGui::Text("Tag: %s", tag.c_str());
-   ImGui::InputFloat("Max Speed", &maxSpeed);
-   ImGui::InputFloat("Max Force", &maxForce);
-   ImGui::InputFloat("Avoidance Weight", &avoidanceWeight);
-   ImGui::InputFloat("Avoidance Distance", &avoidanceDistance);
-   ImGui::Checkbox("Grounded", &grounded);
+	Vec3 velocity = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
+	float vel = velocity.Length();
+	ImGui::Text("Tag: %s", tag.c_str());
+	ImGui::InputFloat("Max Speed", &maxSpeed);
+	ImGui::InputFloat("Avoidance Weight", &avoidanceWeight);
+	ImGui::InputFloat("Avoidance Distance", &avoidanceDistance);
+	ImGui::Checkbox("Grounded", &grounded);
+	ImGui::Checkbox("Lefy Hit", &leftHit);
+	ImGui::Checkbox("Right Hit", &rightHit);
+	ImGui::Checkbox("More Left", &moreLeft);
+	ImGui::Checkbox("More Right", &moreRight);
+	ImGui::InputFloat("Velocity", &vel);
+	ImGui::Checkbox("Void", &voidNear);
+
+
 }

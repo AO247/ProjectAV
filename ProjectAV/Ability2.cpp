@@ -43,14 +43,15 @@ void Ability2::Positioning()
             RayCastResult result2;
             if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(ray2, result2, SpecifiedBroadPhaseLayerFilter(BroadPhaseLayers::GROUND), SpecifiedObjectLayerFilter(Layers::GROUND)))
             {
-                position = ray2.mOrigin + ray2.mDirection * result2.mFraction;;
+                position = ray2.mOrigin + ray2.mDirection * result2.mFraction;
+                pOwner->SetLocalPosition(DirectX::XMFLOAT3(position.GetX(), position.GetY(), position.GetZ()));
             }
         }
         else 
         {
             position = ray.mOrigin + ray.mDirection * result.mFraction;
+            pOwner->SetLocalPosition(DirectX::XMFLOAT3(position.GetX(), position.GetY(), position.GetZ()));
         }
-		pOwner->SetLocalPosition(DirectX::XMFLOAT3(position.GetX(), position.GetY(), position.GetZ()));
     }
 }
 void Ability2::Active()
@@ -58,11 +59,11 @@ void Ability2::Active()
     if (!abilityReady) return;
     for (int i = 0; i < objects.size(); i++)
     {
-        if (objects[i]->tag == "Enemy" || objects[i]->tag == "Stone")
+        if (objects[i]->tag == "ENEMY" || objects[i]->tag == "STONE")
         {
-            PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), Vec3(0.0f, 0.0f, 0.0f));
+            //PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), Vec3(0.0f, 0.0f, 0.0f));
             Vec3 direction = Vec3(0.0f, 1.0f, 0.0f);
-            PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), direction * force * 100.0f);
+            PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), direction * force * 1.0f);
             OutputDebugStringA(("Ability2 hit: " + objects[i]->GetName() + "\n").c_str());
         }
     }
@@ -100,7 +101,7 @@ void Ability2::KeyboardInput()
 
 
 void Ability2::OnTriggerEnter(Node* object) {
-    if (object->tag != "Enemy" && object->tag != "Stone") return;
+    if (object->tag != "ENEMY" && object->tag != "STONE") return;
     if (object->GetComponent<Rigidbody>() == nullptr) return;
     for (int i = 0; i < objects.size(); i++)
     {
@@ -110,7 +111,7 @@ void Ability2::OnTriggerEnter(Node* object) {
     OutputDebugStringA(("Ability2 OnTriggerEnter: " + object->GetName() + "\n").c_str());
 }
 void Ability2::OnTriggerExit(Node* object) {
-    if (object->tag != "Enemy" && object->tag != "Stone") return;
+    if (object->tag != "ENEMY" && object->tag != "STONE") return;
     if (object->GetComponent<Rigidbody>() == nullptr) return;
     auto it = std::remove(objects.begin(), objects.end(), object);
     if (it != objects.end()) {
@@ -121,16 +122,8 @@ void Ability2::OnTriggerExit(Node* object) {
 
 void Ability2::DrawImGuiControls()
 {
-    //ImGui::InputFloat("Move Speed", &moveSpeed);
-    //ImGui::InputFloat("JumpForce", &jumpForce);
-    //ImGui::InputFloat("Dash Force", &dashForce);
-    //ImGui::InputFloat("Dash Cooldown", &dashCooldown);
-    //ImGui::InputFloat("Ability1 Cooldown", &ability1Cooldown);
-    //ImGui::InputFloat("Ability2 Cooldown", &ability2Cooldown);
-    //ImGui::InputFloat("Height", &height);
-    //ImGui::Checkbox("Jumped", &jumped);
-    //ImGui::Checkbox("CanDash", &canDash);
-    //ImGui::Checkbox("Grounded", &grounded);
-    //ImGui::Checkbox("Double Jumped", &doubleJumped);
-    //ImGui::Checkbox("Alive", &alive);
+
+    ImGui::InputFloat("Force", &force);
+    ImGui::InputFloat("Cooldown", &cooldown);
+
 }

@@ -16,13 +16,15 @@ public:
 	Island(Node* owner);
 	virtual ~Island() = default;
 
-	void Rotate();
+	void Rotate(int rot = 0.0f);
 
 	Node* leftPoint;
 	Node* rightPoint;
 	Node* upPoint;
 	Node* downPoint;
 	Vector3 halfExtents;
+
+	std::vector<Node*> spawnPoints;
 private:
 
 };

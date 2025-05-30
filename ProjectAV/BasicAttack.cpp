@@ -6,6 +6,7 @@ namespace dx = DirectX;
 BasicAttack::BasicAttack(Node* owner, std::string tag)
 	: Component(owner, std::move(tag))
 {
+	attackRange = 5.0f;
 }
 
 void BasicAttack::Attack(float dt)
@@ -26,36 +27,40 @@ void BasicAttack::Attack(float dt)
 	else if (timer > stopDmgTime) {
 		return;
 	}
-	//OnTriggerCheck();
-	//OutputDebugStringA("\nNormal Attack\n");
+	CheckAttack();
 }
 
-//void BasicAttack::OnTriggerCheck()
-//{
-//	if (damageArea == nullptr) {
-//		return;
-//	}
-//	std::vector<Collider*> cols = damageArea->GetTriggerStay();
-//
-//	if (cols.size() > 0)
-//	{
-//		for (Collider* col : cols)
-//		{
-//			if (col->GetIsTrigger()) continue;
-//			if (col->GetOwner()->GetComponent<Health>() && col->GetOwner()->tag == "Player")
-//			{
-//				col->GetOwner()->GetComponent<Health>()->TakeDamage(1.0f);
-//				Rigidbody* rb = col->GetOwner()->GetComponent<Rigidbody>();
-//				Vector3 pos(pOwner->GetWorldPosition().x, col->GetOwner()->GetWorldPosition().y - 0.5f, pOwner->GetWorldPosition().z);
-//				Vector3 knockDirection = col->GetOwner()->GetWorldPosition() - pos;
-//				knockDirection.Normalize();
-//				rb->SetVelocity(Vector3(0.0f, 0.0f, 0.0f));
-//				rb->AddForce(knockDirection * knockbackForce * 100.0f);
-//				attacked = true;
-//			}
-//		}
-//	}
-//}
+void BasicAttack::CheckAttack()
+{
+	if (objects.empty()) return;
+	objects[0]->GetComponent<Health>()->TakeDamage(damage);
+	Vec3 pos(pOwner->GetWorldPosition().x, objects[0]->GetWorldPosition().y - 0.2f, pOwner->GetWorldPosition().z);
+	Vec3 knockDirection = Vec3(objects[0]->GetWorldPosition().x, objects[0]->GetWorldPosition().y, objects[0]->GetWorldPosition().z) - pos;
+	knockDirection = knockDirection.Normalized();
+	Rigidbody* rb = objects[0]->GetComponent<Rigidbody>();
+	PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rb->GetBodyID(), Vec3(0.0f, 0.0f, 0.0f));
+	PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(rb->GetBodyID(), knockDirection * knockbackForce);
+	attacked = true;
+	OutputDebugStringA("\nNormal Attack\n");
+}
+
+void BasicAttack::OnTriggerEnter(Node* object) {
+	if (object->tag != "PLAYER") return;
+	for (int i = 0; i < objects.size(); i++)
+	{
+		if (objects[i] == object) return;
+	}
+	objects.push_back(object);
+	OutputDebugStringA(("Enemy OnTriggerEnter: " + object->GetName() + "\n").c_str());
+}
+void BasicAttack::OnTriggerExit(Node* object) {
+	if (object->tag != "PLAYER") return;
+	auto it = std::remove(objects.begin(), objects.end(), object);
+	if (it != objects.end()) {
+		objects.erase(it, objects.end());
+	}
+	OutputDebugStringA(("Enemy OnTriggerExit: " + object->GetName() + "\n").c_str());
+}
 
 
 void BasicAttack::DrawImGuiControls()

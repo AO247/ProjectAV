@@ -6,25 +6,19 @@ Bullet::Bullet(Node* owner) : Component(owner)
 }
 void Bullet::Update(float dt)
 {
-	OnTriggerEnter();
+	timer += dt;
+	if (timer >= lifeTime) {
+		pOwner->Destroy();
+	}
 }
 
-void Bullet::OnTriggerEnter()
+void Bullet::OnCollisionEnter(Node* object)
 {
-	/*std::vector<Collider*> cols = damageArea->GetTriggerEnter();
-
-	if (cols.size() > 0)
+	if (object->GetComponent<Health>() && object != ignore)
 	{
-		for (Collider* col : cols)
-		{
-			if (col->GetIsTrigger()) continue;
-			if (col->GetOwner()->tag == "Player")
-			{
-				col->GetOwner()->GetComponent<Health>()->TakeDamage(damage);
-			}
+		if(object->tag == "PLAYER") object->GetComponent<Health>()->TakeDamage(damage);
 			pOwner->Destroy();
-		}
-	}*/
+	}
 }
 
 

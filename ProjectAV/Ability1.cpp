@@ -28,18 +28,17 @@ void Ability1::Update(float dt)
 }
 void Ability1::Positioning() {
 	pOwner->SetLocalTransform(camera->GetLocalTransform());
-	pOwner->TranslateLocal(Vector3(0.0f, 0.0f, 6.0f));
+	pOwner->TranslateLocal(Vector3(0.0f, 0.0f, 8.0f));
 }
 void Ability1::Active()
 {
     if (!abilityReady) return;
     for (int i = 0; i < objects.size(); i++)
     {
-        if (objects[i]->tag == "Enemy" || objects[i]->tag == "Stone")
+        if (objects[i]->tag == "ENEMY" || objects[i]->tag == "STONE")
         {
-			PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), Vec3(0.0f, 0.0f, 0.0f));
 			Vec3 direction = Vec3(pOwner->Forward().x, pOwner->Forward().y, pOwner->Forward().z);
-            PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), direction * force * 100.0f);
+            PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), direction * force);
 			OutputDebugStringA(("Ability1 hit: " + objects[i]->GetName() + "\n").c_str());
         }
     }
@@ -75,7 +74,7 @@ void Ability1::KeyboardInput()
     }
 }
 void Ability1::OnTriggerEnter(Node* object) {
-    if (object->tag != "Enemy" && object->tag != "Stone") return;
+    if (object->tag != "ENEMY" && object->tag != "STONE") return;
     if (object->GetComponent<Rigidbody>() == nullptr) return;
     for(int i= 0; i < objects.size(); i++)
     {
@@ -85,7 +84,7 @@ void Ability1::OnTriggerEnter(Node* object) {
 	OutputDebugStringA(("Ability1 OnTriggerEnter: " + object->GetName() + "\n").c_str());
 }
 void Ability1::OnTriggerExit(Node* object) {
-    if (object->tag != "Enemy" && object->tag != "Stone") return;
+    if (object->tag != "ENEMY" && object->tag != "STONE") return;
     if (object->GetComponent<Rigidbody>() == nullptr) return;
     auto it = std::remove(objects.begin(), objects.end(), object);
     if (it != objects.end()) {
