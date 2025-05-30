@@ -19,6 +19,7 @@
 #include <Jolt/Jolt.h>
 #include <Jolt/ConfigurationString.h>
 #include <Jolt/Physics/Collision/Shape/CapsuleShape.h>
+#include "imgui/imgui_impl_dx11.h"
 
 namespace dx = DirectX;
 
@@ -333,6 +334,8 @@ void App::DoFrame(float dt)
     CleanupDestroyedNodes(pSceneRoot.get());
 
     wnd.Gfx().BeginFrame(0.5f, 0.5f, 1.0f);
+    //ImGui_ImplDX11_NewFrame();
+    //ImGui::NewFrame();
     //if (pPlayer->GetLocalPosition().y < -10.0f) {
     //	pPlayer->SetLocalPosition({ -20.0f, 225.0f, -25.0f });
     //    pEnemy->SetLocalPosition({ 15.0f, 225.0f, 0.0f });
@@ -378,11 +381,11 @@ void App::DoFrame(float dt)
     }
 	//pCamera->Forward();
 
+    rg.Execute(wnd.Gfx());
+
     if (showControlWindow) {
         ShowControlWindows();
     }
-
-    rg.Execute(wnd.Gfx());
     wnd.Gfx().EndFrame();
     rg.Reset();
 }
@@ -502,6 +505,7 @@ void App::DrawNodeRecursive(Graphics& gfx, Node& node)
 
 void App::ShowControlWindows()
 {
+	//if (!showControlWindow) return; // If control window is not enabled, exit
     // --- Existing Windows ---
 	//DrawSphereColliders(wnd.Gfx()); // Call the updated function
     //DrawBoxColliders(wnd.Gfx()); // Call the updated function

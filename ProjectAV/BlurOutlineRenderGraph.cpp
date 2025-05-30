@@ -10,6 +10,7 @@
 #include "RenderTarget.h"
 #include "DynamicConstant.h"
 #include "CMath.h"
+#include "ImGuiPass.h"
 
 namespace Rgph
 {
@@ -80,6 +81,12 @@ namespace Rgph
 			pass->SetSinkLinkage( "direction","$.blurDirection" );
 			AppendPass( std::move( pass ) );
 		}
+		/*{
+			auto pass = std::make_unique<ImGuiPass>("imgui", gfx);
+			pass->SetSinkLinkage("renderTarget", "vertical.renderTarget");
+			pass->SetSinkLinkage("depthStencil", "vertical.depthStencil");
+			AppendPass(std::move(pass));
+		}*/
 		SetSinkTarget( "backbuffer","vertical.renderTarget" );
 
 		Finalize();

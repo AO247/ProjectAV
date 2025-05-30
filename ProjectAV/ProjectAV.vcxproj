@@ -241,6 +241,7 @@
     <ClInclude Include="FullscreenPass.h" />
     <ClInclude Include="Global.h" />
     <ClInclude Include="HorizontalBlurPass.h" />
+    <ClInclude Include="ImGuiPass.h" />
     <ClInclude Include="LambertianPass.h" />
     <ClInclude Include="LevelGeneratorComp.h" />
     <ClInclude Include="MyContactListener.h" />
