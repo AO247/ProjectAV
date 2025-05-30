@@ -73,10 +73,8 @@ void Walking::Follow(DirectX::XMFLOAT3 targetPos, float sp)
 
 		targetYaw = wrap_angle(currentYaw + yawDifference * rotationLerpFactor);
 		if (angle < maxAllowedAngle) {
-			DirectX::XMVECTOR quat = DirectX::XMQuaternionRotationRollPitchYaw(0.0f, targetYaw, 0.0f);
-			DirectX::XMFLOAT4 quatFloat4;
-			DirectX::XMStoreFloat4(&quatFloat4, quat);
-			pOwner->SetLocalRotation(quatFloat4);
+			Quat q = Quat::sEulerAngles(Vec3(0.0f, targetYaw, 0.0f));
+			PhysicsCommon::physicsSystem->GetBodyInterface().SetRotation(rigidbody->GetBodyID(), q, EActivation::Activate);
 		}
 	}
 
@@ -105,19 +103,16 @@ Vector3 Walking::CalculateAvoidanceForce()
 {
 	Vector3 avoidanceForce(0.0f, 0.0f, 0.0f);
 
-	Vector3 previousRotation = pOwner->GetLocalRotationEuler();
-	//pOwner->TranslateLocal({ 0.0f, 1.0f, 0.0f });
 	Vector3 temporaryDirection = targetPosition - pOwner->GetWorldPosition();
 	temporaryDirection.Normalize();
-	float targetYaw = atan2f(temporaryDirection.x, temporaryDirection.z);
-	pOwner->SetLocalRotation({ 0.0f, targetYaw, 0.0f });
 
 	float radius = 1.0f;
 
 	Vector3 pos = pOwner->GetWorldPosition();
 	pos.y += (-height/2.0f) + 1.0f;
-	Vector3 forward = pOwner->Forward();
-	Vector3 right = pOwner->Right();
+	Vector3 forward = temporaryDirection;
+	Vector3 right = Vector3(forward.z, 0.0f, -forward.x);
+	right.Normalize();
 
 	leftHit = false;
 	rightHit = false;
@@ -194,28 +189,20 @@ Vector3 Walking::CalculateAvoidanceForce()
 		}
 	}
 
-	pOwner->SetLocalRotation(previousRotation);
-	//pOwner->TranslateLocal({ 0.0f, -1.0f, 0.0f });
-
 	return avoidanceForce;
-
 }
 bool Walking::VoidCheck() 
 {
 	bool flag = true;
 	Vector3 avoidanceForce(0.0f, 0.0f, 0.0f);
-
-	Vector3 previousRotation = pOwner->GetLocalRotationEuler();
 	Vector3 temporaryDirection = targetPosition - pOwner->GetWorldPosition();
 	temporaryDirection.Normalize();
-	float targetYaw = atan2f(temporaryDirection.x, temporaryDirection.z);
-	pOwner->SetLocalRotation({ 0.0f, targetYaw, 0.0f });
 
 	float radius = 1.0f;
 
 	Vector3 pos = pOwner->GetWorldPosition();
 
-	Vector3 centerOrigin = pos + pOwner->Forward() * 3.0f;
+	Vector3 centerOrigin = pos + temporaryDirection * 3.0f;
 
 	RRayCast rayLeft = RRayCast(
 		RVec3(centerOrigin.x, centerOrigin.y, centerOrigin.z),
@@ -227,7 +214,6 @@ bool Walking::VoidCheck()
 		flag = false;
 	}
 
-	pOwner->SetLocalRotation(previousRotation);
 	voidNear = flag;
 	return flag;
 }

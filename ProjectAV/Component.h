@@ -31,6 +31,7 @@ public:
     Node* GetOwner() const { return pOwner; }
     virtual void DrawImGuiControls() {};
     std::string tag;
+    bool isRigidbody = false;
     float attackRange;
     bool endAttack;
 
