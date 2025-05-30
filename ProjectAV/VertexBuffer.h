@@ -10,7 +10,7 @@ namespace Bind
 	public:
 		VertexBuffer(Graphics& gfx, const std::string& tag, const Dvtx::VertexBuffer& vbuf);
 		VertexBuffer(Graphics& gfx, const Dvtx::VertexBuffer& vbuf); // Delegates
-		void Bind(Graphics& gfx) noexcept override;
+		void Bind(Graphics& gfx) noxnd override;
 
 		const Dvtx::VertexLayout& GetLayout() const noexcept; // This can return the layout from cpuDataBuffer or a separate copy
 

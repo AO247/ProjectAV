@@ -10,7 +10,6 @@
 class Graphics;
 class Material; // Forward declare the new Material class
 struct aiMesh;   // Forward declare Assimp mesh
-class FrameCommander; // Forward declare for Submit
 
 
 class ModelException : public CException
@@ -36,7 +35,7 @@ public:
     DirectX::XMMATRIX GetTransformXM() const noexcept override;
 
     // **** NEW SUBMIT METHOD ****
-    void Submit(FrameCommander& frame, DirectX::FXMMATRIX accumulatedTransform) const noxnd;
+    void Submit(DirectX::FXMMATRIX accumulatedTransform) const noxnd;
 
 private:
     mutable DirectX::XMFLOAT4X4 transform = {}; // For storing world transform for this mesh

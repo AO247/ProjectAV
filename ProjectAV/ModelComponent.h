@@ -21,6 +21,11 @@ struct aiNode;
 struct aiMesh;
 struct aiMaterial;
 
+namespace Rgph
+{
+    class RenderGraph;
+}
+
 struct XMFLOAT3Less {
     bool operator()(const DirectX::XMFLOAT3& a, const DirectX::XMFLOAT3& b) const {
         // Lexicographical comparison
@@ -39,9 +44,10 @@ class ModelInternalNode
 public:
     ModelInternalNode(int id, const std::string& name, std::vector<Mesh*> meshPtrs, const DirectX::XMMATRIX& transform) noxnd;
     const std::string& GetName() const noexcept { return name; }
-    void Submit(FrameCommander& frame, Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform) const noxnd;
+    void Submit(Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform) const noxnd;
     void ShowTree(int& nodeIndexTracker, ModelInternalNode*& pSelectedNode) const noexcept;
     void SetAppliedTransform(DirectX::FXMMATRIX transform) noexcept;
+    void LinkTechniques(Rgph::RenderGraph&);
     int GetId() const noexcept;
 private:
     void AddChild(std::unique_ptr<ModelInternalNode> pChild) noxnd;
@@ -72,11 +78,12 @@ public:
         }
     };
 
-    ModelComponent(Node* owner, Graphics& gfx, const std::string& modelFile, float scale = 1.0f);
+    ModelComponent(Node* owner, Graphics& gfx, Rgph::RenderGraph& rg, const std::string& modelFile, float scale = 1.0f);
     virtual ~ModelComponent() = default;
 
-    void Submit(FrameCommander& frame, Graphics& gfx, DirectX::FXMMATRIX worldTransform) const noxnd;
+    void Submit(Graphics& gfx, DirectX::FXMMATRIX worldTransform) const noxnd;
     void ShowWindow(Graphics& gfx, const char* windowName = nullptr) noexcept;
+    void LinkTechniques(Rgph::RenderGraph&);
 
     // **** MODIFIED METHOD DECLARATION ****
     std::vector<DirectX::SimpleMath::Vector3> GetAllUniqueVertices() const;

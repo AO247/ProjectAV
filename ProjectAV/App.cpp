@@ -1,10 +1,8 @@
-#include "App.h"
-#include "Node.h"           
+#include "App.h"     
 #include "State.h"
 #include "CMath.h"
 #include "Surface.h"
 #include "imgui/imgui.h"
-#include <memory>
 #include <algorithm>
 #include "CUtil.h"
 #include "ColliderSphere.h"
@@ -24,7 +22,26 @@
 
 namespace dx = DirectX;
 
+void LinkAllTechniquesRecursive(Node* node, Rgph::RenderGraph& rg)
+{
+    if (!node) return;
 
+    // Przechodzimy po wszystkich komponentach node
+    for (const auto& comp : node->GetComponents())
+    {
+        if (auto* model = dynamic_cast<ModelComponent*>(comp.get()))
+        {
+            model->LinkTechniques(rg);
+        }
+        // Jeśli masz inne typy komponentów z LinkTechniques, dodaj je tutaj
+    }
+
+    // Rekurencja po dzieciach
+    for (const auto& child : node->GetChildren())
+    {
+        LinkAllTechniquesRecursive(child.get(), rg);
+    }
+}
 
 App::App(const std::string& commandLine)
     :
@@ -34,12 +51,13 @@ App::App(const std::string& commandLine)
     pointLight(wnd.Gfx()), // Initialize PointLight
     pSceneRoot(std::make_unique<Node>("Root"))
 {
-    TestDynamicConstant();
     // Set Projection Matrix (Far plane adjusted for larger scenes potentially)
     wnd.Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 2000.0f));
 
     cube.SetPos({ 4.0f,2.0f,0.0f });
     cube2.SetPos({ 0.0f,6.0f,0.0f });
+    cube.LinkTechniques(rg);
+    cube2.LinkTechniques(rg);
 
 
     RegisterDefaultAllocator();
@@ -136,11 +154,12 @@ App::App(const std::string& commandLine)
         std::make_unique<Ability2>(pAbility2, wnd, pCamera)
     );
     pAbility2->AddComponent(
-        std::make_unique<ModelComponent>(pAbility2, wnd.Gfx(), "Models\\box.glb")
+        std::make_unique<ModelComponent>(pAbility2, wnd.Gfx(), rg, "Models\\box.glb")
     );
+    pAbility2->GetComponent<ModelComponent>()->LinkTechniques(rg);
     pPlayer->GetComponent<PlayerController>()->ability2 = pAbility2;
 
-
+	
 
     //Adding Other Components
     pFreeViewCamera->AddComponent(
@@ -169,10 +188,11 @@ App::App(const std::string& commandLine)
     //pEnemySoundEffectsPlayer->SetPosition(0.0f, 0.0f, 0.0f);
     soundDevice->SetLocation(pPlayer->GetLocalPosition().x, pPlayer->GetLocalPosition().y, pPlayer->GetLocalPosition().z);
 
-    pSceneRoot->AddComponent(
+  /*  pSceneRoot->AddComponent(
         std::make_unique<Global>(pSceneRoot.get(), wnd, prefabManager, pPlayer)
-    );
-    
+    );*/
+
+    //LinkAllTechniquesRecursive(pSceneRoot.get(), rg);
 	//pEnemy->AddComponent(
 	//	std::make_unique<SoundEffectsPlayer>(pEnemy)
 	//);
@@ -187,6 +207,7 @@ App::App(const std::string& commandLine)
     wnd.DisableCursor();
     wnd.mouse.EnableRaw();
     cursorEnabled = false;
+    
 }
 
 App::~App()
@@ -207,10 +228,10 @@ App::~App()
     //capsuleCollidersToDraw.clear();
 
     // Delete the member DebugLine pointers
-    delete line1; line1 = nullptr;
+    /*delete line1; line1 = nullptr;
     delete line2; line2 = nullptr;
     delete line3; line3 = nullptr;
-    delete line4; line4 = nullptr;
+    delete line4; line4 = nullptr;*/
 }
 
 int App::Go()
@@ -325,6 +346,7 @@ void App::HandleInput(float dt)
         }
     }
 }
+
 void App::DoFrame(float dt)
 {
     pSceneRoot->Update(dt);
@@ -345,8 +367,8 @@ void App::DoFrame(float dt)
 	/*DebugLine line(wnd.Gfx(), pEnemy->GetComponent<StateMachine>()->pos, pEnemy->GetComponent<StateMachine>()->cen, { 0.0f, 0.0f, 1.0f, 1.0f });
     line.Submit(fc);*/ // for idle
     // --- Bind Lights ---
-    cube.Submit(fc);
-	cube2.Submit(fc);
+    cube.Submit();
+	cube2.Submit();
     pointLight.Bind(wnd.Gfx(), viewMatrix); // Bind point light (to slot 0)
 
     FrustumCalculating(); // Draw with FRUSTUM CULLING
@@ -380,9 +402,9 @@ void App::DoFrame(float dt)
         ShowControlWindows();
     }
 
-    fc.Execute(wnd.Gfx());
+    rg.Execute(wnd.Gfx());
     wnd.Gfx().EndFrame();
-    fc.Reset();
+    rg.Reset();
 }
 
 
@@ -487,7 +509,7 @@ void App::DrawNodeRecursive(Graphics& gfx, Node& node)
 
     if (shouldDraw)
     {
-        node.Submit(fc, wnd.Gfx());
+        node.Submit(wnd.Gfx());
         for (const auto& pChild : node.GetChildren())
         {
             if (pChild)
@@ -507,7 +529,7 @@ void App::ShowControlWindows()
     //ForEnemyWalking();
     cube.SpawnControlWindow(wnd.Gfx(), "Cube 1");
 	cube2.SpawnControlWindow(wnd.Gfx(), "Cube 2");
-    pointLight.Submit(fc);
+    pointLight.Submit();
 
     pointLight.SpawnControlWindow(); // Control for Point Light
     if (showDemoWindow)

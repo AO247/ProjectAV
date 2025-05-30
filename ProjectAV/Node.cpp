@@ -454,11 +454,11 @@ void Node::Update(float dt)
     }
 }
 
-void Node::Submit(FrameCommander& frame, Graphics& gfx) const
+void Node::Submit(Graphics& gfx) const
 {
     if (auto* modelComp = GetComponent<ModelComponent>())
     {
-        modelComp->Submit(frame, gfx, GetWorldTransform());
+        modelComp->Submit(gfx, GetWorldTransform());
     }
     // Original Submit for children was commented out, keeping it that way:
     //for (const auto& child : children)

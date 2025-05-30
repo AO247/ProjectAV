@@ -8,7 +8,8 @@
 #include <SimpleMath.h> // For Vector3
 
 class Graphics;
-class FrameCommander; // Forward declare
+class TechniqueProbe;
+class ModelProbe;
 class Component;
 
 using namespace DirectX::SimpleMath; // For Vector3 return types
@@ -65,7 +66,7 @@ public:
 
     // --- Update & Draw ---
     void Update(float dt);
-    void Submit(FrameCommander& frame, Graphics& gfx) const;
+    void Submit(Graphics& gfx) const;
     void ShowNodeTree(Node*& pSelectedNode) noexcept;
     std::string tag;
     Node* parent = nullptr;
