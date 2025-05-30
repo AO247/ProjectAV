@@ -48,7 +48,7 @@ void LevelGenerator::GenerateIslandsNew()
                 {
                     int randLarge = rand() % 2;
                     if (randLarge == 0) {
-                        islandPrefab = PrefabManager::InstantiateIslandBig1(pSceneRoot, 0.0f, 0.0f, 0.0f, 1.0f);
+                        //islandPrefab = PrefabManager::InstantiateIslandBig1(pSceneRoot, 0.0f, 0.0f, 0.0f, 1.0f);
                     }
                     else {
                        // islandPrefab = prefabManager->InstantiateIslandBig2(pSceneRoot, 0.0f, 0.0f, 0.0f, 1.0f);
@@ -256,10 +256,10 @@ void LevelGenerator::GenerateIslands()
                 {
                     int randLarge = rand() % 2;
                     if (randLarge == 0) {
-                        islandPrefab = prefabManager->InstantiateIslandBig1(pSceneRoot, 0.0f, 0.0f, 0.0f, 1.0f);
+                        //islandPrefab = prefabManager->InstantiateIslandBig1(pSceneRoot, 0.0f, 0.0f, 0.0f, 1.0f);
                     }
                     else {
-                        islandPrefab = prefabManager->InstantiateIslandBig2(pSceneRoot, 0.0f, 0.0f, 0.0f, 1.0f);
+                        //islandPrefab = prefabManager->InstantiateIslandBig2(pSceneRoot, 0.0f, 0.0f, 0.0f, 1.0f);
                     }
                     bigIslandCount--;
                     break;
@@ -268,10 +268,10 @@ void LevelGenerator::GenerateIslands()
                 {
                     int randMedium = rand() % 2;
                     if (randMedium == 0) {
-                        islandPrefab = prefabManager->InstantiateIslandMedium1(pSceneRoot, 0.0f, 0.0f, 0.0f, 1.0f);
+                        //islandPrefab = prefabManager->InstantiateIslandMedium1(pSceneRoot, 0.0f, 0.0f, 0.0f, 1.0f);
                     }
                     else {
-                        islandPrefab = prefabManager->InstantiateIslandMedium1(pSceneRoot, 0.0f, 0.0f, 0.0f, 1.0f);
+                        //islandPrefab = prefabManager->InstantiateIslandMedium1(pSceneRoot, 0.0f, 0.0f, 0.0f, 1.0f);
                     }
                     mediumIslandCount--;
                     break;
@@ -280,10 +280,10 @@ void LevelGenerator::GenerateIslands()
                 {
                     int randSmall = rand() % 2;
                     if (randSmall == 0) {
-                        islandPrefab = prefabManager->InstantiateIslandSmall1(pSceneRoot, 0.0f, 0.0f, 0.0f, 1.5f);
+                        //islandPrefab = prefabManager->InstantiateIslandSmall1(pSceneRoot, 0.0f, 0.0f, 0.0f, 1.5f);
                     }
                     else {
-                        islandPrefab = prefabManager->InstantiateIslandSmall2(pSceneRoot, 0.0f, 0.0f, 0.0f, 1.5f);
+                        //islandPrefab = prefabManager->InstantiateIslandSmall2(pSceneRoot, 0.0f, 0.0f, 0.0f, 1.5f);
                     }
                     smallIslandCount--;
                     break;
@@ -614,7 +614,7 @@ void LevelGenerator::SpawnEnemies()
             if(randEnemy == 0)
             {
                 OutputDebugStringA("\nDodajemy\n");
-                enemy = prefabManager->InstantiateShootingEnemy(pSceneRoot, pos.x, pos.y, pos.z, 1.6f, pPlayer);
+                //enemy = prefabManager->InstantiateShootingEnemy(pSceneRoot, pos.x, pos.y, pos.z, 1.6f, pPlayer);
             }
             numberOfHardEnemies--;
         }

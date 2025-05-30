@@ -178,7 +178,7 @@ void ModelInternalNode::ShowTree(int& nodeIndexTracker, ModelInternalNode*& pSel
 
 // --- ModelComponent Implementation ---
 
-ModelComponent::ModelComponent(Node* owner, Graphics& gfx, Rgph::RenderGraph& rg, const std::string& modelFile, float scale)
+ModelComponent::ModelComponent(Node* owner, Graphics& gfx, const std::string& modelFile, float scale)
 	: Component(owner), pControlWindow(std::make_unique<ModelControlWindow>())
 {
 	Assimp::Importer importer;
@@ -214,7 +214,7 @@ ModelComponent::ModelComponent(Node* owner, Graphics& gfx, Rgph::RenderGraph& rg
 
 	int nextId = 0;
 	pRootInternal = ParseNodeRecursive(nextId, *pScene->mRootNode, scale);
-	LinkTechniques(rg);
+	//LinkTechniques(rg);
 }
 
 

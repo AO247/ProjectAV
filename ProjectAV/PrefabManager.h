@@ -1,7 +1,6 @@
 #pragma once
 #include "Prefab.h"
 #include "Node.h"
-#include "RenderGraph.h"
 #include <string>
 #include "Components.h"
 #include "PhysicsCommon.h"
@@ -17,7 +16,6 @@ public:
 	~PrefabManager(); 
     static Window* wind;
     static Node* root;
-	static RenderGraph* renderGraph;
 
 
     Node* InstantiateMushroom1(Node* parentNode = nullptr, float locX = 0, float locY = 0, float locZ = 0, float scale = 1) const;

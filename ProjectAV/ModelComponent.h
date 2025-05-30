@@ -78,7 +78,7 @@ public:
         }
     };
 
-    ModelComponent(Node* owner, Graphics& gfx, Rgph::RenderGraph& rg, const std::string& modelFile, float scale = 1.0f);
+    ModelComponent(Node* owner, Graphics& gfx, const std::string& modelFile, float scale = 1.0f);
     virtual ~ModelComponent() = default;
 
     void Submit(Graphics& gfx, DirectX::FXMMATRIX worldTransform) const noxnd;

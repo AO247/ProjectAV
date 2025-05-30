@@ -58,6 +58,7 @@ App::App(const std::string& commandLine)
     cube2.SetPos({ 0.0f,6.0f,0.0f });
     cube.LinkTechniques(rg);
     cube2.LinkTechniques(rg);
+	pointLight.LinkTechniques(rg);
 
 
     RegisterDefaultAllocator();
@@ -154,7 +155,7 @@ App::App(const std::string& commandLine)
         std::make_unique<Ability2>(pAbility2, wnd, pCamera)
     );
     pAbility2->AddComponent(
-        std::make_unique<ModelComponent>(pAbility2, wnd.Gfx(), rg, "Models\\box.glb")
+        std::make_unique<ModelComponent>(pAbility2, wnd.Gfx(), "Models\\box.glb")
     );
     pAbility2->GetComponent<ModelComponent>()->LinkTechniques(rg);
     pPlayer->GetComponent<PlayerController>()->ability2 = pAbility2;
