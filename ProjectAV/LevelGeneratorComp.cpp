@@ -1,9 +1,10 @@
 #include "LevelGeneratorComp.h"
 #include "Components.h"
+#include "CMath.h"
 
 
-LevelGeneratorComp::LevelGeneratorComp(Node* owner, Node* pPlayer)
-    : Component(owner), pPlayer(pPlayer)
+LevelGeneratorComp::LevelGeneratorComp(Node* owner, Node* pPlayer, bool rot)
+    : Component(owner), pPlayer(pPlayer), spawnNeedRotation(rot)
 {
 
     std::srand(static_cast<unsigned>(std::time(nullptr)));
@@ -126,14 +127,28 @@ void LevelGeneratorComp::GenerateIslands()
 
         if (islands.size() == 0)
         {
+            if (spawnNeedRotation) {
+                island->Rotate(180);
+                ChangePosition(islandPrefab, pointPos, island->upPoint->GetWorldPosition());
+                if (randPoint >= 0 && randPoint < static_cast<int>(points.size())) {
+                    points.erase(points.begin() + randPoint);
+                }
 
-            ChangePosition(islandPrefab, pointPos, island->downPoint->GetWorldPosition());
-            if (randPoint >= 0 && randPoint < static_cast<int>(points.size())) {
-                points.erase(points.begin() + randPoint);
+                points.push_back(Vector4(island->leftPoint->GetWorldPosition().x, island->leftPoint->GetWorldPosition().y, island->leftPoint->GetWorldPosition().z, 1.0f));
+                points.push_back(Vector4(island->downPoint->GetWorldPosition().x, island->downPoint->GetWorldPosition().y, island->downPoint->GetWorldPosition().z, 2.0f));
+                points.push_back(Vector4(island->rightPoint->GetWorldPosition().x, island->rightPoint->GetWorldPosition().y, island->rightPoint->GetWorldPosition().z, 3.0f));
             }
-            points.push_back(Vector4(island->leftPoint->GetWorldPosition().x, island->leftPoint->GetWorldPosition().y, island->leftPoint->GetWorldPosition().z, 1.0f));
-            points.push_back(Vector4(island->upPoint->GetWorldPosition().x, island->upPoint->GetWorldPosition().y, island->upPoint->GetWorldPosition().z, 2.0f));
-            points.push_back(Vector4(island->rightPoint->GetWorldPosition().x, island->rightPoint->GetWorldPosition().y, island->rightPoint->GetWorldPosition().z, 3.0f));
+            else
+            {
+
+                ChangePosition(islandPrefab, pointPos, island->downPoint->GetWorldPosition());
+                if (randPoint >= 0 && randPoint < static_cast<int>(points.size())) {
+                    points.erase(points.begin() + randPoint);
+                }
+                points.push_back(Vector4(island->leftPoint->GetWorldPosition().x, island->leftPoint->GetWorldPosition().y, island->leftPoint->GetWorldPosition().z, 1.0f));
+                points.push_back(Vector4(island->upPoint->GetWorldPosition().x, island->upPoint->GetWorldPosition().y, island->upPoint->GetWorldPosition().z, 2.0f));
+                points.push_back(Vector4(island->rightPoint->GetWorldPosition().x, island->rightPoint->GetWorldPosition().y, island->rightPoint->GetWorldPosition().z, 3.0f));
+            }
             islands.push_back(islandPrefab);
             spawned = true;
         }

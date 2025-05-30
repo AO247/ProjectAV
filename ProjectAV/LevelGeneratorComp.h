@@ -10,7 +10,7 @@ class PrefabManager;
 class LevelGeneratorComp : public Component
 {
 public:
-	LevelGeneratorComp(Node* owner, Node* pPlayer);
+	LevelGeneratorComp(Node* owner, Node* pPlayer, bool rot);
 	virtual ~LevelGeneratorComp() = default;
 
 	int bigIslandCount = 3;
@@ -37,7 +37,7 @@ private:
 
 	void GenerateIslands();
 	void SpawnEnemies();
-
+	bool spawnNeedRotation = false;
 	bool spawned = true;
 	Node* islandPrefab = nullptr;
 	Node* enemy = nullptr;

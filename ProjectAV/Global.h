@@ -32,6 +32,7 @@ public:
 	int levelCount = 0;
 	void AddSpecialLevel();
 	bool yey = true;
+	bool completed = false;
 private:
 	Window& wnd;
 	std::unique_ptr<LevelGenerator> currentLevelGenerator;

@@ -25,6 +25,19 @@ void Global::Update(float dt)
 		{
 			levels[levels.size() - 5]->Destroy();
 			AddSpecialLevel();
+			completed = true;
+		}
+	}
+	if (completed)
+	{
+		Node* spawn = levels[levels.size() - 4]->FindFirstChildByTag("SPAWN");
+		if (spawn != nullptr)
+		{
+			if((spawn->GetWorldPosition() - playerNode->GetWorldPosition()).Length() < 8.0f)
+			{
+				PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(playerNode->GetComponent<Rigidbody>()->GetBodyID(), Vec3(0.0f, 280.0f, 0.0f));
+				completed = false;
+			}
 		}
 	}
 }
@@ -44,11 +57,17 @@ void Global::AddSpecialLevel()
 	level->SetLocalPosition(dx::XMFLOAT3(0.0f, levelCount * 400.0f, 0.0f)); // Example position
 	if (levelCount % 2 == 0)
 	{
-		level->SetLocalRotation(dx::XMFLOAT3(0.0f, to_rad(180.0f), 0.0f));
+		level->AddComponent(
+			std::make_unique<LevelGeneratorComp>(level, playerNode, true)
+		);
 	}
-	level->AddComponent(
-		std::make_unique<LevelGeneratorComp>(level, playerNode)
-	);
+	else 
+	{
+		level->AddComponent(
+			std::make_unique<LevelGeneratorComp>(level, playerNode, false)
+		);
+	}
+
 	levelCount++;
 }
 

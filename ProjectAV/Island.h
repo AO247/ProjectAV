@@ -16,7 +16,7 @@ public:
 	Island(Node* owner);
 	virtual ~Island() = default;
 
-	void Rotate();
+	void Rotate(int rot = 0.0f);
 
 	Node* leftPoint;
 	Node* rightPoint;
