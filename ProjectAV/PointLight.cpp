@@ -40,7 +40,7 @@ void PointLight::Reset() noexcept
 {
 	cbData = {
 		{ 10.0f,9.0f,2.5f },
-		{ 0.05f,0.05f,0.05f },
+		{ 0.85f,0.85f,0.85f },
 		{ 1.0f,1.0f,1.0f },
 		1.0f,
 		1.0f,

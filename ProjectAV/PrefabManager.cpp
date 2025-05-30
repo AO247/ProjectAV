@@ -4,6 +4,7 @@
 
 Window* PrefabManager::wind = nullptr;
 Node* PrefabManager::root = nullptr;
+Rgph::BlurOutlineRenderGraph* PrefabManager::rg = nullptr;
 
 PrefabManager::~PrefabManager()
 {
@@ -17,6 +18,7 @@ Node* PrefabManager::InstantiateMushroom1(Node* parentNode, float locX, float lo
     pNewNodeOwner->AddComponent(
         std::make_unique<ModelComponent>(pNewNodeOwner.get(), wnd->Gfx(), "Models\\enviro_male_2\\grzyb_1.2.obj")
     );
+	//pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(rg);
     ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
     TriangleList islandTriangles = PhysicsCommon::MakeTriangleList(islandModel->GetAllTriangles());
     MeshShapeSettings islandMeshSettings(islandTriangles);

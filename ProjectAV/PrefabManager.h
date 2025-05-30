@@ -4,18 +4,21 @@
 #include <string>
 #include "Components.h"
 #include "PhysicsCommon.h"
+#include "BlurOutlineRenderGraph.h"
+#include "Window.h"
+
 //class PhysicsEngine;
-class Window;
 class ShootAttack;
 class PrefabManager {
 public:
-    PrefabManager(Window* wnd) : wnd(wnd)
+	PrefabManager(Window* wnd) : wnd(wnd)
     {
 
     }
 	~PrefabManager(); 
     static Window* wind;
     static Node* root;
+	static Rgph::BlurOutlineRenderGraph* rg;
 
 
     Node* InstantiateMushroom1(Node* parentNode = nullptr, float locX = 0, float locY = 0, float locZ = 0, float scale = 1) const;
@@ -48,6 +51,7 @@ public:
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
         );
+		pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(2.0f, 10.0f, 2.0f)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::WALL);
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
 
@@ -74,7 +78,7 @@ public:
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\enviro_male_2\\kamien_1.2.obj")
         );
-
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(1.0f, 1.0f, 1.0f)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
 
@@ -105,6 +109,7 @@ public:
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\wyspy_2\\wyspa_duza_okragla_2.obj")
         );
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
         TriangleList islandTriangles = PhysicsCommon::MakeTriangleList(islandModel->GetAllTriangles());
         MeshShapeSettings islandMeshSettings(islandTriangles);
@@ -253,6 +258,7 @@ public:
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\wyspy_2\\wyspa_mala_2.obj")
         );
+        
         ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
         TriangleList islandTriangles = PhysicsCommon::MakeTriangleList(islandModel->GetAllTriangles());
         MeshShapeSettings islandMeshSettings(islandTriangles);
@@ -301,6 +307,7 @@ public:
         pIsland->downPoint = downPoint.get();
         pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
 
         Node* pNewNode = pNewNodeOwner.get();
 
@@ -331,6 +338,7 @@ public:
         pNewNode->AddComponent(
             std::make_unique<ModelComponent>(pNewNode, wind->Gfx(), "Models\\box.glb")
         );
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(2.0f, 10.0f, 2.0f)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Kinematic, Layers::WALL);
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
 
@@ -348,7 +356,6 @@ public:
 
         pNewNode->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
         pNewNode->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
-
 
         return pNewNode;
     }

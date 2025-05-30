@@ -22,27 +22,6 @@
 
 namespace dx = DirectX;
 
-void LinkAllTechniquesRecursive(Node* node, Rgph::RenderGraph& rg)
-{
-    if (!node) return;
-
-    // Przechodzimy po wszystkich komponentach node
-    for (const auto& comp : node->GetComponents())
-    {
-        if (auto* model = dynamic_cast<ModelComponent*>(comp.get()))
-        {
-            model->LinkTechniques(rg);
-        }
-        // Jeśli masz inne typy komponentów z LinkTechniques, dodaj je tutaj
-    }
-
-    // Rekurencja po dzieciach
-    for (const auto& child : node->GetChildren())
-    {
-        LinkAllTechniquesRecursive(child.get(), rg);
-    }
-}
-
 App::App(const std::string& commandLine)
     :
     commandLine(commandLine),
@@ -90,6 +69,7 @@ App::App(const std::string& commandLine)
 
 	auto prefabManagerOwner = std::make_unique<PrefabManager>(&wnd);
 	prefabManager = prefabManagerOwner.get();
+	PrefabManager::rg = &rg; // Set the render graph for prefab manager
 
     // --- Create Nodes ---
 
@@ -189,11 +169,10 @@ App::App(const std::string& commandLine)
     //pEnemySoundEffectsPlayer->SetPosition(0.0f, 0.0f, 0.0f);
     soundDevice->SetLocation(pPlayer->GetLocalPosition().x, pPlayer->GetLocalPosition().y, pPlayer->GetLocalPosition().z);
 
-  /*  pSceneRoot->AddComponent(
+    pSceneRoot->AddComponent(
         std::make_unique<Global>(pSceneRoot.get(), wnd, prefabManager, pPlayer)
-    );*/
+    );
 
-    //LinkAllTechniquesRecursive(pSceneRoot.get(), rg);
 	//pEnemy->AddComponent(
 	//	std::make_unique<SoundEffectsPlayer>(pEnemy)
 	//);
