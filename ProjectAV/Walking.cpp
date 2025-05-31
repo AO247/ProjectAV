@@ -16,13 +16,44 @@ Walking::Walking(Node* owner, std::string tag)
 }
 void Walking::Follow(DirectX::XMFLOAT3 targetPos, float sp)
 {
-	GroundCheck();
-	PhysicsCommon::physicsSystem->GetBodyInterface().SetFriction(rigidbody->GetBodyID(), 0.0f);
-
 	if (!rigidbody) {
 		return;
 	}
 	targetPosition = targetPos;
+	GroundCheck();
+	if (VoidCheck() && grounded)
+	{
+		PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rigidbody->GetBodyID(), Vec3Arg(0.0f, 0.0f, 0.0f));
+			float currentYaw = pOwner->GetLocalRotationEuler().y;
+			Vector3 facingDirection = Vector3(targetPosition)
+				- Vector3(pOwner->GetWorldPosition());
+			facingDirection.Normalize();
+			
+		if (sp > 1.0f)
+		{
+			facingDirection -= facingDirection;
+			float targetYaw = atan2f(facingDirection.x, facingDirection.z);
+			float yawDifference = wrap_angle(targetYaw - currentYaw);
+			targetYaw = wrap_angle(currentYaw + yawDifference * rotationLerpFactor * 1.8f);
+			Quat q = Quat::sEulerAngles(Vec3(0.0f, targetYaw, 0.0f));
+			PhysicsCommon::physicsSystem->GetBodyInterface().SetRotation(rigidbody->GetBodyID(), q, EActivation::Activate);
+			PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(rigidbody->GetBodyID(), Vec3Arg(facingDirection.x, facingDirection.y, facingDirection.z) * maxSpeed * 100.0f);
+		}
+		else 
+		{
+			float targetYaw = atan2f(facingDirection.x, facingDirection.z);
+			float yawDifference = wrap_angle(targetYaw - currentYaw);
+			targetYaw = wrap_angle(currentYaw + yawDifference * rotationLerpFactor);
+			Quat q = Quat::sEulerAngles(Vec3(0.0f, targetYaw, 0.0f));
+			PhysicsCommon::physicsSystem->GetBodyInterface().SetRotation(rigidbody->GetBodyID(), q, EActivation::Activate);
+		}
+
+		return;
+	}
+
+	PhysicsCommon::physicsSystem->GetBodyInterface().SetFriction(rigidbody->GetBodyID(), 0.0f);
+
+
 	Vector3 currentPos = pOwner->GetWorldPosition();
 	Vec3 currentVelocityJPH = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
 	Vector3 currentVelocity = { currentVelocityJPH.GetX(), currentVelocityJPH.GetY(), currentVelocityJPH.GetZ() };
@@ -45,22 +76,16 @@ void Walking::Follow(DirectX::XMFLOAT3 targetPos, float sp)
 	if (steeringMagnitude > maxSpeed) {
 		steeringForce = (steeringForce / steeringMagnitude) * maxSpeed;
 	}
-	if (!VoidCheck()) 
-	{
-		PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(steeringForce.x, steeringForce.y, steeringForce.z) * 10.0f);
-	}
-	else 
-	{
-		steeringForce = -steeringForce;
-		PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(steeringForce.x, steeringForce.y, steeringForce.z) * 10.0f);
-	}
+
+	PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(steeringForce.x, steeringForce.y, steeringForce.z) * 15.0f);
+
 	currentVelocityJPH = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
 	currentVelocity = { currentVelocityJPH.GetX(), currentVelocityJPH.GetY(), currentVelocityJPH.GetZ() };
 	if (currentVelocity.LengthSquared() > 0.01f)
 	{
 		Vector3 toTarget = targetPosition - currentPos;
 		toTarget.Normalize();
-		float dot = currentVelocity.Dot(toTarget); // zak³adam, ¿e masz metodê Dot
+		float dot = currentVelocity.Dot(toTarget);
 		float angle = acosf(std::clamp(dot, -1.0f, 1.0f)); // w radianach
 
 		Vector3 facingDirection = currentVelocity;
@@ -109,7 +134,7 @@ Vector3 Walking::CalculateAvoidanceForce()
 	float radius = 1.0f;
 
 	Vector3 pos = pOwner->GetWorldPosition();
-	pos.y += (-height/2.0f) + 1.0f;
+	pos.y += -(height/2.0f) + 0.0f;
 	Vector3 forward = temporaryDirection;
 	Vector3 right = Vector3(forward.z, 0.0f, -forward.x);
 	right.Normalize();

@@ -1,5 +1,4 @@
 #pragma once
-#include "Prefab.h"
 #include "Node.h"
 #include <string>
 #include "Components.h"
@@ -177,14 +176,14 @@ public:
         auto upPoint = std::make_unique<Node>("Up Point", pNewNodeOwner.get());
         auto downPoint = std::make_unique<Node>("Down Point", pNewNodeOwner.get());
 
-        leftPoint->SetLocalPosition(DirectX::XMFLOAT3(-61.0f, 0.0f, 5.0f));
-        rightPoint->SetLocalPosition(DirectX::XMFLOAT3(69.0f, 0.0f, -10.0f));
-        upPoint->SetLocalPosition(DirectX::XMFLOAT3(10.0f, 0.0f, 64.0f));
-        downPoint->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 0.0f, -64.0f));
-        //pIsland->halfExtents = { 11.0f, 2.0f, 11.0f };
-        pIsland->halfExtents = { (rightPoint->GetLocalPosition().x - leftPoint->GetLocalPosition().x) / 2.0f - 1.0f,
+        leftPoint->SetLocalPosition(DirectX::XMFLOAT3(-65.0f, 0.0f, 35.0f));
+        rightPoint->SetLocalPosition(DirectX::XMFLOAT3(65.0f, 0.0f, 20.0f));
+        upPoint->SetLocalPosition(DirectX::XMFLOAT3(40.0f, 0.0f, 65.0f));
+        downPoint->SetLocalPosition(DirectX::XMFLOAT3(30.0f, 0.0f, -65.0f));
+        pIsland->halfExtents = { 63.0f, 2.0f, 63.0f };
+        /*pIsland->halfExtents = { (rightPoint->GetLocalPosition().x - leftPoint->GetLocalPosition().x) / 2.0f - 1.0f,
                                 2.0f,
-                                (upPoint->GetLocalPosition().z - downPoint->GetLocalPosition().z) / 2.0f - 1.0f };
+                                (upPoint->GetLocalPosition().z - downPoint->GetLocalPosition().z) / 2.0f - 1.0f };*/
         upPoint->AddComponent(
             std::make_unique<ModelComponent>(upPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
         );
@@ -212,10 +211,10 @@ public:
         InstantiateStone1(pNewNode, 22.2f, 30.0f, -18.2f, 2.0f);
         InstantiateStone1(pNewNode, -17.2f, 30.0f, 22.2f, 2.0f);
         InstantiateStone1(pNewNode, 11.2f, 30.0f, -8.2f, 2.0f);
-      /*  InstantiateColumn(pNewNode, 20.0f, 0.0f, 25.0f, 1.0f);
+        InstantiateColumn(pNewNode, 20.0f, 0.0f, 25.0f, 1.0f);
         InstantiateColumn(pNewNode, -5.0f, 0.0f, 25.0f, 1.0f);
         InstantiateColumn(pNewNode, 20.0f, 0.0f, -12.0f, 1.0f);
-        InstantiateColumn(pNewNode, -5.0f, 0.0f, -12.0f, 1.0f);*/
+        InstantiateColumn(pNewNode, -5.0f, 0.0f, -12.0f, 1.0f);
                ////Node* platform1 = InstantiatePlatform1(pNewNode, 41.0f, 0.0f, 6.0f, 1.0f);
                ////Node* platform3 = InstantiatePlatform3(pNewNode, -19.0f, 0.0f, -26.0f, 1.0f);
 
@@ -277,10 +276,10 @@ public:
         downPoint->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 0.0f, -24.0f));
         leftPoint->SetLocalPosition(DirectX::XMFLOAT3(-35.0f, 0.0f, 5.0f));
         rightPoint->SetLocalPosition(DirectX::XMFLOAT3(35.0f, 0.0f, -4.0f));
-        //pIsland->halfExtents = { 11.0f, 2.0f, 11.0f };
-        pIsland->halfExtents = { (rightPoint->GetLocalPosition().x - leftPoint->GetLocalPosition().x) / 2.0f - 1.0f,
+        pIsland->halfExtents = { 33.0f, 2.0f, 33.0f };
+       /* pIsland->halfExtents = { (rightPoint->GetLocalPosition().x - leftPoint->GetLocalPosition().x) / 2.0f - 1.0f,
                                 2.0f,
-                                (upPoint->GetLocalPosition().z - downPoint->GetLocalPosition().z) / 2.0f - 1.0f };
+                                (upPoint->GetLocalPosition().z - downPoint->GetLocalPosition().z) / 2.0f - 1.0f };*/
         upPoint->AddComponent(
             std::make_unique<ModelComponent>(upPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
         );
@@ -329,7 +328,7 @@ public:
         pNewNode->AddComponent(
             std::make_unique<ModelComponent>(pNewNode, wind->Gfx(), "Models\\box.glb")
         );
-        BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(2.0f, 10.0f, 2.0f)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Kinematic, Layers::WALL);
+        BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(0.5f, 0.5f, 0.5f)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Kinematic, Layers::WALL);
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
 
         BodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);

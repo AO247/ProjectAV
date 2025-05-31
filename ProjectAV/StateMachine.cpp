@@ -68,6 +68,10 @@ void StateMachine::Update(float dt)
 		}
 		
 	}
+	if (pOwner->GetLocalPosition().y < -50.0f)
+	{
+		pOwner->Destroy();
+	}
 }
 
 void StateMachine::RequestStateChange(StateType nextState)

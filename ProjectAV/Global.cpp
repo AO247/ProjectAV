@@ -20,7 +20,7 @@ Global::Global(Node* owner, Window& window, Node* player)
 
 void Global::Update(float dt) 
 {
-	if (levels[levels.size() - 3]->GetComponent<LevelGeneratorComp>()->isFinished) {
+	if (levels[levels.size() - 3]->GetComponent<LevelGenerator>()->isFinished) {
 		if (levels[levels.size() - 3]->FindAllChildrenByTag("ENEMY").size() <= 0)
 		{
 			levels[levels.size() - 5]->Destroy();
@@ -58,13 +58,13 @@ void Global::AddSpecialLevel()
 	if (levelCount % 2 == 0)
 	{
 		level->AddComponent(
-			std::make_unique<LevelGeneratorComp>(level, playerNode, true)
+			std::make_unique<LevelGenerator>(level, playerNode, true)
 		);
 	}
 	else 
 	{
 		level->AddComponent(
-			std::make_unique<LevelGeneratorComp>(level, playerNode, false)
+			std::make_unique<LevelGenerator>(level, playerNode, false)
 		);
 	}
 

@@ -217,7 +217,6 @@
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="LayoutCodex.cpp" />
     <ClCompile Include="LevelGenerator.cpp" />
-    <ClCompile Include="LevelGeneratorComp.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MiscMath.cpp" />
@@ -229,7 +228,6 @@
     <ClInclude Include="Ability2.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="Global.h" />
-    <ClInclude Include="LevelGeneratorComp.h" />
     <ClInclude Include="MyContactListener.h" />
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="NullPixelShader.cpp" />
@@ -239,7 +237,6 @@
     <ClCompile Include="PixelShader.cpp" />
     <ClCompile Include="PlayerController.cpp" />
     <ClCompile Include="PointLight.cpp" />
-    <ClCompile Include="Prefab.cpp" />
     <ClCompile Include="PrefabManager.cpp" />
     <ClCompile Include="Rasterizer.cpp" />
     <ClCompile Include="Raycast.cpp" />
@@ -359,7 +356,6 @@
     <ClInclude Include="Plane.h" />
     <ClInclude Include="PlayerController.h" />
     <ClInclude Include="PointLight.h" />
-    <ClInclude Include="Prefab.h" />
     <ClInclude Include="PrefabManager.h" />
     <ClInclude Include="Rasterizer.h" />
     <ClInclude Include="Raycast.h" />

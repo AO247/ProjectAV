@@ -15,7 +15,6 @@
 #include "SoundEffectsPlayer.h"
 #include "DebugLine.h"
 #include "Testing.h"
-#include "Prefab.h"
 #include "PrefabManager.h"
 #include "LevelGenerator.h"
 #include <Jolt/Jolt.h>
@@ -75,9 +74,9 @@ App::App(const std::string& commandLine)
 	pFreeViewCamera = pFreeViewCameraOwner.get();
     auto pPlayerOwner = std::make_unique<Node>("Player", nullptr, "PLAYER");
     pPlayer = pPlayerOwner.get();
-	auto pAbility1Owner = std::make_unique<Node>("Ability1", nullptr, "ABILITY1");
+	auto pAbility1Owner = std::make_unique<Node>("Ability1", nullptr, "TRIGGER");
 	pAbility1 = pAbility1Owner.get();
-	auto pAbility2Owner = std::make_unique<Node>("Ability2", nullptr, "ABILITY2");
+	auto pAbility2Owner = std::make_unique<Node>("Ability2", nullptr, "TRIGGER");
 	pAbility2 = pAbility2Owner.get();
     auto pPrefabsOwner = std::make_unique<Node>("Prefabs", nullptr, "PREFABS");
     pPrefabs = pPrefabsOwner.get();
