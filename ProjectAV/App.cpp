@@ -33,13 +33,13 @@ App::App(const std::string& commandLine)
 {
     // Set Projection Matrix (Far plane adjusted for larger scenes potentially)
     wnd.Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 2000.0f));
+\
 
     cube.SetPos({ 4.0f,2.0f,0.0f });
     cube2.SetPos({ 0.0f,6.0f,0.0f });
     cube.LinkTechniques(rg);
     cube2.LinkTechniques(rg);
 	pointLight.LinkTechniques(rg);
-
 
     RegisterDefaultAllocator();
     Trace = TraceImpl;
@@ -69,9 +69,6 @@ App::App(const std::string& commandLine)
 	soundDevice->SetAttenuation(attentuation);
     myMusic = std::make_unique<MusicBuffer>("Models\\muza_full.wav");
 
-	auto prefabManagerOwner = std::make_unique<PrefabManager>(&wnd);
-	prefabManager = prefabManagerOwner.get();
-
     // --- Create Nodes ---
 
 	auto pCameraNodeOwner = std::make_unique<Node>("Camera", nullptr, "CAMERA");
@@ -95,7 +92,9 @@ App::App(const std::string& commandLine)
     pSceneRoot->AddChild(std::move(pPlayerOwner));
     pSceneRoot->AddChild(std::move(pAbility1Owner));
     pSceneRoot->AddChild(std::move(pAbility2Owner));
+	pSceneRoot->AddChild(std::move(pPrefabsOwner));
 
+	PrefabManager::root = pPrefabs;
 
     //Heeeej Bracie zacz�ooo pada� chood� zmienii� gacieee
     //Heeeej Siostro uciekaajmyy zanim b��dzieee mookroooo
@@ -171,7 +170,7 @@ App::App(const std::string& commandLine)
     soundDevice->SetLocation(pPlayer->GetLocalPosition().x, pPlayer->GetLocalPosition().y, pPlayer->GetLocalPosition().z);
 
     pSceneRoot->AddComponent(
-        std::make_unique<Global>(pSceneRoot.get(), wnd, prefabManager, pPlayer)
+        std::make_unique<Global>(pSceneRoot.get(), wnd, pPlayer)
     );
 
 	//pEnemy->AddComponent(
@@ -229,6 +228,12 @@ int App::Go()
         lag += dt;
         do
         {
+            if (lag < FIXED_TIME_STEP)
+            {
+                physicsSystem->Update(lag, 1, temp_allocator, job_system);
+                lag -= dt;
+                break;
+            }
             physicsSystem->Update(FIXED_TIME_STEP, 1, temp_allocator, job_system);
             lag -= FIXED_TIME_STEP;
         } while (lag >= FIXED_TIME_STEP);
@@ -238,7 +243,7 @@ int App::Go()
         //dynamicsWorld->stepSimulation(dt, 10);
         HandleInput(dt);
         DoFrame(dt);
-        lag = 0.0f;
+        //lag = 0.0f;
     }
 }
 
@@ -807,9 +812,13 @@ void App::CleanupDestroyedNodes(Node* currentNode)
                 if (pChildNode->IsMarkedForDestruction()) {
                     OutputDebugStringA(("Cleanup: Preparing to remove node: " + pChildNode->GetName() + "\n").c_str());
 
-					PhysicsCommon::physicsSystem->GetBodyInterface().DeactivateBody(pChildNode->GetComponent<Rigidbody>()->GetBodyID());
-					PhysicsCommon::physicsSystem->GetBodyInterface().RemoveBody(pChildNode->GetComponent<Rigidbody>()->GetBodyID());
-                    dynamic_cast<MyContactListener*>(PhysicsCommon::physicsSystem->GetContactListener())->RemoveRigidbodyData(pChildNode->GetComponent<Rigidbody>()->GetBodyID());
+                    if (pChildNode->GetComponent<Rigidbody>() != nullptr) {
+                        PhysicsCommon::physicsSystem->GetBodyInterface().DeactivateBody(pChildNode->GetComponent<Rigidbody>()->GetBodyID());
+                        PhysicsCommon::physicsSystem->GetBodyInterface().RemoveBody(pChildNode->GetComponent<Rigidbody>()->GetBodyID());
+                        if (pChildNode->GetComponent<Trigger>() != nullptr) {
+                            dynamic_cast<MyContactListener*>(PhysicsCommon::physicsSystem->GetContactListener())->RemoveRigidbodyData(pChildNode->GetComponent<Rigidbody>()->GetBodyID());
+                        }
+                    }
 
 
                     const auto& components = pChildNode->GetComponents();
