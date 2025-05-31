@@ -54,7 +54,6 @@ void LevelGeneratorComp::GenerateIslands()
                 {
                     int randLarge = rand() % 2;
                     if (randLarge == 0) {
-                        //islandPrefab = prefabManager->InstantiateIslandBig1(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
                         islandPrefab = PrefabManager::InstantiateIslandBig1(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
 
                     }
@@ -71,12 +70,12 @@ void LevelGeneratorComp::GenerateIslands()
                     int randMedium = rand() % 2;
                     if (randMedium == 0) {
                         //islandPrefab = prefabManager->InstantiateIslandMedium1(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
-                        islandPrefab = PrefabManager::InstantiateIslandBig1(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
+                        //islandPrefab = PrefabManager::InstantiateIslandBig1(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
 
                     }
                     else {
                         //islandPrefab = prefabManager->InstantiateIslandMedium1(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
-                        islandPrefab = PrefabManager::InstantiateIslandBig1(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
+                        //islandPrefab = PrefabManager::InstantiateIslandBig1(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
 
                     }
                     mediumIslandCount--;
@@ -87,13 +86,13 @@ void LevelGeneratorComp::GenerateIslands()
                     int randSmall = rand() % 2;
                     if (randSmall == 0) {
                         //islandPrefab = prefabManager->InstantiateIslandSmall1(pOwner, 0.0f, 0.0f, 0.0f, 1.5f);
-                        islandPrefab = PrefabManager::InstantiateIslandBig1(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
+                        //islandPrefab = PrefabManager::InstantiateIslandBig1(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
 
 
                     }
                     else {
                         //islandPrefab = prefabManager->InstantiateIslandSmall2(pOwner, 0.0f, 0.0f, 0.0f, 1.5f);
-                        islandPrefab = PrefabManager::InstantiateIslandBig1(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
+                        //islandPrefab = PrefabManager::InstantiateIslandBig1(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
 
                     }
                     smallIslandCount--;

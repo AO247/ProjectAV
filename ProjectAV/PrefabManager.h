@@ -47,11 +47,14 @@ public:
     {
         auto pNewNodeOwner = std::make_unique<Node>("Enemy", nullptr, "ENEMY");
         Node* pNewNode = pNewNodeOwner.get();
-        parentNode->AddChild(std::move(pNewNodeOwner));
 
         pNewNode->AddComponent(
             std::make_unique<ModelComponent>(pNewNode, wind->Gfx(), "Models\\enemy\\basic2.obj")
         );
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+
+        parentNode->AddChild(std::move(pNewNodeOwner));
+
         BodyCreationSettings eBodySettings(new JPH::CapsuleShape(2.1f, 1.5f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::MOVING);
         eBodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
 
@@ -193,15 +196,19 @@ public:
         upPoint->AddComponent(
             std::make_unique<ModelComponent>(upPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
         );
+        upPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         downPoint->AddComponent(
             std::make_unique<ModelComponent>(downPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
         );
+        downPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         leftPoint->AddComponent(
             std::make_unique<ModelComponent>(leftPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
         );
+        leftPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         rightPoint->AddComponent(
             std::make_unique<ModelComponent>(rightPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
         );
+        rightPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         pIsland->leftPoint = leftPoint.get();
         pIsland->rightPoint = rightPoint.get();
         pIsland->upPoint = upPoint.get();
@@ -217,12 +224,12 @@ public:
         InstantiateStone1(pNewNode, 22.2f, 30.0f, -18.2f, 2.0f);
         InstantiateStone1(pNewNode, -17.2f, 30.0f, 22.2f, 2.0f);
         InstantiateStone1(pNewNode, 11.2f, 30.0f, -8.2f, 2.0f);
-      /*  InstantiateColumn(pNewNode, 20.0f, 0.0f, 25.0f, 1.0f);
+        InstantiateColumn(pNewNode, 20.0f, 0.0f, 25.0f, 1.0f);
         InstantiateColumn(pNewNode, -5.0f, 0.0f, 25.0f, 1.0f);
         InstantiateColumn(pNewNode, 20.0f, 0.0f, -12.0f, 1.0f);
-        InstantiateColumn(pNewNode, -5.0f, 0.0f, -12.0f, 1.0f);*/
-               ////Node* platform1 = InstantiatePlatform1(pNewNode, 41.0f, 0.0f, 6.0f, 1.0f);
-               ////Node* platform3 = InstantiatePlatform3(pNewNode, -19.0f, 0.0f, -26.0f, 1.0f);
+        InstantiateColumn(pNewNode, -5.0f, 0.0f, -12.0f, 1.0f);
+               //Node* platform1 = InstantiatePlatform1(pNewNode, 41.0f, 0.0f, 6.0f, 1.0f);
+               //Node* platform3 = InstantiatePlatform3(pNewNode, -19.0f, 0.0f, -26.0f, 1.0f);
 
 
         auto spawnPoint1 = std::make_unique<Node>("SpawnPoint 1", pNewNodeOwner.get());
@@ -290,15 +297,19 @@ public:
         upPoint->AddComponent(
             std::make_unique<ModelComponent>(upPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
         );
+		upPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         downPoint->AddComponent(
             std::make_unique<ModelComponent>(downPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
         );
+		downPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         leftPoint->AddComponent(
             std::make_unique<ModelComponent>(leftPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
         );
+		leftPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         rightPoint->AddComponent(
             std::make_unique<ModelComponent>(rightPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
         );
+		rightPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         pIsland->leftPoint = leftPoint.get();
         pIsland->rightPoint = rightPoint.get();
         pIsland->upPoint = upPoint.get();
@@ -330,13 +341,16 @@ public:
     {
         auto pNewNodeOwner = std::make_unique<Node>("Bullet", nullptr, "BULLET");
         Node* pNewNode = pNewNodeOwner.get();
-        root->AddChild(std::move(pNewNodeOwner));
 
 
         pNewNode->AddComponent(
             std::make_unique<ModelComponent>(pNewNode, wind->Gfx(), "Models\\box.glb")
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+
+        root->AddChild(std::move(pNewNodeOwner));
+
+
         BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(2.0f, 10.0f, 2.0f)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Kinematic, Layers::WALL);
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
 

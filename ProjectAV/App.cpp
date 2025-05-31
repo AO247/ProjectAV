@@ -36,9 +36,7 @@ App::App(const std::string& commandLine)
 \
 
     cube.SetPos({ 4.0f,2.0f,0.0f });
-    cube2.SetPos({ 0.0f,6.0f,0.0f });
     cube.LinkTechniques(rg);
-    cube2.LinkTechniques(rg);
 	pointLight.LinkTechniques(rg);
 
     RegisterDefaultAllocator();
@@ -356,7 +354,6 @@ void App::DoFrame(float dt)
     line.Submit(fc);*/ // for idle
     // --- Bind Lights ---
     cube.Submit();
-	cube2.Submit();
     pointLight.Bind(wnd.Gfx(), viewMatrix); // Bind point light (to slot 0)
 
     FrustumCalculating(); // Draw with FRUSTUM CULLING
@@ -516,11 +513,10 @@ void App::ShowControlWindows()
     //DrawBoxColliders(wnd.Gfx()); // Call the updated function
 	//DrawCapsuleColliders(wnd.Gfx());
     //ForEnemyWalking();
-    cube.SpawnControlWindow(wnd.Gfx(), "Cube 1");
-	cube2.SpawnControlWindow(wnd.Gfx(), "Cube 2");
+    //cube.SpawnControlWindow(wnd.Gfx(), "Cube 1");
     pointLight.Submit();
 
-    pointLight.SpawnControlWindow(); // Control for Point Light
+    //pointLight.SpawnControlWindow(); // Control for Point Light
     if (showDemoWindow)
     {
         ImGui::ShowDemoWindow(&showDemoWindow);
