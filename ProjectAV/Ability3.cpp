@@ -1,4 +1,4 @@
-#include "Ability2.h"
+#include "Ability3.h"
 #include "Node.h"       // Include Node to call SetLocalPosition/Rotation
 #include "Window.h"     // Included via header, but good practice
 #include "CMath.h"      // For wrap_angle and PI (ensure this is included)
@@ -10,33 +10,44 @@
 #include "BoundingSphere.h"
 
 namespace dx = DirectX;
-Ability2::Ability2(Node* owner, Window& window, Node* camera)
+Ability3::Ability3(Node* owner, Window& window, Node* camera)
     : Component(owner), wnd(window), camera(camera)  // Initialize reference member
 {
 
 }
 
 
-void Ability2::Update(float dt)
+void Ability3::Update(float dt)
 {
     if (!wnd.CursorEnabled())
     {
-        Positioning();
+        if (timer > 0.0f)
+        {
+            Activated();
+            timer -= dt;
+            if (timer <= 0.0f)
+            {
+                timer = 0.0f;
+            }
+
+        }
+        else {
+            Positioning();
+        }
         Cooldowns(dt);
-        //KeyboardInput();
     }
 }
-void Ability2::Positioning()
+void Ability3::Positioning()
 {
-	Vec3 position = Vec3(camera->GetWorldPosition().x, camera->GetWorldPosition().y, camera->GetWorldPosition().z);
-	Vec3 direction = Vec3(camera->Forward().x, camera->Forward().y, camera->Forward().z);
+    Vec3 position = Vec3(camera->GetWorldPosition().x, camera->GetWorldPosition().y, camera->GetWorldPosition().z);
+    Vec3 direction = Vec3(camera->Forward().x, camera->Forward().y, camera->Forward().z);
     RRayCast ray = RRayCast(position, direction * 100.0f);
     RayCastResult result;
-    if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(ray, result, 
-        IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::PLAYER, BroadPhaseLayers::TRIGGER}), 
-        IgnoreMultipleObjectLayerFilter({ Layers::PLAYER, Layers::TRIGGER})))
+    if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(ray, result,
+        IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::PLAYER, BroadPhaseLayers::TRIGGER }),
+        IgnoreMultipleObjectLayerFilter({ Layers::PLAYER, Layers::TRIGGER })))
     {
-        if (PhysicsCommon::physicsSystem->GetBodyInterface().GetObjectLayer(result.mBodyID) != Layers::GROUND) 
+        if (PhysicsCommon::physicsSystem->GetBodyInterface().GetObjectLayer(result.mBodyID) != Layers::GROUND)
         {
             Node* body = reinterpret_cast<Node*>(PhysicsCommon::physicsSystem->GetBodyInterface().GetUserData(result.mBodyID));
             RRayCast ray2 = RRayCast(Vec3(body->GetWorldPosition().x, body->GetWorldPosition().y, body->GetWorldPosition().z), Vec3(0.0f, -100.0f, 0.0f));
@@ -47,37 +58,49 @@ void Ability2::Positioning()
                 pOwner->SetLocalPosition(DirectX::XMFLOAT3(position.GetX(), position.GetY(), position.GetZ()));
             }
         }
-        else 
+        else
         {
             position = ray.mOrigin + ray.mDirection * result.mFraction;
             pOwner->SetLocalPosition(DirectX::XMFLOAT3(position.GetX(), position.GetY(), position.GetZ()));
         }
     }
 }
-void Ability2::Active()
+void Ability3::Active()
 {
     if (!abilityReady) return;
-    for (int i = 0; i < objects.size(); i++)
-    {
-        if (objects[i]->tag == "ENEMY")
-        {
-            PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), Vec3(0.0f, 0.0f, 0.0f));
-            Vec3 direction = Vec3(0.0f, 1.0f, 0.0f);
-            PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), direction * force);
-            OutputDebugStringA(("Ability2 hit: " + objects[i]->GetName() + "\n").c_str());
-        }
-        else if (objects[i]->tag == "STONE")
-        {
-            Vec3 direction = Vec3(0.0f, 1.0f, 0.0f);
-            PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), direction * 230.0f);
-            OutputDebugStringA(("Ability2 hit: " + objects[i]->GetName() + "\n").c_str());
-		}
-    }
+    timer = duration;
     cooldownTimer = cooldown;
     abilityReady = false;
 }
+void Ability3::Activated()
+{
+    for (int i = 0; i < objects.size(); i++)
+    {
+        if (objects[i]->tag == "ENEMY" || objects[i]->tag == "STONE")
+        {
+            Vector3 objPos = objects[i]->GetWorldPosition();
+            Vector3 aPos = pOwner->GetWorldPosition();
+            Vector3 direction = aPos - objPos;
 
-void Ability2::Cooldowns(float dt)
+            float distance = direction.Length();
+            float maxDistance = 40.0f; // Set this to your desired max effect range
+            float minForce = 50.0f;    // Minimum force when farthest
+            float maxForce = force;    // Maximum force when closest
+
+            distance = std::clamp(distance, 0.1f, maxDistance);
+
+            float scaledForce = maxForce * (1.0f - (distance / maxDistance));
+            scaledForce = std::max(scaledForce, minForce);
+            direction.Normalize(); // Ensure direction is a unit vector
+
+            PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), Vec3(0.0f, 0.0f, 0.0f));
+            PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), Vec3(direction.x, direction.y, direction.z) * scaledForce);
+            OutputDebugStringA(("Ability3 hit: " + objects[i]->GetName() + "\n").c_str());
+        }
+    }
+}
+
+void Ability3::Cooldowns(float dt)
 {
     if (cooldownTimer > 0.0f)
     {
@@ -91,7 +114,22 @@ void Ability2::Cooldowns(float dt)
 }
 
 
-void Ability2::OnTriggerEnter(Node* object) {
+void Ability3::KeyboardInput()
+{
+    while (const auto e = wnd.mouse.Read()) // Read events from the queue
+    {
+        switch (e->GetType())
+        {
+        case Mouse::Event::Type::RPress:
+            OutputDebugStringA("\n\n\nRight Mouse Button Pressed\n");
+            Active();
+            break;
+        }
+    }
+}
+
+
+void Ability3::OnTriggerEnter(Node* object) {
     if (object->tag != "ENEMY" && object->tag != "STONE") return;
     if (object->GetComponent<Rigidbody>() == nullptr) return;
     for (int i = 0; i < objects.size(); i++)
@@ -101,7 +139,7 @@ void Ability2::OnTriggerEnter(Node* object) {
     objects.push_back(object);
     OutputDebugStringA(("Ability2 OnTriggerEnter: " + object->GetName() + "\n").c_str());
 }
-void Ability2::OnTriggerExit(Node* object) {
+void Ability3::OnTriggerExit(Node* object) {
     if (object->tag != "ENEMY" && object->tag != "STONE") return;
     if (object->GetComponent<Rigidbody>() == nullptr) return;
     auto it = std::remove(objects.begin(), objects.end(), object);
@@ -111,7 +149,7 @@ void Ability2::OnTriggerExit(Node* object) {
     OutputDebugStringA(("Ability2 OnTriggerExit: " + object->GetName() + "\n").c_str());
 }
 
-void Ability2::DrawImGuiControls()
+void Ability3::DrawImGuiControls()
 {
 
     ImGui::InputFloat("Force", &force);

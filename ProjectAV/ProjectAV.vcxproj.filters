@@ -384,6 +384,9 @@
     <ClCompile Include="Island.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
+    <ClCompile Include="Ability3.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowsMessageMap.h">
@@ -777,6 +780,9 @@
       <Filter>Header Files\Components</Filter>
     </ClInclude>
     <ClInclude Include="Island.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Ability3.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
   </ItemGroup>

@@ -78,6 +78,8 @@ App::App(const std::string& commandLine)
 	pAbility1 = pAbility1Owner.get();
 	auto pAbility2Owner = std::make_unique<Node>("Ability2", nullptr, "TRIGGER");
 	pAbility2 = pAbility2Owner.get();
+	auto pAbility3Owner = std::make_unique<Node>("Ability3", nullptr, "TRIGGER");
+	pAbility3 = pAbility3Owner.get();
     auto pPrefabsOwner = std::make_unique<Node>("Prefabs", nullptr, "PREFABS");
     pPrefabs = pPrefabsOwner.get();
 
@@ -89,6 +91,7 @@ App::App(const std::string& commandLine)
     pSceneRoot->AddChild(std::move(pPlayerOwner));
     pSceneRoot->AddChild(std::move(pAbility1Owner));
     pSceneRoot->AddChild(std::move(pAbility2Owner));
+	pSceneRoot->AddChild(std::move(pAbility3Owner));
 	pSceneRoot->AddChild(std::move(pPrefabsOwner));
 
 	PrefabManager::root = pPrefabs;
@@ -136,6 +139,18 @@ App::App(const std::string& commandLine)
     );
     pPlayer->GetComponent<PlayerController>()->ability2 = pAbility2;
 
+
+    BodyCreationSettings a3odySettings(new JPH::SphereShape(40.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
+    pAbility3->AddComponent(
+        std::make_unique<Trigger>(pAbility3, a3odySettings, false)
+    );
+    pAbility3->AddComponent(
+        std::make_unique<Ability3>(pAbility3, wnd, pCamera)
+    );
+    pAbility3->AddComponent(
+        std::make_unique<ModelComponent>(pAbility3, wnd.Gfx(), "Models\\box.glb")
+    );
+    pPlayer->GetComponent<PlayerController>()->ability3 = pAbility3;
 
 
     //Adding Other Components

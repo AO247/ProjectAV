@@ -172,6 +172,7 @@
     <ClCompile Include="AABB.cpp" />
     <ClCompile Include="Ability1.cpp" />
     <ClCompile Include="Ability2.cpp" />
+    <ClCompile Include="Ability3.cpp" />
     <ClCompile Include="AIController.cpp" />
     <ClCompile Include="App.cpp" />
     <ClCompile Include="AttackState.cpp" />
@@ -226,6 +227,7 @@
     <ClCompile Include="MyContactListener.cpp" />
     <ClInclude Include="Ability1.h" />
     <ClInclude Include="Ability2.h" />
+    <ClInclude Include="Ability3.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="Global.h" />
     <ClInclude Include="MyContactListener.h" />

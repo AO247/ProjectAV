@@ -31,6 +31,7 @@ public:
 	bool alive = true;
 	Node* ability1;
 	Node* ability2;
+	Node* ability3;
 private:
 	Window& wnd;
 	Rigidbody* rigidbody;

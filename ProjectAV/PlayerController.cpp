@@ -228,6 +228,12 @@ void PlayerController::KeyboardInput()
         }
     }
 
+    if (wnd.kbd.KeyIsPressed('Q'))
+    {
+        ability3->GetComponent<Ability3>()->Active();
+	}
+
+
     moveDirection = Vector3(0.0f, 0.0f, 0.0f);
     if (wnd.kbd.KeyIsPressed(VK_SPACE))
     {

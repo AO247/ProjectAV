@@ -70,6 +70,7 @@ private:
     Node* pPlayer = nullptr; // Node representing the player capsule/origin
 	Node* pAbility1 = nullptr; // Node for the first ability
 	Node* pAbility2 = nullptr; // Node for the second ability
+	Node* pAbility3 = nullptr; // Node for the third ability
 	Node* pSelectedSceneNode = nullptr; // Node representing the selected scene node
 	Node* pSoundEffectsPlayer = nullptr; // Node for the sound effects player
     Node* pPrefabs = nullptr;

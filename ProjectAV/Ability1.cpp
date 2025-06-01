@@ -59,20 +59,6 @@ void Ability1::Cooldowns(float dt)
 
 }
 
-
-void Ability1::KeyboardInput()
-{
-    while (const auto e = wnd.mouse.Read()) // Read events from the queue
-    {
-        switch (e->GetType())
-        {
-        case Mouse::Event::Type::LPress:
-            OutputDebugStringA("\n\n\nLeft Mouse Button Pressed\n");
-            Active();
-            break;
-        }
-    }
-}
 void Ability1::OnTriggerEnter(Node* object) {
     if (object->tag != "ENEMY" && object->tag != "STONE") return;
     if (object->GetComponent<Rigidbody>() == nullptr) return;
