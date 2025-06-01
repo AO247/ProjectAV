@@ -23,14 +23,20 @@ public:
 	float avoidanceDistance = 15.0f;
 	float raycastWidthOffset = 0.8f;
 	float height = 8.0f;
+
+	float jumpForce = 1000.0f;
+	float jumpRange = 40.0f;
+
 	bool grounded = false;
 	bool voidNear = false;
+	float jumpTimer = 0.0f;
 private:
 	Rigidbody* rigidbody;
 
 	Vector3 CalculateAvoidanceForce();
 	void GroundCheck();
 	bool VoidCheck();
+	bool Jump();
 	bool rightHit, leftHit, moreLeft, moreRight;
 	float maxAllowedAngle = DirectX::XMConvertToRadians(120.0f);
 };

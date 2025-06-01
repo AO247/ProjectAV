@@ -19,6 +19,10 @@ void Walking::Follow(DirectX::XMFLOAT3 targetPos, float sp)
 	if (!rigidbody) {
 		return;
 	}
+	if (jumpTimer > 0.0f)
+	{
+		jumpTimer -= 0.05;
+	}
 	targetPosition = targetPos;
 	GroundCheck();
 	if (VoidCheck() && grounded)
@@ -28,7 +32,10 @@ void Walking::Follow(DirectX::XMFLOAT3 targetPos, float sp)
 			Vector3 facingDirection = Vector3(targetPosition)
 				- Vector3(pOwner->GetWorldPosition());
 			facingDirection.Normalize();
-			
+		if (Jump())
+		{
+			return;
+		}
 		if (sp > 1.0f)
 		{
 			facingDirection -= facingDirection;
@@ -219,7 +226,6 @@ Vector3 Walking::CalculateAvoidanceForce()
 bool Walking::VoidCheck() 
 {
 	bool flag = true;
-	Vector3 avoidanceForce(0.0f, 0.0f, 0.0f);
 	Vector3 temporaryDirection = targetPosition - pOwner->GetWorldPosition();
 	temporaryDirection.Normalize();
 
@@ -243,6 +249,37 @@ bool Walking::VoidCheck()
 	return flag;
 }
 
+bool Walking::Jump()
+{
+	if (jumpTimer > 0.0f) return false;
+	Vector3 temporaryDirection = targetPosition - pOwner->GetWorldPosition();
+	temporaryDirection.y = 0.0f;
+	temporaryDirection.Normalize();
+
+	Vector3 jumpDirection = temporaryDirection + Vector3(0.0f, 0.8f, 0.0f);
+	jumpDirection.Normalize();
+
+	float radius = 1.0f;
+
+	Vector3 pos = pOwner->GetWorldPosition();
+
+	Vector3 centerOrigin = pos + temporaryDirection * jumpRange;
+
+	RRayCast rayLeft = RRayCast(
+		RVec3(centerOrigin.x, centerOrigin.y, centerOrigin.z),
+		RVec3(0.0f, -50.0f, 0.0f)
+	);
+	RayCastResult resultLeft;
+	if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(rayLeft, resultLeft, SpecifiedBroadPhaseLayerFilter(BroadPhaseLayers::GROUND), SpecifiedObjectLayerFilter(Layers::GROUND)))
+	{
+		PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rigidbody->GetBodyID(), Vec3(0.0f, 0.0f, 0.0f));
+		PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(rigidbody->GetBodyID(), Vec3(jumpDirection.x, jumpDirection.y, jumpDirection.z) * jumpForce);
+		jumpTimer = 3.0f;
+		return true;
+	}
+	return false;
+}
+
 
 void Walking::DrawImGuiControls()
 {
@@ -252,6 +289,8 @@ void Walking::DrawImGuiControls()
 	ImGui::InputFloat("Max Speed", &maxSpeed);
 	ImGui::InputFloat("Avoidance Weight", &avoidanceWeight);
 	ImGui::InputFloat("Avoidance Distance", &avoidanceDistance);
+	ImGui::InputFloat("Jump Range", &jumpRange);
+	ImGui::InputFloat("Jump Force", &jumpForce);
 	ImGui::Checkbox("Grounded", &grounded);
 	ImGui::Checkbox("Lefy Hit", &leftHit);
 	ImGui::Checkbox("Right Hit", &rightHit);
@@ -259,6 +298,7 @@ void Walking::DrawImGuiControls()
 	ImGui::Checkbox("More Right", &moreRight);
 	ImGui::InputFloat("Velocity", &vel);
 	ImGui::Checkbox("Void", &voidNear);
+
 
 
 }
