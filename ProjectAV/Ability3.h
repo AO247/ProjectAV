@@ -22,11 +22,15 @@ public:
 	void OnTriggerExit(Node* other) override;
 	void Active();
 	void Activated();
-	float cooldown = 1.5f; // Cooldown for ability 1
-	float force = 800.0f;
-	float duration = 1.0f;
 	float timer = 0.0f;
-	bool abilityReady = true; // Is the ability ready to be used?
+	
+	float cooldown = 1.5f;
+	float duration = 1.0f;
+	float maxDistance = 40.0f;
+	float minForce = 50.0f;
+	float maxForce = 800.0f;
+
+	bool abilityReady = true;
 private:
 	Window& wnd;
 	Node* camera = nullptr;

@@ -80,12 +80,11 @@ void Ability3::Activated()
         {
             Vector3 objPos = objects[i]->GetWorldPosition();
             Vector3 aPos = pOwner->GetWorldPosition();
+			aPos.y += 1.0f; // Adjust the height of the ability effect
             Vector3 direction = aPos - objPos;
 
             float distance = direction.Length();
-            float maxDistance = 40.0f; // Set this to your desired max effect range
-            float minForce = 50.0f;    // Minimum force when farthest
-            float maxForce = force;    // Maximum force when closest
+           
 
             distance = std::clamp(distance, 0.1f, maxDistance);
 
@@ -151,8 +150,10 @@ void Ability3::OnTriggerExit(Node* object) {
 
 void Ability3::DrawImGuiControls()
 {
-
-    ImGui::InputFloat("Force", &force);
     ImGui::InputFloat("Cooldown", &cooldown);
+	ImGui::InputFloat("Duration", &duration);
+    ImGui::InputFloat("Max Force", &maxForce);
+    ImGui::InputFloat("Min Force", &minForce);
+    ImGui::InputFloat("Max Distance", &maxDistance);
 
 }

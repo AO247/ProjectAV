@@ -7,7 +7,6 @@ LevelGenerator::LevelGenerator(Node* owner, Node* pPlayer, bool rot)
     : Component(owner), pPlayer(pPlayer), spawnNeedRotation(rot)
 {
 
-    std::srand(static_cast<unsigned>(std::time(nullptr)));
 
     points.push_back(Vector4(pOwner->GetWorldPosition().x, pOwner->GetWorldPosition().y, pOwner->GetWorldPosition().z, 0.0f));
 
@@ -87,13 +86,13 @@ void LevelGenerator::GenerateIslands()
                     int randSmall = rand() % 2;
                     if (randSmall == 0) {
                         //islandPrefab = prefabManager->InstantiateIslandSmall1(pOwner, 0.0f, 0.0f, 0.0f, 1.5f);
-                        islandPrefab = PrefabManager::InstantiateIslandBig1(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
+                        islandPrefab = PrefabManager::InstantiateIslandSmall2(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
 
 
                     }
                     else {
                         //islandPrefab = prefabManager->InstantiateIslandSmall2(pOwner, 0.0f, 0.0f, 0.0f, 1.5f);
-                        islandPrefab = PrefabManager::InstantiateIslandBig1(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
+                        islandPrefab = PrefabManager::InstantiateIslandSmall2(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
 
                     }
                     smallIslandCount--;
@@ -110,8 +109,12 @@ void LevelGenerator::GenerateIslands()
         }
         Vector3 p = islandPrefab->GetWorldPosition();
         island = islandPrefab->GetComponent<Island>();
-        if (islands.size() != 0)  island->Rotate();
-        counterToRotate = 0;
+        if (randIsland != 0)
+        {
+            if (islands.size() != 0)  island->Rotate();
+            counterToRotate = 0;
+        }
+
 
     }
     /*if (counterToRotate == 3) {
@@ -341,7 +344,7 @@ void LevelGenerator::SpawnEnemies()
     if (pos != Vector3(0.0f, 0.0f, 0.0f))
     {
         int randEnemy = rand() % 3; // 0 - hard, 1 - medium, 2 - easy
-        randEnemy = 0;
+        //randEnemy = 0;
 
         if (randEnemy == 0 && numberOfHardEnemies > 0)
         {
@@ -349,8 +352,7 @@ void LevelGenerator::SpawnEnemies()
 
             if (randEnemy == 0)
             {
-                //PrefabManager::InstantiateShootingEnemy(pOwner, pos.x, pos.y, pos.z, 1.6f, pPlayer);
-                enemy = PrefabManager::InstantiateShootingEnemy(pOwner, 0.0f, 0.0f, 0.0f, 1.6f, pPlayer);
+                enemy = PrefabManager::InstantiateFlyingEnemy(pOwner, 0.0f, 0.0f, 0.0f, 1.6f, pPlayer);
                 enemy->SetWorldPosition(pos);
             }
 
@@ -363,7 +365,8 @@ void LevelGenerator::SpawnEnemies()
 
             if (randEnemy == 0)
             {
-                //PrefabManager::InstantiateShootingEnemy(pOwner, pos.x, pos.y, pos.z, 1.6f, pPlayer);
+                enemy = PrefabManager::InstantiateShootingEnemy(pOwner, 0.0f, 0.0f, 0.0f, 1.6f, pPlayer);
+                enemy->SetWorldPosition(pos);
             }
 
 
@@ -375,7 +378,8 @@ void LevelGenerator::SpawnEnemies()
 
             if (randEnemy == 0)
             {
-                //PrefabManager::InstantiateShootingEnemy(pOwner, pos.x, pos.y, pos.z, 1.6f, pPlayer);
+                enemy = PrefabManager::InstantiateNormalEnemy(pOwner, 0.0f, 0.0f, 0.0f, 1.6f, pPlayer);
+                enemy->SetWorldPosition(pos);
             }
 
 
