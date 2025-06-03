@@ -19,6 +19,7 @@
 #include "PhysicsCommon.h"
 #include "TestCube.h"
 #include "Global.h"
+#include "Sprite.h"
 
 // Forward declarations
 class PlayerController; // Forward declare
@@ -97,4 +98,12 @@ private:
     bool cursorEnabled = false;
     bool showControlWindow = false;
 	bool freeViewCamera = false;
+
+
+    //===========UI===========
+
+    std::unique_ptr<Sprite> targetSprite;
+    std::unique_ptr<Sprite> heart1Sprite;
+    std::unique_ptr<Sprite> heart2Sprite;
+    std::unique_ptr<Sprite> heart3Sprite;
 };

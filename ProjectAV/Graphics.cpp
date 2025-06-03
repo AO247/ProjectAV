@@ -302,3 +302,9 @@ std::string Graphics::InfoException::GetErrorInfo() const noexcept
 {
 	return info;
 }
+
+
+ID3D11Device* Graphics::GetDevice() const noexcept
+{
+	return pDevice.Get();
+}

@@ -77,6 +77,14 @@ public:
 	bool IsImguiEnabled() const noexcept;
 	UINT GetWidth() const noexcept;
 	UINT GetHeight() const noexcept;
+
+	ID3D11Device* GetDevice() const noexcept;
+	ID3D11DeviceContext* GetContext() const noexcept
+	{
+		return pContext.Get();
+	}
+
+
 private:
 	UINT width;
 	UINT height;

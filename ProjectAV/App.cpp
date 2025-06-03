@@ -203,6 +203,49 @@ App::App(const std::string& commandLine)
     //LevelGenerator levelGenerator(prefabManager, pSceneRoot.get(), pPlayer);
 
 
+    const int screenWidth = 1280;
+    const int screenHeight = 720;
+    const int plusSpriteWidth = 32;
+    const int plusSpriteHeight = 32;
+    const int plusSpriteX = (screenWidth / 2) - (plusSpriteWidth / 2);
+    const int plusSpriteY = (screenHeight / 2) - (plusSpriteHeight / 2);
+
+    targetSprite = std::make_unique<Sprite>(
+        wnd.Gfx().GetDevice(),       
+        plusSpriteX,                // int x (center X)
+        plusSpriteY,                // int y (center Y)
+        plusSpriteWidth,            // int width
+        plusSpriteHeight,           // int height
+        L"Images\\plus.png"       
+    );
+
+    heart1Sprite = std::make_unique<Sprite>(
+        wnd.Gfx().GetDevice(),      
+        20,                // int x  
+        20,                // int y  
+        50,            // int width
+        50,           // int height
+        L"Images\\heart.png"         
+    );
+
+    heart2Sprite = std::make_unique<Sprite>(
+        wnd.Gfx().GetDevice(),      
+        80,                // int x  
+        20,                // int y (center Y)
+        50,            // int width
+        50,           // int height
+        L"Images\\heart.png"         
+    );
+
+    heart3Sprite = std::make_unique<Sprite>(
+        wnd.Gfx().GetDevice(),      // ID3D11Device*
+        140,                // int x (center X)
+        20,                // int y (center Y)
+        50,            // int width
+        50,           // int height
+        L"Images\\heart.png"       
+    );
+
     wnd.DisableCursor();
     wnd.mouse.EnableRaw();
     cursorEnabled = false;
@@ -404,7 +447,30 @@ void App::DoFrame(float dt)
         ShowControlWindows();
     }
 
+
+
     fc.Execute(wnd.Gfx());
+
+    
+
+    if (targetSprite ) { 
+        targetSprite->Draw(wnd.Gfx().GetContext());
+    }
+
+    if (pPlayer->GetComponent<Health>()->currentHealth == 3.0f) {
+        heart1Sprite->Draw(wnd.Gfx().GetContext());
+        heart2Sprite->Draw(wnd.Gfx().GetContext());
+        heart3Sprite->Draw(wnd.Gfx().GetContext());
+    }
+    if (pPlayer->GetComponent<Health>()->currentHealth == 2.0f) {
+        heart1Sprite->Draw(wnd.Gfx().GetContext());
+        heart2Sprite->Draw(wnd.Gfx().GetContext());
+    }
+    if (pPlayer->GetComponent<Health>()->currentHealth == 1.0f) {
+        heart1Sprite->Draw(wnd.Gfx().GetContext());
+    }
+
+
     wnd.Gfx().EndFrame();
     fc.Reset();
 }
