@@ -214,34 +214,49 @@ App::~App()
 
 int App::Go()
 {
-    const float FIXED_TIME_STEP = 1.0f / 60.0f;
+    const float FIXED_TIME_STEP = 1.0f / 120.0f;
     float lag = 0.0f;
+
     while (true)
     {
+        // 1) Obsługa wiadomości systemowych (window, input, itp.)
         if (const auto ecode = Window::ProcessMessages())
-        {
             return *ecode;
-        }
-        const auto dt = timer.Mark() * speed_factor;
+
+        // 2) Zmierz upłynięcie czasu
+        const float dt = timer.Mark() * speed_factor;
         lag += dt;
-        do
+
+        // 2a) Zapobiegnij "spirali śmierci", jeśli lag gwałtownie urośnie
+        constexpr float MAX_LAG = 0.5f; // np. pół sekundy
+        if (lag > MAX_LAG)
+            lag = MAX_LAG;
+
+        // 2b) Pętlą rozbijamy akumulowany czas na równe kroki
+        while (lag >= FIXED_TIME_STEP)
         {
-            if (lag < FIXED_TIME_STEP)
-            {
-                physicsSystem->Update(lag, 1, temp_allocator, job_system);
-                lag -= dt;
-                break;
-            }
             physicsSystem->Update(FIXED_TIME_STEP, 1, temp_allocator, job_system);
             lag -= FIXED_TIME_STEP;
-        } while (lag >= FIXED_TIME_STEP);
-        //physicsSystem->Update(lag, 1, temp_allocator, job_system);
-        dynamic_cast<MyContactListener*>(physicsSystem->GetContactListener())->ExecuteTriggerActivationQueue();
-        dynamic_cast<MyContactListener*>(physicsSystem->GetContactListener())->ExecuteCollisionActivationQueue();
-        //dynamicsWorld->stepSimulation(dt, 10);
+
+        }
+
+        // 2c) Oblicz "resztę" (alpha) do ewentualnej interpolacji
+        const float alpha = lag / FIXED_TIME_STEP;
+
+        // 3) Wypchnij aktywacje triggerów i kolizji
+        auto* contact = dynamic_cast<MyContactListener*>(physicsSystem->GetContactListener());
+        contact->ExecuteTriggerActivationQueue();
+        contact->ExecuteCollisionActivationQueue();
+
+        // 4) Wejście od użytkownika
         HandleInput(dt);
-        DoFrame(dt);
-        //lag = 0.0f;
+
+        pSceneRoot->Update(dt);
+        CleanupDestroyedNodes(pSceneRoot.get());
+
+        DoFrame(alpha);
+
+        // 6) Pętla wraca na początek po kolejnym dt
     }
 }
 
@@ -333,8 +348,7 @@ void App::HandleInput(float dt)
 
 void App::DoFrame(float dt)
 {
-    pSceneRoot->Update(dt);
-    CleanupDestroyedNodes(pSceneRoot.get());
+
 
     wnd.Gfx().BeginFrame(0.5f, 0.5f, 1.0f);
     //ImGui_ImplDX11_NewFrame();
@@ -544,6 +558,8 @@ void App::ShowControlWindows()
     // --- NEW: Scene Hierarchy Window ---
     if (ImGui::Begin("Scene Hierarchy"))
     {
+        ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
+
         if (pSceneRoot)
         {
             pSceneRoot->ShowNodeTree(pSelectedSceneNode);
