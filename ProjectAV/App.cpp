@@ -82,6 +82,8 @@ App::App(const std::string& commandLine)
 	pAbility3 = pAbility3Owner.get();
     auto pPrefabsOwner = std::make_unique<Node>("Prefabs", nullptr, "PREFABS");
     pPrefabs = pPrefabsOwner.get();
+	auto pHandsOwner = std::make_unique<Node>("Hands", nullptr, "HANDS");
+	pHands = pHandsOwner.get();
 
 	
 
@@ -93,6 +95,7 @@ App::App(const std::string& commandLine)
     pSceneRoot->AddChild(std::move(pAbility2Owner));
 	pSceneRoot->AddChild(std::move(pAbility3Owner));
 	pSceneRoot->AddChild(std::move(pPrefabsOwner));
+	pCamera->AddChild(std::move(pHandsOwner));
 
 	PrefabManager::root = pPrefabs;
 
@@ -184,6 +187,11 @@ App::App(const std::string& commandLine)
         std::make_unique<Global>(pSceneRoot.get(), wnd, pPlayer)
     );
     
+    pHands->AddComponent(
+        std::make_unique<ModelComponent>(pHands, wnd.Gfx(), "Models\\objects\\hands.obj")
+	);
+	pHands->SetLocalScale({ 0.1f, 0.1f, 0.1f });
+    pHands->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
 	//pEnemy->AddComponent(
 	//	std::make_unique<SoundEffectsPlayer>(pEnemy)
 	//);
@@ -348,6 +356,7 @@ void App::DoFrame(float dt)
     CleanupDestroyedNodes(pSceneRoot.get());
 
     wnd.Gfx().BeginFrame(0.5f, 0.5f, 1.0f);
+	pointLight.cbData.pos = { pPlayer->GetWorldPosition().x, pPlayer->GetWorldPosition().y + 12.0f, pPlayer->GetWorldPosition().z };
     //if (pPlayer->GetLocalPosition().y < -10.0f) {
     //	pPlayer->SetLocalPosition({ -20.0f, 225.0f, -25.0f });
     //    pEnemy->SetLocalPosition({ 15.0f, 225.0f, 0.0f });

@@ -74,6 +74,7 @@ private:
 	Node* pSelectedSceneNode = nullptr; // Node representing the selected scene node
 	Node* pSoundEffectsPlayer = nullptr; // Node for the sound effects player
     Node* pPrefabs = nullptr;
+	Node* pHands = nullptr;
 
     // --- UI State ---
     
