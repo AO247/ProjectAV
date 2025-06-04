@@ -444,7 +444,6 @@ public:
         InstantiateColumn(pNewNode, 20.0f, 0.0f, -20.0f, 4.0f);
         InstantiateColumn(pNewNode, -20.0f, 0.0f, 20.0f, 4.0f);
         InstantiateColumn(pNewNode, -20.0f, 0.0f, -20.0f, 4.0f);
-        InstantiateNewColumn(pNewNode, 5.0f, 0.0f, 5.0f, 1.0f);
 
 
 
