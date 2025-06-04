@@ -62,6 +62,111 @@ public:
 
         return pNewNode;
     }
+    static Node* InstantiateTopColumn(Node* parentNode, float locX, float locY, float locZ, float scale)
+    {
+        auto pNewNodeOwner = std::make_unique<Node>("Top", nullptr, "STONE");
+
+        pNewNodeOwner->AddComponent(
+            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\objects\\kolumna_1_top.obj")
+        );
+        BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(2.0f, 1.0f, 2.0f)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Kinematic, Layers::WALL);
+        BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
+
+        BodySettings.mMassPropertiesOverride.mMass = 10.0f;
+        BodySettings.mFriction = 0.5f;
+        BodySettings.mMotionQuality = EMotionQuality::LinearCast;
+        pNewNodeOwner->AddComponent(
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), BodySettings)
+        );
+        pNewNodeOwner->AddComponent(
+            std::make_unique<BrokenPart>(pNewNodeOwner.get())
+        );
+        pNewNodeOwner->AddComponent(
+            std::make_unique<Throwable>(pNewNodeOwner.get())
+        );
+
+        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+
+        Node* pNewNode = pNewNodeOwner.get();
+        parentNode->AddChild(std::move(pNewNodeOwner));
+
+        return pNewNode;
+    }
+    static Node* InstantiateMiddleColumn(Node* parentNode, float locX, float locY, float locZ, float scale)
+    {
+        auto pNewNodeOwner = std::make_unique<Node>("Middle", nullptr, "STONE");
+
+        pNewNodeOwner->AddComponent(
+            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\objects\\kolumna_1_srodek.obj")
+        );
+        BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(2.0f, 6.7f, 2.0f)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+        BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
+
+        BodySettings.mMassPropertiesOverride.mMass = 20.0f;
+        BodySettings.mFriction = 0.5f;
+        BodySettings.mMotionQuality = EMotionQuality::LinearCast;
+        pNewNodeOwner->AddComponent(
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), BodySettings)
+        );
+        pNewNodeOwner->AddComponent(
+            std::make_unique<Throwable>(pNewNodeOwner.get())
+        );
+
+        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+
+        Node* pNewNode = pNewNodeOwner.get();
+        parentNode->AddChild(std::move(pNewNodeOwner));
+
+        return pNewNode;
+    }
+    static Node* InstantiateBaseColumn(Node* parentNode, float locX, float locY, float locZ, float scale)
+    {
+        auto pNewNodeOwner = std::make_unique<Node>("Base", nullptr, "WALL");
+
+        pNewNodeOwner->AddComponent(
+            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\objects\\kolumna_1_podstawa.obj")
+        );
+        ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList islandTriangles = PhysicsCommon::MakeTriangleList(islandModel->GetAllTriangles());
+        MeshShapeSettings islandMeshSettings(islandTriangles);
+        Shape::ShapeResult islandMeshCreationResult = islandMeshSettings.Create();
+        ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
+        ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
+        islandMeshShape = islandScaling.Create().Get();
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::WALL);
+        bodySettings.mFriction = 1.0f;
+        pNewNodeOwner->AddComponent(
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
+        );
+
+        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+
+        Node* pNewNode = pNewNodeOwner.get();
+        parentNode->AddChild(std::move(pNewNodeOwner));
+
+        return pNewNode;
+    }
+
+    static Node* InstantiateNewColumn(Node* parentNode, float locX, float locY, float locZ, float scale)
+    {
+        auto pNewNodeOwner = std::make_unique<Node>("New Column", nullptr, "WALL");
+        Node* pNewNode = pNewNodeOwner.get();
+
+        InstantiateBaseColumn(pNewNode, 0.0f, 2.0f, 0.0f, 1.0f);
+        Node* middle = InstantiateMiddleColumn(pNewNode, 0.0f, 12.6f, 0.0f, 1.0f);
+        InstantiateTopColumn(middle, 0.0f, 7.9f, 0.0f, 1.0f);
+
+
+        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+
+        parentNode->AddChild(std::move(pNewNodeOwner));
+
+        return pNewNode;
+    }
     static Node* InstantiateStone1(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
         auto pNewNodeOwner = std::make_unique<Node>("Stone", nullptr, "STONE");
@@ -339,6 +444,7 @@ public:
         InstantiateColumn(pNewNode, 20.0f, 0.0f, -20.0f, 4.0f);
         InstantiateColumn(pNewNode, -20.0f, 0.0f, 20.0f, 4.0f);
         InstantiateColumn(pNewNode, -20.0f, 0.0f, -20.0f, 4.0f);
+        InstantiateNewColumn(pNewNode, 5.0f, 0.0f, 5.0f, 1.0f);
 
 
 

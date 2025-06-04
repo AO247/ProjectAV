@@ -24,13 +24,16 @@ public:
 	float heightBounceWeight = 8.0f;
 
 	Vector3 targetPosition;
-	virtual void Follow(DirectX::XMFLOAT3 target, float sp = 1.0f);
+	virtual void Follow(float dt, DirectX::XMFLOAT3 target, float sp = 1.0f);
 	virtual void DrawImGuiControls() override;
 	float avoidanceWeight = 17.0f;
 	float avoidanceDistance = 8.0f;
 	float raycastDistance = 5.0f;
 	float raycastWidthOffset = 0.8f;
 
+	Vector3 lastIslandPos = { 0.0f, 0.0f, 0.0f };
+	bool grounded = false;
+	bool goingUp = false;
 private:
 	Rigidbody* rigidbody;
 	Vector3 HeightCalculate();

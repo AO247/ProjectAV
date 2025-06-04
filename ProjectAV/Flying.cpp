@@ -16,33 +16,19 @@ Flying::Flying(Node* owner, std::string tag)
 	PhysicsCommon::physicsSystem->GetBodyInterface().SetGravityFactor(rigidbody->GetBodyID(), 0.0f);
 	PhysicsCommon::physicsSystem->GetBodyInterface().SetFriction(rigidbody->GetBodyID(), 0.0f);
 }
-void Flying::Follow(DirectX::XMFLOAT3 targetPos, float sp)
+void Flying::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 {
 	if (!rigidbody) {
 		return;
 	}
 	targetPosition = targetPos;
-
 	if (sp > 1.0f)
 	{
-		if (VoidCheck())
+		if (VoidCheck() || !grounded)
 		{
-			PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rigidbody->GetBodyID(), Vec3Arg(0.0f, 0.0f, 0.0f));
-			float currentYaw = pOwner->GetLocalRotationEuler().y;
-			Vector3 facingDirection = Vector3(targetPosition)
-				- Vector3(pOwner->GetWorldPosition());
-			facingDirection.Normalize();
-
-			facingDirection -= facingDirection;
-			float targetYaw = atan2f(facingDirection.x, facingDirection.z);
-			float yawDifference = wrap_angle(targetYaw - currentYaw);
-			targetYaw = wrap_angle(currentYaw + yawDifference * rotationLerpFactor * 1.8f);
-			Quat q = Quat::sEulerAngles(Vec3(0.0f, targetYaw, 0.0f));
-			PhysicsCommon::physicsSystem->GetBodyInterface().SetRotation(rigidbody->GetBodyID(), q, EActivation::Activate);
-			PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(rigidbody->GetBodyID(), Vec3Arg(facingDirection.x, facingDirection.y, facingDirection.z) * maxSpeed * 100.0f);
-
-			return;
+			targetPosition = lastIslandPos;
 		}
+
 	}
 
 	Vector3 currentPos = pOwner->GetWorldPosition();
@@ -51,10 +37,10 @@ void Flying::Follow(DirectX::XMFLOAT3 targetPos, float sp)
 	Vector3 desiredDirection = targetPosition - currentPos;
 	desiredDirection.y = 0.0f;
 	desiredDirection.Normalize();
-	
+
 	Vector3 desiredVelocity = desiredDirection * maxSpeed / sp;
 
-	
+
 	Vector3 steeringForce = desiredVelocity - currentVelocity;
 
 	steeringForce = steeringForce + (CalculateAvoidanceForce());
@@ -63,9 +49,12 @@ void Flying::Follow(DirectX::XMFLOAT3 targetPos, float sp)
 	if (steeringMagnitude > maxSpeed) {
 		steeringForce = (steeringForce / steeringMagnitude) * maxSpeed;
 	}
-
-	steeringForce += HeightCalculate();
-	PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(steeringForce.x, steeringForce.y, steeringForce.z) * 15.0f);
+	if (!goingUp)
+	{
+		steeringForce += HeightCalculate();
+	}
+	               
+	PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(steeringForce.x, steeringForce.y, steeringForce.z) * 1500.0f * dt);
 
 	currentVelocityJPH = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
 	currentVelocity = { currentVelocityJPH.GetX(), currentVelocityJPH.GetY(), currentVelocityJPH.GetZ() };
@@ -111,6 +100,7 @@ Vector3 Flying::CalculateAvoidanceForce()
 	rightHit = false;
 	moreLeft = false;
 	moreRight = false;
+	goingUp = false;
 
 	Vector3 centerOrigin = pos + forward;
 	Vector3 leftOrigin = centerOrigin - right * radius;
@@ -127,6 +117,25 @@ Vector3 Flying::CalculateAvoidanceForce()
 	rightDir *= avoidanceDistance;
 
 	float targetDistance = Vector3(pos - targetPosition).Length();
+
+
+	RRayCast ray = RRayCast(
+		RVec3(centerOrigin.x, centerOrigin.y, centerOrigin.z),
+		RVec3(centerDir.x * 2.0f, centerDir.y * 2.0f, centerDir.z * 2.0f)
+	);
+	RayCastResult result;
+	if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(ray, result, SpecifiedBroadPhaseLayerFilter(BroadPhaseLayers::GROUND), SpecifiedObjectLayerFilter(Layers::GROUND)))
+	{
+		leftHit = true;
+		//float distance = Vector3(pos - hitLeft.hitPoint).Length();
+		//if(distance < targetDistance)
+		avoidanceForce = Vector3(0.0f, 1.0f, 0.0f) * avoidanceWeight;
+		goingUp = true;
+		return avoidanceForce;
+	}
+
+
+
 	RRayCast rayLeft = RRayCast(
 		RVec3(leftOrigin.x, leftOrigin.y, leftOrigin.z),
 		RVec3(centerDir.x, centerDir.y, centerDir.z)
@@ -188,7 +197,6 @@ Vector3 Flying::CalculateAvoidanceForce()
 
 Vector3 Flying::HeightCalculate()
 {
-	bool flag = true;
 	Vector3 force(0.0f, 0.0f, 0.0f);
 	Vector3 temporaryDirection = targetPosition - pOwner->GetWorldPosition();
 	temporaryDirection.Normalize();
@@ -207,8 +215,16 @@ Vector3 Flying::HeightCalculate()
 		Vec3 position = ray.mOrigin + ray.mDirection * result.mFraction;
 		pos.y = position.GetY() + flyingHeight;
 		force = pos - pOwner->GetWorldPosition();
-		flag = false;
+		Vec3 tymPos = PhysicsCommon::physicsSystem->GetBodyInterface().GetPosition(result.mBodyID);
+		lastIslandPos = { tymPos.GetX(), tymPos.GetY(), tymPos.GetZ() };
+		grounded = true;
 	}
+	else 
+	{
+		grounded = false;
+	}
+
+
 	force.x = 0.0f;
 	force.z = 0.0f;
 	force *= heightAdjustmentWeight;

@@ -43,6 +43,44 @@ Node* Node::GetParent() const { return parent; }
 const std::vector<std::unique_ptr<Node>>& Node::GetChildren() const { return children; }
 const std::string& Node::GetName() const { return name; }
 
+void Node::SetParent(Node* newParent)
+{
+    if (parent == newParent)
+        return;
+
+    // If we have a parent, transfer ownership of this node from the old parent to the new parent
+    if (parent)
+    {
+        auto& siblings = parent->GetChildren_NonConst();
+        auto it = std::find_if(siblings.begin(), siblings.end(),
+            [this](const std::unique_ptr<Node>& n) { return n.get() == this; });
+        if (it != siblings.end())
+        {
+            // Move the unique_ptr to the new parent's children
+            std::unique_ptr<Node> thisNode = std::move(*it);
+            siblings.erase(it);
+
+            if (newParent)
+            {
+                newParent->AddChild(std::move(thisNode));
+            }
+            // If newParent is nullptr, this node is now orphaned and will be deleted unless managed elsewhere
+        }
+    }
+    else if (newParent)
+    {
+        // If no current parent, just add to new parent
+        newParent->AddChild(std::unique_ptr<Node>(this));
+    }
+
+    parent = newParent;
+
+    // Mark transforms dirty
+    localTransformDirty = true;
+    worldTransformDirty = true;
+    transformationOutsidePhysicsTriggered = true;
+}
+
 Component* Node::AddComponent(std::unique_ptr<Component> pComponent) {
     assert(pComponent);
     components.push_back(std::move(pComponent));

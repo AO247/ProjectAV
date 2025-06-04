@@ -179,6 +179,7 @@
     <ClCompile Include="BasicAttack.cpp" />
     <ClCompile Include="Blender.cpp" />
     <ClCompile Include="BoundingSphere.cpp" />
+    <ClCompile Include="BrokenPart.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Camera.cpp" />
@@ -229,6 +230,7 @@
     <ClInclude Include="Ability1.h" />
     <ClInclude Include="Ability2.h" />
     <ClInclude Include="Ability3.h" />
+    <ClInclude Include="BrokenPart.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="Global.h" />

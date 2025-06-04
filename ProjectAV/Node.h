@@ -23,6 +23,7 @@ public:
     void AddChild(std::unique_ptr<Node> pChild);
     Node* GetChild(size_t index);
     Node* GetParent() const;
+    void SetParent(Node* newParent);
     const std::vector<std::unique_ptr<Node>>& GetChildren() const;
     std::vector<std::unique_ptr<Node>>& GetChildren_NonConst();
     const std::string& GetName() const;

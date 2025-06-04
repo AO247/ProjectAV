@@ -178,7 +178,7 @@ App::App(const std::string& commandLine)
 
     // Changing position scale etc.]
     pFreeViewCamera->SetLocalPosition({ 4.0f, 11.0f, -28.0f });
-    pPlayer->SetLocalPosition({ 0.0f, 50.0f, -24.0f });
+    pPlayer->SetLocalPosition({ 0.0f, 80.0f, -24.0f });
 
     //pEnemySoundEffectsPlayer->SetPosition(0.0f, 0.0f, 0.0f);
     soundDevice->SetLocation(pPlayer->GetLocalPosition().x, pPlayer->GetLocalPosition().y, pPlayer->GetLocalPosition().z);

@@ -17,7 +17,7 @@ public:
 	float maxSpeed = 60.0f;
 	float rotationLerpFactor = 0.15f;
 	Vector3 targetPosition;
-	virtual void Follow(DirectX::XMFLOAT3 target, float sp = 1.0f);
+	virtual void Follow(float dt, DirectX::XMFLOAT3 target, float sp = 1.0f);
 	virtual void DrawImGuiControls() override;
 	float avoidanceWeight = 30.0f;
 	float avoidanceDistance = 15.0f;
@@ -30,6 +30,8 @@ public:
 	bool grounded = false;
 	bool voidNear = false;
 	float jumpTimer = 0.0f;
+	Vector3 lastIslandPos = { 0.0f, 0.0f, 0.0f };
+
 private:
 	Rigidbody* rigidbody;
 

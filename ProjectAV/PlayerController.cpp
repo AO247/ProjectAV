@@ -28,7 +28,7 @@ void PlayerController::Update(float dt)
         Cooldowns(dt);
 		KeyboardInput();
 		SpeedControl();
-		MovePlayer();
+		MovePlayer(dt);
     }
 }
 
@@ -152,16 +152,16 @@ void PlayerController::GroundCheck()
     }
 }
 
-void PlayerController::MovePlayer()
+void PlayerController::MovePlayer(float dt)
 {
     moveDirection.Normalize();
     if (grounded)
     {
-        PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * moveSpeed * 100.0f);
+        PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * moveSpeed * 1000.0f * dt);
     }
     else
     {
-        PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * moveSpeed * 10.0f);
+        PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * moveSpeed * 100.0f * dt);
     }
 }
 

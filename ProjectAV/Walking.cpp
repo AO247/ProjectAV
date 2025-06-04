@@ -14,7 +14,7 @@ Walking::Walking(Node* owner, std::string tag)
 {
 	rigidbody = owner->GetComponent<Rigidbody>();
 }
-void Walking::Follow(DirectX::XMFLOAT3 targetPos, float sp)
+void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 {
 	if (!rigidbody) {
 		return;
@@ -27,35 +27,29 @@ void Walking::Follow(DirectX::XMFLOAT3 targetPos, float sp)
 	GroundCheck();
 	if (VoidCheck() && grounded)
 	{
-		PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rigidbody->GetBodyID(), Vec3Arg(0.0f, 0.0f, 0.0f));
-			float currentYaw = pOwner->GetLocalRotationEuler().y;
-			Vector3 facingDirection = Vector3(targetPosition)
-				- Vector3(pOwner->GetWorldPosition());
-			facingDirection.Normalize();
 		if (Jump())
 		{
 			return;
 		}
 		if (sp > 1.0f)
 		{
-			facingDirection -= facingDirection;
-			float targetYaw = atan2f(facingDirection.x, facingDirection.z);
-			float yawDifference = wrap_angle(targetYaw - currentYaw);
-			targetYaw = wrap_angle(currentYaw + yawDifference * rotationLerpFactor * 1.8f);
-			Quat q = Quat::sEulerAngles(Vec3(0.0f, targetYaw, 0.0f));
-			PhysicsCommon::physicsSystem->GetBodyInterface().SetRotation(rigidbody->GetBodyID(), q, EActivation::Activate);
-			PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(rigidbody->GetBodyID(), Vec3Arg(facingDirection.x, facingDirection.y, facingDirection.z) * maxSpeed * 100.0f);
+			targetPosition = lastIslandPos;
 		}
 		else 
 		{
+			float currentYaw = pOwner->GetLocalRotationEuler().y;
+			Vector3 facingDirection = Vector3(targetPosition)
+				- Vector3(pOwner->GetWorldPosition());
+			facingDirection.Normalize();
+			PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rigidbody->GetBodyID(), Vec3Arg(0.0f, 0.0f, 0.0f));
 			float targetYaw = atan2f(facingDirection.x, facingDirection.z);
 			float yawDifference = wrap_angle(targetYaw - currentYaw);
 			targetYaw = wrap_angle(currentYaw + yawDifference * rotationLerpFactor);
 			Quat q = Quat::sEulerAngles(Vec3(0.0f, targetYaw, 0.0f));
 			PhysicsCommon::physicsSystem->GetBodyInterface().SetRotation(rigidbody->GetBodyID(), q, EActivation::Activate);
+			return;
 		}
 
-		return;
 	}
 
 	PhysicsCommon::physicsSystem->GetBodyInterface().SetFriction(rigidbody->GetBodyID(), 0.0f);
@@ -84,7 +78,7 @@ void Walking::Follow(DirectX::XMFLOAT3 targetPos, float sp)
 		steeringForce = (steeringForce / steeringMagnitude) * maxSpeed;
 	}
 
-	PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(steeringForce.x, steeringForce.y, steeringForce.z) * 15.0f);
+	PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(steeringForce.x, steeringForce.y, steeringForce.z) * 1000.0f * dt);
 
 	currentVelocityJPH = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
 	currentVelocity = { currentVelocityJPH.GetX(), currentVelocityJPH.GetY(), currentVelocityJPH.GetZ() };
@@ -125,6 +119,8 @@ void Walking::GroundCheck()
 	if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(ray, result, SpecifiedBroadPhaseLayerFilter(BroadPhaseLayers::GROUND), SpecifiedObjectLayerFilter(Layers::GROUND)))
 	{
 		grounded = true;
+		Vec3 tymPos = PhysicsCommon::physicsSystem->GetBodyInterface().GetPosition(result.mBodyID);
+		lastIslandPos = { tymPos.GetX(), tymPos.GetY(), tymPos.GetZ() };
 	}
 	else
 	{
@@ -170,6 +166,7 @@ Vector3 Walking::CalculateAvoidanceForce()
 		RVec3(leftOrigin.x, leftOrigin.y, leftOrigin.z),
 		RVec3(centerDir.x, centerDir.y, centerDir.z)
 	);
+	//PhysicsCommon::physicsSystem->GetBodyInterface().SetMotionType(rigidbody->GetBodyID(), EMotionType::Dynamic);
 	RayCastResult resultLeft;
 	if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(rayLeft, resultLeft, SpecifiedBroadPhaseLayerFilter(BroadPhaseLayers::WALL), SpecifiedObjectLayerFilter(Layers::WALL)))
 	{

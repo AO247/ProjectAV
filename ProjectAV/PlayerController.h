@@ -19,7 +19,7 @@ public:
 	virtual void Update(float dt) override;
 	virtual void DrawImGuiControls() override;
 
-	float moveSpeed = 14.0f;
+	float moveSpeed = 23.0f;
 	//float jumpForce = 300.0f;
 	//float dashForce = 600.0f;
 	float jumpForce = 30.0f;
@@ -54,7 +54,7 @@ private:
 	bool ability2Ready = true;
 
 	void KeyboardInput();
-	void MovePlayer();
+	void MovePlayer(float dt);
 	void SpeedControl();
 	void GroundCheck();
 	void Jump();
