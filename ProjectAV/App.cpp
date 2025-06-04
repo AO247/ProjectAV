@@ -279,32 +279,36 @@ int App::Go()
 {
     const float FIXED_TIME_STEP = 1.0f / 60.0f;
     float lag = 0.0f;
+
     while (true)
     {
         if (const auto ecode = Window::ProcessMessages())
         {
             return *ecode;
         }
-        const auto dt = timer.Mark() * speed_factor;
+
+        const float dt = timer.Mark();
         lag += dt;
-        do
+
+        constexpr float MAX_LAG = 0.5f; // np. pół sekundy
+        if (lag > MAX_LAG)
+            lag = MAX_LAG;
+
+        while (lag >= FIXED_TIME_STEP)
         {
-            if (lag < FIXED_TIME_STEP)
-            {
-                physicsSystem->Update(lag, 1, temp_allocator, job_system);
-                lag -= dt;
-                break;
-            }
             physicsSystem->Update(FIXED_TIME_STEP, 1, temp_allocator, job_system);
             lag -= FIXED_TIME_STEP;
-        } while (lag >= FIXED_TIME_STEP);
-        //physicsSystem->Update(lag, 1, temp_allocator, job_system);
-        dynamic_cast<MyContactListener*>(physicsSystem->GetContactListener())->ExecuteTriggerActivationQueue();
-        dynamic_cast<MyContactListener*>(physicsSystem->GetContactListener())->ExecuteCollisionActivationQueue();
-        //dynamicsWorld->stepSimulation(dt, 10);
+        }
+
+        const float alpha = lag / FIXED_TIME_STEP;
+
+        auto* contact = dynamic_cast<MyContactListener*>(physicsSystem->GetContactListener());
+        contact->ExecuteTriggerActivationQueue();
+        contact->ExecuteCollisionActivationQueue();
+
         HandleInput(dt);
         DoFrame(dt);
-        //lag = 0.0f;
+
     }
 }
 
