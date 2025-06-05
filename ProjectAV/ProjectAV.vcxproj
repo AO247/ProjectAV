@@ -173,6 +173,7 @@
     <ClCompile Include="Ability1.cpp" />
     <ClCompile Include="Ability2.cpp" />
     <ClCompile Include="Ability3.cpp" />
+    <ClCompile Include="Ability4.cpp" />
     <ClCompile Include="AIController.cpp" />
     <ClCompile Include="App.cpp" />
     <ClCompile Include="AttackState.cpp" />
@@ -227,9 +228,11 @@
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="MusicBuffer.cpp" />
     <ClCompile Include="MyContactListener.cpp" />
+    <ClInclude Include="Ability.h" />
     <ClInclude Include="Ability1.h" />
     <ClInclude Include="Ability2.h" />
     <ClInclude Include="Ability3.h" />
+    <ClInclude Include="Ability4.h" />
     <ClInclude Include="BrokenPart.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="Cube.h" />

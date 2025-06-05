@@ -10,11 +10,11 @@
 // but including Node.h is often fine here.
 class Node;
 
-class Ability2 : public Component
+class Ability4 : public Component
 {
 public:
-	Ability2(Node* owner, Window& window, Node* camera);
-	virtual ~Ability2() = default;
+	Ability4(Node* owner, Window& window, Node* camera);
+	virtual ~Ability4() = default;
 
 	virtual void Update(float dt) override;
 	virtual void DrawImGuiControls() override;
@@ -22,12 +22,17 @@ public:
 	void OnTriggerExit(Node* other) override;
 	void Pressed();
 	void Released();
-	float cooldown = 0.5f; // Cooldown for ability 1
-	float force = 300.0f;
-	bool abilityReady = true; // Is the ability ready to be used?
+	void Activated();
+
+	float cooldown = 1.0f;
+	float force = 600.0f;
+	Vector3	cameraRotation = Vector3::Zero;
+	bool isPressed = false;
+	bool abilityReady = true;
 private:
 	Window& wnd;
 	Node* camera = nullptr;
+	Node* player = nullptr;
 	void KeyboardInput();
 	void Cooldowns(float dt);
 	void Positioning();

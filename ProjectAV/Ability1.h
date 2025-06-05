@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Component.h"
+#include "Ability.h"
 #include "Window.h" // Needs access to Window for input
 #include <DirectXMath.h>
 #include "Rigidbody.h"
@@ -20,7 +20,8 @@ public:
 	virtual void DrawImGuiControls() override;
 	void OnTriggerEnter(Node* other) override;
 	void OnTriggerExit(Node* other) override;
-	void Active();
+	void Pressed();
+	void Released();
 	float cooldown = 0.5f; // Cooldown for ability 1
 	float force = 600.0f;
 	bool abilityReady = true; // Is the ability ready to be used?

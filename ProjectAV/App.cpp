@@ -83,6 +83,8 @@ App::App(const std::string& commandLine)
 	pAbility2 = pAbility2Owner.get();
 	auto pAbility3Owner = std::make_unique<Node>("Ability3", nullptr, "TRIGGER");
 	pAbility3 = pAbility3Owner.get();
+	auto pAbility4Owner = std::make_unique<Node>("Ability4", nullptr, "TRIGGER");
+	pAbility4 = pAbility4Owner.get();
     auto pPrefabsOwner = std::make_unique<Node>("Prefabs", nullptr, "PREFABS");
     pPrefabs = pPrefabsOwner.get();
 	auto pHandsOwner = std::make_unique<Node>("Hands", nullptr, "HANDS");
@@ -97,14 +99,15 @@ App::App(const std::string& commandLine)
     pSceneRoot->AddChild(std::move(pAbility1Owner));
     pSceneRoot->AddChild(std::move(pAbility2Owner));
 	pSceneRoot->AddChild(std::move(pAbility3Owner));
+    pSceneRoot->AddChild(std::move(pAbility4Owner));
 	pSceneRoot->AddChild(std::move(pPrefabsOwner));
 	pCamera->AddChild(std::move(pHandsOwner));
 
 	PrefabManager::root = pPrefabs;
 	PrefabManager::player = pPlayer;
 
-    //Heeeej Bracie zacz�ooo pada� chood� zmienii� gacieee
-    //Heeeej Siostro uciekaajmyy zanim b��dzieee mookroooo
+    //Heeeej Bracie zaczlooo padac choodz zmieniic gacieee
+    //Heeeej Siostro uciekaajmyy zanim beedzieee mookroooo
 
     BodyCreationSettings bodySettings(new JPH::CapsuleShape(1.0f, 1.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::PLAYER);
     bodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
@@ -159,6 +162,16 @@ App::App(const std::string& commandLine)
     );
     pPlayer->GetComponent<PlayerController>()->ability3 = pAbility3;
 
+
+    BodyCreationSettings a4odySettings(new JPH::SphereShape(2.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
+    pAbility4->AddComponent(
+        std::make_unique<Trigger>(pAbility4, a4odySettings, false)
+    );
+    pAbility4->AddComponent(
+        std::make_unique<Ability4>(pAbility4, wnd, pCamera)
+    );
+
+   // pPlayer->GetComponent<PlayerController>()->ability1 = pAbility4;
 
     //Adding Other Components
     pFreeViewCamera->AddComponent(
