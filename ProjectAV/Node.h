@@ -30,7 +30,7 @@ public:
     Node* FindFirstChildByTag(const std::string& searchTag);
     std::vector<Node*> FindAllChildrenByTag(const std::string& searchTag);
     Node* GetRoot() const;
-
+    float radius = 60.0f;
     // --- Components ---
     // ... (GetComponent, AddComponent remain the same) ...
     template<typename T> T* GetComponent() const; // Keep declaration

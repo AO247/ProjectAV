@@ -491,7 +491,7 @@ void App::FrustumCalculating() {
     constexpr float fovAngleY = DirectX::XMConvertToRadians(70.0f); // Field of View in Y direction (radians) - MUST MATCH YOUR PROJECTION
     const float aspectRatio = 16.0f / 9.0f; // MUST MATCH YOUR PROJECTION
     const float nearDist = 0.5f;         // MUST MATCH YOUR PROJECTION
-    const float farDist = 300.0f;       // MUST MATCH YOUR PROJECTION
+    const float farDist = 800.0f;       // MUST MATCH YOUR PROJECTION
 
     // Half heights/widths at near and far planes
     float halfHeightNear = nearDist * tanf(fovAngleY * 0.5f);
@@ -515,7 +515,7 @@ void App::FrustumCalculating() {
     cameraFrustum.Near = 0.5f;
 
     // Far Plane: Normal = -camWorldForward, Point = farCenter
-    cameraFrustum.Far = 300.0f;
+    cameraFrustum.Far = 800.0f;
 
     float tanHalfFovY = tanf(fovAngleY * 0.5f);
     cameraFrustum.TopSlope = tanHalfFovY;
@@ -544,41 +544,42 @@ void App::DrawNodeRecursive(Graphics& gfx, Node& node)
     bool shouldDraw = true; // Assume we draw by default
     ModelComponent* modelComp = node.GetComponent<ModelComponent>();
 
-    //if (modelComp != nullptr) // Only cull nodes with models (or add BoundsComponent later)
-    //{
-    //    DirectX::BoundingSphere sphere;
-    //    DirectX::BoundingBox box;
-    //    DirectX::ContainmentType containment = DirectX::DISJOINT;
-    //    if (node.GetComponent<BoundingSphere>() != nullptr)
-    //    {
-    //        sphere.Center = node.GetWorldPosition();
-    //        sphere.Radius = node.GetComponent<BoundingSphere>()->GetRadius();
-    //        containment = cameraFrustum.Contains(sphere);
-    //    }
-    //    else if (node.GetComponent<OBB>() != nullptr)
-    //    {
-    //        box.Center = node.GetWorldPosition();
-    //        box.Extents = node.GetComponent<OBB>()->GetTransformedSize();
-    //        containment = cameraFrustum.Contains(box);
-    //    }
-    //    else if (node.GetComponent<CapsuleCollider>() != nullptr)
-    //    {
-    //        // Assuming you have a method to get the capsule's bounding sphere
-    //        sphere.Center = DirectX::XMFLOAT3(node.GetWorldPosition().x,
-    //            (node.GetWorldPosition().y + 1.5f),
-    //            node.GetWorldPosition().z);
-    //        sphere.Radius = node.GetComponent<CapsuleCollider>()->GetRadius() * 2.5f;
-    //        containment = cameraFrustum.Contains(sphere);
-    //    }
+    if (modelComp != nullptr) // Only cull nodes with models (or add BoundsComponent later)
+    {
+        DirectX::BoundingSphere sphere;
+        DirectX::BoundingBox box;
+        DirectX::ContainmentType containment = DirectX::DISJOINT;
+        sphere.Center = node.GetWorldPosition();
+        sphere.Radius = node.radius;
+        containment = cameraFrustum.Contains(sphere);
+        //if (node.GetComponent<BoundingSphere>() != nullptr)
+        //{
+        //    sphere.Center = node.GetWorldPosition();
+        //    sphere.Radius = node.GetComponent<BoundingSphere>()->GetRadius();
+        //    containment = cameraFrustum.Contains(sphere);
+        //}
+        //else if (node.GetComponent<OBB>() != nullptr)
+        //{
+        //    box.Center = node.GetWorldPosition();
+        //    box.Extents = node.GetComponent<OBB>()->GetTransformedSize();
+        //    containment = cameraFrustum.Contains(box);
+        //}
+        //else if (node.GetComponent<CapsuleCollider>() != nullptr)
+        //{
+        //    // Assuming you have a method to get the capsule's bounding sphere
+        //    sphere.Center = DirectX::XMFLOAT3(node.GetWorldPosition().x,
+        //        (node.GetWorldPosition().y + 1.5f),
+        //        node.GetWorldPosition().z);
+        //    sphere.Radius = node.GetComponent<CapsuleCollider>()->GetRadius() * 2.5f;
+        //    containment = cameraFrustum.Contains(sphere);
+        //}
 
-    //    if (containment == DirectX::DISJOINT) // DISJOINT means completely outside
-    //    {
-    //        shouldDraw = false; // Don't draw this node or its children
-    //    }
+        if (containment == DirectX::DISJOINT) // DISJOINT means completely outside
+        {
+            shouldDraw = false; // Don't draw this node or its children
+        }
 
-    //}
-
-	shouldDraw = true; // Reset to true for the node itself
+    }
 
     if (shouldDraw)
     {
@@ -618,18 +619,19 @@ void App::ShowControlWindows()
     //}
 
     // --- Simulation Speed Window ---
-    if (ImGui::Begin("Simulation Speed"))
+    /*if (ImGui::Begin("Simulation Speed"))
     {
         ImGui::SliderFloat("Speed Factor", &speed_factor, 0.0f, 4.0f);
 		ImGui::Text("To change camera press 'C'");
 		ImGui::Text("To show/hide control window press 'H'");
     }
-    ImGui::End();
+    ImGui::End();*/
 
 
     // --- NEW: Scene Hierarchy Window ---
     if (ImGui::Begin("Scene Hierarchy"))
     {
+        ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
         if (pSceneRoot)
         {
             pSceneRoot->ShowNodeTree(pSelectedSceneNode);
@@ -735,142 +737,9 @@ void App::ShowControlWindows()
     }
     ImGui::End(); // End Scene Hierarchy Window
 }
-//void App::AddSphereColliderToDraw(Graphics& gfx, BoundingSphere* boundingSphere)
-//{
-//    // Using default constructor then initialize might be slightly cleaner if SolidSphere allows it
-//	ColliderSphere* sphereCollider = new ColliderSphere(gfx, boundingSphere->GetRadius());
-//    sphereCollidersToDraw[boundingSphere] = sphereCollider;
-//
-//}
-//
-//void App::DrawSphereColliders(Graphics& gfx)
-//{
-//    for (auto it = sphereCollidersToDraw.begin(); it != sphereCollidersToDraw.end(); ++it)
-//    {
-//        it->second->SetPos(DirectX::XMFLOAT3(it->first->GetTransformedCenter().x,
-//            it->first->GetTransformedCenter().y,
-//            it->first->GetTransformedCenter().z));
-//        it->second->Submit(fc);
-//    }
-//}
-//
-//
-//
-//// Signature now takes OBB*
-//void App::AddBoxColliderToDraw(Graphics& gfx, OBB* obb)
-//{
-//	SolidBox* box = new SolidBox(gfx, obb->GetTransformedCenter(), obb->GetTransformedSize());
-//    boxCollidersToDraw[obb] = box;
-//
-//}
-//
-//// Logic now uses Rigidbody's world transform for OBB
-//void App::DrawBoxColliders(Graphics& gfx)
-//{
-//    for (auto it = boxCollidersToDraw.begin(); it != boxCollidersToDraw.end(); ++it)
-//    {
-//        it->second->SetPos(DirectX::XMFLOAT3(it->first->GetTransformedCenter().x,
-//            it->first->GetTransformedCenter().y,
-//            it->first->GetTransformedCenter().z));
-//        it->second->SetSize(DirectX::XMFLOAT3(it->first->GetTransformedSize().x,
-//            it->first->GetTransformedSize().y,
-//            it->first->GetTransformedSize().z));
-//        it->second->Submit(fc);
-//    }
-//
-//}
-//
-//void App::AddCapsuleColliderToDraw(Graphics& gfx, CapsuleCollider* capsule)
-//{
-//	SolidCapsule* solidCapsule = new SolidCapsule(gfx, capsule->GetTransformedBase(), capsule->GetTransformedTip(), capsule->GetRadius());
-//	capsuleCollidersToDraw[capsule] = solidCapsule;
-//}
-//
-//void App::DrawCapsuleColliders(Graphics& gfx)
-//{
-//    for (auto it = capsuleCollidersToDraw.begin(); it != capsuleCollidersToDraw.end(); ++it)
-//    {
-//        if (it->first != nullptr) {
-//            it->second->SetBase(it->first->GetTransformedBase());
-//            it->second->SetTip(it->first->GetTransformedTip());
-//            it->second->SetRadius(it->first->GetRadius());
-//            it->second->Update(gfx);
-//            it->second->Submit(fc);
-//        }
-//    }
-//}
 
-void App::ForEnemyWalking() {
- //   Vector3 previousRotation = pEnemy->GetLocalRotationEuler();
-	//pEnemy->TranslateLocal({ 0.0f, 1.0f, 0.0f });
 
- //   Vector3 temporaryDirection = pPlayer->GetWorldPosition() - pEnemy->GetWorldPosition();
 
- //   temporaryDirection.Normalize();
- //   float targetYaw = atan2f(temporaryDirection.x, temporaryDirection.z);
- //   pEnemy->SetLocalRotation({ 0.0f, targetYaw, 0.0f });
-
- //   //float radius = pEnemy->GetComponent<CapsuleCollider>()->GetRadius();
-
- //   Vector3 pos = pEnemy->GetWorldPosition();
- //   Vector3 forward = pEnemy->Forward();
- //   Vector3 right = pEnemy->Right();
- //   Vector3 down = pEnemy->Down();
-
- //   Vector3 centerOrigin = pos + forward;
- //   Vector3 leftOrigin = centerOrigin - right * radius;
- //   Vector3 rightOrigin = centerOrigin + right * radius;
-
- //   Vector3 centerDir = forward;
-
- //   Vector3 leftDir = (forward - right * 0.5f); leftDir.Normalize();
-
- //   Vector3 rightDir = (forward + right * 0.5f); rightDir.Normalize();
-
- //   RaycastData hitLeft = Raycast::CastThroughLayers(leftOrigin, centerDir, std::vector<Layers>{ENEMY, PLAYER});
- //   if (hitLeft.hitCollider != nullptr) {
- //       line1->SetPoints(wnd.Gfx(), leftOrigin, hitLeft.hitPoint);
- //       line1->Submit(fc);
- //   }
- //   else
- //   {
- //       line1->SetPoints(wnd.Gfx(), leftOrigin, { pos.x, pos.y - 5.0f, pos.z });
- //       line1->Submit(fc);
- //   }
- //   RaycastData moreLeft = Raycast::CastThroughLayers(leftOrigin, leftDir, std::vector<Layers>{ENEMY, PLAYER});
- //   if (moreLeft.hitCollider != nullptr) {
- //       line2->SetPoints(wnd.Gfx(), leftOrigin, moreLeft.hitPoint);
- //       line2->Submit(fc);
- //   }
- //   else
- //   {
- //       line2->SetPoints(wnd.Gfx(), leftOrigin, { pos.x, pos.y - 5.0f, pos.z });
- //       line2->Submit(fc);
- //   }
- //   RaycastData hitRight = Raycast::CastThroughLayers(rightOrigin, centerDir, std::vector<Layers>{ENEMY, PLAYER});
- //   if (hitRight.hitCollider != nullptr) {
- //       line3->SetPoints(wnd.Gfx(), rightOrigin, hitRight.hitPoint);
- //       line3->Submit(fc);
- //   }
- //   else
- //   {
- //       line3->SetPoints(wnd.Gfx(), leftOrigin, { pos.x, pos.y - 5.0f, pos.z });
- //       line3->Submit(fc);
- //   }
- //   RaycastData moreRight = Raycast::CastThroughLayers(rightOrigin, rightDir, std::vector<Layers>{ENEMY, PLAYER});
- //   if (moreRight.hitCollider != nullptr) {
- //       line4->SetPoints(wnd.Gfx(), rightOrigin, moreRight.hitPoint);
- //       line4->Submit(fc);
- //   }
- //   else
- //   {
- //       line4->SetPoints(wnd.Gfx(), leftOrigin, { pos.x, pos.y - 5.0f, pos.z });
- //       line4->Submit(fc);
- //   }
-
- //   pEnemy->SetLocalRotation(previousRotation);
- //   pEnemy->TranslateLocal({ 0.0f, -1.0f, 0.0f });
-}
 
 void App::CleanupDestroyedNodes(Node* currentNode)
 {
