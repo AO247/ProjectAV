@@ -239,6 +239,7 @@
     <ClCompile Include="NullPixelShader.cpp" />
     <ClCompile Include="OBB.cpp" />
     <ClCompile Include="PhysicsCommon.cpp" />
+    <ClCompile Include="PhysicsDebugRenderer.cpp" />
     <ClCompile Include="PhysicsEngine.cpp" />
     <ClCompile Include="PixelShader.cpp" />
     <ClCompile Include="PlayerController.cpp" />
@@ -358,6 +359,7 @@
     <ClInclude Include="Pass.h" />
     <ClInclude Include="PerfLog.h" />
     <ClInclude Include="PhysicsCommon.h" />
+    <ClInclude Include="PhysicsDebugRenderer.h" />
     <ClInclude Include="PhysicsEngine.h" />
     <ClInclude Include="PhysicsLayers.h" />
     <ClInclude Include="PixelShader.h" />

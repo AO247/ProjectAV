@@ -61,6 +61,9 @@ App::App(const std::string& commandLine)
     PrefabManager::wind = &wnd;
     physicsSystem->SetGravity(Vec3(0.0f, -80.0f, 0.0f));
 
+    /*physicsDebugRenderer = new PhysicsDebugRenderer(wnd.Gfx());
+    physicsDebugRenderer->Initialize();*/
+
     soundDevice = LISTENER->Get();
     ALint attentuation = AL_INVERSE_DISTANCE_CLAMPED;
 	soundDevice->SetAttenuation(attentuation);
@@ -766,9 +769,9 @@ void App::CleanupDestroyedNodes(Node* currentNode)
                     if (pChildNode->GetComponent<Rigidbody>() != nullptr) {
                         PhysicsCommon::physicsSystem->GetBodyInterface().DeactivateBody(pChildNode->GetComponent<Rigidbody>()->GetBodyID());
                         PhysicsCommon::physicsSystem->GetBodyInterface().RemoveBody(pChildNode->GetComponent<Rigidbody>()->GetBodyID());
-                        if (pChildNode->GetComponent<Trigger>() != nullptr) {
+                        /*if (pChildNode->GetComponent<Trigger>() != nullptr) {
                             dynamic_cast<MyContactListener*>(PhysicsCommon::physicsSystem->GetContactListener())->RemoveRigidbodyData(pChildNode->GetComponent<Rigidbody>()->GetBodyID());
-                        }
+                        }*/
                     }
 
 
