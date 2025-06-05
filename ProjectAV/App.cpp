@@ -98,6 +98,7 @@ App::App(const std::string& commandLine)
 	pCamera->AddChild(std::move(pHandsOwner));
 
 	PrefabManager::root = pPrefabs;
+	PrefabManager::player = pPlayer;
 
     //Heeeej Bracie zacz�ooo pada� chood� zmienii� gacieee
     //Heeeej Siostro uciekaajmyy zanim b��dzieee mookroooo

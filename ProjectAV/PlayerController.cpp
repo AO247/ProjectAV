@@ -22,10 +22,10 @@ PlayerController::PlayerController(Node* owner, Window& window)
 void PlayerController::Update(float dt)
 {
     Positioning();
-    if (!wnd.CursorEnabled() && alive)
+    Cooldowns(dt);
+    if (!wnd.CursorEnabled() && alive && !wnd.playerLocked)
     {
         GroundCheck();
-        Cooldowns(dt);
 		KeyboardInput();
 		SpeedControl();
 		MovePlayer(dt);

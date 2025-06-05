@@ -32,10 +32,11 @@ public:
 	Node* ability1;
 	Node* ability2;
 	Node* ability3;
+	Node* camera;
+
 private:
 	Window& wnd;
 	Rigidbody* rigidbody;
-	Node* camera;
 
 	bool jumped = false;
 	bool grounded = false;

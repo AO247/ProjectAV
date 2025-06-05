@@ -4,6 +4,7 @@
 
 Window* PrefabManager::wind = nullptr;
 Node* PrefabManager::root = nullptr;
+Node* PrefabManager::player = nullptr;
 
 PrefabManager::~PrefabManager()
 {

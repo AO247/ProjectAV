@@ -258,6 +258,7 @@
     <ClCompile Include="SoundDevice.cpp" />
     <ClCompile Include="SoundEffectsLibrary.cpp" />
     <ClCompile Include="SoundEffectsPlayer.cpp" />
+    <ClCompile Include="SpawnJump.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="StateMachine.cpp" />
     <ClCompile Include="Step.cpp" />
@@ -379,6 +380,7 @@
     <ClInclude Include="SoundDevice.h" />
     <ClInclude Include="SoundEffectsLibrary.h" />
     <ClInclude Include="SoundEffectsPlayer.h" />
+    <ClInclude Include="SpawnJump.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="State.h" />

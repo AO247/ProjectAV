@@ -15,6 +15,7 @@ Global::Global(Node* owner, Window& window, Node* player)
 	AddSpecialLevel();
 	AddSpecialLevel();
 	AddSpecialLevel();
+	levels[levels.size() - 3]->GetComponent<LevelGenerator>()->startEnemyGenerating = true;
 }
 
 
@@ -23,20 +24,18 @@ void Global::Update(float dt)
 	if (levels[levels.size() - 3]->GetComponent<LevelGenerator>()->isFinished) {
 		if (levels[levels.size() - 3]->FindAllChildrenByTag("ENEMY").size() <= 0)
 		{
-			levels[levels.size() - 5]->Destroy();
-			AddSpecialLevel();
-			completed = true;
-		}
-	}
-	if (completed)
-	{
-		Node* spawn = levels[levels.size() - 4]->FindFirstChildByTag("SPAWN");
-		if (spawn != nullptr)
-		{
-			if((spawn->GetWorldPosition() - playerNode->GetWorldPosition()).Length() < 8.0f)
+			if (!completed)
 			{
-				PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(playerNode->GetComponent<Rigidbody>()->GetBodyID(), Vec3(0.0f, 280.0f, 0.0f));
-				completed = false;
+				spawn = levels[levels.size() - 3]->FindFirstChildByTag("SPAWN");
+				Node* target = levels[levels.size() - 2]->FindFirstChildByTag("SPAWN");
+				spawn->GetComponent<SpawnJump>()->Activate(target->GetWorldPosition());
+				completed = true;
+			}
+			else if(spawn->GetComponent<SpawnJump>()->halfWay)
+			{
+				levels[levels.size() - 2]->GetComponent<LevelGenerator>()->startEnemyGenerating = true;
+				levels[levels.size() - 5]->Destroy();
+				AddSpecialLevel();
 			}
 		}
 	}
@@ -67,7 +66,7 @@ void Global::AddSpecialLevel()
 			std::make_unique<LevelGenerator>(level, playerNode, false)
 		);
 	}
-
+	completed = false;
 	levelCount++;
 }
 

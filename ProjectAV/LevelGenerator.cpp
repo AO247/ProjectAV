@@ -20,7 +20,7 @@ void LevelGenerator::Update(float dt)
     {
         GenerateIslands();
     }
-    if (!enemiesSpawned && islandGenerated) {
+    if (!enemiesSpawned && islandGenerated && startEnemyGenerating) {
         SpawnEnemies();
     }
     if (islandGenerated && enemiesSpawned)
@@ -393,4 +393,5 @@ void LevelGenerator::DrawImGuiControls()
     ImGui::Checkbox("Island Generated", &islandGenerated);
     ImGui::Checkbox("Enemies Spawned", &enemiesSpawned);
     ImGui::Checkbox("Is Finished", &isFinished);
+	ImGui::Checkbox("Start Enemy Generating", &startEnemyGenerating);
 }

@@ -5,8 +5,6 @@
 #include "Window.h"
 #include <DirectXMath.h>
 #include "SoundEffectsPlayer.h"
-#include "PrefabManager.h"
-#include "LevelGenerator.h"
 #include "CMath.h"
 
 // Forward declare Node to avoid circular include if necessary,
@@ -16,24 +14,25 @@ class PrefabManager;
 class LevelGenerator;
 
 
-class Global : public Component
+class SpawnJump : public Component
 {
 public:
-	Global(Node* owner, Window& window, Node* player);
-	virtual ~Global() = default;
+	SpawnJump(Node* owner, Window& window, Node* player);
+	virtual ~SpawnJump() = default;
 
 	virtual void Update(float dt) override;
 	virtual void DrawImGuiControls() override;
 
 	Node* playerNode;
-	Node* spawn;
-	std::vector<Node*> enemies;
-	std::vector<Node*> levels;
-	int levelCount = 0;
-	void AddSpecialLevel();
-	bool completed = false;
+	bool activated = false;
+	float jumpCooldown = 0.0f;
+	Vector3 targetPosition = Vector3::Zero;
+	void Activate(Vector3 targetPos);
+	bool moved = true;
+	bool pushed = true;
+	bool playerReady = false;
+	bool halfWay = false;
+	bool rotated = false;
 private:
 	Window& wnd;
-	std::unique_ptr<LevelGenerator> currentLevelGenerator;
-	void AddLevel();
 };

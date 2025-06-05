@@ -19,6 +19,7 @@
 #include "Island.h"
 #include "Trigger.h"
 #include "BrokenPart.h"
+#include "SpawnJump.h"
 #include "Ability1.h"
 #include "Ability2.h"
 #include "Ability3.h"

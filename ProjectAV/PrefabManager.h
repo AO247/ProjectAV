@@ -15,6 +15,7 @@ public:
 	~PrefabManager(); 
     static Window* wind;
     static Node* root;
+    static Node* player;
 
 
     Node* InstantiateMushroom1(Node* parentNode = nullptr, float locX = 0, float locY = 0, float locZ = 0, float scale = 1) const;
@@ -405,6 +406,9 @@ public:
         pNewNodeOwner->AddComponent(
             std::make_unique<Island>(pNewNodeOwner.get())
         );
+        pNewNodeOwner->AddComponent(
+            std::make_unique<SpawnJump>(pNewNodeOwner.get(), *wind, player)
+        );
         Island* pIsland = pNewNodeOwner->GetComponent<Island>();
         auto leftPoint = std::make_unique<Node>("Left Point", pNewNodeOwner.get());
         auto rightPoint = std::make_unique<Node>("Right Point", pNewNodeOwner.get());
@@ -412,7 +416,7 @@ public:
         auto downPoint = std::make_unique<Node>("Down Point", pNewNodeOwner.get());
 
         upPoint->SetLocalPosition(DirectX::XMFLOAT3(3.0f, 0.0f, 36.0f));
-        downPoint->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 0.0f, -24.0f));
+        downPoint->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 0.0f, -30.0f));
         leftPoint->SetLocalPosition(DirectX::XMFLOAT3(-35.0f, 0.0f, 5.0f));
         rightPoint->SetLocalPosition(DirectX::XMFLOAT3(35.0f, 0.0f, -4.0f));
         pIsland->halfExtents = { 33.0f, 2.0f, 33.0f };

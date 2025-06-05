@@ -28,6 +28,7 @@ public:
 	bool islandGenerated = false;
 	bool enemiesSpawned = false;
 	bool isFinished = false;
+	bool startEnemyGenerating = false;
 private:
 	Node* pPlayer;
 	float distance = 1.0f;
