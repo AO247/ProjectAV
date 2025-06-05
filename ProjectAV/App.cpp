@@ -62,6 +62,9 @@ App::App(const std::string& commandLine)
     PrefabManager::wind = &wnd;
     physicsSystem->SetGravity(Vec3(0.0f, -80.0f, 0.0f));
 
+    /*physicsDebugRenderer = new PhysicsDebugRenderer(wnd.Gfx());
+    physicsDebugRenderer->Initialize();*/
+
     soundDevice = LISTENER->Get();
     ALint attentuation = AL_INVERSE_DISTANCE_CLAMPED;
 	soundDevice->SetAttenuation(attentuation);
@@ -233,6 +236,9 @@ int App::Go()
             physicsSystem->Update(FIXED_TIME_STEP, 1, temp_allocator, job_system);
             lag -= FIXED_TIME_STEP;
         } while (lag >= FIXED_TIME_STEP);
+        /*JPH::BodyManager::DrawSettings bodyDrawSettings;
+        physicsSystem->DrawBodies(bodyDrawSettings, physicsDebugRenderer);
+        physicsSystem->DrawConstraints(physicsDebugRenderer);*/
         //physicsSystem->Update(lag, 1, temp_allocator, job_system);
         dynamic_cast<MyContactListener*>(physicsSystem->GetContactListener())->ExecuteTriggerActivationQueue();
         dynamic_cast<MyContactListener*>(physicsSystem->GetContactListener())->ExecuteCollisionActivationQueue();
@@ -334,6 +340,7 @@ void App::DoFrame(float dt)
     CleanupDestroyedNodes(pSceneRoot.get());
 
     wnd.Gfx().BeginFrame(0.5f, 0.5f, 1.0f);
+
     //if (pPlayer->GetLocalPosition().y < -10.0f) {
     //	pPlayer->SetLocalPosition({ -20.0f, 225.0f, -25.0f });
     //    pEnemy->SetLocalPosition({ 15.0f, 225.0f, 0.0f });
@@ -382,6 +389,9 @@ void App::DoFrame(float dt)
     }
 
     fc.Execute(wnd.Gfx());
+
+    //physicsDebugRenderer->Render();
+
     wnd.Gfx().EndFrame();
     fc.Reset();
 }

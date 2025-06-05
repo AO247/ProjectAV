@@ -77,6 +77,13 @@ public:
 	bool IsImguiEnabled() const noexcept;
 	UINT GetWidth() const noexcept;
 	UINT GetHeight() const noexcept;
+	ID3D11Device* GetD3DDevice() { return pDevice.Get(); }
+	ID3D11DeviceContext* GetD3DContext() { return pContext.Get(); }
+
+#ifndef NDEBUG
+	DxgiInfoManager& GetDxgiInfoManager() noexcept { return infoManager; } // The public getter
+#endif
+
 private:
 	UINT width;
 	UINT height;
@@ -92,3 +99,25 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> pTarget;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> pDSV;
 };
+
+#ifndef NDEBUG
+inline DxgiInfoManager& GetInfoManager(Graphics& gfx) noexcept
+{
+	// Assuming DxgiInfoManager is a public member of Graphics
+	// If it's private, you'll need a public getter in Graphics class
+	// and call that here.
+	// For example, if Graphics has:
+	// public: DxgiInfoManager& GetInfoManagerInstance() noexcept { return infoManager; }
+	// Then here: return gfx.GetInfoManagerInstance();
+
+	// Based on your Graphics.h, infoManager is a private member.
+	// So you need a public getter in the Graphics class.
+	// Let's assume you add this to Graphics.h inside the class:
+	// public:
+	// #ifndef NDEBUG
+	//    DxgiInfoManager& GetDxgiInfoManager() noexcept { return infoManager; }
+	// #endif
+
+	return gfx.GetDxgiInfoManager(); // Call the new public getter
+}
+#endif

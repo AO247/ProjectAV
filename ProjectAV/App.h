@@ -19,6 +19,7 @@
 #include "PhysicsCommon.h"
 #include "TestCube.h"
 #include "Global.h"
+#include "PhysicsDebugRenderer.h"
 
 // Forward declarations
 class PlayerController; // Forward declare
@@ -47,6 +48,7 @@ private:
     //PhysicsEngine physicsEngine; // Physics engine instance
 
 
+    //PhysicsDebugRenderer* physicsDebugRenderer;
     PhysicsSystem* physicsSystem;
     TempAllocatorImpl* temp_allocator;
     JobSystemThreadPool* job_system;
