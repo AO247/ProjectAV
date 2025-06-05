@@ -214,23 +214,33 @@ void PlayerController::Positioning()
 
 void PlayerController::KeyboardInput()
 {
+
     while (const auto e = wnd.mouse.Read()) // Read events from the queue
     {
         switch (e->GetType())
         {
         case Mouse::Event::Type::LPress:
-            ability1->GetComponent<Ability1>()->Active();
+            ability1->GetComponent<Ability1>()->Pressed();
             break;
 
         case Mouse::Event::Type::RPress:
-            ability2->GetComponent<Ability2>()->Active();
+            ability2->GetComponent<Ability2>()->Pressed();
+            break;
+
+        case Mouse::Event::Type::LRelease:
+            ability1->GetComponent<Ability1>()->Released();
+            break;
+
+        case Mouse::Event::Type::RRelease:
+            ability2->GetComponent<Ability2>()->Released();
             break;
         }
+
     }
 
     if (wnd.kbd.KeyIsPressed('Q'))
     {
-        ability3->GetComponent<Ability3>()->Active();
+        ability3->GetComponent<Ability3>()->Pressed();
 	}
 
 

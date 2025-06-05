@@ -262,7 +262,7 @@ Sprite::~Sprite() {
 }
 
 void Sprite::Draw(ID3D11DeviceContext* context) {
-    OutputDebugStringA("Sprite::Draw() CALLED (Texture Shaders).\n");
+    //OutputDebugStringA("Sprite::Draw() CALLED (Texture Shaders).\n");
 
     if (!context || !vertexBuffer_ || !indexBuffer_ || !vertexShader_ || !pixelShader_ || !inputLayout_ || !constantBuffer_ || !texture_ || !sampler_ || !blendState_) {
         OutputDebugStringA("Sprite::Draw() Error: Missing critical D3D resources (Texture Version). Aborting draw.\n");
@@ -307,10 +307,10 @@ void Sprite::Draw(ID3D11DeviceContext* context) {
         OutputDebugStringA("Sprite::Draw - GetActiveWindow() returned NULL. Using fallback.\n");
     }
 
-    std::vector<char> dbgMsg(512);
+  /*  std::vector<char> dbgMsg(512);
     sprintf_s(dbgMsg.data(), dbgMsg.size(), "Sprite::Draw (Texture) - Sprite Pos(%d,%d) Size(%d,%d). ProjDims(%0.1f x %0.1f). GotFromWnd: %s\n",
         x_, y_, width_, height_, windowClientWidth, windowClientHeight, gotDimensionsFromWindow ? "Yes" : "No");
-    OutputDebugStringA(dbgMsg.data());
+    OutputDebugStringA(dbgMsg.data());*/
 
 
     DirectX::XMMATRIX projMat = DirectX::XMMatrixOrthographicOffCenterLH(0.0f, windowClientWidth, windowClientHeight, 0.0f, 0.0f, 1.0f);
@@ -369,7 +369,7 @@ void Sprite::Draw(ID3D11DeviceContext* context) {
     context->OMSetBlendState(blendState_, blendFactor, 0xffffffff);
 
     context->DrawIndexed(6, 0, 0);
-    OutputDebugStringA("Sprite::Draw() COMPLETED DRAWINDEXED (Texture Shaders).\n");
+    //OutputDebugStringA("Sprite::Draw() COMPLETED DRAWINDEXED (Texture Shaders).\n");
 }
 
 void Sprite::SetPosition(int x, int y) {

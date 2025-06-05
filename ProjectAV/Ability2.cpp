@@ -54,7 +54,7 @@ void Ability2::Positioning()
         }
     }
 }
-void Ability2::Active()
+void Ability2::Pressed()
 {
     if (!abilityReady) return;
     for (int i = 0; i < objects.size(); i++)
@@ -75,6 +75,9 @@ void Ability2::Active()
     }
     cooldownTimer = cooldown;
     abilityReady = false;
+}
+void Ability2::Released()
+{
 }
 
 void Ability2::Cooldowns(float dt)

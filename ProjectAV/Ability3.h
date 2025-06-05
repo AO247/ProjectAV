@@ -20,7 +20,8 @@ public:
 	virtual void DrawImGuiControls() override;
 	void OnTriggerEnter(Node* other) override;
 	void OnTriggerExit(Node* other) override;
-	void Active();
+	void Pressed();
+	void Released();
 	void Activated();
 	float timer = 0.0f;
 	

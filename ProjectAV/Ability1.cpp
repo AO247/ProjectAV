@@ -30,7 +30,7 @@ void Ability1::Positioning() {
 	pOwner->SetLocalTransform(camera->GetLocalTransform());
 	pOwner->TranslateLocal(Vector3(0.0f, 0.0f, 8.0f));
 }
-void Ability1::Active()
+void Ability1::Pressed()
 {
     if (!abilityReady) return;
     for (int i = 0; i < objects.size(); i++)
@@ -45,7 +45,9 @@ void Ability1::Active()
     cooldownTimer = cooldown;
     abilityReady = false;
 }
-
+void Ability1::Released()
+{
+}
 void Ability1::Cooldowns(float dt)
 {
     if (cooldownTimer > 0.0f)

@@ -399,6 +399,9 @@
     <ClCompile Include="SpawnJump.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
+    <ClCompile Include="Ability4.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowsMessageMap.h">
@@ -807,6 +810,12 @@
       <Filter>Header Files\Components</Filter>
     </ClInclude>
     <ClInclude Include="SpawnJump.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Ability4.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Ability.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
   </ItemGroup>
