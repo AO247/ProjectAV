@@ -185,22 +185,6 @@ void PlayerController::Cooldowns(float dt)
     {
         canDash = true;
     }
-	if (ability1CooldownTimer > 0.0f)
-	{
-		ability1CooldownTimer -= dt;
-	}
-	else
-	{
-		ability1Ready = true;
-	}
-	if (ability2CooldownTimer > 0.0f)
-	{
-		ability2CooldownTimer -= dt;
-	}
-	else
-	{
-		ability2Ready = true;
-	}
 }
 
 void PlayerController::Positioning()
@@ -220,19 +204,19 @@ void PlayerController::KeyboardInput()
         switch (e->GetType())
         {
         case Mouse::Event::Type::LPress:
-            ability1->GetComponent<Ability1>()->Pressed();
+            abilitySlot1->GetComponent<Ability>()->Pressed();
             break;
 
         case Mouse::Event::Type::RPress:
-            ability2->GetComponent<Ability2>()->Pressed();
+            abilitySlot2->GetComponent<Ability>()->Pressed();
             break;
 
         case Mouse::Event::Type::LRelease:
-            ability1->GetComponent<Ability1>()->Released();
+            abilitySlot1->GetComponent<Ability>()->Released();
             break;
 
         case Mouse::Event::Type::RRelease:
-            ability2->GetComponent<Ability2>()->Released();
+            abilitySlot2->GetComponent<Ability>()->Released();
             break;
         }
 
@@ -240,7 +224,7 @@ void PlayerController::KeyboardInput()
 
     if (wnd.kbd.KeyIsPressed('Q'))
     {
-        ability3->GetComponent<Ability3>()->Pressed();
+        abilitySlot3->GetComponent<Ability>()->Pressed();
 	}
 
 
@@ -283,8 +267,6 @@ void PlayerController::DrawImGuiControls()
     ImGui::InputFloat("JumpForce", &jumpForce);
 	ImGui::InputFloat("Dash Force", &dashForce);
 	ImGui::InputFloat("Dash Cooldown", &dashCooldown);
-	ImGui::InputFloat("Ability1 Cooldown", &ability1Cooldown);
-	ImGui::InputFloat("Ability2 Cooldown", &ability2Cooldown);
     ImGui::InputFloat("Height", &height);
     ImGui::Checkbox("Jumped", &jumped);
     ImGui::Checkbox("CanDash", &canDash);

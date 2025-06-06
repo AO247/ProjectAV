@@ -26,12 +26,10 @@ public:
 	float dashForce = 70.0f;
 	float height = 4.0f;
 	float dashCooldown = 1.0f;
-	float ability1Cooldown = 1.0f;
-	float ability2Cooldown = 1.0f;
 	bool alive = true;
-	Node* ability1;
-	Node* ability2;
-	Node* ability3;
+	Node* abilitySlot1;
+	Node* abilitySlot2;
+	Node* abilitySlot3;
 	Node* camera;
 
 private:
@@ -46,13 +44,9 @@ private:
 	Vector3 moveDirection;
 	Vector3 dashDirection;
 	float dashCooldownTimer = 0.0f;
-	float ability1CooldownTimer = 0.0f;
-	float ability2CooldownTimer = 0.0f;
 	float dashTimer = 0.0f;
 	bool dashed = false;
 	bool doubleJumped = false;
-	bool ability1Ready = true;
-	bool ability2Ready = true;
 
 	void KeyboardInput();
 	void MovePlayer(float dt);

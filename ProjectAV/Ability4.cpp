@@ -11,7 +11,7 @@
 
 namespace dx = DirectX;
 Ability4::Ability4(Node* owner, Window& window, Node* camera)
-    : Component(owner), wnd(window), camera(camera)  // Initialize reference member
+    : Ability(owner, window, camera)
 {
     player = pOwner->GetRoot()->FindFirstChildByTag("PLAYER");
 }

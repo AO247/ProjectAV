@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Component.h"
+#include "Ability.h"
 #include "Window.h" // Needs access to Window for input
 #include <DirectXMath.h>
 #include "Rigidbody.h"
@@ -10,7 +10,7 @@
 // but including Node.h is often fine here.
 class Node;
 
-class Ability3 : public Component
+class Ability3 : public Ability
 {
 public:
 	Ability3(Node* owner, Window& window, Node* camera);
@@ -20,8 +20,8 @@ public:
 	virtual void DrawImGuiControls() override;
 	void OnTriggerEnter(Node* other) override;
 	void OnTriggerExit(Node* other) override;
-	void Pressed();
-	void Released();
+	void Pressed() override;
+	void Released() override;
 	void Activated();
 	float timer = 0.0f;
 	
@@ -33,8 +33,6 @@ public:
 
 	bool abilityReady = true;
 private:
-	Window& wnd;
-	Node* camera = nullptr;
 	void KeyboardInput();
 	void Cooldowns(float dt);
 	void Positioning();

@@ -1,28 +1,26 @@
 #pragma once
-#include "Component.h"
+#include "Component.h" // Jeœli umiejêtnoœci s¹ komponentami
 #include "Window.h"
+class Node; // Forward declaration
 
-class Node;
-
-class Ability : public Component
+class Ability : public Component // Lub dziedzicz po prostu z niczego, jeœli nie wszystkie umiejêtnoœci to komponenty
 {
 public:
-    Ability(Node* owner, Window& window, Node* camera)
-        : Component(owner), wnd(window), camera(camera)
-    {
-        // W konstruktorze bazowym mo¿emy pobraæ, jeœli potrzeba, np. wskazanie na "player"
-        player = owner->GetRoot()->FindFirstChildByTag("PLAYER");
-    }    
+    Ability(Node* owner, Window& window, Node* camera) // Przyk³adowy konstruktor
+        : Component(owner), wnd(window), camera(camera) {
+    } // Jeœli dziedziedzisz z Component
+
     virtual ~Ability() = default;
 
-    virtual void Update(float dt) override;
-    virtual void DrawImGuiControls() override;
+    // Metody, które ka¿da umiejêtnoœæ musi zaimplementowaæ
+    virtual void Pressed() = 0;   // Czysto wirtualna, jeœli ka¿da umiejêtnoœæ MUSI to zdefiniowaæ
+    virtual void Released() = 0;
+    virtual void Update(float dt) override // Jeœli dziedziczysz z Component i chcesz zachowaæ spójnoœæ
+    {
+        Component::Update(dt); // Wywo³aj bazow¹ implementacjê jeœli istnieje
+    }
 
-    // Wirtualne metody do nadpisania w pochodnych klasach
-    virtual void Pressed() {}
-    virtual void Released() {}
-private:
+protected:
     Window& wnd;
-    Node* camera = nullptr;
-    Node* player = nullptr;
+    Node* camera;
 };

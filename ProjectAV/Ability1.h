@@ -10,24 +10,25 @@
 // but including Node.h is often fine here.
 class Node;
 
-class Ability1 : public Component
+class Ability1 : public Ability
 {
 public:
 	Ability1(Node* owner, Window& window, Node* camera);
 	virtual ~Ability1() = default;
 
+
 	virtual void Update(float dt) override;
 	virtual void DrawImGuiControls() override;
 	void OnTriggerEnter(Node* other) override;
 	void OnTriggerExit(Node* other) override;
-	void Pressed();
-	void Released();
+	void Pressed() override;
+	void Released() override;
 	float cooldown = 0.5f; // Cooldown for ability 1
 	float force = 600.0f;
 	bool abilityReady = true; // Is the ability ready to be used?
 private:
-	Window& wnd;
-	Node* camera = nullptr;
+	/*Window& wnd;
+	Node* camera = nullptr;*/
 	void KeyboardInput();
 	void Cooldowns(float dt);
 	void Positioning();

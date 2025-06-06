@@ -11,7 +11,7 @@
 
 namespace dx = DirectX;
 Ability2::Ability2(Node* owner, Window& window, Node* camera)
-    : Component(owner), wnd(window), camera(camera)  // Initialize reference member
+    : Ability(owner, window, camera)
 {
 
 }

@@ -134,7 +134,7 @@ App::App(const std::string& commandLine)
         std::make_unique<Ability1>(pAbility1, wnd, pCamera)
     );
     pAbility1->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 0.0f, 8.0f));
-    pPlayer->GetComponent<PlayerController>()->ability1 = pAbility1;
+    pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility1;
 
 
     BodyCreationSettings a2odySettings(new JPH::SphereShape(4.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
@@ -147,7 +147,7 @@ App::App(const std::string& commandLine)
     pAbility2->AddComponent(
         std::make_unique<ModelComponent>(pAbility2, wnd.Gfx(), "Models\\box.glb")
     );
-    pPlayer->GetComponent<PlayerController>()->ability2 = pAbility2;
+    pPlayer->GetComponent<PlayerController>()->abilitySlot2 = pAbility2;
 
 
     BodyCreationSettings a3odySettings(new JPH::SphereShape(40.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
@@ -160,7 +160,7 @@ App::App(const std::string& commandLine)
     pAbility3->AddComponent(
         std::make_unique<ModelComponent>(pAbility3, wnd.Gfx(), "Models\\box.glb")
     );
-    pPlayer->GetComponent<PlayerController>()->ability3 = pAbility3;
+    pPlayer->GetComponent<PlayerController>()->abilitySlot3 = pAbility3;
 
 
     BodyCreationSettings a4odySettings(new JPH::SphereShape(2.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
@@ -171,7 +171,7 @@ App::App(const std::string& commandLine)
         std::make_unique<Ability4>(pAbility4, wnd, pCamera)
     );
 
-   // pPlayer->GetComponent<PlayerController>()->ability1 = pAbility4;
+   // pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility4;
 
     //Adding Other Components
     pFreeViewCamera->AddComponent(
@@ -369,6 +369,9 @@ void App::HandleInput(float dt)
             break;
         case 'H': // Toggle UI
             showControlWindow = !showControlWindow;
+            break;
+        case 'B':
+            pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility4;
             break;
         case VK_ESCAPE: // Exit
             PostQuitMessage(0);
