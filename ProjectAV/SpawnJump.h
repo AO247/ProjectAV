@@ -33,6 +33,8 @@ public:
 	bool playerReady = false;
 	bool halfWay = false;
 	bool rotated = false;
+	bool lastRotate = false;
+	float targetYaw = 0.0f;
 private:
 	Window& wnd;
 };

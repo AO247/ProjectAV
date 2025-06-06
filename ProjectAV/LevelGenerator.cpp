@@ -109,13 +109,8 @@ void LevelGenerator::GenerateIslands()
         }
         Vector3 p = islandPrefab->GetWorldPosition();
         island = islandPrefab->GetComponent<Island>();
-        if (randIsland != 0)
-        {
-            if (islands.size() != 0)  island->Rotate();
-            counterToRotate = 0;
-        }
-
-
+        if (islands.size() != 0)  island->Rotate();
+        counterToRotate = 0;
     }
     /*if (counterToRotate == 3) {
         island->Rotate();

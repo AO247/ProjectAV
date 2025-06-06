@@ -39,7 +39,22 @@ void SpawnJump::Update(float dt)
 					direction *= 300.0f * dt;
 					PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(playerNode->GetComponent<Rigidbody>()->GetBodyID(), Vec3(direction.x, 0.0f, direction.z));
 					pushed = true;
-					wnd.playerLocked = false;
+					if (wnd.playerLocked)
+					{
+						auto* cameraNode = playerNode->GetComponent<PlayerController>()->camera;
+						cameraNode->SetLocalRotation(DirectX::XMFLOAT3(0.0f, targetYaw, 0.0f));
+						cameraNode->GetComponent<Camera>()->xRotation = 0.0f;
+						cameraNode->GetComponent<Camera>()->yRotation = targetYaw;
+						wnd.playerLocked = false;
+					}
+					else if (!lastRotate)
+					{
+						auto* cameraNode = playerNode->GetComponent<PlayerController>()->camera;
+						cameraNode->SetLocalRotation(DirectX::XMFLOAT3(0.0f, targetYaw, 0.0f));
+						cameraNode->GetComponent<Camera>()->xRotation = 0.0f;
+						cameraNode->GetComponent<Camera>()->yRotation = targetYaw;
+						lastRotate = true;
+					}
 				}
 				else if (pushed && playerNode->GetWorldPosition().y < targetPosition.y + 3.0f)
 				{
@@ -47,6 +62,7 @@ void SpawnJump::Update(float dt)
 					rotated = false;
 					halfWay = false;
 					playerReady = false;
+					lastRotate = false;
 				}
 				if (!rotated)
 				{
@@ -54,7 +70,7 @@ void SpawnJump::Update(float dt)
 					Vector3 direction = (targetPosition - playerNode->GetWorldPosition());
 					direction.y = 0.0f;
 					direction.Normalize();
-					float targetYaw = atan2f(direction.x, direction.z);
+					targetYaw = atan2f(direction.x, direction.z);
 
 					auto* cameraNode = playerNode->GetComponent<PlayerController>()->camera;
 					DirectX::XMFLOAT3 currentRot = cameraNode->GetLocalRotationEuler();
