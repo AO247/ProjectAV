@@ -74,6 +74,7 @@ private:
 public:
 	Keyboard kbd;
 	Mouse mouse;
+	bool playerLocked = false;
 private:
 	bool cursorEnabled = true;
 	int width;

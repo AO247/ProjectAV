@@ -1,0 +1,12 @@
+# Blender 4.0.2 MTL File: 'flying.blend'
+# www.blender.org
+
+newmtl Material
+Ns 273.120667
+Ka 1.000000 1.000000 1.000000
+Kd 0.022258 0.038244 0.073800
+Ks 0.540909 0.540909 0.540909
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
