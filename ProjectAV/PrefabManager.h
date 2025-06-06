@@ -109,9 +109,8 @@ public:
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(2.0f, 6.7f, 2.0f)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
-        BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
-
         BodySettings.mMassPropertiesOverride.mMass = 20.0f;
+        BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
         BodySettings.mFriction = 0.5f;
         BodySettings.mMotionQuality = EMotionQuality::LinearCast;
         pNewNodeOwner->AddComponent(
@@ -554,6 +553,8 @@ public:
         InstantiateColumn(pNewNode, 20.0f, 0.0f, -20.0f, 4.0f);
         InstantiateColumn(pNewNode, -20.0f, 0.0f, 20.0f, 4.0f);
         InstantiateColumn(pNewNode, -20.0f, 0.0f, -20.0f, 4.0f);
+
+        InstantiateNewColumn(pNewNode, 5.0f, 0.0f, 5.0f, 1.0f);
 
 
 
