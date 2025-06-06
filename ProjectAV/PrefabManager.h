@@ -47,6 +47,7 @@ public:
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
         );
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(2.0f, 10.0f, 2.0f)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::WALL);
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
 
@@ -73,6 +74,7 @@ public:
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\objects\\kolumna_1_top.obj")
         );
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(2.0f, 1.0f, 2.0f)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Kinematic, Layers::WALL);
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
 
@@ -104,6 +106,7 @@ public:
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\objects\\kolumna_1_srodek.obj")
         );
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(2.0f, 6.7f, 2.0f)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
 
@@ -132,6 +135,7 @@ public:
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\objects\\kolumna_1_podstawa.obj")
         );
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
         TriangleList islandTriangles = PhysicsCommon::MakeTriangleList(islandModel->GetAllTriangles());
         MeshShapeSettings islandMeshSettings(islandTriangles);
@@ -209,6 +213,7 @@ public:
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\platformy_glazy_2\\platforma_1.2.obj")
         );
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
         TriangleList islandTriangles = PhysicsCommon::MakeTriangleList(islandModel->GetAllTriangles());
         MeshShapeSettings islandMeshSettings(islandTriangles);
@@ -232,13 +237,12 @@ public:
     }
     static Node* InstantiatePlatform2(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
-
-
         auto pNewNodeOwner = std::make_unique<Node>("Platform1", nullptr, "GROUND");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\platformy_glazy_2\\platforma_2.2.obj")
         );
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
         TriangleList islandTriangles = PhysicsCommon::MakeTriangleList(islandModel->GetAllTriangles());
         MeshShapeSettings islandMeshSettings(islandTriangles);
@@ -269,6 +273,7 @@ public:
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\platformy_glazy_2\\platforma_3.3.obj")
         );
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
         TriangleList islandTriangles = PhysicsCommon::MakeTriangleList(islandModel->GetAllTriangles());
         MeshShapeSettings islandMeshSettings(islandTriangles);
@@ -343,9 +348,8 @@ public:
         leftPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         rightPoint->AddComponent(
             std::make_unique<ModelComponent>(rightPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
-        );*/
         );
-        rightPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        rightPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
         pIsland->leftPoint = leftPoint.get();
         pIsland->rightPoint = rightPoint.get();
         pIsland->upPoint = upPoint.get();
@@ -399,7 +403,7 @@ public:
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\wyspy_2\\wyspa_mala_2.obj")
         );
-        
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
         TriangleList islandTriangles = PhysicsCommon::MakeTriangleList(islandModel->GetAllTriangles());
         MeshShapeSettings islandMeshSettings(islandTriangles);
@@ -447,16 +451,14 @@ public:
 		leftPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         rightPoint->AddComponent(
             std::make_unique<ModelComponent>(rightPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
-        );*/
         );
-		rightPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+		rightPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
         pIsland->leftPoint = leftPoint.get();
         pIsland->rightPoint = rightPoint.get();
         pIsland->upPoint = upPoint.get();
         pIsland->downPoint = downPoint.get();
         pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
-        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
 
         Node* pNewNode = pNewNodeOwner.get();
 
@@ -483,6 +485,8 @@ public:
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\wyspy_2\\wyspa_mala_L_2.obj")
         );
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+
         ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
         TriangleList islandTriangles = PhysicsCommon::MakeTriangleList(islandModel->GetAllTriangles());
         MeshShapeSettings islandMeshSettings(islandTriangles);
@@ -562,11 +566,13 @@ public:
     {
         auto pNewNodeOwner = std::make_unique<Node>("Enemy", nullptr, "ENEMY");
         Node* pNewNode = pNewNodeOwner.get();
-        parentNode->AddChild(std::move(pNewNodeOwner));
 
         pNewNode->AddComponent(
             std::make_unique<ModelComponent>(pNewNode, wind->Gfx(), "Models\\enemy\\basic.obj")
         );
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        parentNode->AddChild(std::move(pNewNodeOwner));
+
         BodyCreationSettings eBodySettings(new JPH::CapsuleShape(2.1f, 1.5f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::MOVING);
         eBodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
 
@@ -609,11 +615,13 @@ public:
     {
         auto pNewNodeOwner = std::make_unique<Node>("Enemy", nullptr, "ENEMY");
         Node* pNewNode = pNewNodeOwner.get();
-        parentNode->AddChild(std::move(pNewNodeOwner));
 
         pNewNode->AddComponent(
             std::make_unique<ModelComponent>(pNewNode, wind->Gfx(), "Models\\enemy\\flying.obj")
         );
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        parentNode->AddChild(std::move(pNewNodeOwner));
+
         BodyCreationSettings eBodySettings(new JPH::CapsuleShape(2.1f, 1.5f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::MOVING);
         eBodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
 
@@ -657,11 +665,13 @@ public:
     {
         auto pNewNodeOwner = std::make_unique<Node>("Enemy", nullptr, "ENEMY");
         Node* pNewNode = pNewNodeOwner.get();
-        parentNode->AddChild(std::move(pNewNodeOwner));
 
         pNewNode->AddComponent(
             std::make_unique<ModelComponent>(pNewNode, wind->Gfx(), "Models\\enemy\\ranged.obj")
         );
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        parentNode->AddChild(std::move(pNewNodeOwner));
+
         BodyCreationSettings eBodySettings(new JPH::CapsuleShape(1.2f, 1.5f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::MOVING);
         eBodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
 

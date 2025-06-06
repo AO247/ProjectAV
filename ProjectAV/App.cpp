@@ -150,7 +150,6 @@ App::App(const std::string& commandLine)
     );
     pPlayer->GetComponent<PlayerController>()->abilitySlot2 = pAbility2;
     pAbility2->GetComponent<ModelComponent>()->LinkTechniques(rg);
-    pPlayer->GetComponent<PlayerController>()->ability2 = pAbility2;
 
 
     BodyCreationSettings a3odySettings(new JPH::SphereShape(40.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
@@ -163,6 +162,7 @@ App::App(const std::string& commandLine)
     pAbility3->AddComponent(
         std::make_unique<ModelComponent>(pAbility3, wnd.Gfx(), "Models\\box.glb")
     );
+    pAbility3->GetComponent<ModelComponent>()->LinkTechniques(rg);
     pPlayer->GetComponent<PlayerController>()->abilitySlot3 = pAbility3;
 
 
@@ -210,6 +210,8 @@ App::App(const std::string& commandLine)
     pHands->AddComponent(
         std::make_unique<ModelComponent>(pHands, wnd.Gfx(), "Models\\objects\\hands.obj")
 	);
+    pHands->GetComponent<ModelComponent>()->LinkTechniques(rg);
+
 	pHands->SetLocalScale({ 0.1f, 0.1f, 0.1f });
     pHands->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
 	//pEnemy->AddComponent(
@@ -305,6 +307,7 @@ int App::Go()
     {
         // 1) Obsługa wiadomości systemowych (window, input, itp.)
         if (const auto ecode = Window::ProcessMessages())
+        {
             return *ecode;
         }
 
@@ -424,7 +427,8 @@ void App::HandleInput(float dt)
 
 void App::DoFrame(float dt)
 {
-
+	pSceneRoot->Update(dt); // Update the scene root and all its children
+    CleanupDestroyedNodes(pSceneRoot.get());
 
     wnd.Gfx().BeginFrame(0.5f, 0.5f, 1.0f);
 	pointLight.cbData.pos = { pPlayer->GetWorldPosition().x, pPlayer->GetWorldPosition().y + 12.0f, pPlayer->GetWorldPosition().z };
