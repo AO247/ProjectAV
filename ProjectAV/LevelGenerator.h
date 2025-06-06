@@ -14,10 +14,10 @@ public:
 	virtual ~LevelGenerator() = default;
 
 	int bigIslandCount = 1;
-	int mediumIslandCount = 1;
-	int smallIslandCount = 1;
+	int mediumIslandCount = 0;
+	int smallIslandCount = 2;
 
-	int numberOfHardEnemies = 1;
+	int numberOfHardEnemies = 0;
 	int numberOfMediumEnemies = 1;
 	int numberOfEasyEnemies = 1;
 
