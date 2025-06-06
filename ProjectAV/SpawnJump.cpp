@@ -63,6 +63,7 @@ void SpawnJump::Update(float dt)
 					halfWay = false;
 					playerReady = false;
 					lastRotate = false;
+					pushed = false;
 				}
 				if (!rotated)
 				{

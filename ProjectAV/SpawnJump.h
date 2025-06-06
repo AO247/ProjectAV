@@ -28,8 +28,8 @@ public:
 	float jumpCooldown = 0.0f;
 	Vector3 targetPosition = Vector3::Zero;
 	void Activate(Vector3 targetPos);
-	bool moved = true;
-	bool pushed = true;
+	bool moved = false;
+	bool pushed = false;
 	bool playerReady = false;
 	bool halfWay = false;
 	bool rotated = false;
