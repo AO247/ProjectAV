@@ -8,7 +8,6 @@
 #include "PrefabManager.h"
 #include "LevelGenerator.h"
 #include "CMath.h"
-#include "LevelGeneratorComp.h"
 
 // Forward declare Node to avoid circular include if necessary,
 // but including Node.h is often fine here.
@@ -27,11 +26,11 @@ public:
 	virtual void DrawImGuiControls() override;
 
 	Node* playerNode;
+	Node* spawn;
 	std::vector<Node*> enemies;
 	std::vector<Node*> levels;
 	int levelCount = 0;
 	void AddSpecialLevel();
-	bool yey = true;
 	bool completed = false;
 private:
 	Window& wnd;

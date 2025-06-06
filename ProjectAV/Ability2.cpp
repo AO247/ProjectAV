@@ -11,7 +11,7 @@
 
 namespace dx = DirectX;
 Ability2::Ability2(Node* owner, Window& window, Node* camera)
-    : Component(owner), wnd(window), camera(camera)  // Initialize reference member
+    : Ability(owner, window, camera)
 {
 
 }
@@ -54,21 +54,30 @@ void Ability2::Positioning()
         }
     }
 }
-void Ability2::Active()
+void Ability2::Pressed()
 {
     if (!abilityReady) return;
     for (int i = 0; i < objects.size(); i++)
     {
-        if (objects[i]->tag == "ENEMY" || objects[i]->tag == "STONE")
+        if (objects[i]->tag == "ENEMY")
         {
-            //PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), Vec3(0.0f, 0.0f, 0.0f));
+            PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), Vec3(0.0f, 0.0f, 0.0f));
             Vec3 direction = Vec3(0.0f, 1.0f, 0.0f);
-            PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), direction * force * 1.0f);
+            PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), direction * force);
             OutputDebugStringA(("Ability2 hit: " + objects[i]->GetName() + "\n").c_str());
         }
+        else if (objects[i]->tag == "STONE")
+        {
+            Vec3 direction = Vec3(0.0f, 1.0f, 0.0f);
+            PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), direction * 230.0f);
+            OutputDebugStringA(("Ability2 hit: " + objects[i]->GetName() + "\n").c_str());
+		}
     }
     cooldownTimer = cooldown;
     abilityReady = false;
+}
+void Ability2::Released()
+{
 }
 
 void Ability2::Cooldowns(float dt)
@@ -82,21 +91,6 @@ void Ability2::Cooldowns(float dt)
         abilityReady = true;
     }
 
-}
-
-
-void Ability2::KeyboardInput()
-{
-    while (const auto e = wnd.mouse.Read()) // Read events from the queue
-    {
-        switch (e->GetType())
-        {
-        case Mouse::Event::Type::RPress:
-			OutputDebugStringA("\n\n\nRight Mouse Button Pressed\n");
-            Active();
-            break;
-        }
-    }
 }
 
 

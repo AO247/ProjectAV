@@ -4,17 +4,17 @@
 
 BodyID Rigidbody::testowanie = BodyID();
 
-Rigidbody::Rigidbody(Node* owner, Vector3 position, float mass, Shape* shape) : Component(owner)
-{
-	isRigidbody = true;
-	BodyInterface& bodyInterface = PhysicsCommon::physicsSystem->GetBodyInterface();
-	BodyCreationSettings bodySettings(shape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Dynamic, Layers::MOVING);
-	bodySettings.mUserData = reinterpret_cast<uint64>(owner);
-	//bodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
-	//bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(2.0f * Vec3(cTorusRadius, cTubeRadius, cTorusRadius), 1000.0f);
-	bodyID = bodyInterface.CreateAndAddBody(bodySettings, EActivation::Activate);
-	dynamic_cast<MyContactListener*>(PhysicsCommon::physicsSystem->GetContactListener())->AddRigidbody(bodyID);
-}
+//Rigidbody::Rigidbody(Node* owner, Vector3 position, float mass, Shape* shape) : Component(owner)
+//{
+//	isRigidbody = true;
+//	BodyInterface& bodyInterface = PhysicsCommon::physicsSystem->GetBodyInterface();
+//	BodyCreationSettings bodySettings(shape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Dynamic, Layers::MOVING);
+//	bodySettings.mUserData = reinterpret_cast<uint64>(owner);
+//	//bodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
+//	//bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(2.0f * Vec3(cTorusRadius, cTubeRadius, cTorusRadius), 1000.0f);
+//	bodyID = bodyInterface.CreateAndAddBody(bodySettings, EActivation::Activate);
+//	dynamic_cast<MyContactListener*>(PhysicsCommon::physicsSystem->GetContactListener())->AddRigidbody(bodyID);
+//}
 
 Rigidbody::Rigidbody(Node* owner, BodyCreationSettings bodySettings) : Component(owner)
 {
@@ -74,13 +74,13 @@ void Rigidbody::Update(float dt)
 	}
 	
 
-	if (PhysicsCommon::physicsSystem->GetBodyInterface().GetMotionType(bodyID) != EMotionType::Static)
-	{
-		pOwner->PhysicsSetLocalRotation(DirectX::XMFLOAT4(rot.GetX(),
+	//if (PhysicsCommon::physicsSystem->GetBodyInterface().GetMotionType(bodyID) != EMotionType::Static)
+	//{
+		pOwner->PhysicsSetWorldRotation(DirectX::XMFLOAT4(rot.GetX(),
 			rot.GetY(),
 			rot.GetZ(),
 			rot.GetW()));
-	}
+	//}
 
 }
 

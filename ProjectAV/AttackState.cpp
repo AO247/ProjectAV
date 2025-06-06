@@ -12,7 +12,6 @@ AttackState::AttackState(StateMachine* pOwner) : State()
 
 void AttackState::Enter(StateMachine* pOwner)
 {
-	std::srand(static_cast<unsigned>(std::time(nullptr)));
 	OutputDebugStringA("Entering ATTACK State\n");
 	if (pOwner->pAttackComponent != nullptr) {
 		time = 0.0f;

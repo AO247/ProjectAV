@@ -22,13 +22,13 @@ PlayerController::PlayerController(Node* owner, Window& window)
 void PlayerController::Update(float dt)
 {
     Positioning();
-    if (!wnd.CursorEnabled() && alive)
+    Cooldowns(dt);
+    if (!wnd.CursorEnabled() && alive && !wnd.playerLocked)
     {
         GroundCheck();
-        Cooldowns(dt);
 		KeyboardInput();
 		SpeedControl();
-		MovePlayer();
+		MovePlayer(dt);
     }
 }
 
@@ -78,8 +78,12 @@ void PlayerController::Jump()
 {
     if ((grounded || !doubleJumped) && !jumped) {
 		Vec3 velocity = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
-        PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rigidbody->GetBodyID(), Vec3(velocity.GetX(), jumpForce, velocity.GetZ()));
-		//PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(rigidbody->GetBodyID(), Vec3(0.0f, jumpForce, 0.0f));
+        if (velocity.GetY() < 0.0f)
+        {
+            PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rigidbody->GetBodyID(), Vec3(velocity.GetX(), 0.0f, velocity.GetZ()));
+
+        }
+		PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(rigidbody->GetBodyID(), Vec3(0.0f, jumpForce, 0.0f));
         if (grounded) {
 			grounded = false;
         }
@@ -148,16 +152,16 @@ void PlayerController::GroundCheck()
     }
 }
 
-void PlayerController::MovePlayer()
+void PlayerController::MovePlayer(float dt)
 {
     moveDirection.Normalize();
     if (grounded)
     {
-        PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * moveSpeed * 100.0f);
+        PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * moveSpeed * 1000.0f * dt);
     }
     else
     {
-        PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * moveSpeed * 10.0f);
+        PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * moveSpeed * 100.0f * dt);
     }
 }
 
@@ -181,22 +185,6 @@ void PlayerController::Cooldowns(float dt)
     {
         canDash = true;
     }
-	if (ability1CooldownTimer > 0.0f)
-	{
-		ability1CooldownTimer -= dt;
-	}
-	else
-	{
-		ability1Ready = true;
-	}
-	if (ability2CooldownTimer > 0.0f)
-	{
-		ability2CooldownTimer -= dt;
-	}
-	else
-	{
-		ability2Ready = true;
-	}
 }
 
 void PlayerController::Positioning()
@@ -210,19 +198,35 @@ void PlayerController::Positioning()
 
 void PlayerController::KeyboardInput()
 {
+
     while (const auto e = wnd.mouse.Read()) // Read events from the queue
     {
         switch (e->GetType())
         {
         case Mouse::Event::Type::LPress:
-            ability1->GetComponent<Ability1>()->Active();
+            abilitySlot1->GetComponent<Ability>()->Pressed();
             break;
 
         case Mouse::Event::Type::RPress:
-            ability2->GetComponent<Ability2>()->Active();
+            abilitySlot2->GetComponent<Ability>()->Pressed();
+            break;
+
+        case Mouse::Event::Type::LRelease:
+            abilitySlot1->GetComponent<Ability>()->Released();
+            break;
+
+        case Mouse::Event::Type::RRelease:
+            abilitySlot2->GetComponent<Ability>()->Released();
             break;
         }
+
     }
+
+    if (wnd.kbd.KeyIsPressed('Q'))
+    {
+        abilitySlot3->GetComponent<Ability>()->Pressed();
+	}
+
 
     moveDirection = Vector3(0.0f, 0.0f, 0.0f);
     if (wnd.kbd.KeyIsPressed(VK_SPACE))
@@ -263,8 +267,6 @@ void PlayerController::DrawImGuiControls()
     ImGui::InputFloat("JumpForce", &jumpForce);
 	ImGui::InputFloat("Dash Force", &dashForce);
 	ImGui::InputFloat("Dash Cooldown", &dashCooldown);
-	ImGui::InputFloat("Ability1 Cooldown", &ability1Cooldown);
-	ImGui::InputFloat("Ability2 Cooldown", &ability2Cooldown);
     ImGui::InputFloat("Height", &height);
     ImGui::Checkbox("Jumped", &jumped);
     ImGui::Checkbox("CanDash", &canDash);

@@ -1,46 +1,52 @@
 #pragma once
 #include "Node.h"
+#include "Component.h"
 #include "PrefabManager.h"
 #include <DirectXMath.h>
 
 using namespace DirectX::SimpleMath;
 class PrefabManager;
 
-class LevelGenerator
+class LevelGenerator : public Component
 {
 public:
-	LevelGenerator(PrefabManager* prefabManager, Node* root, Node* pPlayer, bool isNew);
-	~LevelGenerator() = default;
+	LevelGenerator(Node* owner, Node* pPlayer, bool rot);
+	virtual ~LevelGenerator() = default;
 
-	int bigIslandCount = 0;
+	int bigIslandCount = 1;
 	int mediumIslandCount = 0;
-	int smallIslandCount = 0;
+	int smallIslandCount = 3;
 
-	int numberOfHardEnemies = 0;
-	int numberOfMediumEnemies = 0;
-	int numberOfEasyEnemies = 0;
+	int numberOfHardEnemies = 2;
+	int numberOfMediumEnemies = 2;
+	int numberOfEasyEnemies = 2;
 
 
-	void Update();
+	virtual void Update(float dt) override;
+	virtual void DrawImGuiControls() override;
+
 	bool islandGenerated = false;
 	bool enemiesSpawned = false;
 	bool isFinished = false;
+	bool startEnemyGenerating = false;
 private:
-	PrefabManager* prefabManager;
-	Node* pSceneRoot;
 	Node* pPlayer;
 	float distance = 1.0f;
 	std::vector<Node*> islands;
 	std::vector<Vector4> points;
 	std::vector<Vector3> spawnPoints;
+
 	void GenerateIslands();
 	void SpawnEnemies();
-
-	void GenerateIslandsNew();
-	void SpawnEnemiesNew();
-
+	bool spawnNeedRotation = false;
 	bool spawned = true;
+	Node* islandPrefab = nullptr;
+	Node* enemy = nullptr;
+	int islandNumber = 1;
+	int pIslandNumber = 1;
+	Island* island = nullptr;
 
+	int counterToRotate = 0;
 
 	void ChangePosition(Node* island, Vector3 pointPos, Vector3 startPos);
 	bool Collide(Node* island1, Node* island2);
