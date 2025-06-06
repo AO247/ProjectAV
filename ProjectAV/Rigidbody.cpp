@@ -40,38 +40,38 @@ void Rigidbody::Update(float dt)
 		pos.GetY(),
 		pos.GetZ()));
 
-	if (pOwner->GetName() == "Stone")
-	{
-		if (firstRun)
-		{
-			lastTest = rot.GetW();
-			firstRun = false;
-			testowanie = bodyID;
-		}
-		else
-		{
-			if (lastTest != rot.GetW())
-			{
-				if (bodyID == testowanie)
-				{
-					/*OutputDebugString("mowi: ");
-					OutputDebugString(std::to_string(bodyID.GetIndex()).c_str());
-					OutputDebugString("\n");
-					OutputDebugString(std::to_string(rot.GetX()).c_str());
-					OutputDebugString("\n");
-					OutputDebugString(std::to_string(rot.GetY()).c_str());
-					OutputDebugString("\n");
-					OutputDebugString(std::to_string(rot.GetZ()).c_str());
-					OutputDebugString("\n");
-					OutputDebugString(std::to_string(rot.GetW()).c_str());
-					OutputDebugString("\n");
-					OutputDebugString("\n");*/
-				}
+	//if (pOwner->GetName() == "Stone")
+	//{
+	//	if (firstRun)
+	//	{
+	//		lastTest = rot.GetW();
+	//		firstRun = false;
+	//		testowanie = bodyID;
+	//	}
+	//	else
+	//	{
+	//		if (lastTest != rot.GetW())
+	//		{
+	//			if (bodyID == testowanie)
+	//			{
+	//				/*OutputDebugString("mowi: ");
+	//				OutputDebugString(std::to_string(bodyID.GetIndex()).c_str());
+	//				OutputDebugString("\n");
+	//				OutputDebugString(std::to_string(rot.GetX()).c_str());
+	//				OutputDebugString("\n");
+	//				OutputDebugString(std::to_string(rot.GetY()).c_str());
+	//				OutputDebugString("\n");
+	//				OutputDebugString(std::to_string(rot.GetZ()).c_str());
+	//				OutputDebugString("\n");
+	//				OutputDebugString(std::to_string(rot.GetW()).c_str());
+	//				OutputDebugString("\n");
+	//				OutputDebugString("\n");*/
+	//			}
 
-				lastTest = rot.GetW();
-			}
-		}
-	}
+	//			lastTest = rot.GetW();
+	//		}
+	//	}
+	//}
 	
 
 	//if (PhysicsCommon::physicsSystem->GetBodyInterface().GetMotionType(bodyID) != EMotionType::Static)
