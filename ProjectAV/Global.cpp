@@ -3,8 +3,8 @@ namespace dx = DirectX;
 Global::Global(Node* owner, Window& window, Node* player)
 	: Component(owner), wnd(window), playerNode(player)  // Initialize reference member
 {
-	PrefabManager::InstantiateStartIsland(pOwner, 0.0f, 0.0f, 0.0f, 4.0f);
 	player->SetLocalPosition(enterPoint);
+	PrefabManager::InstantiateStartIsland(pOwner, 0.0f, 0.0f, 0.0f, 4.0f);
 	firstSpawn = PrefabManager::InstantiateFirstIsland(pOwner, 0.0f, 5.0f, -20.0f, 1.0f);
 	StartRun();
 }
@@ -48,7 +48,7 @@ void Global::Update(float dt)
 	{
 		EndRun();
 	}
-	/*if (ending)
+	if (ending)
 	{
 		levels[endingRemover]->Destroy();
 		endingRemover--;
@@ -57,7 +57,7 @@ void Global::Update(float dt)
 			StartRun();
 			ending = false;
 		}
-	}*/
+	}
 	if (firstRun == 0)
 	{
 		firstSpawn->GetComponent<SpawnJump>()->Activate(levels[levels.size() - 3]->FindFirstChildByTag("SPAWN")->GetWorldPosition());
@@ -130,10 +130,10 @@ void Global::EndRun()
 	levelCount = 1;
 	wnd.playerLocked = false;
 	started = false;
-	for (int i = 0; i < levels.size(); i++)
+	/*for (int i = 0; i < levels.size(); i++)
 	{
 		levels[i]->Destroy();
-	}
+	}*/
 }
 void Global::DrawImGuiControls()
 {

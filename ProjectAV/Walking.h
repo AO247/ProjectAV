@@ -19,7 +19,7 @@ public:
 	Vector3 targetPosition;
 	virtual void Follow(float dt, DirectX::XMFLOAT3 target, float sp = 1.0f);
 	virtual void DrawImGuiControls() override;
-	float avoidanceWeight = 30.0f;
+	float avoidanceWeight = 10.0f;
 	float avoidanceDistance = 15.0f;
 	float raycastWidthOffset = 0.8f;
 	float height = 8.0f;
@@ -29,6 +29,7 @@ public:
 
 	bool grounded = false;
 	bool voidNear = false;
+	bool canJump = false;
 	float jumpTimer = 0.0f;
 	Vector3 lastIslandPos = { 0.0f, 0.0f, 0.0f };
 
