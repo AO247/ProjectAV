@@ -4,9 +4,9 @@
 #include <algorithm>
 #include <iterator>
 
-std::vector<std::string> TokenizeQuoted( const std::string& input );
+std::vector<std::string> TokenizeQuoted(const std::string& input);
 
-std::wstring ToWide( const std::string& narrow );
+std::wstring ToWide(const std::string& narrow);
 
 std::string ToNarrow(const std::wstring& wide);
 
@@ -29,9 +29,6 @@ void SplitStringIter(const std::string& s, const std::string& delim, Iter out)
 	}
 }
 
-inline std::vector<std::string> SplitString(const std::string& s, const std::string& delim)
-{
-	std::vector<std::string> strings;
-	SplitStringIter(s, delim, std::back_inserter(strings));
-	return strings;
-}
+std::vector<std::string> SplitString(const std::string& s, const std::string& delim);
+
+bool StringContains(std::string_view haystack, std::string_view needle);
