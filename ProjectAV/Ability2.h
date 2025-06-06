@@ -29,6 +29,5 @@ private:
 	void KeyboardInput();
 	void Cooldowns(float dt);
 	void Positioning();
-	std::vector<Node*> objects;
 	float cooldownTimer = 0.0f;
 };
