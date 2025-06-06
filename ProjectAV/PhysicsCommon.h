@@ -147,7 +147,8 @@ namespace Layers
     static constexpr ObjectLayer TRIGGER = 3;
 	static constexpr ObjectLayer WALL = 4;
     static constexpr ObjectLayer PLAYER = 5;
-    static constexpr ObjectLayer NUM_LAYERS = 6;
+    static constexpr ObjectLayer ENEMY = 6;
+    static constexpr ObjectLayer NUM_LAYERS = 7;
 };
 
 class ObjectLayerPairFilterImpl : public ObjectLayerPairFilter
@@ -169,6 +170,8 @@ public:
             return true;
 		case Layers::PLAYER:
             return true;
+		case Layers::ENEMY:
+            return true;
         default:
             return false;
         }
@@ -183,8 +186,9 @@ namespace BroadPhaseLayers
     static constexpr BroadPhaseLayer TRIGGER(3);
 	static constexpr BroadPhaseLayer WALL(4);
     static constexpr BroadPhaseLayer PLAYER(5);
+	static constexpr BroadPhaseLayer ENEMY(6);
 
-    static constexpr uint NUM_LAYERS(6);
+    static constexpr uint NUM_LAYERS(7);
 };
 
 class BPLayerInterfaceImpl final : public BroadPhaseLayerInterface
@@ -199,6 +203,7 @@ public:
         mObjectToBroadPhase[Layers::TRIGGER] = BroadPhaseLayers::TRIGGER;
 		mObjectToBroadPhase[Layers::WALL] = BroadPhaseLayers::WALL;
         mObjectToBroadPhase[Layers::PLAYER] = BroadPhaseLayers::PLAYER;
+		mObjectToBroadPhase[Layers::ENEMY] = BroadPhaseLayers::ENEMY;
     }
 
     virtual uint GetNumBroadPhaseLayers() const override
@@ -223,6 +228,7 @@ public:
         case (BroadPhaseLayer::Type)BroadPhaseLayers::TRIGGER:		return "TRIGGER";
 		case (BroadPhaseLayer::Type)BroadPhaseLayers::WALL:		    return "WALL";
 		case (BroadPhaseLayer::Type)BroadPhaseLayers::PLAYER:		return "PLAYER";
+		case (BroadPhaseLayer::Type)BroadPhaseLayers::ENEMY:		return "ENEMY";
         default:													JPH_ASSERT(false); return "INVALID";
         }
     }
@@ -250,6 +256,8 @@ public:
         case Layers::WALL:
             return true;
 		case Layers::PLAYER:
+			return true;
+		case Layers::ENEMY:
 			return true;
         default:
             return false;
