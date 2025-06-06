@@ -32,7 +32,7 @@ App::App(const std::string& commandLine)
 {
     // Set Projection Matrix (Far plane adjusted for larger scenes potentially)
     wnd.Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 2000.0f));
-\
+
 
     std::srand(static_cast<unsigned>(std::time(nullptr)));
     cube.SetPos({ 4.0f,2.0f,0.0f });
@@ -305,7 +305,6 @@ int App::Go()
 
     while (true)
     {
-        // 1) Obsługa wiadomości systemowych (window, input, itp.)
         if (const auto ecode = Window::ProcessMessages())
         {
             return *ecode;
@@ -314,7 +313,7 @@ int App::Go()
         const float dt = timer.Mark();
         lag += dt;
 
-        constexpr float MAX_LAG = 0.5f; // np. pół sekundy
+        constexpr float MAX_LAG = 0.5f;
         if (lag > MAX_LAG)
             lag = MAX_LAG;
 

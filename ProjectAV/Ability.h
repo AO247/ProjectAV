@@ -19,7 +19,7 @@ public:
     {
         Component::Update(dt); // Wywo³aj bazow¹ implementacjê jeœli istnieje
     }
-
+    std::vector<Node*> objects;
 protected:
     Window& wnd;
     Node* camera;
