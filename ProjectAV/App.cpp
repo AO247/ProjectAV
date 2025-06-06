@@ -300,7 +300,7 @@ App::~App()
 
 int App::Go()
 {
-    const float FIXED_TIME_STEP = 1.0f / 120.0f;
+    const float FIXED_TIME_STEP = 1.0f / 60.0f;
     float lag = 0.0f;
 
     while (true)
