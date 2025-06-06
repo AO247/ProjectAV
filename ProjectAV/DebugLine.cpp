@@ -62,7 +62,7 @@ DebugLine::DebugLine(Graphics& gfx, dx::XMFLOAT3 start, dx::XMFLOAT3 end, dx::XM
         mainPass.AddBindable(std::make_shared<PixelConstantBuffer<PSColorConstant>>(gfx, colorConst, 1u)); // Slot 1 for material/object color
 
         // --- Input Layout ---
-        mainPass.AddBindable(InputLayout::Resolve(gfx, layout, pvsbc));
+        //mainPass.AddBindable(InputLayout::Resolve(gfx, layout, *pvs));
 
         // --- Transform Constant Buffer ---
         // Since vertices are already in world space, GetTransformXM() returns Identity.
