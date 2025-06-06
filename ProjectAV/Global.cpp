@@ -48,7 +48,7 @@ void Global::Update(float dt)
 	{
 		EndRun();
 	}
-	if (ending)
+	/*if (ending)
 	{
 		levels[endingRemover]->Destroy();
 		endingRemover--;
@@ -57,7 +57,7 @@ void Global::Update(float dt)
 			StartRun();
 			ending = false;
 		}
-	}
+	}*/
 	if (firstRun == 0)
 	{
 		firstSpawn->GetComponent<SpawnJump>()->Activate(levels[levels.size() - 3]->FindFirstChildByTag("SPAWN")->GetWorldPosition());
@@ -130,6 +130,10 @@ void Global::EndRun()
 	levelCount = 1;
 	wnd.playerLocked = false;
 	started = false;
+	for (int i = 0; i < levels.size(); i++)
+	{
+		levels[i]->Destroy();
+	}
 }
 void Global::DrawImGuiControls()
 {
