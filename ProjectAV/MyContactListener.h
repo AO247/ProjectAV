@@ -83,5 +83,7 @@ private:
     std::map<BodyID, std::map<BodyID, int>> collisionContacts;
     std::vector<TriggerActivationEvent> triggerActivationQueue;
     std::vector<TriggerActivationEvent> collisionActivationQueue;
+    std::vector<BodyID> triggerDeletionQueue;
+    std::vector<BodyID> collisionDeletionQueue;
     Mutex mMutex;
 };
