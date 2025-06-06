@@ -51,15 +51,27 @@ void Ability4::Released()
 {
     isPressed = false;
     if (!abilityReady) return;
+    Vector3 direction = Vector3::Zero;
+    Vec3 position = Vec3(camera->GetWorldPosition().x, camera->GetWorldPosition().y, camera->GetWorldPosition().z);
+    Vec3 dire = Vec3(camera->Forward().x, camera->Forward().y, camera->Forward().z);
+    RRayCast ray = RRayCast(position, dire * 100.0f);
+    RayCastResult result;
+    if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(ray, result,
+        IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::PLAYER, BroadPhaseLayers::TRIGGER }),
+        IgnoreMultipleObjectLayerFilter({ Layers::PLAYER, Layers::TRIGGER })))
+    {
+        position = ray.mOrigin + ray.mDirection * result.mFraction;
+		Vector3 pos = Vector3(position.GetX(), position.GetY(), position.GetZ());
+		direction = pos - pOwner->GetWorldPosition();
+        direction.Normalize();
+    }
+    else 
+    {
     Vector3 dir = camera->GetWorldPosition() - pOwner->GetWorldPosition();
 
     float yaw = std::atan2(dir.x, dir.z);
     float distanceXZ = std::sqrt(dir.x * dir.x + dir.z * dir.z);
     float pitch = -std::atan2(dir.y, distanceXZ); // Negative for DirectX
-
-    //dir.y = 0.0f;
-    //dir.Normalize();
-    //float targetYaw = atan2f(dir.x, dir.z);
 
     pOwner->SetLocalRotation(DirectX::XMFLOAT3(pitch, yaw, 0.0f));
     // Nowa rotacja kamery
@@ -69,14 +81,14 @@ void Ability4::Released()
     float deltaPitch = wrap_angle(newCameraRot.x - cameraRotation.x);
 
 
-    // Kierunek w lokalnych osiach gracza
-    Vector3 direction = pOwner->Right() * -deltaYaw + pOwner->Up() * -deltaPitch;
+    direction = pOwner->Right() * -deltaYaw + pOwner->Up() * -deltaPitch;
 
     // Jeœli delta jest bardzo ma³a, nie rzucaj
     if (direction.Length() < 0.01f)
         direction = pOwner->Back();
 
     direction.Normalize();
+    }
 
     for (int i = 0; i < objects.size(); i++)
     {
