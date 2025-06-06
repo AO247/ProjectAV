@@ -35,8 +35,6 @@ App::App(const std::string& commandLine)
 
 
     std::srand(static_cast<unsigned>(std::time(nullptr)));
-    cube.SetPos({ 4.0f,2.0f,0.0f });
-    cube.LinkTechniques(rg);
 	pointLight.LinkTechniques(rg);
 
     RegisterDefaultAllocator();
@@ -445,7 +443,6 @@ void App::DoFrame(float dt)
 	/*DebugLine line(wnd.Gfx(), pEnemy->GetComponent<StateMachine>()->pos, pEnemy->GetComponent<StateMachine>()->cen, { 0.0f, 0.0f, 1.0f, 1.0f });
     line.Submit(fc);*/ // for idle
     // --- Bind Lights ---
-    cube.Submit();
     pointLight.Bind(wnd.Gfx(), viewMatrix); // Bind point light (to slot 0)
 
     FrustumCalculating(); // Draw with FRUSTUM CULLING
@@ -627,7 +624,6 @@ void App::ShowControlWindows()
     //DrawBoxColliders(wnd.Gfx()); // Call the updated function
 	//DrawCapsuleColliders(wnd.Gfx());
     //ForEnemyWalking();
-    //cube.SpawnControlWindow(wnd.Gfx(), "Cube 1");
     pointLight.Submit();
 
     //pointLight.SpawnControlWindow(); // Control for Point Light
