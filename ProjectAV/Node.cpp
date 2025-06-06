@@ -589,7 +589,10 @@ void Node::UpdateWorldTransform(bool transformationOutsidePhysicsTriggered)
     for (auto& child : children)
     {
         child->worldTransformDirty = true;
-        child->transformationOutsidePhysicsTriggered = transformationOutsidePhysicsTriggered;
+        if (transformationOutsidePhysicsTriggered)
+        {
+            child->transformationOutsidePhysicsTriggered = transformationOutsidePhysicsTriggered;
+        }
     }
 }
 
@@ -663,12 +666,14 @@ void Node::Update(float dt)
                     OutputDebugString("\n");
                 }*/
                 
-
                 auto& bodyInterface = PhysicsCommon::physicsSystem->GetBodyInterface();
                 bodyInterface.SetPosition(GetComponent<Rigidbody>()->GetBodyID(), JPH::RVec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z), JPH::EActivation::Activate);
                 bodyInterface.SetRotation(GetComponent<Rigidbody>()->GetBodyID(), JPH::Quat(GetWorldRotationQuaternion().x, GetWorldRotationQuaternion().y, GetWorldRotationQuaternion().z, GetWorldRotationQuaternion().w), JPH::EActivation::Activate);
                 continue;
             }
+            OutputDebugString("\n");
+            OutputDebugString(GetName().c_str());
+            OutputDebugString("\n");
         }
         comp->Update(dt);
     }

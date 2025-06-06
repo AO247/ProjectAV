@@ -896,9 +896,15 @@
     <FxCompile Include="Offset_VS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="BlurOutline_PS.hlsl" />
-    <FxCompile Include="Blur_PS.hlsl" />
-    <FxCompile Include="Fullscreen_VS.hlsl" />
+    <FxCompile Include="Fullscreen_VS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Blur_PS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="BlurOutline_PS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="DXGetErrorDescription.inl">
