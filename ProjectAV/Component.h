@@ -22,8 +22,10 @@ public:
     // For now, ModelComponent will have its own Draw with needed params.
 
     virtual void OnTriggerEnter(Node* object);
+    virtual void OnTriggerStay(Node* object);
     virtual void OnTriggerExit(Node* object);
     virtual void OnCollisionEnter(Node* object);
+    virtual void OnCollisionStay(Node* object);
     virtual void OnCollisionExit(Node* object);
 
     virtual void Follow(float dt, DirectX::XMFLOAT3 target, float sp = 1.0f) {}
