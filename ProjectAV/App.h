@@ -21,6 +21,7 @@
 #include "BlurOutlineRenderGraph.h"
 #include "PhysicsDebugRenderer.h"
 #include "Sprite.h"
+#include "CameraContainer.h"
 
 // Forward declarations
 class PlayerController; // Forward declare
@@ -46,8 +47,10 @@ private:
     Rgph::BlurOutlineRenderGraph rg{ wnd.Gfx() };
     Timer timer;
     float speed_factor = 1.0f;
+    CameraContainer cameras;
     PointLight pointLight;
     //PhysicsEngine physicsEngine; // Physics engine instance
+    bool savingDepth = false;
 
 
     //PhysicsDebugRenderer* physicsDebugRenderer;
@@ -79,6 +82,7 @@ private:
 	Node* pSoundEffectsPlayer = nullptr; // Node for the sound effects player
     Node* pPrefabs = nullptr;
 	Node* pHands = nullptr;
+    
 
     TestCube cube{ wnd.Gfx(),4.0f };
     // --- UI State ---

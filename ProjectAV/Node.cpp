@@ -726,7 +726,7 @@ void Node::Update(float dt)
     transformationOutsidePhysicsTriggered = false;
 }
 
-void Node::Submit(Graphics& gfx) const
+void Node::Submit(size_t channel,Graphics& gfx) const
 {
     if (auto* modelComp = GetComponent<ModelComponent>())
     {

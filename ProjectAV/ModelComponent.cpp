@@ -119,7 +119,7 @@ void ModelInternalNode::Submit(Graphics& gfx, dx::FXMMATRIX accumulatedTransform
 
 	for (const auto pm : meshPtrs) // pm is Mesh*
 	{
-		pm->Submit(modelNodeTransform); // Call Mesh's Submit
+		pm->Submit(0, modelNodeTransform); // Call Mesh's Submit
 	}
 	for (const auto& pc : childPtrs)
 	{

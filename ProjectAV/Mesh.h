@@ -35,7 +35,7 @@ public:
     DirectX::XMMATRIX GetTransformXM() const noexcept override;
 
     // **** NEW SUBMIT METHOD ****
-    void Submit(DirectX::FXMMATRIX accumulatedTransform) const noxnd;
+    void Submit(size_t channels, DirectX::FXMMATRIX accumulatedTranform) const noxnd;
 
 private:
     mutable DirectX::XMFLOAT4X4 transform = {}; // For storing world transform for this mesh

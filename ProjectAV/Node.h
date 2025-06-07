@@ -74,7 +74,7 @@ public:
 
     // --- Update & Draw ---
     void Update(float dt);
-    void Submit(Graphics& gfx) const;
+    void Submit(size_t channels, Graphics& gfx) const;
     void ShowNodeTree(Node*& pSelectedNode) noexcept;
     std::string tag;
     Node* parent = nullptr;

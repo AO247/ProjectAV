@@ -19,6 +19,8 @@
 #include <Jolt/ConfigurationString.h>
 #include <Jolt/Physics/Collision/Shape/CapsuleShape.h>
 #include "imgui/imgui_impl_dx11.h"
+#include "Camera.h"
+#include "Channels.h"
 
 namespace dx = DirectX;
 
@@ -27,7 +29,7 @@ App::App(const std::string& commandLine)
     commandLine(commandLine),
     wnd(1280, 720, "Project AV"), // Pass window dimensions/title
 	scriptCommander(TokenizeQuoted(commandLine)),
-    pointLight(wnd.Gfx()), // Initialize PointLight
+    pointLight(wnd.Gfx(), { 10.0f,5.0f,0.0f }), // Initialize PointLight
     pSceneRoot(std::make_unique<Node>("Root"))
 {
     // Set Projection Matrix (Far plane adjusted for larger scenes potentially)
@@ -101,6 +103,7 @@ App::App(const std::string& commandLine)
     pSceneRoot->AddChild(std::move(pAbility4Owner));
 	pSceneRoot->AddChild(std::move(pPrefabsOwner));
 	pCamera->AddChild(std::move(pHandsOwner));
+    rg.BindShadowCamera(*pointLight.ShareCamera());
 
 	PrefabManager::root = pPrefabs;
 	PrefabManager::player = pPlayer;
@@ -176,10 +179,10 @@ App::App(const std::string& commandLine)
 
     //Adding Other Components
     pFreeViewCamera->AddComponent(
-        std::make_unique<Camera>(pFreeViewCamera, wnd)
+        std::make_unique<Camera>(pFreeViewCamera, wnd, wnd.Gfx(), "FreeViewCameraCam")
     );
     pCamera->AddComponent(
-        std::make_unique<Camera>(pCamera, wnd)
+        std::make_unique<Camera>(pCamera, wnd, wnd.Gfx(), "PlayerFollowCamera")
     );
     pCamera->GetComponent<Camera>()->active = true;
 
@@ -428,7 +431,9 @@ void App::DoFrame(float dt)
     CleanupDestroyedNodes(pSceneRoot.get());
 
     wnd.Gfx().BeginFrame(0.5f, 0.5f, 1.0f);
-	pointLight.cbData.pos = { pPlayer->GetWorldPosition().x, pPlayer->GetWorldPosition().y + 12.0f, pPlayer->GetWorldPosition().z };
+	//pointLight.cbData.pos = { pPlayer->GetWorldPosition().x, pPlayer->GetWorldPosition().y + 12.0f, pPlayer->GetWorldPosition().z };
+    pointLight.Bind( wnd.Gfx(),cameras->GetMatrix() );
+    rg.BindMainCamera(cameras.GetActiveCamera());
     //if (pPlayer->GetLocalPosition().y < -10.0f) {
     //	pPlayer->SetLocalPosition({ -20.0f, 225.0f, -25.0f });
     //    pEnemy->SetLocalPosition({ 15.0f, 225.0f, 0.0f });
@@ -473,6 +478,8 @@ void App::DoFrame(float dt)
 	//pCamera->Forward();
 
     rg.Execute(wnd.Gfx());
+
+    rg.RenderWidgets(wnd.Gfx());
 
     if (showControlWindow) {
         ShowControlWindows();
@@ -624,7 +631,7 @@ void App::ShowControlWindows()
     //DrawBoxColliders(wnd.Gfx()); // Call the updated function
 	//DrawCapsuleColliders(wnd.Gfx());
     //ForEnemyWalking();
-    pointLight.Submit();
+    pointLight.Submit(0);
 
     //pointLight.SpawnControlWindow(); // Control for Point Light
     if (showDemoWindow)

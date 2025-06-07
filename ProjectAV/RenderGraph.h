@@ -22,19 +22,21 @@ namespace Rgph
 	class RenderGraph
 	{
 	public:
-		RenderGraph( Graphics& gfx );
+		RenderGraph(Graphics& gfx);
 		~RenderGraph();
-		void Execute( Graphics& gfx ) noxnd;
+		void Execute(Graphics& gfx) noxnd;
 		void Reset() noexcept;
-		RenderQueuePass& GetRenderQueue( const std::string& passName );
+		RenderQueuePass& GetRenderQueue(const std::string& passName);
+		void StoreDepth(Graphics& gfx, const std::string& path);
 	protected:
-		void SetSinkTarget( const std::string& sinkName,const std::string& target );
-		void AddGlobalSource( std::unique_ptr<Source> );
-		void AddGlobalSink( std::unique_ptr<Sink> );
+		void SetSinkTarget(const std::string& sinkName, const std::string& target);
+		void AddGlobalSource(std::unique_ptr<Source>);
+		void AddGlobalSink(std::unique_ptr<Sink>);
 		void Finalize();
-		void AppendPass( std::unique_ptr<Pass> pass );
+		void AppendPass(std::unique_ptr<Pass> pass);
+		Pass& FindPassByName(const std::string& name);
 	private:
-		void LinkSinks( Pass& pass );
+		void LinkSinks(Pass& pass);
 		void LinkGlobalSinks();
 	private:
 		std::vector<std::unique_ptr<Pass>> passes;

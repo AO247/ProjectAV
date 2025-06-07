@@ -16,7 +16,7 @@ T wrap_angle(T theta) noexcept
 	constexpr T twoPi = static_cast<T>(2.0 * PI);
 	constexpr T pi = static_cast<T>(PI);
 
-	T mod = std::fmod(theta, twoPi);
+	T mod = (T)std::fmod(theta, twoPi);
 
 	if (mod > pi)
 	{
