@@ -15,11 +15,11 @@ namespace Rgph
 
 class Node; // Forward declare
 
-class Camera : public Component
+class Camera : public Component, public std::enable_shared_from_this<Camera>
 {
 public:
 	Camera(Node* owner, Window& window, Graphics& gfx, std::string name, DirectX::XMFLOAT3 homePos = { 0.0f,0.0f,0.0f }, float homePitch = 0.0f, float homeYaw = 0.0f, bool tethered = false) noexcept;
-	virtual ~Camera() = default;
+	//virtual ~Camera() = default;
 
 	virtual void Update(float dt) override;
 

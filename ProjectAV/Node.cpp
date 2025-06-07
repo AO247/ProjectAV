@@ -730,7 +730,7 @@ void Node::Submit(size_t channel,Graphics& gfx) const
 {
     if (auto* modelComp = GetComponent<ModelComponent>())
     {
-        modelComp->Submit(gfx, GetWorldTransform());
+        modelComp->Submit(channel, gfx, GetWorldTransform());
     }
     // Original Submit for children was commented out, keeping it that way:
     //for (const auto& child : children)

@@ -29,7 +29,7 @@ App::App(const std::string& commandLine)
     commandLine(commandLine),
     wnd(1280, 720, "Project AV"), // Pass window dimensions/title
 	scriptCommander(TokenizeQuoted(commandLine)),
-    pointLight(wnd.Gfx(), { 10.0f,5.0f,0.0f }), // Initialize PointLight
+    pointLight(pSceneRoot.get(), wnd, wnd.Gfx(), { 10.0f,5.0f,0.0f }), // Initialize PointLight
     pSceneRoot(std::make_unique<Node>("Root"))
 {
     // Set Projection Matrix (Far plane adjusted for larger scenes potentially)
@@ -108,6 +108,13 @@ App::App(const std::string& commandLine)
 	PrefabManager::root = pPrefabs;
 	PrefabManager::player = pPlayer;
 
+
+    cameras.AddCamera(std::make_unique<Camera>(pFreeViewCamera, wnd, wnd.Gfx(), "FreeViewCameraCam", dx::XMFLOAT3{ -13.5f,6.0f,3.5f }, 0.0f, PI / 2.0f));
+    cameras.AddCamera(std::make_unique<Camera>(pCamera, wnd, wnd.Gfx(), "PlayerFollowCamera", dx::XMFLOAT3{ -13.5f,28.8f,-6.4f }, PI / 180.0f * 13.0f, PI / 180.0f * 61.0f));
+    cameras.AddCamera(pointLight.ShareCamera());
+    cameras.LinkTechniques(rg);
+
+
     //Heeeej Bracie zaczlooo padac choodz zmieniic gacieee
     //Heeeej Siostro uciekaajmyy zanim beedzieee mookroooo
 
@@ -146,11 +153,11 @@ App::App(const std::string& commandLine)
     pAbility2->AddComponent(
         std::make_unique<Ability2>(pAbility2, wnd, pCamera)
     );
-    pAbility2->AddComponent(
+    /*pAbility2->AddComponent(
         std::make_unique<ModelComponent>(pAbility2, wnd.Gfx(), "Models\\box.glb")
-    );
+    );*/
     pPlayer->GetComponent<PlayerController>()->abilitySlot2 = pAbility2;
-    pAbility2->GetComponent<ModelComponent>()->LinkTechniques(rg);
+    /*pAbility2->GetComponent<ModelComponent>()->LinkTechniques(rg);*/
 
 
     BodyCreationSettings a3odySettings(new JPH::SphereShape(40.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
@@ -160,10 +167,10 @@ App::App(const std::string& commandLine)
     pAbility3->AddComponent(
         std::make_unique<Ability3>(pAbility3, wnd, pCamera)
     );
-    pAbility3->AddComponent(
+    /*pAbility3->AddComponent(
         std::make_unique<ModelComponent>(pAbility3, wnd.Gfx(), "Models\\box.glb")
     );
-    pAbility3->GetComponent<ModelComponent>()->LinkTechniques(rg);
+    pAbility3->GetComponent<ModelComponent>()->LinkTechniques(rg);*/
     pPlayer->GetComponent<PlayerController>()->abilitySlot3 = pAbility3;
 
 
@@ -185,7 +192,7 @@ App::App(const std::string& commandLine)
         std::make_unique<Camera>(pCamera, wnd, wnd.Gfx(), "PlayerFollowCamera")
     );
     pCamera->GetComponent<Camera>()->active = true;
-
+    
 
     pPlayer->AddComponent(
         std::make_unique<Health>(pPlayer, 3.0f)
@@ -220,8 +227,7 @@ App::App(const std::string& commandLine)
 	//);
 	//SoundEffectsPlayer* pEnemySoundEffectsPlayer = pEnemy->GetComponent<SoundEffectsPlayer>();
 	//pEnemySoundEffectsPlayer->AddSound("Models\\sci-fidrone.ogg");
-
-
+ 
 
     //LevelGenerator levelGenerator(prefabManager, pSceneRoot.get(), pPlayer);
 
@@ -427,9 +433,10 @@ void App::HandleInput(float dt)
 
 void App::DoFrame(float dt)
 {
+    Camera& activeGameCamera = cameras.GetActiveCamera();
 	pSceneRoot->Update(dt); // Update the scene root and all its children
     CleanupDestroyedNodes(pSceneRoot.get());
-
+    activeGameCamera.Update(dt);
     wnd.Gfx().BeginFrame(0.5f, 0.5f, 1.0f);
 	//pointLight.cbData.pos = { pPlayer->GetWorldPosition().x, pPlayer->GetWorldPosition().y + 12.0f, pPlayer->GetWorldPosition().z };
     pointLight.Bind( wnd.Gfx(),cameras->GetMatrix() );
@@ -448,7 +455,7 @@ void App::DoFrame(float dt)
 	/*DebugLine line(wnd.Gfx(), pEnemy->GetComponent<StateMachine>()->pos, pEnemy->GetComponent<StateMachine>()->cen, { 0.0f, 0.0f, 1.0f, 1.0f });
     line.Submit(fc);*/ // for idle
     // --- Bind Lights ---
-    pointLight.Bind(wnd.Gfx(), viewMatrix); // Bind point light (to slot 0)
+    //pointLight.Bind(wnd.Gfx(), viewMatrix); // Bind point light (to slot 0)
 
     FrustumCalculating(); // Draw with FRUSTUM CULLING
     //pSceneRoot->Submit(fc, wnd.Gfx()); // Draw without FRUSTUM CULLING you have to also uncomment the draw method in Node.cpp
@@ -612,7 +619,7 @@ void App::DrawNodeRecursive(Graphics& gfx, Node& node)
 
     if (shouldDraw)
     {
-        node.Submit(wnd.Gfx());
+        node.Submit(Chan::main, wnd.Gfx());
         for (const auto& pChild : node.GetChildren())
         {
             if (pChild)
@@ -631,8 +638,8 @@ void App::ShowControlWindows()
     //DrawBoxColliders(wnd.Gfx()); // Call the updated function
 	//DrawCapsuleColliders(wnd.Gfx());
     //ForEnemyWalking();
-    pointLight.Submit(0);
-
+    pointLight.Submit(Chan::main);
+    cameras.Submit(Chan::main);
     //pointLight.SpawnControlWindow(); // Control for Point Light
     if (showDemoWindow)
     {

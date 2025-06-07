@@ -36,9 +36,10 @@ namespace Rgph
 		}
 		{
 			auto pass = std::make_unique<LambertianPass>(gfx, "lambertian");
-			pass->SetSinkLinkage("shadowMap", "shadowMap.map");
+			
 			pass->SetSinkLinkage("renderTarget", "clearRT.buffer");
 			pass->SetSinkLinkage("depthStencil", "clearDS.buffer");
+			pass->SetSinkLinkage("shadowMap", "shadowMap.map");
 			AppendPass(std::move(pass));
 		}
 		{

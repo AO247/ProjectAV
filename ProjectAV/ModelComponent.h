@@ -81,7 +81,7 @@ public:
     ModelComponent(Node* owner, Graphics& gfx, const std::string& modelFile, float scale = 1.0f);
     virtual ~ModelComponent() = default;
 
-    void Submit(Graphics& gfx, DirectX::FXMMATRIX worldTransform) const noxnd;
+    void Submit(size_t channels, Graphics& gfx, DirectX::FXMMATRIX worldTransform) const noxnd;
     void ShowWindow(Graphics& gfx, const char* windowName = nullptr) noexcept;
     void LinkTechniques(Rgph::RenderGraph&);
 

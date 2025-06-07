@@ -219,7 +219,7 @@ ModelComponent::ModelComponent(Node* owner, Graphics& gfx, const std::string& mo
 
 
 // **** CHANGED Draw to Submit ****
-void ModelComponent::Submit(Graphics& gfx, dx::FXMMATRIX worldTransform) const noxnd
+void ModelComponent::Submit(size_t channels, Graphics& gfx, dx::FXMMATRIX worldTransform) const noxnd
 {
 	if (pRootInternal) {
 		pRootInternal->Submit(gfx, worldTransform); // Pass gfx if ModelInternalNode::Submit needs it
