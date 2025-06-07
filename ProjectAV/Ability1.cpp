@@ -11,7 +11,7 @@
 
 namespace dx = DirectX;
 Ability1::Ability1(Node* owner, Window& window, Node* camera)
-    : Component(owner), wnd(window), camera(camera)  // Initialize reference member
+    : Ability(owner, window, camera)
 {
 
 }
@@ -30,7 +30,7 @@ void Ability1::Positioning() {
 	pOwner->SetLocalTransform(camera->GetLocalTransform());
 	pOwner->TranslateLocal(Vector3(0.0f, 0.0f, 8.0f));
 }
-void Ability1::Active()
+void Ability1::Pressed()
 {
     if (!abilityReady) return;
     for (int i = 0; i < objects.size(); i++)
@@ -45,7 +45,9 @@ void Ability1::Active()
     cooldownTimer = cooldown;
     abilityReady = false;
 }
-
+void Ability1::Released()
+{
+}
 void Ability1::Cooldowns(float dt)
 {
     if (cooldownTimer > 0.0f)
@@ -59,20 +61,6 @@ void Ability1::Cooldowns(float dt)
 
 }
 
-
-void Ability1::KeyboardInput()
-{
-    while (const auto e = wnd.mouse.Read()) // Read events from the queue
-    {
-        switch (e->GetType())
-        {
-        case Mouse::Event::Type::LPress:
-            OutputDebugStringA("\n\n\nLeft Mouse Button Pressed\n");
-            Active();
-            break;
-        }
-    }
-}
 void Ability1::OnTriggerEnter(Node* object) {
     if (object->tag != "ENEMY" && object->tag != "STONE") return;
     if (object->GetComponent<Rigidbody>() == nullptr) return;

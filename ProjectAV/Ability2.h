@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Component.h"
+#include "Ability.h"
 #include "Window.h" // Needs access to Window for input
 #include <DirectXMath.h>
 #include "Rigidbody.h"
@@ -10,7 +10,7 @@
 // but including Node.h is often fine here.
 class Node;
 
-class Ability2 : public Component
+class Ability2 : public Ability
 {
 public:
 	Ability2(Node* owner, Window& window, Node* camera);
@@ -20,16 +20,14 @@ public:
 	virtual void DrawImGuiControls() override;
 	void OnTriggerEnter(Node* other) override;
 	void OnTriggerExit(Node* other) override;
-	void Active();
+	void Pressed() override;
+	void Released() override;
 	float cooldown = 0.5f; // Cooldown for ability 1
 	float force = 300.0f;
 	bool abilityReady = true; // Is the ability ready to be used?
 private:
-	Window& wnd;
-	Node* camera = nullptr;
 	void KeyboardInput();
 	void Cooldowns(float dt);
 	void Positioning();
-	std::vector<Node*> objects;
 	float cooldownTimer = 0.0f;
 };

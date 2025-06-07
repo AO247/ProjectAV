@@ -29,7 +29,7 @@ private:
 		float attLin;
 		float attQuad;
 	};
-private:
+public:
 	PointLightCBuf cbData;
 	mutable SolidSphere mesh;
 	mutable Bind::PixelConstantBuffer<PointLightCBuf> cbuf;

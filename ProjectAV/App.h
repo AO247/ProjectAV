@@ -19,6 +19,8 @@
 #include "TestCube.h"
 #include "Global.h"
 #include "BlurOutlineRenderGraph.h"
+#include "PhysicsDebugRenderer.h"
+#include "Sprite.h"
 
 // Forward declarations
 class PlayerController; // Forward declare
@@ -48,6 +50,7 @@ private:
     //PhysicsEngine physicsEngine; // Physics engine instance
 
 
+    //PhysicsDebugRenderer* physicsDebugRenderer;
     PhysicsSystem* physicsSystem;
     TempAllocatorImpl* temp_allocator;
     JobSystemThreadPool* job_system;
@@ -70,12 +73,14 @@ private:
     Node* pPlayer = nullptr; // Node representing the player capsule/origin
 	Node* pAbility1 = nullptr; // Node for the first ability
 	Node* pAbility2 = nullptr; // Node for the second ability
+	Node* pAbility3 = nullptr; // Node for the third ability
+    Node* pAbility4 = nullptr;
 	Node* pSelectedSceneNode = nullptr; // Node representing the selected scene node
 	Node* pSoundEffectsPlayer = nullptr; // Node for the sound effects player
     Node* pPrefabs = nullptr;
-    PrefabManager* prefabManager = nullptr;
+	Node* pHands = nullptr;
+
     TestCube cube{ wnd.Gfx(),4.0f };
-    TestCube cube2{ wnd.Gfx(),4.0f };
     // --- UI State ---
     
     /*std::map<BoundingSphere*, ColliderSphere*> sphereCollidersToDraw;
@@ -97,4 +102,12 @@ private:
     bool cursorEnabled = false;
     bool showControlWindow = false;
 	bool freeViewCamera = false;
+
+
+    //===========UI===========
+
+    std::unique_ptr<Sprite> targetSprite;
+    std::unique_ptr<Sprite> heart1Sprite;
+    std::unique_ptr<Sprite> heart2Sprite;
+    std::unique_ptr<Sprite> heart3Sprite;
 };

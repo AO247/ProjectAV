@@ -17,7 +17,7 @@ Camera::Camera(Node* owner, Window& window)
 void Camera::Update(float dt)
 {
     // Don't process look if cursor is enabled OR if required nodes are missing
-    if (!wnd.CursorEnabled() && GetOwner() && active)
+    if (!wnd.CursorEnabled() && GetOwner() && active && !wnd.playerLocked)
     {
         HandleMouseLook(dt);
     }

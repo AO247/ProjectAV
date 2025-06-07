@@ -12,6 +12,17 @@ ShootAttack::ShootAttack(Node* owner, std::string tag)
 
 void ShootAttack::Attack(float dt)
 {
+	Vector3 playerPos = player->GetWorldPosition();
+
+	sm::Vector3 facingDirection = sm::Vector3(playerPos)
+		- sm::Vector3(pOwner->GetWorldPosition());
+	facingDirection.Normalize();
+
+	float targetYaw = atan2f(facingDirection.x, facingDirection.z);
+
+	Quat q = Quat::sEulerAngles(Vec3(0.0f, targetYaw, 0.0f));
+	PhysicsCommon::physicsSystem->GetBodyInterface().SetRotation(pOwner->GetComponent<Rigidbody>()->GetBodyID(), q, EActivation::Activate);
+
 	timer += dt;
 	if (timer >= wholeAttackTime) {
 		attacked = false;
@@ -32,7 +43,6 @@ void ShootAttack::Attack(float dt)
 	pos += pOwner->Forward() * 5.0f;
 	Node* bullet = PrefabManager::InstantiateBullet(pos.x, pos.y, pos.z, 0.2f);
 	bullet->GetComponent<Bullet>()->ignore = pOwner;
-	Vector3 playerPos = player->GetWorldPosition();
 	playerPos.y += 2.0f;
 	Vector3 dir = playerPos - pos;
 	dir.Normalize();

@@ -35,7 +35,7 @@ SolidSphere::SolidSphere(Graphics& gfx, float radius)
 		} colorConst;
 		only.AddBindable(PixelConstantBuffer<PSColorConstant>::Resolve(gfx, colorConst, 1u));
 
-		only.AddBindable(InputLayout::Resolve(gfx, model.vertices.GetLayout(), pvsbc));
+		//only.AddBindable(InputLayout::Resolve(gfx, model.vertices.GetLayout(), pvsbc));
 
 		only.AddBindable(std::make_shared<TransformCbuf>(gfx));
 

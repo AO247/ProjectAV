@@ -45,7 +45,7 @@ void FollowState::Update(StateMachine* pOwner, float dt)
         return;
     }
     if (pOwner->pMovementComponent != nullptr) {
-        pOwner->pMovementComponent->Follow(playerPos);
+        pOwner->pMovementComponent->Follow(dt, playerPos);
     }
 
 }
