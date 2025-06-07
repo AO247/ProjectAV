@@ -48,8 +48,8 @@ namespace Rgph
 			pShadowCBuf->Update(gfx);
 			pMainCamera->BindToGraphics(gfx);
 			RenderQueuePass::Execute(gfx);
-			//ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
-			//gfx.GetContext()->PSSetShaderResources(3, 1, nullSRV);
+			ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
+			gfx.GetContext()->PSSetShaderResources(3, 1, nullSRV);
 		}
 	private:
 		std::shared_ptr<Bind::ShadowSampler> pShadowSampler;
