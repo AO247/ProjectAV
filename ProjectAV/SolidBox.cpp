@@ -6,7 +6,8 @@
 #include "Bindable.h"            
 #include <memory>                
 #include <string>                
-#include <sstream>               
+#include <sstream>        
+#include "Channels.h"
 
 namespace { // Anonymous namespace for internal linkage
     // Keep VecToString for tag generation (using size now)
@@ -42,7 +43,7 @@ SolidBox::SolidBox(Graphics& gfx, DirectX::XMFLOAT3 center, DirectX::XMFLOAT3 si
     pTopology = Topology::Resolve(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
     {
-        Technique colliderTechnique("ColliderSolid");
+        Technique colliderTechnique("ColliderSolid", Chan::main);
         Step mainPass(0);
 
         // --- Vertex Shader ---

@@ -726,11 +726,11 @@ void Node::Update(float dt)
     transformationOutsidePhysicsTriggered = false;
 }
 
-void Node::Submit(Graphics& gfx) const
+void Node::Submit(size_t channels, Graphics& gfx) const
 {
     if (auto* modelComp = GetComponent<ModelComponent>())
     {
-        modelComp->Submit(gfx, GetWorldTransform());
+        modelComp->Submit(channels, gfx, GetWorldTransform());
     }
     // Original Submit for children was commented out, keeping it that way:
     //for (const auto& child : children)

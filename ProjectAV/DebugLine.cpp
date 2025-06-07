@@ -6,6 +6,7 @@
 #include "ConstantBuffers.h"     // For PixelConstantBuffer (if not already in BindableCommon)
 #include "Stencil.h"             // For Stencil state
 #include <sstream>               // For tag generation (though less critical for non-cached debug lines)
+#include "Channels.h"
 
 namespace dx = DirectX;
 
@@ -41,7 +42,7 @@ DebugLine::DebugLine(Graphics& gfx, dx::XMFLOAT3 start, dx::XMFLOAT3 end, dx::XM
 
     // --- 2. Define Rendering Technique ---
     {
-        Technique lineTechnique("DebugLineSolid"); // Name the technique
+        Technique lineTechnique("DebugLineSolid", Chan::main); // Name the technique
         Step mainPass(0); // Step targets rendering pass 0 (or a dedicated debug pass if you have one)
 
         // --- Vertex Shader ---

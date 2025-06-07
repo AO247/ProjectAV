@@ -53,10 +53,10 @@ Mesh::Mesh(Graphics& gfx, const Material& mat, const aiMesh& mesh, float scale) 
 }
 
 // **** NEW SUBMIT METHOD ****
-void Mesh::Submit(dx::FXMMATRIX accumulatedTransform) const noxnd
+void Mesh::Submit(size_t channels, dx::FXMMATRIX accumulatedTransform) const noxnd
 {
     dx::XMStoreFloat4x4(&transform, accumulatedTransform); // Store the final world transform for this mesh
-    Drawable::Submit(); // Call base Drawable's Submit, which iterates techniques
+    Drawable::Submit(channels); // Call base Drawable's Submit, which iterates techniques
 }
 
 DirectX::XMMATRIX Mesh::GetTransformXM() const noexcept

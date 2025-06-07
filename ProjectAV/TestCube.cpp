@@ -6,6 +6,7 @@
 #include "DynamicConstant.h"
 #include "TechniqueProbe.h"
 #include "TransformCbufScaling.h"
+#include "Channels.h"
 
 TestCube::TestCube(Graphics& gfx, float size)
 {
@@ -23,18 +24,18 @@ TestCube::TestCube(Graphics& gfx, float size)
 	auto tcb = std::make_shared<TransformCbuf>(gfx);
 
 	{
-		Technique shade("Shade");
+		Technique shade("Shade", Chan::main);
 		{
 			Step only("lambertian");
 
 			only.AddBindable(Texture::Resolve(gfx, "Images\\brickwall.jpg"));
 			only.AddBindable(Sampler::Resolve(gfx));
 
-			auto pvs = VertexShader::Resolve(gfx, "PhongDif_VS.cso");
-			auto pvsbc = pvs->GetBytecode();
+			auto pvs = VertexShader::Resolve(gfx, "ShadowTest_VS.cso");
+			only.AddBindable(InputLayout::Resolve(gfx, model.vertices.GetLayout(), *pvs));
 			only.AddBindable(std::move(pvs));
 
-			only.AddBindable(PixelShader::Resolve(gfx, "PhongDif_PS.cso"));
+			only.AddBindable(PixelShader::Resolve(gfx, "ShadowTest_PS.cso"));
 
 			Dcb::RawLayout lay;
 			lay.Add<Dcb::Float3>("specularColor");
@@ -46,7 +47,6 @@ TestCube::TestCube(Graphics& gfx, float size)
 			buf["specularGloss"] = 20.0f;
 			only.AddBindable(std::make_shared<Bind::CachingPixelConstantBufferEx>(gfx, buf, 1u));
 
-			//only.AddBindable(InputLayout::Resolve(gfx, model.vertices.GetLayout(), pvsbc));
 
 			only.AddBindable(Rasterizer::Resolve(gfx, false));
 
@@ -56,14 +56,13 @@ TestCube::TestCube(Graphics& gfx, float size)
 		}
 		AddTechnique(std::move(shade));
 	}
-
 	{
-		Technique outline("Outline");
+		Technique outline("Outline", Chan::main);
 		{
 			Step mask("outlineMask");
 
 			// TODO: better sub-layout generation tech for future consideration maybe
-			//mask.AddBindable(InputLayout::Resolve(gfx, model.vertices.GetLayout(), VertexShader::Resolve(gfx, "Solid_VS.cso")->GetBytecode()));
+			mask.AddBindable(InputLayout::Resolve(gfx, model.vertices.GetLayout(), *VertexShader::Resolve(gfx, "Solid_VS.cso")));
 
 			mask.AddBindable(std::move(tcb));
 
@@ -81,7 +80,7 @@ TestCube::TestCube(Graphics& gfx, float size)
 			draw.AddBindable(std::make_shared<Bind::CachingPixelConstantBufferEx>(gfx, buf, 1u));
 
 			// TODO: better sub-layout generation tech for future consideration maybe
-			//draw.AddBindable(InputLayout::Resolve(gfx, model.vertices.GetLayout(), VertexShader::Resolve(gfx, "Solid_VS.cso")->GetBytecode()));
+			draw.AddBindable(InputLayout::Resolve(gfx, model.vertices.GetLayout(), *VertexShader::Resolve(gfx, "Solid_VS.cso")));
 
 			draw.AddBindable(std::make_shared<TransformCbuf>(gfx));
 
@@ -90,6 +89,23 @@ TestCube::TestCube(Graphics& gfx, float size)
 			outline.AddStep(std::move(draw));
 		}
 		AddTechnique(std::move(outline));
+	}
+	// shadow map technique
+	{
+		Technique map{ "ShadowMap",Chan::shadow,true };
+		{
+			Step draw("shadowMap");
+
+			// TODO: better sub-layout generation tech for future consideration maybe
+			draw.AddBindable(InputLayout::Resolve(gfx, model.vertices.GetLayout(), *VertexShader::Resolve(gfx, "Solid_VS.cso")));
+
+			draw.AddBindable(std::make_shared<TransformCbuf>(gfx));
+
+			// TODO: might need to specify rasterizer when doubled-sided models start being used
+
+			map.AddStep(std::move(draw));
+		}
+		AddTechnique(std::move(map));
 	}
 }
 

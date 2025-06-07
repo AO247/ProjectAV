@@ -6,7 +6,8 @@
 #include "Bindable.h"            
 #include <memory>                
 #include <string>                
-#include <sstream>               
+#include <sstream>   
+#include "Channels.h"
 
 // Use necessary namespaces
 namespace dx = DirectX;
@@ -40,7 +41,7 @@ SolidCapsule::SolidCapsule(Graphics& gfx, Vector3 base, Vector3 tip, float radiu
     pTopology = Topology::Resolve(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
     {
-        Technique colliderTechnique("ColliderSolid");
+        Technique colliderTechnique("ColliderSolid", Chan::main);
         Step mainPass(0);
 
         // --- Vertex Shader ---

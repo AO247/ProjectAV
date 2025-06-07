@@ -5,6 +5,7 @@
 #include "Sphere.h"              // For Sphere::Make()
 #include "Stencil.h"             // Include if using Stencil (example SolidSphere might not, but good practice)
 #include "ConstantBuffers.h"     // For PixelConstantBuffer<T>
+#include "Channels.h"
 
 // No need for a local ColliderSphereBlendState if your BindableCommon.h
 // already includes a general Blender::Resolve(gfx, bool blendEnabled)
@@ -28,7 +29,7 @@ ColliderSphere::ColliderSphere(Graphics& gfx, float radius)
     pTopology = Topology::Resolve(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
     {
-        Technique colliderTechnique("ColliderSolid");
+        Technique colliderTechnique("ColliderSolid", Chan::main);
         Step mainPass(0);
 
         // --- Vertex Shader ---

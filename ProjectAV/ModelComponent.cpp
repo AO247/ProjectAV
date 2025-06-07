@@ -110,7 +110,7 @@ void ModelInternalNode::AddChild(std::unique_ptr<ModelInternalNode> pChild) noxn
 }
 
 // Draw method for the *internal* node structure
-void ModelInternalNode::Submit(Graphics& gfx, dx::FXMMATRIX accumulatedTransform) const noxnd
+void ModelInternalNode::Submit(size_t channels, Graphics& gfx, dx::FXMMATRIX accumulatedTransform) const noxnd
 {
 	const auto modelNodeTransform =
 		dx::XMLoadFloat4x4(&appliedTransform) *
@@ -119,11 +119,11 @@ void ModelInternalNode::Submit(Graphics& gfx, dx::FXMMATRIX accumulatedTransform
 
 	for (const auto pm : meshPtrs) // pm is Mesh*
 	{
-		pm->Submit(modelNodeTransform); // Call Mesh's Submit
+		pm->Submit(channels, modelNodeTransform); // Call Mesh's Submit
 	}
 	for (const auto& pc : childPtrs)
 	{
-		pc->Submit(gfx, modelNodeTransform); // Pass gfx if needed, or remove if not
+		pc->Submit(channels, gfx, modelNodeTransform); // Pass gfx if needed, or remove if not
 	}
 }
 
@@ -219,10 +219,10 @@ ModelComponent::ModelComponent(Node* owner, Graphics& gfx, const std::string& mo
 
 
 // **** CHANGED Draw to Submit ****
-void ModelComponent::Submit(Graphics& gfx, dx::FXMMATRIX worldTransform) const noxnd
+void ModelComponent::Submit(size_t channels, Graphics& gfx, dx::FXMMATRIX worldTransform) const noxnd
 {
 	if (pRootInternal) {
-		pRootInternal->Submit(gfx, worldTransform); // Pass gfx if ModelInternalNode::Submit needs it
+		pRootInternal->Submit(channels, gfx, worldTransform); // Pass gfx if ModelInternalNode::Submit needs it
 	}
 }
 
