@@ -23,6 +23,8 @@ public:
 	/*void AddContactPoint(Node* object);
 	void RemoveContactPoint(Node* object);*/
 
+	BodyID GetBodyID();
+
 private:
 	BodyID bodyID;
 	bool rigidbodyAssigned = false;

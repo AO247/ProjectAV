@@ -45,10 +45,7 @@ public:
 
     virtual void OnContactAdded(const Body& inBody1, const Body& inBody2, const ContactManifold& inManifold, ContactSettings& ioSettings) override;
 
-    virtual void OnContactPersisted(const Body& inBody1, const Body& inBody2, const ContactManifold& inManifold, ContactSettings& ioSettings) override
-    {
-        //cout << "A contact was persisted" << endl;
-    }
+    virtual void OnContactPersisted(const Body& inBody1, const Body& inBody2, const ContactManifold& inManifold, ContactSettings& ioSettings) override;
 
     virtual void OnContactRemoved(const SubShapeIDPair& inSubShapePair) override;
 
@@ -64,6 +61,7 @@ private:
     enum ActivationType
     {
         ENTER,
+        STAY,
         EXIT
     };
 
@@ -83,5 +81,7 @@ private:
     std::map<BodyID, std::map<BodyID, int>> collisionContacts;
     std::vector<TriggerActivationEvent> triggerActivationQueue;
     std::vector<TriggerActivationEvent> collisionActivationQueue;
+    std::vector<BodyID> triggerDeletionQueue;
+    std::vector<BodyID> collisionDeletionQueue;
     Mutex mMutex;
 };

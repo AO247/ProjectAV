@@ -35,6 +35,7 @@ public:
 
 	float followDistance = 40.0f;
 	float attackRange = 8.0f; // Distance to trigger attack state
+	bool isFlying = false;
 	Component* pMovementComponent = nullptr; // Pointer to the movement component
 	Component* pAttackComponent = nullptr;
 	std::vector<Component*> attackComponents;

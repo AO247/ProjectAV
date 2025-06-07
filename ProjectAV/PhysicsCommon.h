@@ -21,7 +21,9 @@
 #include <Jolt/Physics/Collision/NarrowPhaseQuery.h>
 #include <Jolt/Physics/Collision/CollisionGroup.h>
 #include <Jolt/Physics/Collision/Shape/RotatedTranslatedShape.h>
+#include <Jolt/Physics/Collision/Shape/ConvexHullShape.h>
 #include <Jolt/Physics/Constraints/FixedConstraint.h>
+#include <Jolt/Renderer/DebugRenderer.h>
 #include "vector"
 #include "SimpleMath.h"
 #include "ModelComponent.h"
@@ -46,6 +48,15 @@ class PhysicsCommon
 public:
 	static JPH::PhysicsSystem* physicsSystem;
 
+    static JPH::Array<JPH::Vec3> MakeVertexArray(std::vector<DirectX::SimpleMath::Vector3> vertices)
+    {
+        JPH::Array<JPH::Vec3> result;
+        for (int i = 0; i < vertices.size(); i++)
+        {
+            result.push_back(JPH::Vec3(vertices[i].x, vertices[i].y, vertices[i].z));
+        }
+        return result;
+    }
     static JPH::TriangleList MakeTriangleList(std::vector<ModelComponent::Triangle> triangles)
     {
         JPH::TriangleList result;
@@ -146,7 +157,8 @@ namespace Layers
     static constexpr ObjectLayer TRIGGER = 3;
 	static constexpr ObjectLayer WALL = 4;
     static constexpr ObjectLayer PLAYER = 5;
-    static constexpr ObjectLayer NUM_LAYERS = 6;
+    static constexpr ObjectLayer ENEMY = 6;
+    static constexpr ObjectLayer NUM_LAYERS = 7;
 };
 
 class ObjectLayerPairFilterImpl : public ObjectLayerPairFilter
@@ -168,6 +180,8 @@ public:
             return true;
 		case Layers::PLAYER:
             return true;
+		case Layers::ENEMY:
+            return true;
         default:
             return false;
         }
@@ -182,8 +196,9 @@ namespace BroadPhaseLayers
     static constexpr BroadPhaseLayer TRIGGER(3);
 	static constexpr BroadPhaseLayer WALL(4);
     static constexpr BroadPhaseLayer PLAYER(5);
+	static constexpr BroadPhaseLayer ENEMY(6);
 
-    static constexpr uint NUM_LAYERS(6);
+    static constexpr uint NUM_LAYERS(7);
 };
 
 class BPLayerInterfaceImpl final : public BroadPhaseLayerInterface
@@ -198,6 +213,7 @@ public:
         mObjectToBroadPhase[Layers::TRIGGER] = BroadPhaseLayers::TRIGGER;
 		mObjectToBroadPhase[Layers::WALL] = BroadPhaseLayers::WALL;
         mObjectToBroadPhase[Layers::PLAYER] = BroadPhaseLayers::PLAYER;
+		mObjectToBroadPhase[Layers::ENEMY] = BroadPhaseLayers::ENEMY;
     }
 
     virtual uint GetNumBroadPhaseLayers() const override
@@ -222,6 +238,7 @@ public:
         case (BroadPhaseLayer::Type)BroadPhaseLayers::TRIGGER:		return "TRIGGER";
 		case (BroadPhaseLayer::Type)BroadPhaseLayers::WALL:		    return "WALL";
 		case (BroadPhaseLayer::Type)BroadPhaseLayers::PLAYER:		return "PLAYER";
+		case (BroadPhaseLayer::Type)BroadPhaseLayers::ENEMY:		return "ENEMY";
         default:													JPH_ASSERT(false); return "INVALID";
         }
     }
@@ -249,6 +266,8 @@ public:
         case Layers::WALL:
             return true;
 		case Layers::PLAYER:
+			return true;
+		case Layers::ENEMY:
 			return true;
         default:
             return false;
