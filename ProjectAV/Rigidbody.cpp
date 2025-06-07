@@ -2,19 +2,14 @@
 #include "Node.h"
 #include "DirectXMath.h"
 
-BodyID Rigidbody::testowanie = BodyID();
-
-//Rigidbody::Rigidbody(Node* owner, Vector3 position, float mass, Shape* shape) : Component(owner)
-//{
-//	isRigidbody = true;
-//	BodyInterface& bodyInterface = PhysicsCommon::physicsSystem->GetBodyInterface();
-//	BodyCreationSettings bodySettings(shape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Dynamic, Layers::MOVING);
-//	bodySettings.mUserData = reinterpret_cast<uint64>(owner);
-//	//bodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
-//	//bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(2.0f * Vec3(cTorusRadius, cTubeRadius, cTorusRadius), 1000.0f);
-//	bodyID = bodyInterface.CreateAndAddBody(bodySettings, EActivation::Activate);
-//	dynamic_cast<MyContactListener*>(PhysicsCommon::physicsSystem->GetContactListener())->AddRigidbody(bodyID);
-//}
+Rigidbody::~Rigidbody()
+{
+	if (constraint != nullptr)
+	{
+		PhysicsCommon::physicsSystem->RemoveConstraint(constraint);
+		//delete constraint;
+	}
+}
 
 Rigidbody::Rigidbody(Node* owner, BodyCreationSettings bodySettings) : Component(owner)
 {
@@ -39,49 +34,33 @@ void Rigidbody::Update(float dt)
 	pOwner->PhysicsSetWorldPosition(DirectX::XMFLOAT3(pos.GetX(),
 		pos.GetY(),
 		pos.GetZ()));
+	pOwner->PhysicsSetWorldRotation(DirectX::XMFLOAT4(rot.GetX(),
+		rot.GetY(),
+		rot.GetZ(),
+		rot.GetW()));
+}
 
-	//if (pOwner->GetName() == "Stone")
-	//{
-	//	if (firstRun)
-	//	{
-	//		lastTest = rot.GetW();
-	//		firstRun = false;
-	//		testowanie = bodyID;
-	//	}
-	//	else
-	//	{
-	//		if (lastTest != rot.GetW())
-	//		{
-	//			if (bodyID == testowanie)
-	//			{
-	//				/*OutputDebugString("mowi: ");
-	//				OutputDebugString(std::to_string(bodyID.GetIndex()).c_str());
-	//				OutputDebugString("\n");
-	//				OutputDebugString(std::to_string(rot.GetX()).c_str());
-	//				OutputDebugString("\n");
-	//				OutputDebugString(std::to_string(rot.GetY()).c_str());
-	//				OutputDebugString("\n");
-	//				OutputDebugString(std::to_string(rot.GetZ()).c_str());
-	//				OutputDebugString("\n");
-	//				OutputDebugString(std::to_string(rot.GetW()).c_str());
-	//				OutputDebugString("\n");
-	//				OutputDebugString("\n");*/
-	//			}
+void Rigidbody::ConnectWithOtherBody(BodyID other, Vec3 otherConnectPointLocal)
+{
+	Body* body1 = PhysicsCommon::physicsSystem->GetBodyLockInterface().TryGetBody(bodyID);
+	Body* body2 = PhysicsCommon::physicsSystem->GetBodyLockInterface().TryGetBody(other);
 
-	//			lastTest = rot.GetW();
-	//		}
-	//	}
-	//}
-	
+	FixedConstraintSettings settings;
+	settings.mPoint1 = Vec3(0, 0, 0);
+	settings.mPoint2 = Vec3(otherConnectPointLocal);
 
-	//if (PhysicsCommon::physicsSystem->GetBodyInterface().GetMotionType(bodyID) != EMotionType::Static)
-	//{
-		pOwner->PhysicsSetWorldRotation(DirectX::XMFLOAT4(rot.GetX(),
-			rot.GetY(),
-			rot.GetZ(),
-			rot.GetW()));
-	//}
+	constraint = settings.Create(*body1, *body2);
+	PhysicsCommon::physicsSystem->AddConstraint(constraint);
+}
 
+void Rigidbody::DisconnectConnectedBody()
+{
+	if (constraint != nullptr)
+	{
+		PhysicsCommon::physicsSystem->RemoveConstraint(constraint);
+		constraint = nullptr;
+	}
+	//delete constraint;
 }
 
 BodyID& Rigidbody::GetBodyID()
