@@ -36,6 +36,8 @@ public:
 	UINT GetIndexCount() const noxnd;
 	void LinkTechniques(Rgph::RenderGraph&);
 	virtual ~Drawable();
+	std::shared_ptr<const Bind::VertexBuffer> GetVertexBuffer() const { return pVertices; }
+	std::shared_ptr<const Bind::IndexBuffer> GetIndexBuffer() const { return pIndices; }
 protected:
 	std::shared_ptr<Bind::IndexBuffer> pIndices;
 	std::shared_ptr<Bind::VertexBuffer> pVertices;

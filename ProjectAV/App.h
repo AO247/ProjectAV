@@ -21,6 +21,7 @@
 #include "BlurOutlineRenderGraph.h"
 #include "PhysicsDebugRenderer.h"
 #include "Sprite.h"
+#include "CameraContainer.h"
 
 // Forward declarations
 class PlayerController; // Forward declare
@@ -47,6 +48,7 @@ private:
     Timer timer;
     float speed_factor = 1.0f;
     PointLight pointLight;
+    CameraContainer cameras;
     //PhysicsEngine physicsEngine; // Physics engine instance
 
 
@@ -60,6 +62,7 @@ private:
     SoundDevice* soundDevice; // Sound device instance
     std::unique_ptr<MusicBuffer> myMusic;
     DirectX::BoundingFrustum cameraFrustum; // Frustum for the camera
+    bool savingDepth = false;
 
     /*DebugLine* line1 = new DebugLine(wnd.Gfx(), {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, { 1.0f, 0.0f, 0.0f, 1.0f });    
     DebugLine* line2 = new DebugLine(wnd.Gfx(), { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f, 0.0f, 1.0f });
@@ -68,6 +71,7 @@ private:
 
     // --- Scene Graph ---
     std::unique_ptr<Node> pSceneRoot;
+    
     Node* pCamera = nullptr;
 	Node* pFreeViewCamera = nullptr; // Node for the free view camera
     Node* pPlayer = nullptr; // Node representing the player capsule/origin

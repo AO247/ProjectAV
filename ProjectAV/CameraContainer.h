@@ -14,7 +14,7 @@ class CameraContainer
 public:
 	void SpawnWindow(Graphics& gfx);
 	void Bind(Graphics& gfx);
-	void AddCamera(std::shared_ptr<Camera> pCam);
+	void AddCamera(Camera* pCam);
 	Camera* operator->();
 	~CameraContainer();
 	void LinkTechniques(Rgph::RenderGraph& rg);

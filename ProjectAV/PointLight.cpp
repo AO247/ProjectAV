@@ -1,9 +1,12 @@
 #include "PointLight.h"
 #include "imgui/imgui.h"
 #include "Camera.h"
+#include "Node.h"
+#include "Window.h"
 
-PointLight::PointLight(Graphics& gfx, DirectX::XMFLOAT3 pos, float radius)
-	:
+PointLight::PointLight(Node* owner, Window& window, Graphics& gfx, DirectX::XMFLOAT3 pos, float radius)
+	: owner(owner),
+	wnd(window),
 	mesh(gfx, radius),
 	cbuf(gfx)
 {
@@ -17,7 +20,7 @@ PointLight::PointLight(Graphics& gfx, DirectX::XMFLOAT3 pos, float radius)
 		0.0075f,
 	};
 	Reset();
-	pCamera = std::make_shared<Camera>(gfx, "Light", cbData.pos, 0.0f, 0.0f, true);
+	pCamera = new Camera(owner, window, gfx, "Light", cbData.pos, 0.0f, 0.0f, true);
 }
 
 void PointLight::SpawnControlWindow() noexcept
@@ -80,7 +83,7 @@ void PointLight::LinkTechniques(Rgph::RenderGraph& rg)
 	mesh.LinkTechniques(rg);
 }
 
-std::shared_ptr<Camera> PointLight::ShareCamera() const noexcept
+Camera* PointLight::ShareCamera() const noexcept
 {
 	return pCamera;
 }

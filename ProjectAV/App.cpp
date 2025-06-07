@@ -19,6 +19,7 @@
 #include <Jolt/ConfigurationString.h>
 #include <Jolt/Physics/Collision/Shape/CapsuleShape.h>
 #include "imgui/imgui_impl_dx11.h"
+#include "Channels.h"
 
 namespace dx = DirectX;
 
@@ -27,7 +28,7 @@ App::App(const std::string& commandLine)
     commandLine(commandLine),
     wnd(1280, 720, "Project AV"), // Pass window dimensions/title
 	scriptCommander(TokenizeQuoted(commandLine)),
-    pointLight(wnd.Gfx()), // Initialize PointLight
+    pointLight(pSceneRoot.get(), wnd, wnd.Gfx()), // Initialize PointLight
     pSceneRoot(std::make_unique<Node>("Root"))
 {
     // Set Projection Matrix (Far plane adjusted for larger scenes potentially)
@@ -88,7 +89,7 @@ App::App(const std::string& commandLine)
     pPrefabs = pPrefabsOwner.get();
 	auto pHandsOwner = std::make_unique<Node>("Hands", nullptr, "HANDS");
 	pHands = pHandsOwner.get();
-
+	
 	
 
     // Adding to Scene Graph
@@ -176,13 +177,17 @@ App::App(const std::string& commandLine)
 
     //Adding Other Components
     pFreeViewCamera->AddComponent(
-        std::make_unique<Camera>(pFreeViewCamera, wnd)
+        std::make_unique<Camera>(pFreeViewCamera, wnd, wnd.Gfx(), "pFreeViewCamera")
     );
     pCamera->AddComponent(
-        std::make_unique<Camera>(pCamera, wnd)
+        std::make_unique<Camera>(pCamera, wnd, wnd.Gfx(), "pCamera")
     );
     pCamera->GetComponent<Camera>()->active = true;
 
+    cameras.AddCamera(pCamera->GetComponent<Camera>());
+    cameras.AddCamera(pFreeViewCamera->GetComponent<Camera>());
+    cameras.AddCamera(pointLight.ShareCamera());
+    cameras.LinkTechniques(rg);
 
     pPlayer->AddComponent(
         std::make_unique<Health>(pPlayer, 3.0f)
@@ -221,7 +226,7 @@ App::App(const std::string& commandLine)
 
 
     //LevelGenerator levelGenerator(prefabManager, pSceneRoot.get(), pPlayer);
-
+    rg.BindShadowCamera(*pointLight.ShareCamera());
 
     const int screenWidth = 1280;
     const int screenHeight = 720;
@@ -428,7 +433,7 @@ void App::DoFrame(float dt)
     CleanupDestroyedNodes(pSceneRoot.get());
 
     wnd.Gfx().BeginFrame(0.5f, 0.5f, 1.0f);
-	pointLight.cbData.pos = { pPlayer->GetWorldPosition().x, pPlayer->GetWorldPosition().y + 12.0f, pPlayer->GetWorldPosition().z };
+	//pointLight.cbData.pos = { pPlayer->GetWorldPosition().x, pPlayer->GetWorldPosition().y + 12.0f, pPlayer->GetWorldPosition().z };
     //if (pPlayer->GetLocalPosition().y < -10.0f) {
     //	pPlayer->SetLocalPosition({ -20.0f, 225.0f, -25.0f });
     //    pEnemy->SetLocalPosition({ 15.0f, 225.0f, 0.0f });
@@ -443,8 +448,8 @@ void App::DoFrame(float dt)
 	/*DebugLine line(wnd.Gfx(), pEnemy->GetComponent<StateMachine>()->pos, pEnemy->GetComponent<StateMachine>()->cen, { 0.0f, 0.0f, 1.0f, 1.0f });
     line.Submit(fc);*/ // for idle
     // --- Bind Lights ---
-    pointLight.Bind(wnd.Gfx(), viewMatrix); // Bind point light (to slot 0)
-
+    pointLight.Bind(wnd.Gfx(), cameras->GetMatrix()); // Bind point light (to slot 0)
+    rg.BindMainCamera(cameras.GetActiveCamera());
     FrustumCalculating(); // Draw with FRUSTUM CULLING
     //pSceneRoot->Submit(fc, wnd.Gfx()); // Draw without FRUSTUM CULLING you have to also uncomment the draw method in Node.cpp
 
@@ -471,13 +476,18 @@ void App::DoFrame(float dt)
         );
     }
 	//pCamera->Forward();
-
+	pointLight.Submit(Chan::main); // Submit point light to the main channel
+    cameras.Submit(Chan::main);
     rg.Execute(wnd.Gfx());
 
     if (showControlWindow) {
         ShowControlWindows();
     }
-
+    if (savingDepth)
+    {
+        rg.DumpShadowMap(wnd.Gfx(), "shadow.png");
+        savingDepth = false;
+    }
     
 
     if (targetSprite ) { 
@@ -605,7 +615,7 @@ void App::DrawNodeRecursive(Graphics& gfx, Node& node)
 
     if (shouldDraw)
     {
-        node.Submit(wnd.Gfx());
+        node.Submit(Chan::main, wnd.Gfx());
         for (const auto& pChild : node.GetChildren())
         {
             if (pChild)
@@ -624,7 +634,7 @@ void App::ShowControlWindows()
     //DrawBoxColliders(wnd.Gfx()); // Call the updated function
 	//DrawCapsuleColliders(wnd.Gfx());
     //ForEnemyWalking();
-    pointLight.Submit();
+    pointLight.Submit(Chan::main);
 
     //pointLight.SpawnControlWindow(); // Control for Point Light
     if (showDemoWindow)
