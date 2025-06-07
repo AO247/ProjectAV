@@ -21,6 +21,7 @@
 #include <Jolt/Physics/Collision/NarrowPhaseQuery.h>
 #include <Jolt/Physics/Collision/CollisionGroup.h>
 #include <Jolt/Physics/Collision/Shape/RotatedTranslatedShape.h>
+#include <Jolt/Physics/Collision/Shape/ConvexHullShape.h>
 #include <Jolt/Physics/Constraints/FixedConstraint.h>
 #include <Jolt/Renderer/DebugRenderer.h>
 #include "vector"
@@ -47,6 +48,15 @@ class PhysicsCommon
 public:
 	static JPH::PhysicsSystem* physicsSystem;
 
+    static JPH::Array<JPH::Vec3> MakeVertexArray(std::vector<DirectX::SimpleMath::Vector3> vertices)
+    {
+        JPH::Array<JPH::Vec3> result;
+        for (int i = 0; i < vertices.size(); i++)
+        {
+            result.push_back(JPH::Vec3(vertices[i].x, vertices[i].y, vertices[i].z));
+        }
+        return result;
+    }
     static JPH::TriangleList MakeTriangleList(std::vector<ModelComponent::Triangle> triangles)
     {
         JPH::TriangleList result;

@@ -102,15 +102,18 @@ public:
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\objects\\kolumna_1_top.obj")
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-        BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(2.0f, 1.0f, 2.0f)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Kinematic, Layers::WALL);
-        BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
-
+        ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
+        ConvexHullShapeSettings shapeSettings(PhysicsCommon::MakeVertexArray(islandModel->GetAllUniqueVertices()));
+        ShapeRefC islandShape = shapeSettings.Create().Get();
+        BodyCreationSettings BodySettings(islandShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
         BodySettings.mMassPropertiesOverride.mMass = 10.0f;
+        BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
         BodySettings.mFriction = 0.5f;
         BodySettings.mMotionQuality = EMotionQuality::LinearCast;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), BodySettings)
         );
+
         pNewNodeOwner->AddComponent(
             std::make_unique<BrokenPart>(pNewNodeOwner.get())
         );
@@ -134,7 +137,10 @@ public:
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\objects\\kolumna_1_srodek.obj")
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-        BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(2.0f, 6.7f, 2.0f)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+        ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
+        ConvexHullShapeSettings shapeSettings(PhysicsCommon::MakeVertexArray(islandModel->GetAllUniqueVertices()));
+        ShapeRefC islandShape = shapeSettings.Create().Get();
+        BodyCreationSettings BodySettings(islandShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
         BodySettings.mMassPropertiesOverride.mMass = 20.0f;
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
         BodySettings.mFriction = 0.5f;
@@ -163,13 +169,9 @@ public:
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
-        TriangleList islandTriangles = PhysicsCommon::MakeTriangleList(islandModel->GetAllTriangles());
-        MeshShapeSettings islandMeshSettings(islandTriangles);
-        Shape::ShapeResult islandMeshCreationResult = islandMeshSettings.Create();
-        ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
-        ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
-        islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::WALL);
+        ConvexHullShapeSettings shapeSettings(PhysicsCommon::MakeVertexArray(islandModel->GetAllUniqueVertices()));
+        ShapeRefC islandShape = shapeSettings.Create().Get();
+        BodyCreationSettings bodySettings(islandShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::WALL);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -190,8 +192,8 @@ public:
 
         InstantiateBaseColumn(pNewNode, 0.0f, 2.0f, 0.0f, 1.0f);
         Node* middle = InstantiateMiddleColumn(pNewNode, 0.0f, 12.6f, 0.0f, 1.0f);
-        InstantiateTopColumn(middle, 0.0f, 7.9f, 0.0f, 1.0f);
-
+        Node* top = InstantiateTopColumn(middle, 0.0f, 7.9f, 0.0f, 1.0f);
+        top->GetComponent<Rigidbody>()->ConnectWithOtherBody(middle->GetComponent<Rigidbody>()->GetBodyID(), Vec3(0.0f, 7.9f, 0.0f));
 
         pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
@@ -209,10 +211,12 @@ public:
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\enviro_male_2\\kamien_1.2.obj")
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-        BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(1.0f, 1.0f, 1.0f)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
-        BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
-
+        ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
+        ConvexHullShapeSettings shapeSettings(PhysicsCommon::MakeVertexArray(islandModel->GetAllUniqueVertices()));
+        ShapeRefC islandShape = shapeSettings.Create().Get();
+        BodyCreationSettings BodySettings(islandShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
         BodySettings.mMassPropertiesOverride.mMass = 7.0f;
+        BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
         BodySettings.mFriction = 0.5f;
         BodySettings.mMotionQuality = EMotionQuality::LinearCast;
         pNewNodeOwner->AddComponent(
