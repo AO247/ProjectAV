@@ -64,9 +64,9 @@ public:
 	Sprite* card1 = nullptr;
 	Sprite* card2 = nullptr;
 	Sprite* card3 = nullptr;
-	int card1Pos = 80;
-	int card2Pos = 475;
-	int card3Pos = 870;
+	int card1Pos = 200;
+	int card2Pos = 800;
+	int card3Pos = 1400;
 
 	std::unique_ptr<Button> testButton1;
 	std::unique_ptr<Button> testButton2;

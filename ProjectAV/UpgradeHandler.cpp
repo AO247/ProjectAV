@@ -6,7 +6,7 @@ UpgradeHandler::UpgradeHandler(Node* owner, Window& window)
 	cardSprite1 = std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
 		80,               // int x  
-		70,                // int y  
+		180,                // int y  
 		350,               // size x  
 		600,                // size y  
 		L"Images\\a1Card.png"
@@ -14,7 +14,7 @@ UpgradeHandler::UpgradeHandler(Node* owner, Window& window)
 	cardSprite2 = std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
 		475,               // int x  
-		70,                // int y  
+		180,                // int y  
 		350,               // size x  
 		600,                // size y  
 		L"Images\\a2Card.png"
@@ -22,7 +22,7 @@ UpgradeHandler::UpgradeHandler(Node* owner, Window& window)
 	cardSprite3 = std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
 		870,               // int x  
-		70,                // int y  
+		180,                // int y  
 		350,               // size x  
 		600,                // size y  
 		L"Images\\dashCard.png"
@@ -30,7 +30,7 @@ UpgradeHandler::UpgradeHandler(Node* owner, Window& window)
 	cardSprite4 = std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
 		870,               // int x  
-		70,                // int y  
+		180,                // int y  
 		350,               // size x  
 		600,                // size y  
 		L"Images\\dashCard.png"
@@ -113,14 +113,14 @@ void UpgradeHandler::Update(float dt)
 		if (slower == 10)
 		{
 			bool flag = false;
-			if (selectedCardSprite->x_ < 406 || selectedCardSprite->x_ > 414)
+			if (selectedCardSprite->x_ < 745 || selectedCardSprite->x_ > 755)
 			{
-				selectedCardSprite->x_ += (410 - selectedCardSprite->x_) / 3;
+				selectedCardSprite->x_ += (750 - selectedCardSprite->x_) / 3;
 				flag = true;
 			}
-			if (selectedCardSprite->y_ < 12 || selectedCardSprite->y_ > 18)
+			if (selectedCardSprite->y_ < 95 || selectedCardSprite->y_ > 105)
 			{
-				selectedCardSprite->y_ += (15 - selectedCardSprite->y_) / 3;
+				selectedCardSprite->y_ += (100 - selectedCardSprite->y_) / 3;
 				flag = true;
 			}
 			if (selectedCardSprite->width_ <= 440)

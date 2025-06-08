@@ -25,7 +25,7 @@ namespace dx = DirectX;
 App::App(const std::string& commandLine)
     :
     commandLine(commandLine),
-    wnd(1280, 720, "Project AV"), // Pass window dimensions/title
+    wnd(1920, 1080, "Project AV"), // Pass window dimensions/title
 	scriptCommander(TokenizeQuoted(commandLine)),
     pointLight(wnd.Gfx()), // Initialize PointLight
     pSceneRoot(std::make_unique<Node>("Root"))
@@ -275,8 +275,8 @@ App::App(const std::string& commandLine)
     //LevelGenerator levelGenerator(prefabManager, pSceneRoot.get(), pPlayer);
 
 
-    const int screenWidth = 1280;
-    const int screenHeight = 720;
+    const int screenWidth = 1920;
+    const int screenHeight = 1080;
     const int plusSpriteWidth = 32;
     const int plusSpriteHeight = 32;
     const int plusSpriteX = (screenWidth / 2) - (plusSpriteWidth / 2);
@@ -293,28 +293,28 @@ App::App(const std::string& commandLine)
 
     heart1Sprite = std::make_unique<Sprite>(
         wnd.Gfx().GetDevice(),      
-        20,                // int x  
-        20,                // int y  
-        50,            // int width
-        50,           // int height
+        (screenWidth / 2) - 35 - 80,                // int x  
+        950,                // int y  
+        70,            // int width
+        70,           // int height
         L"Images\\heart.png"         
     );
 
     heart2Sprite = std::make_unique<Sprite>(
         wnd.Gfx().GetDevice(),      
-        80,                // int x  
-        20,                // int y (center Y)
-        50,            // int width
-        50,           // int height
+        (screenWidth / 2) - 35,                // int x  
+        950,                // int y (center Y)
+        70,            // int width
+        70,           // int height
         L"Images\\heart.png"         
     );
 
     heart3Sprite = std::make_unique<Sprite>(
         wnd.Gfx().GetDevice(),      // ID3D11Device*
-        140,                // int x (center X)
-        20,                // int y (center Y)
-        50,            // int width
-        50,           // int height
+        (screenWidth / 2) - 35 + 80,                // int x (center X)
+        950,                // int y (center Y)
+        70,            // int width
+        70,           // int height
         L"Images\\heart.png"       
     );
 

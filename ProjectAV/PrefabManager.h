@@ -401,7 +401,7 @@ public:
         InstantiateColumn(pNewNode, -5.0f, 0.0f, -12.0f, 1.0f);
         InstantiatePlatform1(pNewNode, 41.0f, 0.0f, 6.0f, 1.0f);
         InstantiatePlatform3(pNewNode, -19.0f, 0.0f, -26.0f, 1.0f);
-		InstantiateStatue(pNewNode, 0.0f, 0.0f, 0.0f, 1.0f);
+		//InstantiateStatue(pNewNode, 0.0f, 0.0f, 0.0f, 1.0f);
 
 
         auto spawnPoint1 = std::make_unique<Node>("SpawnPoint 1", pNewNodeOwner.get());
