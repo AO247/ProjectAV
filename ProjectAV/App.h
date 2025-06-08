@@ -21,6 +21,7 @@
 #include "BlurOutlineRenderGraph.h"
 #include "PhysicsDebugRenderer.h"
 #include "Sprite.h"
+#include "Button.h"
 
 // Forward declarations
 class PlayerController; // Forward declare
@@ -114,4 +115,7 @@ private:
     std::unique_ptr<Sprite> heart1Sprite;
     std::unique_ptr<Sprite> heart2Sprite;
     std::unique_ptr<Sprite> heart3Sprite;
+
+    std::unique_ptr<Button> testButton;
+
 };
