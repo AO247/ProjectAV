@@ -27,17 +27,18 @@ public:
 	float height = 4.0f;
 	float dashCooldown = 1.0f;
 	bool alive = true;
+	bool grounded = false;
+
 	Node* abilitySlot1;
 	Node* abilitySlot2;
 	Node* abilitySlot3;
 	Node* camera;
+	Rigidbody* rigidbody;
 
 private:
 	Window& wnd;
-	Rigidbody* rigidbody;
 
 	bool jumped = false;
-	bool grounded = false;
 	bool canDash = true;
 	float airMultiplier = 1.6f;
 

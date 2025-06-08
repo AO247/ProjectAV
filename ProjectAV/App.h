@@ -79,6 +79,7 @@ private:
 	Node* pSoundEffectsPlayer = nullptr; // Node for the sound effects player
     Node* pPrefabs = nullptr;
 	Node* pHands = nullptr;
+    UpgradeHandler* pUpgradeHandler = nullptr;
 
     TestCube cube{ wnd.Gfx(),4.0f };
     // --- UI State ---

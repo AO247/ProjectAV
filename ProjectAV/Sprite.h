@@ -16,7 +16,10 @@ public:
 
     void SetPosition(int x, int y);
     void SetSize(int width, int height); 
-
+    int x_ = 0;
+    int y_ = 0;
+    int width_ = 0;
+    int height_ = 0;
 private:
     struct Vertex {
         DirectX::XMFLOAT3 position;
@@ -32,10 +35,7 @@ private:
     ID3D11InputLayout* inputLayout_ = nullptr;
     ID3D11Buffer* constantBuffer_ = nullptr;
 
-    int x_ = 0;
-    int y_ = 0;
-    int width_ = 0;
-    int height_ = 0;
+   
 
     DirectX::XMFLOAT4X4 projectionMatrix_{}; // Initialized
     DirectX::XMFLOAT4X4 worldMatrix_{};       // Initialized

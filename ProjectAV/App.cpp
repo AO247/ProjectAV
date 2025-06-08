@@ -217,9 +217,17 @@ App::App(const std::string& commandLine)
 	//);
 	//SoundEffectsPlayer* pEnemySoundEffectsPlayer = pEnemy->GetComponent<SoundEffectsPlayer>();
 	//pEnemySoundEffectsPlayer->AddSound("Models\\sci-fidrone.ogg");
-
-
-
+    pSceneRoot->AddComponent(
+        std::make_unique<UpgradeHandler>(pSceneRoot.get(), wnd)
+	);
+	pUpgradeHandler = pSceneRoot->GetComponent<UpgradeHandler>();
+	pUpgradeHandler->ability1Node = pAbility1;
+	pUpgradeHandler->ability2Node = pAbility2;
+	pUpgradeHandler->ability3Node = pAbility3;
+	pUpgradeHandler->ability4Node = pAbility4;
+	pUpgradeHandler->playerController = pPlayer->GetComponent<PlayerController>();
+    pUpgradeHandler->SetBasicValues();
+	pSceneRoot->GetComponent<Global>()->upgradeHandler = pUpgradeHandler;
     //LevelGenerator levelGenerator(prefabManager, pSceneRoot.get(), pPlayer);
 
 
@@ -374,6 +382,18 @@ void App::HandleInput(float dt)
         case 'H': // Toggle UI
             showControlWindow = !showControlWindow;
             break;
+        case 'X':
+            pUpgradeHandler->ShowUpgradeMenu();
+            break;
+		case '1': // Ability 1
+			pUpgradeHandler->ApplyUpgrade(0);
+            break;
+		case '2': // Ability 2
+            pUpgradeHandler->ApplyUpgrade(1);
+			break;
+        case '3': // Ability 3
+			pUpgradeHandler->ApplyUpgrade(2);
+			break;
         case 'B':
             pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility4;
             break;
@@ -497,7 +517,7 @@ void App::DoFrame(float dt)
         heart1Sprite->Draw(wnd.Gfx().GetContext());
     }
 
-
+    pUpgradeHandler->DrawUpgradeMenu();
     wnd.Gfx().EndFrame();
     rg.Reset();
 }

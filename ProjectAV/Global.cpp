@@ -23,6 +23,7 @@ void Global::Update(float dt)
 					Node* target = levels[levels.size() - 2]->FindFirstChildByTag("SPAWN");
 					spawn->GetComponent<SpawnJump>()->Activate(target->GetWorldPosition());
 					completed = true;
+					upgradeHandler->ShowUpgradeMenu();
 				}
 				else if (spawn->GetComponent<SpawnJump>()->halfWay)
 				{

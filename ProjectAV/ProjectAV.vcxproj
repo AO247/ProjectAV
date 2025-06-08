@@ -190,6 +190,8 @@
     <ClCompile Include="CapsuleCollider.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="Component.cpp" />
+    <ClCompile Include="Fire.cpp" />
+    <ClCompile Include="FireStatue.cpp" />
     <ClCompile Include="FullscreenPass.cpp" />
     <ClCompile Include="Global.cpp" />
     <ClCompile Include="HorizontalBlurPass.cpp" />
@@ -246,6 +248,8 @@
     <ClInclude Include="BufferClearPass.h" />
     <ClInclude Include="BufferResource.h" />
     <ClInclude Include="Cube.h" />
+    <ClInclude Include="Fire.h" />
+    <ClInclude Include="FireStatue.h" />
     <ClInclude Include="FullscreenPass.h" />
     <ClInclude Include="Global.h" />
     <ClInclude Include="HorizontalBlurPass.h" />
@@ -303,6 +307,7 @@
     <ClCompile Include="TransformCbuf.cpp" />
     <ClCompile Include="TransformCbufScaling.cpp" />
     <ClCompile Include="Trigger.cpp" />
+    <ClCompile Include="UpgradeHandler.cpp" />
     <ClCompile Include="Vertex.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
     <ClCompile Include="VertexShader.cpp" />
@@ -442,6 +447,7 @@
     <ClInclude Include="TransformCbuf.h" />
     <ClInclude Include="TransformCbufScaling.h" />
     <ClInclude Include="Trigger.h" />
+    <ClInclude Include="UpgradeHandler.h" />
     <ClInclude Include="Vertex.h" />
     <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="VertexShader.h" />

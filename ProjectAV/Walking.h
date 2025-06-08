@@ -19,7 +19,7 @@ public:
 	Vector3 targetPosition;
 	virtual void Follow(float dt, DirectX::XMFLOAT3 target, float sp = 1.0f);
 	virtual void DrawImGuiControls() override;
-	float avoidanceWeight = 10.0f;
+	float avoidanceWeight = 20.0f;
 	float avoidanceDistance = 15.0f;
 	float raycastWidthOffset = 0.8f;
 	float height = 8.0f;

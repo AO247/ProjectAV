@@ -39,6 +39,7 @@ public:
 	int endingRemover = 0;
 	Vector3 enterPoint = { 0.0f, 5.0f, -60.0f };
 	int firstRun = 10;
+	UpgradeHandler* upgradeHandler;
 private:
 	Window& wnd;
 	void AddLevel();

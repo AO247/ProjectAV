@@ -15,9 +15,9 @@ void Bullet::Update(float dt)
 void Bullet::OnCollisionEnter(Node* object)
 {
 	if (object == ignore || object->tag == "TRIGGER") return;
-	if (object->GetComponent<Health>())
+	if (object->tag == "PLAYER") 
 	{
-		if(object->tag == "PLAYER") object->GetComponent<Health>()->TakeDamage(damage);
+		 object->GetComponent<Health>()->TakeDamage(damage);
 	}
 	pOwner->Destroy();
 }

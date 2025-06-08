@@ -20,6 +20,7 @@
 #include "Trigger.h"
 #include "BrokenPart.h"
 #include "SpawnJump.h"
+#include "UpgradeHandler.h"
 #include "Ability.h"
 #include "Ability1.h"
 #include "Ability2.h"

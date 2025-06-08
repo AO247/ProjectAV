@@ -137,7 +137,7 @@ Vector3 Walking::CalculateAvoidanceForce()
 	float radius = 1.0f;
 
 	Vector3 pos = pOwner->GetWorldPosition();
-	pos.y += -(height/2.0f) + 0.0f;
+	pos.y += -(height/2.0f) + 0.3f;
 	Vector3 forward = temporaryDirection;
 	Vector3 right = Vector3(forward.z, 0.0f, -forward.x);
 	right.Normalize();
@@ -169,10 +169,11 @@ Vector3 Walking::CalculateAvoidanceForce()
 	//PhysicsCommon::physicsSystem->GetBodyInterface().SetMotionType(rigidbody->GetBodyID(), EMotionType::Dynamic);
 	RayCastResult resultLeft;
 	if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(rayLeft, resultLeft, 
-		IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::ENEMY,BroadPhaseLayers::TRIGGER }),
-		IgnoreMultipleObjectLayerFilter({ Layers::ENEMY, Layers::TRIGGER })))
+		IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::ENEMY, BroadPhaseLayers::TRIGGER, BroadPhaseLayers::PLAYER }),
+		IgnoreMultipleObjectLayerFilter({ Layers::ENEMY, Layers::TRIGGER, Layers::PLAYER })))
 	{
 		leftHit = true;
+		PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(resultLeft.mBodyID, Vec3(0.0f, 1000.0f, 0.0f));
 		//float distance = Vector3(pos - hitLeft.hitPoint).Length();
 		//if(distance < targetDistance)
 		avoidanceForce = right * avoidanceWeight;
@@ -185,8 +186,8 @@ Vector3 Walking::CalculateAvoidanceForce()
 	);
 	RayCastResult resultRight;
 	if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(rayRight, resultRight, 
-		IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::ENEMY,BroadPhaseLayers::TRIGGER }),
-		IgnoreMultipleObjectLayerFilter({ Layers::ENEMY, Layers::TRIGGER })))
+		IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::ENEMY, BroadPhaseLayers::TRIGGER, BroadPhaseLayers::PLAYER }),
+		IgnoreMultipleObjectLayerFilter({ Layers::ENEMY, Layers::TRIGGER, Layers::PLAYER })))
 	{
 		rightHit = true;
 		//float distance = Vector3(pos - hitLeft.hitPoint).Length();
@@ -208,19 +209,21 @@ Vector3 Walking::CalculateAvoidanceForce()
 		RayCastResult resultMoreRight;
 
 		if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(rayMoreLeft, resultMoreLeft, 
-			IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::ENEMY,BroadPhaseLayers::TRIGGER }),
-			IgnoreMultipleObjectLayerFilter({ Layers::ENEMY, Layers::TRIGGER })))
+			IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::ENEMY, BroadPhaseLayers::TRIGGER, BroadPhaseLayers::PLAYER }),
+			IgnoreMultipleObjectLayerFilter({ Layers::ENEMY, Layers::TRIGGER, Layers::PLAYER })))
 		{
 			//float distance = Vector3(pos - hitLeft.hitPoint).Length();
 			//if(distance < targetDistance)
+			PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(resultMoreLeft.mBodyID, Vec3(0.0f, 1000.0f, 0.0f));
 			moreLeft = true;
 			avoidanceForce = right * avoidanceWeight * 1.5f;
 		}
 		else if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(rayMoreRight, resultMoreRight, 
-			IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::ENEMY,BroadPhaseLayers::TRIGGER }),
-			IgnoreMultipleObjectLayerFilter({ Layers::ENEMY, Layers::TRIGGER })))
+			IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::ENEMY, BroadPhaseLayers::TRIGGER, BroadPhaseLayers::PLAYER }),
+			IgnoreMultipleObjectLayerFilter({ Layers::ENEMY, Layers::TRIGGER, Layers::PLAYER })))
 		{
 			//float distance = Vector3(pos - hitLeft.hitPoint).Length();
+			PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(resultMoreRight.mBodyID, Vec3(0.0f, 1000.0f, 0.0f));
 			moreRight = true;
 			avoidanceForce = -right * avoidanceWeight * 1.5f;
 		}

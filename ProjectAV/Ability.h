@@ -20,6 +20,8 @@ public:
         Component::Update(dt); // Wywo³aj bazow¹ implementacjê jeœli istnieje
     }
     std::vector<Node*> objects;
+    float force;
+    int killsCount = 3;
 protected:
     Window& wnd;
     Node* camera;

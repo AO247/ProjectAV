@@ -66,7 +66,9 @@ void Ability3::Positioning()
 }
 void Ability3::Pressed()
 {
-    if (!abilityReady) return;
+    //if (!abilityReady) return;
+    if (killsCount < 3) return;
+    killsCount = 0;
     timer = duration;
     cooldownTimer = cooldown;
     abilityReady = false;

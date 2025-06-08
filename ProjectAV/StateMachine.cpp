@@ -75,7 +75,7 @@ void StateMachine::Update(float dt)
 	}
 	if (isFlying) {
 		Vec3 velocity = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(pOwner->GetComponent<Rigidbody>()->GetBodyID());
-		velocity *= 0.95f; // Dampen velocity by 5% each frame
+		velocity *= 0.95f;
 		PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(pOwner->GetComponent<Rigidbody>()->GetBodyID(),velocity);
 	}
 }

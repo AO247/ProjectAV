@@ -62,7 +62,7 @@ public:
 	// The `const` in std::shared_ptr<const Bind::VertexBuffer> means the pointed-to VertexBuffer cannot be modified through this shared_ptr.
 
 protected:
-	std::shared_ptr<Bind::IndexBuffer> pIndices;
+	std::shared_ptr<Bind::IndexBuffer> pIndices;	
 	std::shared_ptr<Bind::VertexBuffer> pVertices;
 	std::shared_ptr<Bind::Topology> pTopology;
 	std::vector<Technique> techniques;
