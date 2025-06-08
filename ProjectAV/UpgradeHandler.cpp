@@ -62,11 +62,52 @@ UpgradeHandler::UpgradeHandler(Node* owner, Window& window)
 		50,           // int height
 		L"Images\\heart.png"
 	);
+
+	testButton1 = std::make_unique<Button>(
+		wnd.Gfx().GetDevice(),
+		wnd.Gfx().GetContext(), // Pass the immediate context
+		card1Pos, 70, 350, 600,        // x, y, width, height
+		L" ",           // Text
+		L"myfile.spritefont" // Path to your .spritefont file
+	);
+	testButton2 = std::make_unique<Button>(
+		wnd.Gfx().GetDevice(),
+		wnd.Gfx().GetContext(), // Pass the immediate context
+		card2Pos, 70, 350, 600,        // x, y, width, height
+		L" ",           // Text
+		L"myfile.spritefont" // Path to your .spritefont file
+	);
+	testButton3 = std::make_unique<Button>(
+		wnd.Gfx().GetDevice(),
+		wnd.Gfx().GetContext(), // Pass the immediate context
+		card3Pos, 70, 350, 600,        // x, y, width, height
+		L" ",           // Text
+		L"myfile.spritefont" // Path to your .spritefont file
+	);
+
 }
 
 
 void UpgradeHandler::Update(float dt)
 {
+	if (upgradeMenuOpen && !upgraded && missclickTimer < 0.0f)
+	{
+		if (wnd.mouse.LeftIsPressed()) { // Or your mouse down event
+			const auto mousePos = wnd.mouse.GetPos();
+			if (testButton1->IsClicked(mousePos.first, mousePos.second))
+			{
+				ApplyUpgrade(0);
+			}
+			else if (testButton2->IsClicked(mousePos.first, mousePos.second))
+			{
+				ApplyUpgrade(1);
+			}
+			else if (testButton3->IsClicked(mousePos.first, mousePos.second))
+			{
+				ApplyUpgrade(2);
+			}
+		}
+	}
 	if (upgraded && !end)
 	{
 		if (slower == 10)
@@ -79,7 +120,7 @@ void UpgradeHandler::Update(float dt)
 			}
 			if (selectedCardSprite->y_ < 12 || selectedCardSprite->y_ > 18)
 			{
-				selectedCardSprite->y_ += (15 -selectedCardSprite->y_) / 3;
+				selectedCardSprite->y_ += (15 - selectedCardSprite->y_) / 3;
 				flag = true;
 			}
 			if (selectedCardSprite->width_ <= 440)
@@ -107,7 +148,7 @@ void UpgradeHandler::Update(float dt)
 	{
 		timer -= dt;
 	}
-	else if(end)
+	else if (end)
 	{
 		timer = 0.0f;
 		CloseUpgradeMenu();
@@ -115,6 +156,10 @@ void UpgradeHandler::Update(float dt)
 	if (waitForGrounded)
 	{
 		ShowUpgradeMenu();
+	}
+	if (missclickTimer > 0.0f)
+	{
+		missclickTimer -= dt;
 	}
 }
 
@@ -126,6 +171,7 @@ void UpgradeHandler::ShowUpgradeMenu()
 		waitForGrounded = true;
 		return;
 	}
+	missclickTimer = 0.3f;
 	PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(playerController->rigidbody->GetBodyID(), Vec3(0.0f,0.0f,0.0f));
 	waitForGrounded = false;
 	upgradeMenuOpen = true;

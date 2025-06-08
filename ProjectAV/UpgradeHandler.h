@@ -4,6 +4,7 @@
 #include "Components.h"
 #include "CMath.h"
 #include "Sprite.h"
+#include "Button.h"
 
 class Node;
 
@@ -41,7 +42,9 @@ public:
 	bool upgraded = false;
 	bool end = false;
 	bool waitForGrounded = false;
-	float timer;
+	float timer = 0.0f;
+	float missclickTimer = 0.0f;
+
 	void ShowUpgradeMenu();
 	void SetBasicValues();
 	void RandomUpgrades();
@@ -65,6 +68,9 @@ public:
 	int card2Pos = 475;
 	int card3Pos = 870;
 
+	std::unique_ptr<Button> testButton1;
+	std::unique_ptr<Button> testButton2;
+	std::unique_ptr<Button> testButton3;
 private:
 	Window& wnd;
 };

@@ -116,6 +116,5 @@ private:
     std::unique_ptr<Sprite> heart2Sprite;
     std::unique_ptr<Sprite> heart3Sprite;
 
-    std::unique_ptr<Button> testButton;
 
 };

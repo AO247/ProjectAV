@@ -318,15 +318,6 @@ App::App(const std::string& commandLine)
         L"Images\\heart.png"       
     );
 
-    testButton = std::make_unique<Button>(
-        wnd.Gfx().GetDevice(),
-        wnd.Gfx().GetContext(), // Pass the immediate context
-        50, 50, 200, 50,        // x, y, width, height
-        L"Click Me!",           // Text
-        L"myfile.spritefont" // Path to your .spritefont file
-    );
-    testButton->SetTextColor({ 1.0f, 1.0f, 0.0f, 1.0f });
-    testButton->SetColor(0.0f, 0.0f, 1.0f, 1.0f);
 
 
     wnd.DisableCursor();
@@ -401,30 +392,6 @@ int App::Go()
 void App::HandleInput(float dt)
 {
 
-    if (wnd.mouse.LeftIsPressed()) { // Or your mouse down event
-        const auto mousePos = wnd.mouse.GetPos();
-        char buffer[256];
-        sprintf_s(buffer, "Mouse: (%d, %d)\n", mousePos.first, mousePos.second);
-        OutputDebugStringA(buffer);
-
-        if (testButton) {
-            sprintf_s(buffer, "Button Rect: x=%d, y=%d, w=%d, h=%d (ClickedX: %d, ClickedY: %d)\n",
-                testButton->GetX(), testButton->GetY(), testButton->GetWidth(), testButton->GetHeight(), // Add GetX, GetY etc. to Button
-                testButton->GetX() + testButton->GetWidth(),
-                testButton->GetY() + testButton->GetHeight()
-            );
-            OutputDebugStringA(buffer);
-
-            if (testButton->IsClicked(mousePos.first, mousePos.second)) {
-                OutputDebugStringA("My Test Button was clicked INSIDE IsClicked!\n");
-                // Action
-            }
-            else {
-                OutputDebugStringA("Click registered, but NOT on button.\n");
-            }
-        }
-    }
-
     // --- Only handle non-player input here ---
     while (const auto e = wnd.kbd.ReadKey())
     {
@@ -462,18 +429,6 @@ void App::HandleInput(float dt)
         case 'H': // Toggle UI
             showControlWindow = !showControlWindow;
             break;
-        case 'X':
-            pUpgradeHandler->ShowUpgradeMenu();
-            break;
-		case '1': // Ability 1
-			pUpgradeHandler->ApplyUpgrade(0);
-            break;
-		case '2': // Ability 2
-            pUpgradeHandler->ApplyUpgrade(1);
-			break;
-        case '3': // Ability 3
-			pUpgradeHandler->ApplyUpgrade(2);
-			break;
         case 'B':
             if (pPlayer->GetComponent<PlayerController>()->abilitySlot1 == pAbility1)
             {
@@ -605,7 +560,7 @@ void App::DoFrame(float dt)
     }
 
 
-    testButton->Draw(wnd.Gfx().GetContext(), (float)wnd.GetWidth(), (float)wnd.GetHeight());
+    //testButton->Draw(wnd.Gfx().GetContext(), (float)wnd.GetWidth(), (float)wnd.GetHeight());
 
     pUpgradeHandler->DrawUpgradeMenu();
     wnd.Gfx().EndFrame();
