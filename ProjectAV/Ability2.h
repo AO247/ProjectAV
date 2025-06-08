@@ -22,9 +22,15 @@ public:
 	void OnTriggerExit(Node* other) override;
 	void Pressed() override;
 	void Released() override;
-	float cooldown = 0.5f; // Cooldown for ability 1
+	float cooldown = 1.2f; // Cooldown for ability 1
+	float timeToChange = 0.0f;
+	bool stop = true;
+
 	float force = 300.0f;
 	bool abilityReady = true; // Is the ability ready to be used?
+
+	Node* rightHandNormal = nullptr;
+	Node* rightHandAbility = nullptr;
 private:
 	void KeyboardInput();
 	void Cooldowns(float dt);

@@ -42,15 +42,19 @@ void Ability4::Positioning()
 }
 void Ability4::Pressed()
 {
-	isPressed = true;
+    isPressed = true;
     if (!abilityReady) return;
 	if (objects.size() == 0) return;
+    leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
+    leftHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
     cameraRotation = camera->GetLocalRotationEuler();
 }
 void Ability4::Released()
 {
     isPressed = false;
     if (!abilityReady) return;
+    leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3.5f });
+    timeToChange = 0.3f;
     Vector3 direction = Vector3::Zero;
     Vec3 position = Vec3(camera->GetWorldPosition().x, camera->GetWorldPosition().y, camera->GetWorldPosition().z);
     Vec3 dire = Vec3(camera->Forward().x, camera->Forward().y, camera->Forward().z);
@@ -128,7 +132,20 @@ void Ability4::Cooldowns(float dt)
     }
     else
     {
+        if (!abilityReady)
+        {
+            leftHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
+        }
         abilityReady = true;
+    }
+    if (timeToChange > 0.0f)
+    {
+        timeToChange -= dt;
+        if (timeToChange <= 0.0f)
+        {
+            leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
+            leftHandNormal->SetLocalPosition({ 0.0f, -2.7f, 1.0f });
+        }
     }
 
 }

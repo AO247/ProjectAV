@@ -78,7 +78,10 @@ private:
 	Node* pSelectedSceneNode = nullptr; // Node representing the selected scene node
 	Node* pSoundEffectsPlayer = nullptr; // Node for the sound effects player
     Node* pPrefabs = nullptr;
-	Node* pHands = nullptr;
+	Node* pLeftHandNormal = nullptr;
+	Node* pLeftHandAbility = nullptr;
+	Node* pRightHandNormal = nullptr;
+	Node* pRightHandAbility = nullptr;
     UpgradeHandler* pUpgradeHandler = nullptr;
 
     TestCube cube{ wnd.Gfx(),4.0f };
