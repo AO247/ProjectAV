@@ -9,7 +9,7 @@ UpgradeHandler::UpgradeHandler(Node* owner, Window& window)
 		70,                // int y  
 		350,               // size x  
 		600,                // size y  
-		L"Images\\card.png"
+		L"Images\\a1Card.png"
 	);
 	cardSprite2 = std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
@@ -17,7 +17,7 @@ UpgradeHandler::UpgradeHandler(Node* owner, Window& window)
 		70,                // int y  
 		350,               // size x  
 		600,                // size y  
-		L"Images\\card.png"
+		L"Images\\a2Card.png"
 	);
 	cardSprite3 = std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
@@ -25,7 +25,15 @@ UpgradeHandler::UpgradeHandler(Node* owner, Window& window)
 		70,                // int y  
 		350,               // size x  
 		600,                // size y  
-		L"Images\\card.png"
+		L"Images\\dashCard.png"
+	);
+	cardSprite4 = std::make_unique<Sprite>(
+		wnd.Gfx().GetDevice(),
+		870,               // int x  
+		70,                // int y  
+		350,               // size x  
+		600,                // size y  
+		L"Images\\dashCard.png"
 	);
 
 	heart1Sprite = std::make_unique<Sprite>(
@@ -149,12 +157,12 @@ void UpgradeHandler::DrawUpgradeMenu()
 		}
 		else
 		{
-			cardSprite1->Draw(wnd.Gfx().GetContext());
-			cardSprite2->Draw(wnd.Gfx().GetContext());
-			cardSprite3->Draw(wnd.Gfx().GetContext());
-			heart1Sprite->Draw(wnd.Gfx().GetContext());
+			card1->Draw(wnd.Gfx().GetContext());
+			card2->Draw(wnd.Gfx().GetContext());
+			card3->Draw(wnd.Gfx().GetContext());
+			/*heart1Sprite->Draw(wnd.Gfx().GetContext());
 			heart2Sprite->Draw(wnd.Gfx().GetContext());
-			heart3Sprite->Draw(wnd.Gfx().GetContext());
+			heart3Sprite->Draw(wnd.Gfx().GetContext());*/
 		}
 	}
 
@@ -172,6 +180,56 @@ void UpgradeHandler::RandomUpgrades()
 	{
 		currentUpgrade3 = rand() % 4;
 	}
+	switch (currentUpgrade1)
+	{
+	case 0: // Upgrade Ability1 Force
+		card1 = cardSprite1.get();
+		break;
+	case 1: // Upgrade Ability2 Force
+		card1 = cardSprite2.get();
+		break;
+	case 2: // Upgrade Dash Force
+		card1 = cardSprite3.get();
+		break;
+	case 3: // Upgrade Jump Force
+		card1 = cardSprite4.get();
+		break;
+	}
+	card1->x_ = card1Pos;
+
+	switch (currentUpgrade2)
+	{
+	case 0: // Upgrade Ability1 Force
+		card2 = cardSprite1.get();
+		break;
+	case 1: // Upgrade Ability2 Force
+		card2 = cardSprite2.get();
+		break;
+	case 2: // Upgrade Dash Force
+		card2 = cardSprite3.get();
+		break;
+	case 3: // Upgrade Jump Force
+		card2 = cardSprite4.get();
+		break;
+	}
+	card2->x_ = card2Pos;
+
+	switch (currentUpgrade3)
+	{
+	case 0: // Upgrade Ability1 Force
+		card3 = cardSprite1.get();
+		break;
+	case 1: // Upgrade Ability2 Force
+		card3 = cardSprite2.get();
+		break;
+	case 2: // Upgrade Dash Force
+		card3 = cardSprite3.get();
+		break;
+	case 3: // Upgrade Jump Force
+		card3 = cardSprite4.get();
+		break;
+	}
+	card3->x_ = card3Pos;
 
 	//400 425 450 475
 	heart1Sprite->x_ = 10 + cardSprite1->x_ + currentUpgrade1 * 90;
@@ -185,17 +243,17 @@ void UpgradeHandler::ApplyUpgrade(int upgradeIndex)
 	if (upgradeIndex == 0)
 	{
 		x = currentUpgrade1;
-		selectedCardSprite = cardSprite1.get();
+		selectedCardSprite = card1;
 	}
 	else if (upgradeIndex == 1)
 	{
 		x = currentUpgrade2;
-		selectedCardSprite = cardSprite2.get();
+		selectedCardSprite = card2;
 	}
 	else if (upgradeIndex == 2)
 	{
 		x = currentUpgrade3;
-		selectedCardSprite = cardSprite3.get();
+		selectedCardSprite = card3;
 	}
 	switch (x)
 	{
@@ -212,7 +270,7 @@ void UpgradeHandler::ApplyUpgrade(int upgradeIndex)
 		dash++;
 		break;
 	case 3: // Upgrade Jump Force
-		playerController->jumpForce += 15.0f;
+		playerController->jumpForce += 10.0f;
 		jump++;
 		break;
 	}
@@ -227,14 +285,14 @@ void UpgradeHandler::ResetUpgrades()
 	ability1Node->GetComponent<Ability1>()->force = basicAbility1Force;
 	ability2Node->GetComponent<Ability2>()->force = basicAbility2Force;
 	playerController->dashForce = basicDashForce;
-	playerController->jumpForce = basicJumpForce;
+	playerController->secondJumpForce = basicJumpForce;
 }
 void UpgradeHandler::SetBasicValues()
 {
 	basicAbility1Force = ability1Node->GetComponent<Ability1>()->force;
 	basicAbility2Force = ability2Node->GetComponent<Ability2>()->force;
 	basicDashForce = playerController->dashForce;
-	basicJumpForce = playerController->jumpForce;
+	basicJumpForce = playerController->secondJumpForce;
 }
 
 void UpgradeHandler::DrawImGuiControls()

@@ -52,12 +52,19 @@ public:
 	std::unique_ptr<Sprite> cardSprite1;
 	std::unique_ptr<Sprite> cardSprite2;
 	std::unique_ptr<Sprite> cardSprite3;
+	std::unique_ptr<Sprite> cardSprite4;
 	std::unique_ptr<Sprite> heart1Sprite;
 	std::unique_ptr<Sprite> heart2Sprite;
 	std::unique_ptr<Sprite> heart3Sprite;
 	Vector4 safeValues = Vector4::Zero;
 	Sprite* selectedCardSprite = nullptr;
-	
+	Sprite* card1 = nullptr;
+	Sprite* card2 = nullptr;
+	Sprite* card3 = nullptr;
+	int card1Pos = 80;
+	int card2Pos = 475;
+	int card3Pos = 870;
+
 private:
 	Window& wnd;
 };

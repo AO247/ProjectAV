@@ -42,18 +42,19 @@ void Ability4::Positioning()
 }
 void Ability4::Pressed()
 {
-    isPressed = true;
     if (!abilityReady) return;
 	if (objects.size() == 0) return;
+    isPressed = true;
     leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
     leftHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
     cameraRotation = camera->GetLocalRotationEuler();
 }
 void Ability4::Released()
 {
+    if (!isPressed) return;
     isPressed = false;
     if (!abilityReady) return;
-    leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3.5f });
+    leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 4.0f });
     timeToChange = 0.3f;
     Vector3 direction = Vector3::Zero;
     Vec3 position = Vec3(camera->GetWorldPosition().x, camera->GetWorldPosition().y, camera->GetWorldPosition().z);

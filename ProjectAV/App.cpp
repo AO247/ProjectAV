@@ -155,11 +155,11 @@ App::App(const std::string& commandLine)
     pAbility2->AddComponent(
         std::make_unique<Ability2>(pAbility2, wnd, pCamera)
     );
-    pAbility2->AddComponent(
+   /* pAbility2->AddComponent(
         std::make_unique<ModelComponent>(pAbility2, wnd.Gfx(), "Models\\box.glb")
-    );
+    );*/
+    //pAbility2->GetComponent<ModelComponent>()->LinkTechniques(rg);
     pPlayer->GetComponent<PlayerController>()->abilitySlot2 = pAbility2;
-    pAbility2->GetComponent<ModelComponent>()->LinkTechniques(rg);
 
 
     BodyCreationSettings a3odySettings(new JPH::SphereShape(40.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
@@ -169,10 +169,10 @@ App::App(const std::string& commandLine)
     pAbility3->AddComponent(
         std::make_unique<Ability3>(pAbility3, wnd, pCamera)
     );
-    pAbility3->AddComponent(
+    /*pAbility3->AddComponent(
         std::make_unique<ModelComponent>(pAbility3, wnd.Gfx(), "Models\\box.glb")
-    );
-    pAbility3->GetComponent<ModelComponent>()->LinkTechniques(rg);
+    );*/
+    //pAbility3->GetComponent<ModelComponent>()->LinkTechniques(rg);
     pPlayer->GetComponent<PlayerController>()->abilitySlot3 = pAbility3;
 
 
@@ -439,7 +439,14 @@ void App::HandleInput(float dt)
 			pUpgradeHandler->ApplyUpgrade(2);
 			break;
         case 'B':
-            pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility4;
+            if (pPlayer->GetComponent<PlayerController>()->abilitySlot1 == pAbility1)
+            {
+                pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility4;
+            }
+            else
+            {
+                pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility1;
+            }
             break;
         case VK_ESCAPE: // Exit
             PostQuitMessage(0);
