@@ -671,9 +671,6 @@ void Node::Update(float dt)
                 bodyInterface.SetRotation(GetComponent<Rigidbody>()->GetBodyID(), JPH::Quat(GetWorldRotationQuaternion().x, GetWorldRotationQuaternion().y, GetWorldRotationQuaternion().z, GetWorldRotationQuaternion().w), JPH::EActivation::Activate);
                 continue;
             }
-            OutputDebugString("\n");
-            OutputDebugString(GetName().c_str());
-            OutputDebugString("\n");
         }
         comp->Update(dt);
     }
@@ -830,15 +827,18 @@ std::vector<Node*> Node::FindAllChildrenByTag(const std::string& searchTag)
 }
 void Node::Destroy()
 {
+    if(!markedForDestruction)
+    {
+        if (GetComponent<Rigidbody>() != nullptr)
+        {
+            dynamic_cast<MyContactListener*>(PhysicsCommon::physicsSystem->GetContactListener())->RemoveRigidbodyData(GetComponent<Rigidbody>()->GetBodyID());
+        }
+        if (GetComponent<Trigger>() != nullptr)
+        {
+            dynamic_cast<MyContactListener*>(PhysicsCommon::physicsSystem->GetContactListener())->RemoveTriggerData(GetComponent<Trigger>()->GetBodyID());
+        }
+    }
     markedForDestruction = true;
-    if (GetComponent<Rigidbody>() != nullptr)
-    {
-        dynamic_cast<MyContactListener*>(PhysicsCommon::physicsSystem->GetContactListener())->RemoveRigidbodyData(GetComponent<Rigidbody>()->GetBodyID());
-    }
-    if (GetComponent<Trigger>() != nullptr)
-    {
-        dynamic_cast<MyContactListener*>(PhysicsCommon::physicsSystem->GetContactListener())->RemoveTriggerData(GetComponent<Trigger>()->GetBodyID());
-    }
     // Recursively mark all children for destruction as well
     for (const auto& child : children)
     {
