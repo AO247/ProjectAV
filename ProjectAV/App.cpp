@@ -212,7 +212,7 @@ App::App(const std::string& commandLine)
     pPlayer->SetLocalPosition({ 0.0f, 80.0f, -24.0f });
 
     //pEnemySoundEffectsPlayer->SetPosition(0.0f, 0.0f, 0.0f);
-    soundDevice->SetLocation(pPlayer->GetLocalPosition().x, pPlayer->GetLocalPosition().y, pPlayer->GetLocalPosition().z);
+    //soundDevice->SetLocation(pPlayer->GetLocalPosition().x, pPlayer->GetLocalPosition().y, pPlayer->GetLocalPosition().z);
 
     pSceneRoot->AddComponent(
         std::make_unique<Global>(pSceneRoot.get(), wnd, pPlayer)
@@ -506,14 +506,6 @@ void App::DoFrame(float dt)
     line.Submit(fc);*/ // for idle
     // --- Bind Lights ---
     pointLight.Bind(wnd.Gfx(), viewMatrix); // Bind point light (to slot 0)
-
-    std::vector<Node*> columns = pSceneRoot->FindAllChildrenByTag("WALL");
-    for (Node* column : columns) {
-        // Perform operations on each column (Node*)
-        if (auto* effect = column->GetComponent<WindTunnelEffect>()) {
-            effect->Update(dt, wnd.Gfx());
-        }
-    }
     //Node* columns = pSceneRoot->FindAllChildrenByTag("WALL");
     //columns->GetComponent<WindTunnelEffect>()->Update(dt, wnd.Gfx());
 

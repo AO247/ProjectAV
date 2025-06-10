@@ -11,36 +11,6 @@ PrefabManager::~PrefabManager()
 {
 }
 
-Node* PrefabManager::InstantiateWall(Node* parentNode, float locX, float locY, float locZ, float scale) const {
-
-
-    auto pNewNodeOwner = std::make_unique<Node>("Stone", nullptr, "Stone");
-
-    pNewNodeOwner->AddComponent(
-        std::make_unique<ModelComponent>(pNewNodeOwner.get(), wnd->Gfx(), "Models\\platformy_glazy_2\\platforma_5.3.obj")
-    );
-    ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
-    TriangleList islandTriangles = PhysicsCommon::MakeTriangleList(islandModel->GetAllTriangles());
-    MeshShapeSettings islandMeshSettings(islandTriangles);
-    Shape::ShapeResult islandMeshCreationResult = islandMeshSettings.Create();
-    ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
-    ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
-    islandMeshShape = islandScaling.Create().Get();
-    BodyCreationSettings bodySettings(islandMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
-    bodySettings.mFriction = 1.0f;
-    pNewNodeOwner->AddComponent(
-        std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
-    );
-
-
-    pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
-    pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
-
-    Node* pNewNode = pNewNodeOwner.get();
-    parentNode->AddChild(std::move(pNewNodeOwner));
-    return pNewNode;
-}
-
 Node* PrefabManager::InstantiatePlatform4(Node* parentNode, float locX, float locY, float locZ, float scale) const {
 
 

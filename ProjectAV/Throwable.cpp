@@ -14,6 +14,10 @@ void Throwable::OnCollisionEnter(Node* object)
 	{
 		object->GetComponent<Health>()->TakeDamage(damage);
 	}
+	if (!pOwner->GetComponent<SoundEffectsPlayer>()->isPlaying())
+	{
+		pOwner->GetComponent<SoundEffectsPlayer>()->Play(0);
+	}
 }
 
 
