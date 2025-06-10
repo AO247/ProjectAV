@@ -18,6 +18,11 @@ void FollowState::Enter(StateMachine* pOwner)
 {
 	OutputDebugStringA("Entering FOLLOW State\n");
 	time = 0.0f;
+    if (pOwner->attackComponents.size() > 0) {
+        int randI = rand() % pOwner->attackComponents.size();
+        pOwner->pAttackComponent = pOwner->attackComponents[randI];
+        pOwner->attackRange = pOwner->pAttackComponent->attackRange;
+    }
 
 }
 
@@ -40,7 +45,7 @@ void FollowState::Update(StateMachine* pOwner, float dt)
         return;
     }
     if (pOwner->pMovementComponent != nullptr) {
-        pOwner->pMovementComponent->Follow(playerPos);
+        pOwner->pMovementComponent->Follow(dt, playerPos);
     }
 
 }

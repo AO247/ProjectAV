@@ -16,6 +16,4 @@ public:
 	virtual StateType GetType() const override { return StateType::IDLE; }
 
 	float time;
-	Component* pAttackComponent = nullptr;
-
 };

@@ -1,7 +1,6 @@
 #include "Mesh.h"
 #include "Graphics.h" 
 #include "Material.h" // Include the new Material class
-#include "FrameCommander.h" // Include for Submit
 #include <assimp/mesh.h> // For aiMesh definition
 #include <sstream> 
 
@@ -54,10 +53,10 @@ Mesh::Mesh(Graphics& gfx, const Material& mat, const aiMesh& mesh, float scale) 
 }
 
 // **** NEW SUBMIT METHOD ****
-void Mesh::Submit(FrameCommander& frame, dx::FXMMATRIX accumulatedTransform) const noxnd
+void Mesh::Submit(dx::FXMMATRIX accumulatedTransform) const noxnd
 {
     dx::XMStoreFloat4x4(&transform, accumulatedTransform); // Store the final world transform for this mesh
-    Drawable::Submit(frame); // Call base Drawable's Submit, which iterates techniques
+    Drawable::Submit(); // Call base Drawable's Submit, which iterates techniques
 }
 
 DirectX::XMMATRIX Mesh::GetTransformXM() const noexcept

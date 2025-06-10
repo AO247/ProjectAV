@@ -1,7 +1,5 @@
 #pragma once
 #include "Bindable.h"
-#include <vector> // Required for std::vector
-#include <string> // Required for std::string (though already implied by Bindable typically)
 
 namespace Bind
 {
@@ -10,15 +8,9 @@ namespace Bind
 	public:
 		IndexBuffer(Graphics& gfx, const std::vector<unsigned short>& indices);
 		IndexBuffer(Graphics& gfx, std::string tag, const std::vector<unsigned short>& indices);
-		void Bind(Graphics& gfx) noexcept override;
+		void Bind(Graphics& gfx) noxnd override;
 		UINT GetCount() const noexcept;
-
-		// **** NEW PUBLIC METHODS to access CPU-side index data ****
 		unsigned short GetIndex(size_t i) const noexcept;
-		// Optional: If you want to provide access to the whole vector
-		// const std::vector<unsigned short>& GetCPUIndices() const noexcept;
-
-
 		static std::shared_ptr<IndexBuffer> Resolve(Graphics& gfx, const std::string& tag,
 			const std::vector<unsigned short>& indices);
 		template<typename...Ignore>
@@ -35,8 +27,6 @@ namespace Bind
 		std::string tag;
 		UINT count;
 		Microsoft::WRL::ComPtr<ID3D11Buffer> pIndexBuffer;
-
-		// **** NEW MEMBER to store CPU-side copy of indices ****
 		std::vector<unsigned short> cpuIndices;
 	};
 }

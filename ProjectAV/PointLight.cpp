@@ -1,35 +1,34 @@
 #include "PointLight.h"
 #include "imgui/imgui.h"
-#include "FrameCommander.h"
 
-PointLight::PointLight( Graphics& gfx,float radius )
+PointLight::PointLight(Graphics& gfx, float radius)
 	:
-	mesh( gfx,radius ),
-	cbuf( gfx )
+	mesh(gfx, radius),
+	cbuf(gfx)
 {
 	Reset();
 }
 
 void PointLight::SpawnControlWindow() noexcept
 {
-	if( ImGui::Begin( "Light" ) )
+	if (ImGui::Begin("Light"))
 	{
-		ImGui::Text( "Position" );
-		ImGui::SliderFloat( "X",&cbData.pos.x,-60.0f,60.0f,"%.1f" );
-		ImGui::SliderFloat( "Y",&cbData.pos.y,-60.0f,60.0f,"%.1f" );
-		ImGui::SliderFloat( "Z",&cbData.pos.z,-60.0f,60.0f,"%.1f" );
-		
-		ImGui::Text( "Intensity/Color" );
-		ImGui::SliderFloat( "Intensity",&cbData.diffuseIntensity,0.01f,2.0f,"%.2f");
-		ImGui::ColorEdit3( "Diffuse Color",&cbData.diffuseColor.x );
-		ImGui::ColorEdit3( "Ambient",&cbData.ambient.x );
-		
-		ImGui::Text( "Falloff" );
-		ImGui::SliderFloat( "Constant",&cbData.attConst,0.05f,10.0f,"%.2f");
-		ImGui::SliderFloat( "Linear",&cbData.attLin,0.0001f,4.0f,"%.4f");
-		ImGui::SliderFloat( "Quadratic",&cbData.attQuad,0.0000001f,10.0f,"%.7f");
+		ImGui::Text("Position");
+		ImGui::SliderFloat("X", &cbData.pos.x, -60.0f, 60.0f, "%.1f");
+		ImGui::SliderFloat("Y", &cbData.pos.y, -60.0f, 60.0f, "%.1f");
+		ImGui::SliderFloat("Z", &cbData.pos.z, -60.0f, 60.0f, "%.1f");
 
-		if( ImGui::Button( "Reset" ) )
+		ImGui::Text("Intensity/Color");
+		ImGui::SliderFloat("Intensity", &cbData.diffuseIntensity, 0.01f, 2.0f, "%.2f", 2);
+		ImGui::ColorEdit3("Diffuse Color", &cbData.diffuseColor.x);
+		ImGui::ColorEdit3("Ambient", &cbData.ambient.x);
+
+		ImGui::Text("Falloff");
+		ImGui::SliderFloat("Constant", &cbData.attConst, 0.05f, 10.0f, "%.2f");
+		ImGui::SliderFloat("Linear", &cbData.attLin, 0.0001f, 4.0f, "%.4f");
+		ImGui::SliderFloat("Quadratic", &cbData.attQuad, 0.0000001f, 10.0f, "%.7f");
+
+		if (ImGui::Button("Reset"))
 		{
 			Reset();
 		}
@@ -41,7 +40,7 @@ void PointLight::Reset() noexcept
 {
 	cbData = {
 		{ 10.0f,9.0f,2.5f },
-		{ 0.45f,0.45f,0.45f },
+		{ 0.85f,0.85f,0.85f },
 		{ 1.0f,1.0f,1.0f },
 		1.0f,
 		1.0f,
@@ -50,17 +49,22 @@ void PointLight::Reset() noexcept
 	};
 }
 
-void PointLight::Submit( FrameCommander& frame ) const noxnd
+void PointLight::Submit() const noxnd
 {
-	mesh.SetPos( cbData.pos );
-	mesh.Submit( frame );
+	mesh.SetPos(cbData.pos);
+	mesh.Submit();
 }
 
-void PointLight::Bind( Graphics& gfx,DirectX::FXMMATRIX view ) const noexcept
+void PointLight::Bind(Graphics& gfx, DirectX::FXMMATRIX view) const noexcept
 {
 	auto dataCopy = cbData;
-	const auto pos = DirectX::XMLoadFloat3( &cbData.pos );
-	DirectX::XMStoreFloat3( &dataCopy.pos,DirectX::XMVector3Transform( pos,view ) );
-	cbuf.Update( gfx,dataCopy );
-	cbuf.Bind( gfx );
+	const auto pos = DirectX::XMLoadFloat3(&cbData.pos);
+	DirectX::XMStoreFloat3(&dataCopy.pos, DirectX::XMVector3Transform(pos, view));
+	cbuf.Update(gfx, dataCopy);
+	cbuf.Bind(gfx);
+}
+
+void PointLight::LinkTechniques(Rgph::RenderGraph& rg)
+{
+	mesh.LinkTechniques(rg);
 }

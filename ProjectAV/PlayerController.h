@@ -22,38 +22,36 @@ public:
 	float moveSpeed = 23.0f;
 	//float jumpForce = 300.0f;
 	//float dashForce = 600.0f;
-	float jumpForce = 300.0f;
-	float dashForce = 750.0f;
+	float jumpForce = 30.0f;
+	float secondJumpForce = 20.0f;
+	float dashForce = 70.0f;
 	float height = 4.0f;
 	float dashCooldown = 1.0f;
-	float ability1Cooldown = 1.0f;
-	float ability2Cooldown = 1.0f;
 	bool alive = true;
-	Node* ability1;
-	Node* ability2;
+	bool grounded = false;
+
+	Node* abilitySlot1;
+	Node* abilitySlot2;
+	Node* abilitySlot3;
+	Node* camera;
+	Rigidbody* rigidbody;
+
 private:
 	Window& wnd;
-	Rigidbody* rigidbody;
-	Node* camera;
 
 	bool jumped = false;
-	bool grounded = false;
 	bool canDash = true;
 	float airMultiplier = 1.6f;
 
 	Vector3 moveDirection;
 	Vector3 dashDirection;
 	float dashCooldownTimer = 0.0f;
-	float ability1CooldownTimer = 0.0f;
-	float ability2CooldownTimer = 0.0f;
 	float dashTimer = 0.0f;
 	bool dashed = false;
 	bool doubleJumped = false;
-	bool ability1Ready = true;
-	bool ability2Ready = true;
 
 	void KeyboardInput();
-	void MovePlayer();
+	void MovePlayer(float dt);
 	void SpeedControl();
 	void GroundCheck();
 	void Jump();

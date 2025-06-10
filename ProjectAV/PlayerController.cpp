@@ -22,13 +22,13 @@ PlayerController::PlayerController(Node* owner, Window& window)
 void PlayerController::Update(float dt)
 {
     Positioning();
-    if (!wnd.CursorEnabled() && alive)
+    Cooldowns(dt);
+    if (!wnd.CursorEnabled() && alive && !wnd.playerLocked)
     {
         GroundCheck();
-        Cooldowns(dt);
 		KeyboardInput();
 		SpeedControl();
-		MovePlayer();
+		MovePlayer(dt);
     }
 }
 
@@ -78,13 +78,17 @@ void PlayerController::Jump()
 {
     if ((grounded || !doubleJumped) && !jumped) {
 		Vec3 velocity = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
-        PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rigidbody->GetBodyID(), Vec3(velocity.GetX(), 0.0f, velocity.GetZ()));
+        if (velocity.GetY() < 0.0f)
+        {
+            PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rigidbody->GetBodyID(), Vec3(velocity.GetX(), 0.0f, velocity.GetZ()));
 
-		PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(rigidbody->GetBodyID(), Vec3(0.0f, jumpForce, 0.0f));
+        }
         if (grounded) {
+            PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(rigidbody->GetBodyID(), Vec3(0.0f, jumpForce, 0.0f));
 			grounded = false;
         }
         else {
+            PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(rigidbody->GetBodyID(), Vec3(0.0f, secondJumpForce, 0.0f));
 			doubleJumped = true;
         }
 		jumped = true;
@@ -129,10 +133,12 @@ void PlayerController::GroundCheck()
 {
     RRayCast ray = RRayCast(
         RVec3(GetOwner()->GetWorldPosition().x, GetOwner()->GetWorldPosition().y, GetOwner()->GetWorldPosition().z),
-        Vec3(0.0f, -(height/2 + 0.2f), 0.0f)
-	);
+        Vec3(0.0f, -(height / 2 + 0.2f), 0.0f)
+    );
     RayCastResult result;
-    if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(ray, result, IgnoreSpecifiedBroadPhaseLayerFilter(BroadPhaseLayers::PLAYER), IgnoreSpecifiedObjectLayerFilter(Layers::PLAYER)))
+    if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(ray, result, 
+        IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::PLAYER, BroadPhaseLayers::TRIGGER }), 
+        IgnoreMultipleObjectLayerFilter({Layers::PLAYER, Layers::TRIGGER})))
     {
 		grounded = true;
     }
@@ -147,16 +153,16 @@ void PlayerController::GroundCheck()
     }
 }
 
-void PlayerController::MovePlayer()
+void PlayerController::MovePlayer(float dt)
 {
     moveDirection.Normalize();
     if (grounded)
     {
-        PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * moveSpeed * 1000.0f);
+        PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * moveSpeed * 1000.0f * dt);
     }
     else
     {
-        PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * moveSpeed * 50.0f);
+        PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * moveSpeed * 100.0f * dt);
     }
 }
 
@@ -180,46 +186,48 @@ void PlayerController::Cooldowns(float dt)
     {
         canDash = true;
     }
-	if (ability1CooldownTimer > 0.0f)
-	{
-		ability1CooldownTimer -= dt;
-	}
-	else
-	{
-		ability1Ready = true;
-	}
-	if (ability2CooldownTimer > 0.0f)
-	{
-		ability2CooldownTimer -= dt;
-	}
-	else
-	{
-		ability2Ready = true;
-	}
 }
 
 void PlayerController::Positioning()
 {
     camera->SetLocalPosition({ GetOwner()->GetLocalPosition().x, GetOwner()->GetLocalPosition().y + height * 9 / 10, GetOwner()->GetLocalPosition().z });
-    GetOwner()->SetLocalRotation({ 0.0f, camera->GetLocalRotationEuler().y, 0.0f });
+    //GetOwner()->SetLocalRotation({ 0.0f, camera->GetLocalRotationEuler().y, 0.0f });
+    Quat q = Quat::sEulerAngles(Vec3(0.0f, camera->GetLocalRotationEuler().y, 0.0f));
+    PhysicsCommon::physicsSystem->GetBodyInterface().SetRotation(rigidbody->GetBodyID(), q, EActivation::Activate);
 }
 
 
 void PlayerController::KeyboardInput()
 {
+
     while (const auto e = wnd.mouse.Read()) // Read events from the queue
     {
         switch (e->GetType())
         {
         case Mouse::Event::Type::LPress:
-            ability1->GetComponent<Ability1>()->Active();
+            abilitySlot1->GetComponent<Ability>()->Pressed();
             break;
 
         case Mouse::Event::Type::RPress:
-            ability2->GetComponent<Ability2>()->Active();
+            abilitySlot2->GetComponent<Ability>()->Pressed();
+            break;
+
+        case Mouse::Event::Type::LRelease:
+            abilitySlot1->GetComponent<Ability>()->Released();
+            break;
+
+        case Mouse::Event::Type::RRelease:
+            abilitySlot2->GetComponent<Ability>()->Released();
             break;
         }
+
     }
+
+    if (wnd.kbd.KeyIsPressed('Q'))
+    {
+        abilitySlot3->GetComponent<Ability>()->Pressed();
+	}
+
 
     moveDirection = Vector3(0.0f, 0.0f, 0.0f);
     if (wnd.kbd.KeyIsPressed(VK_SPACE))
@@ -260,8 +268,6 @@ void PlayerController::DrawImGuiControls()
     ImGui::InputFloat("JumpForce", &jumpForce);
 	ImGui::InputFloat("Dash Force", &dashForce);
 	ImGui::InputFloat("Dash Cooldown", &dashCooldown);
-	ImGui::InputFloat("Ability1 Cooldown", &ability1Cooldown);
-	ImGui::InputFloat("Ability2 Cooldown", &ability2Cooldown);
     ImGui::InputFloat("Height", &height);
     ImGui::Checkbox("Jumped", &jumped);
     ImGui::Checkbox("CanDash", &canDash);

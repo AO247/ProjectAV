@@ -61,6 +61,10 @@ public:
 	bool CursorEnabled() const noexcept;
 	static std::optional<int> ProcessMessages() noexcept;
 	Graphics& Gfx();
+
+	int GetWidth() const noexcept { return width; }
+	int GetHeight() const noexcept { return height; }
+
 private:
 	void ConfineCursor() noexcept;
 	void FreeCursor() noexcept;
@@ -74,6 +78,7 @@ private:
 public:
 	Keyboard kbd;
 	Mouse mouse;
+	bool playerLocked = false;
 private:
 	bool cursorEnabled = true;
 	int width;

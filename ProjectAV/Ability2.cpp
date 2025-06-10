@@ -11,7 +11,7 @@
 
 namespace dx = DirectX;
 Ability2::Ability2(Node* owner, Window& window, Node* camera)
-    : Component(owner), wnd(window), camera(camera)  // Initialize reference member
+    : Ability(owner, window, camera)
 {
 
 }
@@ -54,21 +54,33 @@ void Ability2::Positioning()
         }
     }
 }
-void Ability2::Active()
+void Ability2::Pressed()
 {
     if (!abilityReady) return;
+    rightHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
+    rightHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
+    timeToChange = 0.3f;
     for (int i = 0; i < objects.size(); i++)
     {
-        if (objects[i]->tag == "ENEMY" || objects[i]->tag == "STONE")
+        if (objects[i]->tag == "ENEMY")
         {
-            //PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), Vec3(0.0f, 0.0f, 0.0f));
+            PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), Vec3(0.0f, 0.0f, 0.0f));
             Vec3 direction = Vec3(0.0f, 1.0f, 0.0f);
-            PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), direction * force * 1.0f);
+            PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), direction * force);
             OutputDebugStringA(("Ability2 hit: " + objects[i]->GetName() + "\n").c_str());
         }
+        else if (objects[i]->tag == "STONE")
+        {
+            Vec3 direction = Vec3(0.0f, 1.0f, 0.0f);
+            PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), direction * 230.0f);
+            OutputDebugStringA(("Ability2 hit: " + objects[i]->GetName() + "\n").c_str());
+		}
     }
     cooldownTimer = cooldown;
     abilityReady = false;
+}
+void Ability2::Released()
+{
 }
 
 void Ability2::Cooldowns(float dt)
@@ -79,28 +91,27 @@ void Ability2::Cooldowns(float dt)
     }
     else
     {
+        if (!abilityReady)
+        {
+            rightHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
+        }
         abilityReady = true;
     }
-
-}
-
-
-void Ability2::KeyboardInput()
-{
-    while (const auto e = wnd.mouse.Read()) // Read events from the queue
+    if (timeToChange > 0.0f)
     {
-        switch (e->GetType())
+        timeToChange -= dt;
+        if (timeToChange <= 0.0f)
         {
-        case Mouse::Event::Type::RPress:
-			OutputDebugStringA("\n\n\nRight Mouse Button Pressed\n");
-            Active();
-            break;
+            rightHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
+            rightHandNormal->SetLocalPosition({ 0.0f, -2.7f, 1.0f });
         }
     }
+
 }
 
 
 void Ability2::OnTriggerEnter(Node* object) {
+    if (object == nullptr) return;
     if (object->tag != "ENEMY" && object->tag != "STONE") return;
     if (object->GetComponent<Rigidbody>() == nullptr) return;
     for (int i = 0; i < objects.size(); i++)
@@ -111,6 +122,7 @@ void Ability2::OnTriggerEnter(Node* object) {
     OutputDebugStringA(("Ability2 OnTriggerEnter: " + object->GetName() + "\n").c_str());
 }
 void Ability2::OnTriggerExit(Node* object) {
+    if (object == nullptr) return;
     if (object->tag != "ENEMY" && object->tag != "STONE") return;
     if (object->GetComponent<Rigidbody>() == nullptr) return;
     auto it = std::remove(objects.begin(), objects.end(), object);

@@ -1,10 +1,8 @@
-#include "App.h"
-#include "Node.h"           
+#include "App.h"     
 #include "State.h"
 #include "CMath.h"
 #include "Surface.h"
 #include "imgui/imgui.h"
-#include <memory>
 #include <algorithm>
 #include "CUtil.h"
 #include "ColliderSphere.h"
@@ -15,45 +13,42 @@
 #include "SoundEffectsPlayer.h"
 #include "DebugLine.h"
 #include "Testing.h"
-#include "Prefab.h"
 #include "PrefabManager.h"
 #include "LevelGenerator.h"
 #include "WindTunnelEffect.h"
 #include <Jolt/Jolt.h>
 #include <Jolt/ConfigurationString.h>
 #include <Jolt/Physics/Collision/Shape/CapsuleShape.h>
+#include "imgui/imgui_impl_dx11.h"
 
 namespace dx = DirectX;
-
-
 
 App::App(const std::string& commandLine)
     :
     commandLine(commandLine),
-    wnd(1280, 720, "Project AV"), // Pass window dimensions/title
+    wnd(1920,1080, "Project AV"), // Pass window dimensions/title
 	scriptCommander(TokenizeQuoted(commandLine)),
     pointLight(wnd.Gfx()), // Initialize PointLight
     pSceneRoot(std::make_unique<Node>("Root"))
 {
-    TestDynamicConstant();
     // Set Projection Matrix (Far plane adjusted for larger scenes potentially)
     wnd.Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 2000.0f));
 
-    cube.SetPos({ 4.0f,2.0f,0.0f });
-    cube2.SetPos({ 0.0f,6.0f,0.0f });
 
+    std::srand(static_cast<unsigned>(std::time(nullptr)));
+	pointLight.LinkTechniques(rg);
 
     RegisterDefaultAllocator();
     Trace = TraceImpl;
     JPH_IF_ENABLE_ASSERTS(AssertFailed = AssertFailedImpl;)
     Factory::sInstance = new JPH::Factory();
     RegisterTypes();
-    temp_allocator = new TempAllocatorImpl(10 * 1024 * 1024);
+    temp_allocator = new TempAllocatorImpl(10 * 2024 * 1024);
     job_system = new JobSystemThreadPool(cMaxPhysicsJobs, cMaxPhysicsBarriers, thread::hardware_concurrency() - 1);
-    const uint cMaxBodies = 1024;
+    const uint cMaxBodies = 2048;
     const uint cNumBodyMutexes = 0;
-    const uint cMaxBodyPairs = 1024;
-    const uint cMaxContactConstraints = 1024;
+    const uint cMaxBodyPairs = 4096;
+    const uint cMaxContactConstraints = 2048;
     BPLayerInterfaceImpl* broad_phase_layer_interface = new BPLayerInterfaceImpl();
     ObjectVsBroadPhaseLayerFilterImpl* object_vs_broadphase_layer_filter = new ObjectVsBroadPhaseLayerFilterImpl();
     ObjectLayerPairFilterImpl* object_vs_object_layer_filter = new ObjectLayerPairFilterImpl();
@@ -62,20 +57,17 @@ App::App(const std::string& commandLine)
     contactListener = new MyContactListener();
     physicsSystem->SetContactListener(contactListener);
     PhysicsCommon::physicsSystem = physicsSystem;
+    PrefabManager::wind = &wnd;
+    PrefabManager::rg = &rg;
     physicsSystem->SetGravity(Vec3(0.0f, -80.0f, 0.0f));
-   
+
+    /*physicsDebugRenderer = new PhysicsDebugRenderer(wnd.Gfx());
+    physicsDebugRenderer->Initialize();*/
 
     soundDevice = LISTENER->Get();
     ALint attentuation = AL_INVERSE_DISTANCE_CLAMPED;
 	soundDevice->SetAttenuation(attentuation);
     myMusic = std::make_unique<MusicBuffer>("Models\\muza_full.wav");
-
-	auto prefabManagerOwner = std::make_unique<PrefabManager>(&wnd);
-	PrefabManager* prefabManager = prefabManagerOwner.get();
-
-	//LevelGenerator levelGenerator(prefabManager, pSceneRoot.get(), pPlayer);
-
-    //Node* island = prefabManager->InstantiateIslandSmall2(pSceneRoot.get(), 0.0f, -0.1f, 0.0f, 1.0f);
 
     // --- Create Nodes ---
 
@@ -85,11 +77,25 @@ App::App(const std::string& commandLine)
 	pFreeViewCamera = pFreeViewCameraOwner.get();
     auto pPlayerOwner = std::make_unique<Node>("Player", nullptr, "PLAYER");
     pPlayer = pPlayerOwner.get();
-	auto pAbility1Owner = std::make_unique<Node>("Ability1", nullptr, "ABILITY1");
+	auto pAbility1Owner = std::make_unique<Node>("Ability1", nullptr, "TRIGGER");
 	pAbility1 = pAbility1Owner.get();
-	auto pAbility2Owner = std::make_unique<Node>("Ability2", nullptr, "ABILITY2");
+	auto pAbility2Owner = std::make_unique<Node>("Ability2", nullptr, "TRIGGER");
 	pAbility2 = pAbility2Owner.get();
-    auto pNanosuitOwner = std::make_unique<Node>("Nanosuit");
+	auto pAbility3Owner = std::make_unique<Node>("Ability3", nullptr, "TRIGGER");
+	pAbility3 = pAbility3Owner.get();
+	auto pAbility4Owner = std::make_unique<Node>("Ability4", nullptr, "TRIGGER");
+	pAbility4 = pAbility4Owner.get();
+    auto pPrefabsOwner = std::make_unique<Node>("Prefabs", nullptr, "PREFABS");
+    pPrefabs = pPrefabsOwner.get();
+	auto pLeftHandNormalOwner = std::make_unique<Node>("L Normal", nullptr, "HANDS");
+	pLeftHandNormal = pLeftHandNormalOwner.get();
+    auto pLeftHandAbilityOwner = std::make_unique<Node>("L Ability", nullptr, "HANDS");
+	pLeftHandAbility = pLeftHandAbilityOwner.get();
+    auto pRightHandNormalOwner = std::make_unique<Node>("R Normal", nullptr, "HANDS");
+    pRightHandNormal = pRightHandNormalOwner.get();
+    auto pRightHandAbilityOwner = std::make_unique<Node>("R Ability", nullptr, "HANDS");
+    pRightHandAbility = pRightHandAbilityOwner.get();
+
 
 
 	
@@ -100,17 +106,26 @@ App::App(const std::string& commandLine)
     pSceneRoot->AddChild(std::move(pPlayerOwner));
     pSceneRoot->AddChild(std::move(pAbility1Owner));
     pSceneRoot->AddChild(std::move(pAbility2Owner));
+	pSceneRoot->AddChild(std::move(pAbility3Owner));
+    pSceneRoot->AddChild(std::move(pAbility4Owner));
+	pSceneRoot->AddChild(std::move(pPrefabsOwner));
+	pCamera->AddChild(std::move(pLeftHandNormalOwner));
+    pCamera->AddChild(std::move(pLeftHandAbilityOwner));
+    pCamera->AddChild(std::move(pRightHandNormalOwner));
+    pCamera->AddChild(std::move(pRightHandAbilityOwner));
 
 
+	PrefabManager::root = pPrefabs;
+	PrefabManager::player = pPlayer;
 
-    //Heeeej Bracie zacz�ooo pada� chood� zmienii� gacieee
-    //Heeeej Siostro uciekaajmyy zanim b��dzieee mookroooo
+    //Heeeej Bracie zaczlooo padac choodz zmieniic gacieee
+    //Heeeej Siostro uciekaajmyy zanim beedzieee mookroooo
 
     BodyCreationSettings bodySettings(new JPH::CapsuleShape(1.0f, 1.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::PLAYER);
     bodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
 
     //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
-    bodySettings.mMassPropertiesOverride.mMass = 10.0f;
+    bodySettings.mMassPropertiesOverride.mMass = 1.0f;
     bodySettings.mFriction = 0.0f;
     bodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
     bodySettings.mMotionQuality = EMotionQuality::LinearCast;
@@ -122,93 +137,194 @@ App::App(const std::string& commandLine)
     pPlayer->AddComponent(
         std::make_unique<PlayerController>(pPlayer, wnd) // Add controller first
     );
-	
-    BodyCreationSettings a1BodySettings(new JPH::CapsuleShape(5.0f, 3.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
+
+    BodyCreationSettings a1BodySettings(new JPH::CapsuleShape(4.0f, 4.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
     pAbility1->AddComponent(
         std::make_unique<Trigger>(pAbility1, a1BodySettings, false)
     );
     pAbility1->AddComponent(
         std::make_unique<Ability1>(pAbility1, wnd, pCamera)
     );
-	pAbility1->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 0.0f, 8.0f));
-    pPlayer->GetComponent<PlayerController>()->ability1 = pAbility1;
+    pAbility1->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 0.0f, 8.0f));
+    pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility1;
 
 
-    BodyCreationSettings a2odySettings(new JPH::SphereShape(2.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
-	pAbility2->AddComponent(
+    BodyCreationSettings a2odySettings(new JPH::SphereShape(4.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
+    pAbility2->AddComponent(
         std::make_unique<Trigger>(pAbility2, a2odySettings, false)
     );
     pAbility2->AddComponent(
         std::make_unique<Ability2>(pAbility2, wnd, pCamera)
-	);
-    pAbility2->AddComponent(
-        std::make_unique<ModelComponent>(pAbility2, wnd.Gfx(), "Models\\box.glb")
     );
-    pPlayer->GetComponent<PlayerController>()->ability2 = pAbility2;
+   /* pAbility2->AddComponent(
+        std::make_unique<ModelComponent>(pAbility2, wnd.Gfx(), "Models\\box.glb")
+    );*/
+    //pAbility2->GetComponent<ModelComponent>()->LinkTechniques(rg);
+    pPlayer->GetComponent<PlayerController>()->abilitySlot2 = pAbility2;
 
 
+    BodyCreationSettings a3odySettings(new JPH::SphereShape(40.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
+    pAbility3->AddComponent(
+        std::make_unique<Trigger>(pAbility3, a3odySettings, false)
+    );
+    pAbility3->AddComponent(
+        std::make_unique<Ability3>(pAbility3, wnd, pCamera)
+    );
+    /*pAbility3->AddComponent(
+        std::make_unique<ModelComponent>(pAbility3, wnd.Gfx(), "Models\\box.glb")
+    );*/
+    //pAbility3->GetComponent<ModelComponent>()->LinkTechniques(rg);
+    pPlayer->GetComponent<PlayerController>()->abilitySlot3 = pAbility3;
+
+
+    BodyCreationSettings a4odySettings(new JPH::SphereShape(2.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
+    pAbility4->AddComponent(
+        std::make_unique<Trigger>(pAbility4, a4odySettings, false)
+    );
+    pAbility4->AddComponent(
+        std::make_unique<Ability4>(pAbility4, wnd, pCamera)
+    );
+
+   // pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility4;
 
     //Adding Other Components
     pFreeViewCamera->AddComponent(
         std::make_unique<Camera>(pFreeViewCamera, wnd)
     );
-	pCamera->AddComponent(
-		std::make_unique<Camera>(pCamera, wnd)
-	);
-	pCamera->GetComponent<Camera>()->active = true;
+    pCamera->AddComponent(
+        std::make_unique<Camera>(pCamera, wnd)
+    );
+    pCamera->GetComponent<Camera>()->active = true;
 
 
     pPlayer->AddComponent(
         std::make_unique<Health>(pPlayer, 3.0f)
     );
 
-	pPlayer->AddComponent(
-		std::make_unique<SoundEffectsPlayer>(pPlayer)
-	);
-	SoundEffectsPlayer* pSoundEffectsPlayer = pPlayer->GetComponent<SoundEffectsPlayer>();
+    pPlayer->AddComponent(
+        std::make_unique<SoundEffectsPlayer>(pPlayer)
+    );
+    SoundEffectsPlayer* pSoundEffectsPlayer = pPlayer->GetComponent<SoundEffectsPlayer>();
     pSoundEffectsPlayer->AddSound("Models\\turn.ogg");
+
+    // Changing position scale etc.]
+    pFreeViewCamera->SetLocalPosition({ 4.0f, 11.0f, -28.0f });
+    pPlayer->SetLocalPosition({ 0.0f, 80.0f, -24.0f });
+
+    //pEnemySoundEffectsPlayer->SetPosition(0.0f, 0.0f, 0.0f);
+    soundDevice->SetLocation(pPlayer->GetLocalPosition().x, pPlayer->GetLocalPosition().y, pPlayer->GetLocalPosition().z);
+
+    pSceneRoot->AddComponent(
+        std::make_unique<Global>(pSceneRoot.get(), wnd, pPlayer)
+    );
+    
+    pLeftHandNormal->AddComponent(
+        std::make_unique<ModelComponent>(pLeftHandNormal, wnd.Gfx(), "Models\\hands\\left.obj")
+	);
+    pLeftHandNormal->GetComponent<ModelComponent>()->LinkTechniques(rg);
+    pLeftHandNormal->SetLocalScale({ 0.1f, 0.1f, 0.1f });
+    pLeftHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
+
+    pLeftHandAbility->AddComponent(
+        std::make_unique<ModelComponent>(pLeftHandAbility, wnd.Gfx(), "Models\\hands\\push.obj")
+    );
+	pLeftHandAbility->GetComponent<ModelComponent>()->LinkTechniques(rg);
+    pLeftHandAbility->SetLocalScale({ 0.1f, 0.1f, 0.1f });
+    pLeftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
+    
+    pRightHandNormal->AddComponent(
+        std::make_unique<ModelComponent>(pRightHandNormal, wnd.Gfx(), "Models\\hands\\right.obj")
+	);
+    pRightHandNormal->GetComponent<ModelComponent>()->LinkTechniques(rg);
+    pRightHandNormal->SetLocalScale({ 0.1f, 0.1f, 0.1f });
+    pRightHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
+
+    pRightHandAbility->AddComponent(
+        std::make_unique<ModelComponent>(pRightHandAbility, wnd.Gfx(), "Models\\hands\\toss.obj")
+	);
+    pRightHandAbility->GetComponent<ModelComponent>()->LinkTechniques(rg);
+    pRightHandAbility->SetLocalScale({ 0.1f, 0.1f, 0.1f });
+    pRightHandAbility->SetLocalPosition({ 0.0f, -2.7f, -3000.0f });
+
+    pAbility1->GetComponent<Ability1>()->leftHandNormal = pLeftHandNormal;
+	pAbility1->GetComponent<Ability1>()->leftHandAbility = pLeftHandAbility;
+
+    pAbility2->GetComponent<Ability2>()->rightHandNormal = pRightHandNormal;
+    pAbility2->GetComponent<Ability2>()->rightHandAbility = pRightHandAbility;
+
+    pAbility4->GetComponent<Ability4>()->leftHandNormal = pLeftHandNormal;
+    pAbility4->GetComponent<Ability4>()->leftHandAbility = pLeftHandAbility;
+
+    // --- Prefabs ---
+
 	//pEnemy->AddComponent(
 	//	std::make_unique<SoundEffectsPlayer>(pEnemy)
 	//);
 	//SoundEffectsPlayer* pEnemySoundEffectsPlayer = pEnemy->GetComponent<SoundEffectsPlayer>();
 	//pEnemySoundEffectsPlayer->AddSound("Models\\sci-fidrone.ogg");
+    pSceneRoot->AddComponent(
+        std::make_unique<UpgradeHandler>(pSceneRoot.get(), wnd)
+	);
+	pUpgradeHandler = pSceneRoot->GetComponent<UpgradeHandler>();
+	pUpgradeHandler->ability1Node = pAbility1;
+	pUpgradeHandler->ability2Node = pAbility2;
+	pUpgradeHandler->ability3Node = pAbility3;
+	pUpgradeHandler->ability4Node = pAbility4;
+	pUpgradeHandler->playerController = pPlayer->GetComponent<PlayerController>();
+    pUpgradeHandler->SetBasicValues();
+	pSceneRoot->GetComponent<Global>()->upgradeHandler = pUpgradeHandler;
+    //LevelGenerator levelGenerator(prefabManager, pSceneRoot.get(), pPlayer);
 
 
-    // Changing position scale etc.]
-	pFreeViewCamera->SetLocalPosition({ 4.0f, 11.0f, -28.0f });
-    pPlayer->SetLocalPosition({ 0.0f, 50.0f, 15.0f });
+    const int screenWidth = 1920;
+    const int screenHeight = 1080;
+    const int plusSpriteWidth = 32;
+    const int plusSpriteHeight = 32;
+    const int plusSpriteX = (screenWidth / 2) - (plusSpriteWidth / 2);
+    const int plusSpriteY = (screenHeight / 2) - (plusSpriteHeight / 2);
 
-	//pEnemySoundEffectsPlayer->SetPosition(0.0f, 0.0f, 0.0f);
-	soundDevice->SetLocation(pPlayer->GetLocalPosition().x, pPlayer->GetLocalPosition().y, pPlayer->GetLocalPosition().z);
+    targetSprite = std::make_unique<Sprite>(
+        wnd.Gfx().GetDevice(),       
+        plusSpriteX,                // int x (center X)
+        plusSpriteY,                // int y (center Y)
+        plusSpriteWidth,            // int width
+        plusSpriteHeight,           // int height
+        L"Images\\plus.png"       
+    );
 
-    //Adding colliders to draw
-    //AddBoxColliderToDraw(wnd.Gfx(), island->GetComponent<OBB>());
-    /*AddBoxColliderToDraw(wnd.Gfx(), sOBB);
-	AddBoxColliderToDraw(wnd.Gfx(), cOBB);
-	AddBoxColliderToDraw(wnd.Gfx(), cOBB2);
-	AddBoxColliderToDraw(wnd.Gfx(), cOBB3);
-	AddBoxColliderToDraw(wnd.Gfx(), cOBB4);
-	AddBoxColliderToDraw(wnd.Gfx(), eDamageOBB);*/
+    heart1Sprite = std::make_unique<Sprite>(
+        wnd.Gfx().GetDevice(),      
+        (screenWidth / 2) - 35 - 80,                // int x  
+        950,                // int y  
+        70,            // int width
+        70,           // int height
+        L"Images\\heart.png"         
+    );
 
+    heart2Sprite = std::make_unique<Sprite>(
+        wnd.Gfx().GetDevice(),      
+        (screenWidth / 2) - 35,                // int x  
+        950,                // int y (center Y)
+        70,            // int width
+        70,           // int height
+        L"Images\\heart.png"         
+    );
 
-	/*AddSphereColliderToDraw(wnd.Gfx(), bBoundingSphere);
-	AddSphereColliderToDraw(wnd.Gfx(), a2Sphere);
-	AddSphereColliderToDraw(wnd.Gfx(), sBoundingSphere);*/
-	//AddSphereColliderToDraw(wnd.Gfx(), stone1->GetComponent<BoundingSphere>());
-    /*AddSphereColliderToDraw(wnd.Gfx(), stone2->GetComponent<BoundingSphere>());
-    AddSphereColliderToDraw(wnd.Gfx(), stone3->GetComponent<BoundingSphere>());
-    AddSphereColliderToDraw(wnd.Gfx(), stone5->GetComponent<BoundingSphere>());*/
+    heart3Sprite = std::make_unique<Sprite>(
+        wnd.Gfx().GetDevice(),      // ID3D11Device*
+        (screenWidth / 2) - 35 + 80,                // int x (center X)
+        950,                // int y (center Y)
+        70,            // int width
+        70,           // int height
+        L"Images\\heart.png"       
+    );
 
-	/*AddCapsuleColliderToDraw(wnd.Gfx(), pCapsule);
-	AddCapsuleColliderToDraw(wnd.Gfx(), eCapsule);
-	AddCapsuleColliderToDraw(wnd.Gfx(), a1CapsuleCollider);*/
-
-    LevelGenerator levelGenerator(prefabManager, pSceneRoot.get(), pPlayer);
 
 
     wnd.DisableCursor();
     wnd.mouse.EnableRaw();
     cursorEnabled = false;
+    
 }
 
 App::~App()
@@ -229,36 +345,42 @@ App::~App()
     //capsuleCollidersToDraw.clear();
 
     // Delete the member DebugLine pointers
-    delete line1; line1 = nullptr;
+    /*delete line1; line1 = nullptr;
     delete line2; line2 = nullptr;
     delete line3; line3 = nullptr;
-    delete line4; line4 = nullptr;
+    delete line4; line4 = nullptr;*/
 }
 
 int App::Go()
 {
     const float FIXED_TIME_STEP = 1.0f / 60.0f;
     float lag = 0.0f;
+
     while (true)
     {
         if (const auto ecode = Window::ProcessMessages())
         {
             return *ecode;
         }
-        const auto dt = timer.Mark() * speed_factor;
+
+        const float dt = timer.Mark();
         lag += dt;
+
+        constexpr float MAX_LAG = 0.5f;
+        if (lag > MAX_LAG)
+            lag = MAX_LAG;
+
         while (lag >= FIXED_TIME_STEP)
         {
             physicsSystem->Update(FIXED_TIME_STEP, 1, temp_allocator, job_system);
             lag -= FIXED_TIME_STEP;
         }
-        physicsSystem->Update(lag, 1, temp_allocator, job_system);
-        dynamic_cast<MyContactListener*>(physicsSystem->GetContactListener())->ExecuteTriggerActivationQueue();
-        dynamic_cast<MyContactListener*>(physicsSystem->GetContactListener())->ExecuteCollisionActivationQueue();
-        //dynamicsWorld->stepSimulation(dt, 10);
+
+        const float alpha = lag / FIXED_TIME_STEP;
+
         HandleInput(dt);
         DoFrame(dt);
-        lag = 0.0f;
+
     }
 }
 
@@ -266,6 +388,7 @@ int App::Go()
 // --- UPDATED HandleInput ---
 void App::HandleInput(float dt)
 {
+
     // --- Only handle non-player input here ---
     while (const auto e = wnd.kbd.ReadKey())
     {
@@ -273,6 +396,12 @@ void App::HandleInput(float dt)
 
         switch (e->GetCode())
         {
+        case 'O':
+        {
+            pSceneRoot->GetComponent<Global>()->AddSpecialLevel();
+            break;
+        }
+
 		case 'M': // Toggle Music
 			if (myMusic->isPlaying())
 			{
@@ -296,6 +425,16 @@ void App::HandleInput(float dt)
             break;
         case 'H': // Toggle UI
             showControlWindow = !showControlWindow;
+            break;
+        case 'B':
+            if (pPlayer->GetComponent<PlayerController>()->abilitySlot1 == pAbility1)
+            {
+                pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility4;
+            }
+            else
+            {
+                pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility1;
+            }
             break;
         case VK_ESCAPE: // Exit
             PostQuitMessage(0);
@@ -341,12 +480,17 @@ void App::HandleInput(float dt)
         }
     }
 }
+
 void App::DoFrame(float dt)
 {
-    pSceneRoot->Update(dt);
+	pSceneRoot->Update(dt); // Update the scene root and all its children
+    auto* contact = dynamic_cast<MyContactListener*>(physicsSystem->GetContactListener());
+    contact->ExecuteTriggerActivationQueue();
+    contact->ExecuteCollisionActivationQueue();
     CleanupDestroyedNodes(pSceneRoot.get());
 
     wnd.Gfx().BeginFrame(0.5f, 0.5f, 1.0f);
+	pointLight.cbData.pos = { pPlayer->GetWorldPosition().x, pPlayer->GetWorldPosition().y + 12.0f, pPlayer->GetWorldPosition().z };
     //if (pPlayer->GetLocalPosition().y < -10.0f) {
     //	pPlayer->SetLocalPosition({ -20.0f, 225.0f, -25.0f });
     //    pEnemy->SetLocalPosition({ 15.0f, 225.0f, 0.0f });
@@ -361,8 +505,6 @@ void App::DoFrame(float dt)
 	/*DebugLine line(wnd.Gfx(), pEnemy->GetComponent<StateMachine>()->pos, pEnemy->GetComponent<StateMachine>()->cen, { 0.0f, 0.0f, 1.0f, 1.0f });
     line.Submit(fc);*/ // for idle
     // --- Bind Lights ---
-    cube.Submit(fc);
-	cube2.Submit(fc);
     pointLight.Bind(wnd.Gfx(), viewMatrix); // Bind point light (to slot 0)
 
     std::vector<Node*> columns = pSceneRoot->FindAllChildrenByTag("WALL");
@@ -408,13 +550,37 @@ void App::DoFrame(float dt)
     }
 	//pCamera->Forward();
 
+    rg.Execute(wnd.Gfx());
+
     if (showControlWindow) {
         ShowControlWindows();
     }
 
-    fc.Execute(wnd.Gfx());
+    
+
+    if (targetSprite ) { 
+        targetSprite->Draw(wnd.Gfx().GetContext());
+    }
+
+    if (pPlayer->GetComponent<Health>()->currentHealth == 3.0f) {
+        heart1Sprite->Draw(wnd.Gfx().GetContext());
+        heart2Sprite->Draw(wnd.Gfx().GetContext());
+        heart3Sprite->Draw(wnd.Gfx().GetContext());
+    }
+    if (pPlayer->GetComponent<Health>()->currentHealth == 2.0f) {
+        heart1Sprite->Draw(wnd.Gfx().GetContext());
+        heart2Sprite->Draw(wnd.Gfx().GetContext());
+    }
+    if (pPlayer->GetComponent<Health>()->currentHealth == 1.0f) {
+        heart1Sprite->Draw(wnd.Gfx().GetContext());
+    }
+
+
+    //testButton->Draw(wnd.Gfx().GetContext(), (float)wnd.GetWidth(), (float)wnd.GetHeight());
+
+    pUpgradeHandler->DrawUpgradeMenu();
     wnd.Gfx().EndFrame();
-    fc.Reset();
+    rg.Reset();
 }
 
 
@@ -428,7 +594,7 @@ void App::FrustumCalculating() {
     constexpr float fovAngleY = DirectX::XMConvertToRadians(70.0f); // Field of View in Y direction (radians) - MUST MATCH YOUR PROJECTION
     const float aspectRatio = 16.0f / 9.0f; // MUST MATCH YOUR PROJECTION
     const float nearDist = 0.5f;         // MUST MATCH YOUR PROJECTION
-    const float farDist = 300.0f;       // MUST MATCH YOUR PROJECTION
+    const float farDist = 800.0f;       // MUST MATCH YOUR PROJECTION
 
     // Half heights/widths at near and far planes
     float halfHeightNear = nearDist * tanf(fovAngleY * 0.5f);
@@ -452,7 +618,7 @@ void App::FrustumCalculating() {
     cameraFrustum.Near = 0.5f;
 
     // Far Plane: Normal = -camWorldForward, Point = farCenter
-    cameraFrustum.Far = 300.0f;
+    cameraFrustum.Far = 800.0f;
 
     float tanHalfFovY = tanf(fovAngleY * 0.5f);
     cameraFrustum.TopSlope = tanHalfFovY;
@@ -481,45 +647,46 @@ void App::DrawNodeRecursive(Graphics& gfx, Node& node)
     bool shouldDraw = true; // Assume we draw by default
     ModelComponent* modelComp = node.GetComponent<ModelComponent>();
 
-    //if (modelComp != nullptr) // Only cull nodes with models (or add BoundsComponent later)
-    //{
-    //    DirectX::BoundingSphere sphere;
-    //    DirectX::BoundingBox box;
-    //    DirectX::ContainmentType containment = DirectX::DISJOINT;
-    //    if (node.GetComponent<BoundingSphere>() != nullptr)
-    //    {
-    //        sphere.Center = node.GetWorldPosition();
-    //        sphere.Radius = node.GetComponent<BoundingSphere>()->GetRadius();
-    //        containment = cameraFrustum.Contains(sphere);
-    //    }
-    //    else if (node.GetComponent<OBB>() != nullptr)
-    //    {
-    //        box.Center = node.GetWorldPosition();
-    //        box.Extents = node.GetComponent<OBB>()->GetTransformedSize();
-    //        containment = cameraFrustum.Contains(box);
-    //    }
-    //    else if (node.GetComponent<CapsuleCollider>() != nullptr)
-    //    {
-    //        // Assuming you have a method to get the capsule's bounding sphere
-    //        sphere.Center = DirectX::XMFLOAT3(node.GetWorldPosition().x,
-    //            (node.GetWorldPosition().y + 1.5f),
-    //            node.GetWorldPosition().z);
-    //        sphere.Radius = node.GetComponent<CapsuleCollider>()->GetRadius() * 2.5f;
-    //        containment = cameraFrustum.Contains(sphere);
-    //    }
+    if (modelComp != nullptr) // Only cull nodes with models (or add BoundsComponent later)
+    {
+        DirectX::BoundingSphere sphere;
+        DirectX::BoundingBox box;
+        DirectX::ContainmentType containment = DirectX::DISJOINT;
+        sphere.Center = node.GetWorldPosition();
+        sphere.Radius = node.radius;
+        containment = cameraFrustum.Contains(sphere);
+        //if (node.GetComponent<BoundingSphere>() != nullptr)
+        //{
+        //    sphere.Center = node.GetWorldPosition();
+        //    sphere.Radius = node.GetComponent<BoundingSphere>()->GetRadius();
+        //    containment = cameraFrustum.Contains(sphere);
+        //}
+        //else if (node.GetComponent<OBB>() != nullptr)
+        //{
+        //    box.Center = node.GetWorldPosition();
+        //    box.Extents = node.GetComponent<OBB>()->GetTransformedSize();
+        //    containment = cameraFrustum.Contains(box);
+        //}
+        //else if (node.GetComponent<CapsuleCollider>() != nullptr)
+        //{
+        //    // Assuming you have a method to get the capsule's bounding sphere
+        //    sphere.Center = DirectX::XMFLOAT3(node.GetWorldPosition().x,
+        //        (node.GetWorldPosition().y + 1.5f),
+        //        node.GetWorldPosition().z);
+        //    sphere.Radius = node.GetComponent<CapsuleCollider>()->GetRadius() * 2.5f;
+        //    containment = cameraFrustum.Contains(sphere);
+        //}
 
-    //    if (containment == DirectX::DISJOINT) // DISJOINT means completely outside
-    //    {
-    //        shouldDraw = false; // Don't draw this node or its children
-    //    }
+        if (containment == DirectX::DISJOINT) // DISJOINT means completely outside
+        {
+            shouldDraw = false; // Don't draw this node or its children
+        }
 
-    //}
-
-	shouldDraw = true; // Reset to true for the node itself
+    }
 
     if (shouldDraw)
     {
-        node.Submit(fc, wnd.Gfx());
+        node.Submit(wnd.Gfx());
         for (const auto& pChild : node.GetChildren())
         {
             if (pChild)
@@ -532,17 +699,15 @@ void App::DrawNodeRecursive(Graphics& gfx, Node& node)
 
 void App::ShowControlWindows()
 {
+	//if (!showControlWindow) return; // If control window is not enabled, exit
     // --- Existing Windows ---
-
 	//DrawSphereColliders(wnd.Gfx()); // Call the updated function
     //DrawBoxColliders(wnd.Gfx()); // Call the updated function
 	//DrawCapsuleColliders(wnd.Gfx());
     //ForEnemyWalking();
-    cube.SpawnControlWindow(wnd.Gfx(), "Cube 1");
-	cube2.SpawnControlWindow(wnd.Gfx(), "Cube 2");
-    pointLight.Submit(fc);
+    pointLight.Submit();
 
-    pointLight.SpawnControlWindow(); // Control for Point Light
+    //pointLight.SpawnControlWindow(); // Control for Point Light
     if (showDemoWindow)
     {
         ImGui::ShowDemoWindow(&showDemoWindow);
@@ -558,18 +723,19 @@ void App::ShowControlWindows()
     //}
 
     // --- Simulation Speed Window ---
-    if (ImGui::Begin("Simulation Speed"))
+    /*if (ImGui::Begin("Simulation Speed"))
     {
         ImGui::SliderFloat("Speed Factor", &speed_factor, 0.0f, 4.0f);
 		ImGui::Text("To change camera press 'C'");
 		ImGui::Text("To show/hide control window press 'H'");
     }
-    ImGui::End();
+    ImGui::End();*/
 
 
     // --- NEW: Scene Hierarchy Window ---
     if (ImGui::Begin("Scene Hierarchy"))
     {
+        ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
         if (pSceneRoot)
         {
             pSceneRoot->ShowNodeTree(pSelectedSceneNode);
@@ -675,142 +841,9 @@ void App::ShowControlWindows()
     }
     ImGui::End(); // End Scene Hierarchy Window
 }
-//void App::AddSphereColliderToDraw(Graphics& gfx, BoundingSphere* boundingSphere)
-//{
-//    // Using default constructor then initialize might be slightly cleaner if SolidSphere allows it
-//	ColliderSphere* sphereCollider = new ColliderSphere(gfx, boundingSphere->GetRadius());
-//    sphereCollidersToDraw[boundingSphere] = sphereCollider;
-//
-//}
-//
-//void App::DrawSphereColliders(Graphics& gfx)
-//{
-//    for (auto it = sphereCollidersToDraw.begin(); it != sphereCollidersToDraw.end(); ++it)
-//    {
-//        it->second->SetPos(DirectX::XMFLOAT3(it->first->GetTransformedCenter().x,
-//            it->first->GetTransformedCenter().y,
-//            it->first->GetTransformedCenter().z));
-//        it->second->Submit(fc);
-//    }
-//}
-//
-//
-//
-//// Signature now takes OBB*
-//void App::AddBoxColliderToDraw(Graphics& gfx, OBB* obb)
-//{
-//	SolidBox* box = new SolidBox(gfx, obb->GetTransformedCenter(), obb->GetTransformedSize());
-//    boxCollidersToDraw[obb] = box;
-//
-//}
-//
-//// Logic now uses Rigidbody's world transform for OBB
-//void App::DrawBoxColliders(Graphics& gfx)
-//{
-//    for (auto it = boxCollidersToDraw.begin(); it != boxCollidersToDraw.end(); ++it)
-//    {
-//        it->second->SetPos(DirectX::XMFLOAT3(it->first->GetTransformedCenter().x,
-//            it->first->GetTransformedCenter().y,
-//            it->first->GetTransformedCenter().z));
-//        it->second->SetSize(DirectX::XMFLOAT3(it->first->GetTransformedSize().x,
-//            it->first->GetTransformedSize().y,
-//            it->first->GetTransformedSize().z));
-//        it->second->Submit(fc);
-//    }
-//
-//}
-//
-//void App::AddCapsuleColliderToDraw(Graphics& gfx, CapsuleCollider* capsule)
-//{
-//	SolidCapsule* solidCapsule = new SolidCapsule(gfx, capsule->GetTransformedBase(), capsule->GetTransformedTip(), capsule->GetRadius());
-//	capsuleCollidersToDraw[capsule] = solidCapsule;
-//}
-//
-//void App::DrawCapsuleColliders(Graphics& gfx)
-//{
-//    for (auto it = capsuleCollidersToDraw.begin(); it != capsuleCollidersToDraw.end(); ++it)
-//    {
-//        if (it->first != nullptr) {
-//            it->second->SetBase(it->first->GetTransformedBase());
-//            it->second->SetTip(it->first->GetTransformedTip());
-//            it->second->SetRadius(it->first->GetRadius());
-//            it->second->Update(gfx);
-//            it->second->Submit(fc);
-//        }
-//    }
-//}
 
-void App::ForEnemyWalking() {
- //   Vector3 previousRotation = pEnemy->GetLocalRotationEuler();
-	//pEnemy->TranslateLocal({ 0.0f, 1.0f, 0.0f });
 
- //   Vector3 temporaryDirection = pPlayer->GetWorldPosition() - pEnemy->GetWorldPosition();
 
- //   temporaryDirection.Normalize();
- //   float targetYaw = atan2f(temporaryDirection.x, temporaryDirection.z);
- //   pEnemy->SetLocalRotation({ 0.0f, targetYaw, 0.0f });
-
- //   //float radius = pEnemy->GetComponent<CapsuleCollider>()->GetRadius();
-
- //   Vector3 pos = pEnemy->GetWorldPosition();
- //   Vector3 forward = pEnemy->Forward();
- //   Vector3 right = pEnemy->Right();
- //   Vector3 down = pEnemy->Down();
-
- //   Vector3 centerOrigin = pos + forward;
- //   Vector3 leftOrigin = centerOrigin - right * radius;
- //   Vector3 rightOrigin = centerOrigin + right * radius;
-
- //   Vector3 centerDir = forward;
-
- //   Vector3 leftDir = (forward - right * 0.5f); leftDir.Normalize();
-
- //   Vector3 rightDir = (forward + right * 0.5f); rightDir.Normalize();
-
- //   RaycastData hitLeft = Raycast::CastThroughLayers(leftOrigin, centerDir, std::vector<Layers>{ENEMY, PLAYER});
- //   if (hitLeft.hitCollider != nullptr) {
- //       line1->SetPoints(wnd.Gfx(), leftOrigin, hitLeft.hitPoint);
- //       line1->Submit(fc);
- //   }
- //   else
- //   {
- //       line1->SetPoints(wnd.Gfx(), leftOrigin, { pos.x, pos.y - 5.0f, pos.z });
- //       line1->Submit(fc);
- //   }
- //   RaycastData moreLeft = Raycast::CastThroughLayers(leftOrigin, leftDir, std::vector<Layers>{ENEMY, PLAYER});
- //   if (moreLeft.hitCollider != nullptr) {
- //       line2->SetPoints(wnd.Gfx(), leftOrigin, moreLeft.hitPoint);
- //       line2->Submit(fc);
- //   }
- //   else
- //   {
- //       line2->SetPoints(wnd.Gfx(), leftOrigin, { pos.x, pos.y - 5.0f, pos.z });
- //       line2->Submit(fc);
- //   }
- //   RaycastData hitRight = Raycast::CastThroughLayers(rightOrigin, centerDir, std::vector<Layers>{ENEMY, PLAYER});
- //   if (hitRight.hitCollider != nullptr) {
- //       line3->SetPoints(wnd.Gfx(), rightOrigin, hitRight.hitPoint);
- //       line3->Submit(fc);
- //   }
- //   else
- //   {
- //       line3->SetPoints(wnd.Gfx(), leftOrigin, { pos.x, pos.y - 5.0f, pos.z });
- //       line3->Submit(fc);
- //   }
- //   RaycastData moreRight = Raycast::CastThroughLayers(rightOrigin, rightDir, std::vector<Layers>{ENEMY, PLAYER});
- //   if (moreRight.hitCollider != nullptr) {
- //       line4->SetPoints(wnd.Gfx(), rightOrigin, moreRight.hitPoint);
- //       line4->Submit(fc);
- //   }
- //   else
- //   {
- //       line4->SetPoints(wnd.Gfx(), leftOrigin, { pos.x, pos.y - 5.0f, pos.z });
- //       line4->Submit(fc);
- //   }
-
- //   pEnemy->SetLocalRotation(previousRotation);
- //   pEnemy->TranslateLocal({ 0.0f, -1.0f, 0.0f });
-}
 
 void App::CleanupDestroyedNodes(Node* currentNode)
 {
@@ -834,9 +867,13 @@ void App::CleanupDestroyedNodes(Node* currentNode)
                 if (pChildNode->IsMarkedForDestruction()) {
                     OutputDebugStringA(("Cleanup: Preparing to remove node: " + pChildNode->GetName() + "\n").c_str());
 
-					PhysicsCommon::physicsSystem->GetBodyInterface().DeactivateBody(pChildNode->GetComponent<Rigidbody>()->GetBodyID());
-					PhysicsCommon::physicsSystem->GetBodyInterface().RemoveBody(pChildNode->GetComponent<Rigidbody>()->GetBodyID());
-                    dynamic_cast<MyContactListener*>(PhysicsCommon::physicsSystem->GetContactListener())->RemoveRigidbodyData(pChildNode->GetComponent<Rigidbody>()->GetBodyID());
+                    if (pChildNode->GetComponent<Rigidbody>() != nullptr) {
+                        PhysicsCommon::physicsSystem->GetBodyInterface().DeactivateBody(pChildNode->GetComponent<Rigidbody>()->GetBodyID());
+                        PhysicsCommon::physicsSystem->GetBodyInterface().RemoveBody(pChildNode->GetComponent<Rigidbody>()->GetBodyID());
+                        /*if (pChildNode->GetComponent<Trigger>() != nullptr) {
+                            dynamic_cast<MyContactListener*>(PhysicsCommon::physicsSystem->GetContactListener())->RemoveRigidbodyData(pChildNode->GetComponent<Rigidbody>()->GetBodyID());
+                        }*/
+                    }
 
 
                     const auto& components = pChildNode->GetComponents();

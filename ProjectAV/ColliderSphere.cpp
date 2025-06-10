@@ -46,7 +46,7 @@ ColliderSphere::ColliderSphere(Graphics& gfx, float radius)
         mainPass.AddBindable(std::make_shared<PixelConstantBuffer<PSColorConstant>>(gfx, colorConst, 1u));
 
         // --- Input Layout ---
-        mainPass.AddBindable(InputLayout::Resolve(gfx, model.vertices.GetLayout(), pvsbc));
+        //mainPass.AddBindable(InputLayout::Resolve(gfx, model.vertices.GetLayout(), pvsbc));
 
         // --- Transform Constant Buffer ---
         mainPass.AddBindable(std::make_shared<TransformCbuf>(gfx)); // Assuming default slot 0 for VS

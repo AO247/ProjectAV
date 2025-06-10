@@ -21,14 +21,15 @@ public:
 	// Optional: Set sensitivity
 	void SetSensitivity(float xSens, float ySens) { sensX = xSens; sensY = ySens; }
 	float active = false;
+	float xRotation = 0.0f; // Pitch (applied to camera owner node)
+	float yRotation = 0.0f; // Yaw (applied to orientation node)
 private:
 	void HandleMouseLook(float dt);
 
 	Window& wnd;
 
 	// Rotation state (stored internally, affects nodes)
-	float xRotation = 0.0f; // Pitch (applied to camera owner node)
-	float yRotation = 0.0f; // Yaw (applied to orientation node)
+	
 
 	// Sensitivity
 	float sensX = 0.1f; // Increased default sensitivity (like Unity example * Time.deltaTime)

@@ -142,8 +142,8 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>assimp-vc140-mt.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;DirectXTex.lib;Jolt.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)ProjectAV\Library\x64\moje;D:\vcpkg-master\installed\x64-windows-static\debug\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp-vc140-mt.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;DirectXTex.lib;Jolt.lib;DirectXTK.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\Zuzia\Desktop\studia\vcpkg\installed\x64-windows-static\debug\lib;$(SolutionDir)ProjectAV\Library\x64\moje;D:\vcpkg-master\installed\x64-windows-static\debug\lib;D:\vcpkg\installed\x64-windows-static\debug\lib;D:\GameDev\vcpkg\installed\x64-windows-static\debug\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -172,17 +172,29 @@
     <ClCompile Include="AABB.cpp" />
     <ClCompile Include="Ability1.cpp" />
     <ClCompile Include="Ability2.cpp" />
+    <ClCompile Include="Ability3.cpp" />
+    <ClCompile Include="Ability4.cpp" />
     <ClCompile Include="AIController.cpp" />
     <ClCompile Include="App.cpp" />
     <ClCompile Include="AttackState.cpp" />
     <ClCompile Include="BasicAttack.cpp" />
+    <ClCompile Include="BindingPass.cpp" />
     <ClCompile Include="Blender.cpp" />
+    <ClCompile Include="BlurOutlineRenderGraph.cpp" />
     <ClCompile Include="BoundingSphere.cpp" />
+    <ClCompile Include="BufferClearPass.cpp" />
+    <ClCompile Include="BrokenPart.cpp" />
     <ClCompile Include="Bullet.cpp" />
+    <ClCompile Include="Button.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CapsuleCollider.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="Component.cpp" />
+    <ClCompile Include="Fire.cpp" />
+    <ClCompile Include="FireStatue.cpp" />
+    <ClCompile Include="FullscreenPass.cpp" />
+    <ClCompile Include="Global.cpp" />
+    <ClCompile Include="HorizontalBlurPass.cpp" />
     <ClCompile Include="LegacyCollider.cpp" />
     <ClCompile Include="ColliderSphere.cpp" />
     <ClCompile Include="CUtil.cpp" />
@@ -223,36 +235,65 @@
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="MusicBuffer.cpp" />
     <ClCompile Include="MyContactListener.cpp" />
+    <ClInclude Include="Ability.h" />
     <ClInclude Include="Ability1.h" />
     <ClInclude Include="Ability2.h" />
+    <ClInclude Include="Ability3.h" />
+    <ClInclude Include="Ability4.h" />
+    <ClInclude Include="BrokenPart.h" />
+    <ClInclude Include="Button.h" />
+    <ClInclude Include="BindingPass.h" />
+    <ClInclude Include="BlurOutlineDrawingPass.h" />
+    <ClInclude Include="BlurOutlineRenderGraph.h" />
+    <ClInclude Include="BufferClearPass.h" />
+    <ClInclude Include="BufferResource.h" />
     <ClInclude Include="Cube.h" />
+    <ClInclude Include="Fire.h" />
+    <ClInclude Include="FireStatue.h" />
+    <ClInclude Include="FullscreenPass.h" />
+    <ClInclude Include="Global.h" />
+    <ClInclude Include="HorizontalBlurPass.h" />
+    <ClInclude Include="ImGuiPass.h" />
+    <ClInclude Include="LambertianPass.h" />
     <ClInclude Include="MyContactListener.h" />
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="NullPixelShader.cpp" />
     <ClCompile Include="OBB.cpp" />
+    <ClCompile Include="Pass.cpp" />
     <ClCompile Include="PhysicsCommon.cpp" />
+    <ClCompile Include="PhysicsDebugRenderer.cpp" />
     <ClCompile Include="PhysicsEngine.cpp" />
     <ClCompile Include="PixelShader.cpp" />
     <ClCompile Include="PlayerController.cpp" />
     <ClCompile Include="PointLight.cpp" />
-    <ClCompile Include="Prefab.cpp" />
     <ClCompile Include="PrefabManager.cpp" />
     <ClCompile Include="Rasterizer.cpp" />
     <ClCompile Include="Raycast.cpp" />
     <ClCompile Include="RaycastData.cpp" />
+    <ClCompile Include="RenderGraph.cpp" />
+    <ClCompile Include="RenderGraphCompileException.cpp" />
+    <ClCompile Include="RenderQueuePass.cpp" />
     <ClCompile Include="RenderTarget.cpp" />
     <ClCompile Include="Rigidbody.cpp" />
     <ClCompile Include="Sampler.cpp" />
+    <ClCompile Include="ScaleOutlineRenderGraph.cpp" />
     <ClCompile Include="ScriptCommander.cpp" />
     <ClCompile Include="ShootAttack.cpp" />
+    <ClCompile Include="Sink.cpp" />
+    <ClCompile Include="Skybox.cpp" />
+    <ClCompile Include="SkyboxPass.cpp" />
     <ClCompile Include="SolidBox.cpp" />
     <ClCompile Include="SolidCapsule.cpp" />
     <ClCompile Include="SolidSphere.cpp" />
     <ClCompile Include="SoundDevice.cpp" />
     <ClCompile Include="SoundEffectsLibrary.cpp" />
     <ClCompile Include="SoundEffectsPlayer.cpp" />
+    <ClCompile Include="SpawnJump.cpp" />
+    <ClCompile Include="Sprite.cpp" />
+    <ClCompile Include="Source.cpp" />
     <ClCompile Include="StateMachine.cpp" />
     <ClCompile Include="Step.cpp" />
+    <ClCompile Include="StepLinkingProbe.cpp" />
     <ClCompile Include="Surface.cpp" />
     <ClCompile Include="Technique.cpp" />
     <ClCompile Include="TestCube.cpp" />
@@ -264,11 +305,13 @@
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Topology.cpp" />
     <ClCompile Include="TransformCbuf.cpp" />
-    <ClCompile Include="TransformCbufDoubleboi.cpp" />
+    <ClCompile Include="TransformCbufScaling.cpp" />
     <ClCompile Include="Trigger.cpp" />
+    <ClCompile Include="UpgradeHandler.cpp" />
     <ClCompile Include="Vertex.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
     <ClCompile Include="VertexShader.cpp" />
+    <ClCompile Include="VerticalBlurPass.cpp" />
     <ClCompile Include="Walking.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="WindowsMessageMap.cpp" />
@@ -285,7 +328,6 @@
     <ClInclude Include="BindableCodex.h" />
     <ClInclude Include="BindableCommon.h" />
     <ClInclude Include="Blender.h" />
-    <ClInclude Include="BlurPack.h" />
     <ClInclude Include="BoundingSphere.h" />
     <ClInclude Include="Box.h" />
     <ClInclude Include="Bullet.h" />
@@ -313,7 +355,6 @@
     <ClInclude Include="DynamicConstant.h" />
     <ClInclude Include="Flying.h" />
     <ClInclude Include="FollowState.h" />
-    <ClInclude Include="FrameCommander.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="GraphicsResource.h" />
     <ClInclude Include="GraphicsThrowMacros.h" />
@@ -346,43 +387,57 @@
     <ClInclude Include="Node.h" />
     <ClInclude Include="NullPixelShader.h" />
     <ClInclude Include="OBB.h" />
+    <ClInclude Include="OutlineDrawingPass.h" />
+    <ClInclude Include="OutlineMaskGenerationPass.h" />
     <ClInclude Include="Pass.h" />
     <ClInclude Include="PerfLog.h" />
     <ClInclude Include="PhysicsCommon.h" />
+    <ClInclude Include="PhysicsDebugRenderer.h" />
     <ClInclude Include="PhysicsEngine.h" />
     <ClInclude Include="PhysicsLayers.h" />
     <ClInclude Include="PixelShader.h" />
     <ClInclude Include="Plane.h" />
     <ClInclude Include="PlayerController.h" />
     <ClInclude Include="PointLight.h" />
-    <ClInclude Include="Prefab.h" />
     <ClInclude Include="PrefabManager.h" />
     <ClInclude Include="Rasterizer.h" />
     <ClInclude Include="Raycast.h" />
     <ClInclude Include="RaycastData.h" />
+    <ClInclude Include="RenderGraph.h" />
+    <ClInclude Include="RenderGraphCompileException.h" />
+    <ClInclude Include="RenderQueuePass.h" />
     <ClInclude Include="RenderTarget.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Rigidbody.h" />
     <ClInclude Include="Sampler.h" />
+    <ClInclude Include="ScaleOutlineRenderGraph.h" />
     <ClInclude Include="ScriptCommander.h" />
     <ClInclude Include="ShootAttack.h" />
+    <ClInclude Include="Sink.h" />
+    <ClInclude Include="Skybox.h" />
+    <ClInclude Include="SkyboxPass.h" />
     <ClInclude Include="SolidBox.h" />
     <ClInclude Include="SolidCapsule.h" />
     <ClInclude Include="SolidSphere.h" />
     <ClInclude Include="SoundDevice.h" />
     <ClInclude Include="SoundEffectsLibrary.h" />
     <ClInclude Include="SoundEffectsPlayer.h" />
+    <ClInclude Include="SpawnJump.h" />
+    <ClInclude Include="Source.h" />
     <ClInclude Include="Sphere.h" />
+    <ClInclude Include="Sprite.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="StateType.h" />
     <ClInclude Include="StateMachine.h" />
     <ClInclude Include="Stencil.h" />
     <ClInclude Include="Step.h" />
+    <ClInclude Include="StepLinkingProbe.h" />
     <ClInclude Include="Surface.h" />
     <ClInclude Include="Technique.h" />
     <ClInclude Include="TechniqueProbe.h" />
     <ClInclude Include="TestCube.h" />
     <ClInclude Include="Testing.h" />
+    <ClInclude Include="TestModelProbe.h" />
     <ClInclude Include="TestPlane.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TexturePreprocessor.h" />
@@ -390,11 +445,13 @@
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Topology.h" />
     <ClInclude Include="TransformCbuf.h" />
-    <ClInclude Include="TransformCbufDoubleboi.h" />
+    <ClInclude Include="TransformCbufScaling.h" />
     <ClInclude Include="Trigger.h" />
+    <ClInclude Include="UpgradeHandler.h" />
     <ClInclude Include="Vertex.h" />
     <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="VertexShader.h" />
+    <ClInclude Include="VerticalBlurPass.h" />
     <ClInclude Include="Walking.h" />
     <ClInclude Include="Win.h" />
     <ClInclude Include="Window.h" />
@@ -511,6 +568,16 @@
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir)%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="PhongDifMskSpc_PS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="PhongDifMskSpc_VS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
     <FxCompile Include="PhongDifNrm_PS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
@@ -680,6 +747,18 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
+    <FxCompile Include="Skybox_PS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)%(Filename).cso</ObjectFileOutput>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Skybox_VS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)%(Filename).cso</ObjectFileOutput>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
     <FxCompile Include="Solid_PS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
@@ -707,6 +786,21 @@
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir)%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Test1_VS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Test2_VS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Test_PS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="TransparentPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>

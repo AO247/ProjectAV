@@ -3,8 +3,6 @@
 #include "Node.h" 
 #include "Graphics.h"
 #include "Material.h" // Include the new Material class
-#include "FrameCommander.h" // Include for Submit
-
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
@@ -14,6 +12,8 @@
 #include <filesystem>
 #include <stdexcept>
 #include <set>
+#include "VertexBuffer.h"
+#include "IndexBuffer.h"
 
 namespace dx = DirectX;
 
@@ -110,7 +110,7 @@ void ModelInternalNode::AddChild(std::unique_ptr<ModelInternalNode> pChild) noxn
 }
 
 // Draw method for the *internal* node structure
-void ModelInternalNode::Submit(FrameCommander& frame, Graphics& gfx, dx::FXMMATRIX accumulatedTransform) const noxnd
+void ModelInternalNode::Submit(Graphics& gfx, dx::FXMMATRIX accumulatedTransform) const noxnd
 {
 	const auto modelNodeTransform =
 		dx::XMLoadFloat4x4(&appliedTransform) *
@@ -119,11 +119,11 @@ void ModelInternalNode::Submit(FrameCommander& frame, Graphics& gfx, dx::FXMMATR
 
 	for (const auto pm : meshPtrs) // pm is Mesh*
 	{
-		pm->Submit(frame, modelNodeTransform); // Call Mesh's Submit
+		pm->Submit(modelNodeTransform); // Call Mesh's Submit
 	}
 	for (const auto& pc : childPtrs)
 	{
-		pc->Submit(frame, gfx, modelNodeTransform); // Pass gfx if needed, or remove if not
+		pc->Submit(gfx, modelNodeTransform); // Pass gfx if needed, or remove if not
 	}
 }
 
@@ -214,14 +214,15 @@ ModelComponent::ModelComponent(Node* owner, Graphics& gfx, const std::string& mo
 
 	int nextId = 0;
 	pRootInternal = ParseNodeRecursive(nextId, *pScene->mRootNode, scale);
+	//LinkTechniques(rg);
 }
 
 
 // **** CHANGED Draw to Submit ****
-void ModelComponent::Submit(FrameCommander& frame, Graphics& gfx, dx::FXMMATRIX worldTransform) const noxnd
+void ModelComponent::Submit(Graphics& gfx, dx::FXMMATRIX worldTransform) const noxnd
 {
 	if (pRootInternal) {
-		pRootInternal->Submit(frame, gfx, worldTransform); // Pass gfx if ModelInternalNode::Submit needs it
+		pRootInternal->Submit(gfx, worldTransform); // Pass gfx if ModelInternalNode::Submit needs it
 	}
 }
 
@@ -379,7 +380,6 @@ std::vector<DirectX::SimpleMath::Vector3> ModelComponent::GetAllUniqueVertices()
 
 		std::shared_ptr<const Bind::VertexBuffer> pBindVertexBuffer = pMesh->GetVertexBuffer();
 		if (!pBindVertexBuffer) continue;
-
 		const Dvtx::VertexLayout& layout = pBindVertexBuffer->GetLayout();
 		size_t numVertices = pBindVertexBuffer->GetVertexCount();
 
@@ -413,7 +413,10 @@ std::vector<DirectX::SimpleMath::Vector3> ModelComponent::GetAllUniqueVertices()
 	return resultVertices;
 }
 
-void ModelComponent::AddTechnique(Technique technique)
+void ModelComponent::LinkTechniques(Rgph::RenderGraph& rg)
 {
-	techniques.push_back(std::move(technique));
+	for (auto& pMesh : meshPtrs)
+	{
+		pMesh->LinkTechniques(rg);
+	}
 }

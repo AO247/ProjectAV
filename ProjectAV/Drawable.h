@@ -28,7 +28,10 @@ namespace Bind
 	class InputLayout;
 }
 
-
+namespace Rgph
+{
+	class RenderGraph;
+}
 
 class Drawable
 {
@@ -38,10 +41,11 @@ public:
 	Drawable(const Drawable&) = delete;
 	void AddTechnique(Technique tech_in) noexcept;
 	virtual DirectX::XMMATRIX GetTransformXM() const noexcept = 0;
-	void Submit(class FrameCommander& frame) const noexcept;
-	void Bind(Graphics& gfx) const noexcept;
+	void Submit() const noexcept;
+	void Bind(Graphics& gfx) const noxnd;
 	void Accept(TechniqueProbe& probe);
 	UINT GetIndexCount() const noxnd;
+	void LinkTechniques(Rgph::RenderGraph&);
 	virtual ~Drawable();
 
 	// **** ADD THIS PUBLIC GETTER ****
@@ -58,7 +62,7 @@ public:
 	// The `const` in std::shared_ptr<const Bind::VertexBuffer> means the pointed-to VertexBuffer cannot be modified through this shared_ptr.
 
 protected:
-	std::shared_ptr<Bind::IndexBuffer> pIndices;
+	std::shared_ptr<Bind::IndexBuffer> pIndices;	
 	std::shared_ptr<Bind::VertexBuffer> pVertices;
 	std::shared_ptr<Bind::Topology> pTopology;
 	std::vector<Technique> techniques;

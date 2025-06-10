@@ -1,5 +1,6 @@
 #include "StateMachine.h"
 #include "State.h"
+#include "PhysicsCommon.h"
 
 #include "IdleState.h"
 #include "FollowState.h"
@@ -67,6 +68,15 @@ void StateMachine::Update(float dt)
 			RequestStateChange(StateType::IDLE);
 		}
 		
+	}
+	if (pOwner->GetLocalPosition().y < -50.0f)
+	{
+		pOwner->Destroy();
+	}
+	if (isFlying) {
+		Vec3 velocity = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(pOwner->GetComponent<Rigidbody>()->GetBodyID());
+		velocity *= 0.95f;
+		PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(pOwner->GetComponent<Rigidbody>()->GetBodyID(),velocity);
 	}
 }
 

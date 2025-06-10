@@ -11,7 +11,7 @@
 
 namespace dx = DirectX;
 Ability1::Ability1(Node* owner, Window& window, Node* camera)
-    : Component(owner), wnd(window), camera(camera)  // Initialize reference member
+    : Ability(owner, window, camera)
 {
 
 }
@@ -28,11 +28,14 @@ void Ability1::Update(float dt)
 }
 void Ability1::Positioning() {
 	pOwner->SetLocalTransform(camera->GetLocalTransform());
-	pOwner->TranslateLocal(Vector3(0.0f, 0.0f, 6.0f));
+	pOwner->TranslateLocal(Vector3(0.0f, 0.0f, 8.0f));
 }
-void Ability1::Active()
+void Ability1::Pressed()
 {
     if (!abilityReady) return;
+	timeToChange = 0.3f;
+	leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
+	leftHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
     for (int i = 0; i < objects.size(); i++)
     {
         if (objects[i]->tag == "ENEMY" || objects[i]->tag == "STONE")
@@ -45,7 +48,9 @@ void Ability1::Active()
     cooldownTimer = cooldown;
     abilityReady = false;
 }
-
+void Ability1::Released()
+{
+}
 void Ability1::Cooldowns(float dt)
 {
     if (cooldownTimer > 0.0f)
@@ -54,26 +59,26 @@ void Ability1::Cooldowns(float dt)
     }
     else
     {
+        if (!abilityReady)
+        {
+            leftHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
+        }
         abilityReady = true;
     }
-
-}
-
-
-void Ability1::KeyboardInput()
-{
-    while (const auto e = wnd.mouse.Read()) // Read events from the queue
+    if (timeToChange > 0.0f)
     {
-        switch (e->GetType())
+        timeToChange -= dt;
+        if (timeToChange <= 0.0f)
         {
-        case Mouse::Event::Type::LPress:
-            OutputDebugStringA("\n\n\nLeft Mouse Button Pressed\n");
-            Active();
-            break;
+            leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
+            leftHandNormal->SetLocalPosition({ 0.0f, -2.7f, 1.0f });
         }
     }
+
 }
+
 void Ability1::OnTriggerEnter(Node* object) {
+    if (object == nullptr) return;
     if (object->tag != "ENEMY" && object->tag != "STONE") return;
     if (object->GetComponent<Rigidbody>() == nullptr) return;
     for(int i= 0; i < objects.size(); i++)
@@ -84,6 +89,7 @@ void Ability1::OnTriggerEnter(Node* object) {
 	OutputDebugStringA(("Ability1 OnTriggerEnter: " + object->GetName() + "\n").c_str());
 }
 void Ability1::OnTriggerExit(Node* object) {
+    if (object == nullptr) return;
     if (object->tag != "ENEMY" && object->tag != "STONE") return;
     if (object->GetComponent<Rigidbody>() == nullptr) return;
     auto it = std::remove(objects.begin(), objects.end(), object);

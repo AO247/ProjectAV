@@ -16,10 +16,19 @@ void Health::DrawImGuiControls()
 void Health::TakeDamage(float damage)
 {
 	currentHealth -= damage;
+	if (currentHealth > maxHealth)
+	{
+		currentHealth = maxHealth;
+	}
+	if (damage < 0)
+	{
+		pOwner->GetComponent<PlayerController>()->abilitySlot3->GetComponent<Ability>()->killsCount++;
+	}
 	if (currentHealth <= 0.0f)
 	{
 		if (pOwner->tag != "PLAYER") {
-			GetOwner()->Destroy();
+			pOwner->Destroy();
+			pOwner->GetRoot()->FindFirstChildByTag("PLAYER")->GetComponent<Health>()->TakeDamage(-1);
 		}
 		else {
 			pOwner->GetComponent<PlayerController>()->alive = false;
