@@ -164,6 +164,9 @@ void MyContactListener::AddRigidbody(BodyID id)
 
 void MyContactListener::ExecuteTriggerActivationQueue()
 {
+
+    // TUTASJ SPRAWDZIC LOGIKE TEGO USUWANIA CZY MA SENS I NIE WYSTARCZY SAM TRIGGER
+
     for (int i = 0; i < triggerActivationQueue.size(); i++)
     {
         bool triggerFound = false;
