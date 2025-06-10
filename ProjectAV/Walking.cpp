@@ -137,8 +137,9 @@ Vector3 Walking::CalculateAvoidanceForce()
 	float radius = 1.0f;
 
 	Vector3 pos = pOwner->GetWorldPosition();
-	pos.y += -(height/2.0f) + 0.3f;
+	pos.y += -(height/2.0f) + 0.0f;
 	Vector3 forward = temporaryDirection;
+	forward.y = 0.0f;
 	Vector3 right = Vector3(forward.z, 0.0f, -forward.x);
 	right.Normalize();
 
@@ -161,7 +162,7 @@ Vector3 Walking::CalculateAvoidanceForce()
 	leftDir *= avoidanceDistance;
 	rightDir *= avoidanceDistance;
 
-	float targetDistance = Vector3(pos - targetPosition).Length();
+	float targetDistance = Vector3(pOwner->GetWorldPosition() - targetPosition).Length();
 	RRayCast rayLeft = RRayCast(
 		RVec3(leftOrigin.x, leftOrigin.y, leftOrigin.z),
 		RVec3(centerDir.x, centerDir.y, centerDir.z)
@@ -172,11 +173,14 @@ Vector3 Walking::CalculateAvoidanceForce()
 		IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::ENEMY, BroadPhaseLayers::TRIGGER, BroadPhaseLayers::PLAYER }),
 		IgnoreMultipleObjectLayerFilter({ Layers::ENEMY, Layers::TRIGGER, Layers::PLAYER })))
 	{
-		leftHit = true;
-		PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(resultLeft.mBodyID, Vec3(0.0f, 1000.0f, 0.0f));
-		//float distance = Vector3(pos - hitLeft.hitPoint).Length();
-		//if(distance < targetDistance)
-		avoidanceForce = right * avoidanceWeight;
+		Node* no = reinterpret_cast<Node*>(PhysicsCommon::physicsSystem->GetBodyInterface().GetUserData(resultLeft.mBodyID));
+		float distance = Vector3(pOwner->GetWorldPosition() - no->GetWorldPosition()).Length();
+		if (distance < targetDistance)
+		{
+			leftHit = true;
+			avoidanceForce = right * avoidanceWeight;
+			OutputDebugStringA(("\nLeft Hit into:" + no->GetName()).c_str());
+		}
 	}
 
 
@@ -189,10 +193,14 @@ Vector3 Walking::CalculateAvoidanceForce()
 		IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::ENEMY, BroadPhaseLayers::TRIGGER, BroadPhaseLayers::PLAYER }),
 		IgnoreMultipleObjectLayerFilter({ Layers::ENEMY, Layers::TRIGGER, Layers::PLAYER })))
 	{
-		rightHit = true;
-		//float distance = Vector3(pos - hitLeft.hitPoint).Length();
-		//if(distance < targetDistance)
-		avoidanceForce = -right * avoidanceWeight;
+		Node* no = reinterpret_cast<Node*>(PhysicsCommon::physicsSystem->GetBodyInterface().GetUserData(resultRight.mBodyID));
+		float distance = Vector3(pOwner->GetWorldPosition() - no->GetWorldPosition()).Length();
+		if (distance < targetDistance)
+		{
+			rightHit = true;
+			avoidanceForce = -right * avoidanceWeight;
+			OutputDebugStringA(("\nRight Hit into:" + no->GetName()).c_str());
+		}
 	}
 
 
@@ -212,20 +220,27 @@ Vector3 Walking::CalculateAvoidanceForce()
 			IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::ENEMY, BroadPhaseLayers::TRIGGER, BroadPhaseLayers::PLAYER }),
 			IgnoreMultipleObjectLayerFilter({ Layers::ENEMY, Layers::TRIGGER, Layers::PLAYER })))
 		{
-			//float distance = Vector3(pos - hitLeft.hitPoint).Length();
-			//if(distance < targetDistance)
-			PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(resultMoreLeft.mBodyID, Vec3(0.0f, 1000.0f, 0.0f));
-			moreLeft = true;
-			avoidanceForce = right * avoidanceWeight * 1.5f;
+			Node* no = reinterpret_cast<Node*>(PhysicsCommon::physicsSystem->GetBodyInterface().GetUserData(resultMoreLeft.mBodyID));
+			float distance = Vector3(pOwner->GetWorldPosition() - no->GetWorldPosition()).Length();
+			if (distance < targetDistance)
+			{
+				moreLeft = true;
+				avoidanceForce = right * avoidanceWeight * 1.5f;
+				OutputDebugStringA(("\nMore Left Hit into:" + no->GetName()).c_str());
+			}
 		}
 		else if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(rayMoreRight, resultMoreRight, 
 			IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::ENEMY, BroadPhaseLayers::TRIGGER, BroadPhaseLayers::PLAYER }),
 			IgnoreMultipleObjectLayerFilter({ Layers::ENEMY, Layers::TRIGGER, Layers::PLAYER })))
 		{
-			//float distance = Vector3(pos - hitLeft.hitPoint).Length();
-			PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(resultMoreRight.mBodyID, Vec3(0.0f, 1000.0f, 0.0f));
-			moreRight = true;
-			avoidanceForce = -right * avoidanceWeight * 1.5f;
+			Node* no = reinterpret_cast<Node*>(PhysicsCommon::physicsSystem->GetBodyInterface().GetUserData(resultMoreRight.mBodyID));
+			float distance = Vector3(pOwner->GetWorldPosition() - no->GetWorldPosition()).Length();
+			if (distance < targetDistance)
+			{
+				moreRight = true;
+				avoidanceForce = -right * avoidanceWeight * 1.5f;
+				OutputDebugStringA(("\nMore Right Hit into:" + no->GetName()).c_str());
+			}
 		}
 	}
 

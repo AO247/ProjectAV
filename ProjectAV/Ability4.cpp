@@ -153,6 +153,7 @@ void Ability4::Cooldowns(float dt)
 
 
 void Ability4::OnTriggerEnter(Node* object) {
+    if (object == nullptr) return;
     if (object->tag != "ENEMY" && object->tag != "STONE") return;
     if (object->GetComponent<Rigidbody>() == nullptr) return;
     for (int i = 0; i < objects.size(); i++)
@@ -163,6 +164,7 @@ void Ability4::OnTriggerEnter(Node* object) {
     OutputDebugStringA(("Ability2 OnTriggerEnter: " + object->GetName() + "\n").c_str());
 }
 void Ability4::OnTriggerExit(Node* object) {
+    if (object == nullptr) return;
     if (object->tag != "ENEMY" && object->tag != "STONE") return;
     if (object->GetComponent<Rigidbody>() == nullptr) return;
     auto it = std::remove(objects.begin(), objects.end(), object);

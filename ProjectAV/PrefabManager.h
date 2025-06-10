@@ -789,7 +789,7 @@ public:
         root->AddChild(std::move(pNewNodeOwner));
 
 
-        BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(2.0f, 10.0f, 2.0f)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Kinematic, Layers::WALL);
+        BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(0.2f, 0.2f, 0.2f)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Kinematic, Layers::WALL);
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
 
         BodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 0.1f);
@@ -798,6 +798,11 @@ public:
         BodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
         pNewNode->AddComponent(
             std::make_unique<Rigidbody>(pNewNode, BodySettings)
+        );
+
+        BodyCreationSettings trBodySettings(new JPH::CapsuleShape(0.5f, 0.5f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
+        pNewNode->AddComponent(
+            std::make_unique<Trigger>(pNewNode, trBodySettings, false)
         );
 
         pNewNode->AddComponent(
