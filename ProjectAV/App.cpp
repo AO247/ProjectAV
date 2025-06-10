@@ -137,18 +137,18 @@ App::App(const std::string& commandLine)
         std::make_unique<PlayerController>(pPlayer, wnd) // Add controller first
     );
 
-    BodyCreationSettings a1BodySettings(new JPH::CapsuleShape(4.0f, 4.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
+    BodyCreationSettings a1BodySettings(new JPH::CapsuleShape(6.0f, 5.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
     pAbility1->AddComponent(
         std::make_unique<Trigger>(pAbility1, a1BodySettings, false)
     );
     pAbility1->AddComponent(
         std::make_unique<Ability1>(pAbility1, wnd, pCamera)
     );
-    pAbility1->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 0.0f, 8.0f));
+    pAbility1->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 0.0f, 10.0f));
     pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility1;
 
 
-    BodyCreationSettings a2odySettings(new JPH::SphereShape(4.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
+    BodyCreationSettings a2odySettings(new JPH::SphereShape(5.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
     pAbility2->AddComponent(
         std::make_unique<Trigger>(pAbility2, a2odySettings, false)
     );
@@ -169,17 +169,21 @@ App::App(const std::string& commandLine)
     pAbility3->AddComponent(
         std::make_unique<Ability3>(pAbility3, wnd, pCamera)
     );
-    /*pAbility3->AddComponent(
+   /* pAbility3->AddComponent(
         std::make_unique<ModelComponent>(pAbility3, wnd.Gfx(), "Models\\box.glb")
-    );*/
-    //pAbility3->GetComponent<ModelComponent>()->LinkTechniques(rg);
+    );
+    pAbility3->GetComponent<ModelComponent>()->LinkTechniques(rg);*/
     pPlayer->GetComponent<PlayerController>()->abilitySlot3 = pAbility3;
 
 
-    BodyCreationSettings a4odySettings(new JPH::SphereShape(2.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
+    BodyCreationSettings a4odySettings(new JPH::SphereShape(2.5f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
     pAbility4->AddComponent(
         std::make_unique<Trigger>(pAbility4, a4odySettings, false)
     );
+   /* pAbility4->AddComponent(
+        std::make_unique<ModelComponent>(pAbility4, wnd.Gfx(), "Models\\box.glb")
+    );
+    pAbility4->GetComponent<ModelComponent>()->LinkTechniques(rg);*/
     pAbility4->AddComponent(
         std::make_unique<Ability4>(pAbility4, wnd, pCamera)
     );
@@ -705,15 +709,6 @@ void App::ShowControlWindows()
     //        modelComp->ShowWindow("Nanosuit Controls");
     //    }
     //}
-
-    // --- Simulation Speed Window ---
-    /*if (ImGui::Begin("Simulation Speed"))
-    {
-        ImGui::SliderFloat("Speed Factor", &speed_factor, 0.0f, 4.0f);
-		ImGui::Text("To change camera press 'C'");
-		ImGui::Text("To show/hide control window press 'H'");
-    }
-    ImGui::End();*/
 
 
     // --- NEW: Scene Hierarchy Window ---

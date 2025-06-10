@@ -74,15 +74,17 @@ public:
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-        BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(2.0f, 10.0f, 2.0f)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::WALL);
-        BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
-
-        //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
-        BodySettings.mMassPropertiesOverride.mMass = 50.0f;
-        BodySettings.mFriction = 0.0f;
-        BodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
+        ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList islandTriangles = PhysicsCommon::MakeTriangleList(islandModel->GetAllTriangles());
+        MeshShapeSettings islandMeshSettings(islandTriangles);
+        Shape::ShapeResult islandMeshCreationResult = islandMeshSettings.Create();
+        ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
+        ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
+        islandMeshShape = islandScaling.Create().Get();
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
-            std::make_unique<Rigidbody>(pNewNodeOwner.get(), BodySettings)
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
         pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
@@ -141,7 +143,7 @@ public:
         ConvexHullShapeSettings shapeSettings(PhysicsCommon::MakeVertexArray(islandModel->GetAllUniqueVertices()));
         ShapeRefC islandShape = shapeSettings.Create().Get();
         BodyCreationSettings BodySettings(islandShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
-        BodySettings.mMassPropertiesOverride.mMass = 20.0f;
+        BodySettings.mMassPropertiesOverride.mMass = 40.0f;
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
         BodySettings.mFriction = 0.5f;
         BodySettings.mMotionQuality = EMotionQuality::LinearCast;
@@ -151,7 +153,7 @@ public:
         pNewNodeOwner->AddComponent(
             std::make_unique<Throwable>(pNewNodeOwner.get())
         );
-
+        pNewNodeOwner->GetComponent<Throwable>()->speed = 2.0f;
         pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
@@ -214,6 +216,8 @@ public:
         ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
         ConvexHullShapeSettings shapeSettings(PhysicsCommon::MakeVertexArray(islandModel->GetAllUniqueVertices()));
         ShapeRefC islandShape = shapeSettings.Create().Get();
+        ScaledShapeSettings islandScaling(islandShape, Vec3Arg(scale, scale, scale));
+        islandShape = islandScaling.Create().Get();
         BodyCreationSettings BodySettings(islandShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
         BodySettings.mMassPropertiesOverride.mMass = 7.0f;
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
@@ -395,10 +399,10 @@ public:
         InstantiateStone1(pNewNode, 22.2f, 30.0f, -18.2f, 2.0f);
         InstantiateStone1(pNewNode, -17.2f, 30.0f, 22.2f, 2.0f);
         InstantiateStone1(pNewNode, 11.2f, 30.0f, -8.2f, 2.0f);
-        InstantiateColumn(pNewNode, 20.0f, 0.0f, 25.0f, 1.0f);
-        InstantiateColumn(pNewNode, -5.0f, 0.0f, 25.0f, 1.0f);
-        InstantiateColumn(pNewNode, 20.0f, 0.0f, -12.0f, 1.0f);
-        InstantiateColumn(pNewNode, -5.0f, 0.0f, -12.0f, 1.0f);
+        InstantiateNewColumn(pNewNode, 20.0f, 0.0f, 25.0f, 1.0f);
+        InstantiateNewColumn(pNewNode, -5.0f, 0.0f, 25.0f, 1.0f);
+        InstantiateNewColumn(pNewNode, 20.0f, 0.0f, -12.0f, 1.0f);
+        InstantiateNewColumn(pNewNode, -5.0f, 0.0f, -12.0f, 1.0f);
         InstantiatePlatform1(pNewNode, 41.0f, 0.0f, 6.0f, 1.0f);
         InstantiatePlatform3(pNewNode, -19.0f, 0.0f, -26.0f, 1.0f);
 		//InstantiateStatue(pNewNode, 0.0f, 0.0f, 0.0f, 1.0f);
@@ -496,9 +500,9 @@ public:
         InstantiateStone1(pNewNode, 15.2f, 30.0f, 21.2f, 2.0f);
         InstantiateStone1(pNewNode, 12.2f, 30.0f, -3.2f, 2.0f);
         InstantiateStone1(pNewNode, -15.2f, 30.0f, -8.2f, 2.0f);
-        InstantiateColumn(pNewNode, 17.5f, 0.0f, -7.0f, 1.0f);
-        InstantiateColumn(pNewNode, -4.5f, 0.0f, 1.0f, 1.0f);
-        InstantiateColumn(pNewNode, 16.5f, 0.0f, 10.0f, 1.0f);
+        InstantiateNewColumn(pNewNode, 17.5f, 0.0f, -7.0f, 1.0f);
+        InstantiateNewColumn(pNewNode, -4.5f, 0.0f, 1.0f, 1.0f);
+        InstantiateNewColumn(pNewNode, 16.5f, 0.0f, 10.0f, 1.0f);
 
         auto spawnPoint1 = std::make_unique<Node>("SpawnPoint 1", pNewNodeOwner.get());
         spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(-11.0f, 2.0f, 3.0f));
@@ -585,9 +589,6 @@ public:
         InstantiateColumn(pNewNode, -20.0f, 0.0f, 20.0f, 4.0f);
         InstantiateColumn(pNewNode, -20.0f, 0.0f, -20.0f, 4.0f);
 
-        InstantiateNewColumn(pNewNode, 5.0f, 0.0f, 5.0f, 1.0f);
-
-
 
         pNewNode->AddChild(std::move(leftPoint));
         pNewNode->AddChild(std::move(rightPoint));
@@ -671,6 +672,7 @@ public:
 
         pNewNode->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
         pNewNode->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+
 
 
         return pNewNode;

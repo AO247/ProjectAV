@@ -17,6 +17,7 @@ public:
 	virtual void DrawImGuiControls() override;
 	void OnCollisionEnter(Node* object) override;
 	//BoundingSphere* damageArea;
+	float speed = 35.0f;
 private:
 	Rigidbody* rigidbody;
 };
