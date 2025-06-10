@@ -381,10 +381,6 @@ int App::Go()
 
         const float alpha = lag / FIXED_TIME_STEP;
 
-        auto* contact = dynamic_cast<MyContactListener*>(physicsSystem->GetContactListener());
-        contact->ExecuteTriggerActivationQueue();
-        contact->ExecuteCollisionActivationQueue();
-
         HandleInput(dt);
         DoFrame(dt);
 
@@ -491,6 +487,9 @@ void App::HandleInput(float dt)
 void App::DoFrame(float dt)
 {
 	pSceneRoot->Update(dt); // Update the scene root and all its children
+    auto* contact = dynamic_cast<MyContactListener*>(physicsSystem->GetContactListener());
+    contact->ExecuteTriggerActivationQueue();
+    contact->ExecuteCollisionActivationQueue();
     CleanupDestroyedNodes(pSceneRoot.get());
 
     wnd.Gfx().BeginFrame(0.5f, 0.5f, 1.0f);

@@ -166,27 +166,12 @@ void MyContactListener::ExecuteTriggerActivationQueue()
 {
     for (int i = 0; i < triggerActivationQueue.size(); i++)
     {
-        bool triggerFound = false;
-        bool activatorFound = false;
         for (int j = 0; j < triggerDeletionQueue.size(); j++)
         {
             if (triggerDeletionQueue[j] == triggerActivationQueue[i].trigger)
             {
-                triggerFound = true;
+                triggerActivationQueue.erase(triggerActivationQueue.begin() + i);
             }
-            if (triggerDeletionQueue[j] == triggerActivationQueue[i].activator)
-            {
-                activatorFound = true;
-            }
-            if (triggerFound && activatorFound)
-            {
-                break;
-            }
-        }
-
-        if (triggerFound && activatorFound)
-        {
-            triggerActivationQueue.erase(triggerActivationQueue.begin() + i);
         }
     }
     for (int i = 0; i < triggerActivationQueue.size(); i++)
@@ -223,27 +208,12 @@ void MyContactListener::ExecuteCollisionActivationQueue()
 {
     for (int i = 0; i < collisionActivationQueue.size(); i++)
     {
-        bool triggerFound = false;
-        bool activatorFound = false;
         for (int j = 0; j < collisionDeletionQueue.size(); j++)
         {
             if (collisionDeletionQueue[j] == collisionActivationQueue[i].trigger)
             {
-                triggerFound = true;
+                collisionActivationQueue.erase(collisionActivationQueue.begin() + i);
             }
-            if (collisionDeletionQueue[j] == collisionActivationQueue[i].activator)
-            {
-                activatorFound = true;
-            }
-            if (triggerFound && activatorFound)
-            {
-                break;
-            }
-        }
-
-        if (triggerFound && activatorFound)
-        {
-            collisionActivationQueue.erase(collisionActivationQueue.begin() + i);
         }
     }
     for (int i = 0; i < collisionActivationQueue.size(); i++)
