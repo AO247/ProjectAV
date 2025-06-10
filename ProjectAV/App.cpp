@@ -140,20 +140,9 @@ App::App(const std::string& commandLine)
 		std::make_unique<ModelComponent>(pColumn3, wnd.Gfx(), "Models\\kolumna\\kolumna.obj")
 	);
     pChar->AddComponent(
-		std::make_unique<ModelComponent>(pChar, wnd.Gfx(), "Models\\charBox2.fbx")
+		std::make_unique<ModelComponent>(pChar, wnd.Gfx(), "Models\\char_basic2.glb")
 	);
-
-    //pIsland->AddComponent(
-    //    std::make_unique<ModelComponent>(pIsland, wnd.Gfx(), "Models\\box.glb")
-    //);
-
-
-    /*pNoxTurn->AddComponent(
-        std::make_unique<ModelComponent>(pNoxTurn, wnd.Gfx(), "Models\\stone\\char.fbx")
-    );
-    pNoxTurnHair->AddComponent(
-        std::make_unique<ModelComponent>(pNoxTurnHair, wnd.Gfx(), "Models\\stone\\hair.fbx")
-    );*/
+ 
     pEnemy->AddComponent(
         std::make_unique<ModelComponent>(pEnemy, wnd.Gfx(), "Models\\rBox.fbx")
     );
@@ -208,16 +197,7 @@ App::App(const std::string& commandLine)
 	eCapsule->SetLayer(Layers::ENEMY);
 	eRigidbody->SetCollider(eCapsule);
     physicsEngine.AddRigidbody(eRigidbody);
-
-
-  /*  pIsland->AddComponent(
-        std::make_unique<OBB>(pIsland, nullptr, Vector3(0.0f, -0.3f, 0.0f), Vector3(20.0f, 1.0f, 20.0f))
-    );
-	OBB* iOBB = pIsland->GetComponent<OBB>();
-	iOBB->SetLayer(Layers::GROUND);
-	physicsEngine.AddCollider(iOBB);*/
-
-
+ 
 
 	pBox->AddComponent(
 		std::make_unique<BoundingSphere>(pBox, Vector3(0.0f, 0.0f, 0.0f), 2.0f, nullptr)
@@ -267,14 +247,7 @@ App::App(const std::string& commandLine)
 	pStone->GetComponent<Throwable>()->damageArea = sBoundingSphere;
 	physicsEngine.AddCollider(sBoundingSphere);
 
-
-	/*Node* stone1 = prefabManager->InstantiateStone(pSceneRoot.get(), -10.0f, 1.0f, -10.0f, 1.5f);
-    Node* stone2 = prefabManager->InstantiateStone(pSceneRoot.get(), 10.0f, 1.0f, -10.0f, 1.5f);
-    Node* stone3 = prefabManager->InstantiateStone(pSceneRoot.get(), -10.0f, 1.0f, 10.0f, 1.5f);
-    Node* stone4 = prefabManager->InstantiateStone(pSceneRoot.get(), 10.0f, 1.0f, 10.0f, 1.5f);
-    Node* stone5 = prefabManager->InstantiateStone(pSceneRoot.get(), -5.0f, 1.0f, -5.0f, 1.5f);*/
-
-
+ 
     //Adding Other Components
     pFreeViewCamera->AddComponent(
         std::make_unique<Camera>(pFreeViewCamera, wnd)
@@ -330,23 +303,21 @@ App::App(const std::string& commandLine)
     pAnimComp->Initialize();
 
     bool animsLoaded = pAnimComp->LoadAnimationsFromFile(
-        "Models\\charBox2.fbx", // Path to file containing animations
-        "Models\\charBox2.fbx"             // Path to model whose skeleton these anims target (can be same file)
+        "Models\\char_basic2.glb", // Path to file containing animations
+        "Models\\char_basic2.glb"             // Path to model whose skeleton these anims target (can be same file)
     );
 
     //if (animsLoaded) {
     //    OutputDebugStringA("Animations loaded successfully for pPlayer.\n"); 
 
-    pAnimComp->PlayAnimation("Armature|ArmatureAction", true);
-    //pAnimComp->PlayAnimation("Action", true);
+    pAnimComp->PlayAnimation("walk", true);
+    //pAnimComp->PlayAnimation("walk", true);
     //}
     //else {
     //    OutputDebugStringA("Failed to load animations for pPlayer.\n");
     //}
     
-
-
-    // Changing position scale etc.]
+     
 	pFreeViewCamera->SetLocalPosition({ 4.0f, 11.0f, -28.0f });
     pPlayer->SetLocalPosition({ 0.0f, 35.0f, 0.0f });
 	pBox->SetLocalPosition(DirectX::XMFLOAT3(-10.0f, 3.0f, 10.0f));

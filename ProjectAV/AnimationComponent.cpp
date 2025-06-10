@@ -39,7 +39,7 @@ bool AnimationComponent::LoadAnimationsFromFile(const std::string& animationFile
     }
 
     Assimp::Importer importer;
-    unsigned int flags = aiProcess_ConvertToLeftHanded;
+    unsigned int flags = aiProcess_ConvertToLeftHanded | aiProcess_Triangulate;
     const aiScene* scene = importer.ReadFile(animationFilePath, flags);
 
     if (!scene || !scene->HasAnimations()) {
@@ -211,8 +211,7 @@ void AnimationComponent::Initialize()
     }
 
     // Initialize all matrices to identity.
-    for (auto& matrix : mFinalBoneMatrices)
-    {
+    for (auto& matrix : mFinalBoneMatrices) {
         DirectX::XMStoreFloat4x4(&matrix, DirectX::XMMatrixIdentity());
     }
 
@@ -222,77 +221,65 @@ void AnimationComponent::Initialize()
 
 // AnimationComponent.cpp
 
-void AnimationComponent::Update(float dt)
-{
-    if (!mCachedModelComponent) { // Check if ModelComponent is even cached
-        // Optionally log that ModelComponent isn't available if it's unexpected
+void AnimationComponent::Update(float dt) {
+    // ... (Your existing logic that sets pAnimToProcess to nullptr for bind pose
+    //      and calls CalculateBoneTransformsRecursive) ...
+    // This was Recommendation 2 and seems correct from your provided code.
+    if (!mCachedModelComponent) {
         return;
     }
 
+    const Animation* pAnimToProcess = nullptr;
+    float timeTicksForCalc = 0.0f;
 
-    if (!mIsPlaying || mCurrentAnimationName.empty() || mCurrentAnimationName == "") {
-        // NOT PLAYING: Set mFinalBoneMatrices to represent the bind pose.
-        //ModelInternalNode* rootModelNode = mCachedModelComponent->GetRootInternalNode(); // Get it here too
-        //if (rootModelNode) {
-        //    CalculateBoneTransformsRecursive_BindPose(rootModelNode, DirectX::XMMatrixIdentity());
-        //}
-        //else {
-        //    // Log error if rootModelNode is null even for bind pose
-        //    std::ostringstream oss;
-        //    oss << "AnimationComponent::Update (Not Playing) - Error: Root node from ModelComponent is null.\n";
-        //    OutputDebugStringA(oss.str().c_str());
-        //}
-        return;
-    }
-
-    // --- If Playing ---
-    auto animIt = mAnimations.find(mCurrentAnimationName);
-    if (animIt == mAnimations.end()) {
-        mIsPlaying = false; // Stop if the animation somehow disappeared
-        std::ostringstream oss;
-        oss << "AnimationComponent::Update - Current animation '" << mCurrentAnimationName << "' not found in map. Stopping playback.\n";
-        OutputDebugStringA(oss.str().c_str());
-        return;
-    }
-    const Animation& currentAnim = animIt->second;
-
-
-    // 1. Advance animation time (your existing logic)
-    if (currentAnim.ticksPerSecond > 0.00001f) {
-        mCurrentTimeTicks += currentAnim.ticksPerSecond * dt * mAnimationSpeed;
-    }
-
-    // 2. Handle looping or end of animation (your existing logic)
-    if (mCurrentTimeTicks >= currentAnim.durationTicks) {
-        if (mLoop) {
-            if (currentAnim.durationTicks > 0.00001f) { // Avoid fmod with zero duration
-                mCurrentTimeTicks = fmod(mCurrentTimeTicks, currentAnim.durationTicks);
+    if (mIsPlaying && !mCurrentAnimationName.empty()) {
+        auto animIt = mAnimations.find(mCurrentAnimationName);
+        if (animIt != mAnimations.end()) {
+            const Animation& currentAnim = animIt->second;
+            if (currentAnim.ticksPerSecond > 0.00001f) {
+                mCurrentTimeTicks += currentAnim.ticksPerSecond * dt * mAnimationSpeed;
             }
-            else {
-                mCurrentTimeTicks = 0.0f; // If duration is zero, just reset
+            if (mCurrentTimeTicks >= currentAnim.durationTicks) {
+                if (mLoop) {
+                    mCurrentTimeTicks = (currentAnim.durationTicks > 0.00001f) ?
+                        fmod(mCurrentTimeTicks, currentAnim.durationTicks) : 0.0f;
+                }
+                else {
+                    mCurrentTimeTicks = currentAnim.durationTicks;
+                    mIsPlaying = false;
+                }
+            }
+            if (mIsPlaying) {
+                pAnimToProcess = &currentAnim;
+                timeTicksForCalc = mCurrentTimeTicks;
             }
         }
         else {
-            mCurrentTimeTicks = currentAnim.durationTicks;
+            std::ostringstream oss;
+            oss << "AnimationComponent::Update - Current animation '" << mCurrentAnimationName << "' not found. Reverting to bind pose.\n";
+            OutputDebugStringA(oss.str().c_str());
             mIsPlaying = false;
+            mCurrentAnimationName = "";
         }
     }
 
-    // 3. ***** CALCULATE FINAL BONE TRANSFORMS for active animation *****
-    ModelInternalNode* rootModelNode = mCachedModelComponent->GetRootInternalNode(); // Get the root node
+    ModelInternalNode* rootModelNode = mCachedModelComponent->GetRootInternalNode();
     if (rootModelNode) {
-        // Pass the actual root of the ModelComponent's internal hierarchy,
-        // the current animation data, and an identity matrix as the initial parent transform.
-        CalculateBoneTransformsRecursive(rootModelNode, &currentAnim, DirectX::XMMatrixIdentity());
+        float previousComponentTime = mCurrentTimeTicks;
+        mCurrentTimeTicks = timeTicksForCalc;
+        CalculateBoneTransformsRecursive(rootModelNode, pAnimToProcess, DirectX::XMMatrixIdentity());
+        mCurrentTimeTicks = previousComponentTime;
     }
     else {
-        // This shouldn't happen if Initialize() succeeded and ModelComponent is valid and has a root.
-        std::ostringstream oss;
-        oss << "AnimationComponent::Update (Playing) - Error: Root node from ModelComponent is null.\n";
-        OutputDebugStringA(oss.str().c_str());
-        mIsPlaying = false; // Stop trying to animate if hierarchy is broken
+        if (mIsPlaying || pAnimToProcess) {
+            std::ostringstream oss;
+            oss << "AnimationComponent::Update - Error: Root node from ModelComponent is null.\n";
+            OutputDebugStringA(oss.str().c_str());
+            mIsPlaying = false;
+        }
     }
 }
+
  
 
 // --- Explicit Instantiations (Optional, but good practice if definition is in .cpp) ---
@@ -353,95 +340,96 @@ dx::XMMATRIX AnimationComponent::InterpolateScaling(float animationTimeTicks, co
     return dx::XMMatrixScalingFromVector(dx::XMVectorLerp(dx::XMLoadFloat3(&s0.value), dx::XMLoadFloat3(&s1.value), factor));
 }
 
-
-
 void AnimationComponent::CalculateBoneTransformsRecursive(
-    const ModelInternalNode* modelNode,    // Current node from ModelComponent's hierarchy
-    const Animation* pCurrentAnim,         // The active Animation struct
-    const DirectX::XMMATRIX& parentGlobalTransform // Global transform of modelNode's parent
+    const ModelInternalNode* modelNode,
+    const Animation* pCurrentAnim, // Will be nullptr for bind pose
+    const DirectX::XMMATRIX& parentGlobalTransform
 ) {
-    if (!modelNode || !pCurrentAnim || !mCachedModelComponent) {
+    if (!modelNode || !mCachedModelComponent) { // pCurrentAnim can be null
         return;
     }
-    const std::string ARMATURE_ROOT_NODE_NAME = "Armature";
     std::string nodeName = modelNode->GetName();
-    DirectX::XMMATRIX nodeLocalAnimatedTransform; // This will be the local S * R * T for this node
+    DirectX::XMMATRIX nodeLocalAnimatedTransform;
 
-    // --- Get Local Animated Transform ---
-    auto channelMapEntry = pCurrentAnim->channelMap.find(nodeName);
-    if (channelMapEntry != pCurrentAnim->channelMap.end()) {
-        // This node IS animated in the current animation
-        const AnimationChannel& animChannel = pCurrentAnim->channels[channelMapEntry->second];
+    if (pCurrentAnim) { // If an animation is playing
+        if (nodeName == "hip.L") {
+            auto channelMapEntry = pCurrentAnim->channelMap.find(nodeName);
+            if (channelMapEntry != pCurrentAnim->channelMap.end()) {
+                const AnimationChannel& animChannel = pCurrentAnim->channels[channelMapEntry->second];
+                DirectX::XMMATRIX s = InterpolateScaling(mCurrentTimeTicks, animChannel);
+                DirectX::XMMATRIX r = InterpolateRotation(mCurrentTimeTicks, animChannel);
+                DirectX::XMMATRIX t = InterpolatePosition(mCurrentTimeTicks, animChannel);
+                nodeLocalAnimatedTransform = s * r * t;
+            
+            
+                std::ostringstream oss_srt_hipL;
+                oss_srt_hipL << "\n--- Bone (AnimComp): " << nodeName << " INTERPOLATED SRT ---\n";
+                OutputDebugStringA(oss_srt_hipL.str().c_str());
+                PrintMatrix("ScalingMatrix (hip.L anim)", s);
+                PrintMatrix("RotationMatrix (hip.L anim)", r);
+                PrintMatrix("TranslationMatrix (hip.L anim)", t);
 
-        DirectX::XMMATRIX scalingMatrix = InterpolateScaling(mCurrentTimeTicks, animChannel);
-        DirectX::XMMATRIX rotationMatrix = InterpolateRotation(mCurrentTimeTicks, animChannel);
-        DirectX::XMMATRIX translationMatrix = InterpolatePosition(mCurrentTimeTicks, animChannel);
-
-        if (nodeName == ARMATURE_ROOT_NODE_NAME) {
-            scalingMatrix = DirectX::XMMatrixScaling(1.0f, 1.0f, 1.0f);
-            // You could print here to confirm it's being applied:
-            // PrintMatrix(nodeName + " - FORCED Scale Matrix", scalingMatrix);
+            }
+            else { // Node not in this animation, use bind pose
+                nodeLocalAnimatedTransform = DirectX::XMLoadFloat4x4(&modelNode->GetOriginalTransform_ForAnim());
+            }
         }
-
-        nodeLocalAnimatedTransform = scalingMatrix * rotationMatrix * translationMatrix; // Standard S*R*T order
+        else { // All other bones use bind pose
+            nodeLocalAnimatedTransform = DirectX::XMLoadFloat4x4(&modelNode->GetOriginalTransform_ForAnim());
+        }
     }
-    else {
-        // This node is NOT animated in the current animation, so use its bind-pose local transform
+    else { // No animation playing (pCurrentAnim is nullptr), use bind pose
         nodeLocalAnimatedTransform = DirectX::XMLoadFloat4x4(&modelNode->GetOriginalTransform_ForAnim());
     }
 
-    // --- Calculate Global Transform for this Node ---
-    // Global Transform = Local Animated Transform * Parent's Global Transform
     DirectX::XMMATRIX globalNodeTransform = nodeLocalAnimatedTransform * parentGlobalTransform;
 
-    // --- If this node is a bone, calculate and store its final skinning matrix ---
     const auto& boneInfoMap = mCachedModelComponent->GetBoneInfoMap();
     auto boneInfoIt = boneInfoMap.find(nodeName);
 
-    if (boneInfoIt != boneInfoMap.end()) { // Check if this nodeName is a bone we care about
+    if (boneInfoIt != boneInfoMap.end()) {
         const BoneInfo& boneInfo = boneInfoIt->second;
         if (boneInfo.id >= 0 && static_cast<size_t>(boneInfo.id) < mFinalBoneMatrices.size()) {
-            // Load the bone's offset matrix (transforms from mesh space to this bone's local space in bind pose)
-            // Assimp's mOffsetMatrix is row-major. XMLoadFloat4x4 loads it as such.
+
+            // CRITICAL DEBUG: Print the XMFLOAT4X4 offsetMatrix directly from boneInfo
+            if (nodeName == "hip.L") { // Or your chosen debug bone name
+                std::ostringstream oss_offset_check;
+                oss_offset_check << "--- Bone: " << nodeName << " (ID: " << boneInfo.id << ") --- AnimComp READ Check (T-Pose or Anim)\n";
+                oss_offset_check << "OffsetMatrix (XMFLOAT4X4 direct from boneInfo) in AnimComp:\n";
+                const DirectX::XMFLOAT4X4& boffset = boneInfo.offsetMatrix;
+                oss_offset_check << std::fixed << std::setprecision(3)
+                    << "[" << boffset._11 << ", " << boffset._12 << ", " << boffset._13 << ", " << boffset._14 << "]\n"
+                    << "[" << boffset._21 << ", " << boffset._22 << ", " << boffset._23 << ", " << boffset._24 << "]\n"
+                    << "[" << boffset._31 << ", " << boffset._32 << ", " << boffset._33 << ", " << boffset._34 << "]\n"
+                    << "[" << boffset._41 << ", " << boffset._42 << ", " << boffset._43 << ", " << boffset._44 << "]\n\n";
+                OutputDebugStringA(oss_offset_check.str().c_str());
+            }
+
             DirectX::XMMATRIX offsetMatrix = DirectX::XMLoadFloat4x4(&boneInfo.offsetMatrix);
-
-            // Final Skinning Matrix for Shader = OffsetMatrix * GlobalAnimatedNodeTransform
-            // (offsetMatrix is row-major, globalNodeTransform is row-major, product is row-major)
             DirectX::XMMATRIX finalMatrix = offsetMatrix * globalNodeTransform;
+            DirectX::XMStoreFloat4x4(&mFinalBoneMatrices[boneInfo.id], DirectX::XMMatrixTranspose(finalMatrix));
 
-            // Store it transposed for HLSL cbuffer (which expects column-major by default)
-            DirectX::XMStoreFloat4x4(
-                &mFinalBoneMatrices[boneInfo.id],
-                DirectX::XMMatrixTranspose(finalMatrix)
-            );
-
-//***** CONDITIONAL DEBUG PRINTING FOR ONE OR TWO BONES *****
-            const std::string DEBUG_BONE = "Armature";
-            const std::string DEBUG_BONE_1 = "Bone"; // From your charBox3.fbx example
-             const std::string DEBUG_BONE_2 = "Bone.001";
-             if (nodeName == DEBUG_BONE || nodeName == DEBUG_BONE_1 || nodeName == DEBUG_BONE_2) {
-                std::ostringstream oss_debug;
-                oss_debug << "\n--- Bone: " << nodeName << " (ID: " << boneInfo.id << ") at t=" << mCurrentTimeTicks << " ---\n";
-                OutputDebugStringA(oss_debug.str().c_str());
-                PrintMatrix("1. LocalAnimatedSRT", nodeLocalAnimatedTransform);
+            // Your conditional PrintMatrix calls for detailed breakdown
+            if (nodeName == "root" || nodeName == "centre") { // Example
+                std::ostringstream oss_debug_anim; // Different stream to avoid conflict
+                oss_debug_anim << "\n--- Bone (AnimComp): " << nodeName << " (ID: " << boneInfo.id << ") at t=" << mCurrentTimeTicks << " ---\n";
+                OutputDebugStringA(oss_debug_anim.str().c_str());
+                PrintMatrix("1. LocalSRT (Bind or Anim)", nodeLocalAnimatedTransform); // Renamed for clarity
                 PrintMatrix("2. ParentGlobal", parentGlobalTransform);
-                PrintMatrix("3. GlobalNodeTransform (Local*ParentGlobal)", globalNodeTransform);
-                PrintMatrix("4. OffsetMatrix (from BoneInfo)", offsetMatrix);
-                PrintMatrix("5. FinalSkinningMatrix (Offset*Global, Pre-Transpose)", finalMatrix);
-                PrintMatrix("6. mFinalBoneMatrices[id] (Post-Transpose, For Shader)", DirectX::XMLoadFloat4x4(&mFinalBoneMatrices[boneInfo.id]));
-             }
+                PrintMatrix("3. GlobalTransform (Local*Parent)", globalNodeTransform); // Renamed
+                PrintMatrix("4. OffsetMatrix (Loaded from BoneInfo)", offsetMatrix); // Renamed
+                PrintMatrix("5. FinalSkinningMatrix (Offset*Global)", finalMatrix); // Renamed
+                PrintMatrix("6. mFinalBoneMatrices[id] (To Shader)", DirectX::XMLoadFloat4x4(&mFinalBoneMatrices[boneInfo.id]));
+            }
         }
     }
 
-    // --- Recurse for Children ---
     for (const auto& childNodeUPtr : modelNode->GetChildren_ForAnim()) {
         if (childNodeUPtr) {
-            // Pass the current node's globalNodeTransform as the parentGlobalTransform for its children
             CalculateBoneTransformsRecursive(childNodeUPtr.get(), pCurrentAnim, globalNodeTransform);
         }
     }
 }
-
 
 void AnimationComponent::PlayAnimation(const std::string& animationName, bool loop /*= true*/)
 {

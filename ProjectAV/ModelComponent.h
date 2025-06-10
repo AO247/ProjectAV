@@ -92,5 +92,11 @@ private:
         const DirectX::XMMATRIX& meshGlobalInverseTransform // Or however you named this last parameter
     );
 
+    void CalculateBoneOffsetsRecursive(
+        ModelInternalNode* pInternalNode,
+        const DirectX::XMMATRIX& parentWorldTransform
+        // No need to pass m_BoneInfoMap if it's a member, or pass by ref if you prefer
+    );
+
 
 };
