@@ -610,14 +610,27 @@ public:
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         parentNode->AddChild(std::move(pNewNodeOwner));
 
-        BodyCreationSettings eBodySettings(new JPH::CapsuleShape(2.1f, 1.5f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::MOVING);
-        eBodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
+        CapsuleShapeSettings capsule1ShapeSettings;
+        capsule1ShapeSettings.mRadius = 1.0f;
+        capsule1ShapeSettings.mHalfHeightOfCylinder = 2.0f;
+        CapsuleShapeSettings capsule2ShapeSettings;
+        capsule2ShapeSettings.mRadius = 2.0f;
+        capsule2ShapeSettings.mHalfHeightOfCylinder = 3.0f;
+        ShapeRefC c1Shape = capsule1ShapeSettings.Create().Get();
+        ShapeRefC c2Shape = capsule2ShapeSettings.Create().Get();
+        StaticCompoundShapeSettings compoundSettings;
+        compoundSettings.AddShape(Vec3Arg(0, 0, 0), QuatArg(Quat::sIdentity()), c1Shape);
+        compoundSettings.AddShape(Vec3Arg(0, 0, 0), QuatArg(Quat::sIdentity()), c2Shape);
+        ShapeRefC compShape = compoundSettings.Create().Get();
 
+        BodyCreationSettings eBodySettings(compShape, RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::MOVING);
+        eBodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
         //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
         eBodySettings.mMassPropertiesOverride.mMass = 10.0f;
         eBodySettings.mFriction = 0.2f;
         eBodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
         eBodySettings.mMotionQuality = EMotionQuality::LinearCast;
+
         pNewNode->AddComponent(
             std::make_unique<Rigidbody>(pNewNode, eBodySettings)
         );
