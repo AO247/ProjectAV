@@ -5,7 +5,6 @@
 #include "PointLight.h"
 #include <memory> 
 #include "Node.h" 
-#include "PhysicsEngine.h"
 #include <map>
 #include "Components.h"
 #include "MusicBuffer.h"
@@ -18,8 +17,7 @@
 #include "PhysicsCommon.h"
 #include "TestCube.h"
 #include "Global.h"
-#include "BlurOutlineRenderGraph.h"
-#include "PhysicsDebugRenderer.h"
+#include "MainRenderGraph.h"
 #include "Sprite.h"
 #include "Button.h"
 
@@ -44,7 +42,7 @@ private:
     ImguiManager imgui;
     Window wnd; // PlayerController needs access to this
     ScriptCommander scriptCommander;
-    Rgph::BlurOutlineRenderGraph rg{ wnd.Gfx() };
+    Rgph::MainRenderGraph rg{ wnd.Gfx() };
     Timer timer;
     float speed_factor = 1.0f;
     PointLight pointLight;

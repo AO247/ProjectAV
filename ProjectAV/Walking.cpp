@@ -4,15 +4,17 @@
 #include "CMath.h"
 #include <DirectXMath.h>
 #include <algorithm>
-#include "CapsuleCollider.h"
 #include "SoundEffectsPlayer.h"
 #include "DebugLine.h"
+#include "Components.h"
 
 namespace dx = DirectX;
 Walking::Walking(Node* owner, std::string tag)
 	: Component(owner, std::move(tag))
 {
 	rigidbody = owner->GetComponent<Rigidbody>();
+	PhysicsCommon::physicsSystem->GetBodyInterface().SetFriction(rigidbody->GetBodyID(), 0.0f);
+
 }
 void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 {
@@ -57,7 +59,6 @@ void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 
 	}
 
-	PhysicsCommon::physicsSystem->GetBodyInterface().SetFriction(rigidbody->GetBodyID(), 0.0f);
 
 
 	Vector3 currentPos = pOwner->GetWorldPosition();
@@ -112,7 +113,7 @@ void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 	/*if (pOwner->GetComponent<SoundEffectsPlayer>()->isPlaying() == false) {
 		pOwner->GetComponent<SoundEffectsPlayer>()->Play(0);
 	}*/
-	PhysicsCommon::physicsSystem->GetBodyInterface().SetFriction(rigidbody->GetBodyID(), 0.5f);
+	//PhysicsCommon::physicsSystem->GetBodyInterface().SetFriction(rigidbody->GetBodyID(), 0.5f);
 }
 void Walking::GroundCheck()
 {
@@ -131,6 +132,7 @@ void Walking::GroundCheck()
 	{
 		grounded = false;
 	}
+	pOwner->GetComponent<StateMachine>()->grounded = grounded;
 }
 Vector3 Walking::CalculateAvoidanceForce()
 {

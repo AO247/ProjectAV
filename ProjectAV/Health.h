@@ -3,8 +3,6 @@
 #include "Component.h"
 #include <DirectXMath.h>
 #include "Rigidbody.h"
-#include "Collider.h"
-#include "BoundingSphere.h"
 class Node;
 
 class Health : public Component

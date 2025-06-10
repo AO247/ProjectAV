@@ -544,6 +544,7 @@ void App::DoFrame(float dt)
     }
 
     
+    pUpgradeHandler->DrawUpgradeMenu();
 
     if (targetSprite ) { 
         targetSprite->Draw(wnd.Gfx().GetContext());
@@ -565,7 +566,6 @@ void App::DoFrame(float dt)
 
     //testButton->Draw(wnd.Gfx().GetContext(), (float)wnd.GetWidth(), (float)wnd.GetHeight());
 
-    pUpgradeHandler->DrawUpgradeMenu();
     wnd.Gfx().EndFrame();
     rg.Reset();
 }

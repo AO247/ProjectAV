@@ -169,33 +169,27 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AABB.cpp" />
     <ClCompile Include="Ability1.cpp" />
     <ClCompile Include="Ability2.cpp" />
     <ClCompile Include="Ability3.cpp" />
     <ClCompile Include="Ability4.cpp" />
-    <ClCompile Include="AIController.cpp" />
     <ClCompile Include="App.cpp" />
     <ClCompile Include="AttackState.cpp" />
     <ClCompile Include="BasicAttack.cpp" />
     <ClCompile Include="BindingPass.cpp" />
     <ClCompile Include="Blender.cpp" />
-    <ClCompile Include="BlurOutlineRenderGraph.cpp" />
-    <ClCompile Include="BoundingSphere.cpp" />
+    <ClCompile Include="MainRenderGraph.cpp" />
     <ClCompile Include="BufferClearPass.cpp" />
     <ClCompile Include="BrokenPart.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="CapsuleCollider.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="Fire.cpp" />
     <ClCompile Include="FireStatue.cpp" />
     <ClCompile Include="FullscreenPass.cpp" />
     <ClCompile Include="Global.cpp" />
-    <ClCompile Include="HorizontalBlurPass.cpp" />
-    <ClCompile Include="LegacyCollider.cpp" />
     <ClCompile Include="ColliderSphere.cpp" />
     <ClCompile Include="CUtil.cpp" />
     <ClCompile Include="DebugLine.cpp" />
@@ -222,7 +216,6 @@
     <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="IndexBuffer.cpp" />
     <ClCompile Include="InputLayout.cpp" />
-    <ClCompile Include="IntersectData.cpp" />
     <ClCompile Include="Island.cpp" />
     <ClCompile Include="Job.cpp" />
     <ClCompile Include="Keyboard.cpp" />
@@ -230,7 +223,6 @@
     <ClCompile Include="LevelGenerator.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />
-    <ClCompile Include="MiscMath.cpp" />
     <ClCompile Include="ModelComponent.cpp" />
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="MusicBuffer.cpp" />
@@ -243,8 +235,7 @@
     <ClInclude Include="BrokenPart.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="BindingPass.h" />
-    <ClInclude Include="BlurOutlineDrawingPass.h" />
-    <ClInclude Include="BlurOutlineRenderGraph.h" />
+    <ClInclude Include="MainRenderGraph.h" />
     <ClInclude Include="BufferClearPass.h" />
     <ClInclude Include="BufferResource.h" />
     <ClInclude Include="Cube.h" />
@@ -252,24 +243,18 @@
     <ClInclude Include="FireStatue.h" />
     <ClInclude Include="FullscreenPass.h" />
     <ClInclude Include="Global.h" />
-    <ClInclude Include="HorizontalBlurPass.h" />
     <ClInclude Include="ImGuiPass.h" />
     <ClInclude Include="LambertianPass.h" />
     <ClInclude Include="MyContactListener.h" />
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="NullPixelShader.cpp" />
-    <ClCompile Include="OBB.cpp" />
     <ClCompile Include="Pass.cpp" />
     <ClCompile Include="PhysicsCommon.cpp" />
-    <ClCompile Include="PhysicsDebugRenderer.cpp" />
-    <ClCompile Include="PhysicsEngine.cpp" />
     <ClCompile Include="PixelShader.cpp" />
     <ClCompile Include="PlayerController.cpp" />
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="PrefabManager.cpp" />
     <ClCompile Include="Rasterizer.cpp" />
-    <ClCompile Include="Raycast.cpp" />
-    <ClCompile Include="RaycastData.cpp" />
     <ClCompile Include="RenderGraph.cpp" />
     <ClCompile Include="RenderGraphCompileException.cpp" />
     <ClCompile Include="RenderQueuePass.cpp" />
@@ -311,7 +296,6 @@
     <ClCompile Include="Vertex.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
     <ClCompile Include="VertexShader.cpp" />
-    <ClCompile Include="VerticalBlurPass.cpp" />
     <ClCompile Include="Walking.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="WindowsMessageMap.cpp" />
@@ -319,8 +303,6 @@
     <ClCompile Include="XM.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AABB.h" />
-    <ClInclude Include="AIController.h" />
     <ClInclude Include="App.h" />
     <ClInclude Include="AttackState.h" />
     <ClInclude Include="BasicAttack.h" />
@@ -328,16 +310,12 @@
     <ClInclude Include="BindableCodex.h" />
     <ClInclude Include="BindableCommon.h" />
     <ClInclude Include="Blender.h" />
-    <ClInclude Include="BoundingSphere.h" />
     <ClInclude Include="Box.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Capsule.h" />
-    <ClInclude Include="CapsuleCollider.h" />
     <ClInclude Include="CException.h" />
     <ClInclude Include="CMath.h" />
-    <ClInclude Include="Collider.h" />
-    <ClInclude Include="LegacyCollider.h" />
     <ClInclude Include="ColliderSphere.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="Component.h" />
@@ -372,7 +350,6 @@
     <ClInclude Include="IndexBuffer.h" />
     <ClInclude Include="IndexedTriangleList.h" />
     <ClInclude Include="InputLayout.h" />
-    <ClInclude Include="IntersectData.h" />
     <ClInclude Include="Island.h" />
     <ClInclude Include="Job.h" />
     <ClInclude Include="json.hpp" />
@@ -386,23 +363,15 @@
     <ClInclude Include="MusicBuffer.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="NullPixelShader.h" />
-    <ClInclude Include="OBB.h" />
-    <ClInclude Include="OutlineDrawingPass.h" />
-    <ClInclude Include="OutlineMaskGenerationPass.h" />
     <ClInclude Include="Pass.h" />
     <ClInclude Include="PerfLog.h" />
     <ClInclude Include="PhysicsCommon.h" />
-    <ClInclude Include="PhysicsDebugRenderer.h" />
-    <ClInclude Include="PhysicsEngine.h" />
-    <ClInclude Include="PhysicsLayers.h" />
     <ClInclude Include="PixelShader.h" />
     <ClInclude Include="Plane.h" />
     <ClInclude Include="PlayerController.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="PrefabManager.h" />
     <ClInclude Include="Rasterizer.h" />
-    <ClInclude Include="Raycast.h" />
-    <ClInclude Include="RaycastData.h" />
     <ClInclude Include="RenderGraph.h" />
     <ClInclude Include="RenderGraphCompileException.h" />
     <ClInclude Include="RenderQueuePass.h" />
@@ -410,7 +379,6 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="Rigidbody.h" />
     <ClInclude Include="Sampler.h" />
-    <ClInclude Include="ScaleOutlineRenderGraph.h" />
     <ClInclude Include="ScriptCommander.h" />
     <ClInclude Include="ShootAttack.h" />
     <ClInclude Include="Sink.h" />
@@ -451,7 +419,6 @@
     <ClInclude Include="Vertex.h" />
     <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="VertexShader.h" />
-    <ClInclude Include="VerticalBlurPass.h" />
     <ClInclude Include="Walking.h" />
     <ClInclude Include="Win.h" />
     <ClInclude Include="Window.h" />
@@ -466,20 +433,6 @@
     <Image Include="AvatarFace.ico" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="BlurOutline_PS.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)%(Filename).cso</ObjectFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir)%(Filename).cso</ObjectFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)%(Filename).cso</ObjectFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)%(Filename).cso</ObjectFileOutput>
-    </FxCompile>
     <FxCompile Include="Blur_PS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>

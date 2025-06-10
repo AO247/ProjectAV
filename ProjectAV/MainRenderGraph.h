@@ -12,11 +12,10 @@ namespace Bind
 
 namespace Rgph
 {
-	class BlurOutlineRenderGraph : public RenderGraph
+	class MainRenderGraph : public RenderGraph
 	{
 	public:
-		BlurOutlineRenderGraph(Graphics& gfx);
-		void RenderWidgets(Graphics& gfx);
+		MainRenderGraph(Graphics& gfx);
 	private:
 		// private functions
 		void SetKernelGauss(int radius, float sigma) noxnd;

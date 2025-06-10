@@ -2,7 +2,6 @@
 #include "Component.h"
 #include "Window.h" // Needs access to Window for input
 #include <DirectXMath.h>
-#include "OBB.h"
 #include "Components.h"
 // Forward declare Node to avoid circular include if necessary,
 // but including Node.h is often fine here.

@@ -14,7 +14,7 @@ void Bullet::Update(float dt)
 
 void Bullet::OnTriggerEnter(Node* object)
 {
-	if (object == ignore || object->tag == "TRIGGER" || object == pOwner) return;
+	if (object->tag == "TRIGGER" || object == pOwner) return;
 	if (object->tag == "PLAYER") 
 	{
 		 object->GetComponent<Health>()->TakeDamage(damage);
