@@ -16,7 +16,8 @@ void Throwable::OnCollisionEnter(Node* object)
 	}
 	if (!pOwner->GetComponent<SoundEffectsPlayer>()->isPlaying())
 	{
-		pOwner->GetComponent<SoundEffectsPlayer>()->Play(0);
+		float p = (rand() % 2);
+		pOwner->GetComponent<SoundEffectsPlayer>()->Play(p);
 	}
 }
 

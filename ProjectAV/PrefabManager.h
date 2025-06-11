@@ -1224,6 +1224,12 @@ public:
         auto pNewNodeOwner = std::make_unique<Node>("Stone", nullptr, "STONE");
 
         pNewNodeOwner->AddComponent(
+            std::make_unique<SoundEffectsPlayer>(pNewNodeOwner.get())
+        );
+        pNewNodeOwner->GetComponent<SoundEffectsPlayer>()->AddSound("Models\\turn_mono.ogg");
+        pNewNodeOwner->GetComponent<SoundEffectsPlayer>()->AddSound("Models\\turn_mono.ogg");
+
+        pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\enviro_male_1\\kamien_1.obj")
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
@@ -1242,11 +1248,7 @@ public:
         pNewNodeOwner->AddComponent(
             std::make_unique<Throwable>(pNewNodeOwner.get())
         );
-        pNewNodeOwner->AddComponent(
-            std::make_unique<SoundEffectsPlayer>(pNewNodeOwner.get())
-        );
-        pNewNodeOwner->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\rock_hit1.ogg");
-
+        
         pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
@@ -1686,6 +1688,17 @@ public:
         pNewNode->AddComponent(
             std::make_unique<Health>(pNewNode, 1.0f)
         );
+
+        pNewNode->AddComponent(
+            std::make_unique<SoundEffectsPlayer>(pNewNode)
+        );
+		pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\turn_mono.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\turn_mono.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\turn_mono.ogg");
+		pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Models\\sci_fidrone.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Models\\sci_fidrone.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Models\\sci_fidrone.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Models\\sci_fidrone.ogg");
 
         pNewNode->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
         pNewNode->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));

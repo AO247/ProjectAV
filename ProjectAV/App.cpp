@@ -67,7 +67,8 @@ App::App(const std::string& commandLine)
     soundDevice = LISTENER->Get();
     ALint attentuation = AL_INVERSE_DISTANCE_CLAMPED;
 	soundDevice->SetAttenuation(attentuation);
-    myMusic = std::make_unique<MusicBuffer>("Models\\muza_full.wav");
+    myMusic = std::make_unique<MusicBuffer>("Music\\windererfull.mp3");
+    myMusic->setGain(0.2f);
 
     // --- Create Nodes ---
 
@@ -526,9 +527,9 @@ void App::DoFrame(float dt)
     }
     if (pPlayer != nullptr) {
         soundDevice->SetLocation(
-            pPlayer->GetLocalPosition().x,
-            pPlayer->GetLocalPosition().y,
-            pPlayer->GetLocalPosition().z
+            pPlayer->GetWorldPosition().x,
+            pPlayer->GetWorldPosition().y,
+            pPlayer->GetWorldPosition().z
         );
 
         soundDevice->SetOrientation(
