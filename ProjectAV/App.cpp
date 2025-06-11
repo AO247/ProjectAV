@@ -207,7 +207,11 @@ App::App(const std::string& commandLine)
     );
     SoundEffectsPlayer* pSoundEffectsPlayer = pPlayer->GetComponent<SoundEffectsPlayer>();
     pSoundEffectsPlayer->AddSound("Models\\turn.ogg");
-    pSoundEffectsPlayer->AddSound("Models\\sci-fidrone.ogg");
+    pSoundEffectsPlayer->AddSound("Sounds\\push1.ogg");
+    pSoundEffectsPlayer->AddSound("Sounds\\push2.ogg");
+    pSoundEffectsPlayer->AddSound("Sounds\\toss1.ogg");
+    pSoundEffectsPlayer->AddSound("Sounds\\toss2.ogg");
+    //pSoundEffectsPlayer->AddSound("Models\\sci-fidrone.ogg");
 
     // Changing position scale etc.]
     pFreeViewCamera->SetLocalPosition({ 4.0f, 11.0f, -28.0f });

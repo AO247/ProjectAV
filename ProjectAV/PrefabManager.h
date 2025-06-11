@@ -1226,8 +1226,8 @@ public:
         pNewNodeOwner->AddComponent(
             std::make_unique<SoundEffectsPlayer>(pNewNodeOwner.get())
         );
-        pNewNodeOwner->GetComponent<SoundEffectsPlayer>()->AddSound("Models\\turn_mono.ogg");
-        pNewNodeOwner->GetComponent<SoundEffectsPlayer>()->AddSound("Models\\turn_mono.ogg");
+        pNewNodeOwner->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\rock_hit1.ogg");
+        pNewNodeOwner->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\rock_hit2.ogg");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\enviro_male_1\\kamien_1.obj")
@@ -1654,13 +1654,13 @@ public:
         pNewNode->AddComponent(
             std::make_unique<SoundEffectsPlayer>(pNewNode)
         );
-        /*pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\turn_mono.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\turn_mono.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\turn_mono.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Models\\sci_fidrone.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Models\\sci_fidrone.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Models\\sci_fidrone.ogg");*/
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Models\\turn_mono.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic1.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic2.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic3.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic4.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic_attack1.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic_attack2.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic_attack3.ogg");
 
         pNewNode->AddComponent(
             std::make_unique<ModelComponent>(pNewNode, wind->Gfx(), "Models\\enemy\\basic.obj")

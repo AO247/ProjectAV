@@ -105,8 +105,8 @@ void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 	}
 
 	if (!pOwner->GetComponent<SoundEffectsPlayer>()->isPlaying() && pOwner->GetComponent<SoundEffectsPlayer>() != nullptr) {
-		//float p = (rand() % 4) + 3;
-		//pOwner->GetComponent<SoundEffectsPlayer>()->Play(0);
+		float p = (rand() % 4);
+		pOwner->GetComponent<SoundEffectsPlayer>()->Play(p);
 	}
 
 	PhysicsCommon::physicsSystem->GetBodyInterface().SetFriction(rigidbody->GetBodyID(), 0.5f);

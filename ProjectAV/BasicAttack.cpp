@@ -20,8 +20,8 @@ void BasicAttack::Attack(float dt)
 	}
 	if (attacked) {
 		if (!pOwner->GetComponent<SoundEffectsPlayer>()->isPlaying()) {
-			//float p = (rand() % 3);
-			//pOwner->GetComponent<SoundEffectsPlayer>()->Play(0);
+			float p = (rand() % 3) + 4;
+			pOwner->GetComponent<SoundEffectsPlayer>()->Play(p);
 		}
 		return;
 	}
