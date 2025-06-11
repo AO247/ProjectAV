@@ -3,8 +3,8 @@
 #include <string>
 #include <optional>
 #include "ConditionalNoexcept.h"
-#include <dxtex/DirectXTex.h>
-
+#include "WICTextureLoader.h"
+#include <DirectXTex.h>
 
 class Surface
 {

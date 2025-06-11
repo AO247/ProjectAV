@@ -196,6 +196,11 @@ ModelComponent::ModelComponent(Node* owner, Graphics& gfx, const std::string& mo
 
 	std::filesystem::path filePath(modelFile); // Used by Material class
 
+	std::ostringstream oss_constructor;
+	oss_constructor.str(""); oss_constructor.clear();
+	oss_constructor <<   modelFile <<   "\n";
+
+
 	// Parse materials FIRST
 	std::vector<Material> materials; // Local vector to hold parsed materials
 	materials.reserve(pScene->mNumMaterials);
