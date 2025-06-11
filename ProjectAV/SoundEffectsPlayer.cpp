@@ -15,7 +15,7 @@ SoundEffectsPlayer::SoundEffectsPlayer(Node* owner) : Component(owner)
 
 	// 3. Set a reference distance. This is the distance at which the sound will be at 100% volume.
 	// Sounds closer than this will not get any louder.
-	alSourcef(p_Source, AL_REFERENCE_DISTANCE, 200.0f);
+	alSourcef(p_Source, AL_REFERENCE_DISTANCE, 1000.0f);
 
 	// 4. Set a max distance. Beyond this distance, the sound will be completely inaudible.
 	// This is important for performance, as OpenAL can stop processing sources that are too far away.
@@ -23,7 +23,7 @@ SoundEffectsPlayer::SoundEffectsPlayer(Node* owner) : Component(owner)
 	alSourcef(p_Source, AL_MAX_DISTANCE, 1000.0f);
 
 	// 5. Ensure gain is not zero.
-	alSourcef(p_Source, AL_GAIN, 1.0f);
+	alSourcef(p_Source, AL_GAIN, 100.0f);
 }
 
 void SoundEffectsPlayer::Update(float dt)

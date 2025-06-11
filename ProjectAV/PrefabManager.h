@@ -1652,6 +1652,17 @@ public:
         Node* pNewNode = pNewNodeOwner.get();
 
         pNewNode->AddComponent(
+            std::make_unique<SoundEffectsPlayer>(pNewNode)
+        );
+        /*pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\turn_mono.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\turn_mono.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\turn_mono.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Models\\sci_fidrone.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Models\\sci_fidrone.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Models\\sci_fidrone.ogg");*/
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Models\\turn_mono.ogg");
+
+        pNewNode->AddComponent(
             std::make_unique<ModelComponent>(pNewNode, wind->Gfx(), "Models\\enemy\\basic.obj")
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
@@ -1688,17 +1699,7 @@ public:
         pNewNode->AddComponent(
             std::make_unique<Health>(pNewNode, 1.0f)
         );
-
-        pNewNode->AddComponent(
-            std::make_unique<SoundEffectsPlayer>(pNewNode)
-        );
-		pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\turn_mono.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\turn_mono.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\turn_mono.ogg");
-		pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Models\\sci_fidrone.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Models\\sci_fidrone.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Models\\sci_fidrone.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Models\\sci_fidrone.ogg");
+        
 
         pNewNode->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
         pNewNode->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));

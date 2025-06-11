@@ -207,6 +207,7 @@ App::App(const std::string& commandLine)
     );
     SoundEffectsPlayer* pSoundEffectsPlayer = pPlayer->GetComponent<SoundEffectsPlayer>();
     pSoundEffectsPlayer->AddSound("Models\\turn.ogg");
+    pSoundEffectsPlayer->AddSound("Models\\sci-fidrone.ogg");
 
     // Changing position scale etc.]
     pFreeViewCamera->SetLocalPosition({ 4.0f, 11.0f, -28.0f });

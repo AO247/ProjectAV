@@ -962,6 +962,9 @@
     <ClInclude Include="UpgradeHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="WindTunnelEffect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ProjectAV.rc">
@@ -1064,6 +1067,8 @@
     <FxCompile Include="Test1_VS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="WindTunnel_PS.hlsl" />
+    <FxCompile Include="WindTunnel_VS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DXGetErrorDescription.inl">
