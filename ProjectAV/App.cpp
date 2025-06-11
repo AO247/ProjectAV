@@ -15,7 +15,6 @@
 #include "Testing.h"
 #include "PrefabManager.h"
 #include "LevelGenerator.h"
-#include "WindTunnelEffect.h"
 #include <Jolt/Jolt.h>
 #include <Jolt/ConfigurationString.h>
 #include <Jolt/Physics/Collision/Shape/CapsuleShape.h>

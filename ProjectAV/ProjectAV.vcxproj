@@ -423,7 +423,6 @@
     <ClInclude Include="Window.h" />
     <ClInclude Include="WindowsMessageMap.h" />
     <ClInclude Include="WindowsThrowMacros.h" />
-    <ClInclude Include="WindTunnelEffect.h" />
     <ClInclude Include="XM.h" />
   </ItemGroup>
   <ItemGroup>
