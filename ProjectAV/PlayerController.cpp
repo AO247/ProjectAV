@@ -211,7 +211,7 @@ void PlayerController::KeyboardInput()
         {
         case Mouse::Event::Type::LPress:
             abilitySlot1->GetComponent<Ability>()->Pressed();
-            if (!pOwner->GetComponent<SoundEffectsPlayer>()->isPlaying()) {
+            if (pOwner->GetComponent<SoundEffectsPlayer>()) {
                 float p = (rand() % 2) + 1;
                 pOwner->GetComponent<SoundEffectsPlayer>()->Play(p);
             }
@@ -219,7 +219,7 @@ void PlayerController::KeyboardInput()
 
         case Mouse::Event::Type::RPress:
             abilitySlot2->GetComponent<Ability>()->Pressed();
-            if (!pOwner->GetComponent<SoundEffectsPlayer>()->isPlaying()) {
+            if (pOwner->GetComponent<SoundEffectsPlayer>()) {
                 float p = (rand() % 2) + 3;
                 pOwner->GetComponent<SoundEffectsPlayer>()->Play(p);
             }

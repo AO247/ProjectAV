@@ -5,7 +5,11 @@
 SoundEffectsPlayer::SoundEffectsPlayer(Node* owner, int sourceCount) : Component(owner)
 {
 	//alGenSources(1, &p_Source);
-	
+	if (sourceCount <= 0) {
+		OutputDebugStringA("Warning: SoundEffectsPlayer created with 0 sources.\n");
+		return;
+	}
+
 	m_sources.resize(sourceCount);
 	alGenSources(sourceCount, m_sources.data());
 	alSourcei(p_Source, AL_BUFFER, p_Buffer);
@@ -58,11 +62,11 @@ void SoundEffectsPlayer::Play(int t)
 	//}
 
 	//alSourcePlay(p_Source);
-	if (t >= soundBuffers.size() || soundBuffers[t] == 0)
+	if (m_sources.empty() || t >= soundBuffers.size() || soundBuffers[t] == 0)
 	{
-		// Invalid sound index or buffer not loaded
 		return;
 	}
+
 
 	// Find a free source from our pool
 	ALuint sourceToPlay = GetAvailableSource();
@@ -138,17 +142,22 @@ bool SoundEffectsPlayer::isPlaying()
 
 ALuint SoundEffectsPlayer::GetAvailableSource()
 {
+	if (m_sources.empty())
+	{
+		return 0; // Zwróæ 0 (nieprawid³owe ID), jeœli nie ma Ÿróde³ do u¿ycia
+	}
+
 	for (ALuint source : m_sources)
 	{
 		ALint playState;
 		alGetSourcei(source, AL_SOURCE_STATE, &playState);
 		if (playState != AL_PLAYING)
 		{
-			// This source is not playing, so it's available
 			return source;
 		}
 	}
-	// If all sources are busy, just return the first one.
-	// This will cut off the oldest sound, which is usually acceptable ("sound stealing").
+
+	// Wszystkie Ÿród³a zajête, "ukradnij" pierwsze z nich.
+	// To jest bezpieczne, bo sprawdziliœmy na pocz¹tku, ¿e pula nie jest pusta.
 	return m_sources[0];
 }

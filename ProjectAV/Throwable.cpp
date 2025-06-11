@@ -14,7 +14,7 @@ void Throwable::OnCollisionEnter(Node* object)
 	{
 		object->GetComponent<Health>()->TakeDamage(damage);
 	}
-	if (!pOwner->GetComponent<SoundEffectsPlayer>()->isPlaying())
+	if (pOwner->GetComponent<SoundEffectsPlayer>())
 	{
 		float p = (rand() % 2);
 		pOwner->GetComponent<SoundEffectsPlayer>()->Play(p);

@@ -1117,6 +1117,12 @@ public:
         auto pNewNodeOwner = std::make_unique<Node>("Top", nullptr, "STONE");
 
         pNewNodeOwner->AddComponent(
+            std::make_unique<SoundEffectsPlayer>(pNewNodeOwner.get())
+        );
+        pNewNodeOwner->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\rock_hit1.ogg");
+        pNewNodeOwner->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\rock_hit2.ogg");
+
+        pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\objects\\kolumna_1_top.obj")
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
@@ -1139,6 +1145,7 @@ public:
             std::make_unique<Throwable>(pNewNodeOwner.get())
         );
 
+
         pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
@@ -1150,6 +1157,12 @@ public:
     static Node* InstantiateMiddleColumn(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
         auto pNewNodeOwner = std::make_unique<Node>("Middle", nullptr, "STONE");
+
+        pNewNodeOwner->AddComponent(
+            std::make_unique<SoundEffectsPlayer>(pNewNodeOwner.get())
+        );
+        pNewNodeOwner->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\rock_hit1.ogg");
+        pNewNodeOwner->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\rock_hit2.ogg");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\objects\\kolumna_1_srodek.obj")
@@ -1415,9 +1428,9 @@ public:
 
         Node* pNewNode = pNewNodeOwner.get();
 
-        /*InstantiateStone1(pNewNode, 22.2f, 30.0f, 32.2f, 2.0f);
-        InstantiateStone1(pNewNode, 4.2f, 30.0f, 17.2f, 2.0f);
-        InstantiateStone1(pNewNode, -10.2f, 30.0f, -2.2f, 2.0f);*/
+        //InstantiateStone1(pNewNode, 22.2f, 30.0f, 32.2f, 2.0f);
+        //InstantiateStone1(pNewNode, 4.2f, 30.0f, 17.2f, 2.0f);
+        InstantiateStone1(pNewNode, -10.2f, 30.0f, -2.2f, 2.0f);
         InstantiateStone1(pNewNode, 22.2f, 30.0f, -18.2f, 2.0f);
         InstantiateStone1(pNewNode, -17.2f, 30.0f, 22.2f, 2.0f);
         InstantiateStone1(pNewNode, 11.2f, 30.0f, -8.2f, 2.0f);
@@ -1425,8 +1438,8 @@ public:
         InstantiateNewColumn(pNewNode, -5.0f, 0.0f, 25.0f, 1.0f);
         InstantiateNewColumn(pNewNode, 20.0f, 0.0f, -12.0f, 1.0f);
         InstantiateNewColumn(pNewNode, -5.0f, 0.0f, -12.0f, 1.0f);
-        InstantiatePlatform1(pNewNode, 41.0f, 0.0f, 6.0f, 1.0f);
-        InstantiatePlatform3(pNewNode, -19.0f, 0.0f, -26.0f, 1.0f);
+        //InstantiatePlatform1(pNewNode, 41.0f, 0.0f, 6.0f, 1.0f);
+        //InstantiatePlatform3(pNewNode, -19.0f, 0.0f, -26.0f, 1.0f);
 		//InstantiateStatue(pNewNode, 0.0f, 0.0f, 0.0f, 1.0f);
 
 

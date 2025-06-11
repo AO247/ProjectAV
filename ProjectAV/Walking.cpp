@@ -110,7 +110,7 @@ void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 		}
 	}
 
-	if (!pOwner->GetComponent<SoundEffectsPlayer>()->isPlaying() && pOwner->GetComponent<SoundEffectsPlayer>() != nullptr) {
+	if (pOwner->GetComponent<SoundEffectsPlayer>()) {
 		float p = (rand() % 4);
 		pOwner->GetComponent<SoundEffectsPlayer>()->Play(p);
 	}

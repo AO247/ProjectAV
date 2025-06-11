@@ -15,11 +15,11 @@ public:
 
 	int bigIslandCount = 1;
 	int mediumIslandCount = 0;
-	int smallIslandCount = 2;
+	int smallIslandCount = 0;
 
-	int numberOfHardEnemies = 3;
-	int numberOfMediumEnemies = 3;
-	int numberOfEasyEnemies = 3;
+	int numberOfHardEnemies = 0;
+	int numberOfMediumEnemies = 0;
+	int numberOfEasyEnemies = 1;
 
 
 	virtual void Update(float dt) override;
@@ -42,7 +42,7 @@ private:
 	bool spawned = true;
 	Node* islandPrefab = nullptr;
 	Node* enemy = nullptr;
-	int islandNumber = 1;
+	int islandNumber = 0;
 	int pIslandNumber = 1;
 	Island* island = nullptr;
 
