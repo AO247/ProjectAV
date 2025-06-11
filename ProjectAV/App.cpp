@@ -15,6 +15,7 @@
 #include "Testing.h"
 #include "PrefabManager.h"
 #include "LevelGenerator.h"
+#include "WindTunnelEffect.h"
 #include <Jolt/Jolt.h>
 #include <Jolt/ConfigurationString.h>
 #include <Jolt/Physics/Collision/Shape/CapsuleShape.h>
@@ -67,8 +68,9 @@ App::App(const std::string& commandLine)
 
     soundDevice = LISTENER->Get();
     ALint attentuation = AL_INVERSE_DISTANCE_CLAMPED;
-    soundDevice->SetAttenuation(attentuation);
-    myMusic = std::make_unique<MusicBuffer>("Models\\muza_full.wav");
+	soundDevice->SetAttenuation(attentuation);
+    myMusic = std::make_unique<MusicBuffer>("Music\\windererfull.mp3");
+    myMusic->setGain(1.0f);
 
     // --- Create Nodes ---
 
@@ -211,13 +213,14 @@ App::App(const std::string& commandLine)
     );
     SoundEffectsPlayer* pSoundEffectsPlayer = pPlayer->GetComponent<SoundEffectsPlayer>();
     pSoundEffectsPlayer->AddSound("Models\\turn.ogg");
+    pSoundEffectsPlayer->AddSound("Sounds\\push1.ogg");
+    pSoundEffectsPlayer->AddSound("Sounds\\push2.ogg");
+    pSoundEffectsPlayer->AddSound("Sounds\\toss1.ogg");
+    pSoundEffectsPlayer->AddSound("Sounds\\toss2.ogg");
 
     // Changing position scale etc.]
     pFreeViewCamera->SetLocalPosition({ 4.0f, 11.0f, -28.0f });
     pPlayer->SetLocalPosition({ 0.0f, 80.0f, -24.0f });
-
-    //pEnemySoundEffectsPlayer->SetPosition(0.0f, 0.0f, 0.0f);
-    soundDevice->SetLocation(pPlayer->GetLocalPosition().x, pPlayer->GetLocalPosition().y, pPlayer->GetLocalPosition().z);
 
     pSceneRoot->AddComponent(
         std::make_unique<Global>(pSceneRoot.get(), wnd, pPlayer)
@@ -260,13 +263,6 @@ App::App(const std::string& commandLine)
     pAbility4->GetComponent<Ability4>()->leftHandNormal = pLeftHandNormal;
     pAbility4->GetComponent<Ability4>()->leftHandAbility = pLeftHandAbility;
 
-    // --- Prefabs ---
-
-    //pEnemy->AddComponent(
-    //	std::make_unique<SoundEffectsPlayer>(pEnemy)
-    //);
-    //SoundEffectsPlayer* pEnemySoundEffectsPlayer = pEnemy->GetComponent<SoundEffectsPlayer>();
-    //pEnemySoundEffectsPlayer->AddSound("Models\\sci-fidrone.ogg");
     pSceneRoot->AddComponent(
         std::make_unique<UpgradeHandler>(pSceneRoot.get(), wnd)
     );
@@ -513,7 +509,6 @@ void App::DoFrame(float dt)
     //pointLight.Bind(wnd.Gfx(), viewMatrix);
     dirLight.Bind(wnd.Gfx(), viewMatrix);
 
-
     FrustumCalculating(); // Draw with FRUSTUM CULLING
     //pSceneRoot->Submit(fc, wnd.Gfx()); // Draw without FRUSTUM CULLING you have to also uncomment the draw method in Node.cpp
 
@@ -525,9 +520,9 @@ void App::DoFrame(float dt)
     }
     if (pPlayer != nullptr) {
         soundDevice->SetLocation(
-            pPlayer->GetLocalPosition().x,
-            pPlayer->GetLocalPosition().y,
-            pPlayer->GetLocalPosition().z
+            pPlayer->GetWorldPosition().x,
+            pPlayer->GetWorldPosition().y,
+            pPlayer->GetWorldPosition().z
         );
 
         soundDevice->SetOrientation(

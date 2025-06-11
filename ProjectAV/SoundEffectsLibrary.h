@@ -1,34 +1,28 @@
 #pragma once
-#include <AL\al.h>
+#include <AL/al.h>
 #include <vector>
-
-/// <summary>
-/// SoundEffectsLibrary: Singleton class that keeps track of the shorter sounds
-/// we've loaded into memory. Use the Play function from an instantiation of the
-/// SoundEffectsPlayer on an ID returned from the load function.
-/// 
-/// load function: Use the SE_LOAD(...) function to add sounds, programmer should keep track of
-/// the returned ALuint to use the sound.
-/// 
-/// unload function: Use SE_UNLOAD(...) remove sounds from memory. 
-/// 
-/// </summary>
-
-#define SE_LOAD SoundEffectsLibrary::Get()->Load
-#define SE_UNLOAD SoundEffectsLibrary::Get()->UnLoad
+#include <string>
+#include <unordered_map>
 
 class SoundEffectsLibrary
 {
 public:
-	static SoundEffectsLibrary* Get();
+	// Pobranie instancji singletona
+	static SoundEffectsLibrary& Get();
 
-	ALuint Load(const char* filename);
-	bool UnLoad(const ALuint& bufferId);
+	// Wczytuje dŸwiêk, jeœli nie ma go w cache, i zwraca jego ID.
+	ALuint Load(const std::string& filename);
+
+	// Zwalnia wszystkie zasoby
+	void UnloadAll();
 
 private:
-	SoundEffectsLibrary();
+	SoundEffectsLibrary() = default;
 	~SoundEffectsLibrary();
+	SoundEffectsLibrary(const SoundEffectsLibrary&) = delete;
+	SoundEffectsLibrary& operator=(const SoundEffectsLibrary&) = delete;
 
-	std::vector<ALuint> p_SoundEffectBuffers;
+	ALuint LoadFromFile(const char* filename);
+
+	std::unordered_map<std::string, ALuint> m_buffers;
 };
-

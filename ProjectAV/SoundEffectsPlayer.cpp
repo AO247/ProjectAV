@@ -2,83 +2,115 @@
 #include "SoundEffectsLibrary.h"
 #include <iostream>
 
-SoundEffectsPlayer::SoundEffectsPlayer(Node* owner) : Component(owner)
+SoundEffectsPlayer::SoundEffectsPlayer(Node* owner, int sourceCount) : Component(owner)
 {
-	alGenSources(1, &p_Source);
-	alSourcei(p_Source, AL_BUFFER, p_Buffer);
-	//sound1 = SE_LOAD("..\\ProjectAV\\Models\\turn.ogg");
-	
+	if (sourceCount <= 0) return;
 
+	m_sources.resize(sourceCount);
+	alGenSources(sourceCount, m_sources.data());
+
+	ALenum error = alGetError();
+	if (error != AL_NO_ERROR)
+	{
+		m_sources.clear();
+		OutputDebugStringA("OpenAL Error: Failed to generate sources in SoundEffectsPlayer.\n");
+		return;
+	}
+
+	for (ALuint source : m_sources)
+	{
+		alSourcei(source, AL_SOURCE_RELATIVE, AL_FALSE);
+		alSourcef(source, AL_ROLLOFF_FACTOR, 1.0f);
+		alSourcef(source, AL_REFERENCE_DISTANCE, 15.0f);
+		alSourcef(source, AL_MAX_DISTANCE, 600.0f);
+		alSourcef(source, AL_GAIN, 1.0f);
+	}
 }
 
 void SoundEffectsPlayer::Update(float dt)
 {
-	SetPosition(
-		pOwner->GetLocalPosition().x,
-		pOwner->GetLocalPosition().y,
-		pOwner->GetLocalPosition().z
-	);
+	DirectX::XMFLOAT3 worldPos = pOwner->GetWorldPosition();
+	SetPosition(worldPos.x, worldPos.y, worldPos.z);
 }
 
-void SoundEffectsPlayer::AddSound(std::string path) {
-	sound.push_back(SE_LOAD(path.c_str()));
+void SoundEffectsPlayer::AddSound(const std::string& path) {
+	ALuint bufferID = SoundEffectsLibrary::Get().Load(path);
+	if (bufferID != 0)
+	{
+		m_soundBufferIDs.push_back(bufferID);
+	}
+	else
+	{
+		OutputDebugStringA(("Warning: Failed to load or find sound: " + path + "\n").c_str());
+	}
 }
 
 SoundEffectsPlayer::~SoundEffectsPlayer()
 {
-	alDeleteSources(1, &p_Source);
-}
-
-void SoundEffectsPlayer::Play(int t)
-{
-	ALuint& buffer_to_play = sound[t];
-	if (buffer_to_play != p_Buffer)
+	if (!m_sources.empty())
 	{
-		p_Buffer = buffer_to_play;
-		alSourcei(p_Source, AL_BUFFER, (ALint)p_Buffer);
-	}
-
-	alSourcePlay(p_Source);
-}
-
-void SoundEffectsPlayer::Stop()
-{
-	alSourceStop(p_Source);
-}
-
-void SoundEffectsPlayer::Pause()
-{
-	alSourcePause(p_Source);
-}
-
-void SoundEffectsPlayer::Resume()
-{
-	alSourcePlay(p_Source);
-}
-
-void SoundEffectsPlayer::SetBufferToPlay(const ALuint& buffer_to_play)
-{
-	if (buffer_to_play != p_Buffer)
-	{
-		p_Buffer = buffer_to_play;
-		alSourcei(p_Source, AL_BUFFER, (ALint)p_Buffer);
+		alDeleteSources(m_sources.size(), m_sources.data());
 	}
 }
 
-void SoundEffectsPlayer::SetLooping(const bool& loop)
+void SoundEffectsPlayer::Play(int index)
 {
-	alSourcei(p_Source, AL_LOOPING, (ALint)loop);
+	if (m_sources.empty() || index >= m_soundBufferIDs.size())
+	{
+		return;
+	}
+
+	ALuint bufferToPlay = m_soundBufferIDs[index];
+	if (bufferToPlay == 0) return;
+
+	ALuint sourceToPlay = GetAvailableSource();
+	if (sourceToPlay != 0)
+	{
+		alSourceStop(sourceToPlay);
+		alSourcei(sourceToPlay, AL_BUFFER, bufferToPlay);
+		alSourcePlay(sourceToPlay);
+	}
+}
+
+void SoundEffectsPlayer::StopAll()
+{
+	if (m_sources.empty()) return;
+	for (ALuint source : m_sources)
+	{
+		alSourceStop(source);
+	}
+}
+
+void SoundEffectsPlayer::SetLooping(int soundIndex, const bool& loop)
+{
+	if (!m_sources.empty())
+	{
+		ALuint source = m_sources[0];
+		alSourcei(source, AL_BUFFER, soundBuffers[soundIndex]);
+		alSourcei(source, AL_LOOPING, loop);
+	}
 }
 
 void SoundEffectsPlayer::SetPosition(const float& x, const float& y, const float& z)
 {
-	alSource3f(p_Source, AL_POSITION, x, y, z);
+	for (ALuint source : m_sources)
+	{
+		alSource3f(source, AL_POSITION, x, y, z);
+	}
 }
 
-
-bool SoundEffectsPlayer::isPlaying()
+ALuint SoundEffectsPlayer::GetAvailableSource()
 {
-	ALint playState;
-	alGetSourcei(p_Source, AL_SOURCE_STATE, &playState);
-	return (playState == AL_PLAYING);
+	if (m_sources.empty()) return 0;
+
+	for (ALuint source : m_sources)
+	{
+		ALint playState;
+		alGetSourcei(source, AL_SOURCE_STATE, &playState);
+		if (playState != AL_PLAYING)
+		{
+			return source;
+		}
+	}
+	return m_sources[0];
 }
