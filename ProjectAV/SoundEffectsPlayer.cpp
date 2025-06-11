@@ -4,113 +4,80 @@
 
 SoundEffectsPlayer::SoundEffectsPlayer(Node* owner, int sourceCount) : Component(owner)
 {
-	//alGenSources(1, &p_Source);
-	if (sourceCount <= 0) {
-		OutputDebugStringA("Warning: SoundEffectsPlayer created with 0 sources.\n");
-		return;
-	}
+	if (sourceCount <= 0) return;
 
 	m_sources.resize(sourceCount);
 	alGenSources(sourceCount, m_sources.data());
-	alSourcei(p_Source, AL_BUFFER, p_Buffer);
+
+	ALenum error = alGetError();
+	if (error != AL_NO_ERROR)
+	{
+		m_sources.clear();
+		OutputDebugStringA("OpenAL Error: Failed to generate sources in SoundEffectsPlayer.\n");
+		return;
+	}
 
 	for (ALuint source : m_sources)
 	{
-		// Check for errors
-		ALenum error = alGetError();
-		if (error != AL_NO_ERROR)
-		{
-			// Handle error, maybe log it
-			OutputDebugStringA("OpenAL Error during source generation in SoundEffectsPlayer.\n");
-			break;
-		}
-
 		alSourcei(source, AL_SOURCE_RELATIVE, AL_FALSE);
 		alSourcef(source, AL_ROLLOFF_FACTOR, 1.0f);
-		alSourcef(source, AL_REFERENCE_DISTANCE, 8.0f);
-		alSourcef(source, AL_MAX_DISTANCE, 500.0f);
+		alSourcef(source, AL_REFERENCE_DISTANCE, 15.0f);
+		alSourcef(source, AL_MAX_DISTANCE, 600.0f);
 		alSourcef(source, AL_GAIN, 1.0f);
 	}
 }
 
 void SoundEffectsPlayer::Update(float dt)
 {
-	SetPosition(
-		pOwner->GetWorldPosition().x,
-		pOwner->GetWorldPosition().y,
-		pOwner->GetWorldPosition().z
-	);
+	DirectX::XMFLOAT3 worldPos = pOwner->GetWorldPosition();
+	SetPosition(worldPos.x, worldPos.y, worldPos.z);
 }
 
-void SoundEffectsPlayer::AddSound(std::string path) {
-	soundBuffers.push_back(SE_LOAD(path.c_str()));
+void SoundEffectsPlayer::AddSound(const std::string& path) {
+	ALuint bufferID = SoundEffectsLibrary::Get().Load(path);
+	if (bufferID != 0)
+	{
+		m_soundBufferIDs.push_back(bufferID);
+	}
+	else
+	{
+		OutputDebugStringA(("Warning: Failed to load or find sound: " + path + "\n").c_str());
+	}
 }
 
 SoundEffectsPlayer::~SoundEffectsPlayer()
 {
-	
-	alDeleteSources(m_sources.size(), m_sources.data());
+	if (!m_sources.empty())
+	{
+		alDeleteSources(m_sources.size(), m_sources.data());
+	}
 }
 
-void SoundEffectsPlayer::Play(int t)
+void SoundEffectsPlayer::Play(int index)
 {
-	//ALuint& buffer_to_play = sound[t];
-	//if (buffer_to_play != p_Buffer)
-	//{
-	//	p_Buffer = buffer_to_play;
-	//	alSourcei(p_Source, AL_BUFFER, (ALint)p_Buffer);
-	//}
-
-	//alSourcePlay(p_Source);
-	if (m_sources.empty() || t >= soundBuffers.size() || soundBuffers[t] == 0)
+	if (m_sources.empty() || index >= m_soundBufferIDs.size())
 	{
 		return;
 	}
 
+	ALuint bufferToPlay = m_soundBufferIDs[index];
+	if (bufferToPlay == 0) return;
 
-	// Find a free source from our pool
 	ALuint sourceToPlay = GetAvailableSource();
-
 	if (sourceToPlay != 0)
 	{
-		// Stop whatever the source was doing (if anything)
 		alSourceStop(sourceToPlay);
-		// Assign the new sound buffer to this source
-		alSourcei(sourceToPlay, AL_BUFFER, soundBuffers[t]);
-		// Play the sound
+		alSourcei(sourceToPlay, AL_BUFFER, bufferToPlay);
 		alSourcePlay(sourceToPlay);
 	}
 }
 
-void SoundEffectsPlayer::Stop()
-{
-	alSourceStop(p_Source);
-}
-
 void SoundEffectsPlayer::StopAll()
 {
+	if (m_sources.empty()) return;
 	for (ALuint source : m_sources)
 	{
 		alSourceStop(source);
-	}
-}
-
-void SoundEffectsPlayer::Pause()
-{
-	alSourcePause(p_Source);
-}
-
-void SoundEffectsPlayer::Resume()
-{
-	alSourcePlay(p_Source);
-}
-
-void SoundEffectsPlayer::SetBufferToPlay(const ALuint& buffer_to_play)
-{
-	if (buffer_to_play != p_Buffer)
-	{
-		p_Buffer = buffer_to_play;
-		alSourcei(p_Source, AL_BUFFER, (ALint)p_Buffer);
 	}
 }
 
@@ -132,20 +99,9 @@ void SoundEffectsPlayer::SetPosition(const float& x, const float& y, const float
 	}
 }
 
-
-bool SoundEffectsPlayer::isPlaying()
-{
-	ALint playState;
-	alGetSourcei(p_Source, AL_SOURCE_STATE, &playState);
-	return (playState == AL_PLAYING);
-}
-
 ALuint SoundEffectsPlayer::GetAvailableSource()
 {
-	if (m_sources.empty())
-	{
-		return 0; // Zwróæ 0 (nieprawid³owe ID), jeœli nie ma Ÿróde³ do u¿ycia
-	}
+	if (m_sources.empty()) return 0;
 
 	for (ALuint source : m_sources)
 	{
@@ -156,8 +112,5 @@ ALuint SoundEffectsPlayer::GetAvailableSource()
 			return source;
 		}
 	}
-
-	// Wszystkie Ÿród³a zajête, "ukradnij" pierwsze z nich.
-	// To jest bezpieczne, bo sprawdziliœmy na pocz¹tku, ¿e pula nie jest pusta.
 	return m_sources[0];
 }

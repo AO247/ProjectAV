@@ -1437,7 +1437,7 @@ public:
         InstantiateNewColumn(pNewNode, 20.0f, 0.0f, 25.0f, 1.0f);
         InstantiateNewColumn(pNewNode, -5.0f, 0.0f, 25.0f, 1.0f);
         InstantiateNewColumn(pNewNode, 20.0f, 0.0f, -12.0f, 1.0f);
-        InstantiateNewColumn(pNewNode, -5.0f, 0.0f, -12.0f, 1.0f);
+        //InstantiateNewColumn(pNewNode, -5.0f, 0.0f, -12.0f, 1.0f);
         //InstantiatePlatform1(pNewNode, 41.0f, 0.0f, 6.0f, 1.0f);
         //InstantiatePlatform3(pNewNode, -19.0f, 0.0f, -26.0f, 1.0f);
 		//InstantiateStatue(pNewNode, 0.0f, 0.0f, 0.0f, 1.0f);

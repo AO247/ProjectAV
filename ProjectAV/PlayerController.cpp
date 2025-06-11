@@ -83,7 +83,7 @@ void PlayerController::Jump()
         if (grounded) {
             PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(rigidbody->GetBodyID(), Vec3(0.0f, jumpForce, 0.0f));
 			grounded = false;
-            if (!pOwner->GetComponent<SoundEffectsPlayer>()->isPlaying()) {
+            if (pOwner->GetComponent<SoundEffectsPlayer>()) {
                 //float p = (rand() % 3);
                 pOwner->GetComponent<SoundEffectsPlayer>()->Play(0);
             }
@@ -91,7 +91,7 @@ void PlayerController::Jump()
         else {
             PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(rigidbody->GetBodyID(), Vec3(0.0f, secondJumpForce, 0.0f));
 			doubleJumped = true;
-            if (!pOwner->GetComponent<SoundEffectsPlayer>()->isPlaying()) {
+            if (pOwner->GetComponent<SoundEffectsPlayer>()) {
                 //float p = (rand() % 3);
                 pOwner->GetComponent<SoundEffectsPlayer>()->Play(0);
             }
@@ -105,7 +105,7 @@ void PlayerController::Dash()
     if (!canDash) return;
     dashed = true;
 	canDash = false;
-    if (!pOwner->GetComponent<SoundEffectsPlayer>()->isPlaying()) {
+    if (pOwner->GetComponent<SoundEffectsPlayer>()) {
         pOwner->GetComponent<SoundEffectsPlayer>()->Play(0);
     }
     Vector3 dashDirection = moveDirection;

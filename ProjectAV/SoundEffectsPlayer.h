@@ -5,27 +5,25 @@
 class SoundEffectsPlayer : public Component
 {
 public:
-	SoundEffectsPlayer(Node* owner, int sourceCount = 8);
+	SoundEffectsPlayer(Node* owner, int sourceCount = 6);
 	~SoundEffectsPlayer();
 
-	void Play(int t = 0);
-	void Stop();
+	void Play(int index);
+	void Stop(int index);
 	void StopAll();
-;	void Pause();
-	void Resume();
+;	void Pause(int index);
+	void Resume(int index);
 
 	void SetBufferToPlay(const ALuint& buffer_to_play);
 	void SetLooping(int soundIndex, const bool& loop);
 	void SetPosition(const float& x, const float& y, const float& z);
-	virtual void Update(float dt) override;
 
-	bool isPlaying();
-	void AddSound(std::string path);
+	virtual void Update(float dt) override;
+	void AddSound(const std::string& path);
 	std::vector<ALuint> soundBuffers;
 private:
 	ALuint GetAvailableSource();
 	std::vector<ALuint> m_sources;
-	ALuint p_Source;
-	ALuint p_Buffer = 0;
+	std::vector<ALuint> m_soundBufferIDs;
 };
 
