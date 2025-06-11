@@ -25,18 +25,18 @@ namespace Rgph
 			AppendPass(std::move(pass));
 		}
 		{
-			auto pass = std::make_unique<SkyboxPass>(gfx, "skybox");
+			auto pass = std::make_unique<LambertianPass>(gfx, "lambertian");
 			pass->SetSinkLinkage("renderTarget", "clearRT.buffer");
 			pass->SetSinkLinkage("depthStencil", "clearDS.buffer");
 			AppendPass(std::move(pass));
 		}
 		{
-			auto pass = std::make_unique<LambertianPass>(gfx, "lambertian");
-			pass->SetSinkLinkage("renderTarget", "skybox.renderTarget");
-			pass->SetSinkLinkage("depthStencil", "skybox.depthStencil");
+			auto pass = std::make_unique<SkyboxPass>(gfx, "skybox");
+			pass->SetSinkLinkage("renderTarget", "lambertian.renderTarget");
+			pass->SetSinkLinkage("depthStencil", "lambertian.depthStencil");
 			AppendPass(std::move(pass));
 		}
-		SetSinkTarget("backbuffer", "lambertian.renderTarget");
+		SetSinkTarget("backbuffer", "skybox.renderTarget");
 
 		Finalize();
 	}

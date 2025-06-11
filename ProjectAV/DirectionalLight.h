@@ -1,34 +1,28 @@
 #pragma once
 #include "Graphics.h"
 #include "ConstantBuffers.h"
-#include "ConditionalNoexcept.h"
-#include <DirectXMath.h>
 
 class DirectionalLight
 {
 public:
-    DirectionalLight(Graphics& gfx);
-    void Reset() noexcept;
-    void Bind(Graphics& gfx, DirectX::FXMMATRIX view) const noexcept;
-
-    void SetDirection(const DirectX::XMFLOAT3& dir) noexcept;
-    void SetAmbient(const DirectX::XMFLOAT3& amb) noexcept;
-    void SetDiffuseColor(const DirectX::XMFLOAT3& color) noexcept;
-    void SetDiffuseIntensity(float intensity) noexcept;
-
+	DirectionalLight(Graphics& gfx, UINT slot = 0u);
+	void SpawnControlWindow() noexcept;
+	void Reset() noexcept;
+	void Bind(Graphics& gfx, DirectX::FXMMATRIX view) const noexcept;
 
 private:
+	struct DirectionalLightCBuf
+	{
+		DirectX::XMFLOAT3 direction;
+		float padding1; // Dope³nienie do 16 bajtów
+		DirectX::XMFLOAT3 ambient;
+		float padding2; // Dope³nienie do 16 bajtów
+		DirectX::XMFLOAT3 diffuseColor;
+		float diffuseIntensity; // Idealnie dope³nia do 48 bajtów
+	};
+	static_assert(sizeof(DirectionalLightCBuf) == 48, "Rozmiar DirectionalLightCBuf jest nieprawid³owy!");
 
-    struct DirectionalLightCBuf
-    {
-        alignas(16) DirectX::XMFLOAT3 direction;
-        alignas(16) DirectX::XMFLOAT3 ambient;
-        alignas(16) DirectX::XMFLOAT3 diffuseColor;
-        float diffuseIntensity;
-        float padding[3];
-    };
-
-private:
-    DirectionalLightCBuf cbData;
-    mutable Bind::PixelConstantBuffer<DirectionalLightCBuf> cbuf;
+public:
+	DirectionalLightCBuf cbData;
+	mutable Bind::PixelConstantBuffer<DirectionalLightCBuf> cbuf;
 };

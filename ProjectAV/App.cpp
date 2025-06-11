@@ -25,9 +25,10 @@ namespace dx = DirectX;
 App::App(const std::string& commandLine)
     :
     commandLine(commandLine),
-    wnd(1920,1080, "Project AV"), // Pass window dimensions/title
-	scriptCommander(TokenizeQuoted(commandLine)),
-    pointLight(wnd.Gfx()), // Initialize PointLight
+    wnd(1920, 1080, "Project AV"), // Pass window dimensions/title
+    scriptCommander(TokenizeQuoted(commandLine)),
+    pointLight(wnd.Gfx(), 2u), // Initialize PointLight
+    dirLight(wnd.Gfx(), 0u),
     pSceneRoot(std::make_unique<Node>("Root"))
 {
     // Set Projection Matrix (Far plane adjusted for larger scenes potentially)
@@ -35,12 +36,12 @@ App::App(const std::string& commandLine)
 
 
     std::srand(static_cast<unsigned>(std::time(nullptr)));
-	pointLight.LinkTechniques(rg);
+    pointLight.LinkTechniques(rg);
 
     RegisterDefaultAllocator();
     Trace = TraceImpl;
     JPH_IF_ENABLE_ASSERTS(AssertFailed = AssertFailedImpl;)
-    Factory::sInstance = new JPH::Factory();
+        Factory::sInstance = new JPH::Factory();
     RegisterTypes();
     temp_allocator = new TempAllocatorImpl(10 * 2024 * 1024);
     job_system = new JobSystemThreadPool(cMaxPhysicsJobs, cMaxPhysicsBarriers, thread::hardware_concurrency() - 1);
@@ -65,31 +66,31 @@ App::App(const std::string& commandLine)
 
     soundDevice = LISTENER->Get();
     ALint attentuation = AL_INVERSE_DISTANCE_CLAMPED;
-	soundDevice->SetAttenuation(attentuation);
+    soundDevice->SetAttenuation(attentuation);
     myMusic = std::make_unique<MusicBuffer>("Models\\muza_full.wav");
 
     // --- Create Nodes ---
 
-	auto pCameraNodeOwner = std::make_unique<Node>("Camera", nullptr, "CAMERA");
-	pCamera = pCameraNodeOwner.get();
-	auto pFreeViewCameraOwner = std::make_unique<Node>("FreeViewCamera");
-	pFreeViewCamera = pFreeViewCameraOwner.get();
+    auto pCameraNodeOwner = std::make_unique<Node>("Camera", nullptr, "CAMERA");
+    pCamera = pCameraNodeOwner.get();
+    auto pFreeViewCameraOwner = std::make_unique<Node>("FreeViewCamera");
+    pFreeViewCamera = pFreeViewCameraOwner.get();
     auto pPlayerOwner = std::make_unique<Node>("Player", nullptr, "PLAYER");
     pPlayer = pPlayerOwner.get();
-	auto pAbility1Owner = std::make_unique<Node>("Ability1", nullptr, "TRIGGER");
-	pAbility1 = pAbility1Owner.get();
-	auto pAbility2Owner = std::make_unique<Node>("Ability2", nullptr, "TRIGGER");
-	pAbility2 = pAbility2Owner.get();
-	auto pAbility3Owner = std::make_unique<Node>("Ability3", nullptr, "TRIGGER");
-	pAbility3 = pAbility3Owner.get();
-	auto pAbility4Owner = std::make_unique<Node>("Ability4", nullptr, "TRIGGER");
-	pAbility4 = pAbility4Owner.get();
+    auto pAbility1Owner = std::make_unique<Node>("Ability1", nullptr, "TRIGGER");
+    pAbility1 = pAbility1Owner.get();
+    auto pAbility2Owner = std::make_unique<Node>("Ability2", nullptr, "TRIGGER");
+    pAbility2 = pAbility2Owner.get();
+    auto pAbility3Owner = std::make_unique<Node>("Ability3", nullptr, "TRIGGER");
+    pAbility3 = pAbility3Owner.get();
+    auto pAbility4Owner = std::make_unique<Node>("Ability4", nullptr, "TRIGGER");
+    pAbility4 = pAbility4Owner.get();
     auto pPrefabsOwner = std::make_unique<Node>("Prefabs", nullptr, "PREFABS");
     pPrefabs = pPrefabsOwner.get();
-	auto pLeftHandNormalOwner = std::make_unique<Node>("L Normal", nullptr, "HANDS");
-	pLeftHandNormal = pLeftHandNormalOwner.get();
+    auto pLeftHandNormalOwner = std::make_unique<Node>("L Normal", nullptr, "HANDS");
+    pLeftHandNormal = pLeftHandNormalOwner.get();
     auto pLeftHandAbilityOwner = std::make_unique<Node>("L Ability", nullptr, "HANDS");
-	pLeftHandAbility = pLeftHandAbilityOwner.get();
+    pLeftHandAbility = pLeftHandAbilityOwner.get();
     auto pRightHandNormalOwner = std::make_unique<Node>("R Normal", nullptr, "HANDS");
     pRightHandNormal = pRightHandNormalOwner.get();
     auto pRightHandAbilityOwner = std::make_unique<Node>("R Ability", nullptr, "HANDS");
@@ -97,25 +98,25 @@ App::App(const std::string& commandLine)
 
 
 
-	
+
 
     // Adding to Scene Graph
-	pSceneRoot->AddChild(std::move(pCameraNodeOwner));
-	pSceneRoot->AddChild(std::move(pFreeViewCameraOwner));
+    pSceneRoot->AddChild(std::move(pCameraNodeOwner));
+    pSceneRoot->AddChild(std::move(pFreeViewCameraOwner));
     pSceneRoot->AddChild(std::move(pPlayerOwner));
     pSceneRoot->AddChild(std::move(pAbility1Owner));
     pSceneRoot->AddChild(std::move(pAbility2Owner));
-	pSceneRoot->AddChild(std::move(pAbility3Owner));
+    pSceneRoot->AddChild(std::move(pAbility3Owner));
     pSceneRoot->AddChild(std::move(pAbility4Owner));
-	pSceneRoot->AddChild(std::move(pPrefabsOwner));
-	pCamera->AddChild(std::move(pLeftHandNormalOwner));
+    pSceneRoot->AddChild(std::move(pPrefabsOwner));
+    pCamera->AddChild(std::move(pLeftHandNormalOwner));
     pCamera->AddChild(std::move(pLeftHandAbilityOwner));
     pCamera->AddChild(std::move(pRightHandNormalOwner));
     pCamera->AddChild(std::move(pRightHandAbilityOwner));
 
 
-	PrefabManager::root = pPrefabs;
-	PrefabManager::player = pPlayer;
+    PrefabManager::root = pPrefabs;
+    PrefabManager::player = pPlayer;
 
     //Heeeej Bracie zaczlooo padac choodz zmieniic gacieee
     //Heeeej Siostro uciekaajmyy zanim beedzieee mookroooo
@@ -155,10 +156,10 @@ App::App(const std::string& commandLine)
     pAbility2->AddComponent(
         std::make_unique<Ability2>(pAbility2, wnd, pCamera)
     );
-   /* pAbility2->AddComponent(
-        std::make_unique<ModelComponent>(pAbility2, wnd.Gfx(), "Models\\box.glb")
-    );*/
-    //pAbility2->GetComponent<ModelComponent>()->LinkTechniques(rg);
+    /* pAbility2->AddComponent(
+         std::make_unique<ModelComponent>(pAbility2, wnd.Gfx(), "Models\\box.glb")
+     );*/
+     //pAbility2->GetComponent<ModelComponent>()->LinkTechniques(rg);
     pPlayer->GetComponent<PlayerController>()->abilitySlot2 = pAbility2;
 
 
@@ -169,10 +170,10 @@ App::App(const std::string& commandLine)
     pAbility3->AddComponent(
         std::make_unique<Ability3>(pAbility3, wnd, pCamera)
     );
-   /* pAbility3->AddComponent(
-        std::make_unique<ModelComponent>(pAbility3, wnd.Gfx(), "Models\\box.glb")
-    );
-    pAbility3->GetComponent<ModelComponent>()->LinkTechniques(rg);*/
+    /* pAbility3->AddComponent(
+         std::make_unique<ModelComponent>(pAbility3, wnd.Gfx(), "Models\\box.glb")
+     );
+     pAbility3->GetComponent<ModelComponent>()->LinkTechniques(rg);*/
     pPlayer->GetComponent<PlayerController>()->abilitySlot3 = pAbility3;
 
 
@@ -180,17 +181,17 @@ App::App(const std::string& commandLine)
     pAbility4->AddComponent(
         std::make_unique<Trigger>(pAbility4, a4odySettings, false)
     );
-   /* pAbility4->AddComponent(
-        std::make_unique<ModelComponent>(pAbility4, wnd.Gfx(), "Models\\box.glb")
-    );
-    pAbility4->GetComponent<ModelComponent>()->LinkTechniques(rg);*/
+    /* pAbility4->AddComponent(
+         std::make_unique<ModelComponent>(pAbility4, wnd.Gfx(), "Models\\box.glb")
+     );
+     pAbility4->GetComponent<ModelComponent>()->LinkTechniques(rg);*/
     pAbility4->AddComponent(
         std::make_unique<Ability4>(pAbility4, wnd, pCamera)
     );
 
-   // pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility4;
+    // pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility4;
 
-    //Adding Other Components
+     //Adding Other Components
     pFreeViewCamera->AddComponent(
         std::make_unique<Camera>(pFreeViewCamera, wnd)
     );
@@ -220,10 +221,10 @@ App::App(const std::string& commandLine)
     pSceneRoot->AddComponent(
         std::make_unique<Global>(pSceneRoot.get(), wnd, pPlayer)
     );
-    
+
     pLeftHandNormal->AddComponent(
         std::make_unique<ModelComponent>(pLeftHandNormal, wnd.Gfx(), "Models\\hands\\left.obj")
-	);
+    );
     pLeftHandNormal->GetComponent<ModelComponent>()->LinkTechniques(rg);
     pLeftHandNormal->SetLocalScale({ 0.1f, 0.1f, 0.1f });
     pLeftHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
@@ -231,26 +232,26 @@ App::App(const std::string& commandLine)
     pLeftHandAbility->AddComponent(
         std::make_unique<ModelComponent>(pLeftHandAbility, wnd.Gfx(), "Models\\hands\\push.obj")
     );
-	pLeftHandAbility->GetComponent<ModelComponent>()->LinkTechniques(rg);
+    pLeftHandAbility->GetComponent<ModelComponent>()->LinkTechniques(rg);
     pLeftHandAbility->SetLocalScale({ 0.1f, 0.1f, 0.1f });
     pLeftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
-    
+
     pRightHandNormal->AddComponent(
         std::make_unique<ModelComponent>(pRightHandNormal, wnd.Gfx(), "Models\\hands\\right.obj")
-	);
+    );
     pRightHandNormal->GetComponent<ModelComponent>()->LinkTechniques(rg);
     pRightHandNormal->SetLocalScale({ 0.1f, 0.1f, 0.1f });
     pRightHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
 
     pRightHandAbility->AddComponent(
         std::make_unique<ModelComponent>(pRightHandAbility, wnd.Gfx(), "Models\\hands\\toss.obj")
-	);
+    );
     pRightHandAbility->GetComponent<ModelComponent>()->LinkTechniques(rg);
     pRightHandAbility->SetLocalScale({ 0.1f, 0.1f, 0.1f });
     pRightHandAbility->SetLocalPosition({ 0.0f, -2.7f, -3000.0f });
 
     pAbility1->GetComponent<Ability1>()->leftHandNormal = pLeftHandNormal;
-	pAbility1->GetComponent<Ability1>()->leftHandAbility = pLeftHandAbility;
+    pAbility1->GetComponent<Ability1>()->leftHandAbility = pLeftHandAbility;
 
     pAbility2->GetComponent<Ability2>()->rightHandNormal = pRightHandNormal;
     pAbility2->GetComponent<Ability2>()->rightHandAbility = pRightHandAbility;
@@ -260,22 +261,22 @@ App::App(const std::string& commandLine)
 
     // --- Prefabs ---
 
-	//pEnemy->AddComponent(
-	//	std::make_unique<SoundEffectsPlayer>(pEnemy)
-	//);
-	//SoundEffectsPlayer* pEnemySoundEffectsPlayer = pEnemy->GetComponent<SoundEffectsPlayer>();
-	//pEnemySoundEffectsPlayer->AddSound("Models\\sci-fidrone.ogg");
+    //pEnemy->AddComponent(
+    //	std::make_unique<SoundEffectsPlayer>(pEnemy)
+    //);
+    //SoundEffectsPlayer* pEnemySoundEffectsPlayer = pEnemy->GetComponent<SoundEffectsPlayer>();
+    //pEnemySoundEffectsPlayer->AddSound("Models\\sci-fidrone.ogg");
     pSceneRoot->AddComponent(
         std::make_unique<UpgradeHandler>(pSceneRoot.get(), wnd)
-	);
-	pUpgradeHandler = pSceneRoot->GetComponent<UpgradeHandler>();
-	pUpgradeHandler->ability1Node = pAbility1;
-	pUpgradeHandler->ability2Node = pAbility2;
-	pUpgradeHandler->ability3Node = pAbility3;
-	pUpgradeHandler->ability4Node = pAbility4;
-	pUpgradeHandler->playerController = pPlayer->GetComponent<PlayerController>();
+    );
+    pUpgradeHandler = pSceneRoot->GetComponent<UpgradeHandler>();
+    pUpgradeHandler->ability1Node = pAbility1;
+    pUpgradeHandler->ability2Node = pAbility2;
+    pUpgradeHandler->ability3Node = pAbility3;
+    pUpgradeHandler->ability4Node = pAbility4;
+    pUpgradeHandler->playerController = pPlayer->GetComponent<PlayerController>();
     pUpgradeHandler->SetBasicValues();
-	pSceneRoot->GetComponent<Global>()->upgradeHandler = pUpgradeHandler;
+    pSceneRoot->GetComponent<Global>()->upgradeHandler = pUpgradeHandler;
     //LevelGenerator levelGenerator(prefabManager, pSceneRoot.get(), pPlayer);
 
 
@@ -287,30 +288,30 @@ App::App(const std::string& commandLine)
     const int plusSpriteY = (screenHeight / 2) - (plusSpriteHeight / 2);
 
     targetSprite = std::make_unique<Sprite>(
-        wnd.Gfx().GetDevice(),       
+        wnd.Gfx().GetDevice(),
         plusSpriteX,                // int x (center X)
         plusSpriteY,                // int y (center Y)
         plusSpriteWidth,            // int width
         plusSpriteHeight,           // int height
-        L"Images\\plus.png"       
+        L"Images\\plus.png"
     );
 
     heart1Sprite = std::make_unique<Sprite>(
-        wnd.Gfx().GetDevice(),      
+        wnd.Gfx().GetDevice(),
         (screenWidth / 2) - 35 - 80,                // int x  
         950,                // int y  
         70,            // int width
         70,           // int height
-        L"Images\\heart.png"         
+        L"Images\\heart.png"
     );
 
     heart2Sprite = std::make_unique<Sprite>(
-        wnd.Gfx().GetDevice(),      
+        wnd.Gfx().GetDevice(),
         (screenWidth / 2) - 35,                // int x  
         950,                // int y (center Y)
         70,            // int width
         70,           // int height
-        L"Images\\heart.png"         
+        L"Images\\heart.png"
     );
 
     heart3Sprite = std::make_unique<Sprite>(
@@ -319,7 +320,7 @@ App::App(const std::string& commandLine)
         950,                // int y (center Y)
         70,            // int width
         70,           // int height
-        L"Images\\heart.png"       
+        L"Images\\heart.png"
     );
 
 
@@ -327,7 +328,7 @@ App::App(const std::string& commandLine)
     wnd.DisableCursor();
     wnd.mouse.EnableRaw();
     cursorEnabled = false;
-    
+
 }
 
 App::~App()
@@ -493,7 +494,6 @@ void App::DoFrame(float dt)
     CleanupDestroyedNodes(pSceneRoot.get());
 
     wnd.Gfx().BeginFrame(0.5f, 0.5f, 1.0f);
-	pointLight.cbData.pos = { pPlayer->GetWorldPosition().x, pPlayer->GetWorldPosition().y + 12.0f, pPlayer->GetWorldPosition().z };
     //if (pPlayer->GetLocalPosition().y < -10.0f) {
     //	pPlayer->SetLocalPosition({ -20.0f, 225.0f, -25.0f });
     //    pEnemy->SetLocalPosition({ 15.0f, 225.0f, 0.0f });
@@ -508,7 +508,10 @@ void App::DoFrame(float dt)
 	/*DebugLine line(wnd.Gfx(), pEnemy->GetComponent<StateMachine>()->pos, pEnemy->GetComponent<StateMachine>()->cen, { 0.0f, 0.0f, 1.0f, 1.0f });
     line.Submit(fc);*/ // for idle
     // --- Bind Lights ---
-    pointLight.Bind(wnd.Gfx(), viewMatrix); // Bind point light (to slot 0)
+
+    pointLight.Bind(wnd.Gfx(), viewMatrix);
+    dirLight.Bind(wnd.Gfx(), viewMatrix);
+
 
     FrustumCalculating(); // Draw with FRUSTUM CULLING
     //pSceneRoot->Submit(fc, wnd.Gfx()); // Draw without FRUSTUM CULLING you have to also uncomment the draw method in Node.cpp
@@ -693,8 +696,8 @@ void App::ShowControlWindows()
 	//DrawCapsuleColliders(wnd.Gfx());
     //ForEnemyWalking();
     pointLight.Submit();
-
-    //pointLight.SpawnControlWindow(); // Control for Point Light
+    dirLight.SpawnControlWindow();
+    pointLight.SpawnControlWindow(); // Control for Point Light
     if (showDemoWindow)
     {
         ImGui::ShowDemoWindow(&showDemoWindow);

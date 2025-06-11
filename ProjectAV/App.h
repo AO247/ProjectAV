@@ -20,6 +20,7 @@
 #include "MainRenderGraph.h"
 #include "Sprite.h"
 #include "Button.h"
+#include "DirectionalLight.h"
 
 // Forward declarations
 class PlayerController; // Forward declare
@@ -46,6 +47,8 @@ private:
     Timer timer;
     float speed_factor = 1.0f;
     PointLight pointLight;
+    DirectionalLight dirLight;
+
     //PhysicsEngine physicsEngine; // Physics engine instance
 
 

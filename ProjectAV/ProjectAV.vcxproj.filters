@@ -372,9 +372,6 @@
     <ClCompile Include="RenderGraph.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ScaleOutlineRenderGraph.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="StepLinkingProbe.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -949,6 +946,9 @@
     </FxCompile>
     <FxCompile Include="Test1_VS.hlsl">
       <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="DirectionalLight.hlsl">
+      <Filter>Shaders\Common</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
