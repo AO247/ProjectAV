@@ -17,6 +17,7 @@ public:
 	float knockbackForce = 1500.0f;
 	//BoundingSphere* damageArea;
 	virtual void DrawImGuiControls() override;
+	void OnCollisionEnter(Node* other) override;
 	void OnTriggerEnter(Node* other) override;
 	Node* ignore = nullptr;
 

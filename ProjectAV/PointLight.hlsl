@@ -7,4 +7,5 @@ cbuffer PointLightCBuf : register(b2)
     float attConst;
     float attLin;
     float attQuad;
+    bool enabled;
 };

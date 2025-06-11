@@ -28,7 +28,8 @@ private:
 		float attConst;
 		float attLin;
 		float attQuad;
-	};
+		BOOL enabled;
+	};	
 public:
 	PointLightCBuf cbData;
 	mutable SolidSphere mesh;

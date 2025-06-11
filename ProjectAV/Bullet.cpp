@@ -21,7 +21,11 @@ void Bullet::OnTriggerEnter(Node* object)
 	}
 	pOwner->Destroy();
 }
-
+void Bullet::OnCollisionEnter(Node* object)
+{
+	if (object->tag == "TRIGGER" || object == pOwner) return;
+	pOwner->Destroy();
+}
 
 void Bullet::DrawImGuiControls()
 {

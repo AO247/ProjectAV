@@ -1,10 +1,10 @@
-// PhongSpecNormal_PS.hlsl - NOWA WERSJA
+// PhongSpecNormal_PS.hlsl (WERSJA POPRAWIONA)
 
 #include "ShaderOps.hlsl"
 #include "LightVectorData.hlsl"
 
-#include "PointLight.hlsl"       // b0
-#include "DirectionalLight.hlsl"  // b1
+#include "PointLight.hlsl"
+#include "DirectionalLight.hlsl"
 
 cbuffer ObjectCBuf : register(b1)
 {
@@ -26,7 +26,7 @@ float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float3 vi
 {
     const float3 materialColor = tex.Sample(splr, tc).rgb;
     
-    // Obliczenia normalnej (bez zmian)
+    // Obliczenia normalnej
     viewNormal = normalize(viewNormal);
     if (useNormalMap)
     {
@@ -34,7 +34,7 @@ float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float3 vi
         viewNormal = lerp(viewNormal, mappedNormal, normalMapWeight);
     }
 
-    // Obliczenia parametrów specular (bez zmian)
+    // Obliczenia parametrów specular
     float specularPowerLoaded = specularGloss;
     const float4 specularSample = spec.Sample(splr, tc);
     float3 specularReflectionColor;
@@ -51,20 +51,25 @@ float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float3 vi
         specularPowerLoaded = pow(2.0f, specularSample.a * 13.0f);
     }
 
-    // --- Obliczenia dla Point Light (bez zmian) ---
-    const LightVectorData lv_point = CalculateLightVectorData(viewLightPos, viewFragPos);
-    const float att = Attenuate(attConst, attLin, attQuad, lv_point.distToL);
-    const float3 diffuse_point = Diffuse(diffuseColor, diffuseIntensity, att, lv_point.dirToL, viewNormal);
-    const float3 specular_point = Speculate(diffuseColor * diffuseIntensity * specularReflectionColor, specularWeight, viewNormal, lv_point.vToL, viewFragPos, att, specularPowerLoaded);
+    // --- Inicjalizacja oœwietlenia ---
+    float3 final_color = dir_ambient * materialColor;
 
-    // --- NOWE: Obliczenia dla Directional Light ---
+    // --- Obliczenia dla Directional Light ---
     const float3 dir_to_light_dir = -normalize(viewLightDirection);
-    const float3 diffuse_dir = Diffuse(dir_diffuseColor, dir_diffuseIntensity, 1.0f, dir_to_light_dir, viewNormal);
-    const float3 specular_dir = Speculate(dir_diffuseColor * dir_diffuseIntensity * specularReflectionColor, specularWeight, viewNormal, dir_to_light_dir, viewFragPos, 1.0f, specularPowerLoaded);
-    
-    // --- ZMODYFIKOWANE: Kombinacja œwiate³ ---
-    const float3 total_ambient = ambient + dir_ambient;
-    const float3 final_color = saturate((total_ambient + diffuse_point + diffuse_dir) * materialColor + specular_point + specular_dir);
+    final_color += Diffuse(dir_diffuseColor, dir_diffuseIntensity, 1.0f, dir_to_light_dir, viewNormal) * materialColor;
+    final_color += Speculate(specularReflectionColor, specularWeight, viewNormal, dir_to_light_dir, viewFragPos, 1.0f, specularPowerLoaded) * dir_diffuseIntensity * dir_diffuseColor;
 
-    return float4(final_color, 1.0f);
+    // --- Obliczenia dla Point Light (tylko jeœli w³¹czone) ---
+    if (enabled)
+    {
+        final_color += ambient * materialColor;
+        
+        const LightVectorData lv = CalculateLightVectorData(viewLightPos, viewFragPos);
+        const float att = Attenuate(attConst, attLin, attQuad, lv.distToL);
+        
+        final_color += Diffuse(diffuseColor, diffuseIntensity, att, lv.dirToL, viewNormal) * materialColor;
+        final_color += Speculate(specularReflectionColor, specularWeight, viewNormal, lv.dirToL, viewFragPos, att, specularPowerLoaded) * diffuseIntensity * diffuseColor;
+    }
+    
+    return float4(saturate(final_color), 1.0f);
 }

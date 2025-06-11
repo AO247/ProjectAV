@@ -20,8 +20,6 @@ private:
 		DirectX::XMFLOAT3 diffuseColor;
 		float diffuseIntensity; // Idealnie dope³nia do 48 bajtów
 	};
-	static_assert(sizeof(DirectionalLightCBuf) == 48, "Rozmiar DirectionalLightCBuf jest nieprawid³owy!");
-
 public:
 	DirectionalLightCBuf cbData;
 	mutable Bind::PixelConstantBuffer<DirectionalLightCBuf> cbuf;

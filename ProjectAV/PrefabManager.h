@@ -791,7 +791,7 @@ public:
         root->AddChild(std::move(pNewNodeOwner));
 
 
-        BodyCreationSettings BodySettings(new JPH::SphereShape(0.1f), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Kinematic, Layers::WALL);
+        BodyCreationSettings BodySettings(new JPH::SphereShape(0.1f), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
         BodySettings.mMassPropertiesOverride.mMass = 0.1f;
         BodySettings.mFriction = 0.0f;
@@ -799,8 +799,9 @@ public:
         pNewNode->AddComponent(
             std::make_unique<Rigidbody>(pNewNode, BodySettings)
         );
+        PhysicsCommon::physicsSystem->GetBodyInterface().SetGravityFactor(pNewNode->GetComponent<Rigidbody>()->GetBodyID(), 0);
 
-        BodyCreationSettings trBodySettings(new JPH::SphereShape(0.7f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
+        BodyCreationSettings trBodySettings(new JPH::SphereShape(0.7f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::TRIGGER);
         pNewNode->AddComponent(
             std::make_unique<Trigger>(pNewNode, trBodySettings, false)
         );

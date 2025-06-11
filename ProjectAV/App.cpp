@@ -37,6 +37,7 @@ App::App(const std::string& commandLine)
 
     std::srand(static_cast<unsigned>(std::time(nullptr)));
     pointLight.LinkTechniques(rg);
+     pointLight.cbData.enabled = FALSE; 
 
     RegisterDefaultAllocator();
     Trace = TraceImpl;
@@ -509,7 +510,7 @@ void App::DoFrame(float dt)
     line.Submit(fc);*/ // for idle
     // --- Bind Lights ---
 
-    pointLight.Bind(wnd.Gfx(), viewMatrix);
+    //pointLight.Bind(wnd.Gfx(), viewMatrix);
     dirLight.Bind(wnd.Gfx(), viewMatrix);
 
 

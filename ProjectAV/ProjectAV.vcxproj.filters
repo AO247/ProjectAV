@@ -417,6 +417,9 @@
     <ClCompile Include="MainRenderGraph.cpp">
       <Filter>Source Files\Jobber</Filter>
     </ClCompile>
+    <ClCompile Include="ShadowRasterizer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowsMessageMap.h">
@@ -848,6 +851,15 @@
     <ClInclude Include="UpgradeHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ShadowMappingPass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ShadowCameraCBuf.h">
+      <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="ShadowRasterizer.h">
+      <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ProjectAV.rc">
@@ -949,6 +961,12 @@
     </FxCompile>
     <FxCompile Include="DirectionalLight.hlsl">
       <Filter>Shaders\Common</Filter>
+    </FxCompile>
+    <FxCompile Include="NullPixelShader.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shadow_VS.hlsl">
+      <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
