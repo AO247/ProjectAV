@@ -48,6 +48,7 @@ void ShootAttack::Attack(float dt)
 	dir.Normalize();
 	dir *= bulletSpeed;
 	PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(bullet->GetComponent<Rigidbody>()->GetBodyID(), Vec3(dir.x, dir.y, dir.z));
+	//PhysicsCommon::physicsSystem->GetBodyInterface().MoveKinematic(bullet->GetComponent<Rigidbody>()->GetBodyID(), Vec3Arg(dir.x, dir.y, dir.z) * 500.0f, QuatArg(1.0f,1.0f,1.0f,1.0f), bulletSpeed);
 }
 
 

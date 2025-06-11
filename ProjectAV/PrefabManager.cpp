@@ -5,7 +5,7 @@
 Window* PrefabManager::wind = nullptr;
 Node* PrefabManager::root = nullptr;
 Node* PrefabManager::player = nullptr;
-Rgph::BlurOutlineRenderGraph* PrefabManager::rg = nullptr;
+Rgph::MainRenderGraph* PrefabManager::rg = nullptr;
 
 PrefabManager::~PrefabManager()
 {

@@ -4,15 +4,17 @@
 #include "CMath.h"
 #include <DirectXMath.h>
 #include <algorithm>
-#include "CapsuleCollider.h"
 #include "SoundEffectsPlayer.h"
 #include "DebugLine.h"
+#include "Components.h"
 
 namespace dx = DirectX;
 Walking::Walking(Node* owner, std::string tag)
 	: Component(owner, std::move(tag))
 {
 	rigidbody = owner->GetComponent<Rigidbody>();
+	PhysicsCommon::physicsSystem->GetBodyInterface().SetFriction(rigidbody->GetBodyID(), 0.0f);
+
 }
 void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 {
@@ -34,6 +36,10 @@ void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 		if (sp > 1.0f)
 		{
 			targetPosition = lastIslandPos;
+			Vector3 facingDirection = Vector3(targetPosition) - Vector3(pOwner->GetWorldPosition());
+			facingDirection.y = 0.0f; // Ignore height for facing direction
+			facingDirection.Normalize();
+			PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(rigidbody->GetBodyID(), Vec3(facingDirection.x, facingDirection.y, facingDirection.z) * 5.0f);
 		}
 		else 
 		{
@@ -41,7 +47,8 @@ void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 			Vector3 facingDirection = Vector3(targetPosition)
 				- Vector3(pOwner->GetWorldPosition());
 			facingDirection.Normalize();
-			PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rigidbody->GetBodyID(), Vec3Arg(0.0f, 0.0f, 0.0f));
+			Vec3 velocity = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
+			PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rigidbody->GetBodyID(), Vec3Arg(0.0f, velocity.GetY(), 0.0f));
 			float targetYaw = atan2f(facingDirection.x, facingDirection.z);
 			float yawDifference = wrap_angle(targetYaw - currentYaw);
 			targetYaw = wrap_angle(currentYaw + yawDifference * rotationLerpFactor);
@@ -52,7 +59,6 @@ void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 
 	}
 
-	PhysicsCommon::physicsSystem->GetBodyInterface().SetFriction(rigidbody->GetBodyID(), 0.0f);
 
 
 	Vector3 currentPos = pOwner->GetWorldPosition();
@@ -128,18 +134,20 @@ void Walking::GroundCheck()
 	{
 		grounded = false;
 	}
+	pOwner->GetComponent<StateMachine>()->grounded = grounded;
 }
 Vector3 Walking::CalculateAvoidanceForce()
 {
 	Vector3 avoidanceForce(0.0f, 0.0f, 0.0f);
 
 	Vector3 temporaryDirection = targetPosition - pOwner->GetWorldPosition();
+	temporaryDirection.y = 0.0f; // Ignore height for avoidance
 	temporaryDirection.Normalize();
 
 	float radius = 1.0f;
 
 	Vector3 pos = pOwner->GetWorldPosition();
-	pos.y += -(height/2.0f) + 0.0f;
+	pos.y += -(height/2.0f) + 1.0f;
 	Vector3 forward = temporaryDirection;
 	forward.y = 0.0f;
 	Vector3 right = Vector3(forward.z, 0.0f, -forward.x);
@@ -153,6 +161,7 @@ Vector3 Walking::CalculateAvoidanceForce()
 	Vector3 centerOrigin = pos + forward;
 	Vector3 leftOrigin = centerOrigin - right * radius;
 	Vector3 rightOrigin = centerOrigin + right * radius;
+
 
 	Vector3 centerDir = forward;
 	

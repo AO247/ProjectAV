@@ -4,10 +4,7 @@
 #include "CMath.h"      // For wrap_angle and PI (ensure this is included)
 #include <DirectXMath.h>
 #include <algorithm> // for std::clamp
-#include "Raycast.h"
 #include <string>
-#include "CapsuleCollider.h"
-#include "BoundingSphere.h"
 #include "Components.h"
 
 namespace dx = DirectX;

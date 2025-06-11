@@ -32,7 +32,7 @@ void SpawnJump::Update(float dt)
 				{
 					halfWay = true;
 				}
-				if (!moved && playerNode->GetWorldPosition().y > targetPosition.y + 3.0f)
+				if (!moved && playerNode->GetWorldPosition().y > targetPosition.y + 4.0f)
 				{
 					Vector3 direction = (targetPosition - playerNode->GetWorldPosition());
 					direction.y = 0.0f;
@@ -56,7 +56,7 @@ void SpawnJump::Update(float dt)
 						lastRotate = true;
 					}
 				}
-				else if (pushed && playerNode->GetWorldPosition().y < targetPosition.y + 3.0f)
+				else if (pushed && playerNode->GetWorldPosition().y < targetPosition.y + 4.0f)
 				{
 					moved = true;
 					rotated = false;

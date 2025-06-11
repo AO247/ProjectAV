@@ -9,7 +9,7 @@ void Throwable::OnCollisionEnter(Node* object)
 {
 	Vec3 position = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
 	float l = position.Length();
-	if (l < 35.0f) return;
+	if (l < speed) return;
 	if (object->GetComponent<Health>())
 	{
 		object->GetComponent<Health>()->TakeDamage(damage);

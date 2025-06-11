@@ -313,7 +313,7 @@ LRESULT Window::HandleMsg( HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam ) noex
 		{
 			break;
 		}
-		// in client region -> log move, and log enter + capture mouse (if not previously in window)
+		// in client region log move, and log enter + capture mouse (if not previously in window)
 		if( pt.x >= 0 && pt.x < width && pt.y >= 0 && pt.y < height )
 		{
 			mouse.OnMouseMove( pt.x,pt.y );
@@ -323,14 +323,14 @@ LRESULT Window::HandleMsg( HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam ) noex
 				mouse.OnMouseEnter();
 			}
 		}
-		// not in client -> log move / maintain capture if button down
+		// not in client log move / maintain capture if button down
 		else
 		{
 			if( wParam & (MK_LBUTTON | MK_RBUTTON) )
 			{
 				mouse.OnMouseMove( pt.x,pt.y );
 			}
-			// button up -> release capture / log event for leaving
+			// button up release capture / log event for leaving
 			else
 			{
 				ReleaseCapture();

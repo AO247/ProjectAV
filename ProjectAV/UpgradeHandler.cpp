@@ -33,7 +33,7 @@ UpgradeHandler::UpgradeHandler(Node* owner, Window& window)
 		180,                // int y  
 		350,               // size x  
 		600,                // size y  
-		L"Images\\dashCard.png"
+		L"Images\\jumpCard.png"
 	);
 
 	heart1Sprite = std::make_unique<Sprite>(

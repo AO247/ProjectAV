@@ -51,7 +51,10 @@ void Global::Update(float dt)
 	}
 	if (ending)
 	{
-		levels[endingRemover]->Destroy();
+		if (levels[endingRemover] != nullptr)
+		{
+			levels[endingRemover]->Destroy();
+		}
 		endingRemover--;
 		if(endingRemover < 0)
 		{

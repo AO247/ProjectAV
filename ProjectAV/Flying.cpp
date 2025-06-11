@@ -4,7 +4,6 @@
 #include "CMath.h"
 #include <DirectXMath.h>
 #include <algorithm>
-#include "CapsuleCollider.h"
 #include "SoundEffectsPlayer.h"
 #include "DebugLine.h"
 

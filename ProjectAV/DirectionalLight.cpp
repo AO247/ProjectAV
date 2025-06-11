@@ -1,58 +1,57 @@
 #include "DirectionalLight.h"
+#include "imgui/imgui.h"
 
-DirectionalLight::DirectionalLight(Graphics& gfx)
-    :
-    cbuf(gfx, 1u)
+DirectionalLight::DirectionalLight(Graphics& gfx, UINT slot)
+	:
+	cbuf(gfx, slot)
 {
-    Reset();
+	Reset();
+}
+
+void DirectionalLight::SpawnControlWindow() noexcept
+{
+	if (ImGui::Begin("Directional Light"))
+	{
+		ImGui::Text("Direction");
+		ImGui::SliderFloat3("##Direction", &cbData.direction.x, -1.0f, 1.0f, "%.2f");
+
+		ImGui::Text("Intensity/Color");
+		ImGui::SliderFloat("Intensity", &cbData.diffuseIntensity, 0.0f, 5.0f, "%.2f");
+		ImGui::ColorEdit3("Diffuse Color", &cbData.diffuseColor.x);
+		ImGui::ColorEdit3("Ambient", &cbData.ambient.x);
+
+		if (ImGui::Button("Reset"))
+		{
+			Reset();
+		}
+	}
+	ImGui::End();
 }
 
 void DirectionalLight::Reset() noexcept
 {
-    cbData.direction = { 1.0f, 0.0f, 0.0f };
-
-    cbData.ambient = { 0.1f, 0.1f, 0.1f };
-    cbData.diffuseColor = { 1.0f, 1.0f, 1.0f };
-    cbData.diffuseIntensity = 1.0f;
+	cbData = {
+		{ -0.5f, -0.8f, 0.2f }, // Kierunek z góry, lekko z boku
+		1.0f,
+		{ 0.5f, 0.5f, 0.5f },
+		1.0f,
+		{ 1.0f, 1.0f, 1.0f },
+		1.0f
+	};
 }
-
-void DirectionalLight::SetDirection(const DirectX::XMFLOAT3& dir) noexcept
-{
-    DirectX::XMVECTOR dirVec = DirectX::XMLoadFloat3(&dir);
-
-    if (DirectX::XMVectorGetX(DirectX::XMVector3LengthSq(dirVec)) > 1e-6f)
-    {
-        DirectX::XMStoreFloat3(&cbData.direction, DirectX::XMVector3Normalize(dirVec));
-    }
-}
-
-void DirectionalLight::SetAmbient(const DirectX::XMFLOAT3& amb) noexcept
-{
-    cbData.ambient = amb;
-}
-
-void DirectionalLight::SetDiffuseColor(const DirectX::XMFLOAT3& color) noexcept
-{
-    cbData.diffuseColor = color;
-}
-
-void DirectionalLight::SetDiffuseIntensity(float intensity) noexcept
-{
-    cbData.diffuseIntensity = intensity;
-}
-
 
 void DirectionalLight::Bind(Graphics& gfx, DirectX::FXMMATRIX view) const noexcept
 {
-    auto dataCopy = cbData;
+	// Normalizujemy kierunek, aby upewniæ siê, ¿e jest to wektor jednostkowy
+	DirectX::XMVECTOR dir = DirectX::XMLoadFloat3(&cbData.direction);
+	dir = DirectX::XMVector3Normalize(dir);
 
-    const auto dir = DirectX::XMLoadFloat3(&cbData.direction);
+	auto dataCopy = cbData;
+	// Transformujemy kierunek do przestrzeni widoku (view space)
+	// U¿ywamy XMVector3TransformNormal, poniewa¿ kierunek nie ma pozycji (w=0)
+	const auto transformedDir = DirectX::XMVector3TransformNormal(dir, view);
+	DirectX::XMStoreFloat3(&dataCopy.direction, transformedDir);
 
-    const auto transformedDir = DirectX::XMVector3TransformNormal(dir, view);
-    DirectX::XMStoreFloat3(&dataCopy.direction, DirectX::XMVector3Normalize(transformedDir));
-
-   
-    cbuf.Update(gfx, dataCopy);
-
-    cbuf.Bind(gfx);
+	cbuf.Update(gfx, dataCopy);
+	cbuf.Bind(gfx);
 }

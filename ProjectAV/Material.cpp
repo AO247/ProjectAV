@@ -125,43 +125,6 @@ modelPath(path.string())
 		phong.AddStep(std::move(step));
 		techniques.push_back(std::move(phong));
 	}
-	// outline technique
-	{
-		Technique outline("Outline", false);
-		{
-			Step mask("outlineMask");
-
-			// TODO: better sub-layout generation tech for future consideration maybe
-			mask.AddBindable(InputLayout::Resolve(gfx, vtxLayout, *VertexShader::Resolve(gfx, "Solid_VS.cso")));
-
-			mask.AddBindable(std::make_shared<TransformCbuf>(gfx));
-
-			// TODO: might need to specify rasterizer when doubled-sided models start being used
-
-			outline.AddStep(std::move(mask));
-		}
-		{
-			Step draw("outlineDraw");
-
-			{
-				Dcb::RawLayout lay;
-				lay.Add<Dcb::Float3>("materialColor");
-				auto buf = Dcb::Buffer(std::move(lay));
-				buf["materialColor"] = DirectX::XMFLOAT3{ 1.0f,0.4f,0.4f };
-				draw.AddBindable(std::make_shared<Bind::CachingPixelConstantBufferEx>(gfx, buf, 1u));
-			}
-
-			// TODO: better sub-layout generation tech for future consideration maybe
-			draw.AddBindable(InputLayout::Resolve(gfx, vtxLayout, *VertexShader::Resolve(gfx, "Solid_VS.cso")));
-
-			draw.AddBindable(std::make_shared<TransformCbuf>(gfx));
-
-			// TODO: might need to specify rasterizer when doubled-sided models start being used
-
-			outline.AddStep(std::move(draw));
-		}
-		techniques.push_back(std::move(outline));
-	}
 }
 Dvtx::VertexBuffer Material::ExtractVertices(const aiMesh& mesh) const noexcept
 {
