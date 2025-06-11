@@ -1,5 +1,3 @@
-// BlurOutlineRenderGraph.cpp
-
 #include "BlurOutlineRenderGraph.h"
 #include "BufferClearPass.h"
 #include "LambertianPass.h"
@@ -21,38 +19,27 @@ namespace Rgph
 		:
 		RenderGraph(gfx)
 	{
-		// MODIFIED: Initialize our new member variable here.
-		// The result of make_shared is assigned to our std::shared_ptr<RenderTarget> member,
-		// which is a valid upcast.
 		pOffscreen = std::make_shared<Bind::ShaderInputRenderTarget>(gfx, gfx.GetWidth(), gfx.GetHeight(), 0);
 
-		// MODIFIED: Now we pass our member variable 'pOffscreen' to the Make function.
-		// Its type is std::shared_ptr<Bind::RenderTarget>, which is a perfect match for the
-		// function's expected std::shared_ptr<Bind::RenderTarget>& parameter.
 		AddGlobalSource(DirectBufferSource<Bind::RenderTarget>::Make("offscreen", pOffscreen));
 
-		// Pass to clear the final back buffer
 		{
 			auto pass = std::make_unique<BufferClearPass>("clearRT");
 			pass->SetSinkLinkage("buffer", "$.backbuffer");
 			AppendPass(std::move(pass));
 		}
-		// Pass to clear the main depth stencil
 		{
 			auto pass = std::make_unique<BufferClearPass>("clearDS");
 			pass->SetSinkLinkage("buffer", "$.masterDepth");
 			AppendPass(std::move(pass));
 		}
-		// Pass to clear our new intermediate render target
 		{
 			auto pass = std::make_unique<BufferClearPass>("clearOffscreen");
 			pass->SetSinkLinkage("buffer", "$.offscreen");
 			AppendPass(std::move(pass));
 		}
-		// Main scene rendering pass
 		{
 			auto pass = std::make_unique<LambertianPass>(gfx, "lambertian");
-			// LambertianPass now renders to our new, cleared "offscreen" buffer.
 			pass->SetSinkLinkage("renderTarget", "clearOffscreen.buffer");
 			pass->SetSinkLinkage("depthStencil", "clearDS.buffer");
 			AppendPass(std::move(pass));
@@ -63,7 +50,6 @@ namespace Rgph
 			AppendPass(std::move(pass));
 		}
 
-		// setup blur constant buffers (no change)
 		{
 			{
 				Dcb::RawLayout l;
@@ -84,7 +70,6 @@ namespace Rgph
 			}
 		}
 
-		// Tone Mapping Pass
 		{
 			auto pass = std::make_unique<ToneMappingPass>("toneMap", gfx);
 			pass->SetSinkLinkage("scratchIn", "lambertian.renderTargetTexture");
