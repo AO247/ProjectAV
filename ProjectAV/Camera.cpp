@@ -27,10 +27,11 @@ void Camera::HandleMouseLook(float dt)
     float mouseX = 0.0f;
     float mouseY = 0.0f;
 
-    while (const auto delta = wnd.mouse.ReadRawDelta())
+   
+    while (const auto delta = wnd.mouse.PollRawMovement())
     {
-        mouseX += delta->x;
-        mouseY -= delta->y;
+        mouseX += delta->dx;
+        mouseY -= delta->dy;
     }
 
     yRotation += mouseX * sensX * 0.01f; 

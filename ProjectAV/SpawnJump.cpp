@@ -13,7 +13,7 @@ void SpawnJump::Update(float dt)
 	{
 		if (playerNode != nullptr)
 		{
-			if (!playerReady && (pOwner->GetWorldPosition() - playerNode->GetWorldPosition()).Length() < 5.0f && jumpCooldown < 0.1)
+			if (!playerReady && (pOwner->GetWorldPosition() - playerNode->GetWorldPosition()).Length() < 7.0f && jumpCooldown < 0.1)
 			{
 				PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(playerNode->GetComponent<Rigidbody>()->GetBodyID(), Vec3(0.0f, 0.0f, 0.0f));
 				playerReady = true;
@@ -21,7 +21,7 @@ void SpawnJump::Update(float dt)
 			}
 			if (playerReady)
 			{
-				if ((pOwner->GetWorldPosition() - playerNode->GetWorldPosition()).Length() < 5.0f && jumpCooldown < 0.1)
+				if ((pOwner->GetWorldPosition() - playerNode->GetWorldPosition()).Length() < 7.0f && jumpCooldown < 0.1)
 				{
 					PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(playerNode->GetComponent<Rigidbody>()->GetBodyID(), Vec3(0.0f, 280.0f, 0.0f));
 					moved = false;

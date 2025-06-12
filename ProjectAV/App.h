@@ -9,7 +9,6 @@
 #include "Components.h"
 #include "MusicBuffer.h"
 #include "SoundDevice.h"
-#include "ScriptCommander.h"
 #include "ColliderSphere.h"
 #include "SolidBox.h"
 #include "SolidCapsule.h"
@@ -40,7 +39,6 @@ private:
     std::string commandLine;
     ImguiManager imgui;
     Window wnd;
-    ScriptCommander scriptCommander;
     Rgph::MainRenderGraph rg{ wnd.Gfx() };
     Timer timer;
     float speed_factor = 1.0f;

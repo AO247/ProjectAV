@@ -205,7 +205,7 @@ void PlayerController::Positioning()
 void PlayerController::KeyboardInput()
 {
 
-    while (const auto e = wnd.mouse.Read()) 
+    while (const auto e = wnd.mouse.PollEvent())
     {
         switch (e->GetType())
         {
@@ -236,14 +236,14 @@ void PlayerController::KeyboardInput()
 
     }
 
-    if (wnd.kbd.KeyIsPressed('Q'))
+    if (wnd.kbd.IsKeyPressed('Q'))
     {
         abilitySlot3->GetComponent<Ability>()->Pressed();
 	}
 
 
     moveDirection = Vector3(0.0f, 0.0f, 0.0f);
-    if (wnd.kbd.KeyIsPressed(VK_SPACE))
+    if (wnd.kbd.IsKeyPressed(VK_SPACE))
     {
         Jump();
     }
@@ -252,25 +252,25 @@ void PlayerController::KeyboardInput()
     }
     if (dashed) return;
 
-    if (wnd.kbd.KeyIsPressed('W'))
+    if (wnd.kbd.IsKeyPressed('W'))
     {
         moveDirection += GetOwner()->Forward();
     }
-    if (wnd.kbd.KeyIsPressed('S'))
+    if (wnd.kbd.IsKeyPressed('S'))
     {
         moveDirection += GetOwner()->Back();
     }
-    if (wnd.kbd.KeyIsPressed('A'))
+    if (wnd.kbd.IsKeyPressed('A'))
     {
         moveDirection += GetOwner()->Left();
     }
-    if (wnd.kbd.KeyIsPressed('D'))
+    if (wnd.kbd.IsKeyPressed('D'))
     {
         moveDirection += GetOwner()->Right();
     }
 
 
-    if (wnd.kbd.KeyIsPressed(VK_SHIFT))
+    if (wnd.kbd.IsKeyPressed(VK_SHIFT))
     {
         Dash();
     }

@@ -92,7 +92,7 @@ void UpgradeHandler::Update(float dt)
 {
 	if (upgradeMenuOpen && !upgraded && missclickTimer < 0.0f)
 	{
-		if (wnd.mouse.LeftIsPressed()) { 
+		if (wnd.mouse.IsLeftPressed()) {
 			const auto mousePos = wnd.mouse.GetPos();
 			if (testButton1->IsClicked(mousePos.first, mousePos.second))
 			{
@@ -178,7 +178,7 @@ void UpgradeHandler::ShowUpgradeMenu()
 	end = false;
 	upgraded = false;
 	wnd.EnableCursor();
-	wnd.mouse.DisableRaw();
+	wnd.mouse.DisableRawInput();
 	RandomUpgrades();
 }
 void UpgradeHandler::CloseUpgradeMenu()
@@ -191,7 +191,7 @@ void UpgradeHandler::CloseUpgradeMenu()
 	upgraded = false;
 	end = false;
 	wnd.DisableCursor();
-	wnd.mouse.EnableRaw();
+	wnd.mouse.EnableRawInput();
 }
 void UpgradeHandler::DrawUpgradeMenu()
 {
