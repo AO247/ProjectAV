@@ -29,10 +29,10 @@ void Camera::HandleMouseLook(float dt)
     float mouseY = 0.0f;
 
     // Accumulate mouse delta for this frame
-    while (const auto delta = wnd.mouse.ReadRawDelta())
+    while (const auto delta = wnd.mouse.PollRawMovement())
     {
-        mouseX += delta->x;
-        mouseY -= delta->y;
+        mouseX += delta->dx;
+        mouseY -= delta->dy;
     }
 
     yRotation += mouseX * sensX * 0.01f; // Apply Yaw delta (adjust multiplier)
