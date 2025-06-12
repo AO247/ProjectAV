@@ -275,6 +275,7 @@ App::App(const std::string& commandLine)
     pSceneRoot->GetComponent<Global>()->upgradeHandler = pUpgradeHandler;
     //LevelGenerator levelGenerator(prefabManager, pSceneRoot.get(), pPlayer);
 
+	//PrefabManager::InstantiateFirstIsland(pSceneRoot.get(), 0.0f, 0.0f, 0.0f, 1.0f);
 
     const int screenWidth = 1920;
     const int screenHeight = 1080;

@@ -59,7 +59,7 @@ void LevelGenerator::GenerateIslands()
                     }
                     else {
                         //islandPrefab = prefabManager->InstantiateIslandBig2(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
-                        islandPrefab = PrefabManager::InstantiateIslandBig1(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
+                        islandPrefab = PrefabManager::InstantiateIslandBig2(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
 
                     }
                     bigIslandCount--;
@@ -90,9 +90,14 @@ void LevelGenerator::GenerateIslands()
 
 
                     }
-                    else {
+                    else if(randSmall == 1) {
                         //islandPrefab = prefabManager->InstantiateIslandSmall2(pOwner, 0.0f, 0.0f, 0.0f, 1.5f);
                         islandPrefab = PrefabManager::InstantiateIslandSmall2(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
+
+                    }
+                    else {
+                    //islandPrefab = prefabManager->InstantiateIslandSmall2(pOwner, 0.0f, 0.0f, 0.0f, 1.5f);
+                    islandPrefab = PrefabManager::InstantiateIslandSmall3(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
 
                     }
                     smallIslandCount--;
