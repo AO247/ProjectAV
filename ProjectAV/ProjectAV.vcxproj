@@ -261,7 +261,6 @@
     <ClCompile Include="RenderTarget.cpp" />
     <ClCompile Include="Rigidbody.cpp" />
     <ClCompile Include="Sampler.cpp" />
-    <ClCompile Include="ScriptCommander.cpp" />
     <ClCompile Include="ShootAttack.cpp" />
     <ClCompile Include="Sink.cpp" />
     <ClCompile Include="Skybox.cpp" />
@@ -377,7 +376,6 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="Rigidbody.h" />
     <ClInclude Include="Sampler.h" />
-    <ClInclude Include="ScriptCommander.h" />
     <ClInclude Include="ShootAttack.h" />
     <ClInclude Include="Sink.h" />
     <ClInclude Include="Skybox.h" />

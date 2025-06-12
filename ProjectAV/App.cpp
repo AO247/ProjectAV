@@ -26,7 +26,6 @@ App::App(const std::string& commandLine)
     :
     commandLine(commandLine),
     wnd(1920, 1080, "Project AV"), // Pass window dimensions/title
-    scriptCommander(TokenizeQuoted(commandLine)),
     pointLight(wnd.Gfx(), 2u), // Initialize PointLight
     dirLight(wnd.Gfx(), 0u),
     pSceneRoot(std::make_unique<Node>("Root"))
@@ -322,7 +321,7 @@ App::App(const std::string& commandLine)
 
 
     wnd.DisableCursor();
-    wnd.mouse.EnableRaw();
+    wnd.mouse.EnableRawInput();
     cursorEnabled = false;
 
 }
@@ -390,7 +389,7 @@ void App::HandleInput(float dt)
 {
 
     // --- Only handle non-player input here ---
-    while (const auto e = wnd.kbd.ReadKey())
+    while (const auto e = wnd.kbd.PollKeyEvent())
     {
         if (!e->IsPress()) continue;
 
@@ -415,11 +414,11 @@ void App::HandleInput(float dt)
         case 'C': // Toggle cursor
             if (cursorEnabled) {
                 wnd.DisableCursor();
-                wnd.mouse.EnableRaw();
+                wnd.mouse.EnableRawInput();
             }
             else {
                 wnd.EnableCursor();
-                wnd.mouse.DisableRaw();
+                wnd.mouse.DisableRawInput();
             }
             cursorEnabled = !cursorEnabled;
             break;
@@ -460,22 +459,22 @@ void App::HandleInput(float dt)
 
     // FreeCamera Movement
     if (freeViewCamera) {
-        if (wnd.kbd.KeyIsPressed('I')) {
+        if (wnd.kbd.IsKeyPressed('I')) {
             pFreeViewCamera->TranslateLocal({ 0.0f, 0.0f, 0.4f });
         }
-        if (wnd.kbd.KeyIsPressed('K')) {
+        if (wnd.kbd.IsKeyPressed('K')) {
             pFreeViewCamera->TranslateLocal({ 0.0f, 0.0f, -0.4f });
         }
-        if (wnd.kbd.KeyIsPressed('J')) {
+        if (wnd.kbd.IsKeyPressed('J')) {
             pFreeViewCamera->TranslateLocal({ -0.4f, 0.0f, 0.0f });
         }
-        if (wnd.kbd.KeyIsPressed('L')) {
+        if (wnd.kbd.IsKeyPressed('L')) {
             pFreeViewCamera->TranslateLocal({ 0.4f, 0.0f, 0.0f });
         }
-        if (wnd.kbd.KeyIsPressed('U')) {
+        if (wnd.kbd.IsKeyPressed('U')) {
             pFreeViewCamera->TranslateLocal({ 0.0f, -0.4f, 0.0f });
         }
-        if (wnd.kbd.KeyIsPressed('O')) {
+        if (wnd.kbd.IsKeyPressed('O')) {
             pFreeViewCamera->TranslateLocal({ 0.0f, 0.4f, 0.0f });
         }
     }

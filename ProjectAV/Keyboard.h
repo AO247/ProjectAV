@@ -14,32 +14,25 @@ public:
 		{
 			Press,
 			Release,
+			Invalid
 		};
 	private:
 		Type type;
 		unsigned char code;
 	public:
-		Event( Type type,unsigned char code ) noexcept
+		Event() noexcept : type(Type::Invalid), code(0) {}
+		Event(Type type, unsigned char code) noexcept
 			:
-			type( type ),
-			code( code )
-		{}
-		bool IsPress() const noexcept
+			type(type),
+			code(code)
 		{
-			return type == Type::Press;
 		}
-		bool IsRelease() const noexcept
-		{
-			return type == Type::Release;
-		}
-		unsigned char GetCode() const noexcept
-		{
-			return code;
-		}
+		bool IsPress() const noexcept { return type == Type::Press; }
+		bool IsRelease() const noexcept { return type == Type::Release; }
+		unsigned char GetCode() const noexcept { return code; }
 	};
 public:
 	Keyboard() = default;
-	Keyboard( const Keyboard& ) = delete;
 	Keyboard& operator=( const Keyboard& ) = delete;
 	// key event stuff
 	bool KeyIsPressed( unsigned char keycode ) const noexcept;
@@ -52,21 +45,38 @@ public:
 	void FlushChar() noexcept;
 	void Flush() noexcept;
 	// autorepeat control
+
+	bool IsKeyPressed(unsigned char keycode) const noexcept;
+
+	std::optional<Event> PollKeyEvent() noexcept;
+	bool IsKeyBufferEmpty() const noexcept;
+	void FlushKeyEvents() noexcept;
+
+	std::optional<char> PollChar() noexcept;
+	bool IsCharBufferEmpty() const noexcept;
+	void FlushChars() noexcept;
+
+	void FlushAll() noexcept;
+
 	void EnableAutorepeat() noexcept;
 	void DisableAutorepeat() noexcept;
-	bool AutorepeatIsEnabled() const noexcept;
+	bool IsAutorepeatEnabled() const noexcept;
+
 private:
-	void OnKeyPressed( unsigned char keycode ) noexcept;
-	void OnKeyReleased( unsigned char keycode ) noexcept;
-	void OnChar( char character ) noexcept;
+	void OnKeyPressed(unsigned char keycode) noexcept;
+	void OnKeyReleased(unsigned char keycode) noexcept;
+	void OnChar(char character) noexcept;
 	void ClearState() noexcept;
-	template<typename T>
-	static void TrimBuffer( std::queue<T>& buffer ) noexcept;
+
 private:
-	static constexpr unsigned int nKeys = 256u;
-	static constexpr unsigned int bufferSize = 16u;
+	template<typename T>
+	static void TrimBuffer(std::queue<T>& buffer) noexcept;
+
+private:
+	static constexpr unsigned int keyCount = 256u;
+	static constexpr unsigned int bufferCapacity = 16u;
 	bool autorepeatEnabled = false;
-	std::bitset<nKeys> keystates;
-	std::queue<Event> keybuffer;
-	std::queue<char> charbuffer;
+	std::bitset<keyCount> keyStates;
+	std::queue<Event> keyBuffer;
+	std::queue<char> charBuffer;
 };

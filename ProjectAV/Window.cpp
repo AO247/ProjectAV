@@ -269,7 +269,7 @@ LRESULT Window::HandleMsg( HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam ) noex
 		{
 			break;
 		}
-		if( !(lParam & 0x40000000) || kbd.AutorepeatIsEnabled() ) // filter autorepeat
+		if( !(lParam & 0x40000000) || kbd.IsAutorepeatEnabled() ) // filter autorepeat
 		{
 			kbd.OnKeyPressed( static_cast<unsigned char>(wParam) );
 		}
@@ -418,7 +418,7 @@ LRESULT Window::HandleMsg( HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam ) noex
 	/************** RAW MOUSE MESSAGES **************/
 	case WM_INPUT:
 	{
-		if( !mouse.RawEnabled() )
+		if( !mouse.IsRawInputEnabled() )
 		{
 			break;
 		}
