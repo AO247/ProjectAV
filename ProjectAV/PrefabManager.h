@@ -25,27 +25,24 @@ public:
     ///////////////////////////////
 
     static Node* InstantiateMushroom1(Node* parentNode, float locX, float locY, float locZ, float scale) {
-        auto pNewNodeOwner = std::make_unique<Node>("Stone", nullptr, "WALL");
+        auto pNewNodeOwner = std::make_unique<Node>("Mushroom1", nullptr, "WALL");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\enviro_male_1\\grzyb_1.obj")
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-        ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
-        ConvexHullShapeSettings shapeSettings(PhysicsCommon::MakeVertexArray(islandModel->GetAllUniqueVertices()));
-        ShapeRefC islandShape = shapeSettings.Create().Get();
-        BodyCreationSettings BodySettings(islandShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
-        BodySettings.mMassPropertiesOverride.mMass = 7.0f;
-        BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
-        BodySettings.mFriction = 0.5f;
-        BodySettings.mMotionQuality = EMotionQuality::LinearCast;
-        /*pNewNodeOwner->AddComponent(
-            std::make_unique<Rigidbody>(pNewNodeOwner.get(), BodySettings)
-        );*/
-        /*Rigidbody* pRigidbody = pNewNodeOwner->GetComponent<Rigidbody>();
+        ModelComponent* model = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList modelTriangles = PhysicsCommon::MakeTriangleList(model->GetAllTriangles());
+        MeshShapeSettings modelMeshSettings(modelTriangles);
+        Shape::ShapeResult modelMeshCreationResult = modelMeshSettings.Create();
+        ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
+        ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
+        modelMeshShape = modelScaling.Create().Get();
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
-            std::make_unique<Throwable>(pNewNodeOwner.get())
-        );*/
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
+        );
 
         pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
@@ -56,27 +53,24 @@ public:
         return pNewNode;
     }
     static Node* InstantiateMushroom2(Node* parentNode, float locX, float locY, float locZ, float scale) {
-        auto pNewNodeOwner = std::make_unique<Node>("Stone", nullptr, "WALL");
+        auto pNewNodeOwner = std::make_unique<Node>("Mushroom2", nullptr, "WALL");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\enviro_male_1\\grzyb_2.obj")
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-        ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
-        ConvexHullShapeSettings shapeSettings(PhysicsCommon::MakeVertexArray(islandModel->GetAllUniqueVertices()));
-        ShapeRefC islandShape = shapeSettings.Create().Get();
-        BodyCreationSettings BodySettings(islandShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
-        BodySettings.mMassPropertiesOverride.mMass = 7.0f;
-        BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
-        BodySettings.mFriction = 0.5f;
-        BodySettings.mMotionQuality = EMotionQuality::LinearCast;
-        /*pNewNodeOwner->AddComponent(
-            std::make_unique<Rigidbody>(pNewNodeOwner.get(), BodySettings)
-        );
-        Rigidbody* pRigidbody = pNewNodeOwner->GetComponent<Rigidbody>();
+        ModelComponent* model = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList modelTriangles = PhysicsCommon::MakeTriangleList(model->GetAllTriangles());
+        MeshShapeSettings modelMeshSettings(modelTriangles);
+        Shape::ShapeResult modelMeshCreationResult = modelMeshSettings.Create();
+        ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
+        ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
+        modelMeshShape = modelScaling.Create().Get();
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
-            std::make_unique<Throwable>(pNewNodeOwner.get())
-        );*/
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
+        );
 
         pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
@@ -87,27 +81,24 @@ public:
         return pNewNode;
     }
     static Node* InstantiateMushroom3(Node* parentNode, float locX, float locY, float locZ, float scale) {
-        auto pNewNodeOwner = std::make_unique<Node>("Stone", nullptr, "WALL");
+        auto pNewNodeOwner = std::make_unique<Node>("Mushroom3", nullptr, "WALL");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\enviro_male_1\\grzyb_3.obj")
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-        ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
-        ConvexHullShapeSettings shapeSettings(PhysicsCommon::MakeVertexArray(islandModel->GetAllUniqueVertices()));
-        ShapeRefC islandShape = shapeSettings.Create().Get();
-        BodyCreationSettings BodySettings(islandShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
-        BodySettings.mMassPropertiesOverride.mMass = 7.0f;
-        BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
-        BodySettings.mFriction = 0.5f;
-        BodySettings.mMotionQuality = EMotionQuality::LinearCast;
-        /*pNewNodeOwner->AddComponent(
-            std::make_unique<Rigidbody>(pNewNodeOwner.get(), BodySettings)
-        );
-        Rigidbody* pRigidbody = pNewNodeOwner->GetComponent<Rigidbody>();
+        ModelComponent* model = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList modelTriangles = PhysicsCommon::MakeTriangleList(model->GetAllTriangles());
+        MeshShapeSettings modelMeshSettings(modelTriangles);
+        Shape::ShapeResult modelMeshCreationResult = modelMeshSettings.Create();
+        ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
+        ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
+        modelMeshShape = modelScaling.Create().Get();
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
-            std::make_unique<Throwable>(pNewNodeOwner.get())
-        );*/
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
+        );
 
         pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
@@ -118,27 +109,24 @@ public:
         return pNewNode;
     }
     static Node* InstantiateSpike1(Node* parentNode, float locX, float locY, float locZ, float scale) {
-        auto pNewNodeOwner = std::make_unique<Node>("Stone", nullptr, "STONE");
+        auto pNewNodeOwner = std::make_unique<Node>("Spike1", nullptr, "WALL");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\enviro_male_1\\kolce_1.obj")
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-        ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
-        ConvexHullShapeSettings shapeSettings(PhysicsCommon::MakeVertexArray(islandModel->GetAllUniqueVertices()));
-        ShapeRefC islandShape = shapeSettings.Create().Get();
-        BodyCreationSettings BodySettings(islandShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
-        BodySettings.mMassPropertiesOverride.mMass = 7.0f;
-        BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
-        BodySettings.mFriction = 0.5f;
-        BodySettings.mMotionQuality = EMotionQuality::LinearCast;
-        /*pNewNodeOwner->AddComponent(
-            std::make_unique<Rigidbody>(pNewNodeOwner.get(), BodySettings)
-        );
-        Rigidbody* pRigidbody = pNewNodeOwner->GetComponent<Rigidbody>();
+        ModelComponent* model = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList modelTriangles = PhysicsCommon::MakeTriangleList(model->GetAllTriangles());
+        MeshShapeSettings modelMeshSettings(modelTriangles);
+        Shape::ShapeResult modelMeshCreationResult = modelMeshSettings.Create();
+        ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
+        ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
+        modelMeshShape = modelScaling.Create().Get();
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
-            std::make_unique<Throwable>(pNewNodeOwner.get())
-        );*/
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
+        );
 
         pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
@@ -149,27 +137,24 @@ public:
         return pNewNode;
     }
     static Node* InstantiateSpike2(Node* parentNode, float locX, float locY, float locZ, float scale) {
-        auto pNewNodeOwner = std::make_unique<Node>("Stone", nullptr, "STONE");
+        auto pNewNodeOwner = std::make_unique<Node>("Spike2", nullptr, "WALL");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\enviro_male_1\\kolce_2.obj")
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-        ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
-        ConvexHullShapeSettings shapeSettings(PhysicsCommon::MakeVertexArray(islandModel->GetAllUniqueVertices()));
-        ShapeRefC islandShape = shapeSettings.Create().Get();
-        BodyCreationSettings BodySettings(islandShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
-        BodySettings.mMassPropertiesOverride.mMass = 7.0f;
-        BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
-        BodySettings.mFriction = 0.5f;
-        BodySettings.mMotionQuality = EMotionQuality::LinearCast;
-        /*pNewNodeOwner->AddComponent(
-            std::make_unique<Rigidbody>(pNewNodeOwner.get(), BodySettings)
-        );
-        Rigidbody* pRigidbody = pNewNodeOwner->GetComponent<Rigidbody>();
+        ModelComponent* model = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList modelTriangles = PhysicsCommon::MakeTriangleList(model->GetAllTriangles());
+        MeshShapeSettings modelMeshSettings(modelTriangles);
+        Shape::ShapeResult modelMeshCreationResult = modelMeshSettings.Create();
+        ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
+        ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
+        modelMeshShape = modelScaling.Create().Get();
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
-            std::make_unique<Throwable>(pNewNodeOwner.get())
-        );*/
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
+        );
 
         pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
@@ -181,22 +166,24 @@ public:
     }
     static Node* InstantiateFaceColumn1(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Column", nullptr, "WALL");
+        auto pNewNodeOwner = std::make_unique<Node>("FaceColumn1", nullptr, "WALL");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\enviro_male_1\\filar_twarze.obj")
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-        BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(2.0f, 10.0f, 2.0f)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::WALL);
-        BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
-
-        //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
-        BodySettings.mMassPropertiesOverride.mMass = 50.0f;
-        BodySettings.mFriction = 0.0f;
-        BodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
-        /*pNewNodeOwner->AddComponent(
-            std::make_unique<Rigidbody>(pNewNodeOwner.get(), BodySettings)
-        );*/
+        ModelComponent* model = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList modelTriangles = PhysicsCommon::MakeTriangleList(model->GetAllTriangles());
+        MeshShapeSettings modelMeshSettings(modelTriangles);
+        Shape::ShapeResult modelMeshCreationResult = modelMeshSettings.Create();
+        ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
+        ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
+        modelMeshShape = modelScaling.Create().Get();
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
+        pNewNodeOwner->AddComponent(
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
+        );
 
         pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
@@ -208,22 +195,24 @@ public:
     }
     static Node* InstantiateFire1(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Column", nullptr, "WALL");
+        auto pNewNodeOwner = std::make_unique<Node>("Fire1", nullptr, "WALL");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\enviro_male_2\\krata_ogien.obj")
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-        BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(2.0f, 10.0f, 2.0f)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::WALL);
-        BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
-
-        //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
-        BodySettings.mMassPropertiesOverride.mMass = 50.0f;
-        BodySettings.mFriction = 0.0f;
-        BodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
-        /*pNewNodeOwner->AddComponent(
-            std::make_unique<Rigidbody>(pNewNodeOwner.get(), BodySettings)
-        );*/
+        ModelComponent* model = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList modelTriangles = PhysicsCommon::MakeTriangleList(model->GetAllTriangles());
+        MeshShapeSettings modelMeshSettings(modelTriangles);
+        Shape::ShapeResult modelMeshCreationResult = modelMeshSettings.Create();
+        ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
+        ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
+        modelMeshShape = modelScaling.Create().Get();
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
+        pNewNodeOwner->AddComponent(
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
+        );
 
         pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
@@ -240,21 +229,23 @@ public:
 
     static Node* InstantiateRock1(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Column", nullptr, "WALL");
+        auto pNewNodeOwner = std::make_unique<Node>("Rock1", nullptr, "WALL");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\glazy_0606\\glaz_1.obj")
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-        BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(2.0f, 10.0f, 2.0f)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::WALL);
-        BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
-
-        //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
-        BodySettings.mMassPropertiesOverride.mMass = 50.0f;
-        BodySettings.mFriction = 0.0f;
-        BodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
+        ModelComponent* model = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList modelTriangles = PhysicsCommon::MakeTriangleList(model->GetAllTriangles());
+        MeshShapeSettings modelMeshSettings(modelTriangles);
+        Shape::ShapeResult modelMeshCreationResult = modelMeshSettings.Create();
+        ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
+        ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
+        modelMeshShape = modelScaling.Create().Get();
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
-            std::make_unique<Rigidbody>(pNewNodeOwner.get(), BodySettings)
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
         pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
@@ -267,21 +258,23 @@ public:
     }
     static Node* InstantiateRock2(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Column", nullptr, "WALL");
+        auto pNewNodeOwner = std::make_unique<Node>("Rock2", nullptr, "WALL");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\glazy_0606\\glaz_2.obj")
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-        BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(2.0f, 10.0f, 2.0f)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::WALL);
-        BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
-
-        //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
-        BodySettings.mMassPropertiesOverride.mMass = 50.0f;
-        BodySettings.mFriction = 0.0f;
-        BodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
+        ModelComponent* model = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList modelTriangles = PhysicsCommon::MakeTriangleList(model->GetAllTriangles());
+        MeshShapeSettings modelMeshSettings(modelTriangles);
+        Shape::ShapeResult modelMeshCreationResult = modelMeshSettings.Create();
+        ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
+        ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
+        modelMeshShape = modelScaling.Create().Get();
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
-            std::make_unique<Rigidbody>(pNewNodeOwner.get(), BodySettings)
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
         pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
@@ -294,21 +287,23 @@ public:
     }
     static Node* InstantiateRock3(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Column", nullptr, "WALL");
+        auto pNewNodeOwner = std::make_unique<Node>("Rock3", nullptr, "WALL");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\glazy_0606\\glaz_3.obj")
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-        BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(2.0f, 10.0f, 2.0f)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::WALL);
-        BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
-
-        //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
-        BodySettings.mMassPropertiesOverride.mMass = 50.0f;
-        BodySettings.mFriction = 0.0f;
-        BodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
+        ModelComponent* model = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList modelTriangles = PhysicsCommon::MakeTriangleList(model->GetAllTriangles());
+        MeshShapeSettings modelMeshSettings(modelTriangles);
+        Shape::ShapeResult modelMeshCreationResult = modelMeshSettings.Create();
+        ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
+        ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
+        modelMeshShape = modelScaling.Create().Get();
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
-            std::make_unique<Rigidbody>(pNewNodeOwner.get(), BodySettings)
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
         pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
@@ -321,21 +316,23 @@ public:
     }
     static Node* InstantiateRock4(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Column", nullptr, "WALL");
+        auto pNewNodeOwner = std::make_unique<Node>("Rock4", nullptr, "WALL");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\glazy_0606\\glaz_4.obj")
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-        BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(2.0f, 10.0f, 2.0f)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::WALL);
-        BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
-
-        //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
-        BodySettings.mMassPropertiesOverride.mMass = 50.0f;
-        BodySettings.mFriction = 0.0f;
-        BodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
+        ModelComponent* model = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList modelTriangles = PhysicsCommon::MakeTriangleList(model->GetAllTriangles());
+        MeshShapeSettings modelMeshSettings(modelTriangles);
+        Shape::ShapeResult modelMeshCreationResult = modelMeshSettings.Create();
+        ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
+        ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
+        modelMeshShape = modelScaling.Create().Get();
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
-            std::make_unique<Rigidbody>(pNewNodeOwner.get(), BodySettings)
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
         pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
@@ -348,21 +345,23 @@ public:
     }
     static Node* InstantiateRock5(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Column", nullptr, "WALL");
+        auto pNewNodeOwner = std::make_unique<Node>("Rock5", nullptr, "WALL");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\glazy_0606\\glaz_5.obj")
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-        BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(2.0f, 10.0f, 2.0f)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::WALL);
-        BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
-
-        //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
-        BodySettings.mMassPropertiesOverride.mMass = 50.0f;
-        BodySettings.mFriction = 0.0f;
-        BodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
+        ModelComponent* model = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList modelTriangles = PhysicsCommon::MakeTriangleList(model->GetAllTriangles());
+        MeshShapeSettings modelMeshSettings(modelTriangles);
+        Shape::ShapeResult modelMeshCreationResult = modelMeshSettings.Create();
+        ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
+        ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
+        modelMeshShape = modelScaling.Create().Get();
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
-            std::make_unique<Rigidbody>(pNewNodeOwner.get(), BodySettings)
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
         pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
@@ -375,21 +374,23 @@ public:
     }
     static Node* InstantiateRockDouble(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Column", nullptr, "WALL");
+        auto pNewNodeOwner = std::make_unique<Node>("RockDouble", nullptr, "WALL");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\glazy_0606\\glaz_podwojnny.obj")
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-        BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(2.0f, 10.0f, 2.0f)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::WALL);
-        BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
-
-        //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
-        BodySettings.mMassPropertiesOverride.mMass = 50.0f;
-        BodySettings.mFriction = 0.0f;
-        BodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
+        ModelComponent* model = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList modelTriangles = PhysicsCommon::MakeTriangleList(model->GetAllTriangles());
+        MeshShapeSettings modelMeshSettings(modelTriangles);
+        Shape::ShapeResult modelMeshCreationResult = modelMeshSettings.Create();
+        ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
+        ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
+        modelMeshShape = modelScaling.Create().Get();
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
-            std::make_unique<Rigidbody>(pNewNodeOwner.get(), BodySettings)
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
         pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
@@ -402,26 +403,23 @@ public:
     }
     static Node* InstantiateLog1(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Stone", nullptr, "STONE");
+        auto pNewNodeOwner = std::make_unique<Node>("Log1", nullptr, "WALL");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\enviro_male_1\\konar_1.obj")
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-        ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
-        ConvexHullShapeSettings shapeSettings(PhysicsCommon::MakeVertexArray(islandModel->GetAllUniqueVertices()));
-        ShapeRefC islandShape = shapeSettings.Create().Get();
-        BodyCreationSettings BodySettings(islandShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
-        BodySettings.mMassPropertiesOverride.mMass = 7.0f;
-        BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
-        BodySettings.mFriction = 0.5f;
-        BodySettings.mMotionQuality = EMotionQuality::LinearCast;
+        ModelComponent* model = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList modelTriangles = PhysicsCommon::MakeTriangleList(model->GetAllTriangles());
+        MeshShapeSettings modelMeshSettings(modelTriangles);
+        Shape::ShapeResult modelMeshCreationResult = modelMeshSettings.Create();
+        ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
+        ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
+        modelMeshShape = modelScaling.Create().Get();
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
-            std::make_unique<Rigidbody>(pNewNodeOwner.get(), BodySettings)
-        );
-        Rigidbody* pRigidbody = pNewNodeOwner->GetComponent<Rigidbody>();
-        pNewNodeOwner->AddComponent(
-            std::make_unique<Throwable>(pNewNodeOwner.get())
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
         pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
@@ -434,26 +432,23 @@ public:
     }
     static Node* InstantiateLog2(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Stone", nullptr, "STONE");
+        auto pNewNodeOwner = std::make_unique<Node>("Log2", nullptr, "WALL");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\enviro_male_2\\konar_2.obj")
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-        ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
-        ConvexHullShapeSettings shapeSettings(PhysicsCommon::MakeVertexArray(islandModel->GetAllUniqueVertices()));
-        ShapeRefC islandShape = shapeSettings.Create().Get();
-        BodyCreationSettings BodySettings(islandShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
-        BodySettings.mMassPropertiesOverride.mMass = 7.0f;
-        BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
-        BodySettings.mFriction = 0.5f;
-        BodySettings.mMotionQuality = EMotionQuality::LinearCast;
+        ModelComponent* model = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList modelTriangles = PhysicsCommon::MakeTriangleList(model->GetAllTriangles());
+        MeshShapeSettings modelMeshSettings(modelTriangles);
+        Shape::ShapeResult modelMeshCreationResult = modelMeshSettings.Create();
+        ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
+        ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
+        modelMeshShape = modelScaling.Create().Get();
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
-            std::make_unique<Rigidbody>(pNewNodeOwner.get(), BodySettings)
-        );
-        Rigidbody* pRigidbody = pNewNodeOwner->GetComponent<Rigidbody>();
-        pNewNodeOwner->AddComponent(
-            std::make_unique<Throwable>(pNewNodeOwner.get())
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
         pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
@@ -466,21 +461,23 @@ public:
     }
     static Node* InstantiateWall1(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Column", nullptr, "WALL");
+        auto pNewNodeOwner = std::make_unique<Node>("Wall1", nullptr, "WALL");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\ruiny_1\\murek_1.obj")
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-        BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(2.0f, 10.0f, 2.0f)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::WALL);
-        BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
-
-        //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
-        BodySettings.mMassPropertiesOverride.mMass = 50.0f;
-        BodySettings.mFriction = 0.0f;
-        BodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
+        ModelComponent* model = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList modelTriangles = PhysicsCommon::MakeTriangleList(model->GetAllTriangles());
+        MeshShapeSettings modelMeshSettings(modelTriangles);
+        Shape::ShapeResult modelMeshCreationResult = modelMeshSettings.Create();
+        ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
+        ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
+        modelMeshShape = modelScaling.Create().Get();
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
-            std::make_unique<Rigidbody>(pNewNodeOwner.get(), BodySettings)
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
         pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
@@ -493,21 +490,23 @@ public:
     }
     static Node* InstantiateWall2(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Column", nullptr, "WALL");
+        auto pNewNodeOwner = std::make_unique<Node>("Wall2", nullptr, "WALL");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\ruin_1\\murek_2.obj")
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-        BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(2.0f, 10.0f, 2.0f)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::WALL);
-        BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
-
-        //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
-        BodySettings.mMassPropertiesOverride.mMass = 50.0f;
-        BodySettings.mFriction = 0.0f;
-        BodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
+        ModelComponent* model = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList modelTriangles = PhysicsCommon::MakeTriangleList(model->GetAllTriangles());
+        MeshShapeSettings modelMeshSettings(modelTriangles);
+        Shape::ShapeResult modelMeshCreationResult = modelMeshSettings.Create();
+        ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
+        ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
+        modelMeshShape = modelScaling.Create().Get();
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
-            std::make_unique<Rigidbody>(pNewNodeOwner.get(), BodySettings)
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
         pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
@@ -520,23 +519,24 @@ public:
     }
     static Node* InstantiateWall3(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Column", nullptr, "WALL");
+        auto pNewNodeOwner = std::make_unique<Node>("Wall3", nullptr, "WALL");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\ruiny_1\\murek_3.obj")
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-        BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(2.0f, 10.0f, 2.0f)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::WALL);
-        BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
-
-        //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
-        BodySettings.mMassPropertiesOverride.mMass = 50.0f;
-        BodySettings.mFriction = 0.0f;
-        BodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
+        ModelComponent* model = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList modelTriangles = PhysicsCommon::MakeTriangleList(model->GetAllTriangles());
+        MeshShapeSettings modelMeshSettings(modelTriangles);
+        Shape::ShapeResult modelMeshCreationResult = modelMeshSettings.Create();
+        ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
+        ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
+        modelMeshShape = modelScaling.Create().Get();
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
-            std::make_unique<Rigidbody>(pNewNodeOwner.get(), BodySettings)
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
-
         pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
@@ -547,21 +547,23 @@ public:
     }
     static Node* InstantiateWall4(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Column", nullptr, "WALL");
+        auto pNewNodeOwner = std::make_unique<Node>("Wall4", nullptr, "WALL");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\ruiny_2\\sciana_1.obj")
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-        BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(2.0f, 10.0f, 2.0f)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::WALL);
-        BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
-
-        //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
-        BodySettings.mMassPropertiesOverride.mMass = 50.0f;
-        BodySettings.mFriction = 0.0f;
-        BodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
+        ModelComponent* model = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList modelTriangles = PhysicsCommon::MakeTriangleList(model->GetAllTriangles());
+        MeshShapeSettings modelMeshSettings(modelTriangles);
+        Shape::ShapeResult modelMeshCreationResult = modelMeshSettings.Create();
+        ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
+        ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
+        modelMeshShape = modelScaling.Create().Get();
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
-            std::make_unique<Rigidbody>(pNewNodeOwner.get(), BodySettings)
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
         pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
@@ -574,21 +576,23 @@ public:
     }
     static Node* InstantiateRuin1(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Column", nullptr, "WALL");
+        auto pNewNodeOwner = std::make_unique<Node>("Ruin1", nullptr, "WALL");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\ruiny_1\\ruina_1.obj")
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-        BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(2.0f, 10.0f, 2.0f)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::WALL);
-        BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
-
-        //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
-        BodySettings.mMassPropertiesOverride.mMass = 50.0f;
-        BodySettings.mFriction = 0.0f;
-        BodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
+        ModelComponent* model = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList modelTriangles = PhysicsCommon::MakeTriangleList(model->GetAllTriangles());
+        MeshShapeSettings modelMeshSettings(modelTriangles);
+        Shape::ShapeResult modelMeshCreationResult = modelMeshSettings.Create();
+        ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
+        ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
+        modelMeshShape = modelScaling.Create().Get();
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
-            std::make_unique<Rigidbody>(pNewNodeOwner.get(), BodySettings)
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
         pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
@@ -601,21 +605,23 @@ public:
     }
     static Node* InstantiateRuin2(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Column", nullptr, "WALL");
+        auto pNewNodeOwner = std::make_unique<Node>("Ruin2", nullptr, "WALL");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\ruiny_2\\ruina_2_podstawa.obj")
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-        BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(2.0f, 10.0f, 2.0f)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::WALL);
-        BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
-
-        //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
-        BodySettings.mMassPropertiesOverride.mMass = 50.0f;
-        BodySettings.mFriction = 0.0f;
-        BodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
+        ModelComponent* model = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList modelTriangles = PhysicsCommon::MakeTriangleList(model->GetAllTriangles());
+        MeshShapeSettings modelMeshSettings(modelTriangles);
+        Shape::ShapeResult modelMeshCreationResult = modelMeshSettings.Create();
+        ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
+        ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
+        modelMeshShape = modelScaling.Create().Get();
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
-            std::make_unique<Rigidbody>(pNewNodeOwner.get(), BodySettings)
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
         pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
@@ -628,21 +634,23 @@ public:
     }
     static Node* InstantiateRuin3(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Column", nullptr, "WALL");
+        auto pNewNodeOwner = std::make_unique<Node>("Ruin3", nullptr, "WALL");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\ruiny_2\\ruina_2_top.obj")
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-        BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(2.0f, 10.0f, 2.0f)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::WALL);
-        BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
-
-        //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
-        BodySettings.mMassPropertiesOverride.mMass = 50.0f;
-        BodySettings.mFriction = 0.0f;
-        BodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
+        ModelComponent* model = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList modelTriangles = PhysicsCommon::MakeTriangleList(model->GetAllTriangles());
+        MeshShapeSettings modelMeshSettings(modelTriangles);
+        Shape::ShapeResult modelMeshCreationResult = modelMeshSettings.Create();
+        ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
+        ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
+        modelMeshShape = modelScaling.Create().Get();
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
-            std::make_unique<Rigidbody>(pNewNodeOwner.get(), BodySettings)
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
         pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
@@ -655,21 +663,23 @@ public:
     }
     static Node* InstantiateRuin4(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Column", nullptr, "WALL");
+        auto pNewNodeOwner = std::make_unique<Node>("Ruin4", nullptr, "WALL");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\ruiny_2\\ruina_duza_1.obj")
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-        BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(2.0f, 10.0f, 2.0f)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::WALL);
-        BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
-
-        //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
-        BodySettings.mMassPropertiesOverride.mMass = 50.0f;
-        BodySettings.mFriction = 0.0f;
-        BodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
+        ModelComponent* model = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList modelTriangles = PhysicsCommon::MakeTriangleList(model->GetAllTriangles());
+        MeshShapeSettings modelMeshSettings(modelTriangles);
+        Shape::ShapeResult modelMeshCreationResult = modelMeshSettings.Create();
+        ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
+        ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
+        modelMeshShape = modelScaling.Create().Get();
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
-            std::make_unique<Rigidbody>(pNewNodeOwner.get(), BodySettings)
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
         pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
@@ -682,21 +692,23 @@ public:
     }
     static Node* InstantiateRuin5(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Column", nullptr, "WALL");
+        auto pNewNodeOwner = std::make_unique<Node>("Ruin5", nullptr, "WALL");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\ruiny_2\\ruina_duza_2.obj")
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-        BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(2.0f, 10.0f, 2.0f)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::WALL);
-        BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
-
-        //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
-        BodySettings.mMassPropertiesOverride.mMass = 50.0f;
-        BodySettings.mFriction = 0.0f;
-        BodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
+        ModelComponent* model = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList modelTriangles = PhysicsCommon::MakeTriangleList(model->GetAllTriangles());
+        MeshShapeSettings modelMeshSettings(modelTriangles);
+        Shape::ShapeResult modelMeshCreationResult = modelMeshSettings.Create();
+        ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
+        ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
+        modelMeshShape = modelScaling.Create().Get();
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
-            std::make_unique<Rigidbody>(pNewNodeOwner.get(), BodySettings)
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
         pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
@@ -709,21 +721,23 @@ public:
     }
     static Node* InstantiateRuinRoof1(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Column", nullptr, "WALL");
+        auto pNewNodeOwner = std::make_unique<Node>("RuinRoof1", nullptr, "WALL");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\ruiny_2\\sufit_1.obj")
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-        BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(2.0f, 10.0f, 2.0f)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::WALL);
-        BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
-
-        //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
-        BodySettings.mMassPropertiesOverride.mMass = 50.0f;
-        BodySettings.mFriction = 0.0f;
-        BodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
+        ModelComponent* model = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList modelTriangles = PhysicsCommon::MakeTriangleList(model->GetAllTriangles());
+        MeshShapeSettings modelMeshSettings(modelTriangles);
+        Shape::ShapeResult modelMeshCreationResult = modelMeshSettings.Create();
+        ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
+        ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
+        modelMeshShape = modelScaling.Create().Get();
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
-            std::make_unique<Rigidbody>(pNewNodeOwner.get(), BodySettings)
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
         pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
@@ -736,21 +750,23 @@ public:
     }
     static Node* InstantiateRuinRoof2(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Column", nullptr, "WALL");
+        auto pNewNodeOwner = std::make_unique<Node>("RuinRoof2", nullptr, "WALL");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\ruiny_2\\sufit_2.obj")
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-        BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(2.0f, 10.0f, 2.0f)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::WALL);
-        BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
-
-        //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
-        BodySettings.mMassPropertiesOverride.mMass = 50.0f;
-        BodySettings.mFriction = 0.0f;
-        BodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
+        ModelComponent* model = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList modelTriangles = PhysicsCommon::MakeTriangleList(model->GetAllTriangles());
+        MeshShapeSettings modelMeshSettings(modelTriangles);
+        Shape::ShapeResult modelMeshCreationResult = modelMeshSettings.Create();
+        ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
+        ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
+        modelMeshShape = modelScaling.Create().Get();
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
-            std::make_unique<Rigidbody>(pNewNodeOwner.get(), BodySettings)
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
         pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
@@ -761,23 +777,25 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateStatue(Node* parentNode, float locX, float locY, float locZ, float scale)
+    /*static Node* InstantiateStatue(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Test", nullptr, "WALL");
+        auto pNewNodeOwner = std::make_unique<Node>("Statue", nullptr, "WALL");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\enviro_male_1\\kolce_1.obj")
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-        BodyCreationSettings BodySettings(new JPH::BoxShape(Vec3(2.0f, 10.0f, 2.0f)), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::WALL);
-        BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
-
-        //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
-        BodySettings.mMassPropertiesOverride.mMass = 50.0f;
-        BodySettings.mFriction = 0.0f;
-        BodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
+        ModelComponent* model = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList modelTriangles = PhysicsCommon::MakeTriangleList(model->GetAllTriangles());
+        MeshShapeSettings modelMeshSettings(modelTriangles);
+        Shape::ShapeResult modelMeshCreationResult = modelMeshSettings.Create();
+        ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
+        ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
+        modelMeshShape = modelScaling.Create().Get();
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
-            std::make_unique<Rigidbody>(pNewNodeOwner.get(), BodySettings)
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
         pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
@@ -787,7 +805,7 @@ public:
         parentNode->AddChild(std::move(pNewNodeOwner));
 
         return pNewNode;
-    }
+    }*/
     static Node* InstantiateColumn(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
         auto pNewNodeOwner = std::make_unique<Node>("Column", nullptr, "WALL");
@@ -819,7 +837,7 @@ public:
     }
     static Node* InstantiateColumn1(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Column", nullptr, "WALL");
+        auto pNewNodeOwner = std::make_unique<Node>("Column1", nullptr, "WALL");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\ruiny_1\\kolumna.obj")
@@ -848,7 +866,7 @@ public:
     }
     static Node* InstantiateColumn2(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Column", nullptr, "WALL");
+        auto pNewNodeOwner = std::make_unique<Node>("Column2", nullptr, "WALL");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\ruiny_1\\kolumna_podwojna.obj")
@@ -877,7 +895,7 @@ public:
     }
     static Node* InstantiateColumn3(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Column", nullptr, "WALL");
+        auto pNewNodeOwner = std::make_unique<Node>("Column3", nullptr, "WALL");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\ruiny_1\\kolumna_podwojna_z.obj")
@@ -906,7 +924,7 @@ public:
     }
     static Node* InstantiateColumn4(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Column", nullptr, "WALL");
+        auto pNewNodeOwner = std::make_unique<Node>("Column4", nullptr, "WALL");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\ruiny_1\\kolumna_z.obj")
@@ -935,7 +953,7 @@ public:
     }
     static Node* InstantiateColumn5(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Column", nullptr, "WALL");
+        auto pNewNodeOwner = std::make_unique<Node>("Column5", nullptr, "WALL");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\ruiny_1\\kolumna_z_podstawa.obj")
@@ -964,7 +982,7 @@ public:
     }
     static Node* InstantiateColumn6(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Column", nullptr, "WALL");
+        auto pNewNodeOwner = std::make_unique<Node>("Column6", nullptr, "WALL");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\ruiny_1\\kolumna_z_srodek.obj")
@@ -993,7 +1011,7 @@ public:
     }
     static Node* InstantiateColumn7(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Column", nullptr, "WALL");
+        auto pNewNodeOwner = std::make_unique<Node>("Column7", nullptr, "WALL");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\ruiny_1\\kolumna_z_top.obj")
@@ -1027,7 +1045,7 @@ public:
 
     static Node* InstantiateStick1(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Stone", nullptr, "STONE");
+        auto pNewNodeOwner = std::make_unique<Node>("Stick1", nullptr, "STONE");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\enviro_male_2\\patyk_1.obj")
@@ -1059,7 +1077,7 @@ public:
     }
     static Node* InstantiateStick2(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Stone", nullptr, "STONE");
+        auto pNewNodeOwner = std::make_unique<Node>("Stick2", nullptr, "STONE");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\enviro_male_2\\patyk_2.obj")
@@ -1091,7 +1109,7 @@ public:
     }
     static Node* InstantiateStone1(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Stone", nullptr, "STONE");
+        auto pNewNodeOwner = std::make_unique<Node>("Stone1", nullptr, "STONE");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<SoundEffectsPlayer>(pNewNodeOwner.get())
@@ -1131,7 +1149,7 @@ public:
     }
     static Node* InstantiateStone2(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Stone", nullptr, "STONE");
+        auto pNewNodeOwner = std::make_unique<Node>("Stone2", nullptr, "STONE");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\enviro_male_1\\kamien_2.obj")
@@ -1163,7 +1181,7 @@ public:
     }
     static Node* InstantiateStone3(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Stone", nullptr, "STONE");
+        auto pNewNodeOwner = std::make_unique<Node>("Stone3", nullptr, "STONE");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\enviro_male_1\\kamien_3.obj")
@@ -1195,7 +1213,7 @@ public:
     }
     static Node* InstantiateStone4(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Stone", nullptr, "STONE");
+        auto pNewNodeOwner = std::make_unique<Node>("Stone4", nullptr, "STONE");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\enviro_male_1\\kamien_4.obj")
@@ -1227,7 +1245,7 @@ public:
     }
     static Node* InstantiateStone5(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Stone", nullptr, "STONE");
+        auto pNewNodeOwner = std::make_unique<Node>("Stone5", nullptr, "STONE");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\enviro_male_1\\kamien_5.obj")
@@ -1259,7 +1277,7 @@ public:
     }
     static Node* InstantiatePot1(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Stone", nullptr, "STONE");
+        auto pNewNodeOwner = std::make_unique<Node>("Pot1", nullptr, "STONE");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\enviro_male_2\\waza_1.obj")
@@ -1291,7 +1309,7 @@ public:
     }
     static Node* InstantiatePot2(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Stone", nullptr, "STONE");
+        auto pNewNodeOwner = std::make_unique<Node>("Pot2", nullptr, "STONE");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\enviro_male_2\\waza_2.obj")
@@ -1323,7 +1341,7 @@ public:
     }
     static Node* InstantiatePot3(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Stone", nullptr, "STONE");
+        auto pNewNodeOwner = std::make_unique<Node>("Pot3", nullptr, "STONE");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\enviro_male_2\\waza_3.obj")
@@ -1355,7 +1373,7 @@ public:
     }
     static Node* InstantiatePot4(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Stone", nullptr, "STONE");
+        auto pNewNodeOwner = std::make_unique<Node>("Pot4", nullptr, "STONE");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\enviro_male_2\\waza_4.obj")
@@ -1387,7 +1405,7 @@ public:
     }
     static Node* InstantiateBrick(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Stone", nullptr, "STONE");
+        auto pNewNodeOwner = std::make_unique<Node>("Brick", nullptr, "STONE");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\ruiny_1\\cegla.obj")
@@ -1419,7 +1437,7 @@ public:
     }
     static Node* InstantiateStoneStack1(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Stone", nullptr, "STONE");
+        auto pNewNodeOwner = std::make_unique<Node>("StoneStack1", nullptr, "STONE");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<SoundEffectsPlayer>(pNewNodeOwner.get())
@@ -1459,7 +1477,7 @@ public:
     }
     static Node* InstantiateStoneStack2(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Stone", nullptr, "STONE");
+        auto pNewNodeOwner = std::make_unique<Node>("StoneStackBase1", nullptr, "STONE");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<SoundEffectsPlayer>(pNewNodeOwner.get())
@@ -1499,7 +1517,7 @@ public:
     }
     static Node* InstantiateStoneStack3(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Stone", nullptr, "STONE");
+        auto pNewNodeOwner = std::make_unique<Node>("StoneStackTop1", nullptr, "STONE");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<SoundEffectsPlayer>(pNewNodeOwner.get())
@@ -1539,7 +1557,7 @@ public:
     }
     static Node* InstantiateStoneStack4(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Stone", nullptr, "STONE");
+        auto pNewNodeOwner = std::make_unique<Node>("StoneStackMid1", nullptr, "STONE");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<SoundEffectsPlayer>(pNewNodeOwner.get())
@@ -1613,7 +1631,7 @@ public:
     }
     static Node* InstantiatePlatform2(Node* parentNode, float locX, float locY, float locZ, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Platform1", nullptr, "GROUND");
+        auto pNewNodeOwner = std::make_unique<Node>("Platform2", nullptr, "GROUND");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\platformy_0606\\platforma_2.obj")
@@ -1644,7 +1662,7 @@ public:
     {
 
 
-        auto pNewNodeOwner = std::make_unique<Node>("Platform1", nullptr, "GROUND");
+        auto pNewNodeOwner = std::make_unique<Node>("Platform3", nullptr, "GROUND");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\platformy_0606\\platforma_3.obj")
@@ -1672,7 +1690,7 @@ public:
         return pNewNode;
     }
     static Node* InstantiatePlatform4(Node* parentNode, float locX, float locY, float locZ, float scale) {
-        auto pNewNodeOwner = std::make_unique<Node>("Platform1", nullptr, "GROUND");
+        auto pNewNodeOwner = std::make_unique<Node>("Platform4", nullptr, "GROUND");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\platformy_glazy_2\\platforma_3.3.obj")
@@ -1700,7 +1718,7 @@ public:
         return pNewNode;
     }
     static Node* InstantiatePlatform5(Node* parentNode, float locX, float locY, float locZ, float scale) {
-            auto pNewNodeOwner = std::make_unique<Node>("Platform1", nullptr, "GROUND");
+            auto pNewNodeOwner = std::make_unique<Node>("Platform5", nullptr, "GROUND");
 
             pNewNodeOwner->AddComponent(
                 std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\platformy_glazy_2\\platforma_3.3.obj")
@@ -1728,7 +1746,7 @@ public:
             return pNewNode;
     }
     static Node* InstantiatePlatform6(Node* parentNode, float locX, float locY, float locZ, float scale) {
-        auto pNewNodeOwner = std::make_unique<Node>("Platform1", nullptr, "GROUND");
+        auto pNewNodeOwner = std::make_unique<Node>("Platform6", nullptr, "GROUND");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\platformy_glazy_2\\platforma_3.3.obj")
