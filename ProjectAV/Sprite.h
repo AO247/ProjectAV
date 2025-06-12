@@ -37,8 +37,8 @@ private:
 
    
 
-    DirectX::XMFLOAT4X4 projectionMatrix_{}; // Initialized
-    DirectX::XMFLOAT4X4 worldMatrix_{};       // Initialized
+    DirectX::XMFLOAT4X4 projectionMatrix_{}; 
+    DirectX::XMFLOAT4X4 worldMatrix_{};       
 
     ID3D11ShaderResourceView* texture_ = nullptr;
     ID3D11SamplerState* sampler_ = nullptr;

@@ -9,8 +9,6 @@
 #include "LevelGenerator.h"
 #include "CMath.h"
 
-// Forward declare Node to avoid circular include if necessary,
-// but including Node.h is often fine here.
 class Node;
 class PrefabManager;
 class LevelGenerator;

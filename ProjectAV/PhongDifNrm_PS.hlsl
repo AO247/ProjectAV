@@ -1,4 +1,3 @@
-// PhongDifNormal_PS.hlsl (WERSJA POPRAWIONA)
 
 #include "ShaderOps.hlsl"
 #include "LightVectorData.hlsl"
@@ -21,7 +20,7 @@ SamplerState splr;
 
 float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float3 viewTan : Tangent, float3 viewBitan : Bitangent, float2 tc : Texcoord) : SV_Target
 {
-    // Obliczenia normalnej
+
     viewNormal = normalize(viewNormal);
     if (useNormalMap)
     {
@@ -31,15 +30,15 @@ float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float3 vi
     
     const float3 materialColor = tex.Sample(splr, tc).rgb;
 
-    // --- Inicjalizacja oœwietlenia ---
+
     float3 final_color = dir_ambient * materialColor;
 
-    // --- Obliczenia dla Directional Light ---
+
     const float3 dir_to_light_dir = -normalize(viewLightDirection);
     final_color += Diffuse(dir_diffuseColor, dir_diffuseIntensity, 1.0f, dir_to_light_dir, viewNormal) * materialColor;
     final_color += Speculate(specularColor, specularWeight, viewNormal, dir_to_light_dir, viewFragPos, 1.0f, specularGloss) * dir_diffuseIntensity * dir_diffuseColor;
 
-    // --- Obliczenia dla Point Light (tylko jeœli w³¹czone) ---
+
     if (enabled)
     {
         final_color += ambient * materialColor;

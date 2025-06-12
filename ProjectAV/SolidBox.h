@@ -13,7 +13,7 @@ public:
 	void SetSize(DirectX::XMFLOAT3 size) noexcept;
 	DirectX::XMMATRIX GetTransformXM() const noexcept override;
 private:
-	DirectX::XMFLOAT3 center = { 0.0f, 0.0f, 0.0f }; // Center of the box
-	DirectX::XMFLOAT3 size = { 1.0f, 1.0f, 1.0f }; // Size of the box
+	DirectX::XMFLOAT3 center = { 0.0f, 0.0f, 0.0f };
+	DirectX::XMFLOAT3 size = { 1.0f, 1.0f, 1.0f };
 };
 

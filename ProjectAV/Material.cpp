@@ -17,21 +17,21 @@ modelPath(path.string())
 		material.Get(AI_MATKEY_NAME, tempName);
 		name = tempName.C_Str();
 	}
-	// phong technique
+
 	{
 		Technique phong{ "Phong" };
 		Step step("lambertian");
 		std::string shaderCode = "Phong";
 		aiString texFileName;
 
-		// common (pre)
+
 		vtxLayout.Append(Dvtx::VertexLayout::Position3D);
 		vtxLayout.Append(Dvtx::VertexLayout::Normal);
 		Dcb::RawLayout pscLayout;
 		bool hasTexture = false;
 		bool hasGlossAlpha = false;
 
-		// diffuse
+
 		{
 			bool hasAlpha = false;
 			if (material.GetTexture(aiTextureType_DIFFUSE, 0, &texFileName) == aiReturn_SUCCESS)
@@ -53,7 +53,7 @@ modelPath(path.string())
 			}
 			step.AddBindable(Rasterizer::Resolve(gfx, hasAlpha));
 		}
-		// specular
+
 		{
 			if (material.GetTexture(aiTextureType_SPECULAR, 0, &texFileName) == aiReturn_SUCCESS)
 			{
@@ -70,7 +70,7 @@ modelPath(path.string())
 			pscLayout.Add<Dcb::Float>("specularWeight");
 			pscLayout.Add<Dcb::Float>("specularGloss");
 		}
-		// normal
+
 		{
 			if (material.GetTexture(aiTextureType_NORMALS, 0, &texFileName) == aiReturn_SUCCESS)
 			{
@@ -84,7 +84,7 @@ modelPath(path.string())
 				pscLayout.Add<Dcb::Float>("normalMapWeight");
 			}
 		}
-		// common (post)
+
 		{
 			step.AddBindable(std::make_shared<TransformCbuf>(gfx, 0u));
 			auto pvs = VertexShader::Resolve(gfx, shaderCode + "_VS.cso");
@@ -95,7 +95,7 @@ modelPath(path.string())
 			{
 				step.AddBindable(Bind::Sampler::Resolve(gfx));
 			}
-			// PS material params (cbuf)
+
 			Dcb::Buffer buf{ std::move(pscLayout) };
 			if (auto r = buf["materialColor"]; r.Exists())
 			{

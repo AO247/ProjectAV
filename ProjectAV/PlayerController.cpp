@@ -1,15 +1,15 @@
 #include "PlayerController.h"
-#include "Node.h"       // Include Node to call SetLocalPosition/Rotation
-#include "Window.h"     // Included via header, but good practice
-#include "CMath.h"      // For wrap_angle and PI (ensure this is included)
+#include "Node.h"       
+#include "Window.h"     
+#include "CMath.h"      
 #include <DirectXMath.h>
-#include <algorithm> // for std::clamp
+#include <algorithm> 
 #include <string>
 #include "Components.h"
 
 namespace dx = DirectX;
 PlayerController::PlayerController(Node* owner, Window& window)
-    : Component(owner), wnd(window)  // Initialize reference member
+    : Component(owner), wnd(window)  
 {
 	rigidbody = owner->GetComponent<Rigidbody>();
 	camera = owner->GetRoot()->FindFirstChildByTag("CAMERA");
@@ -84,7 +84,7 @@ void PlayerController::Jump()
             PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(rigidbody->GetBodyID(), Vec3(0.0f, jumpForce, 0.0f));
 			grounded = false;
             if (pOwner->GetComponent<SoundEffectsPlayer>()) {
-                //float p = (rand() % 3);
+
                 pOwner->GetComponent<SoundEffectsPlayer>()->Play(0);
             }
         }
@@ -92,7 +92,7 @@ void PlayerController::Jump()
             PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(rigidbody->GetBodyID(), Vec3(0.0f, secondJumpForce, 0.0f));
 			doubleJumped = true;
             if (pOwner->GetComponent<SoundEffectsPlayer>()) {
-                //float p = (rand() % 3);
+
                 pOwner->GetComponent<SoundEffectsPlayer>()->Play(0);
             }
         }
@@ -180,7 +180,7 @@ void PlayerController::Cooldowns(float dt)
     else
     {
         dashed = false;
-        //rigidbody->friction = true;
+
         PhysicsCommon::physicsSystem->GetBodyInterface().SetFriction(rigidbody->GetBodyID(), 0.1f);
     }
     if (dashCooldownTimer > 0.0f)
@@ -196,7 +196,7 @@ void PlayerController::Cooldowns(float dt)
 void PlayerController::Positioning()
 {
     camera->SetLocalPosition({ GetOwner()->GetLocalPosition().x, GetOwner()->GetLocalPosition().y + height * 9 / 10, GetOwner()->GetLocalPosition().z });
-    //GetOwner()->SetLocalRotation({ 0.0f, camera->GetLocalRotationEuler().y, 0.0f });
+
     Quat q = Quat::sEulerAngles(Vec3(0.0f, camera->GetLocalRotationEuler().y, 0.0f));
     PhysicsCommon::physicsSystem->GetBodyInterface().SetRotation(rigidbody->GetBodyID(), q, EActivation::Activate);
 }
@@ -205,7 +205,7 @@ void PlayerController::Positioning()
 void PlayerController::KeyboardInput()
 {
 
-    while (const auto e = wnd.mouse.Read()) // Read events from the queue
+    while (const auto e = wnd.mouse.Read()) 
     {
         switch (e->GetType())
         {

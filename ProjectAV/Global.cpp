@@ -1,7 +1,7 @@
 #include "Global.h"
 namespace dx = DirectX;
 Global::Global(Node* owner, Window& window, Node* player)
-	: Component(owner), wnd(window), playerNode(player)  // Initialize reference member
+	: Component(owner), wnd(window), playerNode(player)
 {
 	player->SetLocalPosition(enterPoint);
 	PrefabManager::InstantiateStartIsland(pOwner, 0.0f, 0.0f, 0.0f, 4.0f);
@@ -84,7 +84,7 @@ void Global::AddSpecialLevel()
 	auto prefabs = std::make_unique<Node>("Prefabs");
 	Node* prefab = prefabs.get();
 	level->AddChild(std::move(prefabs));
-	level->SetLocalPosition(dx::XMFLOAT3(0.0f, levelCount * 400.0f, 0.0f)); // Example position
+	level->SetLocalPosition(dx::XMFLOAT3(0.0f, levelCount * 400.0f, 0.0f));
 	if (levelCount % 2 == 0)
 	{
 		level->AddComponent(
@@ -134,10 +134,6 @@ void Global::EndRun()
 	levelCount = 1;
 	wnd.playerLocked = false;
 	started = false;
-	/*for (int i = 0; i < levels.size(); i++)
-	{
-		levels[i]->Destroy();
-	}*/
 }
 void Global::DrawImGuiControls()
 {

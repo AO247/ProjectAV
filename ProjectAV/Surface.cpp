@@ -151,7 +151,6 @@ Surface::Surface( DirectX::ScratchImage scratch ) noexcept
 {}
 
 
-// surface exception stuff
 Surface::Exception::Exception( int line,const char* file,std::string note,std::optional<HRESULT> hr ) noexcept
 	:
 	CException( line,file ),

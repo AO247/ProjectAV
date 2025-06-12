@@ -5,14 +5,14 @@
 #include <DirectXMath.h>
 #include <typeinfo> 
 #include "Component.h"
-#include <SimpleMath.h> // For Vector3
+#include <SimpleMath.h> 
 
 class Graphics;
 class TechniqueProbe;
 class ModelProbe;
 class Component;
 
-using namespace DirectX::SimpleMath; // For Vector3 return types
+using namespace DirectX::SimpleMath; 
 
 class Node
 {
@@ -20,7 +20,6 @@ public:
     Node(std::string name = "Node", Node* parent = nullptr, std::string tag = "");
     virtual ~Node() = default;
 
-    // --- Hierarchy ---
     void AddChild(std::unique_ptr<Node> pChild);
     Node* GetChild(size_t index);
     Node* GetParent() const;
@@ -32,30 +31,28 @@ public:
     std::vector<Node*> FindAllChildrenByTag(const std::string& searchTag);
     Node* GetRoot() const;
     float radius = 60.0f;
-    // --- Components ---
-    // ... (GetComponent, AddComponent remain the same) ...
-    template<typename T> T* GetComponent() const; // Keep declaration
-    Component* AddComponent(std::unique_ptr<Component> pComponent); // Keep declaration
-    const std::vector<std::unique_ptr<Component>>& GetComponents() const; // Keep declaration
+
+    template<typename T> T* GetComponent() const; 
+    Component* AddComponent(std::unique_ptr<Component> pComponent);
+    const std::vector<std::unique_ptr<Component>>& GetComponents() const; 
     void ClearComponents();
 
-    // --- Transform ---
-    // Local
-    void SetLocalTransform(DirectX::FXMMATRIX transform);      // Recalculates stored pos/quat/scale from matrix
-    void SetLocalPosition(const DirectX::XMFLOAT3& pos);       // Updates stored position & marks matrix dirty
+
+    void SetLocalTransform(DirectX::FXMMATRIX transform);      
+    void SetLocalPosition(const DirectX::XMFLOAT3& pos);       
     void PhysicsSetLocalPosition(const DirectX::XMFLOAT3& pos);
-    void SetLocalRotation(const DirectX::XMFLOAT3& rotRad);    // Updates stored Quaternion from Euler (Pitch, Yaw, Roll in Radians) & marks matrix dirty
-    void SetLocalRotation(const DirectX::XMFLOAT4& quat);      // Updates stored Quaternion directly & marks matrix dirty
+    void SetLocalRotation(const DirectX::XMFLOAT3& rotRad);    
+    void SetLocalRotation(const DirectX::XMFLOAT4& quat);      
     void SetWorldRotation(const DirectX::XMFLOAT4& worldQuat);
     void PhysicsSetWorldRotation(const DirectX::XMFLOAT4& worldQuat);
     void PhysicsSetLocalRotation(const DirectX::XMFLOAT4& quat);
-    void SetLocalScale(const DirectX::XMFLOAT3& scale);        // Updates stored scale & marks matrix dirty
-    void TranslateLocal(const DirectX::XMFLOAT3& translation); // Translates along local axes
+    void SetLocalScale(const DirectX::XMFLOAT3& scale);        
+    void TranslateLocal(const DirectX::XMFLOAT3& translation); 
 
-    DirectX::XMMATRIX GetLocalTransform() const;               // Constructs matrix from stored components if dirty
+    DirectX::XMMATRIX GetLocalTransform() const;               
     DirectX::XMFLOAT3 GetLocalPosition() const;
-    DirectX::XMFLOAT3 GetLocalRotationEuler() const;           // Converts stored Quaternion to Euler (Pitch, Yaw, Roll in Radians)
-    DirectX::XMFLOAT4 GetLocalRotationQuaternion() const;      // Returns stored Quaternion
+    DirectX::XMFLOAT3 GetLocalRotationEuler() const;           
+    DirectX::XMFLOAT4 GetLocalRotationQuaternion() const;      
     DirectX::XMFLOAT4 GetWorldRotationQuaternion() const;
     DirectX::XMFLOAT3 GetLocalScale() const;
     DirectX::SimpleMath::Vector3 Forward() const;
@@ -65,14 +62,12 @@ public:
     DirectX::SimpleMath::Vector3 Up() const;
     DirectX::SimpleMath::Vector3 Down() const;
 
-    // World
     DirectX::XMMATRIX GetWorldTransform() const;
     DirectX::XMFLOAT3 GetWorldPosition() const;
     void SetWorldPosition(const DirectX::XMFLOAT3& pos);
     void PhysicsSetWorldPosition(const DirectX::XMFLOAT3& pos);
     int myCounter = 0;
 
-    // --- Update & Draw ---
     void Update(float dt);
     void Submit(Graphics& gfx) const;
     void ShowNodeTree(Node*& pSelectedNode) noexcept;
@@ -80,31 +75,29 @@ public:
     Node* parent = nullptr;
 
     bool isMarkedForDeletion = false;
-    void Destroy(); // Marks this node and its children for destruction
+    void Destroy();
     bool IsMarkedForDestruction() const;
-    void RemoveChild(Node* childToRemove); // Helper to remove a specific child
+    void RemoveChild(Node* childToRemove);
 private:
     void UpdateWorldTransform(bool transformationOutsidePhysicsTriggered);
-    void UpdateLocalTransformFromComponents(bool transformationOutsidePhysicsTriggered);     // Helper to build matrix from stored pos/quat/scale
-    void UpdateStoredComponentsFromMatrix();       // Helper used by SetLocalTransform (updates pos, quat, scale)
+    void UpdateLocalTransformFromComponents(bool transformationOutsidePhysicsTriggered);  
+    void UpdateStoredComponentsFromMatrix();    
 
     std::string name;
     bool transformationOutsidePhysicsTriggered = false;
 
-    // --- Store transform components directly ---
     DirectX::XMFLOAT3 localPosition = { 0.0f, 0.0f, 0.0f };
-    DirectX::XMFLOAT4 localRotationQuaternion = { 0.0f, 0.0f, 0.0f, 1.0f }; // Store as Quaternion (x, y, z, w - identity)
+    DirectX::XMFLOAT4 localRotationQuaternion = { 0.0f, 0.0f, 0.0f, 1.0f };
     DirectX::XMFLOAT3 localScale = { 1.0f, 1.0f, 1.0f };
 
-    // --- Matrix caches ---
     DirectX::XMFLOAT4X4 localTransform;
     DirectX::XMFLOAT4X4 worldTransform;
 
     std::vector<std::unique_ptr<Node>> children;
     std::vector<std::unique_ptr<Component>> components;
 
-    bool localTransformDirty = true; // Flag to rebuild local matrix
-    bool worldTransformDirty = true; // Flag to recalculate world matrix
+    bool localTransformDirty = true; 
+    bool worldTransformDirty = true; 
     bool markedForDestruction = false;
 };
 

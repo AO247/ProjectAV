@@ -3,7 +3,7 @@
 
 namespace Dvtx
 {
-	// VertexLayout
+
 	const VertexLayout::Element& VertexLayout::ResolveByIndex( size_t i ) const noxnd
 	{
 		return elements[i];
@@ -56,7 +56,7 @@ namespace Dvtx
 	}
 
 
-	// VertexLayout::Element
+
 	VertexLayout::Element::Element( ElementType type,size_t offset )
 		:
 		type( type ),
@@ -120,7 +120,7 @@ namespace Dvtx
 	}
 
 
-	// Vertex
+
 	Vertex::Vertex( char* pData,const VertexLayout& layout ) noxnd
 		:
 		pData( pData ),
@@ -134,7 +134,7 @@ namespace Dvtx
 	{}
 
 
-	// VertexBuffer
+
 	VertexBuffer::VertexBuffer( VertexLayout layout,size_t size ) noxnd
 		:
 		layout( std::move( layout ) )

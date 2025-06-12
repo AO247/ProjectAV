@@ -9,11 +9,10 @@ struct VS_INPUT
     float3 pos : POSITION;
 };
 
-// This struct explicitly defines the data going from VS to PS
 struct VS_TO_PS
 {
     float4 pos : SV_Position;
-    float3 tex : TEXCOORD0; // Use explicit semantic index 0
+    float3 tex : TEXCOORD0;
 };
 
 VS_TO_PS main(VS_INPUT vin)

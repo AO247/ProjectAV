@@ -72,7 +72,7 @@ void TestScaleMatrixTranslation()
 void TestDynamicConstant()
 {
 	using namespace std::string_literals;
-	// data roundtrip tests
+
 	{
 		Dcb::RawLayout s;
 		s.Add<Dcb::Struct>("butts"s);
@@ -89,16 +89,11 @@ void TestDynamicConstant()
 		s["arr"s].T()["meta"s].T().Set<Dcb::Matrix>(4);
 		s["arr"s].T().Add<Dcb::Bool>("booler");
 
-		// fails: duplicate symbol name
-		// s.Add<Dcb::Bool>( "arr"s );
 
-		// fails: bad symbol name
-		//s.Add<Dcb::Bool>( "69man" );
 
 		auto b = Dcb::Buffer(std::move(s));
 
-		// fails to compile: conversion not in type map
-		//b["woot"s] = "#"s;
+
 
 		const auto sig = b.GetRootLayoutElement().GetSignature();
 
@@ -149,7 +144,7 @@ void TestDynamicConstant()
 			bool act = b["arr"s][2]["booler"s];
 			assert(act == exp);
 		}
-		// exists
+
 		{
 			assert(b["butts"s]["pubes"s].Exists());
 			assert(!b["butts"s]["fubar"s].Exists());
@@ -159,7 +154,7 @@ void TestDynamicConstant()
 				assert(f.x == 69.0f);
 			}
 		}
-		// set if exists
+
 		{
 			assert(b["butts"s]["pubes"s].SetIfExists(dx::XMFLOAT3{ 1.0f,2.0f,3.0f }));
 			auto& f3 = static_cast<const dx::XMFLOAT3&>(b["butts"s]["pubes"s]);
@@ -172,15 +167,10 @@ void TestDynamicConstant()
 			dx::XMFLOAT4X4 act = cb["arr"s][2]["meta"s][5][3];
 			assert(act._11 == 1.0f);
 		}
-		// this doesn't compile: buffer is const
-		// cb["arr"][2]["booler"] = true;
-		// static_cast<bool&>(cb["arr"][2]["booler"]) = true;
-
-		// this fails assertion: array out of bounds
-		// cb["arr"s][200];
+		
 
 	}
-	// size test array of arrays
+
 	{
 		Dcb::RawLayout s;
 		s.Add<Dcb::Array>("arr");
@@ -191,7 +181,7 @@ void TestDynamicConstant()
 		auto act = b.GetSizeInBytes();
 		assert(act == 16u * 4u * 4u * 6u);
 	}
-	// size test array of floats
+
 	{
 		Dcb::RawLayout s;
 		s.Add<Dcb::Array>("arr");
@@ -201,7 +191,7 @@ void TestDynamicConstant()
 		auto act = b.GetSizeInBytes();
 		assert(act == 256u);
 	}
-	// size test array of structs with padding
+
 	{
 		Dcb::RawLayout s;
 		s.Add<Dcb::Array>("arr");
@@ -213,7 +203,7 @@ void TestDynamicConstant()
 		auto act = b.GetSizeInBytes();
 		assert(act == 16u * 2u * 6u);
 	}
-	// size test array of primitive that needs padding
+
 	{
 		Dcb::RawLayout s;
 		s.Add<Dcb::Array>("arr");
@@ -223,16 +213,15 @@ void TestDynamicConstant()
 		auto act = b.GetSizeInBytes();
 		assert(act == 16u * 6u);
 	}
-	// testing CookedLayout
+
 	{
 		Dcb::RawLayout s;
 		s.Add<Dcb::Array>("arr");
 		s["arr"].Set<Dcb::Float3>(6);
 		auto cooked = Dcb::LayoutCodex::Resolve(std::move(s));
-		// raw is cleared after donating
+
 		s.Add<Dcb::Float>("arr");
-		// fails to compile, cooked returns const&
-		// cooked["arr"].Add<Dcb::Float>("buttman");
+
 		auto b1 = Dcb::Buffer(cooked);
 		b1["arr"][0] = dx::XMFLOAT3{ 69.0f,0.0f,0.0f };
 		auto b2 = Dcb::Buffer(cooked);
@@ -240,7 +229,7 @@ void TestDynamicConstant()
 		assert(static_cast<dx::XMFLOAT3>(b1["arr"][0]).x == 69.0f);
 		assert(static_cast<dx::XMFLOAT3>(b2["arr"][0]).x == 420.0f);
 	}
-	// specific testing scenario (packing error)
+
 	{
 		Dcb::RawLayout pscLayout;
 		pscLayout.Add<Dcb::Float3>("materialColor");
@@ -250,7 +239,7 @@ void TestDynamicConstant()
 		auto cooked = Dcb::LayoutCodex::Resolve(std::move(pscLayout));
 		assert(cooked.GetSizeInBytes() == 48u);
 	}
-	// array non-packing
+
 	{
 		Dcb::RawLayout pscLayout;
 		pscLayout.Add<Dcb::Array>("arr");
@@ -258,7 +247,7 @@ void TestDynamicConstant()
 		auto cooked = Dcb::LayoutCodex::Resolve(std::move(pscLayout));
 		assert(cooked.GetSizeInBytes() == 160u);
 	}
-	// array of struct w/ padding
+
 	{
 		Dcb::RawLayout pscLayout;
 		pscLayout.Add<Dcb::Array>("arr");
@@ -268,7 +257,7 @@ void TestDynamicConstant()
 		auto cooked = Dcb::LayoutCodex::Resolve(std::move(pscLayout));
 		assert(cooked.GetSizeInBytes() == 320u);
 	}
-	// testing pointer stuff
+
 	{
 		Dcb::RawLayout s;
 		s.Add<Dcb::Struct>("butts"s);
@@ -284,7 +273,7 @@ void TestDynamicConstant()
 		*(float*)&b["butts"s]["dank"s] = exp2;
 		assert((float&)b["butts"s]["dank"s] == exp2);
 	}
-	// specific testing scenario (packing error)
+
 	{
 		Dcb::RawLayout lay;
 		lay.Add<Dcb::Bool>("normalMapEnabled");
@@ -297,7 +286,7 @@ void TestDynamicConstant()
 		auto buf = Dcb::Buffer(std::move(lay));
 		assert(buf.GetSizeInBytes() == 32u);
 	}
-	// specific testing scenario (array packing issues gimme a tissue)
+
 	{
 		const int maxRadius = 7;
 		const int nCoef = maxRadius * 2 + 1;
@@ -306,14 +295,14 @@ void TestDynamicConstant()
 		l.Add<Dcb::Array>("coefficients");
 		l["coefficients"].Set<Dcb::Float>(nCoef);
 		Dcb::Buffer buf{ std::move(l) };
-		// assert proper amount of memory allocated
+
 		assert(buf.GetSizeInBytes() == (nCoef + 1) * 4 * 4);
-		// assert array empty
+
 		{
 			const char* begin = reinterpret_cast<char*>((int*)&buf["nTaps"]);
 			assert(std::all_of(begin, begin + buf.GetSizeInBytes(), [](char c) {return c == 0; }));
 		}
-		// assert sparse float storage
+
 		{
 			for (int i = 0; i < nCoef; i++)
 			{

@@ -4,7 +4,7 @@
 PointLight::PointLight(Graphics& gfx, UINT slot, float radius)
 	:
 	mesh(gfx, radius),
-	cbuf(gfx, slot) // <-- przeka¿ slot
+	cbuf(gfx, slot)
 {
 	Reset();
 }

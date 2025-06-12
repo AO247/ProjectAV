@@ -14,11 +14,11 @@ private:
 	struct DirectionalLightCBuf
 	{
 		DirectX::XMFLOAT3 direction;
-		float padding1; // Dope³nienie do 16 bajtów
+		float padding1; 
 		DirectX::XMFLOAT3 ambient;
-		float padding2; // Dope³nienie do 16 bajtów
+		float padding2; 
 		DirectX::XMFLOAT3 diffuseColor;
-		float diffuseIntensity; // Idealnie dope³nia do 48 bajtów
+		float diffuseIntensity; 
 	};
 public:
 	DirectionalLightCBuf cbData;

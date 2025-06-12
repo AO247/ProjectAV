@@ -1,40 +1,34 @@
 #include "Mesh.h"
 #include "Graphics.h" 
-#include "Material.h" // Include the new Material class
-#include <assimp/mesh.h> // For aiMesh definition
+#include "Material.h" 
+#include <assimp/mesh.h> 
 #include <sstream> 
 
 namespace dx = DirectX;
-// --- ModelException Implementation --- 
-// (Ensure definitions are present here)
+
 ModelException::ModelException(int line, const char* file, std::string note) noexcept
     :
-    CException(line, file), // Make sure CException base constructor matches
+    CException(line, file), 
     note(std::move(note))
 {
 }
 
 const char* ModelException::what() const noexcept
 {
-    // If CException has its own whatBuffer, use it, otherwise manage locally
+
     std::ostringstream oss;
-    // Assuming CException::what() provides base info
+
     oss << CException::what() << std::endl
         << "[Note] " << GetNote();
-    // Need a way to store the buffer. If CException has whatBuffer, reuse it.
-    // If not, add one here: static thread_local std::string localWhatBuffer;
-    // For now, assuming CException manages its buffer:
-    whatBuffer = oss.str(); // Assign to base class's buffer if it exists & is accessible
-    return whatBuffer.c_str(); // Return pointer to base class's buffer
-    // If CException doesn't provide whatBuffer:
-    // static thread_local std::string localWhatBuffer; // Or make it a member of ModelException
-    // localWhatBuffer = oss.str();
-    // return localWhatBuffer.c_str();
+
+    whatBuffer = oss.str(); 
+    return whatBuffer.c_str(); 
+
 }
 
 const char* ModelException::GetType() const noexcept
 {
-    return "Model Exception"; // Or "Project AV Model Exception" etc.
+    return "Model Exception"; 
 }
 
 const std::string& ModelException::GetNote() const noexcept
@@ -43,24 +37,24 @@ const std::string& ModelException::GetNote() const noexcept
 }
 
 
-// --- Mesh Implementation ---
+
 
 Mesh::Mesh(Graphics& gfx, const Material& mat, const aiMesh& mesh, float scale) noxnd
-    : Drawable(gfx, mat, mesh, scale) // Call base Drawable constructor
+    : Drawable(gfx, mat, mesh, scale) 
 {
-    // Drawable constructor now handles pVertices, pIndices, pTopology, and techniques
+
     dx::XMStoreFloat4x4(&transform, dx::XMMatrixIdentity());
 }
 
-// **** NEW SUBMIT METHOD ****
+
 void Mesh::Submit(dx::FXMMATRIX accumulatedTransform) const noxnd
 {
-    dx::XMStoreFloat4x4(&transform, accumulatedTransform); // Store the final world transform for this mesh
-    Drawable::Submit(); // Call base Drawable's Submit, which iterates techniques
+    dx::XMStoreFloat4x4(&transform, accumulatedTransform); 
+    Drawable::Submit(); 
 }
 
 DirectX::XMMATRIX Mesh::GetTransformXM() const noexcept
 {
-    // This is called by TransformCbuf within a Technique's Step
+    
     return DirectX::XMLoadFloat4x4(&transform);
 }

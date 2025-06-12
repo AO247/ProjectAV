@@ -29,7 +29,5 @@ void Bullet::OnCollisionEnter(Node* object)
 
 void Bullet::DrawImGuiControls()
 {
-	/*ImGui::InputFloat("Move Speed", &moveSpeed);
-	ImGui::Checkbox("Jumped", &jumped);*/
 
 }

@@ -1,9 +1,9 @@
 #include "Ability1.h"
-#include "Node.h"       // Include Node to call SetLocalPosition/Rotation
-#include "Window.h"     // Included via header, but good practice
-#include "CMath.h"      // For wrap_angle and PI (ensure this is included)
+#include "Node.h"       
+#include "Window.h"     
+#include "CMath.h"      
 #include <DirectXMath.h>
-#include <algorithm> // for std::clamp
+#include <algorithm>
 #include <string>
 
 namespace dx = DirectX;
@@ -20,7 +20,6 @@ void Ability1::Update(float dt)
     {
         Positioning();
         Cooldowns(dt);
-        //KeyboardInput();
     }
 }
 void Ability1::Positioning() {

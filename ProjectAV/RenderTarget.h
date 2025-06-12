@@ -40,7 +40,6 @@ namespace Bind
 		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> pShaderResourceView;
 	};
 
-	// RT for Graphics to create RenderTarget for the back buffer
 	class OutputOnlyRenderTarget : public RenderTarget
 	{
 		friend Graphics;

@@ -11,23 +11,23 @@ namespace Bind
 	{
 		INFOMAN(gfx);
 
-		// create depth stensil texture
+
 		wrl::ComPtr<ID3D11Texture2D> pDepthStencil;
 		D3D11_TEXTURE2D_DESC descDepth = {};
 		descDepth.Width = width;
 		descDepth.Height = height;
 		descDepth.MipLevels = 1u;
 		descDepth.ArraySize = 1u;
-		descDepth.Format = DXGI_FORMAT_D24_UNORM_S8_UINT; // this will need to be fixed
+		descDepth.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 		descDepth.SampleDesc.Count = 1u;
 		descDepth.SampleDesc.Quality = 0u;
 		descDepth.Usage = D3D11_USAGE_DEFAULT;
 		descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL | (canBindShaderInput ? D3D11_BIND_SHADER_RESOURCE : 0);
 		GFX_THROW_INFO(GetDevice(gfx)->CreateTexture2D(&descDepth, nullptr, &pDepthStencil));
 
-		// create target view of depth stensil texture
+
 		GFX_THROW_INFO(GetDevice(gfx)->CreateDepthStencilView(
-			pDepthStencil.Get(), nullptr, &pDepthStencilView // nullptr will need to be replaced
+			pDepthStencil.Get(), nullptr, &pDepthStencilView 
 		));
 	}
 
@@ -71,7 +71,7 @@ namespace Bind
 		pDepthStencilView->GetResource(&pRes);
 
 		D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-		srvDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT; // this will need to be fixed
+		srvDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT; 
 		srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 		srvDesc.Texture2D.MostDetailedMip = 0;
 		srvDesc.Texture2D.MipLevels = 1;

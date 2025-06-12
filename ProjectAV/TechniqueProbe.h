@@ -11,7 +11,6 @@ class Step;
 class TechniqueProbe
 {
 public:
-	// TODO: add callback for visiting each mesh
 
 	void SetTechnique(Technique* pTech_in)
 	{

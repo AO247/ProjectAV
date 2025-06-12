@@ -25,13 +25,13 @@ namespace dx = DirectX;
 App::App(const std::string& commandLine)
     :
     commandLine(commandLine),
-    wnd(1920, 1080, "Project AV"), // Pass window dimensions/title
+    wnd(1920, 1080, "Project AV"), 
     scriptCommander(TokenizeQuoted(commandLine)),
-    pointLight(wnd.Gfx(), 2u), // Initialize PointLight
+    pointLight(wnd.Gfx(), 2u), 
     dirLight(wnd.Gfx(), 0u),
     pSceneRoot(std::make_unique<Node>("Root"))
 {
-    // Set Projection Matrix (Far plane adjusted for larger scenes potentially)
+
     wnd.Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 2000.0f));
 
 
@@ -62,16 +62,11 @@ App::App(const std::string& commandLine)
     PrefabManager::rg = &rg;
     physicsSystem->SetGravity(Vec3(0.0f, -80.0f, 0.0f));
 
-    /*physicsDebugRenderer = new PhysicsDebugRenderer(wnd.Gfx());
-    physicsDebugRenderer->Initialize();*/
-
     soundDevice = LISTENER->Get();
     ALint attentuation = AL_INVERSE_DISTANCE_CLAMPED;
 	soundDevice->SetAttenuation(attentuation);
     myMusic = std::make_unique<MusicBuffer>("Music\\windererfull.mp3");
     myMusic->setGain(1.0f);
-
-    // --- Create Nodes ---
 
     auto pCameraNodeOwner = std::make_unique<Node>("Camera", nullptr, "CAMERA");
     pCamera = pCameraNodeOwner.get();
@@ -98,11 +93,6 @@ App::App(const std::string& commandLine)
     auto pRightHandAbilityOwner = std::make_unique<Node>("R Ability", nullptr, "HANDS");
     pRightHandAbility = pRightHandAbilityOwner.get();
 
-
-
-
-
-    // Adding to Scene Graph
     pSceneRoot->AddChild(std::move(pCameraNodeOwner));
     pSceneRoot->AddChild(std::move(pFreeViewCameraOwner));
     pSceneRoot->AddChild(std::move(pPlayerOwner));
@@ -120,13 +110,9 @@ App::App(const std::string& commandLine)
     PrefabManager::root = pPrefabs;
     PrefabManager::player = pPlayer;
 
-    //Heeeej Bracie zaczlooo padac choodz zmieniic gacieee
-    //Heeeej Siostro uciekaajmyy zanim beedzieee mookroooo
-
     BodyCreationSettings bodySettings(new JPH::CapsuleShape(1.0f, 1.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::PLAYER);
     bodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
 
-    //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
     bodySettings.mMassPropertiesOverride.mMass = 1.0f;
     bodySettings.mFriction = 0.0f;
     bodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
@@ -137,7 +123,7 @@ App::App(const std::string& commandLine)
     Rigidbody* pRigidbody = pPlayer->GetComponent<Rigidbody>();
 
     pPlayer->AddComponent(
-        std::make_unique<PlayerController>(pPlayer, wnd) // Add controller first
+        std::make_unique<PlayerController>(pPlayer, wnd)
     );
 
     BodyCreationSettings a1BodySettings(new JPH::CapsuleShape(6.0f, 5.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
@@ -158,10 +144,7 @@ App::App(const std::string& commandLine)
     pAbility2->AddComponent(
         std::make_unique<Ability2>(pAbility2, wnd, pCamera)
     );
-    /* pAbility2->AddComponent(
-         std::make_unique<ModelComponent>(pAbility2, wnd.Gfx(), "Models\\box.glb")
-     );*/
-     //pAbility2->GetComponent<ModelComponent>()->LinkTechniques(rg);
+
     pPlayer->GetComponent<PlayerController>()->abilitySlot2 = pAbility2;
 
 
@@ -172,10 +155,6 @@ App::App(const std::string& commandLine)
     pAbility3->AddComponent(
         std::make_unique<Ability3>(pAbility3, wnd, pCamera)
     );
-    /* pAbility3->AddComponent(
-         std::make_unique<ModelComponent>(pAbility3, wnd.Gfx(), "Models\\box.glb")
-     );
-     pAbility3->GetComponent<ModelComponent>()->LinkTechniques(rg);*/
     pPlayer->GetComponent<PlayerController>()->abilitySlot3 = pAbility3;
 
 
@@ -183,17 +162,11 @@ App::App(const std::string& commandLine)
     pAbility4->AddComponent(
         std::make_unique<Trigger>(pAbility4, a4odySettings, false)
     );
-    /* pAbility4->AddComponent(
-         std::make_unique<ModelComponent>(pAbility4, wnd.Gfx(), "Models\\box.glb")
-     );
-     pAbility4->GetComponent<ModelComponent>()->LinkTechniques(rg);*/
+
     pAbility4->AddComponent(
         std::make_unique<Ability4>(pAbility4, wnd, pCamera)
     );
 
-    // pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility4;
-
-     //Adding Other Components
     pFreeViewCamera->AddComponent(
         std::make_unique<Camera>(pFreeViewCamera, wnd)
     );
@@ -217,7 +190,6 @@ App::App(const std::string& commandLine)
     pSoundEffectsPlayer->AddSound("Sounds\\toss1.ogg");
     pSoundEffectsPlayer->AddSound("Sounds\\toss2.ogg");
 
-    // Changing position scale etc.]
     pFreeViewCamera->SetLocalPosition({ 4.0f, 11.0f, -28.0f });
     pPlayer->SetLocalPosition({ 0.0f, 80.0f, -24.0f });
 
@@ -273,7 +245,6 @@ App::App(const std::string& commandLine)
     pUpgradeHandler->playerController = pPlayer->GetComponent<PlayerController>();
     pUpgradeHandler->SetBasicValues();
     pSceneRoot->GetComponent<Global>()->upgradeHandler = pUpgradeHandler;
-    //LevelGenerator levelGenerator(prefabManager, pSceneRoot.get(), pPlayer);
 
 
     const int screenWidth = 1920;
@@ -285,37 +256,37 @@ App::App(const std::string& commandLine)
 
     targetSprite = std::make_unique<Sprite>(
         wnd.Gfx().GetDevice(),
-        plusSpriteX,                // int x (center X)
-        plusSpriteY,                // int y (center Y)
-        plusSpriteWidth,            // int width
-        plusSpriteHeight,           // int height
+        plusSpriteX,                
+        plusSpriteY,                
+        plusSpriteWidth,            
+        plusSpriteHeight,           
         L"Images\\plus.png"
     );
 
     heart1Sprite = std::make_unique<Sprite>(
         wnd.Gfx().GetDevice(),
-        (screenWidth / 2) - 35 - 80,                // int x  
-        950,                // int y  
-        70,            // int width
-        70,           // int height
+        (screenWidth / 2) - 35 - 80,             
+        950,        
+        70,         
+        70,         
         L"Images\\heart.png"
     );
 
     heart2Sprite = std::make_unique<Sprite>(
         wnd.Gfx().GetDevice(),
-        (screenWidth / 2) - 35,                // int x  
-        950,                // int y (center Y)
-        70,            // int width
-        70,           // int height
+        (screenWidth / 2) - 35,              
+        950,        
+        70,         
+        70,         
         L"Images\\heart.png"
     );
 
     heart3Sprite = std::make_unique<Sprite>(
-        wnd.Gfx().GetDevice(),      // ID3D11Device*
-        (screenWidth / 2) - 35 + 80,                // int x (center X)
-        950,                // int y (center Y)
-        70,            // int width
-        70,           // int height
+        wnd.Gfx().GetDevice(),      
+        (screenWidth / 2) - 35 + 80,               
+        950,         
+        70,          
+        70,          
         L"Images\\heart.png"
     );
 
@@ -329,26 +300,7 @@ App::App(const std::string& commandLine)
 
 App::~App()
 {
-    //for (auto& pair : sphereCollidersToDraw) {
-    //    delete pair.second; // Delete the ColliderSphere*
-    //}
-    //sphereCollidersToDraw.clear();
-
-    //for (auto& pair : boxCollidersToDraw) {
-    //    delete pair.second; // Delete the SolidBox*
-    //}
-    //boxCollidersToDraw.clear();
-
-    //for (auto& pair : capsuleCollidersToDraw) {
-    //    delete pair.second; // Delete the SolidCapsule*
-    //}
-    //capsuleCollidersToDraw.clear();
-
-    // Delete the member DebugLine pointers
-    /*delete line1; line1 = nullptr;
-    delete line2; line2 = nullptr;
-    delete line3; line3 = nullptr;
-    delete line4; line4 = nullptr;*/
+    
 }
 
 int App::Go()
@@ -384,12 +336,9 @@ int App::Go()
     }
 }
 
-
-// --- UPDATED HandleInput ---
 void App::HandleInput(float dt)
 {
 
-    // --- Only handle non-player input here ---
     while (const auto e = wnd.kbd.ReadKey())
     {
         if (!e->IsPress()) continue;
@@ -402,7 +351,7 @@ void App::HandleInput(float dt)
             break;
         }
 
-		case 'M': // Toggle Music
+		case 'M':
 			if (myMusic->isPlaying())
 			{
 				myMusic->Stop();
@@ -412,7 +361,7 @@ void App::HandleInput(float dt)
 				myMusic->Play();
 			}
 			break;
-        case 'C': // Toggle cursor
+        case 'C':
             if (cursorEnabled) {
                 wnd.DisableCursor();
                 wnd.mouse.EnableRaw();
@@ -423,7 +372,7 @@ void App::HandleInput(float dt)
             }
             cursorEnabled = !cursorEnabled;
             break;
-        case 'H': // Toggle UI
+        case 'H': 
             showControlWindow = !showControlWindow;
             break;
         case 'B':
@@ -436,10 +385,10 @@ void App::HandleInput(float dt)
                 pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility1;
             }
             break;
-        case VK_ESCAPE: // Exit
+        case VK_ESCAPE:
             PostQuitMessage(0);
             return;
-        case VK_F1: // Toggle ImGui Demo
+        case VK_F1:
             showDemoWindow = !showDemoWindow;
             break;
         case 'V':
@@ -458,7 +407,6 @@ void App::HandleInput(float dt)
         }
     }
 
-    // FreeCamera Movement
     if (freeViewCamera) {
         if (wnd.kbd.KeyIsPressed('I')) {
             pFreeViewCamera->TranslateLocal({ 0.0f, 0.0f, 0.4f });
@@ -483,33 +431,24 @@ void App::HandleInput(float dt)
 
 void App::DoFrame(float dt)
 {
-	pSceneRoot->Update(dt); // Update the scene root and all its children
+	pSceneRoot->Update(dt);
     auto* contact = dynamic_cast<MyContactListener*>(physicsSystem->GetContactListener());
     contact->ExecuteTriggerActivationQueue();
     contact->ExecuteCollisionActivationQueue();
     CleanupDestroyedNodes(pSceneRoot.get());
 
     wnd.Gfx().BeginFrame(0.5f, 0.5f, 1.0f);
-    //if (pPlayer->GetLocalPosition().y < -10.0f) {
-    //	pPlayer->SetLocalPosition({ -20.0f, 225.0f, -25.0f });
-    //    pEnemy->SetLocalPosition({ 15.0f, 225.0f, 0.0f });
-    //}
+
     dx::XMMATRIX viewMatrix = pCamera->GetComponent<Camera>()->GetViewMatrix();
     if (freeViewCamera)
     {
         viewMatrix = pFreeViewCamera->GetComponent<Camera>()->GetViewMatrix();
     }
     wnd.Gfx().SetCamera(viewMatrix);
-    //fc.ShowWindows(wnd.Gfx());
-	/*DebugLine line(wnd.Gfx(), pEnemy->GetComponent<StateMachine>()->pos, pEnemy->GetComponent<StateMachine>()->cen, { 0.0f, 0.0f, 1.0f, 1.0f });
-    line.Submit(fc);*/ // for idle
-    // --- Bind Lights ---
 
-    //pointLight.Bind(wnd.Gfx(), viewMatrix);
     dirLight.Bind(wnd.Gfx(), viewMatrix);
 
-    FrustumCalculating(); // Draw with FRUSTUM CULLING
-    //pSceneRoot->Submit(fc, wnd.Gfx()); // Draw without FRUSTUM CULLING you have to also uncomment the draw method in Node.cpp
+    FrustumCalculating(); 
 
 
 
@@ -533,7 +472,6 @@ void App::DoFrame(float dt)
             pCamera->Up().z
         );
     }
-	//pCamera->Forward();
 
     rg.Execute(wnd.Gfx());
 
@@ -561,9 +499,6 @@ void App::DoFrame(float dt)
         heart1Sprite->Draw(wnd.Gfx().GetContext());
     }
 
-
-    //testButton->Draw(wnd.Gfx().GetContext(), (float)wnd.GetWidth(), (float)wnd.GetHeight());
-
     wnd.Gfx().EndFrame();
     rg.Reset();
 }
@@ -571,17 +506,16 @@ void App::DoFrame(float dt)
 
 void App::FrustumCalculating() {
     dx::XMMATRIX camWorldTransform = pCamera->GetWorldTransform();
-    dx::XMVECTOR camWorldPos = camWorldTransform.r[3]; // Default
-    dx::XMVECTOR camWorldForward = dx::XMVector3Normalize(dx::XMVector3TransformNormal(dx::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f), camWorldTransform)); // Default
-    dx::XMVECTOR camWorldUp = dx::XMVector3Normalize(dx::XMVector3TransformNormal(dx::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), camWorldTransform));    // Default
-    dx::XMVECTOR camWorldRight = dx::XMVector3Normalize(dx::XMVector3TransformNormal(dx::XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f), camWorldTransform)); // Default
+    dx::XMVECTOR camWorldPos = camWorldTransform.r[3];
+    dx::XMVECTOR camWorldForward = dx::XMVector3Normalize(dx::XMVector3TransformNormal(dx::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f), camWorldTransform)); 
+    dx::XMVECTOR camWorldUp = dx::XMVector3Normalize(dx::XMVector3TransformNormal(dx::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), camWorldTransform));    
+    dx::XMVECTOR camWorldRight = dx::XMVector3Normalize(dx::XMVector3TransformNormal(dx::XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f), camWorldTransform)); 
 
-    constexpr float fovAngleY = DirectX::XMConvertToRadians(70.0f); // Field of View in Y direction (radians) - MUST MATCH YOUR PROJECTION
-    const float aspectRatio = 16.0f / 9.0f; // MUST MATCH YOUR PROJECTION
-    const float nearDist = 0.5f;         // MUST MATCH YOUR PROJECTION
-    const float farDist = 800.0f;       // MUST MATCH YOUR PROJECTION
+    constexpr float fovAngleY = DirectX::XMConvertToRadians(70.0f);
+    const float aspectRatio = 16.0f / 9.0f; 
+    const float nearDist = 0.5f;        
+    const float farDist = 800.0f;      
 
-    // Half heights/widths at near and far planes
     float halfHeightNear = nearDist * tanf(fovAngleY * 0.5f);
     float halfWidthNear = halfHeightNear * aspectRatio;
     float halfHeightFar = farDist * tanf(fovAngleY * 0.5f);
@@ -590,7 +524,6 @@ void App::FrustumCalculating() {
     dx::XMVECTOR nearCenter = dx::XMVectorAdd(camWorldPos, dx::XMVectorScale(camWorldForward, nearDist));
     dx::XMVECTOR farCenter = dx::XMVectorAdd(camWorldPos, dx::XMVectorScale(camWorldForward, farDist));
 
-    // Calculate the 8 corner points (optional for plane calculation, but useful for verification)
     dx::XMVECTOR nearTopLeft = dx::XMVectorAdd(nearCenter, dx::XMVectorSubtract(dx::XMVectorScale(camWorldUp, halfHeightNear), dx::XMVectorScale(camWorldRight, halfWidthNear)));
     dx::XMVECTOR nearTopRight = dx::XMVectorAdd(nearCenter, dx::XMVectorAdd(dx::XMVectorScale(camWorldUp, halfHeightNear), dx::XMVectorScale(camWorldRight, halfWidthNear)));
     dx::XMVECTOR nearBottomLeft = dx::XMVectorAdd(nearCenter, dx::XMVectorSubtract(dx::XMVectorScale(camWorldUp, -halfHeightNear), dx::XMVectorScale(camWorldRight, halfWidthNear)));
@@ -602,7 +535,6 @@ void App::FrustumCalculating() {
 
     cameraFrustum.Near = 0.5f;
 
-    // Far Plane: Normal = -camWorldForward, Point = farCenter
     cameraFrustum.Far = 800.0f;
 
     float tanHalfFovY = tanf(fovAngleY * 0.5f);
@@ -614,12 +546,11 @@ void App::FrustumCalculating() {
 
     DirectX::XMStoreFloat3(&cameraFrustum.Origin, camWorldPos);
     dx::XMMATRIX worldOrientationMatrix;
-    worldOrientationMatrix.r[0] = camWorldRight;   // World X-axis of the camera
-    worldOrientationMatrix.r[1] = camWorldUp;      // World Y-axis of the camera
-    worldOrientationMatrix.r[2] = camWorldForward; // World Z-axis of the camera
-    worldOrientationMatrix.r[3] = dx::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f); // Set W component for a valid matrix
+    worldOrientationMatrix.r[0] = camWorldRight;   
+    worldOrientationMatrix.r[1] = camWorldUp;      
+    worldOrientationMatrix.r[2] = camWorldForward; 
+    worldOrientationMatrix.r[3] = dx::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f); 
 
-    // 3. Convert the Orientation Matrix to a Quaternion
     DirectX::XMStoreFloat4(&cameraFrustum.Orientation, dx::XMQuaternionRotationMatrix(worldOrientationMatrix));
 
 
@@ -628,11 +559,11 @@ void App::FrustumCalculating() {
 
 void App::DrawNodeRecursive(Graphics& gfx, Node& node)
 {
-    // --- Culling Check ---
-    bool shouldDraw = true; // Assume we draw by default
+
+    bool shouldDraw = true; 
     ModelComponent* modelComp = node.GetComponent<ModelComponent>();
 
-    if (modelComp != nullptr) // Only cull nodes with models (or add BoundsComponent later)
+    if (modelComp != nullptr)
     {
         DirectX::BoundingSphere sphere;
         DirectX::BoundingBox box;
@@ -640,31 +571,11 @@ void App::DrawNodeRecursive(Graphics& gfx, Node& node)
         sphere.Center = node.GetWorldPosition();
         sphere.Radius = node.radius;
         containment = cameraFrustum.Contains(sphere);
-        //if (node.GetComponent<BoundingSphere>() != nullptr)
-        //{
-        //    sphere.Center = node.GetWorldPosition();
-        //    sphere.Radius = node.GetComponent<BoundingSphere>()->GetRadius();
-        //    containment = cameraFrustum.Contains(sphere);
-        //}
-        //else if (node.GetComponent<OBB>() != nullptr)
-        //{
-        //    box.Center = node.GetWorldPosition();
-        //    box.Extents = node.GetComponent<OBB>()->GetTransformedSize();
-        //    containment = cameraFrustum.Contains(box);
-        //}
-        //else if (node.GetComponent<CapsuleCollider>() != nullptr)
-        //{
-        //    // Assuming you have a method to get the capsule's bounding sphere
-        //    sphere.Center = DirectX::XMFLOAT3(node.GetWorldPosition().x,
-        //        (node.GetWorldPosition().y + 1.5f),
-        //        node.GetWorldPosition().z);
-        //    sphere.Radius = node.GetComponent<CapsuleCollider>()->GetRadius() * 2.5f;
-        //    containment = cameraFrustum.Contains(sphere);
-        //}
+        
 
-        if (containment == DirectX::DISJOINT) // DISJOINT means completely outside
+        if (containment == DirectX::DISJOINT) 
         {
-            shouldDraw = false; // Don't draw this node or its children
+            shouldDraw = false; 
         }
 
     }
@@ -676,7 +587,7 @@ void App::DrawNodeRecursive(Graphics& gfx, Node& node)
         {
             if (pChild)
             {
-                DrawNodeRecursive(gfx, *pChild); // Recurse for children
+                DrawNodeRecursive(gfx, *pChild); 
             }
         }
     }
@@ -684,31 +595,15 @@ void App::DrawNodeRecursive(Graphics& gfx, Node& node)
 
 void App::ShowControlWindows()
 {
-	//if (!showControlWindow) return; // If control window is not enabled, exit
-    // --- Existing Windows ---
-	//DrawSphereColliders(wnd.Gfx()); // Call the updated function
-    //DrawBoxColliders(wnd.Gfx()); // Call the updated function
-	//DrawCapsuleColliders(wnd.Gfx());
-    //ForEnemyWalking();
+	
     pointLight.Submit();
     dirLight.SpawnControlWindow();
-    pointLight.SpawnControlWindow(); // Control for Point Light
+    pointLight.SpawnControlWindow(); 
     if (showDemoWindow)
     {
         ImGui::ShowDemoWindow(&showDemoWindow);
     }
 
-    // --- Show Model Component Windows ---
-    //if (pNanosuitNode)
-    //{
-    //    if (auto* modelComp = pNanosuitNode->GetComponent<ModelComponent>())
-    //    {
-    //        modelComp->ShowWindow("Nanosuit Controls");
-    //    }
-    //}
-
-
-    // --- NEW: Scene Hierarchy Window ---
     if (ImGui::Begin("Scene Hierarchy"))
     {
         ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
@@ -724,15 +619,14 @@ void App::ShowControlWindows()
             ImGui::Text("Selected: %s", pSelectedSceneNode->GetName().c_str());
             ImGui::Separator();
 
-            // --- Transform Editor ---
             if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
             {
-                // Get current values
+
                 DirectX::XMFLOAT3 pos = pSelectedSceneNode->GetLocalPosition();
                 DirectX::XMFLOAT3 rotRad = pSelectedSceneNode->GetLocalRotationEuler();
                 DirectX::XMFLOAT3 scale = pSelectedSceneNode->GetLocalScale();
 
-                // Convert rotation to degrees for easier editing
+
                 DirectX::XMFLOAT3 rotDeg = {
                     DirectX::XMConvertToDegrees(rotRad.x),
                     DirectX::XMConvertToDegrees(rotRad.y),
@@ -749,22 +643,22 @@ void App::ShowControlWindows()
                 }
 
                 ImGui::Text("Rotation"); ImGui::SameLine();
-                if (ImGui::DragFloat3("##Rotation", &rotDeg.x, 1.0f)) // Edit degrees
+                if (ImGui::DragFloat3("##Rotation", &rotDeg.x, 1.0f)) 
                 {
-                    // Convert back to radians before setting
+
                     rotRad = {
                         DirectX::XMConvertToRadians(rotDeg.x),
                         DirectX::XMConvertToRadians(rotDeg.y),
                         DirectX::XMConvertToRadians(rotDeg.z)
                     };
-                    pSelectedSceneNode->SetLocalRotation(rotRad); // Set radians
+                    pSelectedSceneNode->SetLocalRotation(rotRad);
                     transformChanged = true;
                 }
 
-                ImGui::Text("Scale   "); ImGui::SameLine(); // Extra spaces for alignment
-                if (ImGui::DragFloat3("##Scale", &scale.x, 0.01f, 0.01f, 100.0f)) // Add min/max scale
+                ImGui::Text("Scale   "); ImGui::SameLine(); 
+                if (ImGui::DragFloat3("##Scale", &scale.x, 0.01f, 0.01f, 100.0f)) 
                 {
-                    // Prevent zero scale if needed
+
                     scale.x = std::max(scale.x, 0.001f);
                     scale.y = std::max(scale.y, 0.001f);
                     scale.z = std::max(scale.z, 0.001f);
@@ -772,11 +666,10 @@ void App::ShowControlWindows()
                     transformChanged = true;
                 }
 
-                // Note: The Node's worldTransformDirty flag is already set by the SetLocal... methods.
-                // The Node::Update() call later will handle recalculating the world matrix.
+
             }
 
-            // --- Component Viewer ---
+
             if (ImGui::CollapsingHeader("Components", ImGuiTreeNodeFlags_DefaultOpen))
             {
                 const auto& components = pSelectedSceneNode->GetComponents();
@@ -787,20 +680,20 @@ void App::ShowControlWindows()
                     int compIndex = 0;
                     for (const auto& comp : components) {
                         if (comp) {
-                            // Create a unique ID for the component header
+                           
                             std::string compLabel = typeid(*comp).name();
-                            // Remove "class " prefix if present (platform dependent)
+
                             if (compLabel.rfind("class ", 0) == 0) {
                                 compLabel = compLabel.substr(6);
                             }
-                            compLabel += "##" + std::to_string(compIndex++); // Add unique ID
+                            compLabel += "##" + std::to_string(compIndex++); 
 
-                            // Make each component collapsible
+
                             if (ImGui::TreeNode(compLabel.c_str()))
                             {
-                                // --- Call the component's ImGui draw function ---
+
                                 comp->DrawImGuiControls();
-                                // --- End Call ---
+
 
                                 ImGui::TreePop();
                             }
@@ -815,7 +708,7 @@ void App::ShowControlWindows()
             ImGui::Text("Selected: None");
         }
     }
-    ImGui::End(); // End Scene Hierarchy Window
+    ImGui::End(); 
 }
 
 
@@ -825,7 +718,7 @@ void App::CleanupDestroyedNodes(Node* currentNode)
 {
     if (!currentNode) return;
 
-    // 1. Recursively clean children first.
+
     auto& children_ref = currentNode->GetChildren_NonConst();
     for (size_t i = 0; i < children_ref.size(); ++i) {
         if (children_ref[i]) {
@@ -833,7 +726,7 @@ void App::CleanupDestroyedNodes(Node* currentNode)
         }
     }
 
-    // 2. Now, remove any children of *this* currentNode that are marked.
+
     auto& children = currentNode->GetChildren_NonConst();
     children.erase(
         std::remove_if(children.begin(), children.end(),
@@ -846,9 +739,6 @@ void App::CleanupDestroyedNodes(Node* currentNode)
                     if (pChildNode->GetComponent<Rigidbody>() != nullptr) {
                         PhysicsCommon::physicsSystem->GetBodyInterface().DeactivateBody(pChildNode->GetComponent<Rigidbody>()->GetBodyID());
                         PhysicsCommon::physicsSystem->GetBodyInterface().RemoveBody(pChildNode->GetComponent<Rigidbody>()->GetBodyID());
-                        /*if (pChildNode->GetComponent<Trigger>() != nullptr) {
-                            dynamic_cast<MyContactListener*>(PhysicsCommon::physicsSystem->GetContactListener())->RemoveRigidbodyData(pChildNode->GetComponent<Rigidbody>()->GetBodyID());
-                        }*/
                     }
 
 
@@ -856,33 +746,9 @@ void App::CleanupDestroyedNodes(Node* currentNode)
                     for (const auto& compUniquePtr : components) {
                         Component* comp = compUniquePtr.get();
                         if (!comp) continue;
-                        //physicsEngine.RemoveCollider(dynamic_cast<Collider*>(comp));
 
 
-                        // FOR DRAWING COLLIDERS
-                        //if (auto* bs = dynamic_cast<BoundingSphere*>(comp)) {
-                        //    physicsEngine.RemoveCollider(bs); // Remove from physics
-                        //    auto mapIt = sphereCollidersToDraw.find(bs);
-                        //    if (mapIt != sphereCollidersToDraw.end()) {
-                        //        delete mapIt->second;
-                        //        sphereCollidersToDraw.erase(mapIt);
-                        //    }
-                        //}
-                        //else if (auto* obb = dynamic_cast<OBB*>(comp)) {
-                        //    auto mapIt = boxCollidersToDraw.find(obb);
-                        //    if (mapIt != boxCollidersToDraw.end()) {
-                        //        delete mapIt->second;
-                        //        boxCollidersToDraw.erase(mapIt);
-                        //    }
-                        //}
-                        //else if (auto* cap = dynamic_cast<CapsuleCollider*>(comp)) {
-                        //    auto mapIt = capsuleCollidersToDraw.find(cap);
-                        //    if (mapIt != capsuleCollidersToDraw.end()) {
-                        //        delete mapIt->second; // Delete the allocated SolidCapsule* drawable
-                        //        capsuleCollidersToDraw.erase(mapIt);
-                        //    }
-                        //}
-						// END FOR DRAWING COLLIDERS
+                      
 
                     }
 

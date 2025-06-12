@@ -1,11 +1,11 @@
 #include "FollowState.h"
 #include "StateMachine.h"
-#include "Node.h" // Include Node to get other components
-#include <DirectXMath.h> // For DirectX::XMFLOAT3 operations
+#include "Node.h" 
+#include <DirectXMath.h> 
 #include <SimpleMath.h>
 
 
-#include "Win.h" // For OutputDebugStringA
+#include "Win.h"
 namespace dx = DirectX;
 namespace sm = DirectX::SimpleMath;
 FollowState::FollowState(StateMachine* pOwner) : State()
@@ -34,7 +34,7 @@ void FollowState::Update(StateMachine* pOwner, float dt)
 	sm::Vector3 vOwner(ownerPos.x, ownerPos.y, ownerPos.z);
 	sm::Vector3 vPlayer(playerPos.x, playerPos.y, playerPos.z);
 
-    if (vOwner.Distance(vOwner, vPlayer) > pOwner->followDistance) // Example threshold for "in range"
+    if (vOwner.Distance(vOwner, vPlayer) > pOwner->followDistance) 
     {
         pOwner->RequestStateChange(StateType::IDLE);
         return;

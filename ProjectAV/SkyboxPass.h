@@ -2,7 +2,7 @@
 #include "BindingPass.h"
 #include <memory>
 
-class Skybox; // Forward declare
+class Skybox;
 
 namespace Rgph
 {

@@ -1,9 +1,9 @@
 #include "Ability4.h"
-#include "Node.h"       // Include Node to call SetLocalPosition/Rotation
-#include "Window.h"     // Included via header, but good practice
-#include "CMath.h"      // For wrap_angle and PI (ensure this is included)
+#include "Node.h"       
+#include "Window.h"     
+#include "CMath.h"      
 #include <DirectXMath.h>
-#include <algorithm> // for std::clamp
+#include <algorithm> 
 #include <string>
 
 namespace dx = DirectX;
@@ -76,7 +76,7 @@ void Ability4::Released()
     float pitch = -std::atan2(dir.y, distanceXZ); // Negative for DirectX
 
     pOwner->SetLocalRotation(DirectX::XMFLOAT3(pitch, yaw, 0.0f));
-    // Nowa rotacja kamery
+
     Vector3 newCameraRot = camera->GetLocalRotationEuler();
 
     float deltaYaw = wrap_angle(newCameraRot.y - cameraRotation.y);
@@ -85,7 +85,6 @@ void Ability4::Released()
 
     direction = pOwner->Right() * -deltaYaw + pOwner->Up() * -deltaPitch;
 
-    // Jeœli delta jest bardzo ma³a, nie rzucaj
     if (direction.Length() < 0.01f)
         direction = pOwner->Back();
 
@@ -112,12 +111,6 @@ void Ability4::Activated()
     {
         if (objects[i]->tag == "ENEMY" || objects[i]->tag == "STONE")
         {
-            /*Vector3 objPos = objects[i]->GetWorldPosition();
-            Vector3 aPos = pOwner->GetWorldPosition();
-
-            PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), Vec3(0.0f, 0.0f, 0.0f));
-            PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), Vec3(direction.x, direction.y, direction.z) * scaledForce);
-            OutputDebugStringA(("Ability4 hit: " + objects[i]->GetName() + "\n").c_str());*/
         }
     }
 }

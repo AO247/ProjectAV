@@ -10,7 +10,7 @@ namespace Rgph
 		:
 	BindingPass( std::move( name ) )
 	{
-		// setup fullscreen geometry
+
 		Dvtx::VertexLayout lay;
 		lay.Append( Dvtx::VertexLayout::Position2D );
 		Dvtx::VertexBuffer bufFull{ lay };
@@ -21,7 +21,7 @@ namespace Rgph
 		AddBind( Bind::VertexBuffer::Resolve( gfx,"$Full",std::move( bufFull ) ) );
 		std::vector<unsigned short> indices = { 0,1,2,1,3,2 };
 		AddBind( Bind::IndexBuffer::Resolve( gfx,"$Full",std::move( indices ) ) );
-		// setup other common fullscreen bindables
+
 		auto vs = Bind::VertexShader::Resolve( gfx,"Fullscreen_VS.cso" );
 		AddBind( Bind::InputLayout::Resolve( gfx,lay,*vs) );
 		AddBind( std::move( vs ) );

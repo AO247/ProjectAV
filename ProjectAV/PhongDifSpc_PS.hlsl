@@ -1,4 +1,3 @@
-// PhongSpec_PS.hlsl (WERSJA POPRAWIONA)
 
 #include "ShaderOps.hlsl"
 #include "LightVectorData.hlsl"
@@ -24,7 +23,7 @@ float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float2 tc
     viewNormal = normalize(viewNormal);
     const float3 materialColor = tex.Sample(splr, tc).rgb;
 
-    // Obliczenia parametrów specular
+
     float specularPowerLoaded = specularGloss;
     const float4 specularSample = spec.Sample(splr, tc);
     float3 specularReflectionColor;
@@ -41,15 +40,14 @@ float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float2 tc
         specularPowerLoaded = pow(2.0f, specularSample.a * 13.0f);
     }
 
-    // --- Inicjalizacja oœwietlenia ---
+
     float3 final_color = dir_ambient * materialColor;
 
-    // --- Obliczenia dla Directional Light ---
+
     const float3 dir_to_light_dir = -normalize(viewLightDirection);
     final_color += Diffuse(dir_diffuseColor, dir_diffuseIntensity, 1.0f, dir_to_light_dir, viewNormal) * materialColor;
     final_color += Speculate(specularReflectionColor, specularWeight, viewNormal, dir_to_light_dir, viewFragPos, 1.0f, specularPowerLoaded) * dir_diffuseIntensity * dir_diffuseColor;
 
-    // --- Obliczenia dla Point Light (tylko jeœli w³¹czone) ---
     if (enabled)
     {
         final_color += ambient * materialColor;

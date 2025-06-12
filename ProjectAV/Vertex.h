@@ -172,7 +172,7 @@ namespace Dvtx
 	{
 		friend class VertexBuffer;
 	private:
-		// necessary for Bridge to SetAttribute
+
 		template<VertexLayout::ElementType type>
 		struct AttributeSetting
 		{
@@ -201,14 +201,14 @@ namespace Dvtx
 	protected:
 		Vertex( char* pData,const VertexLayout& layout ) noxnd;
 	private:
-		// enables parameter pack setting of multiple parameters by element index
+
 		template<typename First,typename ...Rest>
 		void SetAttributeByIndex( size_t i,First&& first,Rest&&... rest ) noxnd
 		{
 			SetAttributeByIndex( i,std::forward<First>( first ) );
 			SetAttributeByIndex( i + 1,std::forward<Rest>( rest )... );
 		}
-		// helper to reduce code duplication in SetAttributeByIndex
+
 		template<VertexLayout::ElementType DestLayoutType,typename SrcType>
 		void SetAttribute( char* pAttribute,SrcType&& val ) noxnd
 		{

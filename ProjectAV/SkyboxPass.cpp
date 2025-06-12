@@ -12,7 +12,7 @@ namespace Rgph
 		:
 		BindingPass(std::move(name))
 	{
-		// Cubemap face order: +X, -X, +Y, -Y, +Z, -Z
+
 		std::vector<std::string> facePaths = {
 			"Models\\Skybox\\right.bmp", "Models\\Skybox\\left.bmp",
 			"Models\\Skybox\\up.bmp",   "Models\\Skybox\\down.bmp",
@@ -28,9 +28,9 @@ namespace Rgph
 
 	void SkyboxPass::Execute(Graphics& gfx) const noxnd
 	{
-		// Bind the render target and depth stencil for this pass
+
 		BindBufferResources(gfx);
-		// Execute the unique drawing logic for this pass
+
 		pSkybox->Draw(gfx);
 	}
 }

@@ -1,9 +1,9 @@
 #include "AttackState.h"
 #include "StateMachine.h"
-#include "Node.h" // Include Node to get other components
+#include "Node.h" 
 
 
-#include "Win.h" // For OutputDebugStringA
+#include "Win.h" 
 
 AttackState::AttackState(StateMachine* pOwner) : State()
 {

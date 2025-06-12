@@ -1,9 +1,9 @@
 #include "IdleState.h"
 #include "StateMachine.h"
-#include "Node.h" // Include Node to get other components
+#include "Node.h" 
 
-#include <Windows.h> // For OutputDebugStringA
-#include <DirectXMath.h> // For DirectX::XMFLOAT3 operations
+#include <Windows.h> 
+#include <DirectXMath.h> 
 #include "CMath.h"
 
 namespace dx = DirectX;
@@ -33,7 +33,7 @@ void IdleState::Update(StateMachine* pOwner, float dt)
 
 
     sm::Vector3 circleCenter = pOwner->GetOwner()->GetWorldPosition();
-    circleCenter += pOwner->GetOwner()->Forward() * wanderCenterDistance; // Use StateMachine's member
+    circleCenter += pOwner->GetOwner()->Forward() * wanderCenterDistance; 
 
 
     float angleChangeThisFrame = (((float)rand() / RAND_MAX) - 0.5f) * 2.0f * wanderAngleChange * dt;

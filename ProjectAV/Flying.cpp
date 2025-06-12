@@ -126,8 +126,6 @@ Vector3 Flying::CalculateAvoidanceForce()
 	if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(ray, result, SpecifiedBroadPhaseLayerFilter(BroadPhaseLayers::GROUND), SpecifiedObjectLayerFilter(Layers::GROUND)))
 	{
 		leftHit = true;
-		//float distance = Vector3(pos - hitLeft.hitPoint).Length();
-		//if(distance < targetDistance)
 		avoidanceForce = Vector3(0.0f, 1.0f, 0.0f) * avoidanceWeight;
 		goingUp = true;
 		return avoidanceForce;
@@ -143,8 +141,6 @@ Vector3 Flying::CalculateAvoidanceForce()
 	if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(rayLeft, resultLeft, SpecifiedBroadPhaseLayerFilter(BroadPhaseLayers::WALL), SpecifiedObjectLayerFilter(Layers::WALL)))
 	{
 		leftHit = true;
-		//float distance = Vector3(pos - hitLeft.hitPoint).Length();
-		//if(distance < targetDistance)
 		avoidanceForce = right * avoidanceWeight;
 	}
 
@@ -157,8 +153,6 @@ Vector3 Flying::CalculateAvoidanceForce()
 	if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(rayRight, resultRight, SpecifiedBroadPhaseLayerFilter(BroadPhaseLayers::WALL), SpecifiedObjectLayerFilter(Layers::WALL)))
 	{
 		rightHit = true;
-		//float distance = Vector3(pos - hitLeft.hitPoint).Length();
-		//if(distance < targetDistance)
 		avoidanceForce = -right * avoidanceWeight;
 	}
 
@@ -177,14 +171,11 @@ Vector3 Flying::CalculateAvoidanceForce()
 
 		if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(rayMoreLeft, resultMoreLeft, SpecifiedBroadPhaseLayerFilter(BroadPhaseLayers::WALL), SpecifiedObjectLayerFilter(Layers::WALL)))
 		{
-			//float distance = Vector3(pos - hitLeft.hitPoint).Length();
-			//if(distance < targetDistance)
 			moreLeft = true;
 			avoidanceForce = right * avoidanceWeight * 1.5f;
 		}
 		else if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(rayMoreRight, resultMoreRight, SpecifiedBroadPhaseLayerFilter(BroadPhaseLayers::WALL), SpecifiedObjectLayerFilter(Layers::WALL)))
 		{
-			//float distance = Vector3(pos - hitLeft.hitPoint).Length();
 			moreRight = true;
 			avoidanceForce = -right * avoidanceWeight * 1.5f;
 		}
@@ -229,9 +220,8 @@ Vector3 Flying::HeightCalculate()
 	force *= heightAdjustmentWeight;
 
 	static float bounceTime = 0.0f;
-	bounceTime += 0.01f; // Mo¿esz dostosowaæ szybkoœæ oscylacji
+	bounceTime += 0.01f; 
 
-	// Oscylacja sinusoidalna wokó³ docelowej wysokoœci
 	force.y += std::sin(bounceTime) * heightBounceWeight;
 
 	return force;

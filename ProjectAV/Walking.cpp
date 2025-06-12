@@ -37,7 +37,7 @@ void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 		{
 			targetPosition = lastIslandPos;
 			Vector3 facingDirection = Vector3(targetPosition) - Vector3(pOwner->GetWorldPosition());
-			facingDirection.y = 0.0f; // Ignore height for facing direction
+			facingDirection.y = 0.0f;
 			facingDirection.Normalize();
 			PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(rigidbody->GetBodyID(), Vec3(facingDirection.x, facingDirection.y, facingDirection.z) * 5.0f);
 		}
@@ -93,7 +93,7 @@ void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 		Vector3 toTarget = targetPosition - currentPos;
 		toTarget.Normalize();
 		float dot = currentVelocity.Dot(toTarget);
-		float angle = acosf(std::clamp(dot, -1.0f, 1.0f)); // w radianach
+		float angle = acosf(std::clamp(dot, -1.0f, 1.0f));
 
 		Vector3 facingDirection = currentVelocity;
 		facingDirection.Normalize();
@@ -141,7 +141,7 @@ Vector3 Walking::CalculateAvoidanceForce()
 	Vector3 avoidanceForce(0.0f, 0.0f, 0.0f);
 
 	Vector3 temporaryDirection = targetPosition - pOwner->GetWorldPosition();
-	temporaryDirection.y = 0.0f; // Ignore height for avoidance
+	temporaryDirection.y = 0.0f;
 	temporaryDirection.Normalize();
 
 	float radius = 1.0f;
@@ -178,7 +178,7 @@ Vector3 Walking::CalculateAvoidanceForce()
 		RVec3(leftOrigin.x, leftOrigin.y, leftOrigin.z),
 		RVec3(centerDir.x, centerDir.y, centerDir.z)
 	);
-	//PhysicsCommon::physicsSystem->GetBodyInterface().SetMotionType(rigidbody->GetBodyID(), EMotionType::Dynamic);
+
 	RayCastResult resultLeft;
 	if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(rayLeft, resultLeft, 
 		IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::ENEMY, BroadPhaseLayers::TRIGGER, BroadPhaseLayers::PLAYER }),

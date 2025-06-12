@@ -15,7 +15,6 @@ public:
 	float damage = 1.0f;
 	float lifeTime = 5.0f;
 	float knockbackForce = 1500.0f;
-	//BoundingSphere* damageArea;
 	virtual void DrawImGuiControls() override;
 	void OnCollisionEnter(Node* other) override;
 	void OnTriggerEnter(Node* other) override;
@@ -23,7 +22,6 @@ public:
 
 private:
 	Rigidbody* rigidbody;
-	//void OnTriggerEnter();
 	float timer = 0.0f;
 
 };

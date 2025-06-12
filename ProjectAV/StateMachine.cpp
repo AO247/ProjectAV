@@ -6,25 +6,24 @@
 #include "FollowState.h"
 #include "AttackState.h"
 
-#include <stdexcept> // For runtime_error
+#include <stdexcept> 
 #include <cassert>
 #include <string>
-#include "Win.h"// For OutputDebugStringA
+#include "Win.h"
 
 
 
 StateMachine::StateMachine(Node* owner, StateType initialState)
-	: Component(owner) // Request initial state for first frame
+	: Component(owner) 
 {
 	RegisterState<IdleState>(StateType::IDLE);
 	RegisterState<FollowState>(StateType::FOLLOW);
 	RegisterState<AttackState>(StateType::ATTACK);
 	ChangeState(initialState);
 	if (currentStateType == StateType::NONE) {
-		currentStateType = StateType::IDLE; // Default fallback
-		ChangeState(StateType::IDLE); // Try changing to IDLE if initial faile
+		currentStateType = StateType::IDLE;
+		ChangeState(StateType::IDLE); 
 	}
-	//std::vector<std::unique_ptr<Component>> components = pOwner->GetComponents();
 	for (const auto& component : pOwner->GetComponents())
 	{
 		std::string tagName = "MOVEMENT";
@@ -50,8 +49,8 @@ StateMachine::~StateMachine()
 void StateMachine::Update(float dt)
 {
 
-	// 2. Update the Current State
-	if (currentState) // Ensure state exists
+
+	if (currentState)
 	{
 		currentState->Update(this, dt);
 	}
@@ -62,9 +61,7 @@ void StateMachine::Update(float dt)
 		}
 		else 
 		{
-			// This shouldn't happen after the constructor logic, but safety check
 			OutputDebugStringA("StateMachine Warning: currentState is null in Update!\n");
-			// Maybe try to force back to IDLE?
 			RequestStateChange(StateType::IDLE);
 		}
 		
@@ -88,17 +85,16 @@ void StateMachine::Update(float dt)
 
 void StateMachine::RequestStateChange(StateType nextState)
 {
-	// Store the request. It will be processed at the start of the next Update.
-	// This prevents changing state multiple times within a single frame's update loop.
-	if (nextState != currentStateType) // Don't request change to the same state
+
+	if (nextState != currentStateType) 
 	{
-		ChangeState(nextState); // Optional: immediate change if desired
+		ChangeState(nextState); 
 	}
 }
 
 void StateMachine::EndState()
 {
-	// End the current state and reset to idle
+
 	if (currentState)
 	{
 		if (previousState) {
@@ -106,9 +102,9 @@ void StateMachine::EndState()
 		}
 		else
 		{
-			// This shouldn't happen after the constructor logic, but safety check
+
 			OutputDebugStringA("StateMachine Warning: currentState is null in Update!\n");
-			// Maybe try to force back to IDLE?
+
 			RequestStateChange(StateType::IDLE);
 		}
 	}
@@ -116,7 +112,7 @@ void StateMachine::EndState()
 
 void StateMachine::ChangeState(StateType nextStateType)
 {
-	// Find the factory function for the requested state
+
 	auto it = stateFactory.find(nextStateType);
 	if (it == stateFactory.end())
 	{
@@ -130,20 +126,20 @@ void StateMachine::ChangeState(StateType nextStateType)
 	}
 
 	previousState = std::move(currentState);
-	previousStateType = currentStateType; // Store the previous state type
-	currentState = it->second(this); // Calls the lambda stored in the map
-	currentStateType = nextStateType; // Update the current type enum
+	previousStateType = currentStateType; 
+	currentState = it->second(this); 
+	currentStateType = nextStateType; 
 
-	// Enter the new state
+
 	if (currentState)
 	{
 		currentState->Enter(this);
 	}
 	else
 	{
-		// Factory failed to create state? Should not happen if registration is correct.
+		
 		OutputDebugStringA(("StateMachine Error: Factory failed to create state type: " + std::to_string((int)nextStateType) + "\n").c_str());
-		currentStateType = StateType::NONE; // Mark as invalid state
+		currentStateType = StateType::NONE;
 	}
 }
 

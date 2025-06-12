@@ -1,10 +1,10 @@
 #include "Sprite.h"
-#include <d3dcompiler.h> // For D3DCompile
-#include <iostream>      // For std::cerr
-#include <vector>        // For string formatting buffer
-#include <WICTextureLoader.h> // Included in Sprite.h, but good practice here too
+#include <d3dcompiler.h> 
+#include <iostream>      
+#include <vector>        
+#include <WICTextureLoader.h> 
 
-// Static helper function for shader compilation
+
 static HRESULT CompileShaderFromMemory_Sprite(const char* shaderSource, const char* profile, const char* entryPoint, ID3DBlob** shaderBlob) {
     UINT compileFlags = D3DCOMPILE_ENABLE_STRICTNESS;
 #if defined(DEBUG) || defined(_DEBUG)
@@ -41,7 +41,7 @@ static HRESULT CompileShaderFromMemory_Sprite(const char* shaderSource, const ch
         return hr;
     }
     if (errorBlob) {
-        OutputDebugStringA(static_cast<char*>(errorBlob->GetBufferPointer())); // Show warnings too
+        OutputDebugStringA(static_cast<char*>(errorBlob->GetBufferPointer())); 
         errorBlob->Release();
     }
     return S_OK;
@@ -60,14 +60,12 @@ Sprite::Sprite(ID3D11Device* device, int x, int y, int width, int height,
     DirectX::XMStoreFloat4x4(&projectionMatrix_, DirectX::XMMatrixIdentity());
     DirectX::XMStoreFloat4x4(&worldMatrix_, DirectX::XMMatrixIdentity());
 
-    // Load sprite texture
     hr = DirectX::CreateWICTextureFromFile(device_, spritePath.c_str(), nullptr, &texture_);
     if (FAILED(hr)) {
         std::vector<wchar_t> buffer(256);
         swprintf_s(buffer.data(), buffer.size(), L"Sprite Error: Failed to load sprite texture: %s HRESULT: 0x%X\n", spritePath.c_str(), hr);
         OutputDebugStringW(buffer.data());
         std::wcerr << L"Sprite Error: Failed to load sprite texture: " << spritePath.c_str() << L" HRESULT: 0x" << std::hex << hr << std::endl;
-        // texture_ will be NULL, Draw() will check this.
     }
     else {
         std::vector<wchar_t> buffer(256);
@@ -75,8 +73,6 @@ Sprite::Sprite(ID3D11Device* device, int x, int y, int width, int height,
         OutputDebugStringW(buffer.data());
     }
 
-    // Define vertices for a quad. UVs map to the entire texture.
-    // UV convention: (0,0) is bottom-left of texture, (1,1) is top-right of texture by default for this quad.
     Vertex vertices[] = {
         {{0.0f,           0.0f,          0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}},
         {{(float)width_,  0.0f,          0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {1.0f, 0.0f}},
@@ -84,7 +80,6 @@ Sprite::Sprite(ID3D11Device* device, int x, int y, int width, int height,
         {{0.0f,          (float)height_, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}}
     };
 
-    // Create Vertex Buffer
     D3D11_BUFFER_DESC bd = {};
     bd.Usage = D3D11_USAGE_DYNAMIC;
     bd.ByteWidth = sizeof(vertices);
@@ -102,9 +97,9 @@ Sprite::Sprite(ID3D11Device* device, int x, int y, int width, int height,
         OutputDebugStringA("Sprite Info: Vertex buffer created.\n");
     }
 
-    // Index Buffer data
+
     WORD indices[] = { 0, 1, 2, 0, 2, 3 };
-    // Create Index Buffer
+
     D3D11_BUFFER_DESC ibd = {};
     ibd.Usage = D3D11_USAGE_DEFAULT;
     ibd.ByteWidth = sizeof(indices);
@@ -122,7 +117,7 @@ Sprite::Sprite(ID3D11Device* device, int x, int y, int width, int height,
         OutputDebugStringA("Sprite Info: Index buffer created.\n");
     }
 
-    // --- ORIGINAL SHADERS FOR TEXTURE SAMPLING ---
+
     const char* vertexShaderSource =
         "cbuffer MatrixBuffer : register(b0) {\n"
         "    matrix projectionMatrix;\n"
@@ -158,7 +153,6 @@ Sprite::Sprite(ID3D11Device* device, int x, int y, int width, int height,
         "float4 main(PS_INPUT input) : SV_TARGET {\n"
         "  return input.Color * spriteTexture.Sample(spriteSampler, input.TexCoord);\n"
         "}\n";
-    // --- END ORIGINAL SHADERS ---
 
     ID3DBlob* vsBlob = nullptr;
     hr = CompileShaderFromMemory_Sprite(vertexShaderSource, "vs_4_0", "main", &vsBlob);
@@ -206,7 +200,7 @@ Sprite::Sprite(ID3D11Device* device, int x, int y, int width, int height,
     if (psBlob) psBlob->Release();
     if (vsBlob) vsBlob->Release();
 
-    // Create Constant Buffer
+
     D3D11_BUFFER_DESC cbd = {};
     cbd.Usage = D3D11_USAGE_DYNAMIC;
     cbd.ByteWidth = sizeof(DirectX::XMFLOAT4X4) * 2;
@@ -216,7 +210,7 @@ Sprite::Sprite(ID3D11Device* device, int x, int y, int width, int height,
     if (FAILED(hr)) { OutputDebugStringA("Sprite Error: Failed to create constant buffer!\n"); return; }
     else { OutputDebugStringA("Sprite Info: Constant buffer created.\n"); }
 
-    // Create Sampler State
+
     D3D11_SAMPLER_DESC samplerDesc = {};
     samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
     samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
@@ -229,7 +223,7 @@ Sprite::Sprite(ID3D11Device* device, int x, int y, int width, int height,
     if (FAILED(hr)) { OutputDebugStringA("Sprite Error: Failed to create sampler state!\n"); return; }
     else { OutputDebugStringA("Sprite Info: Sampler state created.\n"); }
 
-    // Create Blend State
+
     D3D11_BLEND_DESC blendDesc = {};
     blendDesc.RenderTarget[0].BlendEnable = TRUE;
     blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
@@ -262,7 +256,7 @@ Sprite::~Sprite() {
 }
 
 void Sprite::Draw(ID3D11DeviceContext* context) {
-    //OutputDebugStringA("Sprite::Draw() CALLED (Texture Shaders).\n");
+
 
     if (!context || !vertexBuffer_ || !indexBuffer_ || !vertexShader_ || !pixelShader_ || !inputLayout_ || !constantBuffer_ || !texture_ || !sampler_ || !blendState_) {
         OutputDebugStringA("Sprite::Draw() Error: Missing critical D3D resources (Texture Version). Aborting draw.\n");
@@ -307,10 +301,7 @@ void Sprite::Draw(ID3D11DeviceContext* context) {
         OutputDebugStringA("Sprite::Draw - GetActiveWindow() returned NULL. Using fallback.\n");
     }
 
-  /*  std::vector<char> dbgMsg(512);
-    sprintf_s(dbgMsg.data(), dbgMsg.size(), "Sprite::Draw (Texture) - Sprite Pos(%d,%d) Size(%d,%d). ProjDims(%0.1f x %0.1f). GotFromWnd: %s\n",
-        x_, y_, width_, height_, windowClientWidth, windowClientHeight, gotDimensionsFromWindow ? "Yes" : "No");
-    OutputDebugStringA(dbgMsg.data());*/
+
 
 
     DirectX::XMMATRIX projMat = DirectX::XMMatrixOrthographicOffCenterLH(0.0f, windowClientWidth, windowClientHeight, 0.0f, 0.0f, 1.0f);
@@ -319,7 +310,7 @@ void Sprite::Draw(ID3D11DeviceContext* context) {
     DirectX::XMMATRIX worldMat = DirectX::XMMatrixTranslation(static_cast<float>(x_), static_cast<float>(y_), 0.0f);
     DirectX::XMStoreFloat4x4(&this->worldMatrix_, DirectX::XMMatrixTranspose(worldMat));
 
-    // Update Vertex Buffer with current sprite size (width_, height_)
+
     Vertex vertices[] = {
         {{0.0f,            0.0f,           0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}},
         {{(float)width_,   0.0f,           0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {1.0f, 0.0f}},
@@ -337,7 +328,7 @@ void Sprite::Draw(ID3D11DeviceContext* context) {
         return;
     }
 
-    // Update Constant Buffer
+
     D3D11_MAPPED_SUBRESOURCE mappedResourceCB;
     HRESULT hrCB = context->Map(constantBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResourceCB);
     if (FAILED(hrCB)) {
@@ -350,7 +341,7 @@ void Sprite::Draw(ID3D11DeviceContext* context) {
     cbPtr->world = worldMatrix_;
     context->Unmap(constantBuffer_, 0);
 
-    // Set up the rendering pipeline stages
+
     UINT stride = sizeof(Vertex);
     UINT offset = 0;
     context->IASetVertexBuffers(0, 1, &vertexBuffer_, &stride, &offset);
@@ -369,7 +360,7 @@ void Sprite::Draw(ID3D11DeviceContext* context) {
     context->OMSetBlendState(blendState_, blendFactor, 0xffffffff);
 
     context->DrawIndexed(6, 0, 0);
-    //OutputDebugStringA("Sprite::Draw() COMPLETED DRAWINDEXED (Texture Shaders).\n");
+
 }
 
 void Sprite::SetPosition(int x, int y) {

@@ -38,7 +38,7 @@ void ShootAttack::Attack(float dt)
 	}
 	OutputDebugStringA("\nShooting\n");
 	attacked = true;
-	// here we will create bullet
+
 	Vector3 pos = pOwner->GetWorldPosition();
 	pos += pOwner->Forward() * 5.0f;
 	Node* bullet = PrefabManager::InstantiateBullet(pos.x, pos.y, pos.z, 0.2f);
@@ -48,7 +48,7 @@ void ShootAttack::Attack(float dt)
 	dir.Normalize();
 	dir *= bulletSpeed;
 	PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(bullet->GetComponent<Rigidbody>()->GetBodyID(), Vec3(dir.x, dir.y, dir.z));
-	//PhysicsCommon::physicsSystem->GetBodyInterface().MoveKinematic(bullet->GetComponent<Rigidbody>()->GetBodyID(), Vec3Arg(dir.x, dir.y, dir.z) * 500.0f, QuatArg(1.0f,1.0f,1.0f,1.0f), bulletSpeed);
+
 }
 
 

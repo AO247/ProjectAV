@@ -2,7 +2,7 @@
 
 namespace dx = DirectX;
 SpawnJump::SpawnJump(Node* owner, Window& window, Node* player)
-	: Component(owner), wnd(window), playerNode(player)  // Initialize reference member
+	: Component(owner), wnd(window), playerNode(player)
 {
 }
 
@@ -67,7 +67,7 @@ void SpawnJump::Update(float dt)
 				}
 				if (!rotated)
 				{
-					// Calculate direction to target (XZ plane)
+
 					Vector3 direction = (targetPosition - playerNode->GetWorldPosition());
 					direction.y = 0.0f;
 					direction.Normalize();

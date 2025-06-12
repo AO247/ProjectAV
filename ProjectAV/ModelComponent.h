@@ -5,14 +5,9 @@
 #include <string>
 #include <DirectXMath.h>
 #include "ConditionalNoexcept.h"
-// #include "AggregateVertex.h" // No longer needed
-
-// Include DirectX Simple Math
 #include <SimpleMath.h>
 #include "Technique.h"
 
-
-// Forward Declarations
 class Mesh;
 class Graphics;
 class FrameCommander;
@@ -29,12 +24,9 @@ namespace Rgph
 
 struct XMFLOAT3Less {
     bool operator()(const DirectX::XMFLOAT3& a, const DirectX::XMFLOAT3& b) const {
-        // Lexicographical comparison
         if (a.x != b.x) return a.x < b.x;
         if (a.y != b.y) return a.y < b.y;
         return a.z < b.z;
-        // Alternative using std::tie (cleaner, include <tuple>):
-        // return std::tie(a.x, a.y, a.z) < std::tie(b.x, b.y, b.z);
     }
 };
 
@@ -86,7 +78,6 @@ public:
     void ShowWindow(Graphics& gfx, const char* windowName = nullptr) noexcept;
     void LinkTechniques(Rgph::RenderGraph&);
 
-    // **** MODIFIED METHOD DECLARATION ****
     std::vector<DirectX::SimpleMath::Vector3> GetAllUniqueVertices() const;
     std::vector<ModelComponent::Triangle> GetAllTriangles() const;
 

@@ -17,10 +17,8 @@ namespace Rgph
 	public:
 		MainRenderGraph(Graphics& gfx);
 	private:
-		// private functions
 		void SetKernelGauss(int radius, float sigma) noxnd;
 		void SetKernelBox(int radius) noxnd;
-		// private data
 		enum class KernelType
 		{
 			Gauss,

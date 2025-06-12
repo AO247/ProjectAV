@@ -31,7 +31,7 @@ void DirectionalLight::SpawnControlWindow() noexcept
 void DirectionalLight::Reset() noexcept
 {
 	cbData = {
-		{ -0.5f, -0.8f, 0.2f }, // Kierunek z góry, lekko z boku
+		{ -0.5f, -0.8f, 0.2f }, 
 		1.0f,
 		{ 0.5f, 0.5f, 0.5f },
 		1.0f,
@@ -42,13 +42,12 @@ void DirectionalLight::Reset() noexcept
 
 void DirectionalLight::Bind(Graphics& gfx, DirectX::FXMMATRIX view) const noexcept
 {
-	// Normalizujemy kierunek, aby upewniæ siê, ¿e jest to wektor jednostkowy
+
 	DirectX::XMVECTOR dir = DirectX::XMLoadFloat3(&cbData.direction);
 	dir = DirectX::XMVector3Normalize(dir);
 
 	auto dataCopy = cbData;
-	// Transformujemy kierunek do przestrzeni widoku (view space)
-	// U¿ywamy XMVector3TransformNormal, poniewa¿ kierunek nie ma pozycji (w=0)
+
 	const auto transformedDir = DirectX::XMVector3TransformNormal(dir, view);
 	DirectX::XMStoreFloat3(&dataCopy.direction, transformedDir);
 
