@@ -297,7 +297,6 @@
     <ClCompile Include="VertexShader.cpp" />
     <ClCompile Include="Walking.cpp" />
     <ClCompile Include="Window.cpp" />
-    <ClCompile Include="WindowsMessageMap.cpp" />
     <ClCompile Include="WinMain.cpp" />
     <ClCompile Include="XM.cpp" />
   </ItemGroup>
@@ -404,7 +403,6 @@
     <ClInclude Include="TechniqueProbe.h" />
     <ClInclude Include="TestCube.h" />
     <ClInclude Include="Testing.h" />
-    <ClInclude Include="TestModelProbe.h" />
     <ClInclude Include="TestPlane.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TexturePreprocessor.h" />
@@ -421,7 +419,6 @@
     <ClInclude Include="Walking.h" />
     <ClInclude Include="Win.h" />
     <ClInclude Include="Window.h" />
-    <ClInclude Include="WindowsMessageMap.h" />
     <ClInclude Include="WindowsThrowMacros.h" />
     <ClInclude Include="XM.h" />
   </ItemGroup>
