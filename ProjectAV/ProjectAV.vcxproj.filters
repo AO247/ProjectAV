@@ -81,9 +81,6 @@
     <ClCompile Include="WinMain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="WindowsMessageMap.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -186,9 +183,6 @@
     <ClCompile Include="ModelComponent.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
-    <ClCompile Include="Collider.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
     <ClCompile Include="Rigidbody.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
@@ -250,9 +244,6 @@
       <Filter>Source Files\Bindable</Filter>
     </ClCompile>
     <ClCompile Include="CUtil.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ScriptCommander.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DynamicConstant.cpp">
@@ -417,14 +408,8 @@
     <ClCompile Include="MainRenderGraph.cpp">
       <Filter>Source Files\Jobber</Filter>
     </ClCompile>
-    <ClCompile Include="ShadowRasterizer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="WindowsMessageMap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Win.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -659,9 +644,6 @@
     <ClInclude Include="json.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ScriptCommander.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="DynamicConstant.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -797,9 +779,6 @@
     <ClInclude Include="StepLinkingProbe.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TestModelProbe.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TransformCbufScaling.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -850,15 +829,6 @@
     </ClInclude>
     <ClInclude Include="UpgradeHandler.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ShadowMappingPass.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ShadowCameraCBuf.h">
-      <Filter>Header Files\Bindable</Filter>
-    </ClInclude>
-    <ClInclude Include="ShadowRasterizer.h">
-      <Filter>Header Files\Bindable</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -965,7 +935,10 @@
     <FxCompile Include="NullPixelShader.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Shadow_VS.hlsl">
+    <FxCompile Include="Skinned_VS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Skinned_PS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>

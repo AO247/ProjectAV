@@ -7,6 +7,7 @@
 #include "ConditionalNoexcept.h"
 #include <SimpleMath.h>
 #include "Technique.h"
+#include <map>
 
 class Mesh;
 class Graphics;
@@ -58,6 +59,12 @@ class ModelComponent : public Component
 {
 public:
 
+    struct BoneInfo
+    {
+        int id;
+        DirectX::XMMATRIX offset;
+    };
+
     struct Triangle
     {
         DirectX::SimpleMath::Vector3 v0;
@@ -84,6 +91,10 @@ public:
     std::vector<std::unique_ptr<Mesh>> meshPtrs;
     void AddTechnique(Technique technique);
     std::vector<Technique> techniques;
+
+    std::map<std::string, BoneInfo> m_BoneInfoMap;
+    int m_boneCounter = 0;
+
 private:
     std::unique_ptr<ModelInternalNode> ParseNodeRecursive(int& nextId, const aiNode& node, float scale);
 
