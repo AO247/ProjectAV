@@ -1971,8 +1971,8 @@ public:
         InstantiateStone1(pNewNode, Vector3(-24.0f, 4.0f, -31.0f), 2.0f);
         InstantiateNewColumn(pNewNode, Vector3(0.0f, 0.0f, 1.0f), 1.0f);
         InstantiateNewColumn(pNewNode, Vector3(0.0f, 0.0f, -30.0f), 1.0f);
-        InstantiateRuin1(pNewNode, Vector3(37.0f, 0.0f, -10.0f), 1.0f);
-        InstantiatePlatform1(pNewNode, Vector3(-34.0f, 0.0f, -4.0f), 1.0f);
+        InstantiateRuin1(pNewNode, Vector3(37.0f, -1.0f, -10.0f), 1.0f);
+        InstantiatePlatform1(pNewNode, Vector3(-34.0f, -0.6f, -4.0f), 1.0f);
         //InstantiatePlatform3(pNewNode, -19.0f, 0.0f, -26.0f, 1.0f);
         //InstantiateStatue(pNewNode, 0.0f, 0.0f, 0.0f, 1.0f);
 
