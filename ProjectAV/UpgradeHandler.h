@@ -41,7 +41,6 @@ public:
 	bool upgradeMenuOpen = false;
 	bool upgraded = false;
 	bool end = false;
-	bool waitForGrounded = false;
 	float timer = 0.0f;
 	float missclickTimer = 0.0f;
 

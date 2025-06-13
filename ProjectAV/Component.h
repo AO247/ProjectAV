@@ -27,6 +27,8 @@ public:
 
     virtual void Follow(float dt, DirectX::XMFLOAT3 target, float sp = 1.0f) {}
 	virtual void Attack(float dt) {}
+    bool canAttack = true;
+    virtual bool GroundCheck() { return false; }
     Node* GetOwner() const { return pOwner; }
     virtual void DrawImGuiControls() {};
     std::string tag;
