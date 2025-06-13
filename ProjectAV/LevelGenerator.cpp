@@ -53,12 +53,12 @@ void LevelGenerator::GenerateIslands()
                 {
                     int randLarge = rand() % 2;
                     if (randLarge == 0) {
-                        islandPrefab = PrefabManager::InstantiateIslandBig1(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
+                        islandPrefab = PrefabManager::InstantiateIslandBig1(pOwner, Vector3(0.0f, 0.0f, 0.0f), 1.0f);
 
                     }
                     else {
             
-                        islandPrefab = PrefabManager::InstantiateIslandBig2(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
+                        islandPrefab = PrefabManager::InstantiateIslandBig2(pOwner, Vector3(0.0f, 0.0f, 0.0f), 1.0f);
 
                     }
                     bigIslandCount--;
@@ -68,11 +68,11 @@ void LevelGenerator::GenerateIslands()
                 {
                     int randMedium = rand() % 2;
                     if (randMedium == 0) {
-                        islandPrefab = PrefabManager::InstantiateIslandBig1(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
+                        islandPrefab = PrefabManager::InstantiateIslandBig1(pOwner, Vector3(0.0f, 0.0f, 0.0f), 1.0f);
 
                     }
                     else {
-                        islandPrefab = PrefabManager::InstantiateIslandBig1(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
+                        islandPrefab = PrefabManager::InstantiateIslandBig1(pOwner, Vector3(0.0f, 0.0f, 0.0f), 1.0f);
 
                     }
                     mediumIslandCount--;
@@ -82,18 +82,18 @@ void LevelGenerator::GenerateIslands()
                 {
                     int randSmall = rand() % 2;
                     if (randSmall == 0) {
-                        islandPrefab = PrefabManager::InstantiateIslandSmall2(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
+                        islandPrefab = PrefabManager::InstantiateIslandSmall2(pOwner, Vector3(0.0f, 0.0f, 0.0f), 1.0f);
 
 
                     }
                     else if(randSmall == 1) {
                         //islandPrefab = prefabManager->InstantiateIslandSmall2(pOwner, 0.0f, 0.0f, 0.0f, 1.5f);
-                        islandPrefab = PrefabManager::InstantiateIslandSmall2(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
+                        islandPrefab = PrefabManager::InstantiateIslandSmall2(pOwner, Vector3(0.0f, 0.0f, 0.0f), 1.0f);
 
                     }
                     else {
                
-                    islandPrefab = PrefabManager::InstantiateIslandSmall3(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
+                    islandPrefab = PrefabManager::InstantiateIslandSmall3(pOwner, Vector3(0.0f, 0.0f, 0.0f), 1.0f);
 
                     }
                     smallIslandCount--;
@@ -105,7 +105,7 @@ void LevelGenerator::GenerateIslands()
             }
         }
         else {
-            islandPrefab = PrefabManager::InstantiateFirstIsland(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
+            islandPrefab = PrefabManager::InstantiateFirstIsland(pOwner, Vector3(0.0f, 0.0f, 0.0f), 1.0f);
         }
         Vector3 p = islandPrefab->GetWorldPosition();
         island = islandPrefab->GetComponent<Island>();
@@ -336,7 +336,7 @@ void LevelGenerator::SpawnEnemies()
 
             if (randEnemy == 0)
             {
-                enemy = PrefabManager::InstantiateFlyingEnemy(pOwner, 0.0f, 0.0f, 0.0f, 1.6f, pPlayer);
+                enemy = PrefabManager::InstantiateFlyingEnemy(pOwner, Vector3(0.0f, 0.0f, 0.0f), 1.6f, pPlayer);
                 enemy->SetWorldPosition(pos);
             }
 
@@ -349,7 +349,7 @@ void LevelGenerator::SpawnEnemies()
 
             if (randEnemy == 0)
             {
-                enemy = PrefabManager::InstantiateShootingEnemy(pOwner, 0.0f, 0.0f, 0.0f, 1.6f, pPlayer);
+                enemy = PrefabManager::InstantiateShootingEnemy(pOwner, Vector3(0.0f, 0.0f, 0.0f), 1.6f, pPlayer);
                 enemy->SetWorldPosition(pos);
             }
 
@@ -362,7 +362,7 @@ void LevelGenerator::SpawnEnemies()
 
             if (randEnemy == 0)
             {
-                enemy = PrefabManager::InstantiateNormalEnemy(pOwner, 0.0f, 0.0f, 0.0f, 1.6f, pPlayer);
+                enemy = PrefabManager::InstantiateNormalEnemy(pOwner, Vector3(0.0f, 0.0f, 0.0f), 1.6f, pPlayer);
                 enemy->SetWorldPosition(pos);
             }
 

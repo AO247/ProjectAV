@@ -41,7 +41,7 @@ void ShootAttack::Attack(float dt)
 
 	Vector3 pos = pOwner->GetWorldPosition();
 	pos += pOwner->Forward() * 5.0f;
-	Node* bullet = PrefabManager::InstantiateBullet(pos.x, pos.y, pos.z, 0.2f);
+	Node* bullet = PrefabManager::InstantiateBullet(Vector3(pos.x, pos.y, pos.z), 0.2f);
 	bullet->GetComponent<Bullet>()->ignore = pOwner;
 	playerPos.y += 2.0f;
 	Vector3 dir = playerPos - pos;

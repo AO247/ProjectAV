@@ -24,7 +24,7 @@ public:
     ///////////ENVIROMENT//////////
     ///////////////////////////////
 
-    static Node* InstantiateMushroom1(Node* parentNode, float locX, float locY, float locZ, float scale) {
+    static Node* InstantiateMushroom1(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0}) {
         auto pNewNodeOwner = std::make_unique<Node>("Mushroom1", nullptr, "WALL");
 
         pNewNodeOwner->AddComponent(
@@ -38,13 +38,13 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -52,7 +52,7 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateMushroom2(Node* parentNode, float locX, float locY, float locZ, float scale) {
+    static Node* InstantiateMushroom2(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0}) {
         auto pNewNodeOwner = std::make_unique<Node>("Mushroom2", nullptr, "WALL");
 
         pNewNodeOwner->AddComponent(
@@ -66,13 +66,13 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -80,7 +80,7 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateMushroom3(Node* parentNode, float locX, float locY, float locZ, float scale) {
+    static Node* InstantiateMushroom3(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0}) {
         auto pNewNodeOwner = std::make_unique<Node>("Mushroom3", nullptr, "WALL");
 
         pNewNodeOwner->AddComponent(
@@ -94,13 +94,13 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -108,7 +108,7 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateSpike1(Node* parentNode, float locX, float locY, float locZ, float scale) {
+    static Node* InstantiateSpike1(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0}) {
         auto pNewNodeOwner = std::make_unique<Node>("Spike1", nullptr, "WALL");
 
         pNewNodeOwner->AddComponent(
@@ -122,13 +122,13 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -136,7 +136,7 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateSpike2(Node* parentNode, float locX, float locY, float locZ, float scale) {
+    static Node* InstantiateSpike2(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0}) {
         auto pNewNodeOwner = std::make_unique<Node>("Spike2", nullptr, "WALL");
 
         pNewNodeOwner->AddComponent(
@@ -150,13 +150,13 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -164,7 +164,7 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateFaceColumn1(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateFaceColumn1(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("FaceColumn1", nullptr, "WALL");
 
@@ -179,13 +179,13 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -193,7 +193,7 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateFire1(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateFire1(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("Fire1", nullptr, "WALL");
 
@@ -208,13 +208,13 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -227,7 +227,7 @@ public:
     ////////WALLS AND OBJECTS//////
     ///////////////////////////////
 
-    static Node* InstantiateRock1(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateRock1(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("Rock1", nullptr, "WALL");
 
@@ -242,13 +242,13 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -256,7 +256,7 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateRock2(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateRock2(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("Rock2", nullptr, "WALL");
 
@@ -271,13 +271,13 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -285,7 +285,7 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateRock3(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateRock3(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("Rock3", nullptr, "WALL");
 
@@ -300,13 +300,13 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -314,7 +314,7 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateRock4(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateRock4(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("Rock4", nullptr, "WALL");
 
@@ -329,13 +329,13 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -343,7 +343,7 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateRock5(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateRock5(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("Rock5", nullptr, "WALL");
 
@@ -358,13 +358,13 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -372,7 +372,7 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateRockDouble(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateRockDouble(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("RockDouble", nullptr, "WALL");
 
@@ -387,13 +387,13 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -401,7 +401,7 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateLog1(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateLog1(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("Log1", nullptr, "WALL");
 
@@ -416,13 +416,13 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -430,7 +430,7 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateLog2(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateLog2(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("Log2", nullptr, "WALL");
 
@@ -445,13 +445,13 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -459,7 +459,7 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateWall1(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateWall1(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("Wall1", nullptr, "WALL");
 
@@ -474,13 +474,13 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -488,7 +488,7 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateWall2(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateWall2(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("Wall2", nullptr, "WALL");
 
@@ -503,13 +503,13 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -517,7 +517,7 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateWall3(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateWall3(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("Wall3", nullptr, "WALL");
 
@@ -532,12 +532,12 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -545,7 +545,7 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateWall4(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateWall4(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("Wall4", nullptr, "WALL");
 
@@ -560,13 +560,13 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -574,7 +574,7 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateRuin1(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateRuin1(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("Ruin1", nullptr, "WALL");
 
@@ -589,13 +589,13 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -603,7 +603,7 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateRuin2(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateRuin2(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("Ruin2", nullptr, "WALL");
 
@@ -618,13 +618,13 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -632,7 +632,7 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateRuin3(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateRuin3(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("Ruin3", nullptr, "WALL");
 
@@ -647,13 +647,13 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -661,7 +661,7 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateRuin4(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateRuin4(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("Ruin4", nullptr, "WALL");
 
@@ -676,13 +676,13 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -690,7 +690,7 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateRuin5(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateRuin5(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("Ruin5", nullptr, "WALL");
 
@@ -705,13 +705,13 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -719,7 +719,7 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateRuinRoof1(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateRuinRoof1(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("RuinRoof1", nullptr, "WALL");
 
@@ -734,13 +734,13 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -748,7 +748,7 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateRuinRoof2(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateRuinRoof2(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("RuinRoof2", nullptr, "WALL");
 
@@ -763,13 +763,13 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -777,7 +777,7 @@ public:
 
         return pNewNode;
     }
-    /*static Node* InstantiateStatue(Node* parentNode, float locX, float locY, float locZ, float scale)
+    /*static Node* InstantiateStatue(Node* parentNode, Vector3 position, float scale)
     {
         auto pNewNodeOwner = std::make_unique<Node>("Statue", nullptr, "WALL");
 
@@ -792,13 +792,13 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -806,7 +806,7 @@ public:
 
         return pNewNode;
     }*/
-    static Node* InstantiateColumn(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateColumn(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("Column", nullptr, "WALL");
 
@@ -821,13 +821,13 @@ public:
         ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
         ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
         islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -835,7 +835,7 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateColumn1(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateColumn1(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("Column1", nullptr, "WALL");
 
@@ -850,13 +850,13 @@ public:
         ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
         ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
         islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -864,7 +864,7 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateColumn2(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateColumn2(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("Column2", nullptr, "WALL");
 
@@ -879,13 +879,13 @@ public:
         ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
         ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
         islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -893,7 +893,7 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateColumn3(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateColumn3(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("Column3", nullptr, "WALL");
 
@@ -908,13 +908,13 @@ public:
         ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
         ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
         islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -922,7 +922,7 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateColumn4(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateColumn4(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("Column4", nullptr, "WALL");
 
@@ -937,13 +937,13 @@ public:
         ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
         ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
         islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -951,7 +951,7 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateColumn5(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateColumn5(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("Column5", nullptr, "WALL");
 
@@ -966,13 +966,13 @@ public:
         ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
         ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
         islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -980,7 +980,7 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateColumn6(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateColumn6(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("Column6", nullptr, "WALL");
 
@@ -995,13 +995,13 @@ public:
         ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
         ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
         islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -1009,7 +1009,7 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateColumn7(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateColumn7(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("Column7", nullptr, "WALL");
 
@@ -1024,13 +1024,13 @@ public:
         ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
         ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
         islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -1043,7 +1043,7 @@ public:
     ///////////THROWABLE///////////
     /////////////////////////////// 
 
-    static Node* InstantiateStick1(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateStick1(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("Stick1", nullptr, "STONE");
 
@@ -1054,7 +1054,7 @@ public:
         ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
         ConvexHullShapeSettings shapeSettings(PhysicsCommon::MakeVertexArray(islandModel->GetAllUniqueVertices()));
         ShapeRefC islandShape = shapeSettings.Create().Get();
-        BodyCreationSettings BodySettings(islandShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+        BodyCreationSettings BodySettings(islandShape, RVec3(position), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
         BodySettings.mMassPropertiesOverride.mMass = 7.0f;
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
         BodySettings.mFriction = 0.5f;
@@ -1067,7 +1067,7 @@ public:
             std::make_unique<Throwable>(pNewNodeOwner.get())
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -1075,7 +1075,7 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateStick2(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateStick2(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("Stick2", nullptr, "STONE");
 
@@ -1086,7 +1086,7 @@ public:
         ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
         ConvexHullShapeSettings shapeSettings(PhysicsCommon::MakeVertexArray(islandModel->GetAllUniqueVertices()));
         ShapeRefC islandShape = shapeSettings.Create().Get();
-        BodyCreationSettings BodySettings(islandShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+        BodyCreationSettings BodySettings(islandShape, RVec3(position), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
         BodySettings.mMassPropertiesOverride.mMass = 7.0f;
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
         BodySettings.mFriction = 0.5f;
@@ -1099,15 +1099,15 @@ public:
             std::make_unique<Throwable>(pNewNodeOwner.get())
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
-        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+        pNewNodeOwner->SetLocalPosition(position);
+        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale/2, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
         parentNode->AddChild(std::move(pNewNodeOwner));
 
         return pNewNode;
     }
-    static Node* InstantiateStone1(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateStone1(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("Stone1", nullptr, "STONE");
 
@@ -1126,7 +1126,7 @@ public:
         ShapeRefC islandShape = shapeSettings.Create().Get();
         ScaledShapeSettings islandScaling(islandShape, Vec3Arg(scale, scale, scale));
         islandShape = islandScaling.Create().Get();
-        BodyCreationSettings BodySettings(islandShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+        BodyCreationSettings BodySettings(islandShape, RVec3(position), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
         BodySettings.mMassPropertiesOverride.mMass = 7.0f;
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
         BodySettings.mFriction = 0.5f;
@@ -1139,7 +1139,7 @@ public:
             std::make_unique<Throwable>(pNewNodeOwner.get())
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -1147,7 +1147,7 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateStone2(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateStone2(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("Stone2", nullptr, "STONE");
 
@@ -1158,7 +1158,7 @@ public:
         ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
         ConvexHullShapeSettings shapeSettings(PhysicsCommon::MakeVertexArray(islandModel->GetAllUniqueVertices()));
         ShapeRefC islandShape = shapeSettings.Create().Get();
-        BodyCreationSettings BodySettings(islandShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+        BodyCreationSettings BodySettings(islandShape, RVec3(position), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
         BodySettings.mMassPropertiesOverride.mMass = 7.0f;
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
         BodySettings.mFriction = 0.5f;
@@ -1171,7 +1171,7 @@ public:
             std::make_unique<Throwable>(pNewNodeOwner.get())
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -1179,7 +1179,7 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateStone3(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateStone3(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("Stone3", nullptr, "STONE");
 
@@ -1190,7 +1190,7 @@ public:
         ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
         ConvexHullShapeSettings shapeSettings(PhysicsCommon::MakeVertexArray(islandModel->GetAllUniqueVertices()));
         ShapeRefC islandShape = shapeSettings.Create().Get();
-        BodyCreationSettings BodySettings(islandShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+        BodyCreationSettings BodySettings(islandShape, RVec3(position), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
         BodySettings.mMassPropertiesOverride.mMass = 7.0f;
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
         BodySettings.mFriction = 0.5f;
@@ -1203,7 +1203,7 @@ public:
             std::make_unique<Throwable>(pNewNodeOwner.get())
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -1211,7 +1211,7 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateStone4(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateStone4(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("Stone4", nullptr, "STONE");
 
@@ -1222,7 +1222,7 @@ public:
         ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
         ConvexHullShapeSettings shapeSettings(PhysicsCommon::MakeVertexArray(islandModel->GetAllUniqueVertices()));
         ShapeRefC islandShape = shapeSettings.Create().Get();
-        BodyCreationSettings BodySettings(islandShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+        BodyCreationSettings BodySettings(islandShape, RVec3(position), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
         BodySettings.mMassPropertiesOverride.mMass = 7.0f;
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
         BodySettings.mFriction = 0.5f;
@@ -1235,7 +1235,7 @@ public:
             std::make_unique<Throwable>(pNewNodeOwner.get())
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -1243,7 +1243,7 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateStone5(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateStone5(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("Stone5", nullptr, "STONE");
 
@@ -1254,7 +1254,7 @@ public:
         ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
         ConvexHullShapeSettings shapeSettings(PhysicsCommon::MakeVertexArray(islandModel->GetAllUniqueVertices()));
         ShapeRefC islandShape = shapeSettings.Create().Get();
-        BodyCreationSettings BodySettings(islandShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+        BodyCreationSettings BodySettings(islandShape, RVec3(position), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
         BodySettings.mMassPropertiesOverride.mMass = 7.0f;
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
         BodySettings.mFriction = 0.5f;
@@ -1267,7 +1267,7 @@ public:
             std::make_unique<Throwable>(pNewNodeOwner.get())
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -1275,7 +1275,7 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiatePot1(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiatePot1(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("Pot1", nullptr, "STONE");
 
@@ -1286,7 +1286,7 @@ public:
         ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
         ConvexHullShapeSettings shapeSettings(PhysicsCommon::MakeVertexArray(islandModel->GetAllUniqueVertices()));
         ShapeRefC islandShape = shapeSettings.Create().Get();
-        BodyCreationSettings BodySettings(islandShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+        BodyCreationSettings BodySettings(islandShape, RVec3(position), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
         BodySettings.mMassPropertiesOverride.mMass = 7.0f;
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
         BodySettings.mFriction = 0.5f;
@@ -1299,7 +1299,7 @@ public:
             std::make_unique<Throwable>(pNewNodeOwner.get())
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -1307,7 +1307,7 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiatePot2(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiatePot2(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("Pot2", nullptr, "STONE");
 
@@ -1318,7 +1318,7 @@ public:
         ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
         ConvexHullShapeSettings shapeSettings(PhysicsCommon::MakeVertexArray(islandModel->GetAllUniqueVertices()));
         ShapeRefC islandShape = shapeSettings.Create().Get();
-        BodyCreationSettings BodySettings(islandShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+        BodyCreationSettings BodySettings(islandShape, RVec3(position), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
         BodySettings.mMassPropertiesOverride.mMass = 7.0f;
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
         BodySettings.mFriction = 0.5f;
@@ -1331,7 +1331,7 @@ public:
             std::make_unique<Throwable>(pNewNodeOwner.get())
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -1339,7 +1339,7 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiatePot3(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiatePot3(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("Pot3", nullptr, "STONE");
 
@@ -1350,7 +1350,7 @@ public:
         ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
         ConvexHullShapeSettings shapeSettings(PhysicsCommon::MakeVertexArray(islandModel->GetAllUniqueVertices()));
         ShapeRefC islandShape = shapeSettings.Create().Get();
-        BodyCreationSettings BodySettings(islandShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+        BodyCreationSettings BodySettings(islandShape, RVec3(position), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
         BodySettings.mMassPropertiesOverride.mMass = 7.0f;
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
         BodySettings.mFriction = 0.5f;
@@ -1363,7 +1363,7 @@ public:
             std::make_unique<Throwable>(pNewNodeOwner.get())
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -1371,7 +1371,7 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiatePot4(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiatePot4(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("Pot4", nullptr, "STONE");
 
@@ -1382,7 +1382,7 @@ public:
         ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
         ConvexHullShapeSettings shapeSettings(PhysicsCommon::MakeVertexArray(islandModel->GetAllUniqueVertices()));
         ShapeRefC islandShape = shapeSettings.Create().Get();
-        BodyCreationSettings BodySettings(islandShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+        BodyCreationSettings BodySettings(islandShape, RVec3(position), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
         BodySettings.mMassPropertiesOverride.mMass = 7.0f;
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
         BodySettings.mFriction = 0.5f;
@@ -1395,7 +1395,7 @@ public:
             std::make_unique<Throwable>(pNewNodeOwner.get())
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -1403,7 +1403,7 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateBrick(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateBrick(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("Brick", nullptr, "STONE");
 
@@ -1414,7 +1414,7 @@ public:
         ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
         ConvexHullShapeSettings shapeSettings(PhysicsCommon::MakeVertexArray(islandModel->GetAllUniqueVertices()));
         ShapeRefC islandShape = shapeSettings.Create().Get();
-        BodyCreationSettings BodySettings(islandShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+        BodyCreationSettings BodySettings(islandShape, RVec3(position), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
         BodySettings.mMassPropertiesOverride.mMass = 7.0f;
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
         BodySettings.mFriction = 0.5f;
@@ -1427,7 +1427,7 @@ public:
             std::make_unique<Throwable>(pNewNodeOwner.get())
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -1435,7 +1435,7 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateStoneStack1(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateStoneStack1(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("StoneStack1", nullptr, "STONE");
 
@@ -1454,7 +1454,7 @@ public:
         ShapeRefC islandShape = shapeSettings.Create().Get();
         ScaledShapeSettings islandScaling(islandShape, Vec3Arg(scale, scale, scale));
         islandShape = islandScaling.Create().Get();
-        BodyCreationSettings BodySettings(islandShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+        BodyCreationSettings BodySettings(islandShape, RVec3(position), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
         BodySettings.mMassPropertiesOverride.mMass = 7.0f;
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
         BodySettings.mFriction = 0.5f;
@@ -1467,7 +1467,7 @@ public:
             std::make_unique<Throwable>(pNewNodeOwner.get())
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -1475,7 +1475,7 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateStoneStack2(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateStoneStack2(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("StoneStackBase1", nullptr, "STONE");
 
@@ -1494,7 +1494,7 @@ public:
         ShapeRefC islandShape = shapeSettings.Create().Get();
         ScaledShapeSettings islandScaling(islandShape, Vec3Arg(scale, scale, scale));
         islandShape = islandScaling.Create().Get();
-        BodyCreationSettings BodySettings(islandShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+        BodyCreationSettings BodySettings(islandShape, RVec3(position), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
         BodySettings.mMassPropertiesOverride.mMass = 7.0f;
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
         BodySettings.mFriction = 0.5f;
@@ -1507,7 +1507,7 @@ public:
             std::make_unique<Throwable>(pNewNodeOwner.get())
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -1515,7 +1515,7 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateStoneStack3(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateStoneStack3(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("StoneStackTop1", nullptr, "STONE");
 
@@ -1534,7 +1534,7 @@ public:
         ShapeRefC islandShape = shapeSettings.Create().Get();
         ScaledShapeSettings islandScaling(islandShape, Vec3Arg(scale, scale, scale));
         islandShape = islandScaling.Create().Get();
-        BodyCreationSettings BodySettings(islandShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+        BodyCreationSettings BodySettings(islandShape, RVec3(position), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
         BodySettings.mMassPropertiesOverride.mMass = 7.0f;
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
         BodySettings.mFriction = 0.5f;
@@ -1547,7 +1547,7 @@ public:
             std::make_unique<Throwable>(pNewNodeOwner.get())
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -1555,7 +1555,7 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateStoneStack4(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateStoneStack4(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("StoneStackMid1", nullptr, "STONE");
 
@@ -1574,7 +1574,7 @@ public:
         ShapeRefC islandShape = shapeSettings.Create().Get();
         ScaledShapeSettings islandScaling(islandShape, Vec3Arg(scale, scale, scale));
         islandShape = islandScaling.Create().Get();
-        BodyCreationSettings BodySettings(islandShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+        BodyCreationSettings BodySettings(islandShape, RVec3(position), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
         BodySettings.mMassPropertiesOverride.mMass = 7.0f;
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
         BodySettings.mFriction = 0.5f;
@@ -1587,7 +1587,7 @@ public:
             std::make_unique<Throwable>(pNewNodeOwner.get())
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -1600,7 +1600,7 @@ public:
     //////////ISLANDS PARTS////////
     ///////////////////////////////
 
-    static Node* InstantiatePlatform1(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiatePlatform1(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("Platform1", nullptr, "GROUND");
 
@@ -1615,21 +1615,21 @@ public:
         ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
         ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
         islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
         parentNode->AddChild(std::move(pNewNodeOwner));
         return pNewNode;
     }
-    static Node* InstantiatePlatform2(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiatePlatform2(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("Platform2", nullptr, "GROUND");
 
@@ -1644,21 +1644,21 @@ public:
         ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
         ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
         islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
         parentNode->AddChild(std::move(pNewNodeOwner));
         return pNewNode;
     }
-    static Node* InstantiatePlatform3(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiatePlatform3(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
 
 
@@ -1675,21 +1675,21 @@ public:
         ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
         ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
         islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
         parentNode->AddChild(std::move(pNewNodeOwner));
         return pNewNode;
     }
-    static Node* InstantiatePlatform4(Node* parentNode, float locX, float locY, float locZ, float scale) {
+    static Node* InstantiatePlatform4(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0}) {
         auto pNewNodeOwner = std::make_unique<Node>("Platform4", nullptr, "GROUND");
 
         pNewNodeOwner->AddComponent(
@@ -1703,21 +1703,21 @@ public:
         ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
         ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
         islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
         parentNode->AddChild(std::move(pNewNodeOwner));
         return pNewNode;
     }
-    static Node* InstantiatePlatform5(Node* parentNode, float locX, float locY, float locZ, float scale) {
+    static Node* InstantiatePlatform5(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0}) {
             auto pNewNodeOwner = std::make_unique<Node>("Platform5", nullptr, "GROUND");
 
             pNewNodeOwner->AddComponent(
@@ -1731,21 +1731,21 @@ public:
             ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
             ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
             islandMeshShape = islandScaling.Create().Get();
-            BodyCreationSettings bodySettings(islandMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+            BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
             bodySettings.mFriction = 1.0f;
             pNewNodeOwner->AddComponent(
                 std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
             );
 
 
-            pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+            pNewNodeOwner->SetLocalPosition(position);
             pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
             Node* pNewNode = pNewNodeOwner.get();
             parentNode->AddChild(std::move(pNewNodeOwner));
             return pNewNode;
     }
-    static Node* InstantiatePlatform6(Node* parentNode, float locX, float locY, float locZ, float scale) {
+    static Node* InstantiatePlatform6(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0}) {
         auto pNewNodeOwner = std::make_unique<Node>("Platform6", nullptr, "GROUND");
 
         pNewNodeOwner->AddComponent(
@@ -1759,14 +1759,14 @@ public:
         ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
         ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
         islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -1778,7 +1778,7 @@ public:
     ////////////ISLANDS////////////
     ///////////////////////////////
 
-    static Node* InstantiateFirstIsland(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateFirstIsland(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("Spawn", nullptr, "SPAWN");
 
@@ -1793,7 +1793,7 @@ public:
         ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
         ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
         islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -1839,16 +1839,16 @@ public:
         pIsland->rightPoint = rightPoint.get();
         pIsland->upPoint = upPoint.get();
         pIsland->downPoint = downPoint.get();
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
 
-        InstantiateColumn(pNewNode, 21.0f, 0.0f, 20.0f, 4.0f);
-        InstantiateColumn(pNewNode, 22.0f, 0.0f, -19.0f, 4.0f);
-        InstantiateColumn(pNewNode, -14.0f, 0.0f, 20.0f, 4.0f);
-        InstantiateColumn(pNewNode, -14.0f, 0.0f, -19.0f, 4.0f);
-		InstantiateBaseColumn(pNewNode, 0.0f, -14.0f, 0.0f, 4.0f);
+        InstantiateColumn(pNewNode, Vector3(21.0f, 0.0f, 20.0f), 4.0f);
+        InstantiateColumn(pNewNode, Vector3(22.0f, 0.0f, -19.0f), 4.0f);
+        InstantiateColumn(pNewNode, Vector3(-14.0f, 0.0f, 20.0f), 4.0f);
+        InstantiateColumn(pNewNode, Vector3(-14.0f, 0.0f, -19.0f), 4.0f);
+		InstantiateBaseColumn(pNewNode, Vector3(0.0f, -14.0f, 0.0f), 4.0f);
 
 
         pNewNode->AddChild(std::move(leftPoint));
@@ -1858,7 +1858,7 @@ public:
         parentNode->AddChild(std::move(pNewNodeOwner));
         return pNewNode;
     }
-    static Node* InstantiateStartIsland(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateStartIsland(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("BASE", nullptr, "GROUND");
 
@@ -1873,12 +1873,12 @@ public:
         ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
         ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
         islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
         pNewNodeOwner->radius = 1000.0f;
 
@@ -1896,7 +1896,7 @@ public:
         return pNewNode;
 
     }
-    static Node* InstantiateIslandBig1(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateIslandBig1(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("Island B1", nullptr, "GROUND");
 
@@ -1911,7 +1911,7 @@ public:
         ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
         ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
         islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -1926,9 +1926,9 @@ public:
         auto upPoint = std::make_unique<Node>("Up Point", pNewNodeOwner.get());
         auto downPoint = std::make_unique<Node>("Down Point", pNewNodeOwner.get());
 
-        leftPoint->SetLocalPosition(DirectX::XMFLOAT3(-65.0f, 0.0f, 35.0f));
-        rightPoint->SetLocalPosition(DirectX::XMFLOAT3(65.0f, 0.0f, 20.0f));
-        upPoint->SetLocalPosition(DirectX::XMFLOAT3(40.0f, 0.0f, 65.0f));
+        leftPoint->SetLocalPosition(DirectX::XMFLOAT3(-56.0f, 4.0f, -1.0f));
+        rightPoint->SetLocalPosition(DirectX::XMFLOAT3(66.0f, 0.0f, 15.0f));
+        upPoint->SetLocalPosition(DirectX::XMFLOAT3(-10.0f, 0.0f, 60.0f));
         downPoint->SetLocalPosition(DirectX::XMFLOAT3(30.0f, 0.0f, -65.0f));
         pIsland->halfExtents = { 63.0f, 2.0f, 63.0f };
         /*pIsland->halfExtents = { (rightPoint->GetLocalPosition().x - leftPoint->GetLocalPosition().x) / 2.0f - 1.0f,
@@ -1954,25 +1954,25 @@ public:
         pIsland->rightPoint = rightPoint.get();
         pIsland->upPoint = upPoint.get();
         pIsland->downPoint = downPoint.get();
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
 
         //InstantiateStone1(pNewNode, 22.2f, 30.0f, 32.2f, 2.0f);
         //InstantiateStone1(pNewNode, 4.2f, 30.0f, 17.2f, 2.0f);
-        InstantiateRock1(pNewNode, -12.0f, 0.0f, 31.0f, 1.0f);
-        InstantiateRock2(pNewNode, 30.0f, 0.0f, -41.0f, 1.0f);
-        InstantiateStone1(pNewNode, -30.0f, 4.0f, 20.0f, 2.0f);
-        InstantiateStone1(pNewNode, -10.0f, 4.0f, -21.0f, 2.0f);
-        InstantiateStone1(pNewNode, 16.0f, 4.0f, 30.0f, 2.0f);
-        InstantiateStone1(pNewNode, 33.0f, 4.0f, 22.0f, 2.0f);
-        InstantiateStone1(pNewNode, -8.0f, 4.0f, 12.0f, 2.0f);
-        InstantiateStone1(pNewNode, -24.0f, 4.0f, -31.0f, 2.0f);
-        InstantiateNewColumn(pNewNode, 0.0f, 0.0f, 1.0f, 1.0f);
-        InstantiateNewColumn(pNewNode, 0.0f, 0.0f, -30.0f, 1.0f);
-        InstantiateRuin1(pNewNode, 37.0f, 0.0f, -10.0f, 1.0f);
-        InstantiatePlatform1(pNewNode, -34.0f, 0.0f, -4.0f, 1.0f);
+        InstantiateRock1(pNewNode, Vector3(-12.0f, 0.0f, 31.0f), 1.0f);
+        InstantiateRock2(pNewNode, Vector3(30.0f, 0.0f, -41.0f), 1.0f);
+        InstantiateStone1(pNewNode, Vector3(-30.0f, 4.0f, 20.0f), 2.0f);
+        InstantiateStone1(pNewNode, Vector3(-10.0f, 4.0f, -21.0f), 2.0f);
+        InstantiateStone1(pNewNode, Vector3(16.0f, 4.0f, 30.0f), 2.0f);
+        InstantiateStone1(pNewNode, Vector3(33.0f, 4.0f, 22.0f), 2.0f);
+        InstantiateStone1(pNewNode, Vector3(-8.0f, 4.0f, 12.0f), 2.0f);
+        InstantiateStone1(pNewNode, Vector3(-24.0f, 4.0f, -31.0f), 2.0f);
+        InstantiateNewColumn(pNewNode, Vector3(0.0f, 0.0f, 1.0f), 1.0f);
+        InstantiateNewColumn(pNewNode, Vector3(0.0f, 0.0f, -30.0f), 1.0f);
+        InstantiateRuin1(pNewNode, Vector3(37.0f, 0.0f, -10.0f), 1.0f);
+        InstantiatePlatform1(pNewNode, Vector3(-34.0f, 0.0f, -4.0f), 1.0f);
         //InstantiatePlatform3(pNewNode, -19.0f, 0.0f, -26.0f, 1.0f);
         //InstantiateStatue(pNewNode, 0.0f, 0.0f, 0.0f, 1.0f);
 
@@ -2000,90 +2000,9 @@ public:
         return pNewNode;
 
     }
-    static Node* InstantiateIslandBig3(Node* parentNode, float locX, float locY, float locZ, float scale) {
-        auto pNewNodeOwner = std::make_unique<Node>("Island S1", nullptr, "GROUND");
-
-        pNewNodeOwner->AddComponent(
-            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\wyspy_0606\\wyspa_duza_p.obj")
-        );
-        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-
-        ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
-        TriangleList islandTriangles = PhysicsCommon::MakeTriangleList(islandModel->GetAllTriangles());
-        MeshShapeSettings islandMeshSettings(islandTriangles);
-        Shape::ShapeResult islandMeshCreationResult = islandMeshSettings.Create();
-        ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
-        ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
-        islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
-        bodySettings.mFriction = 1.0f;
-        pNewNodeOwner->AddComponent(
-            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
-        );
-
-        pNewNodeOwner->AddComponent(
-            std::make_unique<Island>(pNewNodeOwner.get())
-        );
-        Island* pIsland = pNewNodeOwner->GetComponent<Island>();
-        auto leftPoint = std::make_unique<Node>("Left Point", pNewNodeOwner.get());
-        auto rightPoint = std::make_unique<Node>("Right Point", pNewNodeOwner.get());
-        auto upPoint = std::make_unique<Node>("Up Point", pNewNodeOwner.get());
-        auto downPoint = std::make_unique<Node>("Down Point", pNewNodeOwner.get());
-
-        upPoint->SetLocalPosition(DirectX::XMFLOAT3(3.0f, 0.0f, 36.0f));
-        downPoint->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 0.0f, -27.0f));
-        leftPoint->SetLocalPosition(DirectX::XMFLOAT3(-33.0f, 0.0f, 5.0f));
-        rightPoint->SetLocalPosition(DirectX::XMFLOAT3(33.0f, 0.0f, -4.0f));
-        //pIsland->halfExtents = { 11.0f, 2.0f, 11.0f };
-        pIsland->halfExtents = { (rightPoint->GetLocalPosition().x - leftPoint->GetLocalPosition().x) / 2.0f - 1.0f,
-                                2.0f,
-                                (upPoint->GetLocalPosition().z - downPoint->GetLocalPosition().z) / 2.0f - 1.0f };
-        //upPoint->AddComponent(
-        //    std::make_unique<ModelComponent>(upPoint.get(), wnd->Gfx(), "Models\\kolumna\\kolumna.obj")
-        //);
-        //downPoint->AddComponent(
-        //    std::make_unique<ModelComponent>(downPoint.get(), wnd->Gfx(), "Models\\kolumna\\kolumna.obj")
-        //);
-        //leftPoint->AddComponent(
-        //    std::make_unique<ModelComponent>(leftPoint.get(), wnd->Gfx(), "Models\\kolumna\\kolumna.obj")
-        //);
-        //rightPoint->AddComponent(
-        //    std::make_unique<ModelComponent>(rightPoint.get(), wnd->Gfx(), "Models\\kolumna\\kolumna.obj")
-        //);
-        pIsland->leftPoint = leftPoint.get();
-        pIsland->rightPoint = rightPoint.get();
-        pIsland->upPoint = upPoint.get();
-        pIsland->downPoint = downPoint.get();
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
-        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
-
-        Node* pNewNode = pNewNodeOwner.get();
-
-        //Node* stone1 = InstantiateStone1(pNewNode, -10.2f, 15.0f, 8.2f, 2.0f);
-        InstantiateStone1(pNewNode, 3.0f, 30.0f, -8.0f, 2.0f);
-        InstantiateStone1(pNewNode, 20.2f, 30.0f, 4.2f, 2.0f);
-        InstantiateStone1(pNewNode, 15.2f, 30.0f, 21.2f, 2.0f);
-        InstantiateStone1(pNewNode, 12.2f, 30.0f, -3.2f, 2.0f);
-        InstantiateStone1(pNewNode, -15.2f, 30.0f, -8.2f, 2.0f);
-        InstantiateColumn(pNewNode, 17.5f, 0.0f, -7.0f, 1.0f);
-        InstantiateColumn(pNewNode, -4.5f, 0.0f, 1.0f, 1.0f);
-        InstantiateColumn(pNewNode, 16.5f, 0.0f, 10.0f, 1.0f);
-
-        auto spawnPoint1 = std::make_unique<Node>("SpawnPoint 1", pNewNodeOwner.get());
-        spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(-11.0f, 2.0f, 3.0f));
-        pIsland->spawnPoints.push_back(spawnPoint1.get());
-        pNewNode->AddChild(std::move(spawnPoint1));
-
-        pNewNode->AddChild(std::move(leftPoint));
-        pNewNode->AddChild(std::move(rightPoint));
-        pNewNode->AddChild(std::move(upPoint));
-        pNewNode->AddChild(std::move(downPoint));
-        parentNode->AddChild(std::move(pNewNodeOwner));
-        return pNewNode;
-    }
-    static Node* InstantiateIslandBig2(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateIslandBig2(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Island B1", nullptr, "GROUND");
+        auto pNewNodeOwner = std::make_unique<Node>("Island B2", nullptr, "GROUND");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\wyspy_2\\wyspa_duza_okragla_2.obj")
@@ -2096,7 +2015,7 @@ public:
         ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
         ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
         islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -2111,10 +2030,10 @@ public:
         auto upPoint = std::make_unique<Node>("Up Point", pNewNodeOwner.get());
         auto downPoint = std::make_unique<Node>("Down Point", pNewNodeOwner.get());
 
-        leftPoint->SetLocalPosition(DirectX::XMFLOAT3(-65.0f, 0.0f, 35.0f));
-        rightPoint->SetLocalPosition(DirectX::XMFLOAT3(65.0f, 0.0f, 20.0f));
-        upPoint->SetLocalPosition(DirectX::XMFLOAT3(40.0f, 0.0f, 65.0f));
-        downPoint->SetLocalPosition(DirectX::XMFLOAT3(30.0f, 0.0f, -65.0f));
+        leftPoint->SetLocalPosition(DirectX::XMFLOAT3(-56.0f, 3.0f, 14.0f));
+        rightPoint->SetLocalPosition(DirectX::XMFLOAT3(67.0f, 0.0f, 0.0f));
+        upPoint->SetLocalPosition(DirectX::XMFLOAT3(-7.0f, 3.0f, 58.0f));
+        downPoint->SetLocalPosition(DirectX::XMFLOAT3(4.0f, 0.0f, -64.0f));
         pIsland->halfExtents = { 63.0f, 2.0f, 63.0f };
         /*pIsland->halfExtents = { (rightPoint->GetLocalPosition().x - leftPoint->GetLocalPosition().x) / 2.0f - 1.0f,
                                 2.0f,
@@ -2139,26 +2058,26 @@ public:
         pIsland->rightPoint = rightPoint.get();
         pIsland->upPoint = upPoint.get();
         pIsland->downPoint = downPoint.get();
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
 
         //InstantiateStone1(pNewNode, 22.2f, 30.0f, 32.2f, 2.0f);
         //InstantiateStone1(pNewNode, 4.2f, 30.0f, 17.2f, 2.0f);
-        InstantiateRock3(pNewNode, 40.0f, 0.0f, 27.0f, 1.0f);
-        InstantiateRock5(pNewNode, -38.0f, 0.0f, -4.0f, 1.0f);
-        InstantiateStone1(pNewNode, 43.0f, 4.0f, -10.0f, 2.0f);
-        InstantiateStone1(pNewNode, -6.0f, 4.0f, -11.0f, 2.0f);
-        InstantiateStone1(pNewNode, 16.0f, 4.0f, 30.0f, 2.0f);
-        InstantiateStone1(pNewNode, 36.0f, 4.0f, -27.0f, 2.0f);
-        InstantiateStone1(pNewNode, 47.0f, 4.0f, 1.0f, 2.0f);
-        InstantiateStone1(pNewNode, -10.0f, 8.0f, 17.0f, 2.0f);
-        InstantiateNewColumn(pNewNode, 33.0f, 0.0f, 10.0f, 1.0f);
-        InstantiateNewColumn(pNewNode, -7.0f, 0.0f, -32.0f, 1.0f);
-        InstantiateRuin3(pNewNode, 47.0f, 0.0f, -10.0f, 1.0f);
-        InstantiateRuin3(pNewNode, -16.0f, 0.0f, -27.0f, 1.0f);
-        InstantiatePlatform2(pNewNode, -11.0f, 0.0f, 19.0f, 1.0f);
+        InstantiateRock3(pNewNode, Vector3(40.0f, 0.0f, 27.0f), 1.0f);
+        InstantiateRock5(pNewNode, Vector3(-38.0f, 0.0f, -4.0f), 1.0f);
+        InstantiateStone1(pNewNode, Vector3(43.0f, 4.0f, -10.0f), 2.0f);
+        InstantiateStone1(pNewNode, Vector3(-6.0f, 4.0f, -11.0f), 2.0f);
+        InstantiateStone1(pNewNode, Vector3(16.0f, 4.0f, 30.0f), 2.0f);
+        InstantiateStone1(pNewNode, Vector3(36.0f, 4.0f, -27.0f), 2.0f);
+        InstantiateStone1(pNewNode, Vector3(47.0f, 4.0f, 1.0f), 2.0f);
+        InstantiateStone1(pNewNode, Vector3(-10.0f, 8.0f, 17.0f), 2.0f);
+        InstantiateNewColumn(pNewNode, Vector3(33.0f, 0.0f, 10.0f), 1.0f);
+        InstantiateNewColumn(pNewNode, Vector3(-7.0f, 0.0f, -32.0f), 1.0f);
+        InstantiateRuin3(pNewNode, Vector3(47.0f, 0.0f, -10.0f), 1.0f);
+        InstantiateRuin3(pNewNode, Vector3(-16.0f, 0.0f, -27.0f), 1.0f);
+        InstantiatePlatform2(pNewNode, Vector3(-11.0f, 0.0f, 19.0f), 1.0f);
         //InstantiatePlatform3(pNewNode, -19.0f, 0.0f, -26.0f, 1.0f);
         //InstantiateStatue(pNewNode, 0.0f, 0.0f, 0.0f, 1.0f);
 
@@ -2186,11 +2105,11 @@ public:
         return pNewNode;
 
     }
-    static Node* InstantiateIslandMedium1(Node* parentNode, float locX, float locY, float locZ, float scale) {
-        auto pNewNodeOwner = std::make_unique<Node>("Island S1", nullptr, "GROUND");
+    static Node* InstantiateIslandBig3(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0}) {
+        auto pNewNodeOwner = std::make_unique<Node>("Island B3", nullptr, "GROUND");
 
         pNewNodeOwner->AddComponent(
-            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\wyspy_0606\\wyspa_srednia.obj")
+            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\wyspy_0606\\wyspa_duza_p.obj")
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
 
@@ -2201,7 +2120,7 @@ public:
         ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
         ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
         islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -2216,44 +2135,48 @@ public:
         auto upPoint = std::make_unique<Node>("Up Point", pNewNodeOwner.get());
         auto downPoint = std::make_unique<Node>("Down Point", pNewNodeOwner.get());
 
-        upPoint->SetLocalPosition(DirectX::XMFLOAT3(3.0f, 0.0f, 36.0f));
-        downPoint->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 0.0f, -27.0f));
-        leftPoint->SetLocalPosition(DirectX::XMFLOAT3(-33.0f, 0.0f, 5.0f));
-        rightPoint->SetLocalPosition(DirectX::XMFLOAT3(33.0f, 0.0f, -4.0f));
+        upPoint->SetLocalPosition(DirectX::XMFLOAT3(39.0f, 0.0f, 50.0f));
+        downPoint->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 0.0f, -45.0f));
+        leftPoint->SetLocalPosition(DirectX::XMFLOAT3(-62.0f, 0.0f, 31.0f));
+        rightPoint->SetLocalPosition(DirectX::XMFLOAT3(82.0f, 0.0f, -4.0f));
         //pIsland->halfExtents = { 11.0f, 2.0f, 11.0f };
         pIsland->halfExtents = { (rightPoint->GetLocalPosition().x - leftPoint->GetLocalPosition().x) / 2.0f - 1.0f,
                                 2.0f,
                                 (upPoint->GetLocalPosition().z - downPoint->GetLocalPosition().z) / 2.0f - 1.0f };
-        //upPoint->AddComponent(
-        //    std::make_unique<ModelComponent>(upPoint.get(), wnd->Gfx(), "Models\\kolumna\\kolumna.obj")
-        //);
-        //downPoint->AddComponent(
-        //    std::make_unique<ModelComponent>(downPoint.get(), wnd->Gfx(), "Models\\kolumna\\kolumna.obj")
-        //);
-        //leftPoint->AddComponent(
-        //    std::make_unique<ModelComponent>(leftPoint.get(), wnd->Gfx(), "Models\\kolumna\\kolumna.obj")
-        //);
-        //rightPoint->AddComponent(
-        //    std::make_unique<ModelComponent>(rightPoint.get(), wnd->Gfx(), "Models\\kolumna\\kolumna.obj")
-        //);
+        upPoint->AddComponent(
+            std::make_unique<ModelComponent>(upPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+		upPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        downPoint->AddComponent(
+            std::make_unique<ModelComponent>(downPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+		downPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        leftPoint->AddComponent(
+            std::make_unique<ModelComponent>(leftPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+		leftPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        rightPoint->AddComponent(
+            std::make_unique<ModelComponent>(rightPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+		rightPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         pIsland->leftPoint = leftPoint.get();
         pIsland->rightPoint = rightPoint.get();
         pIsland->upPoint = upPoint.get();
         pIsland->downPoint = downPoint.get();
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
 
         //Node* stone1 = InstantiateStone1(pNewNode, -10.2f, 15.0f, 8.2f, 2.0f);
-        InstantiateStone1(pNewNode, 6.0f, 30.0f, -45.0f, 2.0f);
+        /*InstantiateStone1(pNewNode, 3.0f, 30.0f, -8.0f, 2.0f);
         InstantiateStone1(pNewNode, 20.2f, 30.0f, 4.2f, 2.0f);
         InstantiateStone1(pNewNode, 15.2f, 30.0f, 21.2f, 2.0f);
         InstantiateStone1(pNewNode, 12.2f, 30.0f, -3.2f, 2.0f);
         InstantiateStone1(pNewNode, -15.2f, 30.0f, -8.2f, 2.0f);
         InstantiateColumn(pNewNode, 17.5f, 0.0f, -7.0f, 1.0f);
         InstantiateColumn(pNewNode, -4.5f, 0.0f, 1.0f, 1.0f);
-        InstantiateColumn(pNewNode, 16.5f, 0.0f, 10.0f, 1.0f);
+        InstantiateColumn(pNewNode, 16.5f, 0.0f, 10.0f, 1.0f);*/
 
         auto spawnPoint1 = std::make_unique<Node>("SpawnPoint 1", pNewNodeOwner.get());
         spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(-11.0f, 2.0f, 3.0f));
@@ -2267,7 +2190,7 @@ public:
         parentNode->AddChild(std::move(pNewNodeOwner));
         return pNewNode;
     }
-    static Node* InstantiateIslandMedium2(Node* parentNode, float locX, float locY, float locZ, float scale) {
+    static Node* InstantiateIslandMedium1(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0}) {
         auto pNewNodeOwner = std::make_unique<Node>("Island S1", nullptr, "GROUND");
 
         pNewNodeOwner->AddComponent(
@@ -2282,7 +2205,7 @@ public:
         ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
         ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
         islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -2297,44 +2220,48 @@ public:
         auto upPoint = std::make_unique<Node>("Up Point", pNewNodeOwner.get());
         auto downPoint = std::make_unique<Node>("Down Point", pNewNodeOwner.get());
 
-        upPoint->SetLocalPosition(DirectX::XMFLOAT3(3.0f, 0.0f, 36.0f));
-        downPoint->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 0.0f, -27.0f));
-        leftPoint->SetLocalPosition(DirectX::XMFLOAT3(-33.0f, 0.0f, 5.0f));
-        rightPoint->SetLocalPosition(DirectX::XMFLOAT3(33.0f, 0.0f, -4.0f));
+        upPoint->SetLocalPosition(DirectX::XMFLOAT3(-6.0f, 0.0f, 42.0f));
+        downPoint->SetLocalPosition(DirectX::XMFLOAT3(8.0f, 0.0f, -36.0f));
+        leftPoint->SetLocalPosition(DirectX::XMFLOAT3(-44.0f, 0.0f, 5.0f));
+        rightPoint->SetLocalPosition(DirectX::XMFLOAT3(46.0f, 0.0f, 18.0f));
         //pIsland->halfExtents = { 11.0f, 2.0f, 11.0f };
         pIsland->halfExtents = { (rightPoint->GetLocalPosition().x - leftPoint->GetLocalPosition().x) / 2.0f - 1.0f,
                                 2.0f,
                                 (upPoint->GetLocalPosition().z - downPoint->GetLocalPosition().z) / 2.0f - 1.0f };
-        //upPoint->AddComponent(
-        //    std::make_unique<ModelComponent>(upPoint.get(), wnd->Gfx(), "Models\\kolumna\\kolumna.obj")
-        //);
-        //downPoint->AddComponent(
-        //    std::make_unique<ModelComponent>(downPoint.get(), wnd->Gfx(), "Models\\kolumna\\kolumna.obj")
-        //);
-        //leftPoint->AddComponent(
-        //    std::make_unique<ModelComponent>(leftPoint.get(), wnd->Gfx(), "Models\\kolumna\\kolumna.obj")
-        //);
-        //rightPoint->AddComponent(
-        //    std::make_unique<ModelComponent>(rightPoint.get(), wnd->Gfx(), "Models\\kolumna\\kolumna.obj")
-        //);
+        /*upPoint->AddComponent(
+            std::make_unique<ModelComponent>(upPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        upPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        downPoint->AddComponent(
+            std::make_unique<ModelComponent>(downPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        downPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        leftPoint->AddComponent(
+            std::make_unique<ModelComponent>(leftPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        leftPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        rightPoint->AddComponent(
+            std::make_unique<ModelComponent>(rightPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        rightPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
         pIsland->leftPoint = leftPoint.get();
         pIsland->rightPoint = rightPoint.get();
         pIsland->upPoint = upPoint.get();
         pIsland->downPoint = downPoint.get();
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
 
         //Node* stone1 = InstantiateStone1(pNewNode, -10.2f, 15.0f, 8.2f, 2.0f);
-        InstantiateStone1(pNewNode, 3.0f, 30.0f, -8.0f, 2.0f);
+       /* InstantiateStone1(pNewNode, 6.0f, 30.0f, -45.0f, 2.0f);
         InstantiateStone1(pNewNode, 20.2f, 30.0f, 4.2f, 2.0f);
         InstantiateStone1(pNewNode, 15.2f, 30.0f, 21.2f, 2.0f);
         InstantiateStone1(pNewNode, 12.2f, 30.0f, -3.2f, 2.0f);
         InstantiateStone1(pNewNode, -15.2f, 30.0f, -8.2f, 2.0f);
         InstantiateColumn(pNewNode, 17.5f, 0.0f, -7.0f, 1.0f);
         InstantiateColumn(pNewNode, -4.5f, 0.0f, 1.0f, 1.0f);
-        InstantiateColumn(pNewNode, 16.5f, 0.0f, 10.0f, 1.0f);
+        InstantiateColumn(pNewNode, 16.5f, 0.0f, 10.0f, 1.0f);*/
 
         auto spawnPoint1 = std::make_unique<Node>("SpawnPoint 1", pNewNodeOwner.get());
         spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(-11.0f, 2.0f, 3.0f));
@@ -2348,7 +2275,92 @@ public:
         parentNode->AddChild(std::move(pNewNodeOwner));
         return pNewNode;
     }
-    static Node* InstantiateIslandSmall1(Node* parentNode, float locX, float locY, float locZ, float scale) {
+    static Node* InstantiateIslandMedium2(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0}) {
+        auto pNewNodeOwner = std::make_unique<Node>("Island S1", nullptr, "GROUND");
+
+        pNewNodeOwner->AddComponent(
+            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\wyspy_0606\\wyspa_srednia.obj")
+        );
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+
+        ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList islandTriangles = PhysicsCommon::MakeTriangleList(islandModel->GetAllTriangles());
+        MeshShapeSettings islandMeshSettings(islandTriangles);
+        Shape::ShapeResult islandMeshCreationResult = islandMeshSettings.Create();
+        ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
+        ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
+        islandMeshShape = islandScaling.Create().Get();
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
+        pNewNodeOwner->AddComponent(
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
+        );
+
+        pNewNodeOwner->AddComponent(
+            std::make_unique<Island>(pNewNodeOwner.get())
+        );
+        Island* pIsland = pNewNodeOwner->GetComponent<Island>();
+        auto leftPoint = std::make_unique<Node>("Left Point", pNewNodeOwner.get());
+        auto rightPoint = std::make_unique<Node>("Right Point", pNewNodeOwner.get());
+        auto upPoint = std::make_unique<Node>("Up Point", pNewNodeOwner.get());
+        auto downPoint = std::make_unique<Node>("Down Point", pNewNodeOwner.get());
+
+        upPoint->SetLocalPosition(DirectX::XMFLOAT3(-4.0f, 0.0f, 43.0f));
+        downPoint->SetLocalPosition(DirectX::XMFLOAT3(10.0f, 0.0f, -36.0f));
+        leftPoint->SetLocalPosition(DirectX::XMFLOAT3(-44.0f, 0.0f, 2.0f));
+        rightPoint->SetLocalPosition(DirectX::XMFLOAT3(46.0f, 0.0f, 10.0f));
+        //pIsland->halfExtents = { 11.0f, 2.0f, 11.0f };
+        pIsland->halfExtents = { (rightPoint->GetLocalPosition().x - leftPoint->GetLocalPosition().x) / 2.0f - 1.0f,
+                                2.0f,
+                                (upPoint->GetLocalPosition().z - downPoint->GetLocalPosition().z) / 2.0f - 1.0f };
+ /*       upPoint->AddComponent(
+            std::make_unique<ModelComponent>(upPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        upPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        downPoint->AddComponent(
+            std::make_unique<ModelComponent>(downPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        downPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        leftPoint->AddComponent(
+            std::make_unique<ModelComponent>(leftPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        leftPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        rightPoint->AddComponent(
+            std::make_unique<ModelComponent>(rightPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        rightPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
+        pIsland->leftPoint = leftPoint.get();
+        pIsland->rightPoint = rightPoint.get();
+        pIsland->upPoint = upPoint.get();
+        pIsland->downPoint = downPoint.get();
+        pNewNodeOwner->SetLocalPosition(position);
+        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+
+        Node* pNewNode = pNewNodeOwner.get();
+
+        //Node* stone1 = InstantiateStone1(pNewNode, -10.2f, 15.0f, 8.2f, 2.0f);
+        /*InstantiateStone1(pNewNode, 3.0f, 30.0f, -8.0f, 2.0f);
+        InstantiateStone1(pNewNode, 20.2f, 30.0f, 4.2f, 2.0f);
+        InstantiateStone1(pNewNode, 15.2f, 30.0f, 21.2f, 2.0f);
+        InstantiateStone1(pNewNode, 12.2f, 30.0f, -3.2f, 2.0f);
+        InstantiateStone1(pNewNode, -15.2f, 30.0f, -8.2f, 2.0f);
+        InstantiateColumn(pNewNode, 17.5f, 0.0f, -7.0f, 1.0f);
+        InstantiateColumn(pNewNode, -4.5f, 0.0f, 1.0f, 1.0f);
+        InstantiateColumn(pNewNode, 16.5f, 0.0f, 10.0f, 1.0f);*/
+
+        auto spawnPoint1 = std::make_unique<Node>("SpawnPoint 1", pNewNodeOwner.get());
+        spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(-11.0f, 2.0f, 3.0f));
+        pIsland->spawnPoints.push_back(spawnPoint1.get());
+        pNewNode->AddChild(std::move(spawnPoint1));
+
+        pNewNode->AddChild(std::move(leftPoint));
+        pNewNode->AddChild(std::move(rightPoint));
+        pNewNode->AddChild(std::move(upPoint));
+        pNewNode->AddChild(std::move(downPoint));
+        parentNode->AddChild(std::move(pNewNodeOwner));
+        return pNewNode;
+    }
+    static Node* InstantiateIslandSmall1(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0}) {
         auto pNewNodeOwner = std::make_unique<Node>("Island S1", nullptr, "GROUND");
 
         pNewNodeOwner->AddComponent(
@@ -2363,7 +2375,7 @@ public:
         ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
         ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
         islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -2378,43 +2390,47 @@ public:
         auto upPoint = std::make_unique<Node>("Up Point", pNewNodeOwner.get());
         auto downPoint = std::make_unique<Node>("Down Point", pNewNodeOwner.get());
 
-        upPoint->SetLocalPosition(DirectX::XMFLOAT3(3.0f, 0.0f, 36.0f));
-        downPoint->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 0.0f, -27.0f));
-        leftPoint->SetLocalPosition(DirectX::XMFLOAT3(-33.0f, 0.0f, 5.0f));
-        rightPoint->SetLocalPosition(DirectX::XMFLOAT3(33.0f, 0.0f, -4.0f));
+        upPoint->SetLocalPosition(DirectX::XMFLOAT3(-10.0f, 2.0f, 33.0f));
+        downPoint->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 0.0f, -33.0f));
+        leftPoint->SetLocalPosition(DirectX::XMFLOAT3(-34.0f, 1.0f, 5.0f));
+        rightPoint->SetLocalPosition(DirectX::XMFLOAT3(34.0f, 0.0f, -10.0f));
         //pIsland->halfExtents = { 11.0f, 2.0f, 11.0f };
         pIsland->halfExtents = { (rightPoint->GetLocalPosition().x - leftPoint->GetLocalPosition().x) / 2.0f - 1.0f,
                                 2.0f,
                                 (upPoint->GetLocalPosition().z - downPoint->GetLocalPosition().z) / 2.0f - 1.0f };
-        //upPoint->AddComponent(
-        //    std::make_unique<ModelComponent>(upPoint.get(), wnd->Gfx(), "Models\\kolumna\\kolumna.obj")
-        //);
-        //downPoint->AddComponent(
-        //    std::make_unique<ModelComponent>(downPoint.get(), wnd->Gfx(), "Models\\kolumna\\kolumna.obj")
-        //);
-        //leftPoint->AddComponent(
-        //    std::make_unique<ModelComponent>(leftPoint.get(), wnd->Gfx(), "Models\\kolumna\\kolumna.obj")
-        //);
-        //rightPoint->AddComponent(
-        //    std::make_unique<ModelComponent>(rightPoint.get(), wnd->Gfx(), "Models\\kolumna\\kolumna.obj")
-        //);
+        /*upPoint->AddComponent(
+            std::make_unique<ModelComponent>(upPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        upPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        downPoint->AddComponent(
+            std::make_unique<ModelComponent>(downPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        downPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        leftPoint->AddComponent(
+            std::make_unique<ModelComponent>(leftPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        leftPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        rightPoint->AddComponent(
+            std::make_unique<ModelComponent>(rightPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        rightPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
         pIsland->leftPoint = leftPoint.get();
         pIsland->rightPoint = rightPoint.get();
         pIsland->upPoint = upPoint.get();
         pIsland->downPoint = downPoint.get();
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
 
         //Node* stone1 = InstantiateStone1(pNewNode, -10.2f, 15.0f, 8.2f, 2.0f);
-        InstantiateStick1(pNewNode, -14.0f, 15.0f, -15.0f, 0.5f);
-        InstantiateStick2(pNewNode, 15.2f, 15.0f, -19.2f, 1.0f);
-        InstantiateStone1(pNewNode, -9.2f, 15.0f, 16.2f, 2.0f);
-        InstantiateStone1(pNewNode, 19.2f, 15.0f, -5.2f, 2.0f);
+        InstantiateStick1(pNewNode, Vector3(-14.0f, 15.0f, -15.0f), 0.5f);
+        InstantiateStick2(pNewNode, Vector3(15.2f, 15.0f, -19.2f), 1.0f);
+        InstantiateStone1(pNewNode, Vector3(-9.2f, 15.0f, 16.2f), 2.0f);
+        InstantiateStone1(pNewNode, Vector3(19.2f, 15.0f, -5.2f), 2.0f);
         //InstantiateColumn(pNewNode, 17.5f, 0.0f, -7.0f, 1.0f);
         //InstantiateColumn(pNewNode, -4.5f, 0.0f, 1.0f, 1.0f);
-        InstantiatePlatform2(pNewNode, -7.2f, 0.0f, 7.7f, 0.75f);
+        InstantiatePlatform2(pNewNode, Vector3(-7.2f, 0.0f, 7.7f), 0.75f);
 
         auto spawnPoint1 = std::make_unique<Node>("SpawnPoint 1", pNewNodeOwner.get());
         spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(10.0f, 2.0f, -4.0f));
@@ -2428,11 +2444,11 @@ public:
         parentNode->AddChild(std::move(pNewNodeOwner));
         return pNewNode;
     }
-    static Node* InstantiateIslandSmall2(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateIslandSmall2(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
 
 
-        auto pNewNodeOwner = std::make_unique<Node>("Island S1", nullptr, "GROUND");
+        auto pNewNodeOwner = std::make_unique<Node>("Island S2", nullptr, "GROUND");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\wyspy_2\\wyspa_mala_L_2.obj")
@@ -2446,7 +2462,7 @@ public:
         ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
         ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
         islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -2461,42 +2477,46 @@ public:
         auto upPoint = std::make_unique<Node>("Up Point", pNewNodeOwner.get());
         auto downPoint = std::make_unique<Node>("Down Point", pNewNodeOwner.get());
 
-        upPoint->SetLocalPosition(DirectX::XMFLOAT3(3.0f, 0.0f, 36.0f));
-        downPoint->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 0.0f, -27.0f));
-        leftPoint->SetLocalPosition(DirectX::XMFLOAT3(-33.0f, 0.0f, 5.0f));
-        rightPoint->SetLocalPosition(DirectX::XMFLOAT3(33.0f, 0.0f, -4.0f));
+        upPoint->SetLocalPosition(DirectX::XMFLOAT3(15.0f, 0.0f, 36.0f));
+        downPoint->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 0.0f, -25.0f));
+        leftPoint->SetLocalPosition(DirectX::XMFLOAT3(-33.0f, 0.0f, 6.0f));
+        rightPoint->SetLocalPosition(DirectX::XMFLOAT3(33.0f, 0.0f, 16.0f));
         //pIsland->halfExtents = { 11.0f, 2.0f, 11.0f };
         pIsland->halfExtents = { (rightPoint->GetLocalPosition().x - leftPoint->GetLocalPosition().x) / 2.0f - 1.0f,
                                 2.0f,
                                 (upPoint->GetLocalPosition().z - downPoint->GetLocalPosition().z) / 2.0f - 1.0f };
-        //upPoint->AddComponent(
-        //    std::make_unique<ModelComponent>(upPoint.get(), wnd->Gfx(), "Models\\kolumna\\kolumna.obj")
-        //);
-        //downPoint->AddComponent(
-        //    std::make_unique<ModelComponent>(downPoint.get(), wnd->Gfx(), "Models\\kolumna\\kolumna.obj")
-        //);
-        //leftPoint->AddComponent(
-        //    std::make_unique<ModelComponent>(leftPoint.get(), wnd->Gfx(), "Models\\kolumna\\kolumna.obj")
-        //);
-        //rightPoint->AddComponent(
-        //    std::make_unique<ModelComponent>(rightPoint.get(), wnd->Gfx(), "Models\\kolumna\\kolumna.obj")
-        //);
+        /*upPoint->AddComponent(
+            std::make_unique<ModelComponent>(upPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        upPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        downPoint->AddComponent(
+            std::make_unique<ModelComponent>(downPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        downPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        leftPoint->AddComponent(
+            std::make_unique<ModelComponent>(leftPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        leftPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        rightPoint->AddComponent(
+            std::make_unique<ModelComponent>(rightPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        rightPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
         pIsland->leftPoint = leftPoint.get();
         pIsland->rightPoint = rightPoint.get();
         pIsland->upPoint = upPoint.get();
         pIsland->downPoint = downPoint.get();
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
 
         //Node* stone1 = InstantiateStone1(pNewNode, -10.2f, 15.0f, 8.2f, 2.0f);
-        InstantiateStone1(pNewNode, -8.0f, 30.0f, -9.0f, 2.0f);
-        InstantiateStone1(pNewNode, 18.2f, 30.0f, 3.2f, 2.0f);
-        InstantiateStone1(pNewNode, 17.2f, 30.0f, 22.2f, 2.0f);
+        InstantiateStone1(pNewNode, Vector3(-8.0f, 30.0f, -9.0f), 2.0f);
+        InstantiateStone1(pNewNode, Vector3(18.2f, 30.0f, 3.2f), 2.0f);
+        InstantiateStone1(pNewNode, Vector3(17.2f, 30.0f, 22.2f), 2.0f);
         //InstantiateStone1(pNewNode, 12.2f, 30.0f, -3.2f, 2.0f);
-        InstantiateStone1(pNewNode, -13.2f, 30.0f, -2.2f, 2.0f);
-        InstantiateNewColumn(pNewNode, 12.0f, 0.0f, -5.0f, 1.0f);
+        InstantiateStone1(pNewNode, Vector3(-13.2f, 30.0f, -2.2f), 2.0f);
+        InstantiateNewColumn(pNewNode, Vector3(12.0f, 0.0f, -5.0f), 1.0f);
 
         auto spawnPoint1 = std::make_unique<Node>("SpawnPoint 1", pNewNodeOwner.get());
         spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(1.0f, 2.0f, -1.0f));
@@ -2510,8 +2530,8 @@ public:
         parentNode->AddChild(std::move(pNewNodeOwner));
         return pNewNode;
     }
-    static Node* InstantiateIslandSmall3(Node* parentNode, float locX, float locY, float locZ, float scale) {
-        auto pNewNodeOwner = std::make_unique<Node>("Island S1", nullptr, "GROUND");
+    static Node* InstantiateIslandSmall3(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0}) {
+        auto pNewNodeOwner = std::make_unique<Node>("Island S3", nullptr, "GROUND");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\wyspy_2\\wyspa_mala_2.obj")
@@ -2525,7 +2545,7 @@ public:
         ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
         ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
         islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -2540,44 +2560,48 @@ public:
         auto upPoint = std::make_unique<Node>("Up Point", pNewNodeOwner.get());
         auto downPoint = std::make_unique<Node>("Down Point", pNewNodeOwner.get());
 
-        upPoint->SetLocalPosition(DirectX::XMFLOAT3(3.0f, 0.0f, 36.0f));
-        downPoint->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 0.0f, -27.0f));
-        leftPoint->SetLocalPosition(DirectX::XMFLOAT3(-33.0f, 0.0f, 5.0f));
-        rightPoint->SetLocalPosition(DirectX::XMFLOAT3(33.0f, 0.0f, -4.0f));
+        upPoint->SetLocalPosition(DirectX::XMFLOAT3(3.0f, 0.0f, 31.0f));
+        downPoint->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 0.0f, -31.0f));
+        leftPoint->SetLocalPosition(DirectX::XMFLOAT3(-33.0f, 0.0f, 8.0f));
+        rightPoint->SetLocalPosition(DirectX::XMFLOAT3(33.0f, 0.0f, -14.0f));
         //pIsland->halfExtents = { 11.0f, 2.0f, 11.0f };
         pIsland->halfExtents = { (rightPoint->GetLocalPosition().x - leftPoint->GetLocalPosition().x) / 2.0f - 1.0f,
                                 2.0f,
                                 (upPoint->GetLocalPosition().z - downPoint->GetLocalPosition().z) / 2.0f - 1.0f };
-        //upPoint->AddComponent(
-        //    std::make_unique<ModelComponent>(upPoint.get(), wnd->Gfx(), "Models\\kolumna\\kolumna.obj")
-        //);
-        //downPoint->AddComponent(
-        //    std::make_unique<ModelComponent>(downPoint.get(), wnd->Gfx(), "Models\\kolumna\\kolumna.obj")
-        //);
-        //leftPoint->AddComponent(
-        //    std::make_unique<ModelComponent>(leftPoint.get(), wnd->Gfx(), "Models\\kolumna\\kolumna.obj")
-        //);
-        //rightPoint->AddComponent(
-        //    std::make_unique<ModelComponent>(rightPoint.get(), wnd->Gfx(), "Models\\kolumna\\kolumna.obj")
-        //);
+        /*upPoint->AddComponent(
+            std::make_unique<ModelComponent>(upPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        upPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        downPoint->AddComponent(
+            std::make_unique<ModelComponent>(downPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        downPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        leftPoint->AddComponent(
+            std::make_unique<ModelComponent>(leftPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        leftPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        rightPoint->AddComponent(
+            std::make_unique<ModelComponent>(rightPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        rightPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
         pIsland->leftPoint = leftPoint.get();
         pIsland->rightPoint = rightPoint.get();
         pIsland->upPoint = upPoint.get();
         pIsland->downPoint = downPoint.get();
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
 
         //Node* stone1 = InstantiateStone1(pNewNode, -10.2f, 15.0f, 8.2f, 2.0f);
-        InstantiateStone1(pNewNode, -9.0f, 15.0f, -9.0f, 2.0f);
-        InstantiateStone1(pNewNode, 8.2f, 15.0f, -10.2f, 2.0f);
-        InstantiateStone1(pNewNode, -9.2f, 15.0f, 9.2f, 2.0f);
-        InstantiateStone1(pNewNode, 8.2f, 15.0f, 9.2f, 2.0f);
-        InstantiateNewColumn(pNewNode, -14.5f, 0.0f, 15.0f, 1.0f);
-        InstantiateNewColumn(pNewNode, 14.5f, 0.0f, -15.0f, 1.0f);
-        InstantiateNewColumn(pNewNode, 14.5f, 0.0f, 15.0f, 1.0f);
-        InstantiateNewColumn(pNewNode, -14.5f, 0.0f, -15.0f, 1.0f);
+        InstantiateStone1(pNewNode, Vector3(-9.0f, 15.0f, -9.0f), 2.0f);
+        InstantiateStone1(pNewNode, Vector3(8.2f, 15.0f, -10.2f), 2.0f);
+        InstantiateStone1(pNewNode, Vector3(-9.2f, 15.0f, 9.2f), 2.0f);
+        InstantiateStone1(pNewNode, Vector3(8.2f, 15.0f, 9.2f), 2.0f);
+        InstantiateNewColumn(pNewNode, Vector3(-14.5f, 0.0f, 15.0f), 1.0f);
+        InstantiateNewColumn(pNewNode, Vector3(14.5f, 0.0f, -15.0f), 1.0f);
+        InstantiateNewColumn(pNewNode, Vector3(14.5f, 0.0f, 15.0f), 1.0f);
+        InstantiateNewColumn(pNewNode, Vector3(-14.5f, 0.0f, -15.0f), 1.0f);
 
         auto spawnPoint1 = std::make_unique<Node>("SpawnPoint 1", pNewNodeOwner.get());
         spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 2.0f, 0.0f));
@@ -2591,492 +2615,8 @@ public:
         parentNode->AddChild(std::move(pNewNodeOwner));
         return pNewNode;
     }
-    static Node* InstantiateIslandTest1(Node* parentNode, float locX, float locY, float locZ, float scale)
-    {
-        auto pNewNodeOwner = std::make_unique<Node>("Island B1", nullptr, "GROUND");
 
-        pNewNodeOwner->AddComponent(
-            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\wyspy_0606\\wyspa_duza_o.obj")
-        );
-        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-        ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
-        TriangleList islandTriangles = PhysicsCommon::MakeTriangleList(islandModel->GetAllTriangles());
-        MeshShapeSettings islandMeshSettings(islandTriangles);
-        Shape::ShapeResult islandMeshCreationResult = islandMeshSettings.Create();
-        ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
-        ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
-        islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
-        bodySettings.mFriction = 1.0f;
-        pNewNodeOwner->AddComponent(
-            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
-        );
-
-        pNewNodeOwner->AddComponent(
-            std::make_unique<Island>(pNewNodeOwner.get())
-        );
-        Island* pIsland = pNewNodeOwner->GetComponent<Island>();
-        auto leftPoint = std::make_unique<Node>("Left Point", pNewNodeOwner.get());
-        auto rightPoint = std::make_unique<Node>("Right Point", pNewNodeOwner.get());
-        auto upPoint = std::make_unique<Node>("Up Point", pNewNodeOwner.get());
-        auto downPoint = std::make_unique<Node>("Down Point", pNewNodeOwner.get());
-
-        leftPoint->SetLocalPosition(DirectX::XMFLOAT3(-65.0f, 0.0f, 35.0f));
-        rightPoint->SetLocalPosition(DirectX::XMFLOAT3(65.0f, 0.0f, 20.0f));
-        upPoint->SetLocalPosition(DirectX::XMFLOAT3(40.0f, 0.0f, 65.0f));
-        downPoint->SetLocalPosition(DirectX::XMFLOAT3(30.0f, 0.0f, -65.0f));
-        pIsland->halfExtents = { 63.0f, 2.0f, 63.0f };
-        /*pIsland->halfExtents = { (rightPoint->GetLocalPosition().x - leftPoint->GetLocalPosition().x) / 2.0f - 1.0f,
-                                2.0f,
-                                (upPoint->GetLocalPosition().z - downPoint->GetLocalPosition().z) / 2.0f - 1.0f };*/
-                                /*upPoint->AddComponent(
-                                    std::make_unique<ModelComponent>(upPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
-                                );
-                                upPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-                                downPoint->AddComponent(
-                                    std::make_unique<ModelComponent>(downPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
-                                );
-                                downPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-                                leftPoint->AddComponent(
-                                    std::make_unique<ModelComponent>(leftPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
-                                );
-                                leftPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-                                rightPoint->AddComponent(
-                                    std::make_unique<ModelComponent>(rightPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
-                                );
-                                rightPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
-        pIsland->leftPoint = leftPoint.get();
-        pIsland->rightPoint = rightPoint.get();
-        pIsland->upPoint = upPoint.get();
-        pIsland->downPoint = downPoint.get();
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
-        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
-
-        Node* pNewNode = pNewNodeOwner.get();
-
-        //InstantiateStone1(pNewNode, 22.2f, 30.0f, 32.2f, 2.0f);
-        //InstantiateStone1(pNewNode, 4.2f, 30.0f, 17.2f, 2.0f);
-        //InstantiateStone1(pNewNode, -10.2f, 30.0f, -2.2f, 2.0f);
-        //InstantiateStone1(pNewNode, 22.2f, 30.0f, -18.2f, 2.0f);
-        //InstantiateStone1(pNewNode, -17.2f, 30.0f, 22.2f, 2.0f);
-        //InstantiateStone1(pNewNode, 11.2f, 30.0f, -8.2f, 2.0f);
-        //InstantiateNewColumn(pNewNode, 20.0f, 0.0f, 25.0f, 1.0f);
-        //InstantiateNewColumn(pNewNode, -5.0f, 0.0f, 25.0f, 1.0f);
-        //InstantiateNewColumn(pNewNode, 20.0f, 0.0f, -12.0f, 1.0f);
-        //InstantiateNewColumn(pNewNode, -5.0f, 0.0f, -12.0f, 1.0f);
-        //InstantiatePlatform1(pNewNode, 41.0f, 0.0f, 6.0f, 1.0f);
-        //InstantiatePlatform3(pNewNode, -19.0f, 0.0f, -26.0f, 1.0f);
-        //InstantiateStatue(pNewNode, 0.0f, 0.0f, 0.0f, 1.0f);
-
-
-        auto spawnPoint1 = std::make_unique<Node>("SpawnPoint 1", pNewNodeOwner.get());
-        auto spawnPoint2 = std::make_unique<Node>("SpawnPoint 2", pNewNodeOwner.get());
-        auto spawnPoint3 = std::make_unique<Node>("SpawnPoint 2", pNewNodeOwner.get());
-        spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(23.0f, 8.0f, 33.0f));
-        spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(5.0f, 8.0f, 18.0f));
-        spawnPoint3->SetLocalPosition(DirectX::XMFLOAT3(-11.0f, 8.0f, -3.0f));
-        pIsland->spawnPoints.push_back(spawnPoint1.get());
-        pIsland->spawnPoints.push_back(spawnPoint2.get());
-        pIsland->spawnPoints.push_back(spawnPoint3.get());
-        pNewNode->AddChild(std::move(spawnPoint1));
-        pNewNode->AddChild(std::move(spawnPoint2));
-        pNewNode->AddChild(std::move(spawnPoint3));
-
-
-
-        pNewNode->AddChild(std::move(leftPoint));
-        pNewNode->AddChild(std::move(rightPoint));
-        pNewNode->AddChild(std::move(upPoint));
-        pNewNode->AddChild(std::move(downPoint));
-        parentNode->AddChild(std::move(pNewNodeOwner));
-        return pNewNode;
-
-    }
-    static Node* InstantiateIslandTest2(Node* parentNode, float locX, float locY, float locZ, float scale)
-    {
-        auto pNewNodeOwner = std::make_unique<Node>("Island B1", nullptr, "GROUND");
-
-        pNewNodeOwner->AddComponent(
-            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\wyspy_0606\\wyspa_duza_p.obj")
-        );
-        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-        ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
-        TriangleList islandTriangles = PhysicsCommon::MakeTriangleList(islandModel->GetAllTriangles());
-        MeshShapeSettings islandMeshSettings(islandTriangles);
-        Shape::ShapeResult islandMeshCreationResult = islandMeshSettings.Create();
-        ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
-        ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
-        islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
-        bodySettings.mFriction = 1.0f;
-        pNewNodeOwner->AddComponent(
-            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
-        );
-
-        pNewNodeOwner->AddComponent(
-            std::make_unique<Island>(pNewNodeOwner.get())
-        );
-        Island* pIsland = pNewNodeOwner->GetComponent<Island>();
-        auto leftPoint = std::make_unique<Node>("Left Point", pNewNodeOwner.get());
-        auto rightPoint = std::make_unique<Node>("Right Point", pNewNodeOwner.get());
-        auto upPoint = std::make_unique<Node>("Up Point", pNewNodeOwner.get());
-        auto downPoint = std::make_unique<Node>("Down Point", pNewNodeOwner.get());
-
-        leftPoint->SetLocalPosition(DirectX::XMFLOAT3(-65.0f, 0.0f, 35.0f));
-        rightPoint->SetLocalPosition(DirectX::XMFLOAT3(65.0f, 0.0f, 20.0f));
-        upPoint->SetLocalPosition(DirectX::XMFLOAT3(40.0f, 0.0f, 65.0f));
-        downPoint->SetLocalPosition(DirectX::XMFLOAT3(30.0f, 0.0f, -65.0f));
-        pIsland->halfExtents = { 63.0f, 2.0f, 63.0f };
-        /*pIsland->halfExtents = { (rightPoint->GetLocalPosition().x - leftPoint->GetLocalPosition().x) / 2.0f - 1.0f,
-                                2.0f,
-                                (upPoint->GetLocalPosition().z - downPoint->GetLocalPosition().z) / 2.0f - 1.0f };*/
-                                /*upPoint->AddComponent(
-                                    std::make_unique<ModelComponent>(upPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
-                                );
-                                upPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-                                downPoint->AddComponent(
-                                    std::make_unique<ModelComponent>(downPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
-                                );
-                                downPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-                                leftPoint->AddComponent(
-                                    std::make_unique<ModelComponent>(leftPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
-                                );
-                                leftPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-                                rightPoint->AddComponent(
-                                    std::make_unique<ModelComponent>(rightPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
-                                );
-                                rightPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
-        pIsland->leftPoint = leftPoint.get();
-        pIsland->rightPoint = rightPoint.get();
-        pIsland->upPoint = upPoint.get();
-        pIsland->downPoint = downPoint.get();
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
-        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
-
-        Node* pNewNode = pNewNodeOwner.get();
-
-        //InstantiateStone1(pNewNode, 22.2f, 30.0f, 32.2f, 2.0f);
-        //InstantiateStone1(pNewNode, 4.2f, 30.0f, 17.2f, 2.0f);
-        //InstantiateNewColumn(pNewNode, -5.0f, 0.0f, -12.0f, 1.0f);
-        //InstantiatePlatform1(pNewNode, 41.0f, 0.0f, 6.0f, 1.0f);
-        //InstantiatePlatform3(pNewNode, -19.0f, 0.0f, -26.0f, 1.0f);
-        //InstantiateStatue(pNewNode, 0.0f, 0.0f, 0.0f, 1.0f);
-
-
-        auto spawnPoint1 = std::make_unique<Node>("SpawnPoint 1", pNewNodeOwner.get());
-        auto spawnPoint2 = std::make_unique<Node>("SpawnPoint 2", pNewNodeOwner.get());
-        auto spawnPoint3 = std::make_unique<Node>("SpawnPoint 2", pNewNodeOwner.get());
-        spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(23.0f, 8.0f, 33.0f));
-        spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(5.0f, 8.0f, 18.0f));
-        spawnPoint3->SetLocalPosition(DirectX::XMFLOAT3(-11.0f, 8.0f, -3.0f));
-        pIsland->spawnPoints.push_back(spawnPoint1.get());
-        pIsland->spawnPoints.push_back(spawnPoint2.get());
-        pIsland->spawnPoints.push_back(spawnPoint3.get());
-        pNewNode->AddChild(std::move(spawnPoint1));
-        pNewNode->AddChild(std::move(spawnPoint2));
-        pNewNode->AddChild(std::move(spawnPoint3));
-
-
-
-        pNewNode->AddChild(std::move(leftPoint));
-        pNewNode->AddChild(std::move(rightPoint));
-        pNewNode->AddChild(std::move(upPoint));
-        pNewNode->AddChild(std::move(downPoint));
-        parentNode->AddChild(std::move(pNewNodeOwner));
-        return pNewNode;
-
-    }
-    static Node* InstantiateIslandTest3(Node* parentNode, float locX, float locY, float locZ, float scale)
-    {
-        auto pNewNodeOwner = std::make_unique<Node>("Island B1", nullptr, "GROUND");
-
-        pNewNodeOwner->AddComponent(
-            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\wyspy_0606\\wyspa_mala.obj")
-        );
-        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-        ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
-        TriangleList islandTriangles = PhysicsCommon::MakeTriangleList(islandModel->GetAllTriangles());
-        MeshShapeSettings islandMeshSettings(islandTriangles);
-        Shape::ShapeResult islandMeshCreationResult = islandMeshSettings.Create();
-        ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
-        ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
-        islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
-        bodySettings.mFriction = 1.0f;
-        pNewNodeOwner->AddComponent(
-            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
-        );
-
-        pNewNodeOwner->AddComponent(
-            std::make_unique<Island>(pNewNodeOwner.get())
-        );
-        Island* pIsland = pNewNodeOwner->GetComponent<Island>();
-        auto leftPoint = std::make_unique<Node>("Left Point", pNewNodeOwner.get());
-        auto rightPoint = std::make_unique<Node>("Right Point", pNewNodeOwner.get());
-        auto upPoint = std::make_unique<Node>("Up Point", pNewNodeOwner.get());
-        auto downPoint = std::make_unique<Node>("Down Point", pNewNodeOwner.get());
-
-        leftPoint->SetLocalPosition(DirectX::XMFLOAT3(-65.0f, 0.0f, 35.0f));
-        rightPoint->SetLocalPosition(DirectX::XMFLOAT3(65.0f, 0.0f, 20.0f));
-        upPoint->SetLocalPosition(DirectX::XMFLOAT3(40.0f, 0.0f, 65.0f));
-        downPoint->SetLocalPosition(DirectX::XMFLOAT3(30.0f, 0.0f, -65.0f));
-        pIsland->halfExtents = { 63.0f, 2.0f, 63.0f };
-        /*pIsland->halfExtents = { (rightPoint->GetLocalPosition().x - leftPoint->GetLocalPosition().x) / 2.0f - 1.0f,
-                                2.0f,
-                                (upPoint->GetLocalPosition().z - downPoint->GetLocalPosition().z) / 2.0f - 1.0f };*/
-                                /*upPoint->AddComponent(
-                                    std::make_unique<ModelComponent>(upPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
-                                );
-                                upPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-                                downPoint->AddComponent(
-                                    std::make_unique<ModelComponent>(downPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
-                                );
-                                downPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-                                leftPoint->AddComponent(
-                                    std::make_unique<ModelComponent>(leftPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
-                                );
-                                leftPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-                                rightPoint->AddComponent(
-                                    std::make_unique<ModelComponent>(rightPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
-                                );
-                                rightPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
-        pIsland->leftPoint = leftPoint.get();
-        pIsland->rightPoint = rightPoint.get();
-        pIsland->upPoint = upPoint.get();
-        pIsland->downPoint = downPoint.get();
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
-        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
-
-        Node* pNewNode = pNewNodeOwner.get();
-
-        //InstantiateStone1(pNewNode, 22.2f, 30.0f, 32.2f, 2.0f);
-        //InstantiateStone1(pNewNode, 4.2f, 30.0f, 17.2f, 2.0f);
-        //InstantiateNewColumn(pNewNode, -5.0f, 0.0f, -12.0f, 1.0f);
-        //InstantiatePlatform1(pNewNode, 41.0f, 0.0f, 6.0f, 1.0f);
-        //InstantiatePlatform3(pNewNode, -19.0f, 0.0f, -26.0f, 1.0f);
-        //InstantiateStatue(pNewNode, 0.0f, 0.0f, 0.0f, 1.0f);
-
-
-        auto spawnPoint1 = std::make_unique<Node>("SpawnPoint 1", pNewNodeOwner.get());
-        auto spawnPoint2 = std::make_unique<Node>("SpawnPoint 2", pNewNodeOwner.get());
-        auto spawnPoint3 = std::make_unique<Node>("SpawnPoint 2", pNewNodeOwner.get());
-        spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(23.0f, 8.0f, 33.0f));
-        spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(5.0f, 8.0f, 18.0f));
-        spawnPoint3->SetLocalPosition(DirectX::XMFLOAT3(-11.0f, 8.0f, -3.0f));
-        pIsland->spawnPoints.push_back(spawnPoint1.get());
-        pIsland->spawnPoints.push_back(spawnPoint2.get());
-        pIsland->spawnPoints.push_back(spawnPoint3.get());
-        pNewNode->AddChild(std::move(spawnPoint1));
-        pNewNode->AddChild(std::move(spawnPoint2));
-        pNewNode->AddChild(std::move(spawnPoint3));
-
-
-
-        pNewNode->AddChild(std::move(leftPoint));
-        pNewNode->AddChild(std::move(rightPoint));
-        pNewNode->AddChild(std::move(upPoint));
-        pNewNode->AddChild(std::move(downPoint));
-        parentNode->AddChild(std::move(pNewNodeOwner));
-        return pNewNode;
-
-    }
-    static Node* InstantiateIslandTest4(Node* parentNode, float locX, float locY, float locZ, float scale)
-    {
-        auto pNewNodeOwner = std::make_unique<Node>("Island B1", nullptr, "GROUND");
-
-        pNewNodeOwner->AddComponent(
-            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\wyspy_0606\\wyspa_mala_L.obj")
-        );
-        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-        ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
-        TriangleList islandTriangles = PhysicsCommon::MakeTriangleList(islandModel->GetAllTriangles());
-        MeshShapeSettings islandMeshSettings(islandTriangles);
-        Shape::ShapeResult islandMeshCreationResult = islandMeshSettings.Create();
-        ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
-        ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
-        islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
-        bodySettings.mFriction = 1.0f;
-        pNewNodeOwner->AddComponent(
-            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
-        );
-
-        pNewNodeOwner->AddComponent(
-            std::make_unique<Island>(pNewNodeOwner.get())
-        );
-        Island* pIsland = pNewNodeOwner->GetComponent<Island>();
-        auto leftPoint = std::make_unique<Node>("Left Point", pNewNodeOwner.get());
-        auto rightPoint = std::make_unique<Node>("Right Point", pNewNodeOwner.get());
-        auto upPoint = std::make_unique<Node>("Up Point", pNewNodeOwner.get());
-        auto downPoint = std::make_unique<Node>("Down Point", pNewNodeOwner.get());
-
-        leftPoint->SetLocalPosition(DirectX::XMFLOAT3(-65.0f, 0.0f, 35.0f));
-        rightPoint->SetLocalPosition(DirectX::XMFLOAT3(65.0f, 0.0f, 20.0f));
-        upPoint->SetLocalPosition(DirectX::XMFLOAT3(40.0f, 0.0f, 65.0f));
-        downPoint->SetLocalPosition(DirectX::XMFLOAT3(30.0f, 0.0f, -65.0f));
-        pIsland->halfExtents = { 63.0f, 2.0f, 63.0f };
-        /*pIsland->halfExtents = { (rightPoint->GetLocalPosition().x - leftPoint->GetLocalPosition().x) / 2.0f - 1.0f,
-                                2.0f,
-                                (upPoint->GetLocalPosition().z - downPoint->GetLocalPosition().z) / 2.0f - 1.0f };*/
-                                /*upPoint->AddComponent(
-                                    std::make_unique<ModelComponent>(upPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
-                                );
-                                upPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-                                downPoint->AddComponent(
-                                    std::make_unique<ModelComponent>(downPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
-                                );
-                                downPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-                                leftPoint->AddComponent(
-                                    std::make_unique<ModelComponent>(leftPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
-                                );
-                                leftPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-                                rightPoint->AddComponent(
-                                    std::make_unique<ModelComponent>(rightPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
-                                );
-                                rightPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
-        pIsland->leftPoint = leftPoint.get();
-        pIsland->rightPoint = rightPoint.get();
-        pIsland->upPoint = upPoint.get();
-        pIsland->downPoint = downPoint.get();
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
-        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
-
-        Node* pNewNode = pNewNodeOwner.get();
-
-        //InstantiateStone1(pNewNode, 22.2f, 30.0f, 32.2f, 2.0f);
-        //InstantiateStone1(pNewNode, 4.2f, 30.0f, 17.2f, 2.0f);
-        //InstantiateNewColumn(pNewNode, -5.0f, 0.0f, -12.0f, 1.0f);
-        //InstantiatePlatform1(pNewNode, 41.0f, 0.0f, 6.0f, 1.0f);
-        //InstantiatePlatform3(pNewNode, -19.0f, 0.0f, -26.0f, 1.0f);
-        //InstantiateStatue(pNewNode, 0.0f, 0.0f, 0.0f, 1.0f);
-
-
-        auto spawnPoint1 = std::make_unique<Node>("SpawnPoint 1", pNewNodeOwner.get());
-        auto spawnPoint2 = std::make_unique<Node>("SpawnPoint 2", pNewNodeOwner.get());
-        auto spawnPoint3 = std::make_unique<Node>("SpawnPoint 2", pNewNodeOwner.get());
-        spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(23.0f, 8.0f, 33.0f));
-        spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(5.0f, 8.0f, 18.0f));
-        spawnPoint3->SetLocalPosition(DirectX::XMFLOAT3(-11.0f, 8.0f, -3.0f));
-        pIsland->spawnPoints.push_back(spawnPoint1.get());
-        pIsland->spawnPoints.push_back(spawnPoint2.get());
-        pIsland->spawnPoints.push_back(spawnPoint3.get());
-        pNewNode->AddChild(std::move(spawnPoint1));
-        pNewNode->AddChild(std::move(spawnPoint2));
-        pNewNode->AddChild(std::move(spawnPoint3));
-
-
-
-        pNewNode->AddChild(std::move(leftPoint));
-        pNewNode->AddChild(std::move(rightPoint));
-        pNewNode->AddChild(std::move(upPoint));
-        pNewNode->AddChild(std::move(downPoint));
-        parentNode->AddChild(std::move(pNewNodeOwner));
-        return pNewNode;
-
-    }
-    static Node* InstantiateIslandTest5(Node* parentNode, float locX, float locY, float locZ, float scale)
-    {
-        auto pNewNodeOwner = std::make_unique<Node>("Island B1", nullptr, "GROUND");
-
-        pNewNodeOwner->AddComponent(
-            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\wyspy_0606\\wyspa_srednia.obj")
-        );
-        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-        ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
-        TriangleList islandTriangles = PhysicsCommon::MakeTriangleList(islandModel->GetAllTriangles());
-        MeshShapeSettings islandMeshSettings(islandTriangles);
-        Shape::ShapeResult islandMeshCreationResult = islandMeshSettings.Create();
-        ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
-        ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
-        islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
-        bodySettings.mFriction = 1.0f;
-        pNewNodeOwner->AddComponent(
-            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
-        );
-
-        pNewNodeOwner->AddComponent(
-            std::make_unique<Island>(pNewNodeOwner.get())
-        );
-        Island* pIsland = pNewNodeOwner->GetComponent<Island>();
-        auto leftPoint = std::make_unique<Node>("Left Point", pNewNodeOwner.get());
-        auto rightPoint = std::make_unique<Node>("Right Point", pNewNodeOwner.get());
-        auto upPoint = std::make_unique<Node>("Up Point", pNewNodeOwner.get());
-        auto downPoint = std::make_unique<Node>("Down Point", pNewNodeOwner.get());
-
-        leftPoint->SetLocalPosition(DirectX::XMFLOAT3(-65.0f, 0.0f, 35.0f));
-        rightPoint->SetLocalPosition(DirectX::XMFLOAT3(65.0f, 0.0f, 20.0f));
-        upPoint->SetLocalPosition(DirectX::XMFLOAT3(40.0f, 0.0f, 65.0f));
-        downPoint->SetLocalPosition(DirectX::XMFLOAT3(30.0f, 0.0f, -65.0f));
-        pIsland->halfExtents = { 63.0f, 2.0f, 63.0f };
-        /*pIsland->halfExtents = { (rightPoint->GetLocalPosition().x - leftPoint->GetLocalPosition().x) / 2.0f - 1.0f,
-                                2.0f,
-                                (upPoint->GetLocalPosition().z - downPoint->GetLocalPosition().z) / 2.0f - 1.0f };*/
-                                /*upPoint->AddComponent(
-                                    std::make_unique<ModelComponent>(upPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
-                                );
-                                upPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-                                downPoint->AddComponent(
-                                    std::make_unique<ModelComponent>(downPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
-                                );
-                                downPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-                                leftPoint->AddComponent(
-                                    std::make_unique<ModelComponent>(leftPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
-                                );
-                                leftPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-                                rightPoint->AddComponent(
-                                    std::make_unique<ModelComponent>(rightPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
-                                );
-                                rightPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
-        pIsland->leftPoint = leftPoint.get();
-        pIsland->rightPoint = rightPoint.get();
-        pIsland->upPoint = upPoint.get();
-        pIsland->downPoint = downPoint.get();
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
-        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
-
-        Node* pNewNode = pNewNodeOwner.get();
-
-        //InstantiateStone1(pNewNode, 22.2f, 30.0f, 32.2f, 2.0f);
-        //InstantiateStone1(pNewNode, 4.2f, 30.0f, 17.2f, 2.0f);
-        InstantiateStone1(pNewNode, -10.2f, 30.0f, -2.2f, 2.0f);
-        InstantiateStone1(pNewNode, 22.2f, 30.0f, -18.2f, 2.0f);
-        InstantiateStone1(pNewNode, -17.2f, 30.0f, 22.2f, 2.0f);
-        InstantiateStone1(pNewNode, 11.2f, 30.0f, -8.2f, 2.0f);
-        InstantiateNewColumn(pNewNode, 20.0f, 0.0f, 25.0f, 1.0f);
-        InstantiateNewColumn(pNewNode, -5.0f, 0.0f, 25.0f, 1.0f);
-        InstantiateNewColumn(pNewNode, 20.0f, 0.0f, -12.0f, 1.0f);
-        //InstantiateNewColumn(pNewNode, -5.0f, 0.0f, -12.0f, 1.0f);
-        //InstantiatePlatform1(pNewNode, 41.0f, 0.0f, 6.0f, 1.0f);
-        //InstantiatePlatform3(pNewNode, -19.0f, 0.0f, -26.0f, 1.0f);
-        //InstantiateStatue(pNewNode, 0.0f, 0.0f, 0.0f, 1.0f);
-
-
-        auto spawnPoint1 = std::make_unique<Node>("SpawnPoint 1", pNewNodeOwner.get());
-        auto spawnPoint2 = std::make_unique<Node>("SpawnPoint 2", pNewNodeOwner.get());
-        auto spawnPoint3 = std::make_unique<Node>("SpawnPoint 2", pNewNodeOwner.get());
-        spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(23.0f, 8.0f, 33.0f));
-        spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(5.0f, 8.0f, 18.0f));
-        spawnPoint3->SetLocalPosition(DirectX::XMFLOAT3(-11.0f, 8.0f, -3.0f));
-        pIsland->spawnPoints.push_back(spawnPoint1.get());
-        pIsland->spawnPoints.push_back(spawnPoint2.get());
-        pIsland->spawnPoints.push_back(spawnPoint3.get());
-        pNewNode->AddChild(std::move(spawnPoint1));
-        pNewNode->AddChild(std::move(spawnPoint2));
-        pNewNode->AddChild(std::move(spawnPoint3));
-
-
-
-        pNewNode->AddChild(std::move(leftPoint));
-        pNewNode->AddChild(std::move(rightPoint));
-        pNewNode->AddChild(std::move(upPoint));
-        pNewNode->AddChild(std::move(downPoint));
-        parentNode->AddChild(std::move(pNewNodeOwner));
-        return pNewNode;
-
-    }
-
-    static Node* InstantiateTopColumn(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateTopColumn(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("Top", nullptr, "STONE");
 
@@ -3093,7 +2633,7 @@ public:
         ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
         ConvexHullShapeSettings shapeSettings(PhysicsCommon::MakeVertexArray(islandModel->GetAllUniqueVertices()));
         ShapeRefC islandShape = shapeSettings.Create().Get();
-        BodyCreationSettings BodySettings(islandShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+        BodyCreationSettings BodySettings(islandShape, RVec3(position), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
         BodySettings.mMassPropertiesOverride.mMass = 10.0f;
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
         BodySettings.mFriction = 0.5f;
@@ -3110,7 +2650,7 @@ public:
         );
 
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -3118,7 +2658,7 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateMiddleColumn(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateMiddleColumn(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("Middle", nullptr, "STONE");
 
@@ -3135,7 +2675,7 @@ public:
         ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
         ConvexHullShapeSettings shapeSettings(PhysicsCommon::MakeVertexArray(islandModel->GetAllUniqueVertices()));
         ShapeRefC islandShape = shapeSettings.Create().Get();
-        BodyCreationSettings BodySettings(islandShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+        BodyCreationSettings BodySettings(islandShape, RVec3(position), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
         BodySettings.mMassPropertiesOverride.mMass = 40.0f;
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
         BodySettings.mFriction = 0.5f;
@@ -3147,7 +2687,7 @@ public:
             std::make_unique<Throwable>(pNewNodeOwner.get())
         );
         pNewNodeOwner->GetComponent<Throwable>()->speed = 2.0f;
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -3155,7 +2695,7 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateBaseColumn(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateBaseColumn(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("Base", nullptr, "WALL");
 
@@ -3170,13 +2710,13 @@ public:
         ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
         ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
         islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         Node* pNewNode = pNewNodeOwner.get();
@@ -3184,17 +2724,17 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateNewColumn(Node* parentNode, float locX, float locY, float locZ, float scale)
+    static Node* InstantiateNewColumn(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("New Column", nullptr, "WALL");
         Node* pNewNode = pNewNodeOwner.get();
 
-        InstantiateBaseColumn(pNewNode, 0.0f, 2.0f, 0.0f, 1.0f);
-        Node* middle = InstantiateMiddleColumn(pNewNode, 0.0f, 12.6f, 0.0f, 1.0f);
-        Node* top = InstantiateTopColumn(middle, 0.0f, 7.9f, 0.0f, 1.0f);
+        InstantiateBaseColumn(pNewNode, Vector3(0.0f, 2.0f, 0.0f), 1.0f);
+        Node* middle = InstantiateMiddleColumn(pNewNode, Vector3(0.0f, 12.6f, 0.0f), 1.0f);
+        Node* top = InstantiateTopColumn(middle, Vector3(0.0f, 7.9f, 0.0f), 1.0f);
         top->GetComponent<Rigidbody>()->ConnectWithOtherBody(middle->GetComponent<Rigidbody>()->GetBodyID(), Vec3(0.0f, 7.9f, 0.0f));
 
-        pNewNodeOwner->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         parentNode->AddChild(std::move(pNewNodeOwner));
@@ -3206,7 +2746,7 @@ public:
     ////////////ENEMIES////////////
     ///////////////////////////////
 
-    static Node* InstantiateNormalEnemy(Node* parentNode, float locX, float locY, float locZ, float scale, Node* pPlayer)
+    static Node* InstantiateNormalEnemy(Node* parentNode, Vector3 position, float scale, Node* pPlayer)
     {
         auto pNewNodeOwner = std::make_unique<Node>("Enemy", nullptr, "ENEMY");
         Node* pNewNode = pNewNodeOwner.get();
@@ -3261,14 +2801,14 @@ public:
         );
         
 
-        pNewNode->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNode->SetLocalPosition(position);
         pNewNode->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
 
 
         return pNewNode;
     }
-    static Node* InstantiateFlyingEnemy(Node* parentNode, float locX, float locY, float locZ, float scale, Node* pPlayer)
+    static Node* InstantiateFlyingEnemy(Node* parentNode, Vector3 position, float scale, Node* pPlayer)
     {
         auto pNewNodeOwner = std::make_unique<Node>("Enemy", nullptr, "ENEMY");
         Node* pNewNode = pNewNodeOwner.get();
@@ -3324,13 +2864,13 @@ public:
             std::make_unique<Health>(pNewNode, 1.0f)
         );
 
-        pNewNode->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNode->SetLocalPosition(position);
         pNewNode->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
 
         return pNewNode;
     }
-    static Node* InstantiateShootingEnemy(Node* parentNode, float locX, float locY, float locZ, float scale, Node* pPlayer)
+    static Node* InstantiateShootingEnemy(Node* parentNode, Vector3 position, float scale, Node* pPlayer)
     {
         auto pNewNodeOwner = std::make_unique<Node>("Enemy", nullptr, "ENEMY");
         Node* pNewNode = pNewNodeOwner.get();
@@ -3385,14 +2925,14 @@ public:
             std::make_unique<Health>(pNewNode, 1.0f)
         );
 
-        pNewNode->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNode->SetLocalPosition(position);
         pNewNode->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
 
         return pNewNode;
     }
    
-    static Node* InstantiateBullet(float locX, float locY, float locZ, float scale) 
+    static Node* InstantiateBullet(Vector3 position, float scale) 
     {
         auto pNewNodeOwner = std::make_unique<Node>("Bullet", nullptr, "BULLET");
         Node* pNewNode = pNewNodeOwner.get();
@@ -3406,7 +2946,7 @@ public:
         root->AddChild(std::move(pNewNodeOwner));
 
 
-        BodyCreationSettings BodySettings(new JPH::SphereShape(0.1f), RVec3(locX, locY, locZ), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+        BodyCreationSettings BodySettings(new JPH::SphereShape(0.1f), RVec3(position), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
         BodySettings.mMassPropertiesOverride.mMass = 0.1f;
         BodySettings.mFriction = 0.0f;
@@ -3425,7 +2965,7 @@ public:
             std::make_unique<Bullet>(pNewNode)
         );
 
-        pNewNode->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNode->SetLocalPosition(position);
         pNewNode->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         return pNewNode;

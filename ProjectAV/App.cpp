@@ -192,9 +192,9 @@ App::App(const std::string& commandLine)
     pFreeViewCamera->SetLocalPosition({ 4.0f, 11.0f, -28.0f });
     pPlayer->SetLocalPosition({ 0.0f, 80.0f, -24.0f });
 
-    pSceneRoot->AddComponent(
+ /*   pSceneRoot->AddComponent(
         std::make_unique<Global>(pSceneRoot.get(), wnd, pPlayer)
-    );
+    );*/
 
     pLeftHandNormal->AddComponent(
         std::make_unique<ModelComponent>(pLeftHandNormal, wnd.Gfx(), "Models\\hands\\left.obj")
@@ -243,9 +243,9 @@ App::App(const std::string& commandLine)
     pUpgradeHandler->ability4Node = pAbility4;
     pUpgradeHandler->playerController = pPlayer->GetComponent<PlayerController>();
     pUpgradeHandler->SetBasicValues();
-    pSceneRoot->GetComponent<Global>()->upgradeHandler = pUpgradeHandler;
+    //pSceneRoot->GetComponent<Global>()->upgradeHandler = pUpgradeHandler;
 
-	//PrefabManager::InstantiateFirstIsland(pSceneRoot.get(), 0.0f, 0.0f, 0.0f, 1.0f);
+	PrefabManager::InstantiateIslandBig2(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
 
     const int screenWidth = 1920;
     const int screenHeight = 1080;
@@ -636,6 +636,17 @@ void App::ShowControlWindows()
 
                 bool transformChanged = false;
 
+                static char posInputBuf[64] = {};
+                snprintf(posInputBuf, sizeof(posInputBuf), "{%.1ff, %.1ff, %.1ff}", pos.x, pos.y, pos.z);
+                if (ImGui::InputText("P", posInputBuf, sizeof(posInputBuf))) {
+                    // Optional: parse the input and update pos if valid
+                    float x, y, z;
+                    if (sscanf_s(posInputBuf, "{%ff, %ff, %ff}", &x, &y, &z) == 3) {
+                        pos = { x, y, z };
+                        pSelectedSceneNode->SetLocalPosition(pos);
+                        transformChanged = true;
+                    }
+                }
                 ImGui::Text("Position"); ImGui::SameLine();
                 if (ImGui::DragFloat3("##Position", &pos.x, 0.1f))
                 {
