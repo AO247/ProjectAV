@@ -2787,6 +2787,8 @@ public:
         pNewNode->AddComponent(
             std::make_unique<Walking>(pNewNode)
         );
+        Walking* walking = pNewNode->GetComponent<Walking>();
+        walking->radius = 1.5f;
         pNewNode->AddComponent(
             std::make_unique<BasicAttack>(pNewNode)
         );
@@ -2912,6 +2914,8 @@ public:
         pNewNode->AddComponent(
             std::make_unique<Walking>(pNewNode)
         );
+        Walking* walking = pNewNode->GetComponent<Walking>();
+        walking->radius = 1.5f;
         pNewNode->AddComponent(
             std::make_unique<ShootAttack>(pNewNode)
         );
