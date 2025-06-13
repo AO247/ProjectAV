@@ -159,15 +159,16 @@ Vector3 Walking::CalculateAvoidanceForce()
 	forward.y = 0.0f;
 	Vector3 right = Vector3(forward.z, 0.0f, -forward.x);
 	right.Normalize();
+	forward.Normalize();
 
 	leftHit = false;
 	rightHit = false;
 	moreLeft = false;
 	moreRight = false;
 
-	Vector3 centerOrigin = pos + forward;
-	Vector3 leftOrigin = centerOrigin - right * radius;
-	Vector3 rightOrigin = centerOrigin + right * radius;
+	Vector3 centerOrigin = pos + forward * radius;
+	Vector3 leftOrigin = pos - right * radius;
+	Vector3 rightOrigin = pos + right * radius;
 
 
 	Vector3 centerDir = forward;
