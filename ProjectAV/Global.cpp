@@ -6,6 +6,8 @@ Global::Global(Node* owner, Window& window, Node* player)
 	player->SetLocalPosition(enterPoint);
 	PrefabManager::InstantiateStartIsland(pOwner, 0.0f, 0.0f, 0.0f, 4.0f);
 	firstSpawn = PrefabManager::InstantiateFirstIsland(pOwner, 0.0f, 5.0f, -20.0f, 1.0f);
+	firstSpawn->GetComponent<SpawnJump>()->Activate();
+	firstSpawn->GetComponent<SpawnJump>()->upgraded = true;
 	StartRun();
 }
 
@@ -20,17 +22,9 @@ void Global::Update(float dt)
 				if (!completed)
 				{
 					spawn = levels[levels.size() - 3]->FindFirstChildByTag("SPAWN");
-					Node* target = levels[levels.size() - 2]->FindFirstChildByTag("SPAWN");
-					spawn->GetComponent<SpawnJump>()->Activate(target->GetWorldPosition());
+					spawn->GetComponent<SpawnJump>()->Activate();
 					completed = true;
-					upgradeHandler->ShowUpgradeMenu();
-				}
-				else if (spawn->GetComponent<SpawnJump>()->halfWay)
-				{
-					levels[levels.size() - 2]->GetComponent<LevelGenerator>()->startEnemyGenerating = true;
-					levels[levels.size() - 5]->Destroy();
-					AddSpecialLevel();
-					currentLevel++;
+
 				}
 			}
 		}
@@ -38,14 +32,14 @@ void Global::Update(float dt)
 	}
 	else 
 	{
-		if (firstSpawn->GetComponent<SpawnJump>()->pushed)
+		if (playerNode->GetLocalPosition().y > 30.0f)
 		{
 			levels[levels.size() - 3]->GetComponent<LevelGenerator>()->startEnemyGenerating = true;
 			currentLevel = 1;
 			started = true;
 		}
 	}
-	if (playerNode->GetLocalPosition().y < (currentLevel * 400.0f) - 350.0f || playerNode->GetComponent<Health>()->currentHealth == 0.0f)
+	if (playerNode->GetLocalPosition().y < ((currentLevel - 1) * 400.0f) - 50.0f || playerNode->GetComponent<Health>()->currentHealth <= 0.0f)
 	{
 		EndRun();
 	}
@@ -62,17 +56,21 @@ void Global::Update(float dt)
 			ending = false;
 		}
 	}
-	if (firstRun == 0)
+	if (!upgradeHandler->upgradeMenuOpen && upgradeOpen)
 	{
-		firstSpawn->GetComponent<SpawnJump>()->Activate(levels[levels.size() - 3]->FindFirstChildByTag("SPAWN")->GetWorldPosition());
-		firstRun--;
-	}
-	else if (firstRun > 0)
-	{
-		firstRun--;
+		upgradeOpen = false;
+		levels[levels.size() - 4]->FindFirstChildByTag("SPAWN")->GetComponent<SpawnJump>()->upgraded = true;
 	}
 }
-
+void Global::NextStage() 
+{
+	upgradeHandler->ShowUpgradeMenu();
+	upgradeOpen = true;
+	levels[levels.size() - 2]->GetComponent<LevelGenerator>()->startEnemyGenerating = true;
+	levels[levels.size() - 5]->Destroy();
+	AddSpecialLevel();
+	currentLevel++;
+}
 
 void Global::AddSpecialLevel()
 {
@@ -114,10 +112,6 @@ void Global::StartRun()
 	AddSpecialLevel();
 	AddSpecialLevel();
 	AddSpecialLevel();
-	if(firstRun == -1)
-	{
-		firstRun = 10;
-	}
 }
 
 void Global::EndRun()
@@ -143,6 +137,4 @@ void Global::DrawImGuiControls()
 	ImGui::Text("Level Count: %d", levelCount);
 	ImGui::Text("Levels: %d", levels.size());
 	ImGui::Text("Completed: %d", completed);
-	ImGui::Text("First Run: %d", firstRun);
-
 }

@@ -38,7 +38,7 @@ void Ability1::Pressed()
         {
 			Vec3 direction = Vec3(pOwner->Forward().x, pOwner->Forward().y, pOwner->Forward().z);
             PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), direction * force);
-			OutputDebugStringA(("Ability1 hit: " + objects[i]->GetName() + "\n").c_str());
+			//OutputDebugStringA(("Ability1 hit: " + objects[i]->GetName() + "\n").c_str());
         }
     }
     cooldownTimer = cooldown;
@@ -82,7 +82,7 @@ void Ability1::OnTriggerEnter(Node* object) {
         if (objects[i] == object) return;
 	}
     objects.push_back(object);
-	OutputDebugStringA(("Ability1 OnTriggerEnter: " + object->GetName() + "\n").c_str());
+	//OutputDebugStringA(("Ability1 OnTriggerEnter: " + object->GetName() + "\n").c_str());
 }
 void Ability1::OnTriggerExit(Node* object) {
     if (object == nullptr) return;
@@ -92,7 +92,7 @@ void Ability1::OnTriggerExit(Node* object) {
     if (it != objects.end()) {
         objects.erase(it, objects.end());
     }
-	OutputDebugStringA(("Ability1 OnTriggerExit: " + object->GetName() + "\n").c_str());
+	//OutputDebugStringA(("Ability1 OnTriggerExit: " + object->GetName() + "\n").c_str());
 }
 void Ability1::DrawImGuiControls()
 {

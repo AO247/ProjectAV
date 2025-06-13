@@ -6,10 +6,8 @@
 LevelGenerator::LevelGenerator(Node* owner, Node* pPlayer, bool rot)
     : Component(owner), pPlayer(pPlayer), spawnNeedRotation(rot)
 {
-
-
-    points.push_back(Vector4(pOwner->GetWorldPosition().x, pOwner->GetWorldPosition().y, pOwner->GetWorldPosition().z, 0.0f));
-
+    //points.push_back(Vector4(pOwner->GetWorldPosition().x, pOwner->GetWorldPosition().y, pOwner->GetWorldPosition().z, 0.0f));
+    points.push_back(Vector4::Zero);
 }
 
 void LevelGenerator::Update(float dt)
@@ -30,12 +28,32 @@ void LevelGenerator::Update(float dt)
 }
 void LevelGenerator::GenerateIslands()
 {
-    if (bigIslandCount <= 0 && mediumIslandCount <= 0 && smallIslandCount <= 0)
+    if (bigIslandCount <= 0 && mediumIslandCount <= 0 && smallIslandCount <= 0 && spawned)
     {
-        for (int i = 0; i < islands.size(); i++)
+        for (int i = 0; i < islandsInfo.size(); i++)
         {
             float randY = -5.0f + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX) / 10.0f);
-            islands[i]->SetLocalPosition(DirectX::XMFLOAT3(islands[i]->GetLocalPosition().x, islands[i]->GetLocalPosition().y + randY, islands[i]->GetLocalPosition().z));
+            islandsInfo[i].pos.y += randY;
+            if (islandsInfo[i].name == "BIG1")
+            {
+                islandPrefab = PrefabManager::InstantiateIslandBig1(pOwner, islandsInfo[i].pos.x, islandsInfo[i].pos.y, islandsInfo[i].pos.z, 1.0f);
+                islandPrefab->SetLocalRotation({ 0.0f, islandsInfo[i].rot, 0.0f });
+				islandPrefab->GetComponent<Island>()->leftPoint->SetLocalPosition(islandsInfo[i].leftPoint);
+				islandPrefab->GetComponent<Island>()->upPoint->SetLocalPosition(islandsInfo[i].upPoint);
+				islandPrefab->GetComponent<Island>()->rightPoint->SetLocalPosition(islandsInfo[i].rightPoint);
+				islandPrefab->GetComponent<Island>()->downPoint->SetLocalPosition(islandsInfo[i].downPoint);
+            }
+            if (islandsInfo[i].name == "FIRST")
+            {
+                islandPrefab = PrefabManager::InstantiateFirstIsland(pOwner, islandsInfo[i].pos.x, islandsInfo[i].pos.y, islandsInfo[i].pos.z, 1.0f);
+                islandPrefab->SetLocalRotation({ 0.0f, islandsInfo[i].rot, 0.0f });
+                islandPrefab->GetComponent<Island>()->leftPoint->SetLocalPosition(islandsInfo[i].leftPoint);
+                islandPrefab->GetComponent<Island>()->upPoint->SetLocalPosition(islandsInfo[i].upPoint);
+                islandPrefab->GetComponent<Island>()->rightPoint->SetLocalPosition(islandsInfo[i].rightPoint);
+                islandPrefab->GetComponent<Island>()->downPoint->SetLocalPosition(islandsInfo[i].downPoint);
+            }
+            islands.push_back(islandPrefab);
+            
         }
         islandGenerated = true;
         return;
@@ -44,21 +62,28 @@ void LevelGenerator::GenerateIslands()
 
     int randIsland = rand() % 3;
     if (spawned) {
-        spawned = false;
-        if (islands.size() > 0)
+        if (islandsInfo.size() > 0)
         {
             while (true) {
 
                 if (randIsland == 0 && bigIslandCount > 0)
                 {
+                    spawned = false;
                     int randLarge = rand() % 2;
+                    randLarge = 0;
                     if (randLarge == 0) {
-                        islandPrefab = PrefabManager::InstantiateIslandBig1(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
-
+                        //islandPrefab = PrefabManager::InstantiateIslandBig1(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
+                        islandInfo.name = "BIG1";
+                        islandInfo.pos = { 0.0f, 0.0f, 0.0f };
+                        islandInfo.leftPoint = { -65.0f, 0.0f , 35.0f };
+                        islandInfo.upPoint = { 40.0f, 0.0f , 65.0f };
+                        islandInfo.rightPoint = { 65.0f, 0.0f , 20.0f };
+                        islandInfo.downPoint = { 30.0f, 0.0f , -65.0f };
+                        islandInfo.extents = {60.0f, 60.0f};
                     }
                     else {
             
-                        islandPrefab = PrefabManager::InstantiateIslandBig2(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
+                        //islandPrefab = PrefabManager::InstantiateIslandBig2(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
 
                     }
                     bigIslandCount--;
@@ -66,13 +91,14 @@ void LevelGenerator::GenerateIslands()
                 }
                 else if (randIsland == 1 && mediumIslandCount > 0)
                 {
+                    spawned = false;
                     int randMedium = rand() % 2;
                     if (randMedium == 0) {
-                        islandPrefab = PrefabManager::InstantiateIslandBig1(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
+                        //islandPrefab = PrefabManager::InstantiateIslandBig1(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
 
                     }
                     else {
-                        islandPrefab = PrefabManager::InstantiateIslandBig1(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
+                        //islandPrefab = PrefabManager::InstantiateIslandBig1(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
 
                     }
                     mediumIslandCount--;
@@ -80,20 +106,21 @@ void LevelGenerator::GenerateIslands()
                 }
                 else if (randIsland == 2 && smallIslandCount > 0)
                 {
+                    spawned = false;
                     int randSmall = rand() % 2;
                     if (randSmall == 0) {
-                        islandPrefab = PrefabManager::InstantiateIslandSmall2(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
+                        //islandPrefab = PrefabManager::InstantiateIslandSmall2(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
 
 
                     }
                     else if(randSmall == 1) {
                         //islandPrefab = prefabManager->InstantiateIslandSmall2(pOwner, 0.0f, 0.0f, 0.0f, 1.5f);
-                        islandPrefab = PrefabManager::InstantiateIslandSmall2(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
+                        //islandPrefab = PrefabManager::InstantiateIslandSmall2(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
 
                     }
                     else {
                
-                    islandPrefab = PrefabManager::InstantiateIslandSmall3(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
+                    //islandPrefab = PrefabManager::InstantiateIslandSmall3(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
 
                     }
                     smallIslandCount--;
@@ -105,55 +132,59 @@ void LevelGenerator::GenerateIslands()
             }
         }
         else {
-            islandPrefab = PrefabManager::InstantiateFirstIsland(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
+            //islandPrefab = PrefabManager::InstantiateFirstIsland(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
+            spawned = false;
+            islandInfo.name = "FIRST";
+            islandInfo.pos = { 0.0f, 0.0f, 0.0f };
+            islandInfo.leftPoint = { -35.0f, 0.0f , 5.0f };
+            islandInfo.upPoint = { 3.0f, 0.0f , 36.0f };
+            islandInfo.rightPoint = { 35.0f, 0.0f , -4.0f };
+            islandInfo.downPoint = { 0.0f, 0.0f , -30.0f };
+            islandInfo.extents = { 30.0f, 30.0f };
         }
-        Vector3 p = islandPrefab->GetWorldPosition();
-        island = islandPrefab->GetComponent<Island>();
-        if (islands.size() != 0)  island->Rotate();
-        counterToRotate = 0;
+        if (islandsInfo.size() != 0)  Rotate();
     }
-    if (islandPrefab != nullptr && islandPrefab->GetComponent<Island>())
+    if (islandInfo.name != "")
     {
 
         int randPoint = rand() % points.size();
         Vector4 point = points[randPoint];
         Vector3 pointPos = Vector3(point.x, point.y, point.z);
-
-        if (islands.size() == 0)
+        islandInfo.pos = { 0.0f, 0.0f, 0.0f };
+        if (islandsInfo.size() == 0)
         {
             if (spawnNeedRotation) {
-                island->Rotate(180);
-                ChangePosition(islandPrefab, pointPos, island->upPoint->GetWorldPosition());
+                Rotate(180);
+                ChangePosition(&islandInfo, pointPos, islandInfo.upPoint);
                 if (randPoint >= 0 && randPoint < static_cast<int>(points.size())) {
                     points.erase(points.begin() + randPoint);
                 }
-
-                points.push_back(Vector4(island->leftPoint->GetWorldPosition().x, island->leftPoint->GetWorldPosition().y, island->leftPoint->GetWorldPosition().z, 1.0f));
-                points.push_back(Vector4(island->downPoint->GetWorldPosition().x, island->downPoint->GetWorldPosition().y, island->downPoint->GetWorldPosition().z, 2.0f));
-                points.push_back(Vector4(island->rightPoint->GetWorldPosition().x, island->rightPoint->GetWorldPosition().y, island->rightPoint->GetWorldPosition().z, 3.0f));
+                points.push_back(Vector4((islandInfo.leftPoint + islandInfo.pos).x, (islandInfo.leftPoint + islandInfo.pos).y, (islandInfo.leftPoint + islandInfo.pos).z, 1.0f));
+                points.push_back(Vector4((islandInfo.downPoint + islandInfo.pos).x, (islandInfo.downPoint + islandInfo.pos).y, (islandInfo.downPoint + islandInfo.pos).z, 2.0f));
+                points.push_back(Vector4((islandInfo.rightPoint + islandInfo.pos).x, (islandInfo.rightPoint + islandInfo.pos).y, (islandInfo.rightPoint + islandInfo.pos).z, 3.0f));
             }
             else
             {
 
-                ChangePosition(islandPrefab, pointPos, island->downPoint->GetWorldPosition());
+                ChangePosition(&islandInfo, pointPos, islandInfo.downPoint);
                 if (randPoint >= 0 && randPoint < static_cast<int>(points.size())) {
                     points.erase(points.begin() + randPoint);
                 }
-                points.push_back(Vector4(island->leftPoint->GetWorldPosition().x, island->leftPoint->GetWorldPosition().y, island->leftPoint->GetWorldPosition().z, 1.0f));
-                points.push_back(Vector4(island->upPoint->GetWorldPosition().x, island->upPoint->GetWorldPosition().y, island->upPoint->GetWorldPosition().z, 2.0f));
-                points.push_back(Vector4(island->rightPoint->GetWorldPosition().x, island->rightPoint->GetWorldPosition().y, island->rightPoint->GetWorldPosition().z, 3.0f));
+                points.push_back(Vector4((islandInfo.leftPoint + islandInfo.pos).x, (islandInfo.leftPoint + islandInfo.pos).y, (islandInfo.leftPoint + islandInfo.pos).z, 1.0f));
+                points.push_back(Vector4((islandInfo.upPoint + islandInfo.pos).x, (islandInfo.upPoint + islandInfo.pos).y, (islandInfo.upPoint + islandInfo.pos).z, 2.0f));
+                points.push_back(Vector4((islandInfo.rightPoint + islandInfo.pos).x, (islandInfo.rightPoint + islandInfo.pos).y, (islandInfo.rightPoint + islandInfo.pos).z, 3.0f));
             }
-            islands.push_back(islandPrefab);
+            islandsInfo.push_back(islandInfo);
             spawned = true;
         }
         else {
             if (point.w == 0.0f)
             {
-                ChangePosition(islandPrefab, pointPos, island->upPoint->GetWorldPosition());
+                ChangePosition(&islandInfo, pointPos, islandInfo.upPoint);
                 bool flag = true;
-                for (int i = 0; i < islands.size(); i++)
+                for (int i = 0; i < islandsInfo.size(); i++)
                 {
-                    if (Collide(islandPrefab, islands[i]))
+                    if (Collide(islandInfo, islandsInfo[i]))
                     {
                         flag = false;
                     }
@@ -164,20 +195,20 @@ void LevelGenerator::GenerateIslands()
                     if (randPoint >= 0 && randPoint < static_cast<int>(points.size())) {
                         points.erase(points.begin() + randPoint);
                     }
-                    points.push_back(Vector4(island->leftPoint->GetWorldPosition().x, island->leftPoint->GetWorldPosition().y, island->leftPoint->GetWorldPosition().z, 1.0f));
-                    points.push_back(Vector4(island->rightPoint->GetWorldPosition().x, island->rightPoint->GetWorldPosition().y, island->rightPoint->GetWorldPosition().z, 3.0f));
-                    islands.push_back(islandPrefab);
+                    points.push_back(Vector4((islandInfo.leftPoint + islandInfo.pos).x, (islandInfo.leftPoint + islandInfo.pos).y, (islandInfo.leftPoint + islandInfo.pos).z, 1.0f));
+                    points.push_back(Vector4((islandInfo.rightPoint + islandInfo.pos).x, (islandInfo.rightPoint + islandInfo.pos).y, (islandInfo.rightPoint + islandInfo.pos).z, 3.0f));
+                    islandsInfo.push_back(islandInfo);
                     spawned = true;
                 }
 
             }
             else if (point.w == 1)
             {
-                ChangePosition(islandPrefab, pointPos, island->rightPoint->GetWorldPosition());
+                ChangePosition(&islandInfo, pointPos, islandInfo.rightPoint);
                 bool flag = true;
-                for (int i = 0; i < islands.size(); i++)
+                for (int i = 0; i < islandsInfo.size(); i++)
                 {
-                    if (Collide(islandPrefab, islands[i]))
+                    if (Collide(islandInfo, islandsInfo[i]))
                     {
                         flag = false;
                     }
@@ -188,19 +219,19 @@ void LevelGenerator::GenerateIslands()
                     if (randPoint >= 0 && randPoint < static_cast<int>(points.size())) {
                         points.erase(points.begin() + randPoint);
                     }
-                    points.push_back(Vector4(island->downPoint->GetWorldPosition().x, island->downPoint->GetWorldPosition().y, island->downPoint->GetWorldPosition().z, 0.0f));
-                    points.push_back(Vector4(island->upPoint->GetWorldPosition().x, island->upPoint->GetWorldPosition().y, island->upPoint->GetWorldPosition().z, 2.0f));
-                    islands.push_back(islandPrefab);
+                    points.push_back(Vector4((islandInfo.downPoint + islandInfo.pos).x, (islandInfo.downPoint + islandInfo.pos).y, (islandInfo.downPoint + islandInfo.pos).z, 0.0f));
+                    points.push_back(Vector4((islandInfo.upPoint + islandInfo.pos).x, (islandInfo.upPoint + islandInfo.pos).y, (islandInfo.upPoint + islandInfo.pos).z, 2.0f));
+                    islandsInfo.push_back(islandInfo);
                     spawned = true;
                 }
             }
             else if (point.w == 2)
             {
-                ChangePosition(islandPrefab, pointPos, island->downPoint->GetWorldPosition());
+                ChangePosition(&islandInfo, pointPos, islandInfo.downPoint);
                 bool flag = true;
-                for (int i = 0; i < islands.size(); i++)
+                for (int i = 0; i < islandsInfo.size(); i++)
                 {
-                    if (Collide(islandPrefab, islands[i]))
+                    if (Collide(islandInfo, islandsInfo[i]))
                     {
                         flag = false;
                     }
@@ -211,20 +242,20 @@ void LevelGenerator::GenerateIslands()
                     if (randPoint >= 0 && randPoint < static_cast<int>(points.size())) {
                         points.erase(points.begin() + randPoint);
                     }
-                    points.push_back(Vector4(island->leftPoint->GetWorldPosition().x, island->leftPoint->GetWorldPosition().y, island->leftPoint->GetWorldPosition().z, 1.0f));
-                    points.push_back(Vector4(island->rightPoint->GetWorldPosition().x, island->rightPoint->GetWorldPosition().y, island->rightPoint->GetWorldPosition().z, 3.0f));
-                    islands.push_back(islandPrefab);
+                    points.push_back(Vector4((islandInfo.leftPoint + islandInfo.pos).x, (islandInfo.leftPoint + islandInfo.pos).y, (islandInfo.leftPoint + islandInfo.pos).z, 1.0f));
+                    points.push_back(Vector4((islandInfo.rightPoint + islandInfo.pos).x, (islandInfo.rightPoint + islandInfo.pos).y, (islandInfo.rightPoint + islandInfo.pos).z, 3.0f));
+                    islandsInfo.push_back(islandInfo);
                     spawned = true;
                 }
 
             }
             else if (point.w == 3)
             {
-                ChangePosition(islandPrefab, pointPos, island->leftPoint->GetWorldPosition());
+                ChangePosition(&islandInfo, pointPos, islandInfo.leftPoint);
                 bool flag = true;
-                for (int i = 0; i < islands.size(); i++)
+                for (int i = 0; i < islandsInfo.size(); i++)
                 {
-                    if (Collide(islandPrefab, islands[i]))
+                    if (Collide(islandInfo, islandsInfo[i]))
                     {
                         flag = false;
                     }
@@ -235,9 +266,9 @@ void LevelGenerator::GenerateIslands()
                     if (randPoint >= 0 && randPoint < static_cast<int>(points.size())) {
                         points.erase(points.begin() + randPoint);
                     }
-                    points.push_back(Vector4(island->downPoint->GetWorldPosition().x, island->downPoint->GetWorldPosition().y, island->downPoint->GetWorldPosition().z, 0.0f));
-                    points.push_back(Vector4(island->upPoint->GetWorldPosition().x, island->upPoint->GetWorldPosition().y, island->upPoint->GetWorldPosition().z, 2.0f));
-                    islands.push_back(islandPrefab);
+                    points.push_back(Vector4((islandInfo.downPoint + islandInfo.pos).x, (islandInfo.downPoint + islandInfo.pos).y, (islandInfo.downPoint + islandInfo.pos).z, 0.0f));
+                    points.push_back(Vector4((islandInfo.upPoint + islandInfo.pos).x, (islandInfo.upPoint + islandInfo.pos).y, (islandInfo.upPoint + islandInfo.pos).z, 2.0f));
+                    islandsInfo.push_back(islandInfo);
                     spawned = true;
                 }
             }
@@ -248,30 +279,23 @@ void LevelGenerator::GenerateIslands()
 
         }
     }
-    counterToRotate++;
-}
+    }
 
-void LevelGenerator::ChangePosition(Node* island, Vector3 pointPos, Vector3 startPos)
+    void LevelGenerator::ChangePosition(islandInfoStruct* island, Vector3 pointPos, Vector3 startPos)
+    {
+        Vector3 pos = startPos;
+        pos += island->pos;
+        Vector3 dir = pointPos - pos;
+        float length = dir.Length();
+        dir.Normalize();
+        island->pos += (dir * length);
+    }
+
+bool LevelGenerator::Collide(islandInfoStruct island1, islandInfoStruct island2)
 {
-    Vector3 pos = island->GetWorldPosition();
 
-    Vector3 dir = pointPos - startPos;
-    float length = dir.Length();
-    dir.Normalize();
-    island->SetWorldPosition(island->GetWorldPosition() + (dir * length));
-    pos = island->GetWorldPosition();
-}
-
-bool LevelGenerator::Collide(Node* island1, Node* island2)
-{
-    Vector3 pos1 = island1->GetWorldPosition();
-    Vector3 pos2 = island2->GetWorldPosition();
-    Vector3 extents1 = island1->GetComponent<Island>()->halfExtents;
-    Vector3 extents2 = island2->GetComponent<Island>()->halfExtents;
-
-    if (std::abs(pos1.x - pos2.x) > (extents1.x + extents2.x)) return false;
-    if (std::abs(pos1.y - pos2.y) > (extents1.y + extents2.y)) return false;
-    if (std::abs(pos1.z - pos2.z) > (extents1.z + extents2.z)) return false;
+    if (std::abs(island1.pos.x - island2.pos.x) > (island1.extents.x + island2.extents.x)) return false;
+    if (std::abs(island1.pos.z - island2.pos.z) > (island1.extents.y + island2.extents.y)) return false;
     return true;
 }
 
@@ -304,7 +328,7 @@ void LevelGenerator::SpawnEnemies()
                 islands[islandNumber]->GetComponent<Island>()->spawnPoints = spawnPoints;
             }
             islandNumber++;
-            if (islandNumber >= islands.size())
+            if (islandNumber >= islandsInfo.size())
             {
                 islandNumber = 0;
             }
@@ -313,14 +337,14 @@ void LevelGenerator::SpawnEnemies()
         else
         {
             islandNumber++;
-            if (islandNumber >= islands.size())
+            if (islandNumber >= islandsInfo.size())
             {
                 islandNumber = 0;
             }
         }
         if (islandNumber == pIslandNumber)
         {
-            enemiesSpawned = true;
+            //enemiesSpawned = true;
             break;
         }
 
@@ -371,6 +395,57 @@ void LevelGenerator::SpawnEnemies()
         }
     }
 }
+
+
+void LevelGenerator::Rotate(int rot)
+{
+    int randomRotate = rand() % 4;
+    randomRotate = randomRotate * 90;
+    if (rot != 0) randomRotate = rot;
+    islandInfo.rot = to_rad(randomRotate);
+    if (randomRotate == 90)
+    {
+		islandInfo.upPoint = { islandInfo.upPoint.z, islandInfo.upPoint.y, -islandInfo.upPoint.x };
+		islandInfo.downPoint = { islandInfo.downPoint.z, islandInfo.downPoint.y, -islandInfo.downPoint.x };
+		islandInfo.leftPoint = { islandInfo.leftPoint.z, islandInfo.leftPoint.y, -islandInfo.leftPoint.x };
+		islandInfo.rightPoint = { islandInfo.rightPoint.z, islandInfo.rightPoint.y, -islandInfo.rightPoint.x };
+
+        Vector3 pos = islandInfo.upPoint;
+        islandInfo.upPoint = islandInfo.leftPoint;
+        islandInfo.leftPoint = islandInfo.downPoint;
+        islandInfo.downPoint = islandInfo.rightPoint;
+        islandInfo.rightPoint = pos;
+    }
+    else if (randomRotate == 180)
+    {
+        islandInfo.upPoint = { -islandInfo.upPoint.x, islandInfo.upPoint.y, -islandInfo.upPoint.z };
+		islandInfo.downPoint = { -islandInfo.downPoint.x, islandInfo.downPoint.y, -islandInfo.downPoint.z };
+		islandInfo.leftPoint = { -islandInfo.leftPoint.x, islandInfo.leftPoint.y, -islandInfo.leftPoint.z };
+		islandInfo.rightPoint = { -islandInfo.rightPoint.x, islandInfo.rightPoint.y, -islandInfo.rightPoint.z };
+
+        Vector3 pos = islandInfo.upPoint;
+        islandInfo.upPoint = islandInfo.downPoint;
+        islandInfo.downPoint = pos;
+        pos = islandInfo.leftPoint;
+        islandInfo.leftPoint = islandInfo.rightPoint;
+        islandInfo.rightPoint = pos;
+    }
+    else if (randomRotate == 270)
+    {
+        islandInfo.upPoint = { -islandInfo.upPoint.z, islandInfo.upPoint.y, islandInfo.upPoint.x };
+		islandInfo.downPoint = { -islandInfo.downPoint.z, islandInfo.downPoint.y, islandInfo.downPoint.x };
+		islandInfo.leftPoint = { -islandInfo.leftPoint.z, islandInfo.leftPoint.y, islandInfo.leftPoint.x };
+		islandInfo.rightPoint = { -islandInfo.rightPoint.z, islandInfo.rightPoint.y, islandInfo.rightPoint.x };
+
+        Vector3 pos = islandInfo.upPoint;
+        islandInfo.upPoint = islandInfo.rightPoint;
+        islandInfo.rightPoint = islandInfo.downPoint;
+        islandInfo.downPoint = islandInfo.leftPoint;
+        islandInfo.leftPoint = pos;
+    }
+
+}
+
 
 void LevelGenerator::DrawImGuiControls()
 {

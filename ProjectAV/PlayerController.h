@@ -49,7 +49,7 @@ private:
 	void KeyboardInput();
 	void MovePlayer(float dt);
 	void SpeedControl();
-	void GroundCheck();
+	void PlayerGroundCheck();
 	void Jump();
 	void Dash();
 	void Cooldowns(float dt);

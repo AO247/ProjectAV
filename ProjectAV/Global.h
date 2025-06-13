@@ -36,8 +36,9 @@ public:
 	bool ending = false;
 	int endingRemover = 0;
 	Vector3 enterPoint = { 0.0f, 5.0f, -60.0f };
-	int firstRun = 10;
+	bool upgradeOpen = false;
 	UpgradeHandler* upgradeHandler;
+	void NextStage();
 private:
 	Window& wnd;
 	void AddLevel();

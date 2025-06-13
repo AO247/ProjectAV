@@ -77,7 +77,15 @@ void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 	}
 	Vector3 steeringForce = desiredVelocity - currentVelocity;
 
-	steeringForce = steeringForce + (CalculateAvoidanceForce());
+	Vector3 avoidanceForce = CalculateAvoidanceForce();
+	if(moreLeft || moreRight)
+	{
+		steeringForce = avoidanceForce;
+	}
+	else
+	{
+		steeringForce += avoidanceForce;
+	}
 
 	float steeringMagnitude = steeringForce.Length();
 	if (steeringMagnitude > maxSpeed) {
@@ -117,7 +125,7 @@ void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 
 	PhysicsCommon::physicsSystem->GetBodyInterface().SetFriction(rigidbody->GetBodyID(), 0.5f);
 }
-void Walking::GroundCheck()
+bool Walking::GroundCheck()
 {
 	RRayCast ray = RRayCast(
 		RVec3(pOwner->GetWorldPosition().x, pOwner->GetWorldPosition().y, pOwner->GetWorldPosition().z),
@@ -127,14 +135,14 @@ void Walking::GroundCheck()
 	if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(ray, result, SpecifiedBroadPhaseLayerFilter(BroadPhaseLayers::GROUND), SpecifiedObjectLayerFilter(Layers::GROUND)))
 	{
 		grounded = true;
+		canAttack = true;
 		Vec3 tymPos = PhysicsCommon::physicsSystem->GetBodyInterface().GetPosition(result.mBodyID);
 		lastIslandPos = { tymPos.GetX(), tymPos.GetY(), tymPos.GetZ() };
+		return true;
 	}
-	else
-	{
-		grounded = false;
-	}
-	pOwner->GetComponent<StateMachine>()->grounded = grounded;
+	grounded = false;
+	canAttack = false;
+	return false;
 }
 Vector3 Walking::CalculateAvoidanceForce()
 {
@@ -144,10 +152,9 @@ Vector3 Walking::CalculateAvoidanceForce()
 	temporaryDirection.y = 0.0f;
 	temporaryDirection.Normalize();
 
-	float radius = 1.0f;
 
 	Vector3 pos = pOwner->GetWorldPosition();
-	pos.y += -(height/2.0f) + 1.0f;
+	pos.y += -(height/2.0f) + 0.5f;
 	Vector3 forward = temporaryDirection;
 	forward.y = 0.0f;
 	Vector3 right = Vector3(forward.z, 0.0f, -forward.x);
@@ -190,7 +197,7 @@ Vector3 Walking::CalculateAvoidanceForce()
 		{
 			leftHit = true;
 			avoidanceForce = right * avoidanceWeight;
-			OutputDebugStringA(("\nLeft Hit into:" + no->GetName()).c_str());
+			//OutputDebugStringA(("\nLeft Hit into:" + no->GetName()).c_str());
 		}
 	}
 
@@ -210,7 +217,7 @@ Vector3 Walking::CalculateAvoidanceForce()
 		{
 			rightHit = true;
 			avoidanceForce = -right * avoidanceWeight;
-			OutputDebugStringA(("\nRight Hit into:" + no->GetName()).c_str());
+			//OutputDebugStringA(("\nRight Hit into:" + no->GetName()).c_str());
 		}
 	}
 
@@ -237,7 +244,7 @@ Vector3 Walking::CalculateAvoidanceForce()
 			{
 				moreLeft = true;
 				avoidanceForce = right * avoidanceWeight * 1.5f;
-				OutputDebugStringA(("\nMore Left Hit into:" + no->GetName()).c_str());
+				//OutputDebugStringA(("\nMore Left Hit into:" + no->GetName()).c_str());
 			}
 		}
 		else if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(rayMoreRight, resultMoreRight, 
@@ -250,7 +257,7 @@ Vector3 Walking::CalculateAvoidanceForce()
 			{
 				moreRight = true;
 				avoidanceForce = -right * avoidanceWeight * 1.5f;
-				OutputDebugStringA(("\nMore Right Hit into:" + no->GetName()).c_str());
+				//OutputDebugStringA(("\nMore Right Hit into:" + no->GetName()).c_str());
 			}
 		}
 	}
@@ -259,7 +266,7 @@ Vector3 Walking::CalculateAvoidanceForce()
 }
 bool Walking::VoidCheck() 
 {
-	bool flag = true;
+	bool flag = false;
 	Vector3 temporaryDirection = targetPosition - pOwner->GetWorldPosition();
 	temporaryDirection.Normalize();
 
@@ -269,14 +276,26 @@ bool Walking::VoidCheck()
 
 	Vector3 centerOrigin = pos + temporaryDirection * 3.0f;
 
-	RRayCast rayLeft = RRayCast(
+	RRayCast ray1 = RRayCast(
 		RVec3(centerOrigin.x, centerOrigin.y, centerOrigin.z),
 		RVec3(0.0f, -10.0f, 0.0f)
 	);
-	RayCastResult resultLeft;
-	if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(rayLeft, resultLeft, SpecifiedBroadPhaseLayerFilter(BroadPhaseLayers::GROUND), SpecifiedObjectLayerFilter(Layers::GROUND)))
+	RayCastResult result1;
+	if (!PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(ray1, result1, IgnoreSpecifiedBroadPhaseLayerFilter(BroadPhaseLayers::ENEMY), IgnoreSpecifiedObjectLayerFilter(Layers::ENEMY)))
 	{
-		flag = false;
+		flag = true;
+	}
+	Vec3 dir = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
+	dir = dir.Normalized();
+	centerOrigin = pos + Vector3(dir.GetX(), dir.GetY(), dir.GetZ()) * 3.0f;
+	RRayCast ray2 = RRayCast(
+		RVec3(centerOrigin.x, centerOrigin.y, centerOrigin.z),
+		RVec3(0.0f, -10.0f, 0.0f)
+	);
+	RayCastResult result2;
+	if (!PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(ray2, result2, IgnoreSpecifiedBroadPhaseLayerFilter(BroadPhaseLayers::ENEMY), IgnoreSpecifiedObjectLayerFilter(Layers::ENEMY)))
+	{
+		flag = true;
 	}
 
 	voidNear = flag;

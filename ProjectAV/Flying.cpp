@@ -208,9 +208,11 @@ Vector3 Flying::HeightCalculate()
 		Vec3 tymPos = PhysicsCommon::physicsSystem->GetBodyInterface().GetPosition(result.mBodyID);
 		lastIslandPos = { tymPos.GetX(), tymPos.GetY(), tymPos.GetZ() };
 		grounded = true;
+		canAttack = true;
 	}
 	else 
 	{
+		canAttack = false;
 		grounded = false;
 	}
 

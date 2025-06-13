@@ -298,7 +298,7 @@ void Sprite::Draw(ID3D11DeviceContext* context) {
         }
     }
     else {
-        OutputDebugStringA("Sprite::Draw - GetActiveWindow() returned NULL. Using fallback.\n");
+        //OutputDebugStringA("Sprite::Draw - GetActiveWindow() returned NULL. Using fallback.\n");
     }
 
 

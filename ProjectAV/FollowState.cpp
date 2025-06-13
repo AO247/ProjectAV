@@ -3,7 +3,7 @@
 #include "Node.h" 
 #include <DirectXMath.h> 
 #include <SimpleMath.h>
-
+#include "PhysicsCommon.h"
 
 #include "Win.h"
 namespace dx = DirectX;
@@ -16,7 +16,7 @@ FollowState::FollowState(StateMachine* pOwner) : State()
 
 void FollowState::Enter(StateMachine* pOwner)
 {
-	OutputDebugStringA("Entering FOLLOW State\n");
+	//OutputDebugStringA("Entering FOLLOW State\n");
 	time = 0.0f;
     if (pOwner->attackComponents.size() > 0) {
         int randI = rand() % pOwner->attackComponents.size();
@@ -28,21 +28,31 @@ void FollowState::Enter(StateMachine* pOwner)
 
 void FollowState::Update(StateMachine* pOwner, float dt)
 {
-    dx::XMFLOAT3 ownerPos = pOwner->GetOwner()->GetWorldPosition();
-    dx::XMFLOAT3 playerPos = pOwner->pPlayer->GetWorldPosition();
+    sm::Vector3 ownerPos = pOwner->GetOwner()->GetWorldPosition();
+    sm::Vector3 playerPos = pOwner->pPlayer->GetWorldPosition();
 
-	sm::Vector3 vOwner(ownerPos.x, ownerPos.y, ownerPos.z);
-	sm::Vector3 vPlayer(playerPos.x, playerPos.y, playerPos.z);
-
-    if (vOwner.Distance(vOwner, vPlayer) > pOwner->followDistance) 
+    if (ownerPos.Distance(ownerPos, playerPos) > pOwner->followDistance)
     {
         pOwner->RequestStateChange(StateType::IDLE);
         return;
     }
-    if (vOwner.Distance(vOwner, vPlayer) < pOwner->attackRange)
+    if (ownerPos.Distance(ownerPos, playerPos) < pOwner->attackRange)
     {
-		pOwner->RequestStateChange(StateType::ATTACK);
-        return;
+        sm::Vector3 temporaryDirection = playerPos - ownerPos;
+		float length = temporaryDirection.Length();
+        length -= 2.0f;
+        temporaryDirection.Normalize();
+        RRayCast ray1 = RRayCast(
+            RVec3(ownerPos.x, ownerPos.y, ownerPos.z),
+            RVec3(temporaryDirection.x, temporaryDirection.y, temporaryDirection.z) * length
+        );
+        RayCastResult result1;
+        if (!PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(ray1, result1, IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::ENEMY, BroadPhaseLayers::TRIGGER }),
+            IgnoreMultipleObjectLayerFilter({ Layers::ENEMY, Layers::TRIGGER })))
+        {
+            pOwner->RequestStateChange(StateType::ATTACK);
+            return;
+        }
     }
     if (pOwner->pMovementComponent != nullptr) {
         pOwner->pMovementComponent->Follow(dt, playerPos);
@@ -52,5 +62,5 @@ void FollowState::Update(StateMachine* pOwner, float dt)
 
 void FollowState::Exit(StateMachine* pOwner)
 {
-	OutputDebugStringA("Exiting FOLLOW State\n");
+	//OutputDebugStringA("Exiting FOLLOW State\n");
 }

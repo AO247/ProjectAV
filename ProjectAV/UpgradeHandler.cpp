@@ -153,10 +153,6 @@ void UpgradeHandler::Update(float dt)
 		timer = 0.0f;
 		CloseUpgradeMenu();
 	}
-	if (waitForGrounded)
-	{
-		ShowUpgradeMenu();
-	}
 	if (missclickTimer > 0.0f)
 	{
 		missclickTimer -= dt;
@@ -166,14 +162,8 @@ void UpgradeHandler::Update(float dt)
 void UpgradeHandler::ShowUpgradeMenu()
 {
 	if (upgradeMenuOpen) return;
-	if (!playerController->grounded)
-	{
-		waitForGrounded = true;
-		return;
-	}
 	missclickTimer = 0.3f;
 	PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(playerController->rigidbody->GetBodyID(), Vec3(0.0f,0.0f,0.0f));
-	waitForGrounded = false;
 	upgradeMenuOpen = true;
 	end = false;
 	upgraded = false;

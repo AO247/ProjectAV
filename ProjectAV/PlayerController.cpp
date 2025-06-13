@@ -22,7 +22,7 @@ void PlayerController::Update(float dt)
     Cooldowns(dt);
     if (!wnd.CursorEnabled() && alive && !wnd.playerLocked)
     {
-        GroundCheck();
+        PlayerGroundCheck();
 		KeyboardInput();
 		SpeedControl();
 		MovePlayer(dt);
@@ -134,7 +134,7 @@ void PlayerController::Dash()
 
 }
 
-void PlayerController::GroundCheck()
+void PlayerController::PlayerGroundCheck()
 {
     RRayCast ray = RRayCast(
         RVec3(GetOwner()->GetWorldPosition().x, GetOwner()->GetWorldPosition().y, GetOwner()->GetWorldPosition().z),

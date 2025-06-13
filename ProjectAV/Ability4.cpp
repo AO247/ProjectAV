@@ -97,7 +97,7 @@ void Ability4::Released()
         {
             PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), Vec3(0.0f, 0.0f, 0.0f));
             PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), Vec3(direction.x, direction.y, direction.z) * force);
-            OutputDebugStringA(("Ability4 hit: " + objects[i]->GetName() + "\n").c_str());
+            //OutputDebugStringA(("Ability4 hit: " + objects[i]->GetName() + "\n").c_str());
         }
     }
 
@@ -151,7 +151,7 @@ void Ability4::OnTriggerEnter(Node* object) {
         if (objects[i] == object) return;
     }
     objects.push_back(object);
-    OutputDebugStringA(("Ability2 OnTriggerEnter: " + object->GetName() + "\n").c_str());
+    //OutputDebugStringA(("Ability2 OnTriggerEnter: " + object->GetName() + "\n").c_str());
 }
 void Ability4::OnTriggerExit(Node* object) {
     if (object == nullptr) return;
@@ -161,7 +161,7 @@ void Ability4::OnTriggerExit(Node* object) {
     if (it != objects.end()) {
         objects.erase(it, objects.end());
     }
-    OutputDebugStringA(("Ability2 OnTriggerExit: " + object->GetName() + "\n").c_str());
+    //OutputDebugStringA(("Ability2 OnTriggerExit: " + object->GetName() + "\n").c_str());
 }
 
 void Ability4::DrawImGuiControls()

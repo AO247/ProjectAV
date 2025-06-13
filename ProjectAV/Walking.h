@@ -12,15 +12,19 @@ class Walking : public Component
 public:
 	Walking(Node* owner, std::string tag = "MOVEMENT");
 	virtual ~Walking() = default;
-	float maxSpeed = 60.0f;
-	float rotationLerpFactor = 0.15f;
+	float maxSpeed = 80.0f;
+	float rotationLerpFactor = 0.10f;
 	Vector3 targetPosition;
 	virtual void Follow(float dt, DirectX::XMFLOAT3 target, float sp = 1.0f);
 	virtual void DrawImGuiControls() override;
-	float avoidanceWeight = 20.0f;
-	float avoidanceDistance = 15.0f;
+	virtual bool GroundCheck() override;
+
+
+	float avoidanceWeight = 30.0f;
+	float avoidanceDistance = 8.0f;
 	float raycastWidthOffset = 0.8f;
 	float height = 8.0f;
+	float radius = 1.0f;
 
 	float jumpForce = 1000.0f;
 	float jumpRange = 40.0f;
@@ -35,7 +39,6 @@ private:
 	Rigidbody* rigidbody;
 
 	Vector3 CalculateAvoidanceForce();
-	void GroundCheck();
 	bool VoidCheck();
 	bool Jump();
 	bool rightHit, leftHit, moreLeft, moreRight;

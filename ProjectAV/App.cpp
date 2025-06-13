@@ -481,7 +481,6 @@ void App::DoFrame(float dt)
     }
 
     
-    pUpgradeHandler->DrawUpgradeMenu();
 
     if (targetSprite ) { 
         targetSprite->Draw(wnd.Gfx().GetContext());
@@ -499,6 +498,9 @@ void App::DoFrame(float dt)
     if (pPlayer->GetComponent<Health>()->currentHealth == 1.0f) {
         heart1Sprite->Draw(wnd.Gfx().GetContext());
     }
+
+    pUpgradeHandler->DrawUpgradeMenu();
+
 
     wnd.Gfx().EndFrame();
     rg.Reset();
@@ -636,6 +638,17 @@ void App::ShowControlWindows()
 
                 bool transformChanged = false;
 
+                static char posInputBuf[64] = {};
+                snprintf(posInputBuf, sizeof(posInputBuf), "{%.1ff, %.1ff, %.1ff}", pos.x, pos.y, pos.z);
+                if (ImGui::InputText("P", posInputBuf, sizeof(posInputBuf))) {
+                    // Optional: parse the input and update pos if valid
+                    float x, y, z;
+                    if (sscanf_s(posInputBuf, "{%ff, %ff, %ff}", &x, &y, &z) == 3) {
+                        pos = { x, y, z };
+                        pSelectedSceneNode->SetLocalPosition(pos);
+                        transformChanged = true;
+                    }
+                }
                 ImGui::Text("Position"); ImGui::SameLine();
                 if (ImGui::DragFloat3("##Position", &pos.x, 0.1f))
                 {
