@@ -4,8 +4,8 @@ Global::Global(Node* owner, Window& window, Node* player)
 	: Component(owner), wnd(window), playerNode(player)
 {
 	player->SetLocalPosition(enterPoint);
-	PrefabManager::InstantiateStartIsland(pOwner, 0.0f, 0.0f, 0.0f, 4.0f);
-	firstSpawn = PrefabManager::InstantiateFirstIsland(pOwner, 0.0f, 5.0f, -20.0f, 1.0f);
+	PrefabManager::InstantiateStartIsland(pOwner, Vector3(0.0f, 0.0f, 0.0f), 4.0f);
+	firstSpawn = PrefabManager::InstantiateFirstIsland(pOwner, Vector3(0.0f, 5.0f, -20.0f), 1.0f);
 	firstSpawn->GetComponent<SpawnJump>()->Activate();
 	firstSpawn->GetComponent<SpawnJump>()->upgraded = true;
 	StartRun();

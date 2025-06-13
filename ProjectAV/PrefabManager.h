@@ -38,7 +38,7 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -66,7 +66,7 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -94,7 +94,7 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -122,7 +122,7 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -150,7 +150,7 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -179,7 +179,7 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -208,7 +208,7 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -242,7 +242,7 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -271,7 +271,7 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -300,7 +300,7 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -329,7 +329,7 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -358,7 +358,7 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -387,7 +387,7 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -416,7 +416,7 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -445,7 +445,7 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -474,7 +474,7 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -503,7 +503,7 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -532,7 +532,7 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -560,7 +560,7 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -589,7 +589,7 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -618,7 +618,7 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -647,7 +647,7 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -676,7 +676,7 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -705,7 +705,7 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -734,7 +734,7 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -763,7 +763,7 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -792,7 +792,7 @@ public:
         ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
         ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
         modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -821,7 +821,7 @@ public:
         ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
         ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
         islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -850,7 +850,7 @@ public:
         ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
         ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
         islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -879,7 +879,7 @@ public:
         ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
         ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
         islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -908,7 +908,7 @@ public:
         ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
         ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
         islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -937,7 +937,7 @@ public:
         ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
         ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
         islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -966,7 +966,7 @@ public:
         ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
         ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
         islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -995,7 +995,7 @@ public:
         ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
         ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
         islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -1024,7 +1024,7 @@ public:
         ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
         ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
         islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -1054,7 +1054,7 @@ public:
         ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
         ConvexHullShapeSettings shapeSettings(PhysicsCommon::MakeVertexArray(islandModel->GetAllUniqueVertices()));
         ShapeRefC islandShape = shapeSettings.Create().Get();
-        BodyCreationSettings BodySettings(islandShape, RVec3(position), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+        BodyCreationSettings BodySettings(islandShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
         BodySettings.mMassPropertiesOverride.mMass = 7.0f;
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
         BodySettings.mFriction = 0.5f;
@@ -1086,7 +1086,7 @@ public:
         ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
         ConvexHullShapeSettings shapeSettings(PhysicsCommon::MakeVertexArray(islandModel->GetAllUniqueVertices()));
         ShapeRefC islandShape = shapeSettings.Create().Get();
-        BodyCreationSettings BodySettings(islandShape, RVec3(position), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+        BodyCreationSettings BodySettings(islandShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
         BodySettings.mMassPropertiesOverride.mMass = 7.0f;
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
         BodySettings.mFriction = 0.5f;
@@ -1126,7 +1126,7 @@ public:
         ShapeRefC islandShape = shapeSettings.Create().Get();
         ScaledShapeSettings islandScaling(islandShape, Vec3Arg(scale, scale, scale));
         islandShape = islandScaling.Create().Get();
-        BodyCreationSettings BodySettings(islandShape, RVec3(position), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+        BodyCreationSettings BodySettings(islandShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
         BodySettings.mMassPropertiesOverride.mMass = 7.0f;
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
         BodySettings.mFriction = 0.5f;
@@ -1158,7 +1158,7 @@ public:
         ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
         ConvexHullShapeSettings shapeSettings(PhysicsCommon::MakeVertexArray(islandModel->GetAllUniqueVertices()));
         ShapeRefC islandShape = shapeSettings.Create().Get();
-        BodyCreationSettings BodySettings(islandShape, RVec3(position), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+        BodyCreationSettings BodySettings(islandShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
         BodySettings.mMassPropertiesOverride.mMass = 7.0f;
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
         BodySettings.mFriction = 0.5f;
@@ -1190,7 +1190,7 @@ public:
         ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
         ConvexHullShapeSettings shapeSettings(PhysicsCommon::MakeVertexArray(islandModel->GetAllUniqueVertices()));
         ShapeRefC islandShape = shapeSettings.Create().Get();
-        BodyCreationSettings BodySettings(islandShape, RVec3(position), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+        BodyCreationSettings BodySettings(islandShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
         BodySettings.mMassPropertiesOverride.mMass = 7.0f;
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
         BodySettings.mFriction = 0.5f;
@@ -1222,7 +1222,7 @@ public:
         ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
         ConvexHullShapeSettings shapeSettings(PhysicsCommon::MakeVertexArray(islandModel->GetAllUniqueVertices()));
         ShapeRefC islandShape = shapeSettings.Create().Get();
-        BodyCreationSettings BodySettings(islandShape, RVec3(position), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+        BodyCreationSettings BodySettings(islandShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
         BodySettings.mMassPropertiesOverride.mMass = 7.0f;
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
         BodySettings.mFriction = 0.5f;
@@ -1254,7 +1254,7 @@ public:
         ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
         ConvexHullShapeSettings shapeSettings(PhysicsCommon::MakeVertexArray(islandModel->GetAllUniqueVertices()));
         ShapeRefC islandShape = shapeSettings.Create().Get();
-        BodyCreationSettings BodySettings(islandShape, RVec3(position), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+        BodyCreationSettings BodySettings(islandShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
         BodySettings.mMassPropertiesOverride.mMass = 7.0f;
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
         BodySettings.mFriction = 0.5f;
@@ -1286,7 +1286,7 @@ public:
         ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
         ConvexHullShapeSettings shapeSettings(PhysicsCommon::MakeVertexArray(islandModel->GetAllUniqueVertices()));
         ShapeRefC islandShape = shapeSettings.Create().Get();
-        BodyCreationSettings BodySettings(islandShape, RVec3(position), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+        BodyCreationSettings BodySettings(islandShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
         BodySettings.mMassPropertiesOverride.mMass = 7.0f;
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
         BodySettings.mFriction = 0.5f;
@@ -1318,7 +1318,7 @@ public:
         ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
         ConvexHullShapeSettings shapeSettings(PhysicsCommon::MakeVertexArray(islandModel->GetAllUniqueVertices()));
         ShapeRefC islandShape = shapeSettings.Create().Get();
-        BodyCreationSettings BodySettings(islandShape, RVec3(position), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+        BodyCreationSettings BodySettings(islandShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
         BodySettings.mMassPropertiesOverride.mMass = 7.0f;
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
         BodySettings.mFriction = 0.5f;
@@ -1350,7 +1350,7 @@ public:
         ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
         ConvexHullShapeSettings shapeSettings(PhysicsCommon::MakeVertexArray(islandModel->GetAllUniqueVertices()));
         ShapeRefC islandShape = shapeSettings.Create().Get();
-        BodyCreationSettings BodySettings(islandShape, RVec3(position), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+        BodyCreationSettings BodySettings(islandShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
         BodySettings.mMassPropertiesOverride.mMass = 7.0f;
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
         BodySettings.mFriction = 0.5f;
@@ -1382,7 +1382,7 @@ public:
         ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
         ConvexHullShapeSettings shapeSettings(PhysicsCommon::MakeVertexArray(islandModel->GetAllUniqueVertices()));
         ShapeRefC islandShape = shapeSettings.Create().Get();
-        BodyCreationSettings BodySettings(islandShape, RVec3(position), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+        BodyCreationSettings BodySettings(islandShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
         BodySettings.mMassPropertiesOverride.mMass = 7.0f;
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
         BodySettings.mFriction = 0.5f;
@@ -1414,7 +1414,7 @@ public:
         ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
         ConvexHullShapeSettings shapeSettings(PhysicsCommon::MakeVertexArray(islandModel->GetAllUniqueVertices()));
         ShapeRefC islandShape = shapeSettings.Create().Get();
-        BodyCreationSettings BodySettings(islandShape, RVec3(position), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+        BodyCreationSettings BodySettings(islandShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
         BodySettings.mMassPropertiesOverride.mMass = 7.0f;
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
         BodySettings.mFriction = 0.5f;
@@ -1454,7 +1454,7 @@ public:
         ShapeRefC islandShape = shapeSettings.Create().Get();
         ScaledShapeSettings islandScaling(islandShape, Vec3Arg(scale, scale, scale));
         islandShape = islandScaling.Create().Get();
-        BodyCreationSettings BodySettings(islandShape, RVec3(position), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+        BodyCreationSettings BodySettings(islandShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
         BodySettings.mMassPropertiesOverride.mMass = 7.0f;
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
         BodySettings.mFriction = 0.5f;
@@ -1494,7 +1494,7 @@ public:
         ShapeRefC islandShape = shapeSettings.Create().Get();
         ScaledShapeSettings islandScaling(islandShape, Vec3Arg(scale, scale, scale));
         islandShape = islandScaling.Create().Get();
-        BodyCreationSettings BodySettings(islandShape, RVec3(position), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+        BodyCreationSettings BodySettings(islandShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
         BodySettings.mMassPropertiesOverride.mMass = 7.0f;
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
         BodySettings.mFriction = 0.5f;
@@ -1534,7 +1534,7 @@ public:
         ShapeRefC islandShape = shapeSettings.Create().Get();
         ScaledShapeSettings islandScaling(islandShape, Vec3Arg(scale, scale, scale));
         islandShape = islandScaling.Create().Get();
-        BodyCreationSettings BodySettings(islandShape, RVec3(position), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+        BodyCreationSettings BodySettings(islandShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
         BodySettings.mMassPropertiesOverride.mMass = 7.0f;
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
         BodySettings.mFriction = 0.5f;
@@ -1574,7 +1574,7 @@ public:
         ShapeRefC islandShape = shapeSettings.Create().Get();
         ScaledShapeSettings islandScaling(islandShape, Vec3Arg(scale, scale, scale));
         islandShape = islandScaling.Create().Get();
-        BodyCreationSettings BodySettings(islandShape, RVec3(position), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+        BodyCreationSettings BodySettings(islandShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
         BodySettings.mMassPropertiesOverride.mMass = 7.0f;
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
         BodySettings.mFriction = 0.5f;
@@ -1615,7 +1615,7 @@ public:
         ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
         ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
         islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -1644,7 +1644,7 @@ public:
         ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
         ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
         islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -1675,7 +1675,7 @@ public:
         ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
         ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
         islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -1703,7 +1703,7 @@ public:
         ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
         ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
         islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -1731,7 +1731,7 @@ public:
             ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
             ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
             islandMeshShape = islandScaling.Create().Get();
-            BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+            BodyCreationSettings bodySettings(islandMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
             bodySettings.mFriction = 1.0f;
             pNewNodeOwner->AddComponent(
                 std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -1759,7 +1759,7 @@ public:
         ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
         ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
         islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -1793,7 +1793,7 @@ public:
         ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
         ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
         islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -1873,7 +1873,7 @@ public:
         ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
         ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
         islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -1911,7 +1911,7 @@ public:
         ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
         ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
         islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -2015,7 +2015,7 @@ public:
         ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
         ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
         islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -2120,7 +2120,7 @@ public:
         ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
         ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
         islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -2205,7 +2205,7 @@ public:
         ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
         ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
         islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -2290,7 +2290,7 @@ public:
         ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
         ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
         islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -2375,7 +2375,7 @@ public:
         ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
         ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
         islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -2462,7 +2462,7 @@ public:
         ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
         ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
         islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -2545,7 +2545,7 @@ public:
         ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
         ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
         islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -2633,7 +2633,7 @@ public:
         ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
         ConvexHullShapeSettings shapeSettings(PhysicsCommon::MakeVertexArray(islandModel->GetAllUniqueVertices()));
         ShapeRefC islandShape = shapeSettings.Create().Get();
-        BodyCreationSettings BodySettings(islandShape, RVec3(position), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+        BodyCreationSettings BodySettings(islandShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
         BodySettings.mMassPropertiesOverride.mMass = 10.0f;
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
         BodySettings.mFriction = 0.5f;
@@ -2675,7 +2675,7 @@ public:
         ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
         ConvexHullShapeSettings shapeSettings(PhysicsCommon::MakeVertexArray(islandModel->GetAllUniqueVertices()));
         ShapeRefC islandShape = shapeSettings.Create().Get();
-        BodyCreationSettings BodySettings(islandShape, RVec3(position), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+        BodyCreationSettings BodySettings(islandShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
         BodySettings.mMassPropertiesOverride.mMass = 40.0f;
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
         BodySettings.mFriction = 0.5f;
@@ -2710,7 +2710,7 @@ public:
         ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
         ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
         islandMeshShape = islandScaling.Create().Get();
-        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
@@ -2946,7 +2946,7 @@ public:
         root->AddChild(std::move(pNewNodeOwner));
 
 
-        BodyCreationSettings BodySettings(new JPH::SphereShape(0.1f), RVec3(position), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+        BodyCreationSettings BodySettings(new JPH::SphereShape(0.1f), RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
         BodySettings.mMassPropertiesOverride.mMass = 0.1f;
         BodySettings.mFriction = 0.0f;
