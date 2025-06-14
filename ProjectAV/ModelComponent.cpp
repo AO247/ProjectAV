@@ -1,5 +1,6 @@
 #include "ModelComponent.h"
 #include "Mesh.h" 
+#include "ModelException.h"
 #include "Node.h" 
 #include "Graphics.h"
 #include "Material.h"
@@ -34,7 +35,7 @@ class ModelControlWindow
 public:
 
 	void Show(const char* windowName, const ModelInternalNode& root, ModelInternalNode*& pSelectedNode,
-		std::unordered_map<int, TransformParameters>& transforms) noexcept 
+		std::unordered_map<int, TransformParameters>& transforms) noexcept
 	{
 		windowName = windowName ? windowName : "Model Controls";
 		if (ImGui::Begin(windowName))
@@ -85,8 +86,8 @@ public:
 ModelInternalNode::ModelInternalNode(int id, const std::string& name, std::vector<Mesh*> meshPtrs, const dx::XMMATRIX& transform_in) noxnd
 	: id(id), name(name), meshPtrs(std::move(meshPtrs))
 {
-	dx::XMStoreFloat4x4(&transform, transform_in); 
-	dx::XMStoreFloat4x4(&appliedTransform, dx::XMMatrixIdentity()); 
+	dx::XMStoreFloat4x4(&transform, transform_in);
+	dx::XMStoreFloat4x4(&appliedTransform, dx::XMMatrixIdentity());
 }
 
 void ModelInternalNode::AddChild(std::unique_ptr<ModelInternalNode> pChild) noxnd
@@ -155,8 +156,10 @@ void ModelInternalNode::ShowTree(int& nodeIndexTracker, ModelInternalNode*& pSel
 	}
 }
 
-ModelComponent::ModelComponent(Node* owner, Graphics& gfx, const std::string& modelFile, float scale)
-	: Component(owner), pControlWindow(std::make_unique<ModelControlWindow>())
+ModelComponent::ModelComponent(Node* owner, Graphics& gfx, const std::string& modelFile, float scale, bool isSkinned)
+	: Component(owner),
+	pControlWindow(std::make_unique<ModelControlWindow>()),
+	skinnedCharacter(isSkinned) // Initialize the member
 {
 	Assimp::Importer importer;
 	const auto pScene = importer.ReadFile(modelFile.c_str(),
@@ -171,12 +174,19 @@ ModelComponent::ModelComponent(Node* owner, Graphics& gfx, const std::string& mo
 		throw ModelException(__LINE__, __FILE__, "Assimp error: " + std::string(importer.GetErrorString()));
 	}
 
+	// Only extract bone info if the model is marked as skinned
+	if (skinnedCharacter)
+	{
+		ExtractBoneInfo(*pScene);
+	}
+
 	std::filesystem::path filePath(modelFile);
 
 	std::vector<Material> materials;
 	materials.reserve(pScene->mNumMaterials);
 	for (size_t i = 0; i < pScene->mNumMaterials; ++i) {
-		materials.emplace_back(gfx, *pScene->mMaterials[i], filePath);
+		// PASS THE FLAG to the material constructor
+		materials.emplace_back(gfx, *pScene->mMaterials[i], filePath, skinnedCharacter);
 	}
 
 	meshPtrs.reserve(pScene->mNumMeshes);
@@ -189,15 +199,46 @@ ModelComponent::ModelComponent(Node* owner, Graphics& gfx, const std::string& mo
 	pRootInternal = ParseNodeRecursive(nextId, *pScene->mRootNode, scale);
 }
 
+void ModelComponent::ExtractBoneInfo(const aiScene& scene)
+{
+	// Iterate through all meshes in the scene to find all unique bones
+	for (unsigned int meshIdx = 0; meshIdx < scene.mNumMeshes; ++meshIdx)
+	{
+		const auto& mesh = *scene.mMeshes[meshIdx];
+		if (!mesh.HasBones())
+		{
+			continue;
+		}
+
+		// Iterate through all bones in the current mesh
+		for (unsigned int boneIdx = 0; boneIdx < mesh.mNumBones; ++boneIdx)
+		{
+			const auto& bone = *mesh.mBones[boneIdx];
+			std::string boneName = bone.mName.C_Str();
+
+			// If we haven't seen this bone before, add it to our map
+			if (m_BoneInfoMap.find(boneName) == m_BoneInfoMap.end())
+			{
+				BoneInfo newBoneInfo;
+				newBoneInfo.id = m_BoneCounter;
+				// Assimp matrix needs to be converted and transposed for DirectX.
+				// This matrix transforms vertices from model space to the bone's local space.
+				newBoneInfo.offset = dx::XMMatrixTranspose(dx::XMLoadFloat4x4(
+					reinterpret_cast<const dx::XMFLOAT4X4*>(&bone.mOffsetMatrix)
+				));
+				m_BoneInfoMap[boneName] = newBoneInfo;
+				m_BoneCounter++;
+			}
+		}
+	}
+}
 
 void ModelComponent::Submit(Graphics& gfx, dx::FXMMATRIX worldTransform) const noxnd
 {
 	if (pRootInternal) {
-		pRootInternal->Submit(gfx, worldTransform); 
+		pRootInternal->Submit(gfx, worldTransform);
 	}
 }
-
-
 
 std::unique_ptr<ModelInternalNode> ModelComponent::ParseNodeRecursive(int& nextId, const aiNode& node, float scale)
 {
@@ -208,8 +249,6 @@ std::unique_ptr<ModelInternalNode> ModelComponent::ParseNodeRecursive(int& nextI
 	));
 
 	dx::XMMATRIX finalNodeTransform = transformMatrix;
-
-
 
 	std::vector<Mesh*> currentNodeMeshPtrs;
 	currentNodeMeshPtrs.reserve(node.mNumMeshes);

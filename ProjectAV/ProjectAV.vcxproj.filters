@@ -408,6 +408,9 @@
     <ClCompile Include="MainRenderGraph.cpp">
       <Filter>Source Files\Jobber</Filter>
     </ClCompile>
+    <ClCompile Include="ModelException.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Win.h">
@@ -828,6 +831,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="UpgradeHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelException.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

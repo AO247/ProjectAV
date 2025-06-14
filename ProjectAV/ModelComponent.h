@@ -7,7 +7,8 @@
 #include "ConditionalNoexcept.h"
 #include <SimpleMath.h>
 #include "Technique.h"
-#include <map>
+#include <map> // Added for bone info map
+#include <assimp/scene.h>
 
 class Mesh;
 class Graphics;
@@ -58,7 +59,9 @@ private:
 class ModelComponent : public Component
 {
 public:
-
+    //================================================================================
+    // NEW BONE INFO STRUCTURE
+    //================================================================================
     struct BoneInfo
     {
         int id;
@@ -78,7 +81,7 @@ public:
         }
     };
 
-    ModelComponent(Node* owner, Graphics& gfx, const std::string& modelFile, float scale = 1.0f);
+    ModelComponent(Node* owner, Graphics& gfx, const std::string& modelFile, float scale = 1.0f, bool isSkinned = false);
     virtual ~ModelComponent() = default;
 
     void Submit(Graphics& gfx, DirectX::FXMMATRIX worldTransform) const noxnd;
@@ -92,13 +95,22 @@ public:
     void AddTechnique(Technique technique);
     std::vector<Technique> techniques;
 
-    std::map<std::string, BoneInfo> m_BoneInfoMap;
-    int m_boneCounter = 0;
+    //================================================================================
+    // BONE INFO MAP AND COUNTER
+    //================================================================================
+    std::map<std::string, BoneInfo>& GetBoneInfoMap() { return m_BoneInfoMap; }
+    int& GetBoneCount() { return m_BoneCounter; }
+
+    const bool skinnedCharacter;
 
 private:
+    void ExtractBoneInfo(const aiScene& scene);
     std::unique_ptr<ModelInternalNode> ParseNodeRecursive(int& nextId, const aiNode& node, float scale);
 
+    std::map<std::string, BoneInfo> m_BoneInfoMap;
+    int m_BoneCounter = 0;
+
     std::unique_ptr<ModelInternalNode> pRootInternal;
-    
+
     std::unique_ptr<ModelControlWindow> pControlWindow;
 };

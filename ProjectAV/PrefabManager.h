@@ -1849,6 +1849,7 @@ public:
         InstantiateColumn(pNewNode, -14.0f, 0.0f, 20.0f, 4.0f);
         InstantiateColumn(pNewNode, -14.0f, 0.0f, -19.0f, 4.0f);
 		InstantiateBaseColumn(pNewNode, 0.0f, -14.0f, 0.0f, 4.0f);
+        InstantiateAnimationTest(pNewNode, 0.0f, 5.0f, 0.0f, 1.0f);
 
 
         pNewNode->AddChild(std::move(leftPoint));
@@ -3205,6 +3206,23 @@ public:
     ///////////////////////////////
     ////////////ENEMIES////////////
     ///////////////////////////////
+
+    static Node* InstantiateAnimationTest(Node* parentNode, float locX, float locY, float locZ, float scale)
+    {
+        auto pNewNodeOwner = std::make_unique<Node>("AnimationTest", nullptr, "ENEMY");
+        Node* pNewNode = pNewNodeOwner.get();
+
+        pNewNode->AddComponent(
+            std::make_unique<ModelComponent>(pNewNode, wind->Gfx(), "Models\\enemy\\basic.obj", true)
+        );
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        parentNode->AddChild(std::move(pNewNodeOwner));
+
+        pNewNode->SetLocalPosition(DirectX::XMFLOAT3(locX, locY, locZ));
+        pNewNode->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+
+        return pNewNode;
+    }
 
     static Node* InstantiateNormalEnemy(Node* parentNode, float locX, float locY, float locZ, float scale, Node* pPlayer)
     {
