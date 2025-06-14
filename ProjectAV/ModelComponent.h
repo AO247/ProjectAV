@@ -39,7 +39,7 @@ class ModelInternalNode
 public:
     ModelInternalNode(int id, const std::string& name, std::vector<Mesh*> meshPtrs, const DirectX::XMMATRIX& transform) noxnd;
     const std::string& GetName() const noexcept { return name; }
-    void Submit(Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform) const noxnd;
+    void Submit(Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform, const std::vector<DirectX::XMMATRIX>* pBoneTransforms) const noxnd;
     void ShowTree(int& nodeIndexTracker, ModelInternalNode*& pSelectedNode) const noexcept;
     void SetAppliedTransform(DirectX::FXMMATRIX transform) noexcept;
     void LinkTechniques(Rgph::RenderGraph&);

@@ -5,6 +5,7 @@
 #include "PhysicsCommon.h"
 #include "MainRenderGraph.h"
 #include "Window.h"
+#include "AnimationComponent.h"
 
 //class PhysicsEngine;
 class ShootAttack;
@@ -3214,6 +3215,9 @@ public:
 
         pNewNode->AddComponent(
             std::make_unique<ModelComponent>(pNewNode, wind->Gfx(), "Models\\char_basic2.glb", 1.0f, true)
+        );
+        pNewNode->AddComponent(
+            std::make_unique<AnimationComponent>(pNewNode, "", "Models\\char_basic2.glb")
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         parentNode->AddChild(std::move(pNewNodeOwner));

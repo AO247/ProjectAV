@@ -1,6 +1,7 @@
 #include "ModelComponent.h"
 #include "Mesh.h" 
 #include "ModelException.h"
+#include "AnimationComponent.h"
 #include "Node.h" 
 #include "Graphics.h"
 #include "Material.h"
@@ -96,20 +97,24 @@ void ModelInternalNode::AddChild(std::unique_ptr<ModelInternalNode> pChild) noxn
 	childPtrs.push_back(std::move(pChild));
 }
 
-void ModelInternalNode::Submit(Graphics& gfx, dx::FXMMATRIX accumulatedTransform) const noxnd
+void ModelInternalNode::Submit(Graphics& gfx, dx::FXMMATRIX accumulatedTransform, const std::vector<DirectX::XMMATRIX>* pBoneTransforms) const noxnd
 {
 	const auto modelNodeTransform =
 		dx::XMLoadFloat4x4(&appliedTransform) *
 		dx::XMLoadFloat4x4(&transform) *
 		accumulatedTransform;
 
+	// For each mesh in this node, submit it with the final transform AND the bone data
 	for (const auto pm : meshPtrs)
 	{
-		pm->Submit(modelNodeTransform);
+		// The Mesh::Submit overload will handle the pBoneTransforms pointer (even if null)
+		pm->Submit(modelNodeTransform, pBoneTransforms);
 	}
+
+	// Recursively call submit for all children, passing the bone data down
 	for (const auto& pc : childPtrs)
 	{
-		pc->Submit(gfx, modelNodeTransform);
+		pc->Submit(gfx, modelNodeTransform, pBoneTransforms);
 	}
 }
 
@@ -236,7 +241,18 @@ void ModelComponent::ExtractBoneInfo(const aiScene& scene)
 void ModelComponent::Submit(Graphics& gfx, dx::FXMMATRIX worldTransform) const noxnd
 {
 	if (pRootInternal) {
-		pRootInternal->Submit(gfx, worldTransform);
+		AnimationComponent* animationComponent = pOwner->GetComponent<AnimationComponent>();
+		if (animationComponent != nullptr)
+		{
+			// Get the latest bone matrices from the animator
+			const auto& boneMatrices = animationComponent->animator->GetFinalBoneMatrices();
+			// Pass the world transform and the bone matrices into the recursive submit
+			pRootInternal->Submit(gfx, worldTransform, &boneMatrices);
+		}
+		else
+		{
+			pRootInternal->Submit(gfx, worldTransform, nullptr);
+		}
 	}
 }
 

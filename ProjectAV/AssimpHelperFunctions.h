@@ -3,16 +3,16 @@
 #include <DirectXMath.h>
 #include <assimp/anim.h>
 
-DirectX::XMFLOAT3 GetDXVec(const aiVector3D& vec) {
+inline DirectX::XMFLOAT3 GetDXVec(const aiVector3D& vec) {
     return DirectX::XMFLOAT3(vec.x, vec.y, vec.z);
 }
 
-DirectX::XMFLOAT4 GetDXQuat(const aiQuaternion& quat)
+inline DirectX::XMFLOAT4 GetDXQuat(const aiQuaternion& quat)
 {
     return DirectX::XMFLOAT4(quat.x, quat.y, quat.z, quat.w);
 }
 
-DirectX::XMMATRIX GetDXMat(const aiMatrix4x4& mat) {
+inline DirectX::XMMATRIX GetDXMat(const aiMatrix4x4& mat) {
     return DirectX::XMMATRIX(
         mat.a1, mat.a2, mat.a3, mat.a4,
         mat.b1, mat.b2, mat.b3, mat.b4,

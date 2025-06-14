@@ -23,7 +23,6 @@ public:
 		animator->UpdateAnimation(dt);
 	}
 
-private:
 	Animator* animator;
 	Animation* animation;
 };
