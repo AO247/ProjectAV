@@ -39,36 +39,46 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ---------------------------------------------------------------------------
 */
 
-/** @file ai_assert.h
- *  @brief Declares the assimp-specific assertion handler.
+/** @file OBJMATERIAL.h
+ *  @brief Obj-specific material macros
+ *
  */
 
-#pragma once
-#ifndef AI_ASSERT_H_INC
-#define AI_ASSERT_H_INC
+#ifndef AI_OBJMATERIAL_H_INC
+#define AI_OBJMATERIAL_H_INC
 
-#include <assimp/defs.h>
-
-#if defined(ASSIMP_BUILD_DEBUG)
-
-namespace Assimp {
-
-/// @brief Assert violation behavior can be customized: see AssertHandler.h.
-/// @param failedExpression     The expression to validate.
-/// @param file                 The file location
-/// @param line                 The line number
-ASSIMP_API void aiAssertViolation(const char* failedExpression, const char* file, int line);
-
-}
+#ifdef __GNUC__
+#   pragma GCC system_header
 #endif
 
-// Define assertion resolinig
-#if defined(ASSIMP_BUILD_DEBUG)
-#   define ai_assert(expression) (void)((!!(expression)) || (Assimp::aiAssertViolation(#expression, __FILE__, __LINE__), 0))
-#   define ai_assert_entry() ai_assert(false)
-#else
-#   define  ai_assert(expression)
-#   define  ai_assert_entry()
-#endif // ASSIMP_BUILD_DEBUG
+#include <assimp/material.h>
 
-#endif // AI_ASSERT_H_INC
+// ---------------------------------------------------------------------------
+
+// the original illum property
+#define AI_MATKEY_OBJ_ILLUM "$mat.illum", 0, 0
+
+// ---------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------
+// Pure key names for all obj texture-related properties
+//! @cond MATS_DOC_FULL
+
+// support for bump -bm
+#define _AI_MATKEY_OBJ_BUMPMULT_BASE "$tex.bumpmult"
+//! @endcond
+
+// ---------------------------------------------------------------------------
+#define AI_MATKEY_OBJ_BUMPMULT(type, N) _AI_MATKEY_OBJ_BUMPMULT_BASE, type, N
+
+//! @cond MATS_DOC_FULL
+#define AI_MATKEY_OBJ_BUMPMULT_NORMALS(N) \
+    AI_MATKEY_OBJ_BUMPMULT(aiTextureType_NORMALS, N)
+
+#define AI_MATKEY_OBJ_BUMPMULT_HEIGHT(N) \
+    AI_MATKEY_OBJ_BUMPMULT(aiTextureType_HEIGHT, N)
+
+//! @endcond
+
+
+#endif
