@@ -57,8 +57,10 @@ PS_INPUT main(VS_INPUT input)
     }
     */
     
-    output.clipPosition = mul(modelViewProj, totalPosition);
-    output.viewPosition = mul(modelView, totalPosition).xyz;
+    //output.clipPosition = mul(modelViewProj, totalPosition);
+    //output.viewPosition = mul(modelView, totalPosition).xyz;
+    output.clipPosition = mul(totalPosition, modelViewProj);
+    output.viewPosition = mul(totalPosition, modelView).xyz;
     //kom -----
     //output.viewNormal = normalize(mul(skinnedNormal.xyz, (float3x3) modelView));
     //kom -----
