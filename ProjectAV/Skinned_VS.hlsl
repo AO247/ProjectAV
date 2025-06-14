@@ -48,6 +48,14 @@ PS_INPUT main(VS_INPUT input)
             totalPosition = float4(input.position, 1.0f);
             break;
         }
+    
+        //
+        //
+        // DO ZMIANY KOLEJNOSC MNOZENIA??????????
+        //
+        //
+    
+    
         float4 localPosition = mul(finalBoneMatrices[input.boneIDs[i]], float4(input.position, 1.0f));
         totalPosition += localPosition * input.boneWeights[i];
         //kom -----
