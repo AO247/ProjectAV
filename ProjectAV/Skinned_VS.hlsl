@@ -27,16 +27,14 @@ PS_INPUT main(VS_INPUT input)
     PS_INPUT output;
     
     float4 totalPosition = float4(0.0f, 0.0f, 0.0f, 0.0f);
-    totalPosition = float4(input.position, 1.0f);
+    //totalPosition = float4(input.position, 1.0f);
     
-    //kom -----
     //float4 totalNormal = float4(0.0f, 0.0f, 0.0f, 0.0f);
     
     // ZAKLADAM, ZE MAX 4 KOSCI MAJA WPLYW
     // ORAZ MOZEMY MIEC MAX 100 KOSCI
-    //kom -----
     
-    /*
+    
     for (int i = 0; i < 4; i++)
     {
         if (input.boneIDs[i] == -1)
@@ -48,22 +46,13 @@ PS_INPUT main(VS_INPUT input)
             totalPosition = float4(input.position, 1.0f);
             break;
         }
-    
-        //
-        //
-        // DO ZMIANY KOLEJNOSC MNOZENIA??????????
-        //
-        //
-    
-    
-        float4 localPosition = mul(finalBoneMatrices[input.boneIDs[i]], float4(input.position, 1.0f));
+
+        float4 localPosition = mul(float4(input.position, 1.0f), finalBoneMatrices[input.boneIDs[i]]);
         totalPosition += localPosition * input.boneWeights[i];
-        //kom -----
         //float3 localNormal = mul((float3x3) finalBoneMatrices[input.boneIDs[i]], input.normal);
         //totalNormal += localNormal * input.boneWeights[i];
-        //kom -----
     }
-    */
+    
     
     //output.clipPosition = mul(modelViewProj, totalPosition);
     //output.viewPosition = mul(modelView, totalPosition).xyz;

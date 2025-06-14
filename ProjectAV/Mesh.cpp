@@ -102,8 +102,28 @@ Mesh::Mesh(Graphics& gfx, const Material& mat, const aiMesh& mesh, float scale)
 
 void Mesh::Submit(dx::FXMMATRIX accumulatedTransform) const noxnd
 {
+    Submit(accumulatedTransform, nullptr);
+}
+
+void Mesh::Submit(dx::FXMMATRIX accumulatedTransform, const std::vector<dx::XMMATRIX>* pBoneTransforms) const noxnd
+{
     dx::XMStoreFloat4x4(&transform, accumulatedTransform);
+    if (pBoneTransforms)
+    {
+        boneTransforms = *pBoneTransforms;
+    }
+    else
+    {
+        boneTransforms.clear();
+    }
     Drawable::Submit();
+}
+
+const std::vector<DirectX::XMMATRIX>* Mesh::GetBoneTransformsPtr() const noexcept
+{
+    // Only return a valid pointer if there are transforms,
+    // signalling to the cbuf that it should bind.
+    return boneTransforms.empty() ? nullptr : &boneTransforms;
 }
 
 DirectX::XMMATRIX Mesh::GetTransformXM() const noexcept

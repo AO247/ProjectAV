@@ -37,6 +37,7 @@ public:
 	UINT GetIndexCount() const noxnd;
 	void LinkTechniques(Rgph::RenderGraph&);
 	virtual ~Drawable();
+	virtual const std::vector<DirectX::XMMATRIX>* GetBoneTransformsPtr() const noexcept;
 
 	std::shared_ptr<const Bind::VertexBuffer> GetVertexBuffer() const { return pVertices; }
 	std::shared_ptr<const Bind::IndexBuffer> GetIndexBuffer() const { return pIndices; }

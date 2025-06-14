@@ -411,6 +411,9 @@
     <ClCompile Include="ModelException.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SkinningCBuf.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Win.h">
@@ -846,6 +849,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Animator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinningConstantBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinningCBuf.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

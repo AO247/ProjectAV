@@ -16,6 +16,12 @@ void Drawable::Submit() const noexcept
 	}
 }
 
+const std::vector<DirectX::XMMATRIX>* Drawable::GetBoneTransformsPtr() const noexcept
+{
+	// Base implementation returns nullptr as it has no bone data
+	return nullptr;
+}
+
 Drawable::Drawable( Graphics& gfx,const Material& mat,const aiMesh& mesh,float scale ) noexcept
 {
 	pVertices = mat.MakeVertexBindable( gfx,mesh,scale );

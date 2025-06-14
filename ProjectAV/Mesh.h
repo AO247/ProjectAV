@@ -17,7 +17,9 @@ public:
 
     DirectX::XMMATRIX GetTransformXM() const noexcept override;
     void Submit(DirectX::FXMMATRIX accumulatedTransform) const noxnd;
-
+    void Submit(DirectX::FXMMATRIX accumulatedTransform, const std::vector<DirectX::XMMATRIX>* pBoneTransforms) const noxnd;
+    const std::vector<DirectX::XMMATRIX>* GetBoneTransformsPtr() const noexcept override;
 private:
     mutable DirectX::XMFLOAT4X4 transform = {};
+    mutable std::vector<DirectX::XMMATRIX> boneTransforms;
 };

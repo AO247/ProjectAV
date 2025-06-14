@@ -2,6 +2,7 @@
 #include "BindableCommon.h"
 #include "DynamicConstant.h"
 #include "ConstantBuffersEx.h"
+#include "SkinningCBuf.h"
 #include "TransformCbufScaling.h"
 #include "Stencil.h"
 #include <filesystem>
@@ -52,6 +53,7 @@ modelPath(path.string())
 
 		// 4. Add the standard transform constant buffer
 		step.AddBindable(std::make_shared<TransformCbuf>(gfx));
+		step.AddBindable(std::make_shared<SkinningCbuf>(gfx, 3u));
 
 		// TODO: Later, you will add a new "SkinningCbuf" bindable here
 		// that will contain the bone transformation matrices.
