@@ -37,8 +37,10 @@ public:
 	int endingRemover = 0;
 	Vector3 enterPoint = { 0.0f, 5.0f, -60.0f };
 	bool upgradeOpen = false;
+	bool drawLoadingScreen = true;
 	UpgradeHandler* upgradeHandler;
 	void NextStage();
+
 private:
 	Window& wnd;
 	void AddLevel();
