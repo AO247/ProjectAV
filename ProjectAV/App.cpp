@@ -256,6 +256,7 @@ App::App(const std::string& commandLine)
 
     targetSprite = std::make_unique<Sprite>(
         wnd.Gfx().GetDevice(),
+        wnd.Gfx().GetContext(),
         plusSpriteX,                
         plusSpriteY,                
         plusSpriteWidth,            
@@ -265,6 +266,7 @@ App::App(const std::string& commandLine)
 
     heart1Sprite = std::make_unique<Sprite>(
         wnd.Gfx().GetDevice(),
+        wnd.Gfx().GetContext(),
         (screenWidth / 2) - 35 - 80,             
         950,        
         70,         
@@ -274,6 +276,7 @@ App::App(const std::string& commandLine)
 
     heart2Sprite = std::make_unique<Sprite>(
         wnd.Gfx().GetDevice(),
+        wnd.Gfx().GetContext(),
         (screenWidth / 2) - 35,              
         950,        
         70,         
@@ -282,7 +285,8 @@ App::App(const std::string& commandLine)
     );
 
     heart3Sprite = std::make_unique<Sprite>(
-        wnd.Gfx().GetDevice(),      
+        wnd.Gfx().GetDevice(),    
+        wnd.Gfx().GetContext(),
         (screenWidth / 2) - 35 + 80,               
         950,         
         70,          
@@ -291,6 +295,7 @@ App::App(const std::string& commandLine)
     );
     loadingScreen1 = std::make_unique<Sprite>(
         wnd.Gfx().GetDevice(),
+        wnd.Gfx().GetContext(),
         0,
         0,
         1920,
@@ -299,6 +304,7 @@ App::App(const std::string& commandLine)
     );
     loadingScreen2 = std::make_unique<Sprite>(
         wnd.Gfx().GetDevice(),
+        wnd.Gfx().GetContext(),
         0,
         0,
         1920,
@@ -307,6 +313,7 @@ App::App(const std::string& commandLine)
     );
     loadingScreen3 = std::make_unique<Sprite>(
         wnd.Gfx().GetDevice(),
+        wnd.Gfx().GetContext(),
         0,
         0,
         1920,
