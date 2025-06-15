@@ -192,9 +192,9 @@ App::App(const std::string& commandLine)
     pFreeViewCamera->SetLocalPosition({ 4.0f, 11.0f, -28.0f });
     pPlayer->SetLocalPosition({ 0.0f, 80.0f, -24.0f });
 
-    /*pSceneRoot->AddComponent(
+    pSceneRoot->AddComponent(
         std::make_unique<Global>(pSceneRoot.get(), wnd, pPlayer)
-    );*/
+    );
 
     pLeftHandNormal->AddComponent(
         std::make_unique<ModelComponent>(pLeftHandNormal, wnd.Gfx(), "Models\\hands\\left.obj")
@@ -243,7 +243,7 @@ App::App(const std::string& commandLine)
     pUpgradeHandler->ability4Node = pAbility4;
     pUpgradeHandler->playerController = pPlayer->GetComponent<PlayerController>();
     pUpgradeHandler->SetBasicValues();
-   // pSceneRoot->GetComponent<Global>()->upgradeHandler = pUpgradeHandler;
+    pSceneRoot->GetComponent<Global>()->upgradeHandler = pUpgradeHandler;
 
 	PrefabManager::InstantiateIslandBig5(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
 

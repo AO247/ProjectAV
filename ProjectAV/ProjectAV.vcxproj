@@ -178,6 +178,7 @@
     <ClCompile Include="BasicAttack.cpp" />
     <ClCompile Include="BindingPass.cpp" />
     <ClCompile Include="Blender.cpp" />
+    <ClCompile Include="Collectable.cpp" />
     <ClCompile Include="MainRenderGraph.cpp" />
     <ClCompile Include="BufferClearPass.cpp" />
     <ClCompile Include="BrokenPart.cpp" />
@@ -234,6 +235,7 @@
     <ClInclude Include="BrokenPart.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="BindingPass.h" />
+    <ClInclude Include="Collectable.h" />
     <ClInclude Include="MainRenderGraph.h" />
     <ClInclude Include="BufferClearPass.h" />
     <ClInclude Include="BufferResource.h" />

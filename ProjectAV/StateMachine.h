@@ -30,6 +30,8 @@ public:
 	float followDistance = 40.0f;
 	float attackRange = 8.0f;
 	bool isFlying = false;
+	bool isDead = false;
+
 	Component* pMovementComponent = nullptr;
 	Component* pAttackComponent = nullptr;
 	std::vector<Component*> attackComponents;

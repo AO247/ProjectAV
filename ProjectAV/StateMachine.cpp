@@ -12,6 +12,7 @@
 #include <cassert>
 #include <string>
 #include "Win.h"
+#include "PrefabManager.h"
 
 
 
@@ -157,9 +158,17 @@ StateType StateMachine::GetCurrentStateType() const
 
 void StateMachine::Die()
 {
-	pPlayer->GetComponent<PlayerController>()->abilitySlot3->GetComponent<Ability>()->killsCount++;
-	pPlayer->GetComponent<Health>()->TakeDamage(-1);
-	pOwner->Destroy();
+	/*pPlayer->GetComponent<PlayerController>()->abilitySlot3->GetComponent<Ability>()->killsCount++;
+	pPlayer->GetComponent<Health>()->TakeDamage(-1);*/
+	if (!isDead)
+	{
+		isDead = true;
+		Vector3 position = pOwner->GetLocalPosition();
+		PrefabManager::InstantiateHealthCollectable(pOwner->GetParent(), Vector3(position.x + 0.8f, position.y, position.z + 0.8f), 0.3f);
+		PrefabManager::InstantiateExpCollectable(pOwner->GetParent(), Vector3(position.x - 0.8f, position.y, position.z - 0.8f), 0.3f);
+
+		pOwner->Destroy();
+	}
 }
 
 Node* StateMachine::GetOwnerNode() const
