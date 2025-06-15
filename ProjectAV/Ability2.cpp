@@ -68,6 +68,7 @@ void Ability2::Pressed()
         else if (objects[i]->tag == "STONE")
         {
             Vec3 direction = Vec3(0.0f, 1.0f, 0.0f);
+            PhysicsCommon::physicsSystem->GetBodyInterface().SetAngularVelocity(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), Vec3Arg(1.0f, 1.0f, -1.0f));
             PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), direction * 230.0f);
             //OutputDebugStringA(("Ability2 hit: " + objects[i]->GetName() + "\n").c_str());
 		}

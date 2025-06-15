@@ -13,13 +13,13 @@ public:
 	LevelGenerator(Node* owner, Node* pPlayer, bool rot);
 	virtual ~LevelGenerator() = default;
 
-	int bigIslandCount = 10;
+	int bigIslandCount = 5;
 	int mediumIslandCount = 0;
 	int smallIslandCount = 0;
 
-	int numberOfHardEnemies = 3;
-	int numberOfMediumEnemies = 3;
-	int numberOfEasyEnemies = 3;
+	int numberOfHardEnemies = 0;
+	int numberOfMediumEnemies = 1;
+	int numberOfEasyEnemies = 1;
 
 
 	virtual void Update(float dt) override;

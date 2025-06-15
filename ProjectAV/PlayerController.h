@@ -45,11 +45,12 @@ private:
 	float dashTimer = 0.0f;
 	bool dashed = false;
 	bool doubleJumped = false;
-
+	float autoJumpRange = 1.0f;
 	void KeyboardInput();
 	void MovePlayer(float dt);
 	void SpeedControl();
 	void PlayerGroundCheck();
+	void AutoJump();
 	void Jump();
 	void Dash();
 	void Cooldowns(float dt);

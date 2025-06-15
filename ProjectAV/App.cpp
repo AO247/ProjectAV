@@ -289,9 +289,30 @@ App::App(const std::string& commandLine)
         70,          
         L"Images\\heart.png"
     );
-
-
-
+    loadingScreen1 = std::make_unique<Sprite>(
+        wnd.Gfx().GetDevice(),
+        0,
+        0,
+        1920,
+        1080,
+        L"Images\\Loading_Screen1.png"
+    );
+    loadingScreen2 = std::make_unique<Sprite>(
+        wnd.Gfx().GetDevice(),
+        0,
+        0,
+        1920,
+        1080,
+        L"Images\\Loading_Screen2.png"
+    );
+    loadingScreen3 = std::make_unique<Sprite>(
+        wnd.Gfx().GetDevice(),
+        0,
+        0,
+        1920,
+        1080,
+        L"Images\\Loading_Screen3.png"
+    );
     wnd.DisableCursor();
     wnd.mouse.EnableRawInput();
     cursorEnabled = false;
@@ -510,6 +531,34 @@ void App::DoFrame(float dt)
 
     pUpgradeHandler->DrawUpgradeMenu();
 
+    if(pSceneRoot->GetComponent<Global>()->drawLoadingScreen || bonusTime > 0.0f)
+    {
+        if (!pSceneRoot->GetComponent<Global>()->drawLoadingScreen)
+        {
+            bonusTime -= dt;
+        }
+        else {
+            bonusTime = 5.0f;
+        }
+        countLoding ++;
+
+        if (countLoding > 2.0f)
+        {
+            if (countLoding > 2.9f)
+            {
+                countLoding = 0.0f;
+            }
+            loadingScreen3->Draw(wnd.Gfx().GetContext());
+        }
+        else if (countLoding > 1.0f)
+        {
+            loadingScreen2->Draw(wnd.Gfx().GetContext());
+        }
+        else
+        {
+            loadingScreen1->Draw(wnd.Gfx().GetContext());
+        }
+    }
 
     wnd.Gfx().EndFrame();
     rg.Reset();

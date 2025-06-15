@@ -34,6 +34,7 @@ public:
 	Component* pAttackComponent = nullptr;
 	std::vector<Component*> attackComponents;
 	void EndState();
+	void Die();
 private:
 
 	void ChangeState(StateType nextState);

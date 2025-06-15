@@ -15,6 +15,7 @@ public:
 	virtual void DrawImGuiControls() override;
 	void OnCollisionEnter(Node* object) override;
 	float speed = 35.0f;
+	bool heavy = false;
 private:
 	Rigidbody* rigidbody;
 };

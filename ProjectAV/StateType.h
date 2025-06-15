@@ -6,5 +6,5 @@ enum class StateType
     IDLE,
     FOLLOW,
 	ATTACK,
-    STAY
+    STUN
 };

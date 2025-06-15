@@ -1,10 +1,12 @@
 #include "StateMachine.h"
 #include "State.h"
 #include "PhysicsCommon.h"
+#include "Components.h"
 
 #include "IdleState.h"
 #include "FollowState.h"
 #include "AttackState.h"
+#include "StunState.h"
 
 #include <stdexcept> 
 #include <cassert>
@@ -19,6 +21,8 @@ StateMachine::StateMachine(Node* owner, StateType initialState)
 	RegisterState<IdleState>(StateType::IDLE);
 	RegisterState<FollowState>(StateType::FOLLOW);
 	RegisterState<AttackState>(StateType::ATTACK);
+	RegisterState<StunState>(StateType::STUN);
+
 	ChangeState(initialState);
 	if (currentStateType == StateType::NONE) {
 		currentStateType = StateType::IDLE;
@@ -151,6 +155,12 @@ StateType StateMachine::GetCurrentStateType() const
 	return currentStateType;
 }
 
+void StateMachine::Die()
+{
+	pPlayer->GetComponent<PlayerController>()->abilitySlot3->GetComponent<Ability>()->killsCount++;
+	pPlayer->GetComponent<Health>()->TakeDamage(-1);
+	pOwner->Destroy();
+}
 
 Node* StateMachine::GetOwnerNode() const
 {

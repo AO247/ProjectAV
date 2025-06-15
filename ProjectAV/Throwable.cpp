@@ -12,7 +12,7 @@ void Throwable::OnCollisionEnter(Node* object)
 	if (l < speed) return;
 	if (object->GetComponent<Health>())
 	{
-		object->GetComponent<Health>()->TakeDamage(damage);
+		object->GetComponent<Health>()->TakeDamage(damage, heavy);
 	}
 	if (pOwner->GetComponent<SoundEffectsPlayer>())
 	{

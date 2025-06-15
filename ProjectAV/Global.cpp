@@ -3,6 +3,7 @@ namespace dx = DirectX;
 Global::Global(Node* owner, Window& window, Node* player)
 	: Component(owner), wnd(window), playerNode(player)
 {
+
 	player->SetLocalPosition(enterPoint);
 	PrefabManager::InstantiateStartIsland(pOwner, Vector3(0.0f, 0.0f, 0.0f), 4.0f);
 	firstSpawn = PrefabManager::InstantiateFirstIsland(pOwner, Vector3(0.0f, 5.0f, -20.0f), 1.0f);
@@ -37,6 +38,19 @@ void Global::Update(float dt)
 			levels[levels.size() - 3]->GetComponent<LevelGenerator>()->startEnemyGenerating = true;
 			currentLevel = 1;
 			started = true;
+			drawLoadingScreen = false;
+		}
+		if (levels[levels.size() - 1] && !ending)
+		{
+			if (!(levels[levels.size() - 1]->GetComponent<LevelGenerator>()->islandGenerated) && !(levels[levels.size() - 2]->GetComponent<LevelGenerator>()->islandGenerated)
+				&& !(levels[levels.size() - 3]->GetComponent<LevelGenerator>()->islandGenerated))
+			{
+				drawLoadingScreen = true;
+			}
+			else
+			{
+				drawLoadingScreen = false;
+			}
 		}
 	}
 	if (playerNode->GetLocalPosition().y < ((currentLevel - 1) * 400.0f) - 50.0f || playerNode->GetComponent<Health>()->currentHealth <= 0.0f)
