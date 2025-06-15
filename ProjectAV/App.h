@@ -20,6 +20,7 @@
 #include "Sprite.h"
 #include "Button.h"
 #include "DirectionalLight.h"
+#include <fstream>
 
 class PlayerController;
 
@@ -34,6 +35,7 @@ private:
     void HandleInput(float dt);
     void ShowControlWindows();
     void ForEnemyWalking();
+    void SaveNodeTransformsRecursive(Node& node, std::ofstream& file);
 
 private:
     std::string commandLine;

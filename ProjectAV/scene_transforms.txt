@@ -1,0 +1,11 @@
+Object: Ability1             Position: {-16.26f, 3.70f, -4.18f} Rotation: {0.25f, 1.23f, 0.00f}
+Object: Ability2             Position: {-2.70f, 0.08f, 0.60f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Ability3             Position: {-2.70f, 0.08f, 0.60f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Ability4             Position: {-2.70f, 0.08f, 0.60f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Prefabs              Position: {0.00f, 0.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Island M1            Position: {0.00f, 0.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: SpawnPoint 1         Position: {-11.00f, 2.00f, 3.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Left Point           Position: {-44.00f, 0.00f, 5.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Right Point          Position: {46.00f, 0.00f, 18.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Up Point             Position: {-6.00f, 0.00f, 42.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Down Point           Position: {8.00f, 0.00f, -36.00f} Rotation: {0.00f, 0.00f, 0.00f}

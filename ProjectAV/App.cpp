@@ -192,9 +192,9 @@ App::App(const std::string& commandLine)
     pFreeViewCamera->SetLocalPosition({ 4.0f, 11.0f, -28.0f });
     pPlayer->SetLocalPosition({ 0.0f, 80.0f, -24.0f });
 
-    pSceneRoot->AddComponent(
+    /*pSceneRoot->AddComponent(
         std::make_unique<Global>(pSceneRoot.get(), wnd, pPlayer)
-    );
+    );*/
 
     pLeftHandNormal->AddComponent(
         std::make_unique<ModelComponent>(pLeftHandNormal, wnd.Gfx(), "Models\\hands\\left.obj")
@@ -243,9 +243,9 @@ App::App(const std::string& commandLine)
     pUpgradeHandler->ability4Node = pAbility4;
     pUpgradeHandler->playerController = pPlayer->GetComponent<PlayerController>();
     pUpgradeHandler->SetBasicValues();
-    pSceneRoot->GetComponent<Global>()->upgradeHandler = pUpgradeHandler;
+   // pSceneRoot->GetComponent<Global>()->upgradeHandler = pUpgradeHandler;
 
-	//PrefabManager::InstantiateIslandBig2(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
+	PrefabManager::InstantiateIslandMedium1(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
 
     const int screenWidth = 1920;
     const int screenHeight = 1080;
@@ -300,7 +300,16 @@ App::App(const std::string& commandLine)
 
 App::~App()
 {
-    
+    std::ofstream outFile("scene_transforms.txt");
+    if (outFile.is_open())
+    {
+        if (pSceneRoot)
+        {
+            // Rozpocznij rekurencyjny zapis od korzenia sceny
+            SaveNodeTransformsRecursive(*pSceneRoot, outFile);
+        }
+        outFile.close();
+    }
 }
 
 int App::Go()
@@ -781,4 +790,33 @@ void App::CleanupDestroyedNodes(Node* currentNode)
     );
 
     
+}
+
+void App::SaveNodeTransformsRecursive(Node& node, std::ofstream& file)
+{
+    // Pomiñ zapisywanie wêz³ów "technicznych" lub pustych, jeœli chcesz
+    if (node.GetName() != "Root" && node.GetName() != "L Normal" && node.GetName() != "Camera" && node.GetName() != "FreeViewCamera" &&
+        node.GetName() != "L Ability" && node.GetName() != "R Normal" && node.GetName() != "R Ability" && node.GetName() != "Player")
+    {
+        DirectX::XMFLOAT3 pos = node.GetWorldPosition();
+        DirectX::XMFLOAT3 rot = node.GetLocalRotationEuler();
+
+        // Ustaw precyzjê zapisu, aby unikn¹æ notacji naukowej i uzyskaæ czytelne liczby
+        file << std::fixed << std::setprecision(2);
+
+        // Zapisz nazwê i pozycjê w jednej linii
+        file << "Object: " << std::setw(20) << std::left << node.GetName()
+            << " Position: {" << pos.x << "f, " << pos.y << "f, " << pos.z << "f}" 
+			<< " Rotation: {" << rot.x << "f, " << rot.y << "f, " << rot.z << "f}"
+            << std::endl;
+    }
+
+    // Wywo³aj rekurencyjnie dla wszystkich dzieci tego wêz³a
+    for (const auto& pChild : node.GetChildren())
+    {
+        if (pChild)
+        {
+            SaveNodeTransformsRecursive(*pChild, file);
+        }
+    }
 }
