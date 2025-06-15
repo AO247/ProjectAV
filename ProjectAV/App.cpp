@@ -245,7 +245,7 @@ App::App(const std::string& commandLine)
     pUpgradeHandler->SetBasicValues();
    // pSceneRoot->GetComponent<Global>()->upgradeHandler = pUpgradeHandler;
 
-	PrefabManager::InstantiateIslandMedium1(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
+	PrefabManager::InstantiateIslandMedium2(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
 
     const int screenWidth = 1920;
     const int screenHeight = 1080;
