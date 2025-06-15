@@ -24,7 +24,7 @@ class Animation
 public:
     Animation() = default;
 
-    Animation(const std::string& animationPath, ModelComponent* model)
+    Animation(const std::string& animationPath, ModelComponent* model, int index)
     {
         Assimp::Importer importer;
         constexpr unsigned int kImportFlags =
@@ -38,7 +38,7 @@ public:
         const aiScene* scene = importer.ReadFile(animationPath, kImportFlags);
         //const aiScene* scene = importer.ReadFile(animationPath, aiProcess_Triangulate);
         assert(scene && scene->mRootNode);
-        auto animation = scene->mAnimations[0];
+        auto animation = scene->mAnimations[index];
         m_Duration = animation->mDuration;
         m_TicksPerSecond = animation->mTicksPerSecond;
         ReadHeirarchyData(m_RootNode, scene->mRootNode);

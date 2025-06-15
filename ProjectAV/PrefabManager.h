@@ -3219,6 +3219,8 @@ public:
         pNewNode->AddComponent(
             std::make_unique<AnimationComponent>(pNewNode, "", "Models\\char_basic2.glb")
         );
+        AnimationComponent* animComp = pNewNode->GetComponent<AnimationComponent>();
+        animComp->PlayAnimation(3);
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         parentNode->AddChild(std::move(pNewNodeOwner));
 
