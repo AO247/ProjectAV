@@ -24,7 +24,8 @@ public:
         {
             m_CurrentTime += m_CurrentAnimation->GetTicksPerSecond() * dt;
             m_CurrentTime = fmod(m_CurrentTime, m_CurrentAnimation->GetDuration());
-            CalculateBoneTransform(&m_CurrentAnimation->GetRootNode(), DirectX::XMMatrixIdentity());
+            DirectX::XMMATRIX identityMatrix = DirectX::XMMatrixIdentity();
+            CalculateBoneTransform(&m_CurrentAnimation->GetRootNode(), identityMatrix);
         }
     }
 
@@ -34,7 +35,7 @@ public:
         m_CurrentTime = 0.0f;
     }
 
-    void CalculateBoneTransform(const AssimpNodeData* node, DirectX::XMMATRIX parentTransform)
+    void CalculateBoneTransform(const AssimpNodeData* node, DirectX::XMMATRIX& parentTransform)
     {
         std::string nodeName = node->name;
         DirectX::XMMATRIX nodeTransform = node->transformation;
@@ -46,10 +47,10 @@ public:
             Bone->Update(m_CurrentTime);
             nodeTransform = Bone->GetLocalTransform();
         }
-
+        
         DirectX::XMMATRIX globalTransformation = nodeTransform * parentTransform;
 
-        auto boneInfoMap = m_CurrentAnimation->GetBoneIDMap();
+        std::map<std::string, ModelComponent::BoneInfo>& boneInfoMap = m_CurrentAnimation->GetBoneIDMap();
         if (boneInfoMap.find(nodeName) != boneInfoMap.end())
         {
             int index = boneInfoMap[nodeName].id;

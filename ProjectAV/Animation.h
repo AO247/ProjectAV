@@ -68,7 +68,7 @@ public:
 
     inline const AssimpNodeData& GetRootNode() { return m_RootNode; }
 
-    inline const std::map<std::string, ModelComponent::BoneInfo>& GetBoneIDMap()
+    inline std::map<std::string, ModelComponent::BoneInfo>& GetBoneIDMap()
     {
         return m_BoneInfoMap;
     }
