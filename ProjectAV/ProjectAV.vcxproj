@@ -276,6 +276,7 @@
     <ClCompile Include="StateMachine.cpp" />
     <ClCompile Include="Step.cpp" />
     <ClCompile Include="StepLinkingProbe.cpp" />
+    <ClCompile Include="StunState.cpp" />
     <ClCompile Include="Surface.cpp" />
     <ClCompile Include="Technique.cpp" />
     <ClCompile Include="TestCube.cpp" />
@@ -395,6 +396,7 @@
     <ClInclude Include="Stencil.h" />
     <ClInclude Include="Step.h" />
     <ClInclude Include="StepLinkingProbe.h" />
+    <ClInclude Include="StunState.h" />
     <ClInclude Include="Surface.h" />
     <ClInclude Include="Technique.h" />
     <ClInclude Include="TechniqueProbe.h" />

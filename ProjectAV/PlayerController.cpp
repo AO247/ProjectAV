@@ -22,6 +22,7 @@ void PlayerController::Update(float dt)
     Cooldowns(dt);
     if (!wnd.CursorEnabled() && alive && !wnd.playerLocked)
     {
+        AutoJump();
         PlayerGroundCheck();
 		KeyboardInput();
 		SpeedControl();
@@ -136,21 +137,51 @@ void PlayerController::Dash()
 
 void PlayerController::PlayerGroundCheck()
 {
-    RRayCast ray = RRayCast(
-        RVec3(GetOwner()->GetWorldPosition().x, GetOwner()->GetWorldPosition().y, GetOwner()->GetWorldPosition().z),
-        Vec3(0.0f, -(height / 2 + 0.2f), 0.0f)
+    grounded = false;
+
+	Vector3 playerPos = GetOwner()->GetWorldPosition();
+    Vector3 pos = playerPos;
+    Vec3 direction = Vec3(0.0f, -(height / 2 + 0.2f), 0.0f);
+    RRayCast rayCenter = RRayCast(
+        RVec3(pos.x, pos.y, pos.z),
+        direction
     );
-    RayCastResult result;
-    if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(ray, result, 
+    RayCastResult resultCenter;
+    if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(rayCenter, resultCenter,
         IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::PLAYER, BroadPhaseLayers::TRIGGER }), 
         IgnoreMultipleObjectLayerFilter({Layers::PLAYER, Layers::TRIGGER})))
     {
-		grounded = true;
+        grounded = true;
     }
-    else
+
+    pos = playerPos + -moveDirection;
+
+    RRayCast rayBack = RRayCast(
+        RVec3(pos.x, pos.y, pos.z),
+        direction
+    );
+    RayCastResult resultBack;
+    if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(rayBack, resultBack,
+        IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::PLAYER, BroadPhaseLayers::TRIGGER }),
+        IgnoreMultipleObjectLayerFilter({ Layers::PLAYER, Layers::TRIGGER })))
     {
-		grounded = false;
+        grounded = true;
     }
+
+    pos = playerPos + moveDirection;
+
+    RRayCast rayForward = RRayCast(
+        RVec3(pos.x, pos.y, pos.z),
+        direction
+    );
+    RayCastResult resultForward;
+    if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(rayForward, resultForward,
+        IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::PLAYER, BroadPhaseLayers::TRIGGER }),
+        IgnoreMultipleObjectLayerFilter({ Layers::PLAYER, Layers::TRIGGER })))
+    {
+        grounded = true;
+    }
+
 
     if (grounded)
     {
@@ -160,7 +191,6 @@ void PlayerController::PlayerGroundCheck()
 
 void PlayerController::MovePlayer(float dt)
 {
-    moveDirection.Normalize();
     if (grounded)
     {
         PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * moveSpeed * 1000.0f * dt);
@@ -168,6 +198,32 @@ void PlayerController::MovePlayer(float dt)
     else
     {
         PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * moveSpeed * 100.0f * dt);
+    }
+}
+
+void PlayerController::AutoJump()
+{
+    if (grounded)
+    {
+        Vector3 playerPos = GetOwner()->GetWorldPosition();
+        Vector3 pos = playerPos + moveDirection * autoJumpRange;
+        RRayCast rayFront = RRayCast(
+            RVec3(pos.x, pos.y, pos.z),
+            Vec3(0.0f, -(height / 2 + 0.2f), 0.0f)
+        );
+        RayCastResult resultFront;
+        if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(rayFront, resultFront,
+            IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::PLAYER, BroadPhaseLayers::TRIGGER }),
+            IgnoreMultipleObjectLayerFilter({ Layers::PLAYER, Layers::TRIGGER })))
+        {
+            Vec3 hitPos = rayFront.mOrigin + rayFront.mDirection * resultFront.mFraction;
+            Vec3 playerDownPos = Vec3(playerPos.x, playerPos.y - (height / 2), playerPos.z);
+            float diffrence = (hitPos.GetY() - playerDownPos.GetY());
+            if (diffrence < 3.0f && diffrence > 0.5f)
+            {
+				PhysicsCommon::physicsSystem->GetBodyInterface().SetPosition(rigidbody->GetBodyID(), Vec3(playerPos.x, playerPos.y + diffrence, playerPos.z), EActivation::Activate);
+            }
+        }
     }
 }
 
@@ -268,7 +324,7 @@ void PlayerController::KeyboardInput()
     {
         moveDirection += GetOwner()->Right();
     }
-
+    moveDirection.Normalize();
 
     if (wnd.kbd.IsKeyPressed(VK_SHIFT))
     {
@@ -287,4 +343,7 @@ void PlayerController::DrawImGuiControls()
     ImGui::Checkbox("Grounded", &grounded);
     ImGui::Checkbox("Double Jumped", &doubleJumped);
 	ImGui::Checkbox("Alive", &alive);
+    ImGui::InputFloat("Auto Jump Range", &autoJumpRange);
+
+
 }

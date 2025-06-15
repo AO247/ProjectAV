@@ -10,6 +10,6 @@ public:
 	virtual void Enter(StateMachine* pOwner) override;
 	virtual void Update(StateMachine* pOwner, float dt) override;
 	virtual void Exit(StateMachine* pOwner) override;
-	virtual StateType GetType() const override { return StateType::IDLE; }
+	virtual StateType GetType() const override { return StateType::FOLLOW; }
 	float time;
 };

@@ -13,22 +13,32 @@ void Health::DrawImGuiControls()
 	ImGui::Text("Max Health: %f", maxHealth);
 }
 
-void Health::TakeDamage(float damage)
+void Health::TakeDamage(float damage, bool heavy)
 {
-	currentHealth -= damage;
+	if (tank)
+	{
+		if (heavy)
+		{
+			currentHealth -= damage;
+		}
+		else {
+			pOwner->GetComponent<StateMachine>()->RequestStateChange(StateType::STUN);
+		}
+	}
+	else
+	{
+		currentHealth -= damage;
+	}
+
+
 	if (currentHealth > maxHealth)
 	{
 		currentHealth = maxHealth;
 	}
-	if (damage < 0)
-	{
-		pOwner->GetComponent<PlayerController>()->abilitySlot3->GetComponent<Ability>()->killsCount++;
-	}
 	if (currentHealth <= 0.0f)
 	{
 		if (pOwner->tag != "PLAYER") {
-			pOwner->Destroy();
-			pOwner->GetRoot()->FindFirstChildByTag("PLAYER")->GetComponent<Health>()->TakeDamage(-1);
+			pOwner->GetComponent<StateMachine>()->Die();
 		}
 		else {
 			pOwner->GetComponent<PlayerController>()->alive = false;
