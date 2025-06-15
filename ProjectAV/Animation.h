@@ -27,7 +27,16 @@ public:
     Animation(const std::string& animationPath, ModelComponent* model)
     {
         Assimp::Importer importer;
-        const aiScene* scene = importer.ReadFile(animationPath, aiProcess_Triangulate);
+        constexpr unsigned int kImportFlags =
+            aiProcess_Triangulate |
+            aiProcess_ConvertToLeftHanded | 
+            aiProcess_LimitBoneWeights | 
+            aiProcess_JoinIdenticalVertices |
+            aiProcess_ImproveCacheLocality |
+            aiProcess_GenSmoothNormals;
+
+        const aiScene* scene = importer.ReadFile(animationPath, kImportFlags);
+        //const aiScene* scene = importer.ReadFile(animationPath, aiProcess_Triangulate);
         assert(scene && scene->mRootNode);
         auto animation = scene->mAnimations[0];
         m_Duration = animation->mDuration;
