@@ -54,6 +54,7 @@ void Ability6::Positioning()
 }
 void Ability6::Pulling(float dt)
 {
+	if (selectedNode == nullptr) return;
     Vector3 cameraPos = camera->GetWorldPosition();
     Vector3 targetPosition = cameraPos + camera->Forward() * 8.0f;
     Rigidbody* rb = selectedNode->GetComponent<Rigidbody>();
@@ -76,8 +77,8 @@ void Ability6::Pulling(float dt)
 void Ability6::Pressed()
 {
     if (!abilityReady) return;
-    if (selectedNode == nullptr) return;
     isPressed = true;
+    if (selectedNode == nullptr) return;
     leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
     leftHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
 }
