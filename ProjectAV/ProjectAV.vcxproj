@@ -138,7 +138,7 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <FloatingPointModel>Fast</FloatingPointModel>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <Optimization>Full</Optimization>
+      <Optimization>Disabled</Optimization>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -272,6 +272,7 @@
     <ClCompile Include="Sampler.cpp" />
     <ClCompile Include="ShootAttack.cpp" />
     <ClCompile Include="Sink.cpp" />
+    <ClCompile Include="SkinningCBuf.cpp" />
     <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="SkyboxPass.cpp" />
     <ClCompile Include="SolidBox.cpp" />
@@ -389,6 +390,7 @@
     <ClInclude Include="Sampler.h" />
     <ClInclude Include="ShootAttack.h" />
     <ClInclude Include="Sink.h" />
+    <ClInclude Include="SkinningCBuf.h" />
     <ClInclude Include="Skybox.h" />
     <ClInclude Include="SkyboxPass.h" />
     <ClInclude Include="SolidBox.h" />

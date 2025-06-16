@@ -432,6 +432,9 @@
     <ClCompile Include="Ability6.cpp">
       <Filter>Source Files\Components\Abilities</Filter>
     </ClCompile>
+    <ClCompile Include="SkinningCBuf.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Win.h">
@@ -871,6 +874,9 @@
     </ClInclude>
     <ClInclude Include="Ability6.h">
       <Filter>Header Files\Components\Abilities</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinningCBuf.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

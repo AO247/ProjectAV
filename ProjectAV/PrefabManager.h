@@ -5,6 +5,7 @@
 #include "PhysicsCommon.h"
 #include "MainRenderGraph.h"
 #include "Window.h"
+#include "AnimationComponent.h"
 
 //class PhysicsEngine;
 class ShootAttack;
@@ -1849,6 +1850,7 @@ public:
         InstantiateColumn(pNewNode, Vector3(-14.0f, 0.0f, 20.0f), 4.0f);
         InstantiateColumn(pNewNode, Vector3(-14.0f, 0.0f, -19.0f), 4.0f);
 		InstantiateBaseColumn(pNewNode, Vector3(0.0f, -14.0f, 0.0f), 4.0f);
+        InstantiateAnimationTest(pNewNode, Vector3(0.0f, 5.0f, 0.0f), 1.0f);
 
 
         pNewNode->AddChild(std::move(leftPoint));
@@ -3639,6 +3641,28 @@ public:
     ///////////////////////////////
     ////////////ENEMIES////////////
     ///////////////////////////////
+
+    static Node* InstantiateAnimationTest(Node* parentNode, Vector3 position, float scale)
+    {
+        auto pNewNodeOwner = std::make_unique<Node>("AnimationTest", nullptr, "ENEMY");
+        Node* pNewNode = pNewNodeOwner.get();
+
+        pNewNode->AddComponent(
+            std::make_unique<ModelComponent>(pNewNode, wind->Gfx(), "Models\\char_basic2.glb", 1.0f, true)
+        );
+        pNewNode->AddComponent(
+            std::make_unique<AnimationComponent>(pNewNode, "", "Models\\char_basic2.glb")
+        );
+        AnimationComponent* animComp = pNewNode->GetComponent<AnimationComponent>();
+        animComp->PlayAnimation(3);
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        parentNode->AddChild(std::move(pNewNodeOwner));
+
+        pNewNode->SetLocalPosition(DirectX::XMFLOAT3(position.x, position.y, position.z));
+        pNewNode->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+
+        return pNewNode;
+    }
 
     static Node* InstantiateNormalEnemy(Node* parentNode, Vector3 position, float scale, Node* pPlayer)
     {

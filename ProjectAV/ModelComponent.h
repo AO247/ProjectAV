@@ -7,6 +7,8 @@
 #include "ConditionalNoexcept.h"
 #include <SimpleMath.h>
 #include "Technique.h"
+#include <map> // Added for bone info map
+#include <assimp/scene.h>
 
 class Mesh;
 class Graphics;
@@ -37,7 +39,7 @@ class ModelInternalNode
 public:
     ModelInternalNode(int id, const std::string& name, std::vector<Mesh*> meshPtrs, const DirectX::XMMATRIX& transform) noxnd;
     const std::string& GetName() const noexcept { return name; }
-    void Submit(Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform) const noxnd;
+    void Submit(Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform, const std::vector<DirectX::XMMATRIX>* pBoneTransforms) const noxnd;
     void ShowTree(int& nodeIndexTracker, ModelInternalNode*& pSelectedNode) const noexcept;
     void SetAppliedTransform(DirectX::FXMMATRIX transform) noexcept;
     void LinkTechniques(Rgph::RenderGraph&);
@@ -57,6 +59,14 @@ private:
 class ModelComponent : public Component
 {
 public:
+    //================================================================================
+    // NEW BONE INFO STRUCTURE
+    //================================================================================
+    struct BoneInfo
+    {
+        int id;
+        DirectX::XMMATRIX offset;
+    };
 
     struct Triangle
     {
@@ -71,7 +81,7 @@ public:
         }
     };
 
-    ModelComponent(Node* owner, Graphics& gfx, const std::string& modelFile, float scale = 1.0f);
+    ModelComponent(Node* owner, Graphics& gfx, const std::string& modelFile, float scale = 1.0f, bool isSkinned = false);
     virtual ~ModelComponent() = default;
 
     void Submit(Graphics& gfx, DirectX::FXMMATRIX worldTransform) const noxnd;
@@ -84,10 +94,23 @@ public:
     std::vector<std::unique_ptr<Mesh>> meshPtrs;
     void AddTechnique(Technique technique);
     std::vector<Technique> techniques;
+
+    //================================================================================
+    // BONE INFO MAP AND COUNTER
+    //================================================================================
+    std::map<std::string, BoneInfo>& GetBoneInfoMap() { return m_BoneInfoMap; }
+    int& GetBoneCount() { return m_BoneCounter; }
+
+    const bool skinnedCharacter;
+
 private:
+    void ExtractBoneInfo(const aiScene& scene);
     std::unique_ptr<ModelInternalNode> ParseNodeRecursive(int& nextId, const aiNode& node, float scale);
 
+    std::map<std::string, BoneInfo> m_BoneInfoMap;
+    int m_BoneCounter = 0;
+
     std::unique_ptr<ModelInternalNode> pRootInternal;
-    
+
     std::unique_ptr<ModelControlWindow> pControlWindow;
 };
