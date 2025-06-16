@@ -1,5 +1,7 @@
+//////////////////////////
+// Classic push ability //
+//////////////////////////
 #pragma once
-
 #include "Ability.h"
 #include "Window.h"
 #include <DirectXMath.h>

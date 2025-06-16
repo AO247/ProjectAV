@@ -1,12 +1,15 @@
 #include "Global.h"
 namespace dx = DirectX;
-Global::Global(Node* owner, Window& window, Node* player)
-	: Component(owner), wnd(window), playerNode(player)
+Global::Global(Node* owner, Window& window, Node* player, Node* base)
+	: Component(owner), wnd(window), playerNode(player), base(base)
 {
+	auto pLevels = std::make_unique<Node>("Levels");
+	levelsNode = pLevels.get();
+	pOwner->AddChild(std::move(pLevels));
 
 	player->SetLocalPosition(enterPoint);
-	PrefabManager::InstantiateStartIsland(pOwner, Vector3(0.0f, 0.0f, 0.0f), 4.0f);
-	firstSpawn = PrefabManager::InstantiateFirstIsland(pOwner, Vector3(0.0f, 5.0f, -20.0f), 1.0f);
+	PrefabManager::InstantiateStartIsland(base, Vector3(0.0f, 0.0f, 0.0f), 4.0f);
+	firstSpawn = PrefabManager::InstantiateFirstIsland(base, Vector3(0.0f, 5.0f, -20.0f), 1.0f);
 	firstSpawn->GetComponent<SpawnJump>()->Activate();
 	firstSpawn->GetComponent<SpawnJump>()->upgraded = true;
 	StartRun();
@@ -91,7 +94,7 @@ void Global::AddSpecialLevel()
 	std::string levelName = "Level " + std::to_string(levelCount);
 	auto pLevel = std::make_unique<Node>(levelName);
 	Node* level = pLevel.get();
-	pOwner->AddChild(std::move(pLevel));
+	levelsNode->AddChild(std::move(pLevel));
 	levels.push_back(level);
 	auto prefabs = std::make_unique<Node>("Prefabs");
 	Node* prefab = prefabs.get();
@@ -117,11 +120,11 @@ void Global::StartRun()
 {
 	auto pLevel = std::make_unique<Node>("Level 0-1");
 	Node* level = pLevel.get();
-	pOwner->AddChild(std::move(pLevel));
+	levelsNode->AddChild(std::move(pLevel));
 	levels.push_back(level);
 	auto pLevel2 = std::make_unique<Node>("Level 0-2");
 	Node* level2 = pLevel2.get();
-	pOwner->AddChild(std::move(pLevel2));
+	levelsNode->AddChild(std::move(pLevel2));
 	levels.push_back(level2);
 	AddSpecialLevel();
 	AddSpecialLevel();

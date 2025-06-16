@@ -30,14 +30,17 @@ public:
 	float followDistance = 40.0f;
 	float attackRange = 8.0f;
 	bool isFlying = false;
+	bool isDead = false;
+
 	Component* pMovementComponent = nullptr;
 	Component* pAttackComponent = nullptr;
 	std::vector<Component*> attackComponents;
 	void EndState();
 	void Die();
+	void ChangeState(StateType nextState);
+
 private:
 
-	void ChangeState(StateType nextState);
 
 	std::unique_ptr<State> currentState = nullptr;
 	std::unique_ptr<State> previousState = nullptr; 

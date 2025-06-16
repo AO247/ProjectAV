@@ -5,6 +5,8 @@ UpgradeHandler::UpgradeHandler(Node* owner, Window& window)
 {
 	cardSprite1 = std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
+		wnd.Gfx().GetContext(),
+
 		80,              
 		180,             
 		350,             
@@ -13,6 +15,7 @@ UpgradeHandler::UpgradeHandler(Node* owner, Window& window)
 	);
 	cardSprite2 = std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
+		wnd.Gfx().GetContext(),
 		475,              
 		180,              
 		350,              
@@ -21,6 +24,7 @@ UpgradeHandler::UpgradeHandler(Node* owner, Window& window)
 	);
 	cardSprite3 = std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
+		wnd.Gfx().GetContext(),
 		870,             
 		180,             
 		350,             
@@ -29,6 +33,7 @@ UpgradeHandler::UpgradeHandler(Node* owner, Window& window)
 	);
 	cardSprite4 = std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
+		wnd.Gfx().GetContext(),
 		870,              
 		180,              
 		350,              
@@ -38,6 +43,7 @@ UpgradeHandler::UpgradeHandler(Node* owner, Window& window)
 
 	heart1Sprite = std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
+		wnd.Gfx().GetContext(),
 		100,       
 		360,       
 		50,        
@@ -47,6 +53,7 @@ UpgradeHandler::UpgradeHandler(Node* owner, Window& window)
 
 	heart2Sprite = std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
+		wnd.Gfx().GetContext(),
 		495,      
 		360,      
 		50,       
@@ -55,7 +62,8 @@ UpgradeHandler::UpgradeHandler(Node* owner, Window& window)
 	);
 
 	heart3Sprite = std::make_unique<Sprite>(
-		wnd.Gfx().GetDevice(),     
+		wnd.Gfx().GetDevice(),    
+		wnd.Gfx().GetContext(),
 		890,        
 		360,        
 		50,         

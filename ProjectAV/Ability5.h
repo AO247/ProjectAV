@@ -1,6 +1,6 @@
 ////////////////////////////////
-// Evolve of ability 1        //
-// Pick item then pick a spot //
+// Evolve of ability 2        //
+// Throw up for some duration //
 ////////////////////////////////
 #pragma once
 
@@ -12,33 +12,27 @@
 
 class Node;
 
-class Ability4 : public Ability
+class Ability5 : public Ability
 {
 public:
-	Ability4(Node* owner, Window& window, Node* camera);
-	virtual ~Ability4() = default;
+	Ability5(Node* owner, Window& window, Node* camera);
+	virtual ~Ability5() = default;
 
 	virtual void Update(float dt) override;
 	virtual void DrawImGuiControls() override;
-	void OnTriggerEnter(Node* other) override;
-	void OnTriggerExit(Node* other) override;
 	void Pressed() override;
 	void Released() override;
-	void Activated();
-
-	float cooldown = 1.5f;
+	float cooldown = 1.2f;
+	float duration = 3.0f;
 	float timeToChange = 0.0f;
 	bool stop = true;
 
-	float force = 600.0f;
-	Vector3	cameraRotation = Vector3::Zero;
-	bool isPressed = false;
+	float force = 900.0f;
 	bool abilityReady = true;
 
-	Node* leftHandNormal = nullptr;
-	Node* leftHandAbility = nullptr;
+	Node* rightHandNormal = nullptr;
+	Node* rightHandAbility = nullptr;
 private:
-	Node* player = nullptr;
 	void KeyboardInput();
 	void Cooldowns(float dt);
 	void Positioning();

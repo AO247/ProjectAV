@@ -1,3 +1,6 @@
+//////////////////////////
+// Classic push ability //
+//////////////////////////
 #include "Ability1.h"
 #include "Node.h"       
 #include "Window.h"     

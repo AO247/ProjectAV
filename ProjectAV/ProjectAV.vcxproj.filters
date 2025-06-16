@@ -76,6 +76,12 @@
     <Filter Include="Source Files\Jobber\Passlib">
       <UniqueIdentifier>{bf32bb01-7e0e-4724-92c1-758f350a05a2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Components\Abilities">
+      <UniqueIdentifier>{4fce635a-c8c8-474b-a420-68a5a0fd58bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Components\Abilities">
+      <UniqueIdentifier>{5f630209-bb52-45b6-969b-a911ac9ac3bc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinMain.cpp">
@@ -321,12 +327,6 @@
     <ClCompile Include="Component.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Ability1.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Ability2.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
     <ClCompile Include="TestCube.cpp">
       <Filter>Source Files\Drawable</Filter>
     </ClCompile>
@@ -339,9 +339,6 @@
     <ClCompile Include="Island.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
-    <ClCompile Include="Ability3.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
     <ClCompile Include="Button.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -352,9 +349,6 @@
       <Filter>Source Files\Components</Filter>
     </ClCompile>
     <ClCompile Include="SpawnJump.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Ability4.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
     <ClCompile Include="Pass.cpp">
@@ -409,6 +403,30 @@
       <Filter>Source Files\Jobber</Filter>
     </ClCompile>
     <ClCompile Include="StunState.cpp">
+      <Filter>Source Files\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Collectable.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Ability1.cpp">
+      <Filter>Source Files\Components\Abilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Ability2.cpp">
+      <Filter>Source Files\Components\Abilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Ability3.cpp">
+      <Filter>Source Files\Components\Abilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Ability4.cpp">
+      <Filter>Source Files\Components\Abilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Ability5.cpp">
+      <Filter>Source Files\Components\Abilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Ability5Extend.cpp">
+      <Filter>Source Files\Components\Abilities</Filter>
+    </ClCompile>
+    <ClCompile Include="StopState.cpp">
       <Filter>Source Files\States</Filter>
     </ClCompile>
   </ItemGroup>
@@ -728,12 +746,6 @@
     <ClInclude Include="MyContactListener.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Ability1.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Ability2.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
     <ClInclude Include="Cube.h">
       <Filter>Header Files\Geometry</Filter>
     </ClInclude>
@@ -749,9 +761,6 @@
     <ClInclude Include="Island.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
-    <ClInclude Include="Ability3.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
     <ClInclude Include="Button.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -762,12 +771,6 @@
       <Filter>Header Files\Components</Filter>
     </ClInclude>
     <ClInclude Include="SpawnJump.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Ability4.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Ability.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
     <ClInclude Include="BufferResource.h">
@@ -834,6 +837,33 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="StunState.h">
+      <Filter>Header Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Collectable.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Ability.h">
+      <Filter>Header Files\Components\Abilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Ability1.h">
+      <Filter>Header Files\Components\Abilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Ability2.h">
+      <Filter>Header Files\Components\Abilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Ability3.h">
+      <Filter>Header Files\Components\Abilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Ability4.h">
+      <Filter>Header Files\Components\Abilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Ability5.h">
+      <Filter>Header Files\Components\Abilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Ability5Extend.h">
+      <Filter>Header Files\Components\Abilities</Filter>
+    </ClInclude>
+    <ClInclude Include="StopState.h">
       <Filter>Header Files\States</Filter>
     </ClInclude>
   </ItemGroup>
