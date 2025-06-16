@@ -175,6 +175,7 @@
     <ClCompile Include="Ability4.cpp" />
     <ClCompile Include="Ability5.cpp" />
     <ClCompile Include="Ability5Extend.cpp" />
+    <ClCompile Include="Ability6.cpp" />
     <ClCompile Include="App.cpp" />
     <ClCompile Include="AttackState.cpp" />
     <ClCompile Include="BasicAttack.cpp" />
@@ -236,6 +237,7 @@
     <ClInclude Include="Ability4.h" />
     <ClInclude Include="Ability5.h" />
     <ClInclude Include="Ability5Extend.h" />
+    <ClInclude Include="Ability6.h" />
     <ClInclude Include="BrokenPart.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="BindingPass.h" />

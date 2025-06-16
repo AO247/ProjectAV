@@ -265,6 +265,10 @@ bool Button::IsClicked(int mouseX, int mouseY) {
     return (mouseX >= x && mouseX <= x + this->width && mouseY >= y && mouseY <= y + this->height);
 }
 
+bool Button::IsHovered(int mouseX, int mouseY) {
+    return (mouseX >= x && mouseX <= x + this->width && mouseY >= y && mouseY <= y + this->height);
+}
+
 void Button::SetPosition(int x, int y) {
     this->x = x;
     this->y = y;

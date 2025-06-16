@@ -36,7 +36,7 @@ void LevelGenerator::GenerateIslands()
             islandsInfo[i].pos.y += randY;
             if (islandsInfo[i].name == "BIG1")
             {
-                islandPrefab = PrefabManager::InstantiateIslandBig1(pOwner, Vector3(islandsInfo[i].pos.x, islandsInfo[i].pos.y, islandsInfo[i].pos.z), 1.0f);
+                islandPrefab = PrefabManager::InstantiateIslandBig2(pOwner, Vector3(islandsInfo[i].pos.x, islandsInfo[i].pos.y, islandsInfo[i].pos.z), 1.0f);
                 islandPrefab->SetLocalRotation({ 0.0f, islandsInfo[i].rot, 0.0f });
 				islandPrefab->GetComponent<Island>()->leftPoint->SetLocalPosition(islandsInfo[i].leftPoint);
 				islandPrefab->GetComponent<Island>()->upPoint->SetLocalPosition(islandsInfo[i].upPoint);

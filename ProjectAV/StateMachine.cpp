@@ -87,7 +87,8 @@ void StateMachine::Update(float dt)
 		if(pMovementComponent->GroundCheck())
 		{
 		Vec3 velocity = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(pOwner->GetComponent<Rigidbody>()->GetBodyID());
-		velocity *= 0.97f;
+		velocity.SetX(velocity.GetX() * 0.97f);
+		velocity.SetZ(velocity.GetZ() * 0.97f);
 		PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(pOwner->GetComponent<Rigidbody>()->GetBodyID(), velocity);
 		}
 	}

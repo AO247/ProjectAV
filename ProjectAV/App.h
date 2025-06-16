@@ -61,14 +61,8 @@ private:
     Node* pCamera = nullptr;
 	Node* pFreeViewCamera = nullptr; 
     Node* pPlayer = nullptr; 
-	Node* pAbility1 = nullptr; 
-	Node* pAbility2 = nullptr; 
-	Node* pAbility3 = nullptr; 
-    Node* pAbility4 = nullptr;
-	Node* pAbility5 = nullptr;
 	Node* pSelectedSceneNode = nullptr; 
 	Node* pSoundEffectsPlayer = nullptr;
-    Node* pPrefabs = nullptr;
 	Node* pLeftHandNormal = nullptr;
 	Node* pLeftHandAbility = nullptr;
 	Node* pRightHandNormal = nullptr;

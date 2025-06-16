@@ -2377,7 +2377,7 @@ public:
         pIsland->halfExtents = { (rightPoint->GetLocalPosition().x - leftPoint->GetLocalPosition().x) / 2.0f - 1.0f,
                                 2.0f,
                                 (upPoint->GetLocalPosition().z - downPoint->GetLocalPosition().z) / 2.0f - 1.0f };
-        upPoint->AddComponent(
+      /*  upPoint->AddComponent(
             std::make_unique<ModelComponent>(upPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
         );
         upPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
@@ -2392,7 +2392,7 @@ public:
         rightPoint->AddComponent(
             std::make_unique<ModelComponent>(rightPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
         );
-        rightPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        rightPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
         pIsland->leftPoint = leftPoint.get();
         pIsland->rightPoint = rightPoint.get();
         pIsland->upPoint = upPoint.get();
@@ -2420,22 +2420,22 @@ public:
         InstantiateWall1(pNewNode, Vector3(10.60f, 0.00f, 42.20f), 1.0f, Vector3(0.00f, -1.48f, 0.0f));
 
         auto spawnPoint1 = std::make_unique<Node>("SpawnPoint 1", pNewNodeOwner.get());
-        spawnPoint1->AddComponent(
+       /* spawnPoint1->AddComponent(
             std::make_unique<ModelComponent>(spawnPoint1.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
         );
-        spawnPoint1->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        spawnPoint1->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
 
         auto spawnPoint2 = std::make_unique<Node>("SpawnPoint 2", pNewNodeOwner.get());
-        spawnPoint2->AddComponent(
+       /* spawnPoint2->AddComponent(
             std::make_unique<ModelComponent>(spawnPoint2.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
         );
-        spawnPoint2->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        spawnPoint2->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
 
         auto spawnPoint3 = std::make_unique<Node>("SpawnPoint 3", pNewNodeOwner.get());
-        spawnPoint3->AddComponent(
-            std::make_unique<ModelComponent>(spawnPoint3.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
-        );
-        spawnPoint3->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        //spawnPoint3->AddComponent(
+        //    std::make_unique<ModelComponent>(spawnPoint3.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        //);
+        //spawnPoint3->GetComponent<ModelComponent>()->LinkTechniques(*rg);
 
         spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(49.90f, 2.00f, 6.80f));
         spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(-33.20f, 26.50f, 1.00f));

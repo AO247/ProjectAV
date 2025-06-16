@@ -429,6 +429,9 @@
     <ClCompile Include="StopState.cpp">
       <Filter>Source Files\States</Filter>
     </ClCompile>
+    <ClCompile Include="Ability6.cpp">
+      <Filter>Source Files\Components\Abilities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Win.h">
@@ -865,6 +868,9 @@
     </ClInclude>
     <ClInclude Include="StopState.h">
       <Filter>Header Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Ability6.h">
+      <Filter>Header Files\Components\Abilities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

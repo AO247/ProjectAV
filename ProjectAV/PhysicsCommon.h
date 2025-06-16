@@ -341,7 +341,7 @@ class MultipleObjectLayerFilter : public ObjectLayerFilter
 {
 public:
 
-    MultipleObjectLayerFilter(ObjectLayer inLayer) :
+    MultipleObjectLayerFilter(std::vector<ObjectLayer> inLayer) :
         mLayer(inLayer)
     {
     }
