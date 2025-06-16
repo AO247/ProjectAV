@@ -898,7 +898,7 @@ public:
         auto pNewNodeOwner = std::make_unique<Node>("Column2", nullptr, "WALL");
 
         pNewNodeOwner->AddComponent(
-            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\ruiny_1\\kolumna_podwojna.obj")
+            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\ruiny_1\\kolumna_test.obj")
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
@@ -1154,7 +1154,7 @@ public:
         pNewNodeOwner->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\rock_hit2.ogg");
 
         pNewNodeOwner->AddComponent(
-            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\enviro_male_2\\kamien_1.2.obj")
+            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\enviro_male_1\\kamien_1.obj")
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
@@ -2403,19 +2403,18 @@ public:
 
         Node* pNewNode = pNewNodeOwner.get();
 
-        InstantiateStone1(pNewNode, Vector3(5.56f, 1.10f, -16.71f), 2.0f);
-        InstantiateStone1(pNewNode, Vector3(-26.16f, 22.07f, -7.74f), 2.0f);
-        InstantiateStone1(pNewNode, Vector3(38.73f, 1.09f, 24.95f), 2.0f);
-        InstantiateStone1(pNewNode, Vector3(56.80f, 1.10f, -9.90f), 2.0f);
-        InstantiateStone1(pNewNode, Vector3(-3.29f, 1.10f, 13.21f), 2.0f);
+        InstantiateStone1(pNewNode, Vector3(5.56f, 1.10f, -16.71f), 0.4f);
+        InstantiateStone1(pNewNode, Vector3(-26.16f, 22.07f, -7.74f), 0.4f);
+        InstantiateStone1(pNewNode, Vector3(38.73f, 1.09f, 24.95f), 0.4f);
+        InstantiateStone1(pNewNode, Vector3(56.80f, 1.10f, -9.90f), 0.4f);
+        InstantiateStone1(pNewNode, Vector3(-3.29f, 1.10f, 13.21f), 0.4f);
         InstantiateStoneStack1(pNewNode, Vector3(27.43f, 0.0f, 23.43f), 1.0f);
         InstantiateRock3(pNewNode, Vector3(-46.85f, 0.64f, -25.32f), 1.0f);
         InstantiateRock5(pNewNode, Vector3(-17.35f, -0.26f, -29.62f), 1.0f, Vector3(0.00f, 0.19f, 0.00f));
         InstantiateRockDouble(pNewNode, Vector3(41.15f, 0.64f, -25.82f), 1.0f, Vector3(0.00f, 1.54f, 0.00f));
-        InstantiateRock2(pNewNode, Vector3(-46.85f, 0.64f, -25.32f), 1.0f);
         InstantiatePlatform5(pNewNode, Vector3(-28.13f, 1.20f, 4.80f), 1.0f, Vector3(0.00f, 0.18f, 0.00f));
         InstantiateFire1(pNewNode, Vector3(25.70f, 0.90f, 2.20f), 1.0f, Vector3(-0.00f, 3.14f, 0.00f));
-        InstantiateFire1(pNewNode, Vector3(-39.60f, 21.00f, -12.60f), 1.0f, Vector3(0.00f, -1.05f, 0.00f));
+        InstantiateColumn2(pNewNode, Vector3(-39.60f, 21.00f, -12.60f), 1.0f, Vector3(0.00f, -1.05f, 0.00f));
         InstantiateSpike1(pNewNode, Vector3(-15.50f, 0.00f, -4.50f), 1.0f);
         InstantiateWall1(pNewNode, Vector3(10.60f, 0.00f, 42.20f), 1.0f, Vector3(0.00f, -1.48f, 0.0f));
 
