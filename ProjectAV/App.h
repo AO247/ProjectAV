@@ -65,6 +65,7 @@ private:
 	Node* pAbility2 = nullptr; 
 	Node* pAbility3 = nullptr; 
     Node* pAbility4 = nullptr;
+	Node* pAbility5 = nullptr;
 	Node* pSelectedSceneNode = nullptr; 
 	Node* pSoundEffectsPlayer = nullptr;
     Node* pPrefabs = nullptr;

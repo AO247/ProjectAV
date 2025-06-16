@@ -3830,7 +3830,7 @@ public:
         return pNewNode;
     }
    
-    static Node* InstantiateHealthCollectable(Node* parentNode, Vector3 position, float scale)
+    static Node* InstantiateHealthCollectable(Node* parentNode, Vector3 position, float scale, float targetY)
     {
         auto pNewNodeOwner = std::make_unique<Node>("Health", nullptr, "COLLECTABLE");
         Node* pNewNode = pNewNodeOwner.get();
@@ -3845,20 +3845,23 @@ public:
         pNewNode->AddComponent(
             std::make_unique<Trigger>(pNewNode, bodySettings, false)
         );
+
+        pNewNode->SetLocalPosition(position);
+        pNewNode->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+
         pNewNode->AddComponent(
-            std::make_unique<Collectable>(pNewNode)
+            std::make_unique<Collectable>(pNewNode, targetY)
         );
         pNewNode->GetComponent<Collectable>()->health = true;
 
-        pNewNode->SetLocalPosition(position);
-		pNewNode->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+
 
 
         parentNode->AddChild(std::move(pNewNodeOwner));
 
         return pNewNode;
     }
-    static Node* InstantiateExpCollectable(Node* parentNode, Vector3 position, float scale)
+    static Node* InstantiateExpCollectable(Node* parentNode, Vector3 position, float scale, float targetY)
     {
         auto pNewNodeOwner = std::make_unique<Node>("Exp", nullptr, "COLLECTABLE");
         Node* pNewNode = pNewNodeOwner.get();
@@ -3873,16 +3876,46 @@ public:
         pNewNode->AddComponent(
             std::make_unique<Trigger>(pNewNode, bodySettings, false)
         );
+        
+        pNewNode->SetLocalPosition(position);
+        pNewNode->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+
         pNewNode->AddComponent(
-            std::make_unique<Collectable>(pNewNode)
+            std::make_unique<Collectable>(pNewNode, targetY)
         );
         //pNewNode->GetComponent<Collectable>()->health = false;
+
+
+
+
+        parentNode->AddChild(std::move(pNewNodeOwner));
+
+        return pNewNode;
+    }
+    static Node* InstantiateAbility5Extend(Node* parentNode, Vector3 position, float scale, float force, float duration)
+    {
+        auto pNewNodeOwner = std::make_unique<Node>("Ability5Extend", nullptr, "TRIGGER");
+        Node* pNewNode = pNewNodeOwner.get();
+
+
+        pNewNode->AddComponent(
+            std::make_unique<ModelComponent>(pNewNode, wind->Gfx(), "Models\\box.glb")
+        );
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+
+        BodyCreationSettings bodySettings(new JPH::CapsuleShape(30.0f, 5.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
+        pNewNode->AddComponent(
+            std::make_unique<Trigger>(pNewNode, bodySettings, false)
+        );
+        pNewNode->AddComponent(
+            std::make_unique<Ability5Extend>(pNewNode, force, duration)
+        );
 
         pNewNode->SetLocalPosition(position);
         pNewNode->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
 
-        parentNode->AddChild(std::move(pNewNodeOwner));
+        root->AddChild(std::move(pNewNodeOwner));
 
         return pNewNode;
     }

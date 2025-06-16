@@ -37,9 +37,10 @@ public:
 	std::vector<Component*> attackComponents;
 	void EndState();
 	void Die();
+	void ChangeState(StateType nextState);
+
 private:
 
-	void ChangeState(StateType nextState);
 
 	std::unique_ptr<State> currentState = nullptr;
 	std::unique_ptr<State> previousState = nullptr; 

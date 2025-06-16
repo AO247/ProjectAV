@@ -17,7 +17,7 @@ class LevelGenerator;
 class Global : public Component
 {
 public:
-	Global(Node* owner, Window& window, Node* player);
+	Global(Node* owner, Window& window, Node* player, Node* base);
 	virtual ~Global() = default;
 
 	virtual void Update(float dt) override;
@@ -26,6 +26,8 @@ public:
 	Node* playerNode;
 	Node* spawn;
 	Node* firstSpawn;
+	Node* levelsNode;
+	Node* base;
 	std::vector<Node*> enemies;
 	std::vector<Node*> levels;
 	int levelCount = 1;

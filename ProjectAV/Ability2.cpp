@@ -1,3 +1,6 @@
+///////////////////////////
+// Classic throw ability //
+///////////////////////////
 #include "Ability2.h"
 #include "Node.h"       
 #include "Window.h"     

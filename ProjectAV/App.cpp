@@ -66,13 +66,15 @@ App::App(const std::string& commandLine)
 	soundDevice->SetAttenuation(attentuation);
     myMusic = std::make_unique<MusicBuffer>("Music\\windererfull.mp3");
     myMusic->setGain(1.0f);
-
+	auto base = std::make_unique<Node>("Base");
+	auto playerThings = std::make_unique<Node>("Player Things");
     auto pCameraNodeOwner = std::make_unique<Node>("Camera", nullptr, "CAMERA");
     pCamera = pCameraNodeOwner.get();
     auto pFreeViewCameraOwner = std::make_unique<Node>("FreeViewCamera");
     pFreeViewCamera = pFreeViewCameraOwner.get();
     auto pPlayerOwner = std::make_unique<Node>("Player", nullptr, "PLAYER");
     pPlayer = pPlayerOwner.get();
+	auto abilities = std::make_unique<Node>("Abilities");
     auto pAbility1Owner = std::make_unique<Node>("Ability1", nullptr, "TRIGGER");
     pAbility1 = pAbility1Owner.get();
     auto pAbility2Owner = std::make_unique<Node>("Ability2", nullptr, "TRIGGER");
@@ -81,7 +83,9 @@ App::App(const std::string& commandLine)
     pAbility3 = pAbility3Owner.get();
     auto pAbility4Owner = std::make_unique<Node>("Ability4", nullptr, "TRIGGER");
     pAbility4 = pAbility4Owner.get();
-    auto pPrefabsOwner = std::make_unique<Node>("Prefabs", nullptr, "PREFABS");
+	auto pAbility5Owner = std::make_unique<Node>("Ability5", nullptr, "TRIGGER");
+	pAbility5 = pAbility5Owner.get(); 
+    auto pPrefabsOwner = std::make_unique<Node>("Temporary", nullptr, "PREFABS");
     pPrefabs = pPrefabsOwner.get();
     auto pLeftHandNormalOwner = std::make_unique<Node>("L Normal", nullptr, "HANDS");
     pLeftHandNormal = pLeftHandNormalOwner.get();
@@ -92,13 +96,20 @@ App::App(const std::string& commandLine)
     auto pRightHandAbilityOwner = std::make_unique<Node>("R Ability", nullptr, "HANDS");
     pRightHandAbility = pRightHandAbilityOwner.get();
 
-    pSceneRoot->AddChild(std::move(pCameraNodeOwner));
-    pSceneRoot->AddChild(std::move(pFreeViewCameraOwner));
-    pSceneRoot->AddChild(std::move(pPlayerOwner));
-    pSceneRoot->AddChild(std::move(pAbility1Owner));
-    pSceneRoot->AddChild(std::move(pAbility2Owner));
-    pSceneRoot->AddChild(std::move(pAbility3Owner));
-    pSceneRoot->AddChild(std::move(pAbility4Owner));
+	Node* pPlayerThings = playerThings.get();
+	Node* pAbilities = abilities.get();
+	Node* pBase = base.get();
+	pSceneRoot->AddChild(std::move(base));
+    pSceneRoot->AddChild(std::move(playerThings));
+    pPlayerThings->AddChild(std::move(pCameraNodeOwner));
+    pPlayerThings->AddChild(std::move(pFreeViewCameraOwner));
+    pPlayerThings->AddChild(std::move(pPlayerOwner));
+	pSceneRoot->AddChild(std::move(abilities));
+    pAbilities->AddChild(std::move(pAbility1Owner));
+    pAbilities->AddChild(std::move(pAbility2Owner));
+    pAbilities->AddChild(std::move(pAbility3Owner));
+    pAbilities->AddChild(std::move(pAbility4Owner));
+    pAbilities->AddChild(std::move(pAbility5Owner));
     pSceneRoot->AddChild(std::move(pPrefabsOwner));
     pCamera->AddChild(std::move(pLeftHandNormalOwner));
     pCamera->AddChild(std::move(pLeftHandAbilityOwner));
@@ -166,6 +177,11 @@ App::App(const std::string& commandLine)
         std::make_unique<Ability4>(pAbility4, wnd, pCamera)
     );
 
+    pAbility5->AddComponent(
+        std::make_unique<Ability5>(pAbility5, wnd, pCamera)
+    );
+	pPlayer->GetComponent<PlayerController>()->abilitySlot2 = pAbility5;
+
     pFreeViewCamera->AddComponent(
         std::make_unique<Camera>(pFreeViewCamera, wnd)
     );
@@ -193,7 +209,7 @@ App::App(const std::string& commandLine)
     pPlayer->SetLocalPosition({ 0.0f, 80.0f, -24.0f });
 
     pSceneRoot->AddComponent(
-        std::make_unique<Global>(pSceneRoot.get(), wnd, pPlayer)
+        std::make_unique<Global>(pSceneRoot.get(), wnd, pPlayer, pBase)
     );
 
     pLeftHandNormal->AddComponent(
@@ -233,6 +249,9 @@ App::App(const std::string& commandLine)
     pAbility4->GetComponent<Ability4>()->leftHandNormal = pLeftHandNormal;
     pAbility4->GetComponent<Ability4>()->leftHandAbility = pLeftHandAbility;
 
+	pAbility5->GetComponent<Ability5>()->rightHandNormal = pRightHandNormal;
+	pAbility5->GetComponent<Ability5>()->rightHandAbility = pRightHandAbility;
+
     pSceneRoot->AddComponent(
         std::make_unique<UpgradeHandler>(pSceneRoot.get(), wnd)
     );
@@ -245,7 +264,7 @@ App::App(const std::string& commandLine)
     pUpgradeHandler->SetBasicValues();
     pSceneRoot->GetComponent<Global>()->upgradeHandler = pUpgradeHandler;
 
-	PrefabManager::InstantiateIslandBig5(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
+	PrefabManager::InstantiateIslandBig5(pBase, Vector3(0.0f, 0.0f, 0.0f), 1.0f);
 
     const int screenWidth = 1920;
     const int screenHeight = 1080;

@@ -7,6 +7,7 @@
 #include "FollowState.h"
 #include "AttackState.h"
 #include "StunState.h"
+#include "StopState.h"
 
 #include <stdexcept> 
 #include <cassert>
@@ -23,6 +24,7 @@ StateMachine::StateMachine(Node* owner, StateType initialState)
 	RegisterState<FollowState>(StateType::FOLLOW);
 	RegisterState<AttackState>(StateType::ATTACK);
 	RegisterState<StunState>(StateType::STUN);
+	RegisterState<StopState>(StateType::STOP);
 
 	ChangeState(initialState);
 	if (currentStateType == StateType::NONE) {
@@ -164,9 +166,36 @@ void StateMachine::Die()
 	{
 		isDead = true;
 		Vector3 position = pOwner->GetLocalPosition();
-		PrefabManager::InstantiateHealthCollectable(pOwner->GetParent(), Vector3(position.x + 0.8f, position.y, position.z + 0.8f), 0.3f);
-		PrefabManager::InstantiateExpCollectable(pOwner->GetParent(), Vector3(position.x - 0.8f, position.y, position.z - 0.8f), 0.3f);
+		RRayCast ray = RRayCast(
+			RVec3(pOwner->GetWorldPosition().x, pOwner->GetWorldPosition().y, pOwner->GetWorldPosition().z),
+			Vec3(0.0f, -30.0f, 0.0f)
+		);
+		RayCastResult result;
+		if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(ray, result, 
+			IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::ENEMY, BroadPhaseLayers::TRIGGER }),
+			IgnoreMultipleObjectLayerFilter({ Layers::ENEMY, Layers::TRIGGER })))
+		{
+			Vec3 hitPos = ray.mOrigin + ray.mDirection * result.mFraction;
+			Node* parent = pOwner->GetParent();
+			DirectX::XMFLOAT3 hitPosFloat3(hitPos.GetX(), hitPos.GetY(), hitPos.GetZ());
+			DirectX::XMMATRIX parentWorld = parent->GetWorldTransform();
+			DirectX::XMMATRIX invParentWorld = DirectX::XMMatrixInverse(nullptr, parentWorld);
 
+			DirectX::XMVECTOR worldVec = DirectX::XMLoadFloat3(&hitPosFloat3);
+			DirectX::XMVECTOR localVec = DirectX::XMVector3Transform(worldVec, invParentWorld);
+
+			DirectX::XMFLOAT3 localHitPos;
+			DirectX::XMStoreFloat3(&localHitPos, localVec);
+
+			float targetY = localHitPos.y + 4.0f;
+			PrefabManager::InstantiateHealthCollectable(pOwner->GetParent(), Vector3(position.x + 0.8f, position.y, position.z + 0.8f), 0.3f, targetY);
+			PrefabManager::InstantiateExpCollectable(pOwner->GetParent(), Vector3(position.x - 0.8f, position.y, position.z - 0.8f), 0.3f, targetY);
+		}
+		else
+		{
+			PrefabManager::InstantiateHealthCollectable(pOwner->GetParent(), Vector3(position.x + 0.8f, position.y, position.z + 0.8f), 0.3f, position.y);
+			PrefabManager::InstantiateExpCollectable(pOwner->GetParent(), Vector3(position.x - 0.8f, position.y, position.z - 0.8f), 0.3f, position.y);
+		}
 		pOwner->Destroy();
 	}
 }
