@@ -71,7 +71,7 @@ private:
 
     TestCube cube{ wnd.Gfx(),4.0f };
     void FrustumCalculating();
-    void DrawNodeRecursive(Graphics& gfx, Node& node);
+    void DrawNodeRecursive(Graphics& gfx, Node* node);
     void CleanupDestroyedNodes(Node* currentNode);
 
     bool showDemoWindow = false;

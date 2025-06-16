@@ -659,30 +659,23 @@ void App::FrustumCalculating() {
     DirectX::XMStoreFloat4(&cameraFrustum.Orientation, dx::XMQuaternionRotationMatrix(worldOrientationMatrix));
 
 
-    DrawNodeRecursive(wnd.Gfx(), *pSceneRoot);
+    DrawNodeRecursive(wnd.Gfx(), pSceneRoot.get());
 }
 
-void App::DrawNodeRecursive(Graphics& gfx, Node& node)
+void App::DrawNodeRecursive(Graphics& gfx, Node* node)
 {
 
     bool shouldDraw = true; 
-    ModelComponent* modelComp = node.GetComponent<ModelComponent>();
+    ModelComponent* modelComp = node->GetComponent<ModelComponent>();
 
     if (modelComp != nullptr)
     {
         DirectX::BoundingSphere sphere;
         DirectX::BoundingBox box;
         DirectX::ContainmentType containment = DirectX::DISJOINT;
-        if (node.GetComponent<Rigidbody>() != nullptr)
-        {
-             Vec3 pos = PhysicsCommon::physicsSystem->GetBodyInterface().GetPosition(node.GetComponent<Rigidbody>()->GetBodyID());
-             sphere.Center = DirectX::XMFLOAT3(pos.GetX(), pos.GetY(), pos.GetZ());
-        }
-        else 
-        {
-            sphere.Center = node.GetWorldPosition();
-        }
-        sphere.Radius = node.radius;
+
+        sphere.Center = node->GetWorldPosition();
+        sphere.Radius = node->radius;
         containment = cameraFrustum.Contains(sphere);
         
 
@@ -695,15 +688,16 @@ void App::DrawNodeRecursive(Graphics& gfx, Node& node)
 
     if (shouldDraw)
     {
-        node.Submit(wnd.Gfx());
-        for (const auto& pChild : node.GetChildren())
+        node->Submit(wnd.Gfx());
+    }
+    for (const auto& pChild : node->GetChildren())
+    {
+        if (pChild)
         {
-            if (pChild)
-            {
-                DrawNodeRecursive(gfx, *pChild); 
-            }
+            DrawNodeRecursive(gfx, pChild.get()); 
         }
     }
+
 }
 
 void App::ShowControlWindows()
