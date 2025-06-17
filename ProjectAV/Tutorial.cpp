@@ -86,6 +86,13 @@ void Tutorial::Stage2(float dt)
 		PhysicsCommon::physicsSystem->GetBodyInterface().SetAngularVelocity(bid, Vec3::sZero());
 		PhysicsCommon::physicsSystem->GetBodyInterface().SetPosition(bid, Vec3(stone1Pos.x, stone1Pos.y, stone1Pos.z), EActivation::Activate);
 	}
+	if (stone2->GetLocalPosition().y < stone2Pos.y - 30.0f)
+	{
+		BodyID bid = stone2->GetComponent<Rigidbody>()->GetBodyID();
+		PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(bid, Vec3::sZero());
+		PhysicsCommon::physicsSystem->GetBodyInterface().SetAngularVelocity(bid, Vec3::sZero());
+		PhysicsCommon::physicsSystem->GetBodyInterface().SetPosition(bid, Vec3(stone2Pos.x, stone2Pos.y, stone2Pos.z), EActivation::Activate);
+	}
 }
 
 void Tutorial::DrawNote()

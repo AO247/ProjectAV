@@ -2056,7 +2056,7 @@ public:
         InstantiateStone1(pNewNode, Vector3(-17.13f, 0.64f, -14.36f), 2.0f);
         InstantiateStone1(pNewNode, Vector3(8.31f, 0.64f, -5.58f), 2.0f);
         InstantiateStoneStack1(pNewNode, Vector3(-7.92f, 1.72f, -11.22f), 1.0f);
-        InstantiateStoneStack1(pNewNode, Vector3(-13.62f, 1.72f, 9.78f), 1.0f);
+        InstantiateNewColumn(pNewNode, Vector3(-13.62f, 0.0f, 9.78f), 1.0f);
         InstantiateRock1(pNewNode, Vector3(-6.90f, 5.20f, 28.00f), 1.0f, Vector3(0.00f, 0.63f, 3.14f));
         InstantiateRock1(pNewNode, Vector3(-7.40f, 13.60f, 50.30f), 1.0f, Vector3(0.00f, 1.38f, 3.14f));
         InstantiateRock1(pNewNode, Vector3(-12.80f, 21.30f, 78.10f), 1.0f, Vector3(0.00f, 0.63f, 3.14f));
@@ -2086,8 +2086,17 @@ public:
 		Node* AbilityIsland = InstantiateAbilityIsland(pNewNodeOwner.get(), { -92.29f, 0.00f, 50.61f }, 1.0f, { 0.0f, 2.36f, 0.0f });
 		Node* UltIsland = InstantiateUltIsland(pNewNodeOwner.get(), { -250.91f, -0.01f, -137.29f }, 1.0f, { 0.0f, -1.66f, 0.04f });
         
-        tut->stone1 = InstantiateStone1(pNewNodeOwner.get(), { -210.0f, 1.8f, -40.0f }, 2.0f);
-        tut->stone2 = InstantiateStone1(pNewNodeOwner.get(), { -163.0f, 1.2f, 26.0f }, 2.0f);
+        tut->stone1 = InstantiateStone1(pNewNodeOwner.get(), { -163.0f, 1.2f, 26.0f }, 2.0f);
+        tut->stone2 = InstantiateStone1(pNewNodeOwner.get(), { -210.0f, 1.8f, -40.0f }, 2.0f);
+        Node* enemy1 = InstantiateNormalEnemy(root, { 187.4f, -18.3f, -267.6f }, 1.6f, player);
+        Node* enemy2 = InstantiateNormalEnemy(root, { 105.0f, -15.5f, -236.4f }, 1.6f, player);
+        Node* enemy3 = InstantiateNormalEnemy(root, { 44.1f, -15.3f, -198.9f }, 1.6f, player);
+        Node* enemy4 = InstantiateShootingEnemy(root, { 32.2f, -15.8f, -203.6f }, 1.6f, player);
+        enemy1->GetComponent<Walking>()->maxSpeed = 0.0f;
+        enemy2->GetComponent<Walking>()->maxSpeed = 0.0f;
+        enemy3->GetComponent<Walking>()->maxSpeed = 0.0f;        
+        enemy4->GetComponent<Walking>()->maxSpeed = 0.0f;
+
         tut->SetStones();
 		//InstantiateNormalEnemy(pNewNodeOwner.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f, pPlayer);
 		//InstantiateNormalEnemy(pNewNodeOwner.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f, pPlayer);
