@@ -96,7 +96,7 @@ UpgradeHandler::UpgradeHandler(Node* owner, Window& window)
 	ability4Gif = std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
 		wnd.Gfx().GetContext(),
-		22, 34, 190, 337, 
+		22, 34, 337, 190, 
 		L"Images\\ability4.gif"
 	);
 
@@ -107,6 +107,7 @@ void UpgradeHandler::Update(float dt)
 {
 	if (upgradeMenuOpen && !upgraded && missclickTimer < 0.0f)
 	{
+		ability4Gif->Update(dt);
 		if (wnd.mouse.IsLeftPressed()) {
 			const auto mousePos = wnd.mouse.GetPos();
 			if (testButton1->IsClicked(mousePos.first, mousePos.second))
