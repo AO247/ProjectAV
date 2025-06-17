@@ -3856,7 +3856,7 @@ public:
    
     static Node* InstantiateHealthCollectable(Node* parentNode, Vector3 position, float scale, float targetY)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Health", nullptr, "COLLECTABLE");
+        auto pNewNodeOwner = std::make_unique<Node>("Health", nullptr, "TRIGGER");
         Node* pNewNode = pNewNodeOwner.get();
 
 
@@ -3887,7 +3887,7 @@ public:
     }
     static Node* InstantiateExpCollectable(Node* parentNode, Vector3 position, float scale, float targetY)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Exp", nullptr, "COLLECTABLE");
+        auto pNewNodeOwner = std::make_unique<Node>("Exp", nullptr, "TRIGGER");
         Node* pNewNode = pNewNodeOwner.get();
 
 
@@ -3951,7 +3951,7 @@ public:
 
 
         pNewNode->AddComponent(
-            std::make_unique<ModelComponent>(pNewNode, wind->Gfx(), "Models\\box.glb")
+            std::make_unique<ModelComponent>(pNewNode, wind->Gfx(), "Models\\box.glb", 1.0f)
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
 

@@ -19,6 +19,15 @@ public:
 	virtual void DrawImGuiControls() override;
 
 	PlayerController* playerController = nullptr;
+
+	struct cardData
+	{
+		std::unique_ptr<Sprite> level0;
+		std::unique_ptr<Sprite> level1;
+		std::unique_ptr<Sprite> level2;
+		int count = 0;
+
+	};
 	int ability1 = 0;
 	int ability2 = 0;
 	int dash = 0;
