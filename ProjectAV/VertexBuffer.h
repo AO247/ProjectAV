@@ -11,7 +11,7 @@ namespace Bind
 		VertexBuffer(Graphics& gfx, const std::string& tag, const Dvtx::VertexBuffer& vbuf);
 		VertexBuffer(Graphics& gfx, const Dvtx::VertexBuffer& vbuf);
 		void Bind(Graphics& gfx) noxnd override;
-
+		ID3D11Buffer* Get() const noexcept;
 		const Dvtx::VertexLayout& GetLayout() const noexcept;
 
 		size_t GetVertexCount() const noexcept;
