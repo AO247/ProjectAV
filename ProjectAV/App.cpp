@@ -557,7 +557,7 @@ void App::DoFrame(float dt)
 
     pUpgradeHandler->DrawUpgradeMenu();
 
-    if(pSceneRoot->GetComponent<Global>()->drawLoadingScreen || bonusTime > 0.0f)
+    /*if(pSceneRoot->GetComponent<Global>()->drawLoadingScreen || bonusTime > 0.0f)
     {
         if (!pSceneRoot->GetComponent<Global>()->drawLoadingScreen)
         {
@@ -584,7 +584,7 @@ void App::DoFrame(float dt)
         {
             loadingScreen1->Draw(wnd.Gfx().GetContext());
         }
-    }
+    }*/
 
     wnd.Gfx().EndFrame();
     rg.Reset();
@@ -873,7 +873,7 @@ void App::SaveNodeTransformsRecursive(Node& node, std::ofstream& file)
     if (node.GetName() != "Root" && node.GetName() != "L Normal" && node.GetName() != "Camera" && node.GetName() != "FreeViewCamera" &&
         node.GetName() != "L Ability" && node.GetName() != "R Normal" && node.GetName() != "R Ability" && node.GetName() != "Player")
     {
-        DirectX::XMFLOAT3 pos = node.GetWorldPosition();
+        DirectX::XMFLOAT3 pos = node.GetLocalPosition();
         DirectX::XMFLOAT3 rot = node.GetLocalRotationEuler();
 
         // Ustaw precyzj� zapisu, aby unikn�� notacji naukowej i uzyska� czytelne liczby
