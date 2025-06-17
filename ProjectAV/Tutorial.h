@@ -22,6 +22,12 @@ public:
 	std::vector<Node*> levels;
 	std::vector<Vector3> checkpoints;
 	std::unique_ptr<Sprite> note1;
+	std::unique_ptr<Sprite> note2;
+	std::unique_ptr<Sprite> note3;
+	std::unique_ptr<Sprite> note4;
+	std::unique_ptr<Sprite> note5;
+	std::unique_ptr<Sprite> note6;
+	std::unique_ptr<Sprite> note7;
 	Sprite* currentNote;
 
 	Node* stone1 = nullptr;

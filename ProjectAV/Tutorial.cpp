@@ -11,9 +11,63 @@ Tutorial::Tutorial(Node* owner, Window* window, Node* player)
 		wnd->Gfx().GetContext(),
 		80,
 		180,
-		350,
-		600,
-		L"Images\\note1.png"
+		374,
+		182,
+		L"Images\\note1.2.png"
+	);
+	note2 = std::make_unique<Sprite>(
+		wnd->Gfx().GetDevice(),
+		wnd->Gfx().GetContext(),
+		30,
+		30,
+		374,
+		182,
+		L"Images\\note2.png"
+	);
+	note3 = std::make_unique<Sprite>(
+		wnd->Gfx().GetDevice(),
+		wnd->Gfx().GetContext(),
+		30,
+		30,
+		374,
+		182,
+		L"Images\\note3.png"
+	);
+	note4 = std::make_unique<Sprite>(
+		wnd->Gfx().GetDevice(),
+		wnd->Gfx().GetContext(),
+		30,
+		30,
+		374,
+		182,
+		L"Images\\note4.png"
+	);
+	note5 = std::make_unique<Sprite>(
+		wnd->Gfx().GetDevice(),
+		wnd->Gfx().GetContext(),
+		30,
+		30,
+		374,
+		182,
+		L"Images\\note5.png"
+	);
+	note6 = std::make_unique<Sprite>(
+		wnd->Gfx().GetDevice(),
+		wnd->Gfx().GetContext(),
+		30,
+		30,
+		374,
+		182,
+		L"Images\\note6.png"
+	);
+	note7 = std::make_unique<Sprite>(
+		wnd->Gfx().GetDevice(),
+		wnd->Gfx().GetContext(),
+		30,
+		30,
+		374,
+		182,
+		L"Images\\note7.png"
 	);
     checkpoints.push_back({ 8.5f, -17.2f, -422.7f });
     checkpoints.push_back({ 72.5f, -19.0f, -465.1f });
@@ -76,7 +130,7 @@ void Tutorial::Stage2(float dt)
 	timer += dt;
 	if (timer > 20.0f)
 	{
-		//currentNote = note1.get();
+		//currentNote = note2.get();
 		//message press jump mid air to use second jump
 	}
 	if (stone1->GetLocalPosition().y < stone1Pos.y - 30.0f)
