@@ -21,6 +21,7 @@ public:
 	std::vector<Node*> enemies;
 	std::vector<Node*> levels;
 	std::vector<Vector3> checkpoints;
+	std::unique_ptr<Sprite> note0;
 	std::unique_ptr<Sprite> note1;
 	std::unique_ptr<Sprite> note2;
 	std::unique_ptr<Sprite> note3;
@@ -43,6 +44,7 @@ public:
 	int currentStage = 1;
 	int playerDeathCount = 0;
 	float timer = 0.0f;
+	bool qPressed = false;
 private:
 	Window* wnd;
 

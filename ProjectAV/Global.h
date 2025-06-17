@@ -28,6 +28,7 @@ public:
 	Node* firstSpawn;
 	Node* levelsNode;
 	Node* base;
+	Tutorial* tut;
 	std::vector<Node*> enemies;
 	std::vector<Node*> levels;
 	int levelCount = 1;

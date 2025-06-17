@@ -67,6 +67,7 @@ private:
 	Node* pLeftHandAbility = nullptr;
 	Node* pRightHandNormal = nullptr;
 	Node* pRightHandAbility = nullptr;
+	Node* tutorialNode = nullptr;
     UpgradeHandler* pUpgradeHandler = nullptr;
 
     TestCube cube{ wnd.Gfx(),4.0f };

@@ -127,6 +127,7 @@ void Global::StartRun()
 	levelsNode->AddChild(std::move(pLevel2));
 	levels.push_back(level2);
 	AddSpecialLevel();
+
 	AddSpecialLevel();
 	AddSpecialLevel();
 }
@@ -136,10 +137,15 @@ void Global::EndRun()
 	playerNode->GetComponent<PlayerController>()->abilitySlot1->GetComponent<Ability>()->objects.clear();
 	playerNode->GetComponent<PlayerController>()->abilitySlot2->GetComponent<Ability>()->objects.clear();
 	playerNode->GetComponent<PlayerController>()->abilitySlot3->GetComponent<Ability>()->objects.clear();
-	ending = true;
-	endingRemover = levels.size() - 1;
 	playerNode->GetComponent<Health>()->currentHealth = playerNode->GetComponent<Health>()->maxHealth;
 	playerNode->GetComponent<PlayerController>()->alive = true;
+	/*if (!tut->completed)
+	{
+		playerNode->SetLocalPosition(tut->checkpoints[tut->currentCheckpointIndex]);
+		return;
+	}*/
+	ending = true;
+	endingRemover = levels.size() - 1;
 	playerNode->SetLocalPosition(enterPoint);
 	currentLevel = 0;
 	levelCount = 1;

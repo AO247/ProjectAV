@@ -38,6 +38,7 @@ public:
 	void EndState();
 	void Die();
 	void ChangeState(StateType nextState);
+	float timer = 0.0f;
 
 private:
 

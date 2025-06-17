@@ -55,8 +55,7 @@ StateMachine::~StateMachine()
 
 void StateMachine::Update(float dt)
 {
-
-
+	if (timer < 6.0f) timer += dt;
 	if (currentState)
 	{
 		currentState->Update(this, dt);
@@ -73,7 +72,7 @@ void StateMachine::Update(float dt)
 		}
 		
 	}
-	if (pOwner->GetLocalPosition().y < -50.0f)
+	if (pOwner->GetLocalPosition().y < -50.0f && timer >= 2.0f)
 	{
 		pOwner->Destroy();
 	}
@@ -163,6 +162,11 @@ void StateMachine::Die()
 {
 	/*pPlayer->GetComponent<PlayerController>()->abilitySlot3->GetComponent<Ability>()->killsCount++;
 	pPlayer->GetComponent<Health>()->TakeDamage(-1);*/
+	if (timer < 6.0f)
+	{
+		pOwner->GetComponent<Health>()->currentHealth = pOwner->GetComponent<Health>()->maxHealth;
+		return;
+	}
 	if (!isDead)
 	{
 		isDead = true;

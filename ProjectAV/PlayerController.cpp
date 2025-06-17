@@ -13,6 +13,7 @@ PlayerController::PlayerController(Node* owner, Window& window)
 {
 	rigidbody = owner->GetComponent<Rigidbody>();
 	camera = owner->GetRoot()->FindFirstChildByTag("CAMERA");
+    PhysicsCommon::physicsSystem->GetBodyInterface().SetFriction(rigidbody->GetBodyID(), 0);
 }
 
 
@@ -25,8 +26,8 @@ void PlayerController::Update(float dt)
         AutoJump();
         PlayerGroundCheck();
 		KeyboardInput();
+        MovePlayer(dt);
 		SpeedControl();
-		MovePlayer(dt);
     }
 }
 
@@ -37,20 +38,20 @@ void PlayerController::SpeedControl()
 	Vec3 velocity = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
 	velocity.SetY(0.0f);
 	if (grounded) {
-        if (velocity.Length() > moveSpeed)
+        if (velocity.Length() > maxSpeed)
         {
             velocity = velocity.Normalized();
-            velocity *= moveSpeed;
+            velocity *= maxSpeed;
             Vec3 limitedVel = velocity;
             limitedVel.SetY(PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID()).GetY());
             PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rigidbody->GetBodyID(), limitedVel);
         }
     }
 	else {
-        if (velocity.Length() > (moveSpeed * airMultiplier))
+        if (velocity.Length() > (maxSpeed * airMultiplier))
         {
             velocity = velocity.Normalized();
-            velocity *= moveSpeed * airMultiplier;
+            velocity *= maxSpeed * airMultiplier;
             Vec3 limitedVel = velocity;
             limitedVel.SetY(PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID()).GetY());
             PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rigidbody->GetBodyID(), limitedVel);
@@ -128,8 +129,16 @@ void PlayerController::Dash()
     Vec3 dir = Vec3(dashDirection.x, dashDirection.y, dashDirection.z);
     dashTimer = 0.2f;
 	dashCooldownTimer = dashCooldown;
-
-	PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rigidbody->GetBodyID(), Vec3(0.0f, 0.0f, 0.0f));
+	Vec3 vel = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
+    if(vel.GetY() < 0.0f)
+    {
+        vel.SetY(vel.GetY() / 2.0f);
+    }
+    else
+    {
+        vel.SetY(0.0f);
+	}
+	PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rigidbody->GetBodyID(), Vec3(0.0f, vel.GetY(), 0.0f));
 	PhysicsCommon::physicsSystem->GetBodyInterface().SetFriction(rigidbody->GetBodyID(), 0.0f);
     PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(rigidbody->GetBodyID(), dir * dashForce);
 
@@ -191,14 +200,47 @@ void PlayerController::PlayerGroundCheck()
 
 void PlayerController::MovePlayer(float dt)
 {
-    if (grounded)
+   /* if (grounded)
     {
-        PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * moveSpeed * 1000.0f * dt);
+        PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * acceleration * 1000.0f * dt);
     }
     else
     {
-        PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * moveSpeed * 100.0f * dt);
+        PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * acceleration * 800.0f * dt);
+    }*/
+    if (grounded)
+    {
+            Vec3 desiredVel = Vec3(moveDirection.x, 0.0f, moveDirection.z);
+            Vec3 currentVel = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
+            Vec3 copy = currentVel;
+            currentVel.SetY(0);
+            float currentLength = currentVel.Length();
+            currentVel = currentVel.Normalized();
+
+            /*if ((desiredVel - currentVel).Length() > 0.5f)
+            {
+                Vec3 newVelocity = desiredVel * (currentLength / 2.0f);
+                newVelocity.SetY(copy.GetY());
+                PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rigidbody->GetBodyID(), newVelocity);
+            }*/
+            if ((desiredVel - currentVel).Length() > 0.2f)
+            {
+                Vec3 newVelocity = desiredVel * currentLength;
+                newVelocity.SetY(copy.GetY());
+                PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rigidbody->GetBodyID(), newVelocity);
+            }
+
+
+            PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * acceleration * 1000.0f * dt);
     }
+    else
+    {
+        PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(
+            rigidbody->GetBodyID(),
+            Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * acceleration * 800.0f * dt
+        );
+    }
+
 }
 
 void PlayerController::AutoJump()
@@ -333,8 +375,10 @@ void PlayerController::KeyboardInput()
 }
 void PlayerController::DrawImGuiControls()
 {
-    ImGui::InputFloat("Move Speed", &moveSpeed);
+    ImGui::InputFloat("Move Speed", &maxSpeed);
+	ImGui::InputFloat("Acceleration", &acceleration);
     ImGui::InputFloat("JumpForce", &jumpForce);
+	ImGui::InputFloat("Second Jump Force", &secondJumpForce);
 	ImGui::InputFloat("Dash Force", &dashForce);
 	ImGui::InputFloat("Dash Cooldown", &dashCooldown);
     ImGui::InputFloat("Height", &height);

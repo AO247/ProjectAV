@@ -1936,6 +1936,7 @@ public:
         InstantiateRock2(pNewNode, Vector3(22.00f, 0.50f, -15.20f), 1.0f, Vector3(0.0f, -0.19f, 0.0f));
         InstantiateRock4(pNewNode, Vector3(-15.90f, 0.00f, -7.40f), 1.0f, Vector3(0.00f, -1.29f, 0.00f));
         InstantiateRock1(pNewNode, { -6.06f, 16.70f, 35.21f }, 0.9f, Vector3(0.00f, 0.00f, 3.14f));
+		InstantiateBaseColumn(pNewNode, { 66.9f, -1.4f, -31.9f }, 0.8f);
         InstantiatePlatform3(pNewNode, Vector3(0.00f, 0.00f, 8.30f), 1.0f, Vector3(0.00f, 1.75f, 0.00f));
 
         parentNode->AddChild(std::move(pNewNodeOwner));
@@ -1968,7 +1969,7 @@ public:
         pNewNodeOwner->SetLocalRotation(rotation);
         Node* pNewNode = pNewNodeOwner.get();
 
-        InstantiateStoneStack1(pNewNode, Vector3(-0.72f, 1.72f, -1.72f), 1.0f);
+        InstantiateStoneStack1(pNewNode, Vector3(-2.72f, 1.72f, -1.72f), 1.0f);
         InstantiateRock2(pNewNode, Vector3(21.70f, -0.10f, -17.70f), 1.0f);
         InstantiateRock3(pNewNode, Vector3(6.40f, 0.20f, 22.50f), 1.0f);
         InstantiateRock3(pNewNode, Vector3(22.30f, 0.00f, -10.90f), 1.0f);
@@ -2064,7 +2065,6 @@ public:
         InstantiateRock4(pNewNode, Vector3(-26.00f, -0.30f, 23.70f), 1.0f);
         InstantiateRock5(pNewNode, Vector3(30.40f, -0.40f, 0.60f), 1.0f);
         InstantiateRockDouble(pNewNode, Vector3(24.10f, -0.40f, 19.40f), 1.0f, Vector3(0.00f, 1.10f, 0.00f));
-		InstantiateNormalEnemy(pNewNode, Vector3(0.0f, 8.0f, 0.0f), 1.0f, player);
 
 		parentNode->AddChild(std::move(pNewNodeOwner));
         return pNewNode;
@@ -2086,16 +2086,19 @@ public:
 		Node* AbilityIsland = InstantiateAbilityIsland(pNewNodeOwner.get(), { -92.29f, 0.00f, 50.61f }, 1.0f, { 0.0f, 2.36f, 0.0f });
 		Node* UltIsland = InstantiateUltIsland(pNewNodeOwner.get(), { -250.91f, -0.01f, -137.29f }, 1.0f, { 0.0f, -1.66f, 0.04f });
         
-        tut->stone1 = InstantiateStone1(pNewNodeOwner.get(), { -163.0f, 1.2f, 26.0f }, 2.0f);
+        tut->stone1 = InstantiateStone1(pNewNodeOwner.get(), { -163.0f, 3.2f, 26.0f }, 2.0f);
         tut->stone2 = InstantiateStone1(pNewNodeOwner.get(), { -210.0f, 1.8f, -40.0f }, 2.0f);
         Node* enemy1 = InstantiateNormalEnemy(root, { 187.4f, -18.3f, -267.6f }, 1.6f, player);
         Node* enemy2 = InstantiateNormalEnemy(root, { 105.0f, -15.5f, -236.4f }, 1.6f, player);
         Node* enemy3 = InstantiateNormalEnemy(root, { 44.1f, -15.3f, -198.9f }, 1.6f, player);
         Node* enemy4 = InstantiateShootingEnemy(root, { 32.2f, -15.8f, -203.6f }, 1.6f, player);
+        Node* enemy5 = InstantiateShootingEnemy(root, { 35.2f, -15.8f, -190.6f }, 1.6f, player);
+
         enemy1->GetComponent<Walking>()->maxSpeed = 0.0f;
         enemy2->GetComponent<Walking>()->maxSpeed = 0.0f;
         enemy3->GetComponent<Walking>()->maxSpeed = 0.0f;        
         enemy4->GetComponent<Walking>()->maxSpeed = 0.0f;
+        enemy5->GetComponent<Walking>()->maxSpeed = 0.0f;
 
         tut->SetStones();
 		//InstantiateNormalEnemy(pNewNodeOwner.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f, pPlayer);
@@ -4072,7 +4075,7 @@ public:
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
 
-        BodyCreationSettings bodySettings(new JPH::SphereShape(1.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
+        BodyCreationSettings bodySettings(new JPH::SphereShape(3.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
         pNewNode->AddComponent(
             std::make_unique<Trigger>(pNewNode, bodySettings, false)
         );
@@ -4103,7 +4106,7 @@ public:
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
 
-        BodyCreationSettings bodySettings(new JPH::SphereShape(1.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
+        BodyCreationSettings bodySettings(new JPH::SphereShape(3.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
         pNewNode->AddComponent(
             std::make_unique<Trigger>(pNewNode, bodySettings, false)
         );

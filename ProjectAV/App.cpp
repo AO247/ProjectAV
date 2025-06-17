@@ -282,7 +282,8 @@ App::App(const std::string& commandLine)
     pUpgradeHandler->SetBasicValues();
     pSceneRoot->GetComponent<Global>()->upgradeHandler = pUpgradeHandler;
 
-	PrefabManager::InstantiateTutorialIslands(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
+	tutorialNode = PrefabManager::InstantiateTutorialIslands(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
+    pSceneRoot->GetComponent<Global>()->tut = tutorialNode->GetComponent<Tutorial>();
 
     const int screenWidth = 1920;
     const int screenHeight = 1080;
@@ -450,6 +451,9 @@ void App::HandleInput(float dt)
         case 'H': 
             showControlWindow = !showControlWindow;
             break;
+        /*case 'Q':
+			tutorialNode->GetComponent<Tutorial>()->qPressed= true;
+			break;*/
         /*case 'B':
             if (pPlayer->GetComponent<PlayerController>()->abilitySlot1 == pAbility1)
             {
@@ -506,6 +510,7 @@ void App::HandleInput(float dt)
 
 void App::DoFrame(float dt)
 {
+    CleanupDestroyedNodes(pSceneRoot.get());
 	pSceneRoot->Update(dt);
     auto* contact = dynamic_cast<MyContactListener*>(physicsSystem->GetContactListener());
     contact->ExecuteTriggerActivationQueue();
@@ -574,6 +579,8 @@ void App::DoFrame(float dt)
     }
 
     pUpgradeHandler->DrawUpgradeMenu();
+
+	tutorialNode->GetComponent<Tutorial>()->DrawNote();
 
     if(pSceneRoot->GetComponent<Global>()->drawLoadingScreen || bonusTime > 0.0f)
     {
