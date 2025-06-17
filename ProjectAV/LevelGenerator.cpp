@@ -74,7 +74,23 @@ void LevelGenerator::GenerateIslands()
             else if (islandsInfo[i].name == "BIG10")
             {
                 islandPrefab = PrefabManager::InstantiateIslandBig10(pOwner, Vector3(islandsInfo[i].pos.x, islandsInfo[i].pos.y, islandsInfo[i].pos.z), 1.0f);
-            }
+			}
+			else if (islandsInfo[i].name == "MEDIUM1")
+			{
+				islandPrefab = PrefabManager::InstantiateIslandMedium1(pOwner, Vector3(islandsInfo[i].pos.x, islandsInfo[i].pos.y, islandsInfo[i].pos.z), 1.0f);
+			}
+			else if (islandsInfo[i].name == "SMALL1")
+			{
+				islandPrefab = PrefabManager::InstantiateIslandSmall1(pOwner, Vector3(islandsInfo[i].pos.x, islandsInfo[i].pos.y, islandsInfo[i].pos.z), 1.0f);
+			}
+			else if (islandsInfo[i].name == "SMALL2")
+			{
+				islandPrefab = PrefabManager::InstantiateIslandSmall2(pOwner, Vector3(islandsInfo[i].pos.x, islandsInfo[i].pos.y, islandsInfo[i].pos.z), 1.0f);
+			}
+			else if (islandsInfo[i].name == "SMALL3")
+			{
+				islandPrefab = PrefabManager::InstantiateIslandSmall3(pOwner, Vector3(islandsInfo[i].pos.x, islandsInfo[i].pos.y, islandsInfo[i].pos.z), 1.0f);
+			}
             if (islandsInfo[i].name == "FIRST")
             {
                 islandPrefab = PrefabManager::InstantiateFirstIsland(pOwner, Vector3(islandsInfo[i].pos.x, islandsInfo[i].pos.y, islandsInfo[i].pos.z), 1.0f);
@@ -200,10 +216,15 @@ void LevelGenerator::GenerateIslands()
                 else if (randIsland == 1 && mediumIslandCount > 0)
                 {
                     spawned = false;
-                    int randMedium = rand() % 2;
+                    int randMedium = rand() % 1;
                     if (randMedium == 0) {
-                        //islandPrefab = PrefabManager::InstantiateIslandBig1(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
-
+                        islandInfo.name = "MEDIUM1";
+                        islandInfo.pos = { 0.0f, 0.0f, 0.0f };
+                        islandInfo.leftPoint = { -44.00f, 0.00f, 21.10f };
+                        islandInfo.upPoint = { -6.0f, 0.0f, 42.0f };
+                        islandInfo.rightPoint = { 46.0f, 0.0f, 18.0f };
+                        islandInfo.downPoint = { 8.0f, 0.0f, -36.0f };
+                        islandInfo.extents = { 60.0f, 60.0f };
                     }
                     else {
                         //islandPrefab = PrefabManager::InstantiateIslandBig1(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
@@ -215,21 +236,33 @@ void LevelGenerator::GenerateIslands()
                 else if (randIsland == 2 && smallIslandCount > 0)
                 {
                     spawned = false;
-                    int randSmall = rand() % 2;
+                    int randSmall = rand() % 3;
                     if (randSmall == 0) {
-                        //islandPrefab = PrefabManager::InstantiateIslandSmall2(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
-
-
+                        islandInfo.name = "SMALL1";
+                        islandInfo.pos = { 0.0f, 0.0f, 0.0f };
+                        islandInfo.leftPoint = { -34.0f, 1.0f, 5.0f };
+                        islandInfo.upPoint = { -10.0f, 2.0f, 33.0f };
+                        islandInfo.rightPoint = { 34.0f, 0.0f, -10.0f };
+                        islandInfo.downPoint = { 0.0f, 0.0f, -33.0f };
+                        islandInfo.extents = { 60.0f, 60.0f };
                     }
                     else if(randSmall == 1) {
-                        //islandPrefab = prefabManager->InstantiateIslandSmall2(pOwner, 0.0f, 0.0f, 0.0f, 1.5f);
-                        //islandPrefab = PrefabManager::InstantiateIslandSmall2(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
-
+                        islandInfo.name = "SMALL2";
+                        islandInfo.pos = { 0.0f, 0.0f, 0.0f };
+                        islandInfo.leftPoint = { -33.0f, 0.0f, 6.0f };
+                        islandInfo.upPoint = { 15.0f, 0.0f, 36.0f };
+                        islandInfo.rightPoint = { 33.0f, 0.0f, 16.0f };
+                        islandInfo.downPoint = { 0.0f, 0.0f, -25.0f };
+                        islandInfo.extents = { 60.0f, 60.0f };
                     }
                     else {
-               
-                    //islandPrefab = PrefabManager::InstantiateIslandSmall3(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
-
+                        islandInfo.name = "SMALL3";
+                        islandInfo.pos = { 0.0f, 0.0f, 0.0f };
+                        islandInfo.leftPoint = { -33.0f, 0.0f, 8.0f };
+                        islandInfo.upPoint = { 3.0f, 0.0f, 31.0f };
+                        islandInfo.rightPoint = { 33.0f, 0.0f, -14.0f };
+                        islandInfo.downPoint = { 0.0f, 0.0f, -31.0f };
+                        islandInfo.extents = { 60.0f, 60.0f };
                     }
                     smallIslandCount--;
                     break;
