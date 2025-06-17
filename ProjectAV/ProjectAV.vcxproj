@@ -302,6 +302,7 @@
     <ClCompile Include="TransformCbuf.cpp" />
     <ClCompile Include="TransformCbufScaling.cpp" />
     <ClCompile Include="Trigger.cpp" />
+    <ClCompile Include="Tutorial.cpp" />
     <ClCompile Include="UpgradeHandler.cpp" />
     <ClCompile Include="Vertex.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
@@ -425,6 +426,7 @@
     <ClInclude Include="TransformCbuf.h" />
     <ClInclude Include="TransformCbufScaling.h" />
     <ClInclude Include="Trigger.h" />
+    <ClInclude Include="Tutorial.h" />
     <ClInclude Include="UpgradeHandler.h" />
     <ClInclude Include="Vertex.h" />
     <ClInclude Include="VertexBuffer.h" />

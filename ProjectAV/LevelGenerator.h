@@ -13,9 +13,9 @@ public:
 	LevelGenerator(Node* owner, Node* pPlayer, bool rot);
 	virtual ~LevelGenerator() = default;
 
-	int bigIslandCount = 10;
-	int mediumIslandCount = 0;
-	int smallIslandCount = 0;
+	int bigIslandCount = 2;
+	int mediumIslandCount = 1;
+	int smallIslandCount = 2;
 
 	int numberOfHardEnemies = 3;
 	int numberOfMediumEnemies = 1;
@@ -39,7 +39,6 @@ private:
 		Vector3 upPoint{ 0.0f, 0.0f, 0.0f };
 		Vector3 rightPoint{ 0.0f, 0.0f, 0.0f };
 		Vector3 downPoint{ 0.0f, 0.0f, 0.0f };
-		Vector2 extents{ 0.0f, 0.0f };
 	};
 	float distance = 1.0f;
 	std::vector<Node*> islands;

@@ -127,7 +127,6 @@ void LevelGenerator::GenerateIslands()
                         islandInfo.upPoint = { 40.0f, 0.0f , 65.0f };
                         islandInfo.rightPoint = { 65.0f, 0.0f , 20.0f };
                         islandInfo.downPoint = { 30.0f, 0.0f , -65.0f };
-                        islandInfo.extents = {60.0f, 60.0f};
                     }
                     else if(randLarge == 1){
                         islandInfo.name = "BIG2";
@@ -136,7 +135,6 @@ void LevelGenerator::GenerateIslands()
                         islandInfo.upPoint = { -7.0f, 3.0f, 58.0f };
                         islandInfo.rightPoint = { 67.0f, 0.0f, 0.0f };
                         islandInfo.downPoint = { 4.0f, 0.0f, -64.0f };
-                        islandInfo.extents = { 60.0f, 60.0f };
                     }
                     else if (randLarge == 2) {
 						islandInfo.name = "BIG3";
@@ -145,7 +143,6 @@ void LevelGenerator::GenerateIslands()
 						islandInfo.upPoint = { 39.0f, 0.0f, 50.0f };
 						islandInfo.rightPoint = { 82.0f, 0.0f, -4.0f };
 						islandInfo.downPoint = { 0.0f, 0.0f, -45.0f };
-						islandInfo.extents = { 60.0f, 60.0f };
                     }
                     else if (randLarge == 3) {
 						islandInfo.name = "BIG4";
@@ -154,7 +151,6 @@ void LevelGenerator::GenerateIslands()
 						islandInfo.upPoint = { 9.80f, 0.00f, 50.00f };
 						islandInfo.rightPoint = { 82.00f, 0.00f, -4.00f };
 						islandInfo.downPoint = { -5.90f, 0.00f, -45.00f };
-						islandInfo.extents = { 60.0f, 60.0f };
                     }
                     else if (randLarge == 4) {
                         islandInfo.name = "BIG5";
@@ -163,7 +159,6 @@ void LevelGenerator::GenerateIslands()
                         islandInfo.upPoint = { 55.20f, 0.00f, 49.00f };
                         islandInfo.rightPoint = { 82.00f, 0.00f, -4.00f };
                         islandInfo.downPoint = { -5.90f, 0.00f, -45.00f };
-                        islandInfo.extents = { 60.0f, 60.0f };
                     }
                     else if (randLarge == 5) {
 						islandInfo.name = "BIG6";
@@ -172,7 +167,6 @@ void LevelGenerator::GenerateIslands()
 						islandInfo.upPoint = { -7.20f, 5.00f, 49.00f };
 						islandInfo.rightPoint = { 82.00f, 0.00f, -4.00f };
 						islandInfo.downPoint = { -5.90f, 0.00f, -45.00f };
-						islandInfo.extents = { 60.0f, 60.0f };
                     }
                     else if (randLarge == 6) {
 						islandInfo.name = "BIG7";
@@ -181,7 +175,6 @@ void LevelGenerator::GenerateIslands()
 						islandInfo.upPoint = { -7.00f, 0.00f, 58.00f };
 						islandInfo.rightPoint = { 67.00f, 0.00f, -18.00f };
 						islandInfo.downPoint = { -15.70f, 0.00f, -64.00f };
-						islandInfo.extents = { 60.0f, 60.0f };
                     }
                     else if (randLarge == 7) {
 						islandInfo.name = "BIG8";
@@ -190,7 +183,6 @@ void LevelGenerator::GenerateIslands()
 						islandInfo.upPoint = { -7.00f, 0.00f, 58.00f };
 						islandInfo.rightPoint = { 67.00f, 0.00f, -18.00f };
 						islandInfo.downPoint = { -15.70f, 0.00f, -64.00f };
-						islandInfo.extents = { 60.0f, 60.0f };
                     }
                     else if(randLarge == 8) {
                         islandInfo.name = "BIG9";
@@ -199,7 +191,6 @@ void LevelGenerator::GenerateIslands()
                         islandInfo.upPoint = { -7.00f, 0.00f, 58.00f };
                         islandInfo.rightPoint = { 67.00f, 0.00f, -18.00f };
                         islandInfo.downPoint = { -15.70f, 0.00f, -64.00f };
-                        islandInfo.extents = { 60.0f, 60.0f };
                     } 
                     else {
 						islandInfo.name = "BIG10";
@@ -208,7 +199,6 @@ void LevelGenerator::GenerateIslands()
 						islandInfo.upPoint = { 5.70f, 0.00f, 58.00f };
 						islandInfo.rightPoint = { 67.00f, 0.00f, -18.00f };
 						islandInfo.downPoint = { 0.40f, 18.00f, -64.00f };
-						islandInfo.extents = { 60.0f, 60.0f };
                     }
                     bigIslandCount--;
                     break;
@@ -224,7 +214,6 @@ void LevelGenerator::GenerateIslands()
                         islandInfo.upPoint = { -6.0f, 0.0f, 42.0f };
                         islandInfo.rightPoint = { 46.0f, 0.0f, 18.0f };
                         islandInfo.downPoint = { 8.0f, 0.0f, -36.0f };
-                        islandInfo.extents = { 60.0f, 60.0f };
                     }
                     else {
                         //islandPrefab = PrefabManager::InstantiateIslandBig1(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
@@ -244,7 +233,6 @@ void LevelGenerator::GenerateIslands()
                         islandInfo.upPoint = { -10.0f, 2.0f, 33.0f };
                         islandInfo.rightPoint = { 34.0f, 0.0f, -10.0f };
                         islandInfo.downPoint = { 0.0f, 0.0f, -33.0f };
-                        islandInfo.extents = { 60.0f, 60.0f };
                     }
                     else if(randSmall == 1) {
                         islandInfo.name = "SMALL2";
@@ -253,7 +241,6 @@ void LevelGenerator::GenerateIslands()
                         islandInfo.upPoint = { 15.0f, 0.0f, 36.0f };
                         islandInfo.rightPoint = { 33.0f, 0.0f, 16.0f };
                         islandInfo.downPoint = { 0.0f, 0.0f, -25.0f };
-                        islandInfo.extents = { 60.0f, 60.0f };
                     }
                     else {
                         islandInfo.name = "SMALL3";
@@ -262,7 +249,6 @@ void LevelGenerator::GenerateIslands()
                         islandInfo.upPoint = { 3.0f, 0.0f, 31.0f };
                         islandInfo.rightPoint = { 33.0f, 0.0f, -14.0f };
                         islandInfo.downPoint = { 0.0f, 0.0f, -31.0f };
-                        islandInfo.extents = { 60.0f, 60.0f };
                     }
                     smallIslandCount--;
                     break;
@@ -281,7 +267,6 @@ void LevelGenerator::GenerateIslands()
             islandInfo.upPoint = { 3.0f, 0.0f , 36.0f };
             islandInfo.rightPoint = { 35.0f, 0.0f , -4.0f };
             islandInfo.downPoint = { 0.0f, 0.0f , -30.0f };
-            islandInfo.extents = { 30.0f, 30.0f };
         }
         if (islandsInfo.size() != 0)  Rotate();
     }
@@ -434,9 +419,24 @@ void LevelGenerator::GenerateIslands()
 
 bool LevelGenerator::Collide(islandInfoStruct island1, islandInfoStruct island2)
 {
+    Vector3 pos1 = island1.pos;
+	Vector3 pos2 = island2.pos;
 
-    if (std::abs(island1.pos.x - island2.pos.x) > (island1.extents.x + island2.extents.x)) return false;
-    if (std::abs(island1.pos.z - island2.pos.z) > (island1.extents.y + island2.extents.y)) return false;
+	pos1.x += (island1.rightPoint.x + island1.leftPoint.x)/2;
+	pos1.z += (island1.upPoint.z + island1.downPoint.z) / 2;
+	pos2.x += (island2.rightPoint.x + island2.leftPoint.x) / 2;
+	pos2.z += (island2.upPoint.z + island2.downPoint.z) / 2;
+
+    Vector2 extents1;
+	Vector2 extents2;
+
+	extents1.x = (std::abs(island1.rightPoint.x - island1.leftPoint.x) / 2.0f) - 2.0f;
+	extents1.y = (std::abs(island1.upPoint.z - island1.downPoint.z) / 2.0f) - 2.0f;
+	extents2.x = (std::abs(island2.rightPoint.x - island2.leftPoint.x) / 2.0f) - 2.0f;
+	extents2.y = (std::abs(island2.upPoint.z - island2.downPoint.z) / 2.0f) - 2.0f;
+
+    if (std::abs(pos1.x - pos2.x) > (extents1.x + extents2.x)) return false;
+    if (std::abs(pos1.z - pos2.z) > (extents1.y + extents2.y)) return false;
     return true;
 }
 

@@ -8,7 +8,7 @@ Global::Global(Node* owner, Window& window, Node* player, Node* base)
 	pOwner->AddChild(std::move(pLevels));
 
 	player->SetLocalPosition(enterPoint);
-	PrefabManager::InstantiateStartIsland(base, Vector3(0.0f, 0.0f, 0.0f), 4.0f);
+	PrefabManager::InstantiateStartIsland(base, Vector3(0.0f, 0.0f, 0.0f), 2.0f);
 	firstSpawn = PrefabManager::InstantiateFirstIsland(base, Vector3(0.0f, 5.0f, -20.0f), 1.0f);
 	firstSpawn->GetComponent<SpawnJump>()->Activate();
 	firstSpawn->GetComponent<SpawnJump>()->upgraded = true;

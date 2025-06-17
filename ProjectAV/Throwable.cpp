@@ -7,12 +7,16 @@ Throwable::Throwable(Node* owner) : Component(owner)
 
 void Throwable::OnCollisionEnter(Node* object)
 {
+	if (object == nullptr) return;
 	Vec3 position = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
 	float l = position.Length();
 	if (l < speed) return;
-	if (object->GetComponent<Health>())
+	if (object->tag == "ENEMY" || object->tag == "PLAYER")
 	{
-		object->GetComponent<Health>()->TakeDamage(damage, heavy);
+		if (object->GetComponent<Health>())
+		{
+			object->GetComponent<Health>()->TakeDamage(damage, heavy);
+		}
 	}
 	if (pOwner->GetComponent<SoundEffectsPlayer>())
 	{
