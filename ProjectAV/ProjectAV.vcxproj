@@ -83,8 +83,8 @@
     <LibraryPath>$(SolutionDir)ProjectAV\Library\x64\Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)ProjectAV\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\VS Projects\ZTGK\ProjectAV\Library\x64\mojeRelease;$(SolutionDir)ProjectAV\Library\x64\Release;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)ProjectAV\Include\assimp;$(SolutionDir)ProjectAV\Include;$(SolutionDir)ProjectAV\Include\dxtex;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)ProjectAV\Library\x64\mojeRelease;$(SolutionDir)ProjectAV\Library\x64\Release;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -138,11 +138,12 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <FloatingPointModel>Fast</FloatingPointModel>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <Optimization>Disabled</Optimization>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>assimp-vc140-mt.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;DirectXTex.lib;Jolt.lib;DirectXTK.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>assimp-vc143-mtd.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;DirectXTex.lib;Jolt.lib;DirectXTK.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:\Users\Zuzia\Desktop\studia\vcpkg\installed\x64-windows-static\debug\lib;$(SolutionDir)ProjectAV\Library\x64\mojeDebug;D:\vcpkg-master\installed\x64-windows-static\debug\lib;D:\vcpkg\installed\x64-windows-static\debug\lib;D:\GameDev\vcpkg\installed\x64-windows-static\debug\lib;C:\semestr_6\ZTGK\vcpkg\installed\x64-windows-static\debug\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -159,13 +160,14 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FloatingPointModel>Fast</FloatingPointModel>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <Optimization>MinSpace</Optimization>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;assimp-vc140-mt.lib;DirectXTex.lib;Jolt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>assimp-vc143-mt.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;DirectXTex.lib;Jolt.lib;DirectXTK.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -175,6 +177,7 @@
     <ClCompile Include="Ability4.cpp" />
     <ClCompile Include="Ability5.cpp" />
     <ClCompile Include="Ability5Extend.cpp" />
+    <ClCompile Include="Ability6.cpp" />
     <ClCompile Include="App.cpp" />
     <ClCompile Include="AttackState.cpp" />
     <ClCompile Include="BasicAttack.cpp" />
@@ -236,6 +239,7 @@
     <ClInclude Include="Ability4.h" />
     <ClInclude Include="Ability5.h" />
     <ClInclude Include="Ability5Extend.h" />
+    <ClInclude Include="Ability6.h" />
     <ClInclude Include="BrokenPart.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="BindingPass.h" />
@@ -268,6 +272,7 @@
     <ClCompile Include="Sampler.cpp" />
     <ClCompile Include="ShootAttack.cpp" />
     <ClCompile Include="Sink.cpp" />
+    <ClCompile Include="SkinningCBuf.cpp" />
     <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="SkyboxPass.cpp" />
     <ClCompile Include="SolidBox.cpp" />
@@ -385,6 +390,7 @@
     <ClInclude Include="Sampler.h" />
     <ClInclude Include="ShootAttack.h" />
     <ClInclude Include="Sink.h" />
+    <ClInclude Include="SkinningCBuf.h" />
     <ClInclude Include="Skybox.h" />
     <ClInclude Include="SkyboxPass.h" />
     <ClInclude Include="SolidBox.h" />

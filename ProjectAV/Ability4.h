@@ -20,14 +20,12 @@ public:
 
 	virtual void Update(float dt) override;
 	virtual void DrawImGuiControls() override;
-	void OnTriggerEnter(Node* other) override;
-	void OnTriggerExit(Node* other) override;
 	void Pressed() override;
 	void Released() override;
-	void Activated();
 
 	float cooldown = 1.5f;
 	float timeToChange = 0.0f;
+	float pressedTime = 0.0f;
 	bool stop = true;
 
 	float force = 600.0f;
@@ -37,6 +35,8 @@ public:
 
 	Node* leftHandNormal = nullptr;
 	Node* leftHandAbility = nullptr;
+	Node* selectedNode = nullptr;
+	Ability* baseAbility = nullptr;
 private:
 	Node* player = nullptr;
 	void KeyboardInput();

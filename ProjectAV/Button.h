@@ -18,6 +18,7 @@ public:
 
     void Draw(ID3D11DeviceContext* context, float screenWidth, float screenHeight);
     bool IsClicked(int mouseX, int mouseY);
+	bool IsHovered(int mouseX, int mouseY);
 
     void SetPosition(int x, int y);
     void SetSize(int width, int height);

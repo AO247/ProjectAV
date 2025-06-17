@@ -76,17 +76,19 @@ App::App(const std::string& commandLine)
     pPlayer = pPlayerOwner.get();
 	auto abilities = std::make_unique<Node>("Abilities");
     auto pAbility1Owner = std::make_unique<Node>("Ability1", nullptr, "TRIGGER");
-    pAbility1 = pAbility1Owner.get();
+    Node* pAbility1 = pAbility1Owner.get();
     auto pAbility2Owner = std::make_unique<Node>("Ability2", nullptr, "TRIGGER");
-    pAbility2 = pAbility2Owner.get();
+    Node* pAbility2 = pAbility2Owner.get();
     auto pAbility3Owner = std::make_unique<Node>("Ability3", nullptr, "TRIGGER");
-    pAbility3 = pAbility3Owner.get();
+    Node* pAbility3 = pAbility3Owner.get();
     auto pAbility4Owner = std::make_unique<Node>("Ability4", nullptr, "TRIGGER");
-    pAbility4 = pAbility4Owner.get();
+    Node* pAbility4 = pAbility4Owner.get();
 	auto pAbility5Owner = std::make_unique<Node>("Ability5", nullptr, "TRIGGER");
-	pAbility5 = pAbility5Owner.get(); 
+    Node* pAbility5 = pAbility5Owner.get();
+    auto pAbility6Owner = std::make_unique<Node>("Ability6", nullptr, "TRIGGER");
+    Node* pAbility6 = pAbility6Owner.get();
     auto pPrefabsOwner = std::make_unique<Node>("Temporary", nullptr, "PREFABS");
-    pPrefabs = pPrefabsOwner.get();
+    Node* pPrefabs = pPrefabsOwner.get();
     auto pLeftHandNormalOwner = std::make_unique<Node>("L Normal", nullptr, "HANDS");
     pLeftHandNormal = pLeftHandNormalOwner.get();
     auto pLeftHandAbilityOwner = std::make_unique<Node>("L Ability", nullptr, "HANDS");
@@ -110,12 +112,14 @@ App::App(const std::string& commandLine)
     pAbilities->AddChild(std::move(pAbility3Owner));
     pAbilities->AddChild(std::move(pAbility4Owner));
     pAbilities->AddChild(std::move(pAbility5Owner));
+    pAbilities->AddChild(std::move(pAbility6Owner));
     pSceneRoot->AddChild(std::move(pPrefabsOwner));
     pCamera->AddChild(std::move(pLeftHandNormalOwner));
     pCamera->AddChild(std::move(pLeftHandAbilityOwner));
     pCamera->AddChild(std::move(pRightHandNormalOwner));
     pCamera->AddChild(std::move(pRightHandAbilityOwner));
 
+    PrefabManager::InstantiateStone1(pSceneRoot.get(), Vector3(0.0f, 100.0f, 0.0f), 1.0f);
 
     PrefabManager::root = pPrefabs;
     PrefabManager::player = pPlayer;
@@ -176,11 +180,20 @@ App::App(const std::string& commandLine)
     pAbility4->AddComponent(
         std::make_unique<Ability4>(pAbility4, wnd, pCamera)
     );
+    pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility4;
+    pAbility4->GetComponent<Ability4>()->baseAbility = pAbility1->GetComponent<Ability1>();
+
 
     pAbility5->AddComponent(
         std::make_unique<Ability5>(pAbility5, wnd, pCamera)
     );
 	pPlayer->GetComponent<PlayerController>()->abilitySlot2 = pAbility5;
+
+    pAbility6->AddComponent(
+        std::make_unique<Ability6>(pAbility6, wnd, pCamera)
+    );
+    pAbility6->GetComponent<Ability6>()->baseAbility = pAbility1->GetComponent<Ability1>();
+    pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility6;
 
     pFreeViewCamera->AddComponent(
         std::make_unique<Camera>(pFreeViewCamera, wnd)
@@ -252,6 +265,9 @@ App::App(const std::string& commandLine)
 	pAbility5->GetComponent<Ability5>()->rightHandNormal = pRightHandNormal;
 	pAbility5->GetComponent<Ability5>()->rightHandAbility = pRightHandAbility;
 
+    pAbility6->GetComponent<Ability6>()->leftHandNormal = pLeftHandNormal;
+    pAbility6->GetComponent<Ability6>()->leftHandAbility = pLeftHandAbility;
+
     pSceneRoot->AddComponent(
         std::make_unique<UpgradeHandler>(pSceneRoot.get(), wnd)
     );
@@ -260,6 +276,8 @@ App::App(const std::string& commandLine)
     pUpgradeHandler->ability2Node = pAbility2;
     pUpgradeHandler->ability3Node = pAbility3;
     pUpgradeHandler->ability4Node = pAbility4;
+	pUpgradeHandler->ability5Node = pAbility5;
+	pUpgradeHandler->ability6Node = pAbility6;
     pUpgradeHandler->playerController = pPlayer->GetComponent<PlayerController>();
     pUpgradeHandler->SetBasicValues();
     //pSceneRoot->GetComponent<Global>()->upgradeHandler = pUpgradeHandler;
@@ -432,7 +450,7 @@ void App::HandleInput(float dt)
         case 'H': 
             showControlWindow = !showControlWindow;
             break;
-        case 'B':
+        /*case 'B':
             if (pPlayer->GetComponent<PlayerController>()->abilitySlot1 == pAbility1)
             {
                 pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility4;
@@ -441,7 +459,7 @@ void App::HandleInput(float dt)
             {
                 pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility1;
             }
-            break;
+            break;*/
         case VK_ESCAPE:
             PostQuitMessage(0);
             return;
@@ -641,22 +659,23 @@ void App::FrustumCalculating() {
     DirectX::XMStoreFloat4(&cameraFrustum.Orientation, dx::XMQuaternionRotationMatrix(worldOrientationMatrix));
 
 
-    DrawNodeRecursive(wnd.Gfx(), *pSceneRoot);
+    DrawNodeRecursive(wnd.Gfx(), pSceneRoot.get());
 }
 
-void App::DrawNodeRecursive(Graphics& gfx, Node& node)
+void App::DrawNodeRecursive(Graphics& gfx, Node* node)
 {
 
     bool shouldDraw = true; 
-    ModelComponent* modelComp = node.GetComponent<ModelComponent>();
+    ModelComponent* modelComp = node->GetComponent<ModelComponent>();
 
     if (modelComp != nullptr)
     {
         DirectX::BoundingSphere sphere;
         DirectX::BoundingBox box;
         DirectX::ContainmentType containment = DirectX::DISJOINT;
-        sphere.Center = node.GetWorldPosition();
-        sphere.Radius = node.radius;
+
+        sphere.Center = node->GetWorldPosition();
+        sphere.Radius = node->radius;
         containment = cameraFrustum.Contains(sphere);
         
 
@@ -669,15 +688,16 @@ void App::DrawNodeRecursive(Graphics& gfx, Node& node)
 
     if (shouldDraw)
     {
-        node.Submit(wnd.Gfx());
-        for (const auto& pChild : node.GetChildren())
+        node->Submit(wnd.Gfx());
+    }
+    for (const auto& pChild : node->GetChildren())
+    {
+        if (pChild)
         {
-            if (pChild)
-            {
-                DrawNodeRecursive(gfx, *pChild); 
-            }
+            DrawNodeRecursive(gfx, pChild.get()); 
         }
     }
+
 }
 
 void App::ShowControlWindows()
@@ -852,8 +872,6 @@ void App::CleanupDestroyedNodes(Node* currentNode)
 
                     if (pSelectedSceneNode == pChildNode.get()) { pSelectedSceneNode = nullptr; }
                     if (pPlayer == pChildNode.get()) { pPlayer = nullptr; }
-                    if (pAbility1 == pChildNode.get()) { pAbility1 = nullptr; }
-                    if (pAbility2 == pChildNode.get()) { pAbility2 = nullptr; }
 
                     OutputDebugStringA(("Cleanup: Node removed from parent: " + pChildNode->GetName() + "\n").c_str());
                     return true;

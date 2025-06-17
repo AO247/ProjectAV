@@ -37,6 +37,8 @@ public:
 	Node* ability2Node = nullptr;
 	Node* ability3Node = nullptr;
 	Node* ability4Node = nullptr;
+	Node* ability5Node = nullptr;
+	Node* ability6Node = nullptr;
 	int slower = 0;
 	bool upgradeMenuOpen = false;
 	bool upgraded = false;
@@ -55,6 +57,7 @@ public:
 	std::unique_ptr<Sprite> cardSprite2;
 	std::unique_ptr<Sprite> cardSprite3;
 	std::unique_ptr<Sprite> cardSprite4;
+	std::unique_ptr<Sprite> ability4Gif;
 	std::unique_ptr<Sprite> heart1Sprite;
 	std::unique_ptr<Sprite> heart2Sprite;
 	std::unique_ptr<Sprite> heart3Sprite;

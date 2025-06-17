@@ -93,6 +93,13 @@ UpgradeHandler::UpgradeHandler(Node* owner, Window& window)
 		L"myfile.spritefont" 
 	);
 
+	ability4Gif = std::make_unique<Sprite>(
+		wnd.Gfx().GetDevice(),
+		wnd.Gfx().GetContext(),
+		22, 34, 190, 337, 
+		L"Images\\ability4.gif"
+	);
+
 }
 
 
@@ -116,40 +123,40 @@ void UpgradeHandler::Update(float dt)
 			}
 		}
 	}
+	static float animationTime = 0.0f;
+	static int startX = 0, startY = 0, startW = 0, startH = 0;
+	static int targetX = 0, targetY = 0, targetW = 0, targetH = 0;
+
 	if (upgraded && !end)
 	{
-		if (slower == 10)
+		if (animationTime == 0.0f)
 		{
-			bool flag = false;
-			if (selectedCardSprite->x_ < 745 || selectedCardSprite->x_ > 755)
-			{
-				selectedCardSprite->x_ += (750 - selectedCardSprite->x_) / 3;
-				flag = true;
-			}
-			if (selectedCardSprite->y_ < 95 || selectedCardSprite->y_ > 105)
-			{
-				selectedCardSprite->y_ += (100 - selectedCardSprite->y_) / 3;
-				flag = true;
-			}
-			if (selectedCardSprite->width_ <= 440)
-			{
-				selectedCardSprite->width_ += 8;
-				flag = true;
-			}
-			if (selectedCardSprite->height_ <= 690)
-			{
-				selectedCardSprite->height_ += 8;
-				flag = true;
-			}
-			if (!flag)
-			{
-				timer = 1.5f;
-				end = true;
-			}
-			slower = 0;
+			startX = selectedCardSprite->x_;
+			startY = selectedCardSprite->y_;
+			startW = selectedCardSprite->width_;
+			startH = selectedCardSprite->height_;
+
+			int screenW = wnd.Gfx().GetWidth();
+			int screenH = wnd.Gfx().GetHeight();
+			targetW = 500; 
+			targetH = 800;
+			targetX = (screenW - targetW) / 2;
+			targetY = (screenH - targetH) / 2;
 		}
-		else {
-			slower++;
+
+		animationTime += dt;
+		float t = std::min(animationTime / 1.5f, 1.0f);
+
+		selectedCardSprite->x_ = static_cast<int>(startX + (targetX - startX) * t);
+		selectedCardSprite->y_ = static_cast<int>(startY + (targetY - startY) * t);
+		selectedCardSprite->width_ = static_cast<int>(startW + (targetW - startW) * t);
+		selectedCardSprite->height_ = static_cast<int>(startH + (targetH - startH) * t);
+
+		if (t >= 1.0f)
+		{
+			timer = 1.5f;
+			end = true;
+			animationTime = 0.0f;
 		}
 	}
 	if (timer > 0.0f)
@@ -201,9 +208,11 @@ void UpgradeHandler::DrawUpgradeMenu()
 		}
 		else
 		{
+
 			card1->Draw(wnd.Gfx().GetContext());
 			card2->Draw(wnd.Gfx().GetContext());
 			card3->Draw(wnd.Gfx().GetContext());
+			ability4Gif->Draw(wnd.Gfx().GetContext());
 			
 		}
 	}
