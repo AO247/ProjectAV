@@ -222,7 +222,7 @@ App::App(const std::string& commandLine)
     pPlayer->SetLocalPosition({ 0.0f, 80.0f, -24.0f });
 
    /* pSceneRoot->AddComponent(
-        std::make_unique<Global>(pSceneRoot.get(), wnd, pPlayer)
+        std::make_unique<Global>(pSceneRoot.get(), wnd, pPlayer, pBase)
     );*/
 
     pLeftHandNormal->AddComponent(
@@ -282,7 +282,7 @@ App::App(const std::string& commandLine)
     pUpgradeHandler->SetBasicValues();
     //pSceneRoot->GetComponent<Global>()->upgradeHandler = pUpgradeHandler;
 
-	PrefabManager::InstantiateTutorialIslands(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
+	PrefabManager::InstantiateTutorialIslands(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f, pPlayerOwner.get());
 
     const int screenWidth = 1920;
     const int screenHeight = 1080;

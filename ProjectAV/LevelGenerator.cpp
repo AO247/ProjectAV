@@ -36,22 +36,54 @@ void LevelGenerator::GenerateIslands()
             islandsInfo[i].pos.y += randY;
             if (islandsInfo[i].name == "BIG1")
             {
+                islandPrefab = PrefabManager::InstantiateIslandBig1(pOwner, Vector3(islandsInfo[i].pos.x, islandsInfo[i].pos.y, islandsInfo[i].pos.z), 1.0f);
+
+			}
+            else if (islandsInfo[i].name == "BIG2")
+            {
                 islandPrefab = PrefabManager::InstantiateIslandBig2(pOwner, Vector3(islandsInfo[i].pos.x, islandsInfo[i].pos.y, islandsInfo[i].pos.z), 1.0f);
-                islandPrefab->SetLocalRotation({ 0.0f, islandsInfo[i].rot, 0.0f });
-				islandPrefab->GetComponent<Island>()->leftPoint->SetLocalPosition(islandsInfo[i].leftPoint);
-				islandPrefab->GetComponent<Island>()->upPoint->SetLocalPosition(islandsInfo[i].upPoint);
-				islandPrefab->GetComponent<Island>()->rightPoint->SetLocalPosition(islandsInfo[i].rightPoint);
-				islandPrefab->GetComponent<Island>()->downPoint->SetLocalPosition(islandsInfo[i].downPoint);
+            }
+			else if (islandsInfo[i].name == "BIG3")
+			{
+				islandPrefab = PrefabManager::InstantiateIslandBig3(pOwner, Vector3(islandsInfo[i].pos.x, islandsInfo[i].pos.y, islandsInfo[i].pos.z), 1.0f);
+			}
+			else if (islandsInfo[i].name == "BIG4")
+			{
+				islandPrefab = PrefabManager::InstantiateIslandBig4(pOwner, Vector3(islandsInfo[i].pos.x, islandsInfo[i].pos.y, islandsInfo[i].pos.z), 1.0f);
+			}
+            else if (islandsInfo[i].name == "BIG5")
+            {
+                islandPrefab = PrefabManager::InstantiateIslandBig5(pOwner, Vector3(islandsInfo[i].pos.x, islandsInfo[i].pos.y, islandsInfo[i].pos.z), 1.0f);
+            }
+			else if (islandsInfo[i].name == "BIG6")
+			{
+				islandPrefab = PrefabManager::InstantiateIslandBig6(pOwner, Vector3(islandsInfo[i].pos.x, islandsInfo[i].pos.y, islandsInfo[i].pos.z), 1.0f);
+			}
+			else if (islandsInfo[i].name == "BIG7")
+			{
+				islandPrefab = PrefabManager::InstantiateIslandBig7(pOwner, Vector3(islandsInfo[i].pos.x, islandsInfo[i].pos.y, islandsInfo[i].pos.z), 1.0f);
+			}
+			else if (islandsInfo[i].name == "BIG8")
+			{
+				islandPrefab = PrefabManager::InstantiateIslandBig8(pOwner, Vector3(islandsInfo[i].pos.x, islandsInfo[i].pos.y, islandsInfo[i].pos.z), 1.0f);
+			}
+			else if (islandsInfo[i].name == "BIG9")
+			{
+				islandPrefab = PrefabManager::InstantiateIslandBig9(pOwner, Vector3(islandsInfo[i].pos.x, islandsInfo[i].pos.y, islandsInfo[i].pos.z), 1.0f);
+			}
+            else if (islandsInfo[i].name == "BIG10")
+            {
+                islandPrefab = PrefabManager::InstantiateIslandBig10(pOwner, Vector3(islandsInfo[i].pos.x, islandsInfo[i].pos.y, islandsInfo[i].pos.z), 1.0f);
             }
             if (islandsInfo[i].name == "FIRST")
             {
                 islandPrefab = PrefabManager::InstantiateFirstIsland(pOwner, Vector3(islandsInfo[i].pos.x, islandsInfo[i].pos.y, islandsInfo[i].pos.z), 1.0f);
-                islandPrefab->SetLocalRotation({ 0.0f, islandsInfo[i].rot, 0.0f });
-                islandPrefab->GetComponent<Island>()->leftPoint->SetLocalPosition(islandsInfo[i].leftPoint);
-                islandPrefab->GetComponent<Island>()->upPoint->SetLocalPosition(islandsInfo[i].upPoint);
-                islandPrefab->GetComponent<Island>()->rightPoint->SetLocalPosition(islandsInfo[i].rightPoint);
-                islandPrefab->GetComponent<Island>()->downPoint->SetLocalPosition(islandsInfo[i].downPoint);
             }
+            islandPrefab->SetLocalRotation({ 0.0f, islandsInfo[i].rot, 0.0f });
+            islandPrefab->GetComponent<Island>()->leftPoint->SetLocalPosition(islandsInfo[i].leftPoint);
+            islandPrefab->GetComponent<Island>()->upPoint->SetLocalPosition(islandsInfo[i].upPoint);
+            islandPrefab->GetComponent<Island>()->rightPoint->SetLocalPosition(islandsInfo[i].rightPoint);
+            islandPrefab->GetComponent<Island>()->downPoint->SetLocalPosition(islandsInfo[i].downPoint);
             islands.push_back(islandPrefab);
             
         }
@@ -69,8 +101,8 @@ void LevelGenerator::GenerateIslands()
                 if (randIsland == 0 && bigIslandCount > 0)
                 {
                     spawned = false;
-                    int randLarge = rand() % 2;
-                    randLarge = 0;
+                    int randLarge = rand() % 10;
+                    //randLarge = 0;
                     if (randLarge == 0) {
                         //islandPrefab = PrefabManager::InstantiateIslandBig1(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
                         islandInfo.name = "BIG1";
@@ -81,10 +113,86 @@ void LevelGenerator::GenerateIslands()
                         islandInfo.downPoint = { 30.0f, 0.0f , -65.0f };
                         islandInfo.extents = {60.0f, 60.0f};
                     }
+                    else if(randLarge == 1){
+                        islandInfo.name = "BIG2";
+                        islandInfo.pos = { 0.0f, 0.0f, 0.0f };
+                        islandInfo.leftPoint = { -56.0f, 3.0f, 14.0f };
+                        islandInfo.upPoint = { -7.0f, 3.0f, 58.0f };
+                        islandInfo.rightPoint = { 67.0f, 0.0f, 0.0f };
+                        islandInfo.downPoint = { 4.0f, 0.0f, -64.0f };
+                        islandInfo.extents = { 60.0f, 60.0f };
+                    }
+                    else if (randLarge == 2) {
+						islandInfo.name = "BIG3";
+						islandInfo.pos = { 0.0f, 0.0f, 0.0f };
+						islandInfo.leftPoint = { -62.00f, 18.00f, 4.30f };
+						islandInfo.upPoint = { 39.0f, 0.0f, 50.0f };
+						islandInfo.rightPoint = { 82.0f, 0.0f, -4.0f };
+						islandInfo.downPoint = { 0.0f, 0.0f, -45.0f };
+						islandInfo.extents = { 60.0f, 60.0f };
+                    }
+                    else if (randLarge == 3) {
+						islandInfo.name = "BIG4";
+						islandInfo.pos = { 0.0f, 0.0f, 0.0f };
+						islandInfo.leftPoint = { -61.00f, 20.00f, 4.30f };
+						islandInfo.upPoint = { 9.80f, 0.00f, 50.00f };
+						islandInfo.rightPoint = { 82.00f, 0.00f, -4.00f };
+						islandInfo.downPoint = { -5.90f, 0.00f, -45.00f };
+						islandInfo.extents = { 60.0f, 60.0f };
+                    }
+                    else if (randLarge == 4) {
+                        islandInfo.name = "BIG5";
+                        islandInfo.pos = { 0.0f, 0.0f, 0.0f };
+                        islandInfo.leftPoint = { -61.00f, 20.00f, 4.30f };
+                        islandInfo.upPoint = { 55.20f, 0.00f, 49.00f };
+                        islandInfo.rightPoint = { 82.00f, 0.00f, -4.00f };
+                        islandInfo.downPoint = { -5.90f, 0.00f, -45.00f };
+                        islandInfo.extents = { 60.0f, 60.0f };
+                    }
+                    else if (randLarge == 5) {
+						islandInfo.name = "BIG6";
+						islandInfo.pos = { 0.0f, 0.0f, 0.0f };
+						islandInfo.leftPoint = { -61.00f, 5.00f, 4.30f };
+						islandInfo.upPoint = { -7.20f, 5.00f, 49.00f };
+						islandInfo.rightPoint = { 82.00f, 0.00f, -4.00f };
+						islandInfo.downPoint = { -5.90f, 0.00f, -45.00f };
+						islandInfo.extents = { 60.0f, 60.0f };
+                    }
+                    else if (randLarge == 6) {
+						islandInfo.name = "BIG7";
+						islandInfo.pos = { 0.0f, 0.0f, 0.0f };
+						islandInfo.leftPoint = { -56.00f, 0.00f, -33.60f };
+						islandInfo.upPoint = { -7.00f, 0.00f, 58.00f };
+						islandInfo.rightPoint = { 67.00f, 0.00f, -18.00f };
+						islandInfo.downPoint = { -15.70f, 0.00f, -64.00f };
+						islandInfo.extents = { 60.0f, 60.0f };
+                    }
+                    else if (randLarge == 7) {
+						islandInfo.name = "BIG8";
+						islandInfo.pos = { 0.0f, 0.0f, 0.0f };
+						islandInfo.leftPoint = { -56.00f, 0.00f, -33.60f };
+						islandInfo.upPoint = { -7.00f, 0.00f, 58.00f };
+						islandInfo.rightPoint = { 67.00f, 0.00f, -18.00f };
+						islandInfo.downPoint = { -15.70f, 0.00f, -64.00f };
+						islandInfo.extents = { 60.0f, 60.0f };
+                    }
+                    else if(randLarge == 8) {
+                        islandInfo.name = "BIG9";
+                        islandInfo.pos = { 0.0f, 0.0f, 0.0f };
+                        islandInfo.leftPoint = { -56.00f, 0.00f, -33.60f };
+                        islandInfo.upPoint = { -7.00f, 0.00f, 58.00f };
+                        islandInfo.rightPoint = { 67.00f, 0.00f, -18.00f };
+                        islandInfo.downPoint = { -15.70f, 0.00f, -64.00f };
+                        islandInfo.extents = { 60.0f, 60.0f };
+                    } 
                     else {
-            
-                        //islandPrefab = PrefabManager::InstantiateIslandBig2(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
-
+						islandInfo.name = "BIG10";
+						islandInfo.pos = { 0.0f, 0.0f, 0.0f };
+						islandInfo.leftPoint = { -56.10f, 0.00f, 21.60f };
+						islandInfo.upPoint = { 5.70f, 0.00f, 58.00f };
+						islandInfo.rightPoint = { 67.00f, 0.00f, -18.00f };
+						islandInfo.downPoint = { 0.40f, 18.00f, -64.00f };
+						islandInfo.extents = { 60.0f, 60.0f };
                     }
                     bigIslandCount--;
                     break;

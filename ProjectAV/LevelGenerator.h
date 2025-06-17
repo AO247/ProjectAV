@@ -13,7 +13,7 @@ public:
 	LevelGenerator(Node* owner, Node* pPlayer, bool rot);
 	virtual ~LevelGenerator() = default;
 
-	int bigIslandCount = 5;
+	int bigIslandCount = 10;
 	int mediumIslandCount = 0;
 	int smallIslandCount = 0;
 

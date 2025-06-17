@@ -1899,6 +1899,7 @@ public:
         return pNewNode;
 
     }
+
     static Node* InstantiateAbilityIsland(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 }) {
         auto pNewNodeOwner = std::make_unique<Node>("AbilityIsland", nullptr, "ABILITY");
         pNewNodeOwner->AddComponent(
@@ -1926,15 +1927,16 @@ public:
         pNewNodeOwner->SetLocalRotation(rotation);
         Node* pNewNode = pNewNodeOwner.get();
 
-        InstantiateStone1(pNewNode, Vector3(-9.92f, 1.72f, -1.42f), 2.0f);
-        InstantiateRock1(pNewNode, Vector3(0.00f, 0.00f, -36.70f), 1.0f, Vector3(0.00f, 0.00f, 3.14f));
-        InstantiateRock2(pNewNode, Vector3(19.10f, 0.00f, -13.10f), 1.0f, Vector3(0.0f, -0.19f, 0.0f));
-        InstantiateRock3(pNewNode, Vector3(-18.20f, 0.00f, 22.80f), 1.0f);
-        InstantiateRock3(pNewNode, Vector3(19.70f, -0.10f, -4.70f), 1.0f);
-        InstantiateRock4(pNewNode, Vector3(-17.80f, 0.00f, 12.90f), 1.0f);
-        InstantiatePlatform3(pNewNode, Vector3(0.00f, 0.00f, 3.70f), 0.6f, Vector3(0.00f, -1.57f, 0.00f));
-        InstantiateRockDouble(pNewNode, Vector3(-24.90f, -0.30f, -8.60f), 1.0f, Vector3(0.00f, 0.17f, 0.00f));
-        InstantiateRockDouble(pNewNode, Vector3(22.30f, 0.00f, 18.30f), 0.5f, Vector3(0.00f, -0.40f, 0.00f));
+        InstantiateStone1(pNewNode, Vector3(142.50f, 0.80f, -23.30f), 2.0f);
+        InstantiateStone1(pNewNode, Vector3(65.00f, 0.58f, -34.00f), 2.0f);
+        InstantiateRock1(pNewNode, Vector3(92.00f, -2.80f, -31.90f), 1.0f, Vector3(0.00f, 0.00f, 3.14f));
+        InstantiateRock1(pNewNode, Vector3(13.30f, 0.00f, -44.70f), 1.0f, Vector3(0.00f, 0.00f, 3.14f));
+        InstantiateRock1(pNewNode, Vector3(51.10f, -0.10f, -36.00f), 2.0f, Vector3(0.00f, -0.89f, 3.14f));
+        InstantiateRock1(pNewNode, Vector3(182.70f, 0.00f, 8.30f), 1.0f, Vector3(0.00f, 0.00f, 3.14f));
+        InstantiateRock1(pNewNode, Vector3(138.10f, 0.10f, -31.70f), 2.0f, Vector3(0.00f, -1.45f, 3.14f));
+        InstantiateRock2(pNewNode, Vector3(22.00f, 0.50f, -15.20f), 1.0f, Vector3(0.0f, -0.19f, 0.0f));
+        InstantiateRock4(pNewNode, Vector3(-15.90f, 0.00f, -7.40f), 1.0f, Vector3(0.00f, -1.29f, 0.00f));
+        InstantiatePlatform3(pNewNode, Vector3(0.00f, 0.00f, 8.30f), 1.0f, Vector3(0.00f, 1.75f, 0.00f));
 
         parentNode->AddChild(std::move(pNewNodeOwner));
         return pNewNode;
@@ -1967,11 +1969,7 @@ public:
         Node* pNewNode = pNewNodeOwner.get();
 
         InstantiateStoneStack1(pNewNode, Vector3(-0.72f, 1.72f, -1.72f), 1.0f);
-        InstantiateRock1(pNewNode, Vector3(-3.70f, 0.00f, -53.00f), 1.0f, Vector3(0.00f, 0.00f, 3.14f));
-        InstantiateRock1(pNewNode, Vector3(6.70f, 0.00f, -34.70f), 1.0f, Vector3(0.00f, -1.22f, 3.14f));
-        InstantiateRock1(pNewNode, Vector3(-47.00f, 0.00f, 2.80f), 1.0f, Vector3(0.00f, 1.45f, 3.14f));
-        InstantiateRock1(pNewNode, Vector3(-56.90f, 0.00f, -26.20f), 1.0f, Vector3(0.00f, 0.63f, 3.14f));
-        InstantiateRock1(pNewNode, Vector3(-78.40f, 0.00f, -48.00f), 1.0f, Vector3(0.00f, 1.45f, 3.14f));
+        InstantiateRock1(pNewNode, Vector3(9.10f, 0.00f, -46.80f), 1.0f, Vector3(0.00f, 0.00f, 3.14f));
         InstantiateRock2(pNewNode, Vector3(21.70f, -0.10f, -17.70f), 1.0f);
         InstantiateRock3(pNewNode, Vector3(6.40f, 0.20f, 22.50f), 1.0f);
         InstantiateRock3(pNewNode, Vector3(22.30f, 0.00f, -10.90f), 1.0f);
@@ -1983,9 +1981,53 @@ public:
         parentNode->AddChild(std::move(pNewNodeOwner));
         return pNewNode;
     }
+    static Node* InstantiateDoubleJumpIsland(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 }) {
+        auto pNewNodeOwner = std::make_unique<Node>("DoubleJumpIsland", nullptr, "ABILITY");
+        pNewNodeOwner->AddComponent(
+            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\wyspy_0606\\wyspa_duza_p.obj")
+        );
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList islandTriangles = PhysicsCommon::MakeTriangleList(islandModel->GetAllTriangles());
+        MeshShapeSettings islandMeshSettings(islandTriangles);
+        Shape::ShapeResult islandMeshCreationResult = islandMeshSettings.Create();
+        ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
+        ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
+        islandMeshShape = islandScaling.Create().Get();
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
+        pNewNodeOwner->AddComponent(
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
+        );
+        pNewNodeOwner->AddComponent(
+            std::make_unique<Island>(pNewNodeOwner.get())
+        );
 
-    static Node* InstantiateAbilityIsland2(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 }) {
-        auto pNewNodeOwner = std::make_unique<Node>("AbilityIsland", nullptr, "ABILITY");
+        pNewNodeOwner->SetLocalPosition(position);
+        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+        pNewNodeOwner->SetLocalRotation(rotation);
+        Node* pNewNode = pNewNodeOwner.get();
+
+        InstantiateStoneStack1(pNewNode, Vector3(-18.12f, 1.72f, 25.88f), 1.0f);
+        InstantiateRock1(pNewNode, Vector3(27.40f, 3.00f, -3.80f), 1.0f, Vector3(0.00f, 0.00f, 3.14f));
+        InstantiateRock1(pNewNode, Vector3(8.60f, 8.90f, 12.60f), 1.0f, Vector3(0.00f, -1.22f, 3.14f));
+        InstantiateRock1(pNewNode, Vector3(-13.90f, 13.30f, -2.90f), 1.0f, Vector3(0.00f, 1.45f, 3.14f));
+        InstantiateRock1(pNewNode, Vector3(-55.20f, 17.00f, -13.90f), 1.0f, Vector3(0.00f, 0.63f, 3.14f));
+        InstantiateRock2(pNewNode, Vector3(66.00f, -0.10f, -12.90f), 1.0f);
+        InstantiateRock3(pNewNode, Vector3(61.20f, 0.20f, -3.00f), 1.0f);
+        InstantiateRock3(pNewNode, Vector3(33.90f, 0.00f, -32.80f), 1.0f);
+        InstantiateRock4(pNewNode, Vector3(25.60f, -8.60f, 36.10f), 1.0f, Vector3(0.0f, -2.85f, 0.0f));
+        InstantiateRock4(pNewNode, Vector3(-41.80f, -3.80f, 25.50f), 1.0f, Vector3(0.0f, -0.86f, 0.0f));
+        InstantiateRock4(pNewNode, Vector3(9.60f, -5.30f, 37.90f), 1.0f, Vector3(0.0f, -2.29f, 0.0f));
+        InstantiateRock5(pNewNode, Vector3(22.60f, -0.90f, -30.20f), 1.0f);
+        InstantiateRockDouble(pNewNode, Vector3(-17.30f, -0.30f, -24.00f), 0.6f, Vector3(0.00f, 2.86f, 0.0f));
+        InstantiateRockDouble(pNewNode, Vector3(60.10f, 0.00f, 18.00f), 1.0f, Vector3(0.00f, 0.96f, 0.00f));
+
+        parentNode->AddChild(std::move(pNewNodeOwner));
+        return pNewNode;
+    }
+    static Node* InstantiateUltIsland(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 }) {
+        auto pNewNodeOwner = std::make_unique<Node>("UltIsland", nullptr, "ABILITY");
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\wyspy_0606\\wyspa_srednia.obj")
         );
@@ -2011,27 +2053,34 @@ public:
         pNewNodeOwner->SetLocalRotation(rotation);
         Node* pNewNode = pNewNodeOwner.get();
 
-		InstantiateStone1(pNewNode, Vector3(-9.92f, 1.72f, -1.42f), 2.0f);
-		InstantiateRock1(pNewNode, Vector3(0.00f, 0.00f, -36.70f), 1.0f, Vector3(0.00f, 0.00f, 3.14f));
-		InstantiateRock2(pNewNode, Vector3(22.10f, 0.00f, -21.60f), 1.0f);
-		InstantiateRock3(pNewNode, Vector3(-24.40f, 0.00f, 22.80f), 1.0f);
-        InstantiateRock3(pNewNode, Vector3(22.30f, 0.00f, -10.90f), 1.0f);
-        InstantiateRock4(pNewNode, Vector3(-23.00f, 0.00f, 11.90f), 1.0f);
-        InstantiateRock5(pNewNode, Vector3(31.60f, 0.00f, 0.60f), 1.0f);
-		InstantiateRockDouble(pNewNode, Vector3(-24.90f, -0.30f, -8.60f), 1.0f);
-        InstantiateRockDouble(pNewNode, Vector3(24.10f, 0.00f, 19.40f), 1.0f, Vector3(0.00f, 1.10f, 0.00f));
+		InstantiateStone1(pNewNode, Vector3(-3.84f, 0.66f, 14.90f), 2.0f);
+        InstantiateStone1(pNewNode, Vector3(-17.13f, 0.64f, -14.36f), 2.0f);
+        InstantiateStone1(pNewNode, Vector3(8.31f, 0.64f, -5.58f), 2.0f);
+        InstantiateStoneStack1(pNewNode, Vector3(-7.92f, 1.72f, -11.22f), 1.0f);
+        InstantiateStoneStack1(pNewNode, Vector3(-13.62f, 1.72f, 9.78f), 1.0f);
+        InstantiateRock1(pNewNode, Vector3(-6.90f, 5.20f, 28.00f), 1.0f, Vector3(0.00f, 0.63f, 3.14f));
+        InstantiateRock1(pNewNode, Vector3(-7.40f, 13.60f, 50.30f), 1.0f, Vector3(0.00f, 1.38f, 3.14f));
+        InstantiateRock1(pNewNode, Vector3(-12.80f, 21.30f, 78.10f), 1.0f, Vector3(0.00f, 0.63f, 3.14f));
+        InstantiateRock3(pNewNode, Vector3(32.70f, -0.30f, -9.80f), 1.0f);
+        InstantiateRock4(pNewNode, Vector3(-26.00f, -0.30f, 23.70f), 1.0f);
+        InstantiateRock5(pNewNode, Vector3(30.40f, -0.40f, 0.60f), 1.0f);
+        InstantiateRockDouble(pNewNode, Vector3(24.10f, -0.40f, 19.40f), 1.0f, Vector3(0.00f, 1.10f, 0.00f));
 
 		parentNode->AddChild(std::move(pNewNodeOwner));
         return pNewNode;
     }
-
-    static Node* InstantiateTutorialIslands(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 }) {
+    static Node* InstantiateTutorialIslands(Node* parentNode, Vector3 position, float scale, Node* pPlayer, Vector3 rotation = { 0,0,0 }) {
         auto pNewNodeOwner = std::make_unique<Node>("Tutorial", nullptr, "GROUND");
 
         Node* FirstIsland = InstantiateFirstIsland(pNewNodeOwner.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
-		Node* AbilityIsland = InstantiateAbilityIsland(pNewNodeOwner.get(), Vector3(-86.70f, 0.00f, -17.30f), 1.0f);
-		Node* JumpIsland = InstantiateJumpIsland(pNewNodeOwner.get(), Vector3(-2.80f, 0.00f, 89.30f), 1.0f);
+		Node* AbilityIsland = InstantiateAbilityIsland(pNewNodeOwner.get(), Vector3(-110.90f, 0.00f, -86.20f), 1.0f);
+		Node* JumpIsland = InstantiateJumpIsland(pNewNodeOwner.get(), Vector3(-12.80f, 0.00f, 92.10f), 1.0f);
+		Node* DoubleJumpIsland = InstantiateDoubleJumpIsland(pNewNodeOwner.get(), Vector3(-95.10f, 0.00f, 57.80f), 1.0f, Vector3(0.0f, -1.19f, 0.0f));
+		Node* UltIsland = InstantiateUltIsland(pNewNodeOwner.get(), Vector3(125.00f, 0.00f, -29.30f), 1.0f, Vector3(0.0f, -1.19f, 0.0f));
         
+		//InstantiateNormalEnemy(pNewNodeOwner.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f, pPlayer);
+		//InstantiateNormalEnemy(pNewNodeOwner.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f, pPlayer);
+
         pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
         pNewNodeOwner->SetLocalRotation(rotation);
