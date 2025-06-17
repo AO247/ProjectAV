@@ -17,7 +17,10 @@ public:
 	virtual void Update(float dt) override;
 	virtual void DrawImGuiControls() override;
 
-	float acceleration = 10.0f;
+	float acceleration = 8.0f;
+	float deceleration = 25.0f;
+	float airControl = 0.5f;
+
 	float maxSpeed = 35.0f;
 
 	float jumpForce = 30.0f;
@@ -25,8 +28,12 @@ public:
 	float dashForce = 70.0f;
 	float height = 4.0f;
 	float dashCooldown = 1.5f;
+
+
+
 	bool alive = true;
 	bool grounded = false;
+	
 
 	Node* abilitySlot1;
 	Node* abilitySlot2;
@@ -50,7 +57,7 @@ private:
 	float autoJumpRange = 1.0f;
 	void KeyboardInput();
 	void MovePlayer(float dt);
-	void SpeedControl();
+	void SpeedControl(float dt);
 	void PlayerGroundCheck();
 	void AutoJump();
 	void Jump();

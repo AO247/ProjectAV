@@ -27,12 +27,12 @@ void PlayerController::Update(float dt)
         PlayerGroundCheck();
 		KeyboardInput();
         MovePlayer(dt);
-		SpeedControl();
+		SpeedControl(dt);
     }
 }
 
 
-void PlayerController::SpeedControl()
+void PlayerController::SpeedControl(float dt)
 {
 	if (dashed) return;
 	Vec3 velocity = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
@@ -62,12 +62,12 @@ void PlayerController::SpeedControl()
 	{
 		Vec3 vel = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
         if (grounded) {
-            vel.SetX(vel.GetX() * 0.90f);
-            vel.SetZ(vel.GetZ() * 0.90f);
+            vel.SetX(vel.GetX() * 0.92f);
+            vel.SetZ(vel.GetZ() * 0.92f);
         }
         else {
-            vel.SetX(vel.GetX() * 0.95f);
-            vel.SetZ(vel.GetZ() * 0.95f);
+            vel.SetX(vel.GetX() * 0.99f);
+            vel.SetZ(vel.GetZ() * 0.99f);
         }
 		PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rigidbody->GetBodyID(), vel);
 	}
@@ -124,7 +124,7 @@ void PlayerController::Dash()
     {
 		dashDirection = camera->Forward();
     }
-
+    dashDirection.y += 0.3f;
     dashDirection.Normalize();
     Vec3 dir = Vec3(dashDirection.x, dashDirection.y, dashDirection.z);
     dashTimer = 0.2f;
@@ -200,38 +200,22 @@ void PlayerController::PlayerGroundCheck()
 
 void PlayerController::MovePlayer(float dt)
 {
-   /* if (grounded)
-    {
+    if (grounded && moveDirection.Length() > 0.0f)
+    { 
+        Vec3 desiredVel = Vec3(moveDirection.x, 0.0f, moveDirection.z);
+        Vec3 currentVel = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
+        Vec3 copy = currentVel;
+        currentVel.SetY(0);
+        float currentLength = currentVel.Length();
+        currentVel = currentVel.Normalized();
+
+        if ((desiredVel - currentVel).Length() > 0.2f)
+        {
+            Vec3 newVelocity = desiredVel * currentLength;
+            newVelocity.SetY(copy.GetY());
+            PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rigidbody->GetBodyID(), newVelocity);
+        }
         PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * acceleration * 1000.0f * dt);
-    }
-    else
-    {
-        PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * acceleration * 800.0f * dt);
-    }*/
-    if (grounded)
-    {
-            Vec3 desiredVel = Vec3(moveDirection.x, 0.0f, moveDirection.z);
-            Vec3 currentVel = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
-            Vec3 copy = currentVel;
-            currentVel.SetY(0);
-            float currentLength = currentVel.Length();
-            currentVel = currentVel.Normalized();
-
-            /*if ((desiredVel - currentVel).Length() > 0.5f)
-            {
-                Vec3 newVelocity = desiredVel * (currentLength / 2.0f);
-                newVelocity.SetY(copy.GetY());
-                PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rigidbody->GetBodyID(), newVelocity);
-            }*/
-            if ((desiredVel - currentVel).Length() > 0.2f)
-            {
-                Vec3 newVelocity = desiredVel * currentLength;
-                newVelocity.SetY(copy.GetY());
-                PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rigidbody->GetBodyID(), newVelocity);
-            }
-
-
-            PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * acceleration * 1000.0f * dt);
     }
     else
     {

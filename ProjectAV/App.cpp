@@ -510,7 +510,6 @@ void App::HandleInput(float dt)
 
 void App::DoFrame(float dt)
 {
-    CleanupDestroyedNodes(pSceneRoot.get());
 	pSceneRoot->Update(dt);
     auto* contact = dynamic_cast<MyContactListener*>(physicsSystem->GetContactListener());
     contact->ExecuteTriggerActivationQueue();
