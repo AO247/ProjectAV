@@ -139,7 +139,7 @@ void PlayerController::Dash()
         vel.SetY(0.0f);
 	}
 	PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rigidbody->GetBodyID(), Vec3(0.0f, vel.GetY(), 0.0f));
-	PhysicsCommon::physicsSystem->GetBodyInterface().SetFriction(rigidbody->GetBodyID(), 0.0f);
+	//PhysicsCommon::physicsSystem->GetBodyInterface().SetFriction(rigidbody->GetBodyID(), 0.0f);
     PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(rigidbody->GetBodyID(), dir * dashForce);
 
 }
@@ -263,7 +263,7 @@ void PlayerController::Cooldowns(float dt)
     {
         dashed = false;
 
-        PhysicsCommon::physicsSystem->GetBodyInterface().SetFriction(rigidbody->GetBodyID(), 0.1f);
+        //PhysicsCommon::physicsSystem->GetBodyInterface().SetFriction(rigidbody->GetBodyID(), 0.1f);
     }
     if (dashCooldownTimer > 0.0f)
     {
