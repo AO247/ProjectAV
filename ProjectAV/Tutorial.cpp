@@ -5,12 +5,20 @@ Tutorial::Tutorial(Node* owner, Window* window, Node* player)
 	: Component(owner), wnd(window), player(player)
 {
 
-
+	note0 = std::make_unique<Sprite>(
+		wnd->Gfx().GetDevice(),
+		wnd->Gfx().GetContext(),
+		30,
+		30,
+		374,
+		182,
+		L"Images\\note0.png"
+	);
 	note1 = std::make_unique<Sprite>(
 		wnd->Gfx().GetDevice(),
 		wnd->Gfx().GetContext(),
-		80,
-		180,
+		30,
+		30,
 		374,
 		182,
 		L"Images\\note1.2.png"
@@ -70,12 +78,15 @@ Tutorial::Tutorial(Node* owner, Window* window, Node* player)
 		L"Images\\note7.png"
 	);
     checkpoints.push_back({ 8.5f, -17.2f, -422.7f });
+	checkpoints.push_back({ 31.7f, -17.2f, -447.9f });
     checkpoints.push_back({ 72.5f, -19.0f, -465.1f });
     checkpoints.push_back({ 155.0f, -0.5f, -412.3f });
     checkpoints.push_back({ 221.3f, -0.8f, -366.0f });
+	checkpoints.push_back({ 217.3f, -17.5f, -296.1f });
     checkpoints.push_back({ 155.8f, -17.3f, -239.0f });
     checkpoints.push_back({ 69.3f, -16.4f, -220.7f });
 	checkpoints.push_back({ 20.5f, 3.2f, -105.1f});
+
 
 	player->SetLocalPosition(checkpoints[0]);
 
@@ -86,23 +97,21 @@ void Tutorial::Update(float dt)
 {
 	if (completed) return;
 	EnemyHandler();
-
-	if(player->GetLocalPosition().y < checkpoints[currentCheckpointIndex].y - 30.0f)
+	timer += dt;
+	if(player->GetLocalPosition().y < checkpoints[currentCheckpointIndex].y - 60.0f)
 	{
 		player->SetLocalPosition(checkpoints[currentCheckpointIndex]);
 		playerDeathCount++;
 	}
-	if ((player->GetLocalPosition() - checkpoints[currentCheckpointIndex + 1]).Length() < 10.0f)
+	if ((player->GetLocalPosition() - checkpoints[currentCheckpointIndex + 1]).Length() < 10.0f 
+		|| (player->GetLocalPosition() - checkpoints[currentCheckpointIndex + 2]).Length() < 10.0f)
 	{
 		currentCheckpointIndex++;
 		currentStage++;
 		timer = 0.0f;
 		playerDeathCount = 0;
 		currentNote = nullptr;
-		if (currentCheckpointIndex >= checkpoints.size() - 1)
-		{
-			completed = true;
-		}
+
 	}
 	if (currentStage == 1)
 	{
@@ -113,16 +122,53 @@ void Tutorial::Update(float dt)
 		Stage2(dt);
 	}
 	Stage2(dt);
+	if (currentCheckpointIndex == 1)
+	{
+		currentNote = note0.get();
+	}
+	if (currentCheckpointIndex == 2)
+	{
+		currentNote = note1.get();
+	}
+	if (currentCheckpointIndex == 3)
+	{
+		currentNote = note2.get();
+	}
+	if (currentCheckpointIndex == 5)
+	{
+		currentNote = note3.get();
+	}
+	if (currentCheckpointIndex == 6)
+	{
+		currentNote = note4.get();
+	}
+	if (currentCheckpointIndex == 7)
+	{
+		currentNote = note5.get();
+	}
+	if (currentCheckpointIndex == 7 && qPressed)
+	{
+		currentNote = note6.get();
+	}
+	if (currentCheckpointIndex == 8)
+	{
+		currentNote = note7.get();
+	}
+	if (currentCheckpointIndex >= checkpoints.size() - 1 && timer > 5.0f)
+	{
+		currentNote = nullptr;
+		completed = true;
+	}
 }
 
 void Tutorial::Stage1(float dt)
 {
-	timer += dt;
-	if (timer > 20.0f || playerDeathCount == 3)
-	{
-		currentNote = note1.get();
-		//message press jump mid air to use second jump
-	}
+	//timer += dt;
+	//if (timer > 20.0f || playerDeathCount == 3)
+	//{
+	//	currentNote = note1.get();
+	//	//message press jump mid air to use second jump
+	//}
 
 }
 void Tutorial::Stage2(float dt)
