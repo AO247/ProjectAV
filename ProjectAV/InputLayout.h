@@ -12,6 +12,9 @@ namespace Bind
 		InputLayout(Graphics& gfx,
 			Dvtx::VertexLayout layout,
 			const VertexShader& vs);
+		InputLayout(Graphics& gfx,
+			const std::vector<D3D11_INPUT_ELEMENT_DESC>& layout,
+			const VertexShader& vs);
 		void Bind(Graphics& gfx) noxnd override;
 		const Dvtx::VertexLayout GetLayout() const noexcept;
 		static std::shared_ptr<InputLayout> Resolve(Graphics& gfx,

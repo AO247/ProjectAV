@@ -82,6 +82,11 @@ Graphics::Graphics(HWND hWnd, int width, int height)
 	ImGui_ImplDX11_Init(pDevice.Get(), pContext.Get());
 }
 
+void Graphics::DrawIndexedInstanced(UINT indexCount, UINT instanceCount) noxnd
+{
+	GFX_THROW_INFO_ONLY(pContext->DrawIndexedInstanced(indexCount, instanceCount, 0u, 0u, 0u));
+}
+
 Graphics::~Graphics()
 {
 	ImGui_ImplDX11_Shutdown();

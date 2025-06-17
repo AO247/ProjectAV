@@ -7,6 +7,7 @@
 #include "DynamicConstant.h"
 #include "imgui/imgui.h"
 #include "CMath.h"
+#include "ParticlePass.h"
 
 namespace Rgph
 {
@@ -36,8 +37,15 @@ namespace Rgph
 			pass->SetSinkLinkage("depthStencil", "lambertian.depthStencil");
 			AppendPass(std::move(pass));
 		}
-		SetSinkTarget("backbuffer", "skybox.renderTarget");
+		// Add the particle pass. It will be empty at first each frame.
+		{
+			auto pass = std::make_unique<ParticlePass>(gfx, "particles");
+			pass->SetSinkLinkage("renderTarget", "skybox.renderTarget");
+			pass->SetSinkLinkage("depthStencil", "skybox.depthStencil");
+			AppendPass(std::move(pass));
+		}
 
+		SetSinkTarget("backbuffer", "particles.renderTarget");
 		Finalize();
 	}
 }

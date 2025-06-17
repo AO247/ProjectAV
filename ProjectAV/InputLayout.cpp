@@ -29,6 +29,20 @@ namespace Bind
 		return layout;
 	}
 
+	InputLayout::InputLayout(Graphics& gfx,
+		const std::vector<D3D11_INPUT_ELEMENT_DESC>& d3dLayout,
+		const VertexShader& vs)
+	{
+		INFOMAN(gfx);
+		const auto pBytecode = vs.GetBytecode();
+		GFX_THROW_INFO(GetDevice(gfx)->CreateInputLayout(
+			d3dLayout.data(), (UINT)d3dLayout.size(),
+			pBytecode->GetBufferPointer(),
+			pBytecode->GetBufferSize(),
+			&pInputLayout
+		));
+	}
+
 	void InputLayout::Bind(Graphics& gfx) noxnd
 	{
 		INFOMAN_NOHR(gfx);

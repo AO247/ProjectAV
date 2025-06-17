@@ -47,7 +47,24 @@ namespace Rgph
 	{
 		globalSources.push_back( std::move( out ) );
 	}
-
+	Rgph::Pass& RenderGraph::GetPass(const std::string& passName) const
+	{
+		try
+		{
+			for (const auto& p : passes)
+			{
+				if (p->GetName() == passName)
+				{
+					return *p;
+				}
+			}
+		}
+		catch (std::bad_cast&)
+		{
+			throw RGC_EXCEPTION("In RenderGraph::GetPass, pass was not of the correct type: " + passName);
+		}
+		throw RGC_EXCEPTION("In RenderGraph::GetPass, pass not found: " + passName);
+	}
 	void RenderGraph::AddGlobalSink( std::unique_ptr<Sink> in )
 	{
 		globalSinks.push_back( std::move( in ) );
