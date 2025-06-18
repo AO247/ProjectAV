@@ -1,8 +1,10 @@
 #pragma once
 #include "Component.h"
 #include "InstanceBuffer.h"
+#include "IEmitterLogic.h"
 #include <vector>
 #include <random>
+#include <memory>
 #include "ParticleCbuf.h"
 
 // Forward declarations to keep header clean and reduce compile times
@@ -30,8 +32,9 @@ namespace Rgph
 class ParticleSystemComponent : public Component
 {
 public:
-    // Constructor is simple, with no need to know about render pass names
-    ParticleSystemComponent(Node* owner, Graphics& gfx, const std::string& texturePath, UINT maxParticles);
+    // Constructor now takes a pointer to an emitter strategy
+    ParticleSystemComponent(Node* owner, Graphics& gfx, const std::string& texturePath,
+        UINT maxParticles, std::unique_ptr<IEmitterLogic> pEmitterLogic);
 
     // Standard component functions
     void Update(float dt) override;
@@ -40,22 +43,30 @@ public:
     // Connects this component to the render graph's dedicated particle pass
     void Link(Rgph::RenderGraph& rg);
 
-    // Public properties for easy customization of the effect
-    DirectX::XMFLOAT3 EmitterPositionOffset = { 0.0f, 0.0f, 0.0f };
+    // This method is now public so that emitter strategies can call it
+    void EmitParticle(const DirectX::XMFLOAT3& position);
+
+    // --- Public Properties ---
+    // These properties are accessed by the various emitter strategies and by the particle simulation.
+
+    // Used by PointEmitterLogic
     float EmissionRate = 100.0f;
+    // Used by TrailEmitterLogic (and can be customized)
+    float ParticlesPerMeter = 50.0f;
+
+    // General particle appearance and behavior
+    DirectX::XMFLOAT3 EmitterPositionOffset = { 0.0f, 0.0f, 0.0f };
     float ParticleLifetime = 2.0f;
-    DirectX::XMFLOAT3 ParticleVelocity = { 0.0f, 5.0f, 0.0f };
-    DirectX::XMFLOAT3 ParticleVelocityVariance = { 2.0f, 1.0f, 2.0f };
-    DirectX::XMFLOAT4 StartColor = { 1.0f, 0.5f, 0.2f, 1.0f };
-    DirectX::XMFLOAT4 EndColor = { 1.0f, 1.0f, 0.8f, 0.0f };
-    float StartSize = 1.0f;
+    DirectX::XMFLOAT3 ParticleVelocity = { 0.0f, 0.5f, 0.0f };
+    DirectX::XMFLOAT3 ParticleVelocityVariance = { 0.2f, 0.2f, 0.2f };
+    DirectX::XMFLOAT4 StartColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+    DirectX::XMFLOAT4 EndColor = { 1.0f, 1.0f, 1.0f, 0.0f };
+    float StartSize = 0.5f;
     float EndSize = 0.1f;
     float StartRotation = 0.0f;
     float EndRotation = 3.14159f;
 
 private:
-    // Helper function to create a new particle
-    void EmitParticle(const DirectX::XMFLOAT3& emitterWorldPos);
     // Private function containing the actual GPU rendering commands
     void Draw(Graphics& gfx) const;
 
@@ -84,7 +95,6 @@ private:
     };
 
     // The data that will be uploaded to the GPU for each active particle instance
-    // This MUST match the InstanceInput struct in the vertex shader.
     struct InstanceData
     {
         DirectX::XMFLOAT3 instancePos;
@@ -100,11 +110,13 @@ private:
     // Render Graph Integration
     Rgph::ParticlePass* pTargetPass = nullptr;
 
+    // Emitter Strategy
+    std::unique_ptr<IEmitterLogic> pEmitterLogic;
+
     // CPU-side simulation data
     std::vector<Particle> particles;
     std::vector<InstanceData> instanceData;
     UINT activeParticleCount = 0;
-    float timeSinceLastEmission = 0.0f;
     std::mt19937 rng;
 
     // GPU-side bindable resources

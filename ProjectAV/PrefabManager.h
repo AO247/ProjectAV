@@ -7,6 +7,8 @@
 #include "Window.h"
 #include "AnimationComponent.h"
 #include "ParticleSystemComponent.h"
+#include "TrailEmitterLogic.h"
+#include "PointEmitterLogic.h"
 
 //class PhysicsEngine;
 class ShootAttack;
@@ -3866,7 +3868,7 @@ public:
             std::make_unique<AnimationComponent>(pNewNode, "", "Models\\char_basic2.glb")
         );
         pNewNode->AddComponent(
-            std::make_unique<ParticleSystemComponent>(pNewNode, wind->Gfx(), "Models\\flame.png", 200)
+            std::make_unique<ParticleSystemComponent>(pNewNode, wind->Gfx(), "Models\\flame.png", 200, std::make_unique<TrailEmitterLogic>())
         );
         ParticleSystemComponent* pParticleSystem = pNewNode->GetComponent<ParticleSystemComponent>();
         pParticleSystem->EmissionRate = 10.0f;              // Particles per second
