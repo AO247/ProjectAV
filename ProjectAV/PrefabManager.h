@@ -2219,7 +2219,7 @@ public:
         //spawnPoint6->AddComponent(
         //    std::make_unique<ModelComponent>(spawnPoint6.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
         //);
-        spawnPoint6->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        //spawnPoint6->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(-19.0f, 3.0f, 2.0f));
         spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(11.90f, 3.0f, 8.50f));
         spawnPoint3->SetLocalPosition(DirectX::XMFLOAT3(7.10f, 3.0f, 26.30f));
@@ -2424,9 +2424,9 @@ public:
         leftPoint->SetLocalPosition(DirectX::XMFLOAT3(-58.50f, 18.00f, 4.30f));
         rightPoint->SetLocalPosition(DirectX::XMFLOAT3(81.00f, 0.00f, -4.00f));
         //pIsland->halfExtents = { 11.0f, 2.0f, 11.0f };
-        pIsland->halfExtents = { (rightPoint->GetLocalPosition().x - leftPoint->GetLocalPosition().x) / 2.0f - 1.0f,
+       /* pIsland->halfExtents = { (rightPoint->GetLocalPosition().x - leftPoint->GetLocalPosition().x) / 2.0f - 1.0f,
                                 2.0f,
-                                (upPoint->GetLocalPosition().z - downPoint->GetLocalPosition().z) / 2.0f - 1.0f };
+                                (upPoint->GetLocalPosition().z - downPoint->GetLocalPosition().z) / 2.0f - 1.0f };*/
         /*upPoint->AddComponent(
             std::make_unique<ModelComponent>(upPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
         );
@@ -2458,6 +2458,8 @@ public:
         InstantiateStone1(pNewNode, Vector3(29.13f, 2.17f, 14.48f), 2.0f);
         InstantiateStone1(pNewNode, Vector3(44.39f, 1.72f, -17.77f), 2.0f);
         InstantiateStone1(pNewNode, Vector3(-1.88f, 1.72f, 15.39f), 2.0f);
+        InstantiateRock3(pNewNode, Vector3(-26.10f, 0.00f, -31.90f), 0.7f);
+        InstantiateRock3(pNewNode, Vector3(-43.60f, 0.00f, 25.60f), 0.6f, Vector3(0.00f, -1.22f, 0.00f));
         InstantiateNewColumn(pNewNode, Vector3(52.40f, 0.00f, 18.61f), 1.0f);
         InstantiatePot4(pNewNode, Vector3(30.05f, 0.64f, -31.02f), 1.0f);
         InstantiateMushroom1(pNewNode, Vector3(30.90f, 0.00f, 25.20f), 0.4f, Vector3(-0.00f, 1.15f, 0.00f));
@@ -2596,14 +2598,17 @@ public:
         InstantiateStone1(pNewNode, Vector3(-1.36f, 1.09f, 15.46f), 2.0f);
         InstantiateNewColumn(pNewNode, Vector3(21.00f, 0.00f, -23.89f), 1.0f);
         InstantiateNewColumn(pNewNode, Vector3(52.40f, 0.00f, 18.61f), 1.0f);
-        InstantiateRock3(pNewNode, Vector3(-46.85f, 0.34f, -23.22f), 1.0f);
-        InstantiateRock5(pNewNode, Vector3(-25.25f, -0.06f, -29.62f), 1.0f, Vector3(0.00f, 0.19f, 0.00f));
+		InstantiateRock1(pNewNode, Vector3(20.00f, -1.10f, 37.70f), 0.6f, Vector3(0.00f, 1.13f, 0.00f));
+		InstantiateRock1(pNewNode, Vector3(58.90f, -0.60f, -22.00f), 0.6f, Vector3(0.00f, -0.35f, 0.00f));
+		InstantiateRock2(pNewNode, Vector3(5.10f, 0.00f, -31.60f), 0.6f, Vector3(0.00f, -0.65f, 0.00f));
+        InstantiateRock3(pNewNode, Vector3(-47.95f, 0.34f, -23.22f), 1.0f);
+        InstantiateRock5(pNewNode, Vector3(-21.45f, -0.06f, -28.62f), 1.0f, Vector3(0.00f, -0.04f, 0.00f));
         InstantiateMushroom1(pNewNode, Vector3(46.20f, 0.00f, -1.60f), 0.4f, Vector3(-0.00f, 3.14f, 0.00f));
         InstantiateMushroom2(pNewNode, Vector3(-41.90f, 21.00f, -12.60f), 0.4f, Vector3(0.00f, -1.05f, 0.00f));
         InstantiateMushroom2(pNewNode, Vector3(-10.10f, 0.00f, -3.10f), 0.4f);
         InstantiateMushroom3(pNewNode, Vector3(-12.80f, 0.00f, -6.80f), 0.4f);
-        InstantiatePlatform5(pNewNode, Vector3(-28.13f, 1.20f, 4.80f), 1.0f, Vector3(0.00f, 0.18f, 0.00f));
-        InstantiateWall3(pNewNode, Vector3(33.20f, 0.00f, -27.00f), 1.0f, Vector3(0.00f, 1.31f, 0.0f));
+        InstantiatePlatform5(pNewNode, Vector3(-28.73f, 1.20f, 8.30f), 1.0f, Vector3(0.00f, 0.18f, 0.00f));
+        InstantiateWall3(pNewNode, Vector3(33.10f, 0.00f, -25.80f), 1.0f, Vector3(0.00f, 1.31f, 0.0f));
         InstantiateWall3(pNewNode, Vector3(45.50f, 0.00f, 27.50f), 1.0f, Vector3(0.00f, -1.48f, 0.0f));
 
         auto spawnPoint1 = std::make_unique<Node>("SpawnPoint 1", pNewNodeOwner.get());
@@ -2873,7 +2878,7 @@ public:
         InstantiateStoneStack1(pNewNode, Vector3(25.53f, 0.00f, 0.93f), 1.0f);
         InstantiateRock3(pNewNode, Vector3(-52.15f, 0.64f, -10.52f), 1.0f, Vector3(0.00f, 1.03f, 0.00f));
         InstantiateRock5(pNewNode, Vector3(48.35f, -0.26f, 15.98f), 1.0f, Vector3(0.00f, 0.19f, 0.00f));
-        InstantiateRockDouble(pNewNode, Vector3(48.85f, 0.64f, -26.42f), 1.0f, Vector3(0.00f, -1.64f, 0.00f));
+        InstantiateRockDouble(pNewNode, Vector3(48.75f, 0.64f, -24.12f), 1.0f, Vector3(0.00f, -1.64f, 0.00f));
         InstantiateRock2(pNewNode, Vector3(-12.85f, 0.64f, 42.28f), 1.0f, Vector3(0.00f, -0.78f, 0.0f));
         InstantiateRock2(pNewNode, Vector3(-33.25f, 0.64f, 39.08f), 1.0f, Vector3(0.00f, -1.64f, 0.0f));
         InstantiatePlatform1(pNewNode, Vector3(-40.73f, -0.10f, 7.40f), 1.0f, Vector3(0.00f, 0.18f, 0.00f));
@@ -3011,7 +3016,7 @@ public:
         InstantiateWall2(pNewNode, Vector3(-42.45f, 0.14f, 5.98f), 1.0f, Vector3(0.00f, 0.12f, 0.00f));
         InstantiateRock3(pNewNode, Vector3(53.85f, -0.26f, 23.08f), 1.0f, Vector3(0.00f, 1.74f, 0.00f));
         InstantiateRock3(pNewNode, Vector3(-44.45f, -0.26f, -20.62f), 1.0f, Vector3(0.00f, 0.28f, 0.00f));
-        InstantiateRock1(pNewNode, Vector3(-44.45f, -0.26f, -20.62f), 1.0f, Vector3(0.00f, 0.28f, 0.00f));
+        InstantiateRock1(pNewNode, Vector3(-0.95f, -0.26f, 0.38f), 0.8f, Vector3(0.00f, 0.28f, 0.00f));
         InstantiateWall1(pNewNode, Vector3(15.35f, 0.24f, -53.22f), 1.0f, Vector3(0.00f, -1.64f, 0.00f));
         InstantiateRuin5(pNewNode, Vector3(25.65f, 0.64f, 4.28f), 1.0f, Vector3(0.00f, -1.64f, 0.0f));
         InstantiateFire1(pNewNode, Vector3(23.57f, 0.50f, -26.70f), 1.0f, Vector3(0.00f, 0.0f, 0.00f));
