@@ -280,9 +280,9 @@ App::App(const std::string& commandLine)
 	pUpgradeHandler->ability6Node = pAbility6;
     pUpgradeHandler->playerController = pPlayer->GetComponent<PlayerController>();
     pUpgradeHandler->SetBasicValues();
-    pSceneRoot->GetComponent<Global>()->upgradeHandler = pUpgradeHandler;
+    //pSceneRoot->GetComponent<Global>()->upgradeHandler = pUpgradeHandler;
 
-	//PrefabManager::InstantiateIslandMedium4(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
+	PrefabManager::InstantiateIslandMedium9(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
 	//tutorialNode = PrefabManager::InstantiateTutorialIslands(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
     //pSceneRoot->GetComponent<Global>()->tut = tutorialNode->GetComponent<Tutorial>();
 
@@ -424,7 +424,7 @@ void App::HandleInput(float dt)
         {
         case 'O':
         {
-            pSceneRoot->GetComponent<Global>()->AddSpecialLevel();
+            //pSceneRoot->GetComponent<Global>()->AddSpecialLevel();
             break;
         }
 
