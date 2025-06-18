@@ -22,7 +22,7 @@ void Health::TakeDamage(float damage, bool heavy)
 			currentHealth -= damage;
 		}
 		else {
-			pOwner->GetComponent<StateMachine>()->RequestStateChange(StateType::STUN);
+			pOwner->GetComponent<StateMachine>()->Stun(1.6f);
 		}
 	}
 	else

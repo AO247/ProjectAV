@@ -14,16 +14,20 @@ void Bullet::Update(float dt)
 
 void Bullet::OnTriggerEnter(Node* object)
 {
-	if (object->tag == "TRIGGER" || object == pOwner) return;
+	if (object->tag == "TRIGGER"|| object == pOwner || object == ignore) return;
 	if (object->tag == "PLAYER") 
 	{
 		 object->GetComponent<Health>()->TakeDamage(damage);
+	}
+	if (pushedByPlayer && object->tag == "ENEMY")
+	{
+		object->GetComponent<StateMachine>()->Stun(1.0f);
 	}
 	pOwner->Destroy();
 }
 void Bullet::OnCollisionEnter(Node* object)
 {
-	if (object->tag == "TRIGGER" || object == pOwner) return;
+	if (object->tag == "TRIGGER" || object == pOwner || object == ignore) return;
 	pOwner->Destroy();
 }
 

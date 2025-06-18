@@ -13,7 +13,6 @@ PlayerController::PlayerController(Node* owner, Window& window)
 {
 	rigidbody = owner->GetComponent<Rigidbody>();
 	camera = owner->GetRoot()->FindFirstChildByTag("CAMERA");
-    PhysicsCommon::physicsSystem->GetBodyInterface().SetFriction(rigidbody->GetBodyID(), 0);
 }
 
 
@@ -27,12 +26,12 @@ void PlayerController::Update(float dt)
         PlayerGroundCheck();
 		KeyboardInput();
         MovePlayer(dt);
-		SpeedControl();
+		SpeedControl(dt);
     }
 }
 
 
-void PlayerController::SpeedControl()
+void PlayerController::SpeedControl(float dt)
 {
 	if (dashed) return;
 	Vec3 velocity = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
@@ -62,12 +61,12 @@ void PlayerController::SpeedControl()
 	{
 		Vec3 vel = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
         if (grounded) {
-            vel.SetX(vel.GetX() * 0.90f);
-            vel.SetZ(vel.GetZ() * 0.90f);
+            vel.SetX(vel.GetX() * 0.92f);
+            vel.SetZ(vel.GetZ() * 0.92f);
         }
         else {
-            vel.SetX(vel.GetX() * 0.95f);
-            vel.SetZ(vel.GetZ() * 0.95f);
+            vel.SetX(vel.GetX() * 0.99f);
+            vel.SetZ(vel.GetZ() * 0.99f);
         }
 		PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rigidbody->GetBodyID(), vel);
 	}
@@ -124,7 +123,7 @@ void PlayerController::Dash()
     {
 		dashDirection = camera->Forward();
     }
-
+    dashDirection.y += 0.3f;
     dashDirection.Normalize();
     Vec3 dir = Vec3(dashDirection.x, dashDirection.y, dashDirection.z);
     dashTimer = 0.2f;
@@ -200,38 +199,22 @@ void PlayerController::PlayerGroundCheck()
 
 void PlayerController::MovePlayer(float dt)
 {
-   /* if (grounded)
-    {
+    if (grounded && moveDirection.Length() > 0.0f)
+    { 
+        Vec3 desiredVel = Vec3(moveDirection.x, 0.0f, moveDirection.z);
+        Vec3 currentVel = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
+        Vec3 copy = currentVel;
+        currentVel.SetY(0);
+        float currentLength = currentVel.Length();
+        currentVel = currentVel.Normalized();
+
+        if ((desiredVel - currentVel).Length() > 0.2f)
+        {
+            Vec3 newVelocity = desiredVel * currentLength;
+            newVelocity.SetY(copy.GetY());
+            PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rigidbody->GetBodyID(), newVelocity);
+        }
         PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * acceleration * 1000.0f * dt);
-    }
-    else
-    {
-        PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * acceleration * 800.0f * dt);
-    }*/
-    if (grounded)
-    {
-            Vec3 desiredVel = Vec3(moveDirection.x, 0.0f, moveDirection.z);
-            Vec3 currentVel = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
-            Vec3 copy = currentVel;
-            currentVel.SetY(0);
-            float currentLength = currentVel.Length();
-            currentVel = currentVel.Normalized();
-
-            /*if ((desiredVel - currentVel).Length() > 0.5f)
-            {
-                Vec3 newVelocity = desiredVel * (currentLength / 2.0f);
-                newVelocity.SetY(copy.GetY());
-                PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rigidbody->GetBodyID(), newVelocity);
-            }*/
-            if ((desiredVel - currentVel).Length() > 0.2f)
-            {
-                Vec3 newVelocity = desiredVel * currentLength;
-                newVelocity.SetY(copy.GetY());
-                PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rigidbody->GetBodyID(), newVelocity);
-            }
-
-
-            PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * acceleration * 1000.0f * dt);
     }
     else
     {
@@ -249,11 +232,44 @@ void PlayerController::AutoJump()
     {
         Vector3 playerPos = GetOwner()->GetWorldPosition();
         Vector3 pos = playerPos + moveDirection * autoJumpRange;
+
+        // Calculate left and right directions by rotating moveDirection by ±10 degrees around Y axis
+        float angleRad = DirectX::XMConvertToRadians(30.0f);
+        // Right: +10 degrees
+        Vector3 rightDir = Vector3(
+            moveDirection.x * cosf(angleRad) - moveDirection.z * sinf(angleRad),
+            moveDirection.y,
+            moveDirection.x * sinf(angleRad) + moveDirection.z * cosf(angleRad)
+        );
+        // Left: -10 degrees
+        Vector3 leftDir = Vector3(
+            moveDirection.x * cosf(-angleRad) - moveDirection.z * sinf(-angleRad),
+            moveDirection.y,
+            moveDirection.x * sinf(-angleRad) + moveDirection.z * cosf(-angleRad)
+        );
+
+        Vector3 leftPos = playerPos + leftDir * autoJumpRange;
+        Vector3 rightPos = playerPos + rightDir * autoJumpRange;
+
+        // Central raycast (original)
         RRayCast rayFront = RRayCast(
             RVec3(pos.x, pos.y, pos.z),
             Vec3(0.0f, -(height / 2 + 0.2f), 0.0f)
         );
         RayCastResult resultFront;
+
+        RRayCast rayLeft = RRayCast(
+            RVec3(leftPos.x, leftPos.y, leftPos.z),
+            Vec3(0.0f, -(height / 2 + 0.2f), 0.0f)
+        );
+        RayCastResult resultLeft;
+
+        RRayCast rayRight = RRayCast(
+            RVec3(rightPos.x, rightPos.y, rightPos.z),
+            Vec3(0.0f, -(height / 2 + 0.2f), 0.0f)
+        );
+        RayCastResult resultRight;
+
         if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(rayFront, resultFront,
             IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::PLAYER, BroadPhaseLayers::TRIGGER }),
             IgnoreMultipleObjectLayerFilter({ Layers::PLAYER, Layers::TRIGGER })))
@@ -261,11 +277,38 @@ void PlayerController::AutoJump()
             Vec3 hitPos = rayFront.mOrigin + rayFront.mDirection * resultFront.mFraction;
             Vec3 playerDownPos = Vec3(playerPos.x, playerPos.y - (height / 2), playerPos.z);
             float diffrence = (hitPos.GetY() - playerDownPos.GetY());
-            if (diffrence < 3.0f && diffrence > 0.5f)
+            if (diffrence < 2.5f && diffrence > 0.5f)
             {
 				PhysicsCommon::physicsSystem->GetBodyInterface().SetPosition(rigidbody->GetBodyID(), Vec3(playerPos.x, playerPos.y + diffrence, playerPos.z), EActivation::Activate);
             }
         }
+        else if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(rayLeft, resultLeft,
+            IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::PLAYER, BroadPhaseLayers::TRIGGER }),
+            IgnoreMultipleObjectLayerFilter({ Layers::PLAYER, Layers::TRIGGER })))
+        {
+            Vec3 hitPos = rayLeft.mOrigin + rayLeft.mDirection * resultLeft.mFraction;
+            Vec3 playerDownPos = Vec3(playerPos.x, playerPos.y - (height / 2), playerPos.z);
+            float diffrence = (hitPos.GetY() - playerDownPos.GetY());
+            if (diffrence < 2.5f && diffrence > 0.5f)
+            {
+                PhysicsCommon::physicsSystem->GetBodyInterface().SetPosition(rigidbody->GetBodyID(), Vec3(playerPos.x, playerPos.y + diffrence, playerPos.z), EActivation::Activate);
+            }
+        }
+
+
+        else if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(rayRight, resultRight,
+            IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::PLAYER, BroadPhaseLayers::TRIGGER }),
+            IgnoreMultipleObjectLayerFilter({ Layers::PLAYER, Layers::TRIGGER })))
+        {
+            Vec3 hitPos = rayRight.mOrigin + rayRight.mDirection * resultRight.mFraction;
+            Vec3 playerDownPos = Vec3(playerPos.x, playerPos.y - (height / 2), playerPos.z);
+            float diffrence = (hitPos.GetY() - playerDownPos.GetY());
+            if (diffrence < 2.5f && diffrence > 0.5f)
+            {
+                PhysicsCommon::physicsSystem->GetBodyInterface().SetPosition(rigidbody->GetBodyID(), Vec3(playerPos.x, playerPos.y + diffrence, playerPos.z), EActivation::Activate);
+            }
+        }
+
     }
 }
 

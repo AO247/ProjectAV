@@ -104,7 +104,7 @@ void Tutorial::Update(float dt)
 		playerDeathCount++;
 	}
 	if ((player->GetLocalPosition() - checkpoints[currentCheckpointIndex + 1]).Length() < 10.0f 
-		|| (player->GetLocalPosition() - checkpoints[currentCheckpointIndex + 2]).Length() < 10.0f)
+		/*|| (player->GetLocalPosition() - checkpoints[currentCheckpointIndex + 2]).Length() < 10.0f*/)
 	{
 		currentCheckpointIndex++;
 		currentStage++;

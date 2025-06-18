@@ -4636,24 +4636,39 @@ public:
             std::make_unique<Rigidbody>(pNewNode, eBodySettings)
         );
 
+        // ATTACK
+        auto attackNodeOwner = std::make_unique<Node>("Basic Attack", nullptr, "TRIGGER");
+        Node* pattackNode = attackNodeOwner.get();
+
         BodyCreationSettings a1BodySettings(new JPH::CapsuleShape(5.0f, 3.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
-        pNewNode->AddComponent(
-            std::make_unique<Trigger>(pNewNode, a1BodySettings, false)
+        pattackNode->AddComponent(
+            std::make_unique<Trigger>(pattackNode, a1BodySettings, false)
         );
+        pattackNode->AddComponent(
+            std::make_unique<BasicAttack>(pattackNode)
+        );
+        BasicAttack* basicAttack = pattackNode->GetComponent<BasicAttack>();
+        basicAttack->attackRange = 7.0f;
+        pNewNode->SetLocalPosition({ 0.0f, 0.0f, 0.0f });
+        pNewNode->AddChild(std::move(attackNodeOwner));
+
+        //MOVEMENT
         pNewNode->AddComponent(
             std::make_unique<Walking>(pNewNode)
         );
         Walking* walking = pNewNode->GetComponent<Walking>();
         walking->radius = 1.5f;
-        pNewNode->AddComponent(
-            std::make_unique<BasicAttack>(pNewNode)
-        );
+        walking->maxSpeed = 90.0f;
+
+        //STATE MACHINE
         pNewNode->AddComponent(
             std::make_unique<StateMachine>(pNewNode, StateType::IDLE)
         );
-        pNewNode->GetComponent<StateMachine>()->attackRange = 35.0f;
-        pNewNode->GetComponent<StateMachine>()->followDistance = 60.0f;
-        pNewNode->GetComponent<StateMachine>()->pPlayer = pPlayer;
+        StateMachine* stateMachine = pNewNode->GetComponent<StateMachine>();
+        stateMachine->followDistance = 60.0f;
+        stateMachine->pPlayer = pPlayer;
+        stateMachine->attackComponents.push_back(basicAttack);
+        stateMachine->pMovementComponent = walking;
         pNewNode->AddComponent(
             std::make_unique<Health>(pNewNode, 1.0f)
         );
@@ -4701,23 +4716,39 @@ public:
             std::make_unique<Rigidbody>(pNewNode, eBodySettings)
         );
 
-        BodyCreationSettings a1BodySettings(new JPH::CapsuleShape(5.0f, 3.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
-        pNewNode->AddComponent(
-            std::make_unique<Trigger>(pNewNode, a1BodySettings, false)
-        );
-        pNewNode->AddComponent(
-            std::make_unique<Flying>(pNewNode)
-        );
+
+        // ATTACK
         pNewNode->AddComponent(
             std::make_unique<ShootAttack>(pNewNode)
         );
+        ShootAttack* shootAttack = pNewNode->GetComponent<ShootAttack>();
+        shootAttack->bulletSpeed = 40.0f;
+        shootAttack->attackRange = 60.0f;
+
+        //MOVEMENT
+        pNewNode->AddComponent(
+            std::make_unique<Flying>(pNewNode)
+        );
+        Flying* flying = pNewNode->GetComponent<Flying>();
+        flying->maxSpeed = 38.0f;
+        flying->height = 2.0f;
+
+
+        pNewNode->AddComponent(
+            std::make_unique<Flying>(pNewNode)
+        );
+
+        //STATE MACHINE
         pNewNode->AddComponent(
             std::make_unique<StateMachine>(pNewNode, StateType::IDLE)
         );
-        pNewNode->GetComponent<StateMachine>()->attackRange = 35.0f;
-        pNewNode->GetComponent<StateMachine>()->followDistance = 60.0f;
-        pNewNode->GetComponent<StateMachine>()->isFlying = true;
-        pNewNode->GetComponent<StateMachine>()->pPlayer = pPlayer;
+        StateMachine* stateMachine = pNewNode->GetComponent<StateMachine>();
+        stateMachine->followDistance = 120.0f;
+        stateMachine->isFlying = true;
+        stateMachine->pPlayer = pPlayer;
+        stateMachine->attackComponents.push_back(shootAttack);
+        stateMachine->pMovementComponent = flying;
+
         pNewNode->AddComponent(
             std::make_unique<Health>(pNewNode, 1.0f)
         );
@@ -4755,7 +4786,7 @@ public:
         eBodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
 
         //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
-        eBodySettings.mMassPropertiesOverride.mMass = 10.0f;
+        eBodySettings.mMassPropertiesOverride.mMass = 7.0f;
         eBodySettings.mFriction = 0.2f;
         eBodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
         eBodySettings.mMotionQuality = EMotionQuality::LinearCast;
@@ -4763,24 +4794,33 @@ public:
             std::make_unique<Rigidbody>(pNewNode, eBodySettings)
         );
 
-        BodyCreationSettings a1BodySettings(new JPH::CapsuleShape(5.0f, 3.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
+        // ATTACK
         pNewNode->AddComponent(
-            std::make_unique<Trigger>(pNewNode, a1BodySettings, false)
+            std::make_unique<ShootAttack>(pNewNode)
         );
+        ShootAttack* shootAttack = pNewNode->GetComponent<ShootAttack>();
+        shootAttack->bulletSpeed = 50.0f;
+        shootAttack->attackRange = 60.0f;
+
+        //MOVEMENT
         pNewNode->AddComponent(
             std::make_unique<Walking>(pNewNode)
         );
         Walking* walking = pNewNode->GetComponent<Walking>();
         walking->radius = 1.5f;
-        pNewNode->AddComponent(
-            std::make_unique<ShootAttack>(pNewNode)
-        );
+        walking->maxSpeed = 80.0f;
+        
+
+
+        //STATE MACHINE
         pNewNode->AddComponent(
             std::make_unique<StateMachine>(pNewNode, StateType::IDLE)
         );
-        pNewNode->GetComponent<StateMachine>()->attackRange = 35.0f;
-        pNewNode->GetComponent<StateMachine>()->followDistance = 60.0f;
-        pNewNode->GetComponent<StateMachine>()->pPlayer = pPlayer;
+        StateMachine* stateMachine = pNewNode->GetComponent<StateMachine>();
+        stateMachine->followDistance = 90.0f;
+        stateMachine->pPlayer = pPlayer;
+        stateMachine->attackComponents.push_back(shootAttack);
+        stateMachine->pMovementComponent = walking;
         pNewNode->AddComponent(
             std::make_unique<Health>(pNewNode, 1.0f)
         );

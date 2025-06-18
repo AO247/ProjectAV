@@ -16,10 +16,10 @@ public:
 	float lifeTime = 5.0f;
 	float knockbackForce = 1500.0f;
 	virtual void DrawImGuiControls() override;
-	void OnCollisionEnter(Node* other) override;
 	void OnTriggerEnter(Node* other) override;
+	void OnCollisionEnter(Node* other) override;
 	Node* ignore = nullptr;
-
+	bool pushedByPlayer = false;
 private:
 	Rigidbody* rigidbody;
 	float timer = 0.0f;

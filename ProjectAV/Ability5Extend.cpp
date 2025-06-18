@@ -55,17 +55,30 @@ void Ability5Extend::ApplyForce(Node* object, float dt) {
             Vec3(0.5f, 0.5f, 0.5f)
 		);
     }
-    PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(
-        rb->GetBodyID(),
-        Vec3(0, 1, 0) * forceY * dt
-    );
+    if (object->tag == "BULLET")
+    {
+        Bullet* bullet = object->GetComponent<Bullet>();
+        bullet->pushedByPlayer = true;
+        bullet->ignore = nullptr;
+        PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(
+            rb->GetBodyID(),
+            Vec3(0, 1, 0) * forceY * 0.5f * dt
+        );
+    }
+    else {
+        PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(
+            rb->GetBodyID(),
+            Vec3(0, 1, 0) * forceY * dt
+        );
+    }
+
 }
 
 void Ability5Extend::OnTriggerEnter(Node* object) {
     if (object == nullptr) return;
-    if (object->tag != "ENEMY" && object->tag != "STONE") return;
+    if (object->tag != "ENEMY" && object->tag != "STONE" && object->tag != "BULLET") return;
     if (object->GetComponent<Rigidbody>() == nullptr) return;
-    if (object->tag != "ENEMY")
+    if (object->tag != "ENEMY") 
     {
 		Vec3 velocity = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(
             object->GetComponent<Rigidbody>()->GetBodyID()
@@ -81,9 +94,10 @@ void Ability5Extend::OnTriggerEnter(Node* object) {
     }
     objects.push_back(object);
 }
+
 void Ability5Extend::OnTriggerExit(Node* object) {
     if (object == nullptr) return;
-    if (object->tag != "ENEMY" && object->tag != "STONE") return;
+    if (object->tag != "ENEMY" && object->tag != "STONE" && object->tag != "BULLET") return;
     if (object->GetComponent<Rigidbody>() == nullptr) return;
     auto it = std::remove(objects.begin(), objects.end(), object);
     if (it != objects.end()) {
