@@ -156,8 +156,8 @@ void PlayerController::PlayerGroundCheck()
     );
     RayCastResult resultCenter;
     if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(rayCenter, resultCenter,
-        IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::PLAYER, BroadPhaseLayers::TRIGGER }), 
-        IgnoreMultipleObjectLayerFilter({Layers::PLAYER, Layers::TRIGGER})))
+        IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::ENEMY, BroadPhaseLayers::PLAYER, BroadPhaseLayers::TRIGGER }),
+        IgnoreMultipleObjectLayerFilter({ Layers::ENEMY, Layers::PLAYER, Layers::TRIGGER})))
     {
         grounded = true;
     }
@@ -170,8 +170,8 @@ void PlayerController::PlayerGroundCheck()
     );
     RayCastResult resultBack;
     if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(rayBack, resultBack,
-        IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::PLAYER, BroadPhaseLayers::TRIGGER }),
-        IgnoreMultipleObjectLayerFilter({ Layers::PLAYER, Layers::TRIGGER })))
+        IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::ENEMY, BroadPhaseLayers::PLAYER, BroadPhaseLayers::TRIGGER }),
+        IgnoreMultipleObjectLayerFilter({ Layers::ENEMY,  Layers::PLAYER, Layers::TRIGGER })))
     {
         grounded = true;
     }

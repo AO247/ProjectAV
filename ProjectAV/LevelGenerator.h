@@ -18,8 +18,8 @@ public:
 	int smallIslandCount = 2;
 
 	int numberOfHardEnemies = 2;
-	int numberOfMediumEnemies = 1;
-	int numberOfEasyEnemies = 1;
+	int numberOfMediumEnemies = 2;
+	int numberOfEasyEnemies = 2;
 
 
 	virtual void Update(float dt) override;
@@ -58,7 +58,8 @@ private:
 	int pIslandNumber = 1;
 
 	int counterToRotate = 0;
-
+	float enemiesLimitTimer = 10.0f;
+	float islandLimitTimer = 40.0f;
 	void Rotate(int rot = 0);
 
 	void ChangePosition(islandInfoStruct* island, Vector3 pointPos, Vector3 startPos);
