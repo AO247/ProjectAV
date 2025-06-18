@@ -19,7 +19,7 @@ void StunState::Update(StateMachine* pOwner, float dt)
 {
 	time += dt;
 
-	if (time > 2.0f)
+	if (time > pOwner->stunTime)
 	{
 		pOwner->EndState();
 	}

@@ -492,7 +492,7 @@ void Node::UpdateStoredComponentsFromMatrix()
 
 void Node::Update(float dt)
 {
-    
+    if (this == NULL || this == nullptr) return;
     if (localTransformDirty) { 
         UpdateLocalTransformFromComponents(transformationOutsidePhysicsTriggered); 
     }

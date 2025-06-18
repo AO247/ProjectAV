@@ -101,6 +101,7 @@ App::App(const std::string& commandLine)
 	Node* pPlayerThings = playerThings.get();
 	Node* pAbilities = abilities.get();
 	Node* pBase = base.get();
+    pSceneRoot->AddChild(std::move(pPrefabsOwner));
 	pSceneRoot->AddChild(std::move(base));
     pSceneRoot->AddChild(std::move(playerThings));
     pPlayerThings->AddChild(std::move(pCameraNodeOwner));
@@ -113,7 +114,6 @@ App::App(const std::string& commandLine)
     pAbilities->AddChild(std::move(pAbility4Owner));
     pAbilities->AddChild(std::move(pAbility5Owner));
     pAbilities->AddChild(std::move(pAbility6Owner));
-    pSceneRoot->AddChild(std::move(pPrefabsOwner));
     pCamera->AddChild(std::move(pLeftHandNormalOwner));
     pCamera->AddChild(std::move(pLeftHandAbilityOwner));
     pCamera->AddChild(std::move(pRightHandNormalOwner));
@@ -282,8 +282,8 @@ App::App(const std::string& commandLine)
     pUpgradeHandler->SetBasicValues();
     pSceneRoot->GetComponent<Global>()->upgradeHandler = pUpgradeHandler;
 
-	tutorialNode = PrefabManager::InstantiateTutorialIslands(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
-    pSceneRoot->GetComponent<Global>()->tut = tutorialNode->GetComponent<Tutorial>();
+	/*tutorialNode = PrefabManager::InstantiateTutorialIslands(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
+    pSceneRoot->GetComponent<Global>()->tut = tutorialNode->GetComponent<Tutorial>();*/
 
     const int screenWidth = 1920;
     const int screenHeight = 1080;
@@ -451,6 +451,9 @@ void App::HandleInput(float dt)
         case 'H': 
             showControlWindow = !showControlWindow;
             break;
+        case 'X':
+            tutorialNode = PrefabManager::InstantiateTutorialIslands(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
+            break;
         /*case 'Q':
 			tutorialNode->GetComponent<Tutorial>()->qPressed= true;
 			break;*/
@@ -579,7 +582,7 @@ void App::DoFrame(float dt)
 
     pUpgradeHandler->DrawUpgradeMenu();
 
-	tutorialNode->GetComponent<Tutorial>()->DrawNote();
+	//tutorialNode->GetComponent<Tutorial>()->DrawNote();
 
     if(pSceneRoot->GetComponent<Global>()->drawLoadingScreen || bonusTime > 0.0f)
     {

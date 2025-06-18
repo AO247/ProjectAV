@@ -31,27 +31,31 @@ StateMachine::StateMachine(Node* owner, StateType initialState)
 		currentStateType = StateType::IDLE;
 		ChangeState(StateType::IDLE); 
 	}
-	for (const auto& component : pOwner->GetComponents())
-	{
-		std::string tagName = "MOVEMENT";
-		std::string tagName2 = "ATTACK";
+	//for (const auto& component : pOwner->GetComponents())
+	//{
+	//	std::string tagName = "MOVEMENT";
+	//	std::string tagName2 = "ATTACK";
 
-		if (component->tag == tagName)
-		{
-			pMovementComponent = component.get();
-		}
-		else if (component->tag == tagName2)
-		{
-			attackComponents.push_back(component.get());
-		}
-	}
+	//	if (component->tag == tagName)
+	//	{
+	//		pMovementComponent = component.get();
+	//	}
+	//	else if (component->tag == tagName2)
+	//	{
+	//		attackComponents.push_back(component.get());
+	//	}
+	//}
 	pPlayer = pOwner->GetRoot()->FindFirstChildByTag("PLAYER");
 }
 StateMachine::~StateMachine()
 {
 
 }
-
+void StateMachine::Stun(float time)
+{
+	stunTime = time;
+	RequestStateChange(StateType::STUN);
+}
 
 void StateMachine::Update(float dt)
 {

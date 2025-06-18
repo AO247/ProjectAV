@@ -8,6 +8,7 @@
 #include <DirectXMath.h>
 #include <algorithm>
 #include <string>
+#include "Components.h"
 
 namespace dx = DirectX;
 Ability1::Ability1(Node* owner, Window& window, Node* camera)
@@ -41,7 +42,14 @@ void Ability1::Pressed()
         {
 			Vec3 direction = Vec3(pOwner->Forward().x, pOwner->Forward().y, pOwner->Forward().z);
             PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), direction * force);
-			//OutputDebugStringA(("Ability1 hit: " + objects[i]->GetName() + "\n").c_str());
+        }
+        else if (objects[i]->tag == "BULLET")
+        {
+            Vec3 direction = Vec3(pOwner->Forward().x, pOwner->Forward().y, pOwner->Forward().z);
+            Bullet* bullet = objects[i]->GetComponent<Bullet>();
+            bullet->pushedByPlayer = true;
+            bullet->ignore = nullptr;
+            PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), direction * force * 0.04f);
         }
     }
     cooldownTimer = cooldown;
@@ -78,7 +86,7 @@ void Ability1::Cooldowns(float dt)
 
 void Ability1::OnTriggerEnter(Node* object) {
     if (object == nullptr) return;
-    if (object->tag != "ENEMY" && object->tag != "STONE") return;
+    if (object->tag != "ENEMY" && object->tag != "STONE" && object->tag != "BULLET") return;
     if (object->GetComponent<Rigidbody>() == nullptr) return;
     for(int i= 0; i < objects.size(); i++)
     {
@@ -89,7 +97,7 @@ void Ability1::OnTriggerEnter(Node* object) {
 }
 void Ability1::OnTriggerExit(Node* object) {
     if (object == nullptr) return;
-    if (object->tag != "ENEMY" && object->tag != "STONE") return;
+    if (object->tag != "ENEMY" && object->tag != "STONE" && object->tag != "BULLET") return;
     if (object->GetComponent<Rigidbody>() == nullptr) return;
     auto it = std::remove(objects.begin(), objects.end(), object);
     if (it != objects.end()) {
