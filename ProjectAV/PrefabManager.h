@@ -3874,12 +3874,12 @@ public:
         pParticleSystem->EmitterPositionOffset = { 0.0f, 1.0f, 0.0f }; // Start slightly above the node's origin
         pParticleSystem->ParticleVelocity = { 0.0f, 10.0f, 0.0f }; // Strong upward velocity
         pParticleSystem->ParticleVelocityVariance = { 2.5f, 1.0f, 2.5f }; // Spread them out horizontally
-        pParticleSystem->StartColor = { 0.3f, 0.6f, 1.0f, 1.0f }; // Bluish water color
-        pParticleSystem->EndColor = { 0.8f, 0.9f, 1.0f, 0.0f };   // Fade to a light blue and then disappear
+        pParticleSystem->StartColor = { 1.0f, 1.0f, 1.0f, 1.0f }; // Bluish water color
+        pParticleSystem->EndColor = { 1.0f, 1.0f, 1.0f, 1.0f };   // Fade to a light blue and then disappear
         pParticleSystem->StartSize = 1.5f;
         pParticleSystem->EndSize = 0.3f;
         pParticleSystem->StartRotation = 0.0f;
-        pParticleSystem->EndRotation = 6.28f; // Two full rotations over its lifetime
+        pParticleSystem->EndRotation = 0.0f; // Two full rotations over its lifetime
 
 
         AnimationComponent* animComp = pNewNode->GetComponent<AnimationComponent>();

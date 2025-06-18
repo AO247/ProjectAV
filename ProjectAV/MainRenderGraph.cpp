@@ -1,8 +1,9 @@
 #include "MainRenderGraph.h"
 #include "BufferClearPass.h"
 #include "LambertianPass.h"
+#include "SkyboxPass.h"       // Include all passes
+#include "ParticlePass.h"
 #include "Source.h"
-#include "SkyboxPass.h"
 #include "RenderTarget.h"
 #include "DynamicConstant.h"
 #include "imgui/imgui.h"
@@ -10,14 +11,10 @@
 
 namespace Rgph
 {
-
+	// GetParticlePass implementation remains the same
 	Rgph::ParticlePass& MainRenderGraph::GetParticlePass()
 	{
-		// This assert is a good safety check. It will fire in debug mode
-		// if something went wrong during construction and pParticlePass was not set.
 		assert(pParticlePass != nullptr && "Particle pass has not been created or linked in MainRenderGraph");
-
-		// Return a reference to the stored particle pass.
 		return *pParticlePass;
 	}
 
@@ -25,6 +22,7 @@ namespace Rgph
 		:
 		RenderGraph(gfx)
 	{
+		// 1. Clear the main render target and depth buffer
 		{
 			auto pass = std::make_unique<BufferClearPass>("clearRT");
 			pass->SetSinkLinkage("buffer", "$.backbuffer");
@@ -35,34 +33,39 @@ namespace Rgph
 			pass->SetSinkLinkage("buffer", "$.masterDepth");
 			AppendPass(std::move(pass));
 		}
+
+		// 2. Draw all solid, opaque geometry first. This populates the depth buffer.
 		{
 			auto pass = std::make_unique<LambertianPass>(gfx, "lambertian");
 			pass->SetSinkLinkage("renderTarget", "clearRT.buffer");
 			pass->SetSinkLinkage("depthStencil", "clearDS.buffer");
 			AppendPass(std::move(pass));
 		}
-		// +++ 3. ADD THE PARTICLE PASS to the graph +++
-		{
-			auto pass = std::make_unique<ParticlePass>(gfx, "particles");
-			// Particles draw into the same target as solid objects
-			pass->SetSinkLinkage("renderTarget", "lambertian.renderTarget");
-			// They use the depth buffer from the solid pass for testing but don't write to it (handled by Blend state)
-			pass->SetSinkLinkage("depthStencil", "lambertian.depthStencil");
 
-			// Store the raw pointer so we can return it from GetParticlePass()
-			pParticlePass = static_cast<ParticlePass*>(pass.get());
-			// Add the pass to the graph's list (ownership is transferred)
-			AppendPass(std::move(pass));
-		}
-
-		// 4. Draw the skybox last
+		// 3. Draw the skybox. It will correctly appear behind the solid geometry
+		//    because it tests against the now-populated depth buffer.
 		{
 			auto pass = std::make_unique<SkyboxPass>(gfx, "skybox");
-			pass->SetSinkLinkage("renderTarget", "particles.renderTarget");
-			pass->SetSinkLinkage("depthStencil", "particles.depthStencil");
+			// It reads from the output of the lambertian pass...
+			pass->SetSinkLinkage("renderTarget", "lambertian.renderTarget");
+			pass->SetSinkLinkage("depthStencil", "lambertian.depthStencil");
 			AppendPass(std::move(pass));
 		}
-		SetSinkTarget("backbuffer", "skybox.renderTarget");
+
+		// 4. Draw all transparent geometry (particles) last.
+		{
+			auto pass = std::make_unique<ParticlePass>(gfx, "particles");
+			// It reads from the output of the SKYBOX pass. This means the skybox
+			// is already in the color buffer, and particles will blend ON TOP of it.
+			pass->SetSinkLinkage("renderTarget", "skybox.renderTarget");
+			pass->SetSinkLinkage("depthStencil", "skybox.depthStencil");
+
+			pParticlePass = static_cast<ParticlePass*>(pass.get());
+			AppendPass(std::move(pass));
+		}
+
+		// 5. The final output of the graph is now the particle pass's render target.
+		SetSinkTarget("backbuffer", "particles.renderTarget");
 
 		Finalize();
 	}
