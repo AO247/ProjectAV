@@ -3932,6 +3932,7 @@ public:
         walking->radius = 1.5f;
         walking->maxSpeed = 90.0f;
 
+
         //STATE MACHINE
         pNewNode->AddComponent(
             std::make_unique<StateMachine>(pNewNode, StateType::IDLE)
@@ -4005,11 +4006,6 @@ public:
         flying->maxSpeed = 38.0f;
         flying->height = 2.0f;
 
-
-        pNewNode->AddComponent(
-            std::make_unique<Flying>(pNewNode)
-        );
-
         //STATE MACHINE
         pNewNode->AddComponent(
             std::make_unique<StateMachine>(pNewNode, StateType::IDLE)
@@ -4075,13 +4071,21 @@ public:
         shootAttack->attackRange = 60.0f;
 
         //MOVEMENT
+        auto voidOwner = std::make_unique<Node>("VoidCheck", nullptr, "TRIGGER");
+        voidOwner->AddComponent(
+            std::make_unique<ModelComponent>(voidOwner.get(), wind->Gfx(), "Models\\box.glb")
+        );
+        voidOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+
         pNewNode->AddComponent(
             std::make_unique<Walking>(pNewNode)
         );
         Walking* walking = pNewNode->GetComponent<Walking>();
         walking->radius = 1.5f;
         walking->maxSpeed = 80.0f;
-        
+        //walking->voidNode = voidOwner.get();
+        root->AddChild(std::move(voidOwner));
+
 
 
         //STATE MACHINE
@@ -4103,7 +4107,72 @@ public:
 
         return pNewNode;
     }
-   
+    static Node* InstantiateMageEnemy(Node* parentNode, Vector3 position, float scale, Node* pPlayer)
+    {
+        auto pNewNodeOwner = std::make_unique<Node>("Mage", nullptr, "ENEMY");
+        Node* pNewNode = pNewNodeOwner.get();
+
+        pNewNode->AddComponent(
+            std::make_unique<SoundEffectsPlayer>(pNewNode)
+        );
+
+
+        pNewNode->AddComponent(
+            std::make_unique<ModelComponent>(pNewNode, wind->Gfx(), "Models\\enemy\\flying.obj")
+        );
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        parentNode->AddChild(std::move(pNewNodeOwner));
+
+        BodyCreationSettings eBodySettings(new JPH::CapsuleShape(2.1f, 1.5f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::ENEMY);
+        eBodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
+
+        //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
+        eBodySettings.mMassPropertiesOverride.mMass = 10.0f;
+        eBodySettings.mFriction = 0.2f;
+        eBodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
+        eBodySettings.mMotionQuality = EMotionQuality::LinearCast;
+        pNewNode->AddComponent(
+            std::make_unique<Rigidbody>(pNewNode, eBodySettings)
+        );
+
+
+        // ATTACK
+        pNewNode->AddComponent(
+            std::make_unique<ShootAttack>(pNewNode)
+        );
+        ShootAttack* shootAttack = pNewNode->GetComponent<ShootAttack>();
+        shootAttack->bulletSpeed = 40.0f;
+        shootAttack->attackRange = 60.0f;
+
+        //MOVEMENT
+        pNewNode->AddComponent(
+            std::make_unique<Walking>(pNewNode)
+        );
+        Walking* walking = pNewNode->GetComponent<Walking>();
+        walking->maxSpeed = 0.0f;
+
+        //STATE MACHINE
+        pNewNode->AddComponent(
+            std::make_unique<StateMachine>(pNewNode, StateType::IDLE)
+        );
+        StateMachine* stateMachine = pNewNode->GetComponent<StateMachine>();
+        stateMachine->followDistance = 120.0f;
+        stateMachine->isFlying = true;
+        stateMachine->pPlayer = pPlayer;
+        stateMachine->attackComponents.push_back(shootAttack);
+        stateMachine->pMovementComponent = walking;
+
+        pNewNode->AddComponent(
+            std::make_unique<Health>(pNewNode, 1.0f)
+        );
+
+        pNewNode->SetLocalPosition(position);
+        pNewNode->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+
+
+        return pNewNode;
+    }
+
     static Node* InstantiateHealthCollectable(Node* parentNode, Vector3 position, float scale, float targetY)
     {
         auto pNewNodeOwner = std::make_unique<Node>("Health", nullptr, "TRIGGER");

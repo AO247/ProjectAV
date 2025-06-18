@@ -66,14 +66,13 @@ void Ability2::Pressed()
             PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), Vec3(0.0f, 0.0f, 0.0f));
             Vec3 direction = Vec3(0.0f, 1.0f, 0.0f);
             PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), direction * force);
-            //OutputDebugStringA(("Ability2 hit: " + objects[i]->GetName() + "\n").c_str());
+            objects[i]->GetComponent<StateMachine>()->Stop(0.8f);
         }
         else if (objects[i]->tag == "STONE")
         {
             Vec3 direction = Vec3(0.0f, 1.0f, 0.0f);
             PhysicsCommon::physicsSystem->GetBodyInterface().SetAngularVelocity(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), Vec3Arg(1.0f, 1.0f, -1.0f));
             PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), direction * 230.0f);
-            //OutputDebugStringA(("Ability2 hit: " + objects[i]->GetName() + "\n").c_str());
 		}
         else if (objects[i]->tag == "BULLET")
         {
