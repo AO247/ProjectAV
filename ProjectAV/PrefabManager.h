@@ -1971,7 +1971,7 @@ public:
         Node* pNewNode = pNewNodeOwner.get();
 
         InstantiateStoneStack1(pNewNode, Vector3(-2.72f, 1.72f, -1.72f), 1.0f);
-        InstantiateAnimationTest(pNewNode, Vector3(4.0f, 10.72f, -1.72f), 1.0f);
+        InstantiateAnimationTest(pNewNode, Vector3(4.0f, 6.72f, -1.72f), 1.0f);
         InstantiateRock2(pNewNode, Vector3(21.70f, -0.10f, -17.70f), 1.0f);
         InstantiateRock3(pNewNode, Vector3(6.40f, 0.20f, 22.50f), 1.0f);
         InstantiateRock3(pNewNode, Vector3(22.30f, 0.00f, -10.90f), 1.0f);
@@ -3866,18 +3866,18 @@ public:
             std::make_unique<AnimationComponent>(pNewNode, "", "Models\\char_basic2.glb")
         );
         pNewNode->AddComponent(
-            std::make_unique<ParticleSystemComponent>(pNewNode, wind->Gfx(), "Models\\flat_normal.png", 200)
+            std::make_unique<ParticleSystemComponent>(pNewNode, wind->Gfx(), "Models\\flame.png", 200)
         );
         ParticleSystemComponent* pParticleSystem = pNewNode->GetComponent<ParticleSystemComponent>();
-        pParticleSystem->EmissionRate = 250.0f;              // Particles per second
-        pParticleSystem->ParticleLifetime = 4.0f;            // How long each particle lives
+        pParticleSystem->EmissionRate = 10.0f;              // Particles per second
+        pParticleSystem->ParticleLifetime = 0.3f;            // How long each particle lives
         pParticleSystem->EmitterPositionOffset = { 0.0f, 1.0f, 0.0f }; // Start slightly above the node's origin
         pParticleSystem->ParticleVelocity = { 0.0f, 10.0f, 0.0f }; // Strong upward velocity
         pParticleSystem->ParticleVelocityVariance = { 2.5f, 1.0f, 2.5f }; // Spread them out horizontally
         pParticleSystem->StartColor = { 0.3f, 0.6f, 1.0f, 1.0f }; // Bluish water color
         pParticleSystem->EndColor = { 0.8f, 0.9f, 1.0f, 0.0f };   // Fade to a light blue and then disappear
-        pParticleSystem->StartSize = 500.5f;
-        pParticleSystem->EndSize = 1000.1f;
+        pParticleSystem->StartSize = 1.5f;
+        pParticleSystem->EndSize = 0.3f;
         pParticleSystem->StartRotation = 0.0f;
         pParticleSystem->EndRotation = 6.28f; // Two full rotations over its lifetime
 
@@ -3885,6 +3885,7 @@ public:
         AnimationComponent* animComp = pNewNode->GetComponent<AnimationComponent>();
         animComp->PlayAnimation(3);
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        pParticleSystem->Link(*rg);
         parentNode->AddChild(std::move(pNewNodeOwner));
 
         pNewNode->SetLocalPosition(DirectX::XMFLOAT3(position.x, position.y, position.z));

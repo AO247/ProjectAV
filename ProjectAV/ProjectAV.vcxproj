@@ -260,6 +260,7 @@
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="NullPixelShader.cpp" />
     <ClCompile Include="ParticleCbuf.cpp" />
+    <ClCompile Include="ParticlePass.cpp" />
     <ClCompile Include="ParticleSystemComponent.cpp" />
     <ClCompile Include="Pass.cpp" />
     <ClCompile Include="PhysicsCommon.cpp" />
@@ -378,6 +379,7 @@
     <ClInclude Include="Node.h" />
     <ClInclude Include="NullPixelShader.h" />
     <ClInclude Include="ParticleCbuf.h" />
+    <ClInclude Include="ParticlePass.h" />
     <ClInclude Include="ParticleSystemComponent.h" />
     <ClInclude Include="Pass.h" />
     <ClInclude Include="PerfLog.h" />

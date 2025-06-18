@@ -3,6 +3,7 @@
 #include <vector>
 #include <memory>
 #include "ConditionalNoexcept.h"
+#include "ParticlePass.h"
 
 class Graphics;
 
@@ -11,6 +12,7 @@ namespace Bind
 	class RenderTarget;
 	class DepthStencil;
 }
+namespace Rgph { class ParticlePass; }
 
 namespace Rgph
 {
@@ -27,6 +29,7 @@ namespace Rgph
 		void Execute( Graphics& gfx ) noxnd;
 		void Reset() noexcept;
 		RenderQueuePass& GetRenderQueue( const std::string& passName );
+		virtual ParticlePass& GetParticlePass();
 	protected:
 		void SetSinkTarget( const std::string& sinkName,const std::string& target );
 		void AddGlobalSource( std::unique_ptr<Source> );
