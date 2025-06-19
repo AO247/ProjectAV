@@ -282,8 +282,8 @@ App::App(const std::string& commandLine)
     pUpgradeHandler->SetBasicValues();
     pSceneRoot->GetComponent<Global>()->upgradeHandler = pUpgradeHandler;
 
-	/*tutorialNode = PrefabManager::InstantiateTutorialIslands(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
-    pSceneRoot->GetComponent<Global>()->tut = tutorialNode->GetComponent<Tutorial>();*/
+	tutorialNode = PrefabManager::InstantiateTutorialIslands(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
+    pSceneRoot->GetComponent<Global>()->tut = tutorialNode->GetComponent<Tutorial>();
 
     const int screenWidth = 1920;
     const int screenHeight = 1080;

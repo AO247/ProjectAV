@@ -1,41 +1,62 @@
 #include "ShaderOps.hlsl"
 #include "LightVectorData.hlsl"
 #include "DirectionalLight.hlsl"
+#include "PointLight.hlsl"
+
+cbuffer ObjectCBuf : register(b1)
+{ 
+    float3 materialColor;  
+    bool hasDiffuseMap; 
+    float3 specularColor;  
+    bool useNormalMap;  
+    float normalMapWeight;  
+    float specularWeight; 
+    float specularGloss;  
+};
+
+Texture2D diffuseTexture ;
+Texture2D normalTexture : register(t2);  
+SamplerState defaultSampler ;
 
 struct PS_INPUT
 {
     float4 clipPosition : SV_Position;
+    float3 viewPosition : TEXCOORD0;
     float3 viewNormal : NORMAL;
-    float2 texCoord : TEXCOORD0;
-    float3 viewPosition : TEXCOORD1;
+    float2 texCoord : TEXCOORD1;
+    float3 viewTangent : TANGENT;
+    float3 viewBitangent : BITANGENT;
 };
 
 float4 main(PS_INPUT input) : SV_Target
 {
-    // Normalize the interpolated normal vector
-    const float3 normal = normalize(input.viewNormal);
+    float3 N = normalize(input.viewNormal);
+    float3 T = normalize(input.viewTangent);
+    float3 B = normalize(input.viewBitangent);
 
-    // ======== HARDCODED MATERIAL PROPERTIES ========
-    // As requested, no textures or material cbuffer. Just a solid color.
-    const float3 solidColor = float3(0.9f, 0.75f, 0.65f); // A simple flesh/stone tone
-    const float3 specularColor = float3(1.0f, 1.0f, 1.0f); // White specular highlights
-    const float specularWeight = 0.8f;
-    const float specularGloss = 30.0f;
-    // ===============================================
+    if ( useNormalMap )  
+    {
+        const float3 mappedNormal = MapNormal(T, B, N, input.texCoord, normalTexture, defaultSampler);
+        N = normalize(lerp(N, mappedNormal, normalMapWeight));
+    }
+    
+    float3 albedo;
+    float alpha = 1.0f;
+    if ( hasDiffuseMap )
+    {
+        float4 diffuseSample = diffuseTexture.Sample(defaultSampler, input.texCoord);
+        albedo = diffuseSample.rgb;
+        alpha = diffuseSample.a;
+    }
 
-    // Start with the ambient light contribution
-    float3 final_color = dir_ambient * solidColor;
+    float3 final_color = float3(0.0f, 0.0f, 0.0f);
 
-    // The direction vector FROM the light source is given. We need the vector TO the light source.
-    const float3 dirToLight = -normalize(viewLightDirection);
+    // Directional Light (from b2)
+    final_color += dir_ambient * albedo;
+    const float3 dir_to_light_dir_vs = -normalize(viewLightDirection);  
+    final_color += Diffuse(dir_diffuseColor, dir_diffuseIntensity, 1.0f, dir_to_light_dir_vs, N) * albedo;
+    final_color += Speculate(specularColor, specularWeight, N, dir_to_light_dir_vs, input.viewPosition, 1.0f, specularGloss) * dir_diffuseIntensity * dir_diffuseColor;
 
-    // Add the diffuse lighting component
-    final_color += Diffuse(dir_diffuseColor, dir_diffuseIntensity, 1.0f, dirToLight, normal) * solidColor;
-
-    // Add the specular highlight component
-    // The highlight's color and intensity is modulated by the light's color and intensity
-    final_color += Speculate(specularColor, specularWeight, normal, dirToLight, input.viewPosition, 1.0f, specularGloss) * dir_diffuseIntensity * dir_diffuseColor;
-
-    // Return the final saturated color with full alpha
-    return float4(saturate(final_color), 1.0f);
+ 
+    return float4(saturate(final_color), alpha);
 }

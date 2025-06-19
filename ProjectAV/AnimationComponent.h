@@ -41,6 +41,18 @@ public:
 		animator->PlayAnimation(animations[index]);
 	}
 
+	Animation* GetCurrentPlayingAnimationRaw() const {
+		if (animator) { 
+			return animator->GetCurrentAnimation();  
+		}
+		return nullptr;
+	}
+	Animation* GetAnimationByIndex(int index) const {
+		if (index >= 0 && static_cast<size_t>(index) < animations.size()) {
+			return animations[index];
+		}
+		return nullptr;
+	}
 	Animator* animator;
 	Animation* animation;
 	std::vector<Animation*> animations;

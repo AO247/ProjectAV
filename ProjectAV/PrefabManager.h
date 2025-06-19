@@ -6,6 +6,7 @@
 #include "MainRenderGraph.h"
 #include "Window.h"
 #include "AnimationComponent.h"
+ 
 
 //class PhysicsEngine;
 class ShootAttack;
@@ -21,10 +22,13 @@ public:
     static Node* player;
     static Rgph::MainRenderGraph* rg;
 
+
+
+#pragma region  ENVIROMENT
+    
     ///////////////////////////////
     ///////////ENVIROMENT//////////
     ///////////////////////////////
-
     static Node* InstantiateMushroom1(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0}) {
         auto pNewNodeOwner = std::make_unique<Node>("Mushroom1", nullptr, "WALL");
 
@@ -230,6 +234,9 @@ public:
 
         return pNewNode;
     }
+#pragma endregion
+
+#pragma region WALLS AND OBJECTS
 
     ///////////////////////////////
     ////////WALLS AND OBJECTS//////
@@ -1074,6 +1081,11 @@ public:
 
         return pNewNode;
     }
+#pragma endregion
+
+#pragma region THROWABLE
+
+
 
     ///////////////////////////////
     ///////////THROWABLE///////////
@@ -1589,6 +1601,11 @@ public:
 
         return pNewNode;
     }
+#pragma endregion
+
+#pragma region ISLANDS PARTS
+
+
 
     ///////////////////////////////
     //////////ISLANDS PARTS////////
@@ -1773,6 +1790,11 @@ public:
         parentNode->AddChild(std::move(pNewNodeOwner));
         return pNewNode;
     }
+#pragma endregion
+
+#pragma region ISLANDS
+
+
 
     ///////////////////////////////
     ////////////ISLANDS////////////
@@ -3848,6 +3870,11 @@ public:
         return pNewNode;
     }
 
+#pragma endregion
+
+#pragma region ENEMIES
+
+
     ///////////////////////////////
     ////////////ENEMIES////////////
     ///////////////////////////////
@@ -3891,8 +3918,16 @@ public:
         pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic_attack3.ogg");
 
         pNewNode->AddComponent(
-            std::make_unique<ModelComponent>(pNewNode, wind->Gfx(), "Models\\enemy\\basic.obj")
+            std::make_unique<ModelComponent>(pNewNode, wind->Gfx(), "Models\\basic_gltf\\basic1.gltf", 1.0f, true)
         );
+
+        pNewNode->AddComponent(
+            std::make_unique<AnimationComponent>(pNewNode, "", "Models\\basic_gltf\\basic1.gltf")
+        );
+        AnimationComponent* animComp = pNewNode->GetComponent<AnimationComponent>();
+        animComp->PlayAnimation(3);
+
+
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         parentNode->AddChild(std::move(pNewNodeOwner));
 
@@ -4236,3 +4271,6 @@ public:
     Window* wnd;
 private:
 };
+
+#pragma endregion
+

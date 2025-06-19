@@ -67,6 +67,10 @@ public:
         return m_FinalBoneMatrices;
     }
 
+    Animation* GetCurrentAnimation() const {
+        return m_CurrentAnimation;
+    }
+
 private:
     std::vector<DirectX::XMMATRIX> m_FinalBoneMatrices;
     Animation* m_CurrentAnimation;
