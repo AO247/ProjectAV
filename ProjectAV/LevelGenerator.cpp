@@ -510,7 +510,8 @@ void LevelGenerator::SpawnEnemies()
 
             if (randEnemy == 0)
             {
-                enemy = PrefabManager::InstantiateFlyingEnemy(pOwner, Vector3(0.0f, 0.0f, 0.0f), 1.6f, pPlayer);
+                enemy = PrefabManager::InstantiateFlyingEnemy(pOwner, Vector3(0.0f, 0.0f, 0.0f), 1.6f);
+				//enemy = PrefabManager::InstantiateMageEnemy(pOwner, Vector3(0.0f, 0.0f, 0.0f), 1.6f);
                 enemy->SetWorldPosition(pos);
             }
 
@@ -523,7 +524,7 @@ void LevelGenerator::SpawnEnemies()
 
             if (randEnemy == 0)
             {
-                enemy = PrefabManager::InstantiateShootingEnemy(pOwner, Vector3(0.0f, 0.0f, 0.0f), 1.6f, pPlayer);
+                enemy = PrefabManager::InstantiateShootingEnemy(pOwner, Vector3(0.0f, 0.0f, 0.0f), 1.6f);
                 enemy->SetWorldPosition(pos);
             }
 
@@ -536,7 +537,7 @@ void LevelGenerator::SpawnEnemies()
 
             if (randEnemy == 0)
             {
-                enemy = PrefabManager::InstantiateNormalEnemy(pOwner, Vector3(0.0f, 0.0f, 0.0f), 1.6f, pPlayer);
+                enemy = PrefabManager::InstantiateNormalEnemy(pOwner, Vector3(0.0f, 0.0f, 0.0f), 1.6f);
                 enemy->SetWorldPosition(pos);
             }
 

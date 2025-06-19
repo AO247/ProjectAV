@@ -78,6 +78,7 @@ public:
     void Destroy();
     bool IsMarkedForDestruction() const;
     void RemoveChild(Node* childToRemove);
+    void MoveToTop();
 private:
     void UpdateWorldTransform(bool transformationOutsidePhysicsTriggered);
     void UpdateLocalTransformFromComponents(bool transformationOutsidePhysicsTriggered);  

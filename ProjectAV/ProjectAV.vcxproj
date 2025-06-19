@@ -183,6 +183,7 @@
     <ClCompile Include="BasicAttack.cpp" />
     <ClCompile Include="BindingPass.cpp" />
     <ClCompile Include="Blender.cpp" />
+    <ClCompile Include="BoomAttack.cpp" />
     <ClCompile Include="Collectable.cpp" />
     <ClCompile Include="MainRenderGraph.cpp" />
     <ClCompile Include="BufferClearPass.cpp" />
@@ -240,6 +241,7 @@
     <ClInclude Include="Ability5.h" />
     <ClInclude Include="Ability5Extend.h" />
     <ClInclude Include="Ability6.h" />
+    <ClInclude Include="BoomAttack.h" />
     <ClInclude Include="BrokenPart.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="BindingPass.h" />
@@ -281,7 +283,9 @@
     <ClCompile Include="SoundDevice.cpp" />
     <ClCompile Include="SoundEffectsLibrary.cpp" />
     <ClCompile Include="SoundEffectsPlayer.cpp" />
+    <ClCompile Include="SpawnAttack.cpp" />
     <ClCompile Include="SpawnJump.cpp" />
+    <ClCompile Include="Spikes.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="StateMachine.cpp" />
@@ -400,9 +404,11 @@
     <ClInclude Include="SoundDevice.h" />
     <ClInclude Include="SoundEffectsLibrary.h" />
     <ClInclude Include="SoundEffectsPlayer.h" />
+    <ClInclude Include="SpawnAttack.h" />
     <ClInclude Include="SpawnJump.h" />
     <ClInclude Include="Source.h" />
     <ClInclude Include="Sphere.h" />
+    <ClInclude Include="Spikes.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="StateType.h" />
