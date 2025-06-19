@@ -224,9 +224,69 @@ void LevelGenerator::GenerateIslands()
                         islandInfo.rightPoint = { 46.0f, 0.0f, 18.0f };
                         islandInfo.downPoint = { 8.0f, 0.0f, -36.0f };
                     }
+					else if (randMedium == 1) {
+						islandInfo.name = "MEDIUM2";
+						islandInfo.pos = { 0.0f, 0.0f, 0.0f };
+						islandInfo.leftPoint = { -44.00f, 0.00f, 21.10f };
+						islandInfo.upPoint = { -6.0f, 0.0f, 42.0f };
+						islandInfo.rightPoint = { 46.0f, 0.0f, 18.0f };
+						islandInfo.downPoint = { 8.0f, 0.0f, -36.0f };
+					}
+                    else if (randMedium == 2) {
+                        islandInfo.name = "MEDIUM3";
+                        islandInfo.pos = { 0.0f, 0.0f, 0.0f };
+                        islandInfo.leftPoint = { -44.00f, 0.00f, 21.10f };
+                        islandInfo.upPoint = { -6.0f, 0.0f, 42.0f };
+                        islandInfo.rightPoint = { 46.0f, 0.0f, 18.0f };
+                        islandInfo.downPoint = { 8.0f, 0.0f, -36.0f };
+                    }
+					else if (randMedium == 3) {
+						islandInfo.name = "MEDIUM4";
+						islandInfo.pos = { 0.0f, 0.0f, 0.0f };
+						islandInfo.leftPoint = { -44.00f, 0.00f, 21.10f };
+						islandInfo.upPoint = { -6.0f, 0.0f, 42.0f };
+						islandInfo.rightPoint = { 46.0f, 0.0f, 18.0f };
+						islandInfo.downPoint = { 8.0f, 0.0f, -36.0f };
+					}
+					else if (randMedium == 4) {
+						islandInfo.name = "MEDIUM5";
+						islandInfo.pos = { 0.0f, 0.0f, 0.0f };
+						islandInfo.leftPoint = { -44.00f, 0.00f, 21.10f };
+						islandInfo.upPoint = { -6.0f, 0.0f, 42.0f };
+						islandInfo.rightPoint = { 46.0f, 0.0f, 18.0f };
+						islandInfo.downPoint = { 8.0f, 0.0f, -36.0f };
+					}
+					else if (randMedium == 5) {
+						islandInfo.name = "MEDIUM6";
+						islandInfo.pos = { 0.0f, 0.0f, 0.0f };
+						islandInfo.leftPoint = { -44.00f, 0.00f, 21.10f };
+						islandInfo.upPoint = { -6.0f, 0.0f, 42.0f };
+						islandInfo.rightPoint = { 46.0f, 0.0f, 18.0f };
+						islandInfo.downPoint = { 8.0f, 0.0f, -36.0f };
+					}
+					else if (randMedium == 6) {
+						islandInfo.name = "MEDIUM7";
+						islandInfo.pos = { 0.0f, 0.0f, 0.0f };
+						islandInfo.leftPoint = { -44.00f, 0.00f, 21.10f };
+						islandInfo.upPoint = { -6.0f, 0.0f, 42.0f };
+						islandInfo.rightPoint = { 46.0f, 0.0f, 18.0f };
+						islandInfo.downPoint = { 8.0f, 0.0f, -36.0f };
+					}
+					else if (randMedium == 7) {
+						islandInfo.name = "MEDIUM8";
+						islandInfo.pos = { 0.0f, 0.0f, 0.0f };
+						islandInfo.leftPoint = { -44.00f, 0.00f, 21.10f };
+						islandInfo.upPoint = { -6.0f, 0.0f, 42.0f };
+						islandInfo.rightPoint = { 46.0f, 0.0f, 18.0f };
+						islandInfo.downPoint = { 8.0f, 0.0f, -36.0f };
+					}
                     else {
-                        //islandPrefab = PrefabManager::InstantiateIslandBig1(pOwner, 0.0f, 0.0f, 0.0f, 1.0f);
-
+                        islandInfo.name = "MEDIUM9";
+                        islandInfo.pos = { 0.0f, 0.0f, 0.0f };
+                        islandInfo.leftPoint = { -44.00f, 0.00f, 21.10f };
+                        islandInfo.upPoint = { -6.0f, 0.0f, 42.0f };
+                        islandInfo.rightPoint = { 46.0f, 0.0f, 18.0f };
+                        islandInfo.downPoint = { 8.0f, 0.0f, -36.0f };
                     }
                     mediumIslandCount--;
                     break;
