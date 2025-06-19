@@ -19,7 +19,7 @@ void StopState::Update(StateMachine* pOwner, float dt)
 {
 	time += dt;
 
-	if (time > 0.5f)
+	if (time > pOwner->stopTime)
 	{
 		pOwner->RequestStateChange(StateType::IDLE);
 	}

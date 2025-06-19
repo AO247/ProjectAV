@@ -650,6 +650,25 @@ bool Node::IsMarkedForDestruction() const
     return markedForDestruction;
 }
 
+void Node::MoveToTop()
+{
+    if (parent == nullptr)
+    {
+        return;
+    }
+
+    auto& siblings = parent->GetChildren_NonConst();
+
+    auto it = std::find_if(siblings.begin(), siblings.end(),
+        [this](const std::unique_ptr<Node>& pChild) {
+            return pChild.get() == this;
+        });
+
+    if (it != siblings.end())
+    {
+        std::rotate(siblings.begin(), it, it + 1);
+    }
+}
 
 std::vector<std::unique_ptr<Node>>& Node::GetChildren_NonConst()
 {

@@ -17,9 +17,18 @@ void LevelGenerator::Update(float dt)
     if (!islandGenerated)
     {
         GenerateIslands();
+		islandLimitTimer -= dt;
+        if(islandLimitTimer <= 0.0f) {
+			bigIslandCount = 0;
+			mediumIslandCount = 0;
+			smallIslandCount = 0;
+            spawned = true;
+		}
     }
     if (!enemiesSpawned && islandGenerated && startEnemyGenerating) {
         SpawnEnemies();
+        enemiesLimitTimer -= dt;
+        if (enemiesLimitTimer <= 0.0f) enemiesSpawned = true;
     }
     if (islandGenerated && enemiesSpawned)
     {
@@ -407,15 +416,15 @@ void LevelGenerator::GenerateIslands()
     }
     }
 
-    void LevelGenerator::ChangePosition(islandInfoStruct* island, Vector3 pointPos, Vector3 startPos)
-    {
-        Vector3 pos = startPos;
-        pos += island->pos;
-        Vector3 dir = pointPos - pos;
-        float length = dir.Length();
-        dir.Normalize();
-        island->pos += (dir * length);
-    }
+void LevelGenerator::ChangePosition(islandInfoStruct* island, Vector3 pointPos, Vector3 startPos)
+{
+    Vector3 pos = startPos;
+    pos += island->pos;
+    Vector3 dir = pointPos - pos;
+    float length = dir.Length();
+    dir.Normalize();
+    island->pos += (dir * length);
+}
 
 bool LevelGenerator::Collide(islandInfoStruct island1, islandInfoStruct island2)
 {
@@ -501,7 +510,8 @@ void LevelGenerator::SpawnEnemies()
 
             if (randEnemy == 0)
             {
-                enemy = PrefabManager::InstantiateFlyingEnemy(pOwner, Vector3(0.0f, 0.0f, 0.0f), 1.6f, pPlayer);
+                enemy = PrefabManager::InstantiateFlyingEnemy(pOwner, Vector3(0.0f, 0.0f, 0.0f), 1.6f);
+				//enemy = PrefabManager::InstantiateMageEnemy(pOwner, Vector3(0.0f, 0.0f, 0.0f), 1.6f);
                 enemy->SetWorldPosition(pos);
             }
 
@@ -514,7 +524,7 @@ void LevelGenerator::SpawnEnemies()
 
             if (randEnemy == 0)
             {
-                enemy = PrefabManager::InstantiateShootingEnemy(pOwner, Vector3(0.0f, 0.0f, 0.0f), 1.6f, pPlayer);
+                enemy = PrefabManager::InstantiateShootingEnemy(pOwner, Vector3(0.0f, 0.0f, 0.0f), 1.6f);
                 enemy->SetWorldPosition(pos);
             }
 
@@ -527,7 +537,7 @@ void LevelGenerator::SpawnEnemies()
 
             if (randEnemy == 0)
             {
-                enemy = PrefabManager::InstantiateNormalEnemy(pOwner, Vector3(0.0f, 0.0f, 0.0f), 1.6f, pPlayer);
+                enemy = PrefabManager::InstantiateNormalEnemy(pOwner, Vector3(0.0f, 0.0f, 0.0f), 1.6f);
                 enemy->SetWorldPosition(pos);
             }
 

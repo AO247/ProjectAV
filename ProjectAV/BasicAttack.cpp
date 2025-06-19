@@ -6,7 +6,6 @@ namespace dx = DirectX;
 BasicAttack::BasicAttack(Node* owner, std::string tag)
 	: Component(owner, std::move(tag))
 {
-	attackRange = 5.0f;
 }
 
 void BasicAttack::Attack(float dt)

@@ -15,7 +15,7 @@ public:
 	virtual StateType GetType() const override { return StateType::IDLE; }
 	sm::Vector3 previousPos = { 0.0f, 0.0f, 0.0f };
 	float wanderRradius = 1.5f;
-	float wanderCenterDistance = 6.0f;
+	float wanderCenterDistance = 10.0f;
 	float wanderAngleChange = 25.0f;
 	float wanderAngle;
 	float time;

@@ -31,6 +31,8 @@ public:
 	float followDistance = 40.0f;
 	float attackRange = 8.0f;
 	float stunTime = 1.0f;
+	float stopTime = 1.0f;
+
 	bool isFlying = false;
 	bool isDead = false;
 
@@ -41,6 +43,7 @@ public:
 	void Die();
 	void ChangeState(StateType nextState);
 	void Stun(float time);
+	void Stop(float time);
 	float timer = 0.0f;
 
 	EnemyType enemyType = EnemyType::BASIC;

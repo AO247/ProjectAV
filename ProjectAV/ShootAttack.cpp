@@ -3,15 +3,14 @@
 #include "PrefabManager.h"
 
 namespace dx = DirectX;
-ShootAttack::ShootAttack(Node* owner, std::string tag)
-	: Component(owner, std::move(tag))
+ShootAttack::ShootAttack(Node* owner, Node* player, std::string tag)
+	: Component(owner, std::move(tag)), player(player)
 {
-	player = pOwner->GetRoot()->FindFirstChildByTag("PLAYER");
-	attackRange = 45.0f;
 }
 
 void ShootAttack::Attack(float dt)
 {
+	if (player == NULL && player == nullptr) return;
 	Vector3 playerPos = player->GetWorldPosition();
 
 	sm::Vector3 facingDirection = sm::Vector3(playerPos)
@@ -36,7 +35,6 @@ void ShootAttack::Attack(float dt)
 	if (timer < shootTime) {
 		return;
 	}
-	OutputDebugStringA("\nShooting\n");
 	attacked = true;
 
 	Vector3 pos = pOwner->GetWorldPosition();

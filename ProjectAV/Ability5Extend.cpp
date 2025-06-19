@@ -47,7 +47,7 @@ void Ability5Extend::ApplyForce(Node* object, float dt) {
     //);
     if (object->tag == "ENEMY")
     {
-		object->GetComponent<StateMachine>()->RequestStateChange(StateType::STOP);
+		object->GetComponent<StateMachine>()->Stop(0.3f);
     }
     else {
         PhysicsCommon::physicsSystem->GetBodyInterface().SetAngularVelocity(

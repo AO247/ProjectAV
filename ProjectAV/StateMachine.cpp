@@ -56,7 +56,11 @@ void StateMachine::Stun(float time)
 	stunTime = time;
 	RequestStateChange(StateType::STUN);
 }
-
+void StateMachine::Stop(float time)
+{
+	stopTime = time;
+	RequestStateChange(StateType::STOP);
+}
 void StateMachine::Update(float dt)
 {
 	if (timer < 6.0f) timer += dt;
