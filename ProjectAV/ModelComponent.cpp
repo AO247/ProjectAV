@@ -178,7 +178,7 @@ ModelComponent::ModelComponent(Node* owner, Graphics& gfx, const std::string& mo
 	if (!pScene || !pScene->mRootNode || pScene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) {
 		throw ModelException(__LINE__, __FILE__, "Assimp error: " + std::string(importer.GetErrorString()));
 	}
-
+ 
 	// Only extract bone info if the model is marked as skinned
 	if (skinnedCharacter)
 	{

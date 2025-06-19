@@ -27,7 +27,10 @@ public:
 	}
 	~AnimationComponent()
 	{
-		delete animation;
+		for (Animation* anim : animations) {
+			delete anim; 
+		}
+
 		delete animator;
 	}
 	
@@ -36,11 +39,26 @@ public:
 		animator->UpdateAnimation(dt);
 	}
 
-	void PlayAnimation(int index)
+	void PlayAnimation(int index, float transitionDuration = 0.2f)
 	{
-		animator->PlayAnimation(animations[index]);
+		if (animator && index >= 0 && index < animations.size()) {
+			animator->PlayAnimation(animations[index], transitionDuration);
+		}
 	}
 
+
+	Animation* GetCurrentPlayingAnimationRaw() const {
+		if (animator) { 
+			return animator->GetCurrentAnimation();  
+		}
+		return nullptr;
+	}
+	Animation* GetAnimationByIndex(int index) const {
+		if (index >= 0 && static_cast<size_t>(index) < animations.size()) {
+			return animations[index];
+		}
+		return nullptr;
+	}
 	Animator* animator;
 	Animation* animation;
 	std::vector<Animation*> animations;

@@ -79,6 +79,8 @@ public:
     bool IsMarkedForDestruction() const;
     void RemoveChild(Node* childToRemove);
     void MoveToTop();
+    std::vector<std::unique_ptr<Node>> children;
+
 private:
     void UpdateWorldTransform(bool transformationOutsidePhysicsTriggered);
     void UpdateLocalTransformFromComponents(bool transformationOutsidePhysicsTriggered);  
@@ -94,7 +96,6 @@ private:
     DirectX::XMFLOAT4X4 localTransform;
     DirectX::XMFLOAT4X4 worldTransform;
 
-    std::vector<std::unique_ptr<Node>> children;
     std::vector<std::unique_ptr<Component>> components;
 
     bool localTransformDirty = true; 

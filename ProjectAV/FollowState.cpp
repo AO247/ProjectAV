@@ -4,8 +4,11 @@
 #include <DirectXMath.h> 
 #include <SimpleMath.h>
 #include "PhysicsCommon.h"
-
+#include "EnemyConfig.h"
+#include "AnimationComponent.h"
 #include "Win.h"
+
+
 namespace dx = DirectX;
 namespace sm = DirectX::SimpleMath;
 FollowState::FollowState(StateMachine* pOwner) : State()
@@ -22,6 +25,16 @@ void FollowState::Enter(StateMachine* pOwner)
         int randI = rand() % pOwner->attackComponents.size();
         pOwner->pAttackComponent = pOwner->attackComponents[randI];
         pOwner->attackRange = pOwner->pAttackComponent->attackRange;
+    }
+
+    AnimationComponent* animComp = pOwner->GetOwnerNode()->GetComponent<AnimationComponent>();
+    if (animComp) {
+        switch (pOwner->enemyType)
+        {
+        case EnemyType::BASIC:
+            animComp->PlayAnimation(EnemyAnimationIndices::BASIC_WALK);
+            break;
+        }
     }
 
 }

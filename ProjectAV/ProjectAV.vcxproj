@@ -185,6 +185,7 @@
     <ClCompile Include="Blender.cpp" />
     <ClCompile Include="BoomAttack.cpp" />
     <ClCompile Include="Collectable.cpp" />
+    <ClCompile Include="Fireplace.cpp" />
     <ClCompile Include="MainRenderGraph.cpp" />
     <ClCompile Include="BufferClearPass.cpp" />
     <ClCompile Include="BrokenPart.cpp" />
@@ -192,7 +193,7 @@
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Component.cpp" />
-    <ClCompile Include="Fire.cpp" />
+    <ClCompile Include="OnFire.cpp" />
     <ClCompile Include="FireStatue.cpp" />
     <ClCompile Include="FullscreenPass.cpp" />
     <ClCompile Include="Global.cpp" />
@@ -246,11 +247,12 @@
     <ClInclude Include="Button.h" />
     <ClInclude Include="BindingPass.h" />
     <ClInclude Include="Collectable.h" />
+    <ClInclude Include="Fireplace.h" />
     <ClInclude Include="MainRenderGraph.h" />
     <ClInclude Include="BufferClearPass.h" />
     <ClInclude Include="BufferResource.h" />
     <ClInclude Include="Cube.h" />
-    <ClInclude Include="Fire.h" />
+    <ClInclude Include="OnFire.h" />
     <ClInclude Include="FireStatue.h" />
     <ClInclude Include="FullscreenPass.h" />
     <ClInclude Include="Global.h" />
