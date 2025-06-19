@@ -95,6 +95,8 @@ public:
     float EndRotation = 3.14159f;
     bool destroyAfterEmission = false;
     bool lockRotationOnYAxis = false;
+    UINT textureAtlasRows = 1;
+    UINT textureAtlasColumns = 1;
 
 private:
     // Private function containing the actual GPU rendering commands
@@ -115,6 +117,7 @@ private:
         float lifetime = 0.0f;
         float age = 0.0f;
         bool active = false;
+        DirectX::XMFLOAT2 atlasOffset;
     };
 
     // The vertex structure for the static quad geometry
@@ -131,6 +134,7 @@ private:
         DirectX::XMFLOAT4 instanceColor;
         DirectX::XMFLOAT2 instanceSize;
         float instanceRot;
+        DirectX::XMFLOAT2 atlasOffset;
     };
 
     // --- Member Variables ---

@@ -3863,19 +3863,22 @@ public:
         pCircleLogic->ParticlesPerSecond = 100.0f;
 
         pNewNode->AddComponent(
-            std::make_unique<ParticleSystemComponent>(pNewNode, wind->Gfx(), "Models\\flame.png", 200, std::move(pCircleLogic))
+            std::make_unique<ParticleSystemComponent>(pNewNode, wind->Gfx(), "Models\\windAtlas.png", 200, std::move(pCircleLogic))
         );
         ParticleSystemComponent* particles = pNewNode->GetComponent<ParticleSystemComponent>();
         particles->SetPlaybackMode(ParticleSystemComponent::PlaybackMode::OneShot);
         particles->destroyAfterEmission = true;
-        particles->ParticleLifetime = 4.0f; // 0.4
+        particles->ParticleLifetime = 0.7f;
         particles->EmissionDuration = 0.1f;
         particles->EmissionRate = 40.0f;
-        particles->ParticleVelocity = { 0.0f, 5.0f, 0.0f }; // 20
+        particles->ParticleVelocity = { 0.0f, 20.0f, 0.0f };
+        particles->ParticleVelocityVariance = { 0.0f, 10.0f, 0.0f };
         particles->StartSize = 2.0f;
         particles->EndSize = 1.0f;
         particles->EndRotation = 0.0f;
         particles->lockRotationOnYAxis = true;
+        particles->textureAtlasColumns = 2;
+        particles->textureAtlasRows = 2;
         
         particles->Play();
         particles->Link(*rg);

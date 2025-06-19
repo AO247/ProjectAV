@@ -62,6 +62,8 @@ ParticleSystemComponent::ParticleSystemComponent(Node* owner, Graphics& gfx, con
         { "INSTANCE_COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, (UINT)offsetof(InstanceData, instanceColor), D3D11_INPUT_PER_INSTANCE_DATA, 1 },
         { "INSTANCE_SIZE",  0, DXGI_FORMAT_R32G32_FLOAT,       1, (UINT)offsetof(InstanceData, instanceSize),  D3D11_INPUT_PER_INSTANCE_DATA, 1 },
         { "INSTANCE_ROT",   0, DXGI_FORMAT_R32_FLOAT,          1, (UINT)offsetof(InstanceData, instanceRot),   D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+        // +++ ADD THIS NEW ELEMENT DESCRIPTION +++
+        { "ATLAS_OFFSET",   0, DXGI_FORMAT_R32G32_FLOAT,       1, (UINT)offsetof(InstanceData, atlasOffset),   D3D11_INPUT_PER_INSTANCE_DATA, 1 },
     };
     pInputLayout = Bind::InputLayout::Resolve(gfx, ied, *pVertexShader);
 
@@ -120,6 +122,7 @@ void ParticleSystemComponent::Update(float dt)
         idata.instanceSize.x = std::lerp(p.startSize, p.endSize, t);
         idata.instanceSize.y = idata.instanceSize.x;
         idata.instanceRot = std::lerp(p.startRotation, p.endRotation, t);
+        idata.atlasOffset = p.atlasOffset;
 
         activeParticleCount++;
     }
@@ -168,6 +171,16 @@ void ParticleSystemComponent::EmitParticle(const DirectX::XMFLOAT3& position)
             p.startRotation = StartRotation;
             p.endRotation = EndRotation;
 
+            std::uniform_int_distribution<UINT> row_dist(0, textureAtlasRows - 1);
+            std::uniform_int_distribution<UINT> col_dist(0, textureAtlasColumns - 1);
+            UINT randomRow = row_dist(rng);
+            UINT randomCol = col_dist(rng);
+
+            // Calculate the UV offset for the top-left corner of this sub-texture.
+            // This will be stored with the instance data and sent to the GPU.
+            p.atlasOffset.x = (float)randomCol / textureAtlasColumns;
+            p.atlasOffset.y = (float)randomRow / textureAtlasRows;
+
             dx::XMVECTOR basePos = dx::XMLoadFloat3(&position);
             dx::XMVECTOR offsetPos = dx::XMLoadFloat3(&EmitterPositionOffset);
             dx::XMStoreFloat3(&p.position, dx::XMVectorAdd(basePos, offsetPos));
@@ -205,6 +218,8 @@ void ParticleSystemComponent::Draw(Graphics& gfx) const
     const auto invView = dx::XMMatrixInverse(&determinant, view);
     dx::XMStoreFloat3(&cbuf.cameraPosition, invView.r[3]);
     cbuf.lockY = lockRotationOnYAxis;
+    cbuf.atlasSize.x = 1.0f / textureAtlasColumns;
+    cbuf.atlasSize.y = 1.0f / textureAtlasRows;
     pVcbuf->Update(gfx, cbuf);
 
     pVertexShader->Bind(gfx);
