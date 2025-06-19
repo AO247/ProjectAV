@@ -9,8 +9,6 @@
 #include "LevelGenerator.h"
 #include "CMath.h"
 
-// Forward declare Node to avoid circular include if necessary,
-// but including Node.h is often fine here.
 class Node;
 class PrefabManager;
 class LevelGenerator;
@@ -19,7 +17,7 @@ class LevelGenerator;
 class Global : public Component
 {
 public:
-	Global(Node* owner, Window& window, Node* player);
+	Global(Node* owner, Window& window, Node* player, Node* base);
 	virtual ~Global() = default;
 
 	virtual void Update(float dt) override;
@@ -28,6 +26,9 @@ public:
 	Node* playerNode;
 	Node* spawn;
 	Node* firstSpawn;
+	Node* levelsNode;
+	Node* base;
+	Tutorial* tut;
 	std::vector<Node*> enemies;
 	std::vector<Node*> levels;
 	int levelCount = 1;
@@ -38,7 +39,11 @@ public:
 	bool ending = false;
 	int endingRemover = 0;
 	Vector3 enterPoint = { 0.0f, 5.0f, -60.0f };
-	int firstRun = 10;
+	bool upgradeOpen = false;
+	bool drawLoadingScreen = true;
+	UpgradeHandler* upgradeHandler;
+	void NextStage();
+
 private:
 	Window& wnd;
 	void AddLevel();

@@ -83,7 +83,6 @@ public:
     }
     static AABox ComputeAABBFromOrientedBox(const Vec3& halfExtent, const Mat44& transform)
     {
-        // 8 naro¿ników w lokalnych wspó³rzêdnych
         std::vector<Vec3> corners = {
             Vec3(-halfExtent.GetX(), -halfExtent.GetY(), -halfExtent.GetZ()),
             Vec3(halfExtent.GetX(), -halfExtent.GetY(), -halfExtent.GetZ()),
@@ -95,7 +94,6 @@ public:
             Vec3(halfExtent.GetX(),  halfExtent.GetY(),  halfExtent.GetZ())
         };
 
-        // Transformuj naro¿niki do œwiata
         Vec3 min = transform * corners[0];
         Vec3 max = min;
 
@@ -111,9 +109,9 @@ public:
     static BodyIDVector OverlapBox(Vec3 center, Vec3 halfExtent, Quat rotation)
     {
         AABox aabb(center - halfExtent, center + halfExtent);
-		//AABox aabb = ComputeAABBFromOrientedBox(halfExtent, Mat44::sRotationTranslation(rotation, center));
+
         AllHitCollisionCollector<CollideShapeBodyCollector> collector;
-        // Lambda-callback do zbierania wyników
+
         physicsSystem->GetBroadPhaseQuery().CollideAABox(aabb, collector);
         return collector.mHits;
     }
@@ -124,31 +122,24 @@ JPH_SUPPRESS_WARNINGS
 
 static void TraceImpl(const char* inFMT, ...)
 {
-    // Format the message
+
     va_list list;
     va_start(list, inFMT);
     char buffer[1024];
     vsnprintf(buffer, sizeof(buffer), inFMT, list);
     va_end(list);
 
-    // Print to the TTY
-    //cout << buffer << endl;
 }
 
 #ifdef JPH_ENABLE_ASSERTS
 
-// Callback for asserts, connect this to your own assert handler if you have one
 static bool AssertFailedImpl(const char* inExpression, const char* inMessage, const char* inFile, uint inLine)
 {
-    // Print to the TTY
-    //cout << inFile << ":" << inLine << ": (" << inExpression << ") " << (inMessage != nullptr ? inMessage : "") << endl;
-
-    // Breakpoint
     return true;
 };
 
 
-#endif // JPH_ENABLE_ASSERTS
+#endif
 
 namespace Layers
 {
@@ -158,7 +149,8 @@ namespace Layers
     static constexpr ObjectLayer TRIGGER = 3;
 	static constexpr ObjectLayer WALL = 4;
     static constexpr ObjectLayer PLAYER = 5;
-    static constexpr ObjectLayer NUM_LAYERS = 6;
+    static constexpr ObjectLayer ENEMY = 6;
+    static constexpr ObjectLayer NUM_LAYERS = 7;
 };
 
 class ObjectLayerPairFilterImpl : public ObjectLayerPairFilter
@@ -169,7 +161,7 @@ public:
         switch (inObject1)
         {
         case Layers::NON_MOVING:
-            return inObject2 == Layers::MOVING; // Non moving only collides with moving
+            return inObject2 == Layers::MOVING;
         case Layers::MOVING:
             return true;
         case Layers::TRIGGER:
@@ -179,6 +171,8 @@ public:
         case Layers::WALL:
             return true;
 		case Layers::PLAYER:
+            return true;
+		case Layers::ENEMY:
             return true;
         default:
             return false;
@@ -194,8 +188,9 @@ namespace BroadPhaseLayers
     static constexpr BroadPhaseLayer TRIGGER(3);
 	static constexpr BroadPhaseLayer WALL(4);
     static constexpr BroadPhaseLayer PLAYER(5);
+	static constexpr BroadPhaseLayer ENEMY(6);
 
-    static constexpr uint NUM_LAYERS(6);
+    static constexpr uint NUM_LAYERS(7);
 };
 
 class BPLayerInterfaceImpl final : public BroadPhaseLayerInterface
@@ -203,13 +198,13 @@ class BPLayerInterfaceImpl final : public BroadPhaseLayerInterface
 public:
     BPLayerInterfaceImpl()
     {
-        // Create a mapping table from object to broad phase layer
         mObjectToBroadPhase[Layers::NON_MOVING] = BroadPhaseLayers::NON_MOVING;
         mObjectToBroadPhase[Layers::MOVING] = BroadPhaseLayers::MOVING;
 		mObjectToBroadPhase[Layers::GROUND] = BroadPhaseLayers::GROUND;
         mObjectToBroadPhase[Layers::TRIGGER] = BroadPhaseLayers::TRIGGER;
 		mObjectToBroadPhase[Layers::WALL] = BroadPhaseLayers::WALL;
         mObjectToBroadPhase[Layers::PLAYER] = BroadPhaseLayers::PLAYER;
+		mObjectToBroadPhase[Layers::ENEMY] = BroadPhaseLayers::ENEMY;
     }
 
     virtual uint GetNumBroadPhaseLayers() const override
@@ -234,10 +229,11 @@ public:
         case (BroadPhaseLayer::Type)BroadPhaseLayers::TRIGGER:		return "TRIGGER";
 		case (BroadPhaseLayer::Type)BroadPhaseLayers::WALL:		    return "WALL";
 		case (BroadPhaseLayer::Type)BroadPhaseLayers::PLAYER:		return "PLAYER";
+		case (BroadPhaseLayer::Type)BroadPhaseLayers::ENEMY:		return "ENEMY";
         default:													JPH_ASSERT(false); return "INVALID";
         }
     }
-#endif // JPH_EXTERNAL_PROFILE || JPH_PROFILE_ENABLED
+#endif
 
 private:
     BroadPhaseLayer	mObjectToBroadPhase[Layers::NUM_LAYERS];
@@ -261,6 +257,8 @@ public:
         case Layers::WALL:
             return true;
 		case Layers::PLAYER:
+			return true;
+		case Layers::ENEMY:
 			return true;
         default:
             return false;
@@ -344,7 +342,7 @@ class MultipleObjectLayerFilter : public ObjectLayerFilter
 {
 public:
 
-    MultipleObjectLayerFilter(ObjectLayer inLayer) :
+    MultipleObjectLayerFilter(std::vector<ObjectLayer> inLayer) :
         mLayer(inLayer)
     {
     }

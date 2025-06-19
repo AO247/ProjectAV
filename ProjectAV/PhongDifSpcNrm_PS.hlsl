@@ -1,9 +1,11 @@
+
 #include "ShaderOps.hlsl"
 #include "LightVectorData.hlsl"
 
 #include "PointLight.hlsl"
+#include "DirectionalLight.hlsl"
 
-cbuffer ObjectCBuf
+cbuffer ObjectCBuf : register(b1)
 {
     bool useGlossAlpha;
     bool useSpecularMap;
@@ -17,40 +19,23 @@ cbuffer ObjectCBuf
 Texture2D tex;
 Texture2D spec;
 Texture2D nmap;
-
 SamplerState splr;
-
 
 float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float3 viewTan : Tangent, float3 viewBitan : Bitangent, float2 tc : Texcoord) : SV_Target
 {
-    // sample diffuse texture
-    float4 dtex = tex.Sample(splr, tc);
+    const float3 materialColor = tex.Sample(splr, tc).rgb;
+    
 
-    #ifdef MASK_BOI
-    // bail if highly translucent
-    clip(dtex.a < 0.1f ? -1 : 1);
-    // flip normal when backface
-    if (dot(viewNormal, viewFragPos) >= 0.0f)
-    {
-        viewNormal = -viewNormal;
-    }
-    #endif
-
-    // normalize the mesh normal
     viewNormal = normalize(viewNormal);
-    // replace normal with mapped if normal mapping enabled
     if (useNormalMap)
     {
         const float3 mappedNormal = MapNormal(normalize(viewTan), normalize(viewBitan), viewNormal, tc, nmap, splr);
         viewNormal = lerp(viewNormal, mappedNormal, normalMapWeight);
     }
-	// fragment to light vector data
-    const LightVectorData lv = CalculateLightVectorData(viewLightPos, viewFragPos);
-    // specular parameter determination (mapped or uniform)
-    float3 specularReflectionColor;
-    float specularPower = specularGloss;
+    float specularPowerLoaded = specularGloss;
     const float4 specularSample = spec.Sample(splr, tc);
-    if( useSpecularMap )
+    float3 specularReflectionColor;
+    if (useSpecularMap)
     {
         specularReflectionColor = specularSample.rgb;
     }
@@ -58,19 +43,27 @@ float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float3 vi
     {
         specularReflectionColor = specularColor;
     }
-    if( useGlossAlpha )
+    if (useGlossAlpha)
     {
-        specularPower = pow(2.0f, specularSample.a * 13.0f);
+        specularPowerLoaded = pow(2.0f, specularSample.a * 13.0f);
     }
-	// attenuation
-    const float att = Attenuate(attConst, attLin, attQuad, lv.distToL);
-	// diffuse light
-    const float3 diffuse = Diffuse(diffuseColor, diffuseIntensity, att, lv.dirToL, viewNormal);
-    // specular reflected
-    const float3 specularReflected = Speculate(
-        diffuseColor * diffuseIntensity * specularReflectionColor, specularWeight, viewNormal,
-        lv.vToL, viewFragPos, att, specularPower
-    );
-	// final color = attenuate diffuse & ambient by diffuse texture color and add specular reflected
-    return float4(saturate((diffuse + ambient) * dtex.rgb + specularReflected), 1.0f);
+
+    float3 final_color = dir_ambient * materialColor;
+
+    const float3 dir_to_light_dir = -normalize(viewLightDirection);
+    final_color += Diffuse(dir_diffuseColor, dir_diffuseIntensity, 1.0f, dir_to_light_dir, viewNormal) * materialColor;
+    final_color += Speculate(specularReflectionColor, specularWeight, viewNormal, dir_to_light_dir, viewFragPos, 1.0f, specularPowerLoaded) * dir_diffuseIntensity * dir_diffuseColor;
+
+    if (enabled)
+    {
+        final_color += ambient * materialColor;
+        
+        const LightVectorData lv = CalculateLightVectorData(viewLightPos, viewFragPos);
+        const float att = Attenuate(attConst, attLin, attQuad, lv.distToL);
+        
+        final_color += Diffuse(diffuseColor, diffuseIntensity, att, lv.dirToL, viewNormal) * materialColor;
+        final_color += Speculate(specularReflectionColor, specularWeight, viewNormal, lv.dirToL, viewFragPos, att, specularPowerLoaded) * diffuseIntensity * diffuseColor;
+    }
+    
+    return float4(saturate(final_color), 1.0f);
 }

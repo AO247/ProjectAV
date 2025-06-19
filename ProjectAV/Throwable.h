@@ -3,8 +3,6 @@
 #include "Component.h"
 #include <DirectXMath.h>
 #include "Rigidbody.h"
-#include "Collider.h"
-#include "BoundingSphere.h"
 #include "Components.h"
 class Node;
 
@@ -16,7 +14,9 @@ public:
 	float damage = 1.0f;
 	virtual void DrawImGuiControls() override;
 	void OnCollisionEnter(Node* object) override;
-	//BoundingSphere* damageArea;
+	float speed = 35.0f;
+	bool pot = false;
+	bool heavy = false;
 private:
 	Rigidbody* rigidbody;
 };

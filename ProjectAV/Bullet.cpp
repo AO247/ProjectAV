@@ -12,20 +12,26 @@ void Bullet::Update(float dt)
 	}
 }
 
-void Bullet::OnCollisionEnter(Node* object)
+void Bullet::OnTriggerEnter(Node* object)
 {
-	if (object == ignore || object->tag == "TRIGGER") return;
-	if (object->GetComponent<Health>())
+	if (object->tag == "TRIGGER"|| object == pOwner || object == ignore) return;
+	if (object->tag == "PLAYER") 
 	{
-		if(object->tag == "PLAYER") object->GetComponent<Health>()->TakeDamage(damage);
+		 object->GetComponent<Health>()->TakeDamage(damage);
+	}
+	if (pushedByPlayer && object->tag == "ENEMY")
+	{
+		object->GetComponent<StateMachine>()->Stun(1.0f);
 	}
 	pOwner->Destroy();
 }
-
+void Bullet::OnCollisionEnter(Node* object)
+{
+	if (object->tag == "TRIGGER" || object == pOwner || object == ignore) return;
+	pOwner->Destroy();
+}
 
 void Bullet::DrawImGuiControls()
 {
-	/*ImGui::InputFloat("Move Speed", &moveSpeed);
-	ImGui::Checkbox("Jumped", &jumped);*/
 
 }

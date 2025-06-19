@@ -6,10 +6,11 @@ class Mouse
 {
 	friend class Window;
 public:
-	struct RawDelta
+	struct RawMovement
 	{
-		int x,y;
+		int dx, dy;
 	};
+
 	class Event
 	{
 	public:
@@ -24,90 +25,96 @@ public:
 			Move,
 			Enter,
 			Leave,
+			Invalid
 		};
+
 	private:
 		Type type;
 		bool leftIsPressed;
 		bool rightIsPressed;
 		int x;
 		int y;
+
 	public:
-		Event( Type type,const Mouse& parent ) noexcept
+		Event() noexcept
 			:
-			type( type ),
-			leftIsPressed( parent.leftIsPressed ),
-			rightIsPressed( parent.rightIsPressed ),
-			x( parent.x ),
-			y( parent.y )
-		{}
-		Type GetType() const noexcept
+			type(Type::Invalid),
+			leftIsPressed(false),
+			rightIsPressed(false),
+			x(0),
+			y(0)
 		{
-			return type;
 		}
-		std::pair<int,int> GetPos() const noexcept
+
+		Event(Type type, const Mouse& parent) noexcept
+			:
+			type(type),
+			leftIsPressed(parent.leftIsPressed),
+			rightIsPressed(parent.rightIsPressed),
+			x(parent.x),
+			y(parent.y)
 		{
-			return{ x,y };
 		}
-		int GetPosX() const noexcept
-		{
-			return x;
-		}
-		int GetPosY() const noexcept
-		{
-			return y;
-		}
-		bool LeftIsPressed() const noexcept
-		{
-			return leftIsPressed;
-		}
-		bool RightIsPressed() const noexcept
-		{
-			return rightIsPressed;
-		}
+
+		Type GetType() const noexcept { return type; }
+		std::pair<int, int> GetPos() const noexcept { return{ x,y }; }
+		int GetPosX() const noexcept { return x; }
+		int GetPosY() const noexcept { return y; }
+		bool IsLeftPressed() const noexcept { return leftIsPressed; }
+		bool IsRightPressed() const noexcept { return rightIsPressed; }
 	};
+
 public:
 	Mouse() = default;
-	Mouse( const Mouse& ) = delete;
-	Mouse& operator=( const Mouse& ) = delete;
-	std::pair<int,int> GetPos() const noexcept;
-	std::optional<RawDelta> ReadRawDelta() noexcept;
+	Mouse(const Mouse&) = delete;
+	Mouse& operator=(const Mouse&) = delete;
+
+	std::pair<int, int> GetPos() const noexcept;
 	int GetPosX() const noexcept;
 	int GetPosY() const noexcept;
 	bool IsInWindow() const noexcept;
-	bool LeftIsPressed() const noexcept;
-	bool RightIsPressed() const noexcept;
-	std::optional<Mouse::Event> Read() noexcept;
-	bool IsEmpty() const noexcept
+	bool IsLeftPressed() const noexcept;
+	bool IsRightPressed() const noexcept;
+	bool IsRawInputEnabled() const noexcept;
+	void EnableRawInput() noexcept;
+	void DisableRawInput() noexcept;
+
+	std::optional<Mouse::Event> PollEvent() noexcept;
+	std::optional<RawMovement> PollRawMovement() noexcept;
+	bool IsEventBufferEmpty() const noexcept
 	{
-		return buffer.empty();
+		return eventBuffer.empty();
 	}
-	void Flush() noexcept;
-	void EnableRaw() noexcept;
-	void DisableRaw() noexcept;
-	bool RawEnabled() const noexcept;
+	void FlushEvents() noexcept;
+
 private:
-	void OnMouseMove( int x,int y ) noexcept;
+	void OnMouseMove(int x, int y) noexcept;
 	void OnMouseLeave() noexcept;
 	void OnMouseEnter() noexcept;
-	void OnRawDelta( int dx,int dy ) noexcept;
-	void OnLeftPressed( int x,int y ) noexcept;
-	void OnLeftReleased( int x,int y ) noexcept;
-	void OnRightPressed( int x,int y ) noexcept;
-	void OnRightReleased( int x,int y ) noexcept;
-	void OnWheelUp( int x,int y ) noexcept;
-	void OnWheelDown( int x,int y ) noexcept;
-	void TrimBuffer() noexcept;
-	void TrimRawInputBuffer() noexcept;
-	void OnWheelDelta( int x,int y,int delta ) noexcept;
+	void OnRawDelta(int dx, int dy) noexcept;
+	void OnLeftPressed(int x, int y) noexcept;
+	void OnLeftReleased(int x, int y) noexcept;
+	void OnRightPressed(int x, int y) noexcept;
+	void OnRightReleased(int x, int y) noexcept;
+	void OnWheelUp(int x, int y) noexcept;
+	void OnWheelDown(int x, int y) noexcept;
+	void OnWheelDelta(int x, int y, int delta) noexcept;
+
 private:
-	static constexpr unsigned int bufferSize = 16u;
-	int x;
-	int y;
+	template<typename T>
+	static void TrimQueue(std::queue<T>& queue) noexcept;
+	void TrimEventBuffer() noexcept;
+	void TrimRawInputBuffer() noexcept;
+
+private:
+	static constexpr unsigned int bufferCapacity = 16u;
+	int x = 0;
+	int y = 0;
 	bool leftIsPressed = false;
 	bool rightIsPressed = false;
 	bool isInWindow = false;
-	int wheelDeltaCarry = 0;
-	bool rawEnabled = false;
-	std::queue<Event> buffer;
-	std::queue<RawDelta> rawDeltaBuffer;
+	int wheelDeltaAccumulator = 0;
+	bool rawInputEnabled = false;
+	std::queue<Event> eventBuffer;
+	std::queue<RawMovement> rawMovementBuffer;
 };

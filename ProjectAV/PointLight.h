@@ -12,7 +12,7 @@ namespace Rgph
 class PointLight
 {
 public:
-	PointLight(Graphics& gfx, float radius = 0.5f);
+	PointLight(Graphics& gfx, UINT slot = 2u, float radius = 0.5f);
 	void SpawnControlWindow() noexcept;
 	void Reset() noexcept;
 	void Submit() const noxnd;
@@ -28,7 +28,8 @@ private:
 		float attConst;
 		float attLin;
 		float attQuad;
-	};
+		BOOL enabled;
+	};	
 public:
 	PointLightCBuf cbData;
 	mutable SolidSphere mesh;

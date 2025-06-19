@@ -1,13 +1,13 @@
 #include "IndexBuffer.h"
 #include "GraphicsThrowMacros.h"
 #include "BindableCodex.h"
-#include <cassert> // For assert
+#include <cassert>
 
 namespace Bind
 {
 	IndexBuffer::IndexBuffer(Graphics& gfx, const std::vector<unsigned short>& indices_in)
 		:
-		IndexBuffer(gfx, "?", indices_in) // Delegate to tagged constructor
+		IndexBuffer(gfx, "?", indices_in) 
 	{
 	}
 
@@ -15,7 +15,7 @@ namespace Bind
 		:
 		tag(tag_in),
 		count((UINT)indices_in.size()),
-		cpuIndices(indices_in) // **** Store a copy of the input indices ****
+		cpuIndices(indices_in) 
 	{
 		INFOMAN(gfx);
 
@@ -27,8 +27,7 @@ namespace Bind
 		ibd.ByteWidth = UINT(count * sizeof(unsigned short));
 		ibd.StructureByteStride = sizeof(unsigned short);
 		D3D11_SUBRESOURCE_DATA isd = {};
-		// Use the original passed-in indices_in.data() for GPU upload for consistency
-		// or cpuIndices.data() if you prefer. Both hold the same data at this point.
+
 		isd.pSysMem = indices_in.data();
 		GFX_THROW_INFO(GetDevice(gfx)->CreateBuffer(&ibd, &isd, &pIndexBuffer));
 	}
@@ -41,27 +40,19 @@ namespace Bind
 
 	UINT IndexBuffer::GetCount() const noexcept
 	{
-		return count; // This is already the number of indices
+		return count; 
 	}
 
-	// **** IMPLEMENTATION OF NEW PUBLIC METHODS ****
 	unsigned short IndexBuffer::GetIndex(size_t i) const noexcept
 	{
 		assert(i < cpuIndices.size() && "Index out of bounds in IndexBuffer::GetIndex");
 		return cpuIndices[i];
 	}
 
-	/* Optional:
-	const std::vector<unsigned short>& IndexBuffer::GetCPUIndices() const noexcept
-	{
-		return cpuIndices;
-	}
-	*/
-
 	std::shared_ptr<IndexBuffer> IndexBuffer::Resolve(Graphics& gfx, const std::string& tag,
 		const std::vector<unsigned short>& indices)
 	{
-		assert(tag != "?"); // Make sure tag is not the default placeholder
+		assert(tag != "?"); 
 		return Codex::Resolve<IndexBuffer>(gfx, tag, indices);
 	}
 	std::string IndexBuffer::GenerateUID_(const std::string& tag)
@@ -71,7 +62,6 @@ namespace Bind
 	}
 	std::string IndexBuffer::GetUID() const noexcept
 	{
-		// Call the static GenerateUID_ with the instance's tag
 		return GenerateUID_(tag);
 	}
 }

@@ -80,6 +80,12 @@ public:
 	{
 		return pContext.Get();
 	}
+#ifndef NDEBUG
+	DxgiInfoManager& GetInfoManager() noexcept
+	{
+		return infoManager;
+	}
+#endif
 
 
 	std::shared_ptr<Bind::RenderTarget> GetTarget();

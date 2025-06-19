@@ -35,7 +35,6 @@ void TexturePreprocessor::FlipYAllNormalMapsInObj( const std::string & objPath )
 {
 	const auto rootPath = std::filesystem::path{ objPath }.parent_path().string() + "\\";
 
-	// load scene from .obj file to get our list of normal maps in the materials
 	Assimp::Importer imp;
 	const auto pScene = imp.ReadFile( objPath.c_str(),0u );
 	if( pScene == nullptr )
@@ -43,7 +42,6 @@ void TexturePreprocessor::FlipYAllNormalMapsInObj( const std::string & objPath )
 		throw ModelException( __LINE__,__FILE__,imp.GetErrorString() );
 	}
 
-	// loop through materials and process any normal maps
 	for( auto i = 0u; i < pScene->mNumMaterials; i++ )
 	{
 		const auto& mat = *pScene->mMaterials[i];
@@ -58,21 +56,18 @@ void TexturePreprocessor::FlipYAllNormalMapsInObj( const std::string & objPath )
 
 void TexturePreprocessor::FlipYNormalMap( const std::string& pathIn,const std::string& pathOut )
 {
-	// function for processing each normal in texture
 	using namespace DirectX;
 	const auto flipY = XMVectorSet( 1.0f,-1.0f,1.0f,1.0f );
 	const auto ProcessNormal = [flipY]( FXMVECTOR n,int x,int y ) -> XMVECTOR
 	{
 		return XMVectorMultiply( n,flipY );
 	};
-	// execute processing over every texel in file
 	TransformFile( pathIn,pathOut,ProcessNormal );
 }
 
 void TexturePreprocessor::ValidateNormalMap( const std::string& pathIn,float thresholdMin,float thresholdMax )
 {
 	OutputDebugStringA( ("Validating normal map [" + pathIn + "]\n").c_str() );
-	// function for processing each normal in texture
 	using namespace DirectX;
 	auto sum = XMVectorZero();
 	const auto ProcessNormal = [thresholdMin,thresholdMax,&sum]( FXMVECTOR n,int x,int y ) -> XMVECTOR
@@ -98,10 +93,10 @@ void TexturePreprocessor::ValidateNormalMap( const std::string& pathIn,float thr
 		sum = XMVectorAdd( sum,n );
 		return n;
 	};
-	// execute the validation for each texel
+
 	auto surf = Surface::FromFile( pathIn );
 	TransformSurface( surf,ProcessNormal );
-	// output bias
+
 	{
 		XMFLOAT2 sumv;
 		XMStoreFloat2( &sumv,sum );
@@ -113,10 +108,10 @@ void TexturePreprocessor::ValidateNormalMap( const std::string& pathIn,float thr
 
 void TexturePreprocessor::MakeStripes( const std::string& pathOut,int size,int stripeWidth )
 {
-	// make sure texture dimension is power of 2
+
 	auto power = log2( size );
 	assert( modf( power,&power ) == 0.0 );
-	// make sure stripe width enables at least 2 stripes
+
 	assert( stripeWidth < size / 2 );
 
 	Surface s( size,size );

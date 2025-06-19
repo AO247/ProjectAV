@@ -13,11 +13,11 @@ public:
 	LevelGenerator(Node* owner, Node* pPlayer, bool rot);
 	virtual ~LevelGenerator() = default;
 
-	int bigIslandCount = 1;
-	int mediumIslandCount = 0;
+	int bigIslandCount = 2;
+	int mediumIslandCount = 1;
 	int smallIslandCount = 2;
 
-	int numberOfHardEnemies = 0;
+	int numberOfHardEnemies = 1;
 	int numberOfMediumEnemies = 1;
 	int numberOfEasyEnemies = 1;
 
@@ -31,23 +31,39 @@ public:
 	bool startEnemyGenerating = false;
 private:
 	Node* pPlayer;
+	struct islandInfoStruct {
+		std::string name = "";
+		Vector3 pos = { 0.0f, 0.0f, 0.0f };
+		float rot = 0.0f;
+		Vector3 leftPoint{ 0.0f, 0.0f, 0.0f };
+		Vector3 upPoint{ 0.0f, 0.0f, 0.0f };
+		Vector3 rightPoint{ 0.0f, 0.0f, 0.0f };
+		Vector3 downPoint{ 0.0f, 0.0f, 0.0f };
+	};
 	float distance = 1.0f;
 	std::vector<Node*> islands;
+	std::vector<islandInfoStruct> islandsInfo;
+	islandInfoStruct islandInfo;
+	std::vector<std::unique_ptr<Node>> islandsOwners;
 	std::vector<Vector4> points;
 	std::vector<Vector3> spawnPoints;
-
 	void GenerateIslands();
 	void SpawnEnemies();
 	bool spawnNeedRotation = false;
 	bool spawned = true;
 	Node* islandPrefab = nullptr;
+
 	Node* enemy = nullptr;
-	int islandNumber = 1;
+	int islandNumber = 0;
 	int pIslandNumber = 1;
-	Island* island = nullptr;
 
 	int counterToRotate = 0;
+	float enemiesLimitTimer = 10.0f;
+	float islandLimitTimer = 40.0f;
+	void Rotate(int rot = 0);
 
-	void ChangePosition(Node* island, Vector3 pointPos, Vector3 startPos);
-	bool Collide(Node* island1, Node* island2);
+	void ChangePosition(islandInfoStruct* island, Vector3 pointPos, Vector3 startPos);
+	bool Collide(islandInfoStruct island1, islandInfoStruct island2);
+
+
 };

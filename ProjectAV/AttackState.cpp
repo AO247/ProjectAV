@@ -1,9 +1,9 @@
 #include "AttackState.h"
 #include "StateMachine.h"
-#include "Node.h" // Include Node to get other components
+#include "Node.h" 
 
 
-#include "Win.h" // For OutputDebugStringA
+#include "Win.h" 
 
 AttackState::AttackState(StateMachine* pOwner) : State()
 {
@@ -12,7 +12,7 @@ AttackState::AttackState(StateMachine* pOwner) : State()
 
 void AttackState::Enter(StateMachine* pOwner)
 {
-	OutputDebugStringA("Entering ATTACK State\n");
+	//OutputDebugStringA("Entering ATTACK State\n");
 	if (pOwner->pAttackComponent != nullptr) {
 		time = 0.0f;
 		sm::Vector3 facingDirection = sm::Vector3(pOwner->pPlayer->GetWorldPosition())
@@ -38,5 +38,5 @@ void AttackState::Update(StateMachine* pOwner, float dt)
 
 void AttackState::Exit(StateMachine* pOwner)
 {
-	OutputDebugStringA("Exiting ATTACK State\n");
+	//OutputDebugStringA("Exiting ATTACK State\n");
 }

@@ -33,9 +33,6 @@
     <Filter Include="Header Files\Components">
       <UniqueIdentifier>{7ad4ecba-a54e-41ab-8f65-b1e5267fa1e5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Enemies">
-      <UniqueIdentifier>{741a85d2-24b2-4598-ba88-360e22f6d032}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\States">
       <UniqueIdentifier>{4ef6fe62-1bed-4971-8dc9-a3df3b6fc497}</UniqueIdentifier>
     </Filter>
@@ -55,17 +52,8 @@
     <Filter Include="Source Files\Components">
       <UniqueIdentifier>{2627c391-8230-4cdb-95f9-3ad7ea8445f2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Enemies">
-      <UniqueIdentifier>{44cc9cd3-00f6-4ac5-8ce9-a1422cad9aa5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\States">
       <UniqueIdentifier>{bd6c8b48-7d3e-4a88-b5e1-54f07d9a59ae}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Physics">
-      <UniqueIdentifier>{9e82040b-d2b0-49ea-8435-4db9fd020b3a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Physics">
-      <UniqueIdentifier>{af7fa25c-6766-471f-922f-6d9f53a75943}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Jobber">
       <UniqueIdentifier>{7e8fb7ed-82d3-4df9-be3e-4d72f21e0b37}</UniqueIdentifier>
@@ -88,12 +76,21 @@
     <Filter Include="Source Files\Jobber\Passlib">
       <UniqueIdentifier>{bf32bb01-7e0e-4724-92c1-758f350a05a2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Components\Abilities">
+      <UniqueIdentifier>{4fce635a-c8c8-474b-a420-68a5a0fd58bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Components\Abilities">
+      <UniqueIdentifier>{5f630209-bb52-45b6-969b-a911ac9ac3bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Components\Enemies">
+      <UniqueIdentifier>{9c555987-76e0-4d38-8e3e-1e36b1e1e614}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Components\Enemies">
+      <UniqueIdentifier>{6e3d2293-c7ad-40f8-aed5-7ca90d77af66}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinMain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="WindowsMessageMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Window.cpp">
@@ -198,25 +195,7 @@
     <ClCompile Include="ModelComponent.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
-    <ClCompile Include="MiscMath.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Collider.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
     <ClCompile Include="Rigidbody.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="PhysicsEngine.cpp">
-      <Filter>Source Files\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="IntersectData.cpp">
-      <Filter>Source Files\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="AABB.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="BoundingSphere.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
     <ClCompile Include="SolidBox.cpp">
@@ -224,9 +203,6 @@
     </ClCompile>
     <ClCompile Include="ColliderSphere.cpp">
       <Filter>Source Files\Drawable</Filter>
-    </ClCompile>
-    <ClCompile Include="AIController.cpp">
-      <Filter>Source Files\Components</Filter>
     </ClCompile>
     <ClCompile Include="IdleState.cpp">
       <Filter>Source Files\States</Filter>
@@ -249,29 +225,14 @@
     <ClCompile Include="TestPlane.cpp">
       <Filter>Source Files\Drawable</Filter>
     </ClCompile>
-    <ClCompile Include="OBB.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
     <ClCompile Include="DirectionalLight.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Walking.cpp">
-      <Filter>Source Files\Components</Filter>
     </ClCompile>
     <ClCompile Include="TexturePreprocessor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DirectionalLight.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CapsuleCollider.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Raycast.cpp">
-      <Filter>Source Files\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="RaycastData.cpp">
-      <Filter>Source Files\Physics</Filter>
     </ClCompile>
     <ClCompile Include="SolidCapsule.cpp">
       <Filter>Source Files\Drawable</Filter>
@@ -292,9 +253,6 @@
       <Filter>Source Files\Bindable</Filter>
     </ClCompile>
     <ClCompile Include="CUtil.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ScriptCommander.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DynamicConstant.cpp">
@@ -345,21 +303,6 @@
     <ClCompile Include="Health.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
-    <ClCompile Include="BasicAttack.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="ShootAttack.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Bullet.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Flying.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="LegacyCollider.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="PhysicsCommon.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -375,12 +318,6 @@
     <ClCompile Include="Component.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Ability1.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Ability2.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
     <ClCompile Include="TestCube.cpp">
       <Filter>Source Files\Drawable</Filter>
     </ClCompile>
@@ -391,9 +328,6 @@
       <Filter>Source Files\Components</Filter>
     </ClCompile>
     <ClCompile Include="Island.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Ability3.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
     <ClCompile Include="Button.cpp">
@@ -408,34 +342,16 @@
     <ClCompile Include="SpawnJump.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
-    <ClCompile Include="Ability4.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="PhysicsDebugRenderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="BlurOutlineRenderGraph.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="HorizontalBlurPass.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Pass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="RenderGraph.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ScaleOutlineRenderGraph.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="StepLinkingProbe.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TransformCbufScaling.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="VerticalBlurPass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="RenderQueuePass.cpp">
@@ -459,11 +375,86 @@
     <ClCompile Include="Source.cpp">
       <Filter>Source Files\Jobber\Passlib</Filter>
     </ClCompile>
+    <ClCompile Include="Skybox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyboxPass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UpgradeHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Fire.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="FireStatue.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="MainRenderGraph.cpp">
+      <Filter>Source Files\Jobber</Filter>
+    </ClCompile>
+    <ClCompile Include="StunState.cpp">
+      <Filter>Source Files\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Collectable.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Ability1.cpp">
+      <Filter>Source Files\Components\Abilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Ability2.cpp">
+      <Filter>Source Files\Components\Abilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Ability3.cpp">
+      <Filter>Source Files\Components\Abilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Ability4.cpp">
+      <Filter>Source Files\Components\Abilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Ability5.cpp">
+      <Filter>Source Files\Components\Abilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Ability5Extend.cpp">
+      <Filter>Source Files\Components\Abilities</Filter>
+    </ClCompile>
+    <ClCompile Include="StopState.cpp">
+      <Filter>Source Files\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Ability6.cpp">
+      <Filter>Source Files\Components\Abilities</Filter>
+    </ClCompile>
+    <ClCompile Include="SkinningCBuf.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Tutorial.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet.cpp">
+      <Filter>Source Files\Components\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="BasicAttack.cpp">
+      <Filter>Source Files\Components\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="Flying.cpp">
+      <Filter>Source Files\Components\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="Walking.cpp">
+      <Filter>Source Files\Components\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="ShootAttack.cpp">
+      <Filter>Source Files\Components\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="SpawnAttack.cpp">
+      <Filter>Source Files\Components\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="BoomAttack.cpp">
+      <Filter>Source Files\Components\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="Spikes.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="WindowsMessageMap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Win.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -611,22 +602,7 @@
     <ClInclude Include="BindableCodex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Collider.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
     <ClInclude Include="Rigidbody.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="PhysicsEngine.h">
-      <Filter>Header Files\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="IntersectData.h">
-      <Filter>Header Files\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="AABB.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="BoundingSphere.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
     <ClInclude Include="Box.h">
@@ -640,9 +616,6 @@
     </ClInclude>
     <ClInclude Include="BindableCodex.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AIController.h">
-      <Filter>Header Files\Components</Filter>
     </ClInclude>
     <ClInclude Include="State.h">
       <Filter>Header Files\States</Filter>
@@ -674,20 +647,11 @@
     <ClInclude Include="Plane.h">
       <Filter>Header Files\Drawable</Filter>
     </ClInclude>
-    <ClInclude Include="OBB.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
     <ClInclude Include="DirectionalLight.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CapsuleCollider.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
     <ClInclude Include="DirectionalLight.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Walking.h">
-      <Filter>Header Files\Components</Filter>
     </ClInclude>
     <ClInclude Include="Components.h">
       <Filter>Header Files\Components</Filter>
@@ -703,15 +667,6 @@
     </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Raycast.h">
-      <Filter>Header Files\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="RaycastData.h">
-      <Filter>Header Files\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="PhysicsLayers.h">
-      <Filter>Header Files\Physics</Filter>
     </ClInclude>
     <ClInclude Include="DebugLine.h">
       <Filter>Header Files</Filter>
@@ -729,9 +684,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="json.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ScriptCommander.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DynamicConstant.h">
@@ -791,21 +743,6 @@
     <ClInclude Include="Health.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
-    <ClInclude Include="BasicAttack.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="ShootAttack.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Bullet.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Flying.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="LegacyCollider.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="PhysicsCommon.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -817,12 +754,6 @@
     </ClInclude>
     <ClInclude Include="MyContactListener.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Ability1.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Ability2.h">
-      <Filter>Header Files\Components</Filter>
     </ClInclude>
     <ClInclude Include="Cube.h">
       <Filter>Header Files\Geometry</Filter>
@@ -839,9 +770,6 @@
     <ClInclude Include="Island.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
-    <ClInclude Include="Ability3.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
     <ClInclude Include="Button.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -852,15 +780,6 @@
       <Filter>Header Files\Components</Filter>
     </ClInclude>
     <ClInclude Include="SpawnJump.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="PhysicsDebugRenderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Ability4.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Ability.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
     <ClInclude Include="BufferResource.h">
@@ -875,9 +794,6 @@
     <ClInclude Include="StepLinkingProbe.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TestModelProbe.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TransformCbufScaling.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -887,22 +803,7 @@
     <ClInclude Include="LambertianPass.h">
       <Filter>Header Files\Jobber\Passlib</Filter>
     </ClInclude>
-    <ClInclude Include="HorizontalBlurPass.h">
-      <Filter>Header Files\Jobber\Passlib</Filter>
-    </ClInclude>
-    <ClInclude Include="BlurOutlineDrawingPass.h">
-      <Filter>Header Files\Jobber\Passlib</Filter>
-    </ClInclude>
-    <ClInclude Include="VerticalBlurPass.h">
-      <Filter>Header Files\Jobber\Passlib</Filter>
-    </ClInclude>
     <ClInclude Include="BufferClearPass.h">
-      <Filter>Header Files\Jobber\Passlib</Filter>
-    </ClInclude>
-    <ClInclude Include="OutlineMaskGenerationPass.h">
-      <Filter>Header Files\Jobber\Passlib</Filter>
-    </ClInclude>
-    <ClInclude Include="OutlineDrawingPass.h">
       <Filter>Header Files\Jobber\Passlib</Filter>
     </ClInclude>
     <ClInclude Include="Step.h">
@@ -926,11 +827,86 @@
     <ClInclude Include="FullscreenPass.h">
       <Filter>Header Files\Jobber\Passlib\Base</Filter>
     </ClInclude>
-    <ClInclude Include="BlurOutlineRenderGraph.h">
+    <ClInclude Include="MainRenderGraph.h">
       <Filter>Header Files\Jobber\Graphlib</Filter>
     </ClInclude>
-    <ClInclude Include="ScaleOutlineRenderGraph.h">
-      <Filter>Header Files\Jobber\Graphlib</Filter>
+    <ClInclude Include="Fire.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FireStatue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Skybox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyboxPass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UpgradeHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StunState.h">
+      <Filter>Header Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Collectable.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Ability.h">
+      <Filter>Header Files\Components\Abilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Ability1.h">
+      <Filter>Header Files\Components\Abilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Ability2.h">
+      <Filter>Header Files\Components\Abilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Ability3.h">
+      <Filter>Header Files\Components\Abilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Ability4.h">
+      <Filter>Header Files\Components\Abilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Ability5.h">
+      <Filter>Header Files\Components\Abilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Ability5Extend.h">
+      <Filter>Header Files\Components\Abilities</Filter>
+    </ClInclude>
+    <ClInclude Include="StopState.h">
+      <Filter>Header Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Ability6.h">
+      <Filter>Header Files\Components\Abilities</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinningCBuf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Tutorial.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="BasicAttack.h">
+      <Filter>Header Files\Components\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="Bullet.h">
+      <Filter>Header Files\Components\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="Flying.h">
+      <Filter>Header Files\Components\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="ShootAttack.h">
+      <Filter>Header Files\Components\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="Walking.h">
+      <Filter>Header Files\Components\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="SpawnAttack.h">
+      <Filter>Header Files\Components\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="BoomAttack.h">
+      <Filter>Header Files\Components\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="Spikes.h">
+      <Filter>Header Files\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1010,7 +986,31 @@
     <FxCompile Include="Blur_PS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="BlurOutline_PS.hlsl">
+    <FxCompile Include="Test2_VS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="PhongDifMskSpc_PS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="PhongDifMskSpc_VS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Skybox_PS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Skybox_VS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Test_PS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Test1_VS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="DirectionalLight.hlsl">
+      <Filter>Shaders\Common</Filter>
+    </FxCompile>
+    <FxCompile Include="NullPixelShader.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>

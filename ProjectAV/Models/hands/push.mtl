@@ -1,0 +1,15 @@
+# Blender 4.0.2 MTL File: 'location_change.blend'
+# www.blender.org
+
+newmtl Material
+Ns 5.571695
+Ka 1.000000 1.000000 1.000000
+Kd 0.760757 0.458932 0.305612
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+
+map_Kd hands_base.png
+map_Kn -bm 1.000000 hands_normal.png

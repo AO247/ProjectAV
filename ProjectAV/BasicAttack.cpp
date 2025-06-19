@@ -6,7 +6,6 @@ namespace dx = DirectX;
 BasicAttack::BasicAttack(Node* owner, std::string tag)
 	: Component(owner, std::move(tag))
 {
-	attackRange = 5.0f;
 }
 
 void BasicAttack::Attack(float dt)
@@ -19,6 +18,10 @@ void BasicAttack::Attack(float dt)
 		return;
 	}
 	if (attacked) {
+		if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+			float p = (rand() % 3) + 4;
+			pOwner->GetComponent<SoundEffectsPlayer>()->Play(p);
+		}
 		return;
 	}
 	if (timer < startDmgTime) {

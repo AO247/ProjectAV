@@ -1,57 +1,70 @@
 #include "StateMachine.h"
 #include "State.h"
 #include "PhysicsCommon.h"
+#include "Components.h"
 
 #include "IdleState.h"
 #include "FollowState.h"
 #include "AttackState.h"
+#include "StunState.h"
+#include "StopState.h"
 
-#include <stdexcept> // For runtime_error
+#include <stdexcept> 
 #include <cassert>
 #include <string>
-#include "Win.h"// For OutputDebugStringA
+#include "Win.h"
+#include "PrefabManager.h"
 
 
 
 StateMachine::StateMachine(Node* owner, StateType initialState)
-	: Component(owner) // Request initial state for first frame
+	: Component(owner) 
 {
 	RegisterState<IdleState>(StateType::IDLE);
 	RegisterState<FollowState>(StateType::FOLLOW);
 	RegisterState<AttackState>(StateType::ATTACK);
+	RegisterState<StunState>(StateType::STUN);
+	RegisterState<StopState>(StateType::STOP);
+
 	ChangeState(initialState);
 	if (currentStateType == StateType::NONE) {
-		currentStateType = StateType::IDLE; // Default fallback
-		ChangeState(StateType::IDLE); // Try changing to IDLE if initial faile
+		currentStateType = StateType::IDLE;
+		ChangeState(StateType::IDLE); 
 	}
-	//std::vector<std::unique_ptr<Component>> components = pOwner->GetComponents();
-	for (const auto& component : pOwner->GetComponents())
-	{
-		std::string tagName = "MOVEMENT";
-		std::string tagName2 = "ATTACK";
+	//for (const auto& component : pOwner->GetComponents())
+	//{
+	//	std::string tagName = "MOVEMENT";
+	//	std::string tagName2 = "ATTACK";
 
-		if (component->tag == tagName)
-		{
-			pMovementComponent = component.get();
-		}
-		else if (component->tag == tagName2)
-		{
-			attackComponents.push_back(component.get());
-		}
-	}
+	//	if (component->tag == tagName)
+	//	{
+	//		pMovementComponent = component.get();
+	//	}
+	//	else if (component->tag == tagName2)
+	//	{
+	//		attackComponents.push_back(component.get());
+	//	}
+	//}
 	pPlayer = pOwner->GetRoot()->FindFirstChildByTag("PLAYER");
 }
 StateMachine::~StateMachine()
 {
 
 }
-
-
+void StateMachine::Stun(float time)
+{
+	stunTime = time;
+	RequestStateChange(StateType::STUN);
+}
+void StateMachine::Stop(float time)
+{
+	stopTime = time;
+	RequestStateChange(StateType::STOP);
+}
 void StateMachine::Update(float dt)
 {
-
-	// 2. Update the Current State
-	if (currentState) // Ensure state exists
+	if (timer < 6.0f) timer += dt;
+	if (currentState)
 	{
 		currentState->Update(this, dt);
 	}
@@ -62,37 +75,44 @@ void StateMachine::Update(float dt)
 		}
 		else 
 		{
-			// This shouldn't happen after the constructor logic, but safety check
 			OutputDebugStringA("StateMachine Warning: currentState is null in Update!\n");
-			// Maybe try to force back to IDLE?
 			RequestStateChange(StateType::IDLE);
 		}
 		
 	}
-	if (pOwner->GetLocalPosition().y < -50.0f)
+	if (pOwner->GetLocalPosition().y < -50.0f && timer >= 2.0f)
 	{
 		pOwner->Destroy();
 	}
 	if (isFlying) {
 		Vec3 velocity = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(pOwner->GetComponent<Rigidbody>()->GetBodyID());
-		velocity *= 0.95f; // Dampen velocity by 5% each frame
+		velocity *= 0.95f;
 		PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(pOwner->GetComponent<Rigidbody>()->GetBodyID(),velocity);
+	}
+	else
+	{
+		if(pMovementComponent->GroundCheck())
+		{
+		Vec3 velocity = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(pOwner->GetComponent<Rigidbody>()->GetBodyID());
+		velocity.SetX(velocity.GetX() * 0.97f);
+		velocity.SetZ(velocity.GetZ() * 0.97f);
+		PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(pOwner->GetComponent<Rigidbody>()->GetBodyID(), velocity);
+		}
 	}
 }
 
 void StateMachine::RequestStateChange(StateType nextState)
 {
-	// Store the request. It will be processed at the start of the next Update.
-	// This prevents changing state multiple times within a single frame's update loop.
-	if (nextState != currentStateType) // Don't request change to the same state
+
+	if (nextState != currentStateType) 
 	{
-		ChangeState(nextState); // Optional: immediate change if desired
+		ChangeState(nextState); 
 	}
 }
 
 void StateMachine::EndState()
 {
-	// End the current state and reset to idle
+
 	if (currentState)
 	{
 		if (previousState) {
@@ -100,9 +120,9 @@ void StateMachine::EndState()
 		}
 		else
 		{
-			// This shouldn't happen after the constructor logic, but safety check
+
 			OutputDebugStringA("StateMachine Warning: currentState is null in Update!\n");
-			// Maybe try to force back to IDLE?
+
 			RequestStateChange(StateType::IDLE);
 		}
 	}
@@ -110,7 +130,7 @@ void StateMachine::EndState()
 
 void StateMachine::ChangeState(StateType nextStateType)
 {
-	// Find the factory function for the requested state
+
 	auto it = stateFactory.find(nextStateType);
 	if (it == stateFactory.end())
 	{
@@ -124,20 +144,20 @@ void StateMachine::ChangeState(StateType nextStateType)
 	}
 
 	previousState = std::move(currentState);
-	previousStateType = currentStateType; // Store the previous state type
-	currentState = it->second(this); // Calls the lambda stored in the map
-	currentStateType = nextStateType; // Update the current type enum
+	previousStateType = currentStateType; 
+	currentState = it->second(this); 
+	currentStateType = nextStateType; 
 
-	// Enter the new state
+
 	if (currentState)
 	{
 		currentState->Enter(this);
 	}
 	else
 	{
-		// Factory failed to create state? Should not happen if registration is correct.
+		
 		OutputDebugStringA(("StateMachine Error: Factory failed to create state type: " + std::to_string((int)nextStateType) + "\n").c_str());
-		currentStateType = StateType::NONE; // Mark as invalid state
+		currentStateType = StateType::NONE;
 	}
 }
 
@@ -146,6 +166,52 @@ StateType StateMachine::GetCurrentStateType() const
 	return currentStateType;
 }
 
+void StateMachine::Die()
+{
+	/*pPlayer->GetComponent<PlayerController>()->abilitySlot3->GetComponent<Ability>()->killsCount++;
+	pPlayer->GetComponent<Health>()->TakeDamage(-1);*/
+	if (timer < 6.0f)
+	{
+		pOwner->GetComponent<Health>()->currentHealth = pOwner->GetComponent<Health>()->maxHealth;
+		return;
+	}
+	if (!isDead)
+	{
+		isDead = true;
+		Vector3 position = pOwner->GetLocalPosition();
+		RRayCast ray = RRayCast(
+			RVec3(pOwner->GetWorldPosition().x, pOwner->GetWorldPosition().y, pOwner->GetWorldPosition().z),
+			Vec3(0.0f, -30.0f, 0.0f)
+		);
+		RayCastResult result;
+		if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(ray, result, 
+			IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::ENEMY, BroadPhaseLayers::TRIGGER }),
+			IgnoreMultipleObjectLayerFilter({ Layers::ENEMY, Layers::TRIGGER })))
+		{
+			Vec3 hitPos = ray.mOrigin + ray.mDirection * result.mFraction;
+			Node* parent = pOwner->GetParent();
+			DirectX::XMFLOAT3 hitPosFloat3(hitPos.GetX(), hitPos.GetY(), hitPos.GetZ());
+			DirectX::XMMATRIX parentWorld = parent->GetWorldTransform();
+			DirectX::XMMATRIX invParentWorld = DirectX::XMMatrixInverse(nullptr, parentWorld);
+
+			DirectX::XMVECTOR worldVec = DirectX::XMLoadFloat3(&hitPosFloat3);
+			DirectX::XMVECTOR localVec = DirectX::XMVector3Transform(worldVec, invParentWorld);
+
+			DirectX::XMFLOAT3 localHitPos;
+			DirectX::XMStoreFloat3(&localHitPos, localVec);
+
+			float targetY = localHitPos.y + 4.0f;
+			PrefabManager::InstantiateHealthCollectable(pOwner->GetParent(), Vector3(position.x + 0.8f, position.y, position.z + 0.8f), 0.3f, targetY);
+			PrefabManager::InstantiateExpCollectable(pOwner->GetParent(), Vector3(position.x - 0.8f, position.y, position.z - 0.8f), 0.3f, targetY);
+		}
+		else
+		{
+			PrefabManager::InstantiateHealthCollectable(pOwner->GetParent(), Vector3(position.x + 0.8f, position.y, position.z + 0.8f), 0.3f, position.y);
+			PrefabManager::InstantiateExpCollectable(pOwner->GetParent(), Vector3(position.x - 0.8f, position.y, position.z - 0.8f), 0.3f, position.y);
+		}
+		pOwner->Destroy();
+	}
+}
 
 Node* StateMachine::GetOwnerNode() const
 {

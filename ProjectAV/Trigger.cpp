@@ -15,9 +15,6 @@ Trigger::Trigger(Node* owner, BodyCreationSettings bodySettings, bool parentHasR
 	bodySettings.mIsSensor = true;
 	bodySettings.mMotionType = EMotionType::Kinematic;
 	bodyID = bodyInterface.CreateAndAddBody(bodySettings, EActivation::Activate);
-	OutputDebugString("triggercio utworzony i jego id to: ");
-	OutputDebugString(std::to_string(bodyID.GetIndex()).c_str());
-	OutputDebugString("\n");
 	bodyInterface.ActivateBody(bodyID);
 
 	if (parentHasRigidbody) 
@@ -55,29 +52,3 @@ BodyID Trigger::GetBodyID()
 {
 	return bodyID;
 }
-
-//void Trigger::AddContactPoint(Node* object)
-//{
-//	contacts[object]++;
-//	if (contacts[object] == 1)
-//	{
-//		const auto& components = pOwner->GetComponents();
-//		for (int i = 0; i < components.size(); i++)
-//		{
-//			components[i]->OnTriggerEnter(object);
-//		}
-//	}
-//}
-//
-//void Trigger::RemoveContactPoint(Node* object)
-//{
-//	contacts[object]--;
-//	if (contacts[object] == 0)
-//	{
-//		const auto& components = pOwner->GetComponents();
-//		for (int i = 0; i < components.size(); i++)
-//		{
-//			components[i]->OnTriggerExit(object);
-//		}
-//	}
-//}

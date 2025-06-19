@@ -10,7 +10,7 @@ class Node;
 class ShootAttack : public Component
 {
 public:
-	ShootAttack(Node* owner, std::string tag = "ATTACK");
+	ShootAttack(Node* owner, Node* player = nullptr, std::string tag = "ATTACK");
 	virtual ~ShootAttack() = default;
 	float damage = 1.0f;
 	float wholeAttackTime = 1.5f;

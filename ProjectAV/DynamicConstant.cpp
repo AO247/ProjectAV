@@ -213,7 +213,7 @@ namespace Dcb
 	}
 	bool LayoutElement::ValidateSymbolName(const std::string& name) noexcept
 	{
-		// symbols can contain alphanumeric and underscore, must not start with digit
+
 		return !name.empty() && !std::isdigit(name.front()) &&
 			std::all_of(name.begin(), name.end(), [](char c) {
 			return std::isalnum(c) || c == '_';

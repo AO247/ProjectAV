@@ -35,7 +35,7 @@ public:
 		const char* GetType() const noexcept override;
 	};
 private:
-	// singleton manages registration/cleanup of window class
+
 	class WindowClass
 	{
 	public:
@@ -61,6 +61,10 @@ public:
 	bool CursorEnabled() const noexcept;
 	static std::optional<int> ProcessMessages() noexcept;
 	Graphics& Gfx();
+
+	int GetWidth() const noexcept { return width; }
+	int GetHeight() const noexcept { return height; }
+
 private:
 	void ConfineCursor() noexcept;
 	void FreeCursor() noexcept;

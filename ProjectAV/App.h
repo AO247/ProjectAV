@@ -5,12 +5,10 @@
 #include "PointLight.h"
 #include <memory> 
 #include "Node.h" 
-#include "PhysicsEngine.h"
 #include <map>
 #include "Components.h"
 #include "MusicBuffer.h"
 #include "SoundDevice.h"
-#include "ScriptCommander.h"
 #include "ColliderSphere.h"
 #include "SolidBox.h"
 #include "SolidCapsule.h"
@@ -18,12 +16,13 @@
 #include "PhysicsCommon.h"
 #include "TestCube.h"
 #include "Global.h"
-#include "BlurOutlineRenderGraph.h"
-#include "PhysicsDebugRenderer.h"
+#include "MainRenderGraph.h"
 #include "Sprite.h"
+#include "Button.h"
+#include "DirectionalLight.h"
+#include <fstream>
 
-// Forward declarations
-class PlayerController; // Forward declare
+class PlayerController;
 
 class App
 {
@@ -36,66 +35,44 @@ private:
     void HandleInput(float dt);
     void ShowControlWindows();
     void ForEnemyWalking();
+    void SaveNodeTransformsRecursive(Node& node, std::ofstream& file);
 
 private:
-    // Core App Systems
     std::string commandLine;
     ImguiManager imgui;
-    Window wnd; // PlayerController needs access to this
-    ScriptCommander scriptCommander;
-    Rgph::BlurOutlineRenderGraph rg{ wnd.Gfx() };
+    Window wnd;
+    Rgph::MainRenderGraph rg{ wnd.Gfx() };
     Timer timer;
     float speed_factor = 1.0f;
     PointLight pointLight;
-    //PhysicsEngine physicsEngine; // Physics engine instance
+    DirectionalLight dirLight;
 
-
-    //PhysicsDebugRenderer* physicsDebugRenderer;
     PhysicsSystem* physicsSystem;
     TempAllocatorImpl* temp_allocator;
     JobSystemThreadPool* job_system;
     MyContactListener* contactListener;
 
 
-    SoundDevice* soundDevice; // Sound device instance
+    SoundDevice* soundDevice; 
     std::unique_ptr<MusicBuffer> myMusic;
-    DirectX::BoundingFrustum cameraFrustum; // Frustum for the camera
+    DirectX::BoundingFrustum cameraFrustum; 
 
-    /*DebugLine* line1 = new DebugLine(wnd.Gfx(), {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, { 1.0f, 0.0f, 0.0f, 1.0f });    
-    DebugLine* line2 = new DebugLine(wnd.Gfx(), { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f, 0.0f, 1.0f });
-    DebugLine* line3 = new DebugLine(wnd.Gfx(), { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f, 0.0f, 1.0f });
-    DebugLine* line4 = new DebugLine(wnd.Gfx(), { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f, 0.0f, 1.0f });*/
-
-    // --- Scene Graph ---
     std::unique_ptr<Node> pSceneRoot;
     Node* pCamera = nullptr;
-	Node* pFreeViewCamera = nullptr; // Node for the free view camera
-    Node* pPlayer = nullptr; // Node representing the player capsule/origin
-	Node* pAbility1 = nullptr; // Node for the first ability
-	Node* pAbility2 = nullptr; // Node for the second ability
-	Node* pAbility3 = nullptr; // Node for the third ability
-    Node* pAbility4 = nullptr;
-	Node* pSelectedSceneNode = nullptr; // Node representing the selected scene node
-	Node* pSoundEffectsPlayer = nullptr; // Node for the sound effects player
-    Node* pPrefabs = nullptr;
-	Node* pHands = nullptr;
+	Node* pFreeViewCamera = nullptr; 
+    Node* pPlayer = nullptr; 
+	Node* pSelectedSceneNode = nullptr; 
+	Node* pSoundEffectsPlayer = nullptr;
+	Node* pLeftHandNormal = nullptr;
+	Node* pLeftHandAbility = nullptr;
+	Node* pRightHandNormal = nullptr;
+	Node* pRightHandAbility = nullptr;
+	Node* tutorialNode = nullptr;
+    UpgradeHandler* pUpgradeHandler = nullptr;
 
     TestCube cube{ wnd.Gfx(),4.0f };
-    // --- UI State ---
-    
-    /*std::map<BoundingSphere*, ColliderSphere*> sphereCollidersToDraw;
-
-    std::map<OBB*, SolidBox*> boxCollidersToDraw;
-	std::map<CapsuleCollider*, SolidCapsule*> capsuleCollidersToDraw;*/
-
-    /*void AddSphereColliderToDraw(Graphics& gfx, BoundingSphere* boundingSphere);
-    void DrawSphereColliders(Graphics& gfx);
-    void AddBoxColliderToDraw(Graphics& gfx, OBB* obb);
-    void DrawBoxColliders(Graphics& gfx);
-	void AddCapsuleColliderToDraw(Graphics& gfx, CapsuleCollider* capsule);*/
-	//void DrawCapsuleColliders(Graphics& gfx);
     void FrustumCalculating();
-    void DrawNodeRecursive(Graphics& gfx, Node& node);
+    void DrawNodeRecursive(Graphics& gfx, Node* node);
     void CleanupDestroyedNodes(Node* currentNode);
 
     bool showDemoWindow = false;
@@ -103,11 +80,17 @@ private:
     bool showControlWindow = false;
 	bool freeViewCamera = false;
 
-
-    //===========UI===========
-
     std::unique_ptr<Sprite> targetSprite;
     std::unique_ptr<Sprite> heart1Sprite;
     std::unique_ptr<Sprite> heart2Sprite;
     std::unique_ptr<Sprite> heart3Sprite;
+    std::unique_ptr<Sprite> loadingScreen1;
+    std::unique_ptr<Sprite> loadingScreen2;
+    std::unique_ptr<Sprite> loadingScreen3;
+    float countLoding = 0.0f;
+    float bonusTime = 5.0f;
+
+
+
+
 };

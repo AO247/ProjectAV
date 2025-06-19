@@ -1,13 +1,13 @@
+//////////////////////////
+// Classic push ability //
+//////////////////////////
 #pragma once
-
 #include "Ability.h"
-#include "Window.h" // Needs access to Window for input
+#include "Window.h"
 #include <DirectXMath.h>
 #include "Rigidbody.h"
 #include "SoundEffectsPlayer.h"
 
-// Forward declare Node to avoid circular include if necessary,
-// but including Node.h is often fine here.
 class Node;
 
 class Ability1 : public Ability
@@ -23,12 +23,15 @@ public:
 	void OnTriggerExit(Node* other) override;
 	void Pressed() override;
 	void Released() override;
-	float cooldown = 0.5f; // Cooldown for ability 1
+	float cooldown = 1.2f;
+	float timeToChange = 0.0f;
 	float force = 600.0f;
-	bool abilityReady = true; // Is the ability ready to be used?
+	bool abilityReady = true;
+	bool stop = true;
+	Node* leftHandNormal = nullptr;
+	Node* leftHandAbility = nullptr;
+
 private:
-	/*Window& wnd;
-	Node* camera = nullptr;*/
 	void KeyboardInput();
 	void Cooldowns(float dt);
 	void Positioning();

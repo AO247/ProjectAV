@@ -3,8 +3,6 @@
 #include "Component.h"
 #include <DirectXMath.h>
 #include "Rigidbody.h"
-#include "Collider.h"
-#include "BoundingSphere.h"
 #include "Components.h"
 class Node;
 
@@ -17,14 +15,13 @@ public:
 	float damage = 1.0f;
 	float lifeTime = 5.0f;
 	float knockbackForce = 1500.0f;
-	//BoundingSphere* damageArea;
 	virtual void DrawImGuiControls() override;
-	void OnCollisionEnter(Node* object) override;
+	void OnTriggerEnter(Node* other) override;
+	void OnCollisionEnter(Node* other) override;
 	Node* ignore = nullptr;
-
+	bool pushedByPlayer = false;
 private:
 	Rigidbody* rigidbody;
-	//void OnTriggerEnter();
 	float timer = 0.0f;
 
 };

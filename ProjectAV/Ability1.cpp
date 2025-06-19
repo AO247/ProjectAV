@@ -1,13 +1,14 @@
+//////////////////////////
+// Classic push ability //
+//////////////////////////
 #include "Ability1.h"
-#include "Node.h"       // Include Node to call SetLocalPosition/Rotation
-#include "Window.h"     // Included via header, but good practice
-#include "CMath.h"      // For wrap_angle and PI (ensure this is included)
+#include "Node.h"       
+#include "Window.h"     
+#include "CMath.h"      
 #include <DirectXMath.h>
-#include <algorithm> // for std::clamp
-#include "Raycast.h"
+#include <algorithm>
 #include <string>
-#include "CapsuleCollider.h"
-#include "BoundingSphere.h"
+#include "Components.h"
 
 namespace dx = DirectX;
 Ability1::Ability1(Node* owner, Window& window, Node* camera)
@@ -23,7 +24,6 @@ void Ability1::Update(float dt)
     {
         Positioning();
         Cooldowns(dt);
-        //KeyboardInput();
     }
 }
 void Ability1::Positioning() {
@@ -33,13 +33,23 @@ void Ability1::Positioning() {
 void Ability1::Pressed()
 {
     if (!abilityReady) return;
+	timeToChange = 0.3f;
+	leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
+	leftHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
     for (int i = 0; i < objects.size(); i++)
     {
         if (objects[i]->tag == "ENEMY" || objects[i]->tag == "STONE")
         {
 			Vec3 direction = Vec3(pOwner->Forward().x, pOwner->Forward().y, pOwner->Forward().z);
             PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), direction * force);
-			OutputDebugStringA(("Ability1 hit: " + objects[i]->GetName() + "\n").c_str());
+        }
+        else if (objects[i]->tag == "BULLET")
+        {
+            Vec3 direction = Vec3(pOwner->Forward().x, pOwner->Forward().y, pOwner->Forward().z);
+            Bullet* bullet = objects[i]->GetComponent<Bullet>();
+            bullet->pushedByPlayer = true;
+            bullet->ignore = nullptr;
+            PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), direction * force * 0.04f);
         }
     }
     cooldownTimer = cooldown;
@@ -56,29 +66,44 @@ void Ability1::Cooldowns(float dt)
     }
     else
     {
+        if (!abilityReady)
+        {
+            leftHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
+        }
         abilityReady = true;
+    }
+    if (timeToChange > 0.0f)
+    {
+        timeToChange -= dt;
+        if (timeToChange <= 0.0f)
+        {
+            leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
+            leftHandNormal->SetLocalPosition({ 0.0f, -2.7f, 1.0f });
+        }
     }
 
 }
 
 void Ability1::OnTriggerEnter(Node* object) {
-    if (object->tag != "ENEMY" && object->tag != "STONE") return;
+    if (object == nullptr) return;
+    if (object->tag != "ENEMY" && object->tag != "STONE" && object->tag != "BULLET") return;
     if (object->GetComponent<Rigidbody>() == nullptr) return;
     for(int i= 0; i < objects.size(); i++)
     {
         if (objects[i] == object) return;
 	}
     objects.push_back(object);
-	OutputDebugStringA(("Ability1 OnTriggerEnter: " + object->GetName() + "\n").c_str());
+	//OutputDebugStringA(("Ability1 OnTriggerEnter: " + object->GetName() + "\n").c_str());
 }
 void Ability1::OnTriggerExit(Node* object) {
-    if (object->tag != "ENEMY" && object->tag != "STONE") return;
+    if (object == nullptr) return;
+    if (object->tag != "ENEMY" && object->tag != "STONE" && object->tag != "BULLET") return;
     if (object->GetComponent<Rigidbody>() == nullptr) return;
     auto it = std::remove(objects.begin(), objects.end(), object);
     if (it != objects.end()) {
         objects.erase(it, objects.end());
     }
-	OutputDebugStringA(("Ability1 OnTriggerExit: " + object->GetName() + "\n").c_str());
+	//OutputDebugStringA(("Ability1 OnTriggerExit: " + object->GetName() + "\n").c_str());
 }
 void Ability1::DrawImGuiControls()
 {

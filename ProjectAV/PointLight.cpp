@@ -1,10 +1,10 @@
 #include "PointLight.h"
 #include "imgui/imgui.h"
 
-PointLight::PointLight(Graphics& gfx, float radius)
+PointLight::PointLight(Graphics& gfx, UINT slot, float radius)
 	:
 	mesh(gfx, radius),
-	cbuf(gfx)
+	cbuf(gfx, slot)
 {
 	Reset();
 }
@@ -14,12 +14,12 @@ void PointLight::SpawnControlWindow() noexcept
 	if (ImGui::Begin("Light"))
 	{
 		ImGui::Text("Position");
-		ImGui::SliderFloat("X", &cbData.pos.x, -60.0f, 60.0f, "%.1f");
-		ImGui::SliderFloat("Y", &cbData.pos.y, -60.0f, 60.0f, "%.1f");
-		ImGui::SliderFloat("Z", &cbData.pos.z, -60.0f, 60.0f, "%.1f");
+		ImGui::SliderFloat("X", &cbData.pos.x, -160.0f, 160.0f, "%.1f");
+		ImGui::SliderFloat("Y", &cbData.pos.y, -60.0f, 460.0f, "%.1f");
+		ImGui::SliderFloat("Z", &cbData.pos.z, -160.0f, 160.0f, "%.1f");
 
 		ImGui::Text("Intensity/Color");
-		ImGui::SliderFloat("Intensity", &cbData.diffuseIntensity, 0.01f, 2.0f, "%.2f", 2);
+		ImGui::SliderFloat("Intensity", &cbData.diffuseIntensity, 0.01f, 2.0f, "%.2f");
 		ImGui::ColorEdit3("Diffuse Color", &cbData.diffuseColor.x);
 		ImGui::ColorEdit3("Ambient", &cbData.ambient.x);
 
@@ -40,12 +40,13 @@ void PointLight::Reset() noexcept
 {
 	cbData = {
 		{ 10.0f,9.0f,2.5f },
-		{ 0.85f,0.85f,0.85f },
+		{ 0.0f,0.0f,0.0f },
 		{ 1.0f,1.0f,1.0f },
 		1.0f,
 		1.0f,
 		0.045f,
 		0.0075f,
+		TRUE
 	};
 }
 

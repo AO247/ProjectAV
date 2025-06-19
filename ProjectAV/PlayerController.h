@@ -1,13 +1,11 @@
 #pragma once
 
 #include "Component.h"
-#include "Window.h" // Needs access to Window for input
+#include "Window.h"
 #include <DirectXMath.h>
 #include "Rigidbody.h"
 #include "SoundEffectsPlayer.h"
 
-// Forward declare Node to avoid circular include if necessary,
-// but including Node.h is often fine here.
 class Node;
 
 class PlayerController : public Component
@@ -19,27 +17,36 @@ public:
 	virtual void Update(float dt) override;
 	virtual void DrawImGuiControls() override;
 
-	float moveSpeed = 23.0f;
-	//float jumpForce = 300.0f;
-	//float dashForce = 600.0f;
+	float acceleration = 8.0f;
+	float deceleration = 25.0f;
+	float airControl = 0.5f;
+
+	float maxSpeed = 35.0f;
+
 	float jumpForce = 30.0f;
+	float secondJumpForce = 20.0f;
 	float dashForce = 70.0f;
 	float height = 4.0f;
-	float dashCooldown = 1.0f;
+	float dashCooldown = 1.5f;
+
+
+
 	bool alive = true;
+	bool grounded = false;
+	
+
 	Node* abilitySlot1;
 	Node* abilitySlot2;
 	Node* abilitySlot3;
 	Node* camera;
+	Rigidbody* rigidbody;
 
 private:
 	Window& wnd;
-	Rigidbody* rigidbody;
 
 	bool jumped = false;
-	bool grounded = false;
 	bool canDash = true;
-	float airMultiplier = 1.6f;
+	float airMultiplier = 1.1f;
 
 	Vector3 moveDirection;
 	Vector3 dashDirection;
@@ -47,11 +54,12 @@ private:
 	float dashTimer = 0.0f;
 	bool dashed = false;
 	bool doubleJumped = false;
-
+	float autoJumpRange = 1.0f;
 	void KeyboardInput();
 	void MovePlayer(float dt);
-	void SpeedControl();
-	void GroundCheck();
+	void SpeedControl(float dt);
+	void PlayerGroundCheck();
+	void AutoJump();
 	void Jump();
 	void Dash();
 	void Cooldowns(float dt);

@@ -1,13 +1,15 @@
+/////////////////////////
+// Evolve of ability 2 //
+// BLACK HOLE          //
+/////////////////////////
 #include "Ability3.h"
-#include "Node.h"       // Include Node to call SetLocalPosition/Rotation
-#include "Window.h"     // Included via header, but good practice
-#include "CMath.h"      // For wrap_angle and PI (ensure this is included)
+#include "Node.h"       
+#include "Window.h"     
+#include "CMath.h"      
 #include <DirectXMath.h>
-#include <algorithm> // for std::clamp
-#include "Raycast.h"
+#include <algorithm>
 #include <string>
-#include "CapsuleCollider.h"
-#include "BoundingSphere.h"
+#include "Components.h"
 
 namespace dx = DirectX;
 Ability3::Ability3(Node* owner, Window& window, Node* camera)
@@ -66,7 +68,8 @@ void Ability3::Positioning()
 }
 void Ability3::Pressed()
 {
-    if (!abilityReady) return;
+    if (killsCount < 3) return;
+    killsCount = 0;
     timer = duration;
     cooldownTimer = cooldown;
     abilityReady = false;
@@ -82,7 +85,7 @@ void Ability3::Activated()
         {
             Vector3 objPos = objects[i]->GetWorldPosition();
             Vector3 aPos = pOwner->GetWorldPosition();
-			aPos.y += 1.0f; // Adjust the height of the ability effect
+			aPos.y += 1.0f; 
             Vector3 direction = aPos - objPos;
 
             float distance = direction.Length();
@@ -92,11 +95,19 @@ void Ability3::Activated()
 
             float scaledForce = maxForce * (1.0f - (distance / maxDistance));
             scaledForce = std::max(scaledForce, minForce);
-            direction.Normalize(); // Ensure direction is a unit vector
+            direction.Normalize();
 
             PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), Vec3(0.0f, 0.0f, 0.0f));
             PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), Vec3(direction.x, direction.y, direction.z) * scaledForce);
-            OutputDebugStringA(("Ability3 hit: " + objects[i]->GetName() + "\n").c_str());
+            //OutputDebugStringA(("Ability3 hit: " + objects[i]->GetName() + "\n").c_str());
+        }
+        else if (objects[i]->tag == "BULLET")
+        {
+            Vec3 direction = Vec3(pOwner->Forward().x, pOwner->Forward().y, pOwner->Forward().z);
+            Bullet* bullet = objects[i]->GetComponent<Bullet>();
+            bullet->pushedByPlayer = true;
+            bullet->ignore = nullptr;
+            PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), direction * force * 0.04f);
         }
     }
 }
@@ -118,23 +129,25 @@ void Ability3::Cooldowns(float dt)
 
 
 void Ability3::OnTriggerEnter(Node* object) {
-    if (object->tag != "ENEMY" && object->tag != "STONE") return;
+    if (object == nullptr) return;
+    if (object->tag != "ENEMY" && object->tag != "STONE" && object->tag != "BULLET") return;
     if (object->GetComponent<Rigidbody>() == nullptr) return;
     for (int i = 0; i < objects.size(); i++)
     {
         if (objects[i] == object) return;
     }
     objects.push_back(object);
-    OutputDebugStringA(("Ability2 OnTriggerEnter: " + object->GetName() + "\n").c_str());
+    //OutputDebugStringA(("Ability2 OnTriggerEnter: " + object->GetName() + "\n").c_str());
 }
 void Ability3::OnTriggerExit(Node* object) {
-    if (object->tag != "ENEMY" && object->tag != "STONE") return;
+    if (object == nullptr) return;
+    if (object->tag != "ENEMY" && object->tag != "STONE" && object->tag != "BULLET") return;
     if (object->GetComponent<Rigidbody>() == nullptr) return;
     auto it = std::remove(objects.begin(), objects.end(), object);
     if (it != objects.end()) {
         objects.erase(it, objects.end());
     }
-    OutputDebugStringA(("Ability2 OnTriggerExit: " + object->GetName() + "\n").c_str());
+    //OutputDebugStringA(("Ability2 OnTriggerExit: " + object->GetName() + "\n").c_str());
 }
 
 void Ability3::DrawImGuiControls()
