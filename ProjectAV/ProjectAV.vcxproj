@@ -248,6 +248,7 @@
     <ClInclude Include="BindingPass.h" />
     <ClInclude Include="Collectable.h" />
     <ClInclude Include="EnemyAnimationConfig.h" />
+    <ClInclude Include="EnemyConfig.h" />
     <ClInclude Include="MainRenderGraph.h" />
     <ClInclude Include="BufferClearPass.h" />
     <ClInclude Include="BufferResource.h" />

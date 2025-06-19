@@ -3972,6 +3972,7 @@ public:
             std::make_unique<StateMachine>(pNewNode, StateType::IDLE)
         );
         StateMachine* stateMachine = pNewNode->GetComponent<StateMachine>();
+        stateMachine->enemyType = EnemyType::BASIC;
         stateMachine->followDistance = 60.0f;
         stateMachine->pPlayer = pPlayer;
         stateMachine->attackComponents.push_back(basicAttack);

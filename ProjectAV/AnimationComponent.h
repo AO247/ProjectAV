@@ -27,7 +27,10 @@ public:
 	}
 	~AnimationComponent()
 	{
-		delete animation;
+		for (Animation* anim : animations) {
+			delete anim; 
+		}
+
 		delete animator;
 	}
 	
@@ -36,10 +39,13 @@ public:
 		animator->UpdateAnimation(dt);
 	}
 
-	void PlayAnimation(int index)
+	void PlayAnimation(int index, float transitionDuration = 0.2f)
 	{
-		animator->PlayAnimation(animations[index]);
+		if (animator && index >= 0 && index < animations.size()) {
+			animator->PlayAnimation(animations[index], transitionDuration);
+		}
 	}
+
 
 	Animation* GetCurrentPlayingAnimationRaw() const {
 		if (animator) { 

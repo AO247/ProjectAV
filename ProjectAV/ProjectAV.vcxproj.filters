@@ -896,6 +896,9 @@
     <ClInclude Include="EnemyAnimationConfig.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="EnemyConfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ProjectAV.rc">

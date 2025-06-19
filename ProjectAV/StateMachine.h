@@ -7,6 +7,7 @@
 #include <functional>       
 #include "Node.h"
 #include <SimpleMath.h>
+#include "EnemyConfig.h"
 
 class State;
 namespace sm = DirectX::SimpleMath;
@@ -41,6 +42,9 @@ public:
 	void ChangeState(StateType nextState);
 	void Stun(float time);
 	float timer = 0.0f;
+
+	EnemyType enemyType = EnemyType::BASIC;
+
 
 private:
 
