@@ -9,6 +9,7 @@
 #include "ParticleSystemComponent.h"
 #include "TrailEmitterLogic.h"
 #include "PointEmitterLogic.h"
+#include "CircleEmitterLogic.h"
 
 //class PhysicsEngine;
 class ShootAttack;
@@ -3851,6 +3852,41 @@ public:
 
         return pNewNode;
     }
+    static Node* InstantiateAbility2Particles(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 })
+    {
+        auto pNewNodeOwner = std::make_unique<Node>("Ability2Particles", nullptr);
+        Node* pNewNode = pNewNodeOwner.get();
+
+        auto pCircleLogic = std::make_unique<CircleEmitterLogic>();
+        pCircleLogic->Radius = 2.5f;                
+        pCircleLogic->Orientation = CircleEmitterLogic::Plane::XZ; 
+        pCircleLogic->ParticlesPerSecond = 100.0f;
+
+        pNewNode->AddComponent(
+            std::make_unique<ParticleSystemComponent>(pNewNode, wind->Gfx(), "Models\\flame.png", 200, std::move(pCircleLogic))
+        );
+        ParticleSystemComponent* particles = pNewNode->GetComponent<ParticleSystemComponent>();
+        particles->SetPlaybackMode(ParticleSystemComponent::PlaybackMode::OneShot);
+        particles->destroyAfterEmission = true;
+        particles->ParticleLifetime = 0.4f;
+        particles->EmissionDuration = 0.1f;
+        particles->EmissionRate = 40.0f;
+        particles->ParticleVelocity = { 0.0f, 20.0f, 0.0f };
+        particles->StartSize = 2.0f;
+        particles->EndSize = 1.0f;
+        particles->EndRotation = 0.0f;
+        
+        particles->Play();
+        particles->Link(*rg);
+
+        pNewNodeOwner->SetLocalPosition(position);
+        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+        pNewNodeOwner->SetLocalRotation(rotation);
+
+        parentNode->AddChild(std::move(pNewNodeOwner));
+
+        return pNewNode;
+    }
 
     ///////////////////////////////
     ////////////ENEMIES////////////
@@ -3868,7 +3904,7 @@ public:
             std::make_unique<AnimationComponent>(pNewNode, "", "Models\\char_basic2.glb")
         );
         pNewNode->AddComponent(
-            std::make_unique<ParticleSystemComponent>(pNewNode, wind->Gfx(), "Models\\flame.png", 200, std::make_unique<TrailEmitterLogic>())
+            std::make_unique<ParticleSystemComponent>(pNewNode, wind->Gfx(), "Models\\flame.png", 200, std::make_unique<PointEmitterLogic>())
         );
         ParticleSystemComponent* pParticleSystem = pNewNode->GetComponent<ParticleSystemComponent>();
         pParticleSystem->EmissionRate = 10.0f;              // Particles per second

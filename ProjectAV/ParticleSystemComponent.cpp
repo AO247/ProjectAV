@@ -25,7 +25,10 @@ ParticleSystemComponent::ParticleSystemComponent(Node* owner, Graphics& gfx, con
     : Component(owner),
     gfx(gfx),
     pEmitterLogic(std::move(pEmitterLogic_in)),
-    rng(std::random_device{}())
+    rng(std::random_device{}()),
+    m_playbackMode(PlaybackMode::Loop),
+    m_isEmitting(true),
+    m_emissionTimer(0.0f)
 {
     particles.resize(maxParticles);
     instanceData.resize(maxParticles);
@@ -51,7 +54,6 @@ ParticleSystemComponent::ParticleSystemComponent(Node* owner, Graphics& gfx, con
     pVertexShader = Bind::VertexShader::Resolve(gfx, "Particle_VS.cso");
     pPixelShader = Bind::PixelShader::Resolve(gfx, "Particle_PS.cso");
 
-    // Define the input layout with explicit byte offsets for robustness.
     const std::vector<D3D11_INPUT_ELEMENT_DESC> ied =
     {
         { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -77,13 +79,25 @@ void ParticleSystemComponent::Link(Rgph::RenderGraph& rg)
 
 void ParticleSystemComponent::Update(float dt)
 {
-    // 1. Delegate particle CREATION to the current emitter strategy
-    if (pEmitterLogic)
+    // --- 1. Emitter Logic ---
+    if (m_isEmitting)
     {
-        pEmitterLogic->Update(dt, *this);
+        if (pEmitterLogic)
+        {
+            pEmitterLogic->Update(dt, *this);
+        }
+
+        if (m_playbackMode == PlaybackMode::OneShot)
+        {
+            m_emissionTimer += dt;
+            if (m_emissionTimer >= EmissionDuration)
+            {
+                m_isEmitting = false;
+            }
+        }
     }
 
-    // 2. SIMULATE all existing active particles
+    // --- 2. SIMULATE all existing active particles ---
     activeParticleCount = 0;
     for (auto& p : particles)
     {
@@ -110,10 +124,28 @@ void ParticleSystemComponent::Update(float dt)
         activeParticleCount++;
     }
 
-    // 3. Update the GPU instance buffer if there are any active particles
+    // --- 3. Update the GPU instance buffer ---
     if (activeParticleCount > 0)
     {
         pInstanceBuffer->Update(gfx, instanceData);
+    }
+
+    // --- 4. CORRECTED: Self-Destruction Logic ---
+    // This check is placed at the end of Update to use the freshly calculated state.
+    if (destroyAfterEmission && m_playbackMode == PlaybackMode::OneShot && !m_isEmitting && activeParticleCount == 0)
+    {
+        // Conditions met:
+        // 1. The user has opted in (destroyAfterEmission == true).
+        // 2. It's a one-shot effect.
+        // 3. The emission period has ended (!m_isEmitting).
+        // 4. All emitted particles have completed their lifetime (activeParticleCount == 0).
+
+        // It's safe to destroy the owner Node.
+        pOwner->Destroy();
+
+        // We return immediately to prevent any further processing on this component,
+        // as its owner is now queued for destruction.
+        return;
     }
 }
 
@@ -136,7 +168,6 @@ void ParticleSystemComponent::EmitParticle(const DirectX::XMFLOAT3& position)
             p.startRotation = StartRotation;
             p.endRotation = EndRotation;
 
-            // The position is now passed in directly by the emitter strategy
             dx::XMVECTOR basePos = dx::XMLoadFloat3(&position);
             dx::XMVECTOR offsetPos = dx::XMLoadFloat3(&EmitterPositionOffset);
             dx::XMStoreFloat3(&p.position, dx::XMVectorAdd(basePos, offsetPos));
@@ -167,7 +198,6 @@ void ParticleSystemComponent::Submit(Graphics& gfx, dx::FXMMATRIX worldTransform
 
 void ParticleSystemComponent::Draw(Graphics& gfx) const
 {
-    // Update constant buffer
     ParticleCbuf cbuf;
     cbuf.viewProjection = dx::XMMatrixTranspose(gfx.GetCamera() * gfx.GetProjection());
     const auto view = gfx.GetCamera();
@@ -176,7 +206,6 @@ void ParticleSystemComponent::Draw(Graphics& gfx) const
     dx::XMStoreFloat3(&cbuf.cameraPosition, invView.r[3]);
     pVcbuf->Update(gfx, cbuf);
 
-    // Bind all resources
     pVertexShader->Bind(gfx);
     pPixelShader->Bind(gfx);
     pInputLayout->Bind(gfx);
@@ -186,12 +215,53 @@ void ParticleSystemComponent::Draw(Graphics& gfx) const
     pVcbuf->Bind(gfx);
     pIndexBuffer->Bind(gfx);
 
-    // Set vertex buffers
     const UINT strides[] = { (UINT)sizeof(ParticleVertex), pInstanceBuffer->GetStride() };
     const UINT offsets[] = { 0u, 0u };
     ID3D11Buffer* const pBuffers[] = { pVertexBuffer->Get(), pInstanceBuffer->Get() };
     gfx.GetContext()->IASetVertexBuffers(0u, 2, pBuffers, strides, offsets);
 
-    // Draw
     gfx.GetContext()->DrawIndexedInstanced(pIndexBuffer->GetCount(), activeParticleCount, 0, 0, 0);
+}
+
+void ParticleSystemComponent::SetPlaybackMode(PlaybackMode mode)
+{
+    m_playbackMode = mode;
+    if (m_playbackMode == PlaybackMode::Loop)
+    {
+        m_isEmitting = true;
+    }
+    else // OneShot
+    {
+        m_isEmitting = false;
+        m_emissionTimer = 0.0f;
+    }
+}
+
+ParticleSystemComponent::PlaybackMode ParticleSystemComponent::GetPlaybackMode() const
+{
+    return m_playbackMode;
+}
+
+void ParticleSystemComponent::Play()
+{
+    m_isEmitting = true;
+    if (m_playbackMode == PlaybackMode::OneShot)
+    {
+        m_emissionTimer = 0.0f;
+    }
+}
+
+void ParticleSystemComponent::Stop()
+{
+    m_isEmitting = false;
+}
+
+bool ParticleSystemComponent::IsEmitting() const
+{
+    return m_isEmitting;
+}
+
+bool ParticleSystemComponent::IsAlive() const
+{
+    return m_isEmitting || (activeParticleCount > 0);
 }

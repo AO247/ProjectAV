@@ -183,6 +183,7 @@
     <ClCompile Include="BasicAttack.cpp" />
     <ClCompile Include="BindingPass.cpp" />
     <ClCompile Include="Blender.cpp" />
+    <ClCompile Include="CircleEmitterLogic.cpp" />
     <ClCompile Include="Collectable.cpp" />
     <ClCompile Include="IEmitterLogic.cpp" />
     <ClCompile Include="InstanceBuffer.cpp" />
@@ -245,6 +246,7 @@
     <ClInclude Include="BrokenPart.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="BindingPass.h" />
+    <ClInclude Include="CircleEmitterLogic.h" />
     <ClInclude Include="Collectable.h" />
     <ClInclude Include="IEmitterLogic.h" />
     <ClInclude Include="InstanceBuffer.h" />

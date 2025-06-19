@@ -32,6 +32,14 @@ namespace Rgph
 class ParticleSystemComponent : public Component
 {
 public:
+    // NEW: Enum to define the playback behavior of the emitter.
+    enum class PlaybackMode
+    {
+        Loop,    // The emitter runs continuously.
+        OneShot  // The emitter runs for a specified duration then stops.
+    };
+
+public:
     // Constructor now takes a pointer to an emitter strategy
     ParticleSystemComponent(Node* owner, Graphics& gfx, const std::string& texturePath,
         UINT maxParticles, std::unique_ptr<IEmitterLogic> pEmitterLogic);
@@ -46,6 +54,24 @@ public:
     // This method is now public so that emitter strategies can call it
     void EmitParticle(const DirectX::XMFLOAT3& position);
 
+    // --- NEW: Playback Control ---
+    void SetPlaybackMode(PlaybackMode mode);
+    PlaybackMode GetPlaybackMode() const;
+
+    // For OneShot mode, this starts or restarts the emission.
+    // For Loop mode, this ensures the emitter is running.
+    void Play();
+
+    // Forcibly stops the emission of new particles, regardless of mode.
+    // Existing particles will continue their simulation until they expire.
+    void Stop();
+
+    // Returns true if the emitter is currently trying to create new particles.
+    bool IsEmitting() const;
+    // Returns true if there are any active particles being simulated/rendered.
+    // Useful for knowing when a one-shot effect has completely finished.
+    bool IsAlive() const;
+
     // --- Public Properties ---
     // These properties are accessed by the various emitter strategies and by the particle simulation.
 
@@ -53,6 +79,8 @@ public:
     float EmissionRate = 100.0f;
     // Used by TrailEmitterLogic (and can be customized)
     float ParticlesPerMeter = 50.0f;
+    // NEW: Used for OneShot mode to determine how long to emit particles.
+    float EmissionDuration = 1.0f;
 
     // General particle appearance and behavior
     DirectX::XMFLOAT3 EmitterPositionOffset = { 0.0f, 0.0f, 0.0f };
@@ -61,10 +89,11 @@ public:
     DirectX::XMFLOAT3 ParticleVelocityVariance = { 0.2f, 0.2f, 0.2f };
     DirectX::XMFLOAT4 StartColor = { 1.0f, 1.0f, 1.0f, 1.0f };
     DirectX::XMFLOAT4 EndColor = { 1.0f, 1.0f, 1.0f, 0.0f };
-    float StartSize = 0.5f;
+    float StartSize = 1.0f;
     float EndSize = 0.1f;
     float StartRotation = 0.0f;
     float EndRotation = 3.14159f;
+    bool destroyAfterEmission = false;
 
 private:
     // Private function containing the actual GPU rendering commands
@@ -118,6 +147,11 @@ private:
     std::vector<InstanceData> instanceData;
     UINT activeParticleCount = 0;
     std::mt19937 rng;
+
+    // NEW: Playback state variables
+    PlaybackMode m_playbackMode = PlaybackMode::Loop;
+    bool m_isEmitting = true; // Controls if the emitter is active
+    float m_emissionTimer = 0.0f; // Timer for one-shot duration
 
     // GPU-side bindable resources
     std::shared_ptr<Bind::VertexBuffer> pVertexBuffer;

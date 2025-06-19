@@ -459,6 +459,9 @@
     <ClCompile Include="TrailEmitterLogic.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CircleEmitterLogic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Win.h">
@@ -924,6 +927,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TrailEmitterLogic.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CircleEmitterLogic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

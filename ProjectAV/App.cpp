@@ -158,6 +158,13 @@ App::App(const std::string& commandLine)
     pAbility2->AddComponent(
         std::make_unique<Ability2>(pAbility2, wnd, pCamera)
     );
+    //pAbility2->AddComponent(
+    //    std::make_unique<ParticleSystemComponent>(pAbility2, wnd.Gfx(), "Models\\flame.png", 200, std::make_unique<PointEmitterLogic>())
+    //);
+    //ParticleSystemComponent* ability2Particles = pAbility2->GetComponent<ParticleSystemComponent>();
+    //ability2Particles->SetPlaybackMode(ParticleSystemComponent::PlaybackMode::OneShot);
+
+    //ability2Particles->Link(rg);
 
     pPlayer->GetComponent<PlayerController>()->abilitySlot2 = pAbility2;
 
