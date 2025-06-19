@@ -5046,7 +5046,7 @@ public:
 
         // ATTACK
         pNewNode->AddComponent(
-            std::make_unique<ShootAttack>(pNewNode)
+            std::make_unique<ShootAttack>(pNewNode, player)
         );
         ShootAttack* shootAttack = pNewNode->GetComponent<ShootAttack>();
         shootAttack->bulletSpeed = 40.0f;
