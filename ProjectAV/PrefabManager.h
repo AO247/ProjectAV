@@ -3868,13 +3868,14 @@ public:
         ParticleSystemComponent* particles = pNewNode->GetComponent<ParticleSystemComponent>();
         particles->SetPlaybackMode(ParticleSystemComponent::PlaybackMode::OneShot);
         particles->destroyAfterEmission = true;
-        particles->ParticleLifetime = 0.4f;
+        particles->ParticleLifetime = 4.0f; // 0.4
         particles->EmissionDuration = 0.1f;
         particles->EmissionRate = 40.0f;
-        particles->ParticleVelocity = { 0.0f, 20.0f, 0.0f };
+        particles->ParticleVelocity = { 0.0f, 5.0f, 0.0f }; // 20
         particles->StartSize = 2.0f;
         particles->EndSize = 1.0f;
         particles->EndRotation = 0.0f;
+        particles->lockRotationOnYAxis = true;
         
         particles->Play();
         particles->Link(*rg);

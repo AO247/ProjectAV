@@ -94,6 +94,7 @@ public:
     float StartRotation = 0.0f;
     float EndRotation = 3.14159f;
     bool destroyAfterEmission = false;
+    bool lockRotationOnYAxis = false;
 
 private:
     // Private function containing the actual GPU rendering commands

@@ -204,6 +204,7 @@ void ParticleSystemComponent::Draw(Graphics& gfx) const
     dx::XMVECTOR determinant;
     const auto invView = dx::XMMatrixInverse(&determinant, view);
     dx::XMStoreFloat3(&cbuf.cameraPosition, invView.r[3]);
+    cbuf.lockY = lockRotationOnYAxis;
     pVcbuf->Update(gfx, cbuf);
 
     pVertexShader->Bind(gfx);
