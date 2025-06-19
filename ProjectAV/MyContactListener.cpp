@@ -56,13 +56,15 @@ void MyContactListener::OnContactPersisted(const Body& inBody1, const Body& inBo
     for (int i = 0; i < triggerActivationQueue.size(); i++)
     {
         if (contacts.count(body1ID) != 0 &&
-            triggerActivationQueue[i].trigger == body1ID && 
+            triggerActivationQueue[i].trigger == body1ID &&
+            triggerActivationQueue[i].activator == body2ID &&
             triggerActivationQueue[i].activationType == STAY)
         {
             body1AlreadyInQueue = true;
         }
         if (contacts.count(body2ID) &&
             triggerActivationQueue[i].trigger == body2ID && 
+            triggerActivationQueue[i].activator == body1ID &&
             triggerActivationQueue[i].activationType == STAY)
         {
             body2AlreadyInQueue = true;
@@ -83,12 +85,14 @@ void MyContactListener::OnContactPersisted(const Body& inBody1, const Body& inBo
     {
         if (collisionContacts.count(body1ID) != 0 &&
             collisionActivationQueue[i].trigger == body1ID &&
+            collisionActivationQueue[i].activator == body2ID &&
             collisionActivationQueue[i].activationType == STAY)
         {
             body1AlreadyInQueue = true;
         }
         if (collisionContacts.count(body2ID) &&
             collisionActivationQueue[i].trigger == body2ID &&
+            collisionActivationQueue[i].activator == body1ID &&
             collisionActivationQueue[i].activationType == STAY)
         {
             body2AlreadyInQueue = true;
