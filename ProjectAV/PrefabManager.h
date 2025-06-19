@@ -1328,6 +1328,8 @@ public:
         ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
         ConvexHullShapeSettings shapeSettings(PhysicsCommon::MakeVertexArray(islandModel->GetAllUniqueVertices()));
         ShapeRefC islandShape = shapeSettings.Create().Get();
+        ScaledShapeSettings islandScaling(islandShape, Vec3Arg(scale, scale, scale));
+        islandShape = islandScaling.Create().Get();
         BodyCreationSettings BodySettings(islandShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
         BodySettings.mMassPropertiesOverride.mMass = 7.0f;
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
@@ -1361,8 +1363,10 @@ public:
         ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
         ConvexHullShapeSettings shapeSettings(PhysicsCommon::MakeVertexArray(islandModel->GetAllUniqueVertices()));
         ShapeRefC islandShape = shapeSettings.Create().Get();
+        ScaledShapeSettings islandScaling(islandShape, Vec3Arg(scale, scale, scale));
+        islandShape = islandScaling.Create().Get();
         BodyCreationSettings BodySettings(islandShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
-        BodySettings.mMassPropertiesOverride.mMass = 7.0f;
+        BodySettings.mMassPropertiesOverride.mMass = 10.0f;
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
         BodySettings.mFriction = 0.5f;
         BodySettings.mMotionQuality = EMotionQuality::LinearCast;
@@ -1394,6 +1398,8 @@ public:
         ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
         ConvexHullShapeSettings shapeSettings(PhysicsCommon::MakeVertexArray(islandModel->GetAllUniqueVertices()));
         ShapeRefC islandShape = shapeSettings.Create().Get();
+        ScaledShapeSettings islandScaling(islandShape, Vec3Arg(scale, scale, scale));
+        islandShape = islandScaling.Create().Get();
         BodyCreationSettings BodySettings(islandShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
         BodySettings.mMassPropertiesOverride.mMass = 7.0f;
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
@@ -1851,7 +1857,7 @@ public:
         InstantiateColumn(pNewNode, Vector3(22.0f, 0.0f, -19.0f), 4.0f);
         InstantiateColumn(pNewNode, Vector3(-14.0f, 0.0f, 20.0f), 4.0f);
         InstantiateColumn(pNewNode, Vector3(-14.0f, 0.0f, -19.0f), 4.0f);
-		InstantiateBaseColumn(pNewNode, Vector3(0.0f, -14.0f, 0.0f), 4.0f, 1.0f);
+		InstantiateBaseColumn(pNewNode, Vector3(0.00f, -3.10f, 0.00f), 4.0f, 1.0f);
         //InstantiateAnimationTest(pNewNode, Vector3(0.0f, 5.0f, 0.0f), 1.0f);
 
 
@@ -1971,12 +1977,14 @@ public:
         pNewNodeOwner->SetLocalRotation(rotation);
         Node* pNewNode = pNewNodeOwner.get();
 
-        InstantiateStoneStack1(pNewNode, Vector3(-2.72f, 1.72f, -1.72f), 1.0f);
+        InstantiateStoneStack1(pNewNode, Vector3(-7.22f, 2.22f, 2.98f), 1.0f);
         InstantiateRock2(pNewNode, Vector3(21.70f, -0.10f, -17.70f), 1.0f);
         InstantiateRock3(pNewNode, Vector3(6.40f, 0.20f, 22.50f), 1.0f);
         InstantiateRock3(pNewNode, Vector3(22.30f, 0.00f, -10.90f), 1.0f);
         InstantiateRock4(pNewNode, Vector3(-2.10f, -2.40f, 25.50f), 1.0f, Vector3(0.0f, -0.86f, 0.0f));
         InstantiateRock5(pNewNode, Vector3(27.10f, -0.90f, 0.10f), 1.0f);
+		InstantiateRock5(pNewNode, Vector3(11.80f, -1.80f, -17.20f), 0.8f, Vector3(0.00f, 0.00f, -0.31f));
+		InstantiateRock1(pNewNode, Vector3(1.30f, -0.60f, -14.30f), 0.8f, Vector3(0.00f, -2.01f, 0.00f));
         InstantiateRockDouble(pNewNode, Vector3(-12.90f, -0.30f, -13.10f), 0.6f, Vector3(0.00f, 2.84f, 0.0f));
         InstantiateRockDouble(pNewNode, Vector3(19.50f, 0.00f, 16.10f), 1.0f, Vector3(0.00f, 1.75f, 0.00f));
 
@@ -3429,8 +3437,8 @@ public:
         InstantiateStone1(pNewNode, Vector3(-8.04f, 21.12f, -42.65f), 2.0f);
         InstantiateStone1(pNewNode, Vector3(8.55f, 1.19f, -21.60f), 2.0f);
         InstantiateStone1(pNewNode, Vector3(31.00f, 1.19f, 27.30f), 2.0f);
-        InstantiateBrick(pNewNode, Vector3(-6.04f, 7.94f, 9.00f), 1.0f);
-        InstantiateBrick(pNewNode, Vector3(43.35f, 0.50f, -3.65f), 1.0f, Vector3(-0.22f, 1.42f, 1.78f));
+        InstantiateBrick(pNewNode, Vector3(-6.04f, 7.94f, 9.00f), 0.5f);
+        InstantiateBrick(pNewNode, Vector3(43.35f, 0.50f, -3.65f), 0.5f, Vector3(-0.22f, 1.42f, 1.78f));
 		InstantiateRock2(pNewNode, Vector3(32.00f, 0.64f, -50.40f), 1.0f, Vector3(0.00f, -0.86f, 0.00f));
 		InstantiateRock3(pNewNode, Vector3(-31.20f, 8.04f, 23.60f), 1.0f, Vector3(0.00f, -1.87f, -1.57f));
         InstantiateWall4(pNewNode, Vector3(1.17f, -0.60f, 28.40f), 1.0f, Vector3(0.00f, -1.57f, 0.00f));
@@ -4458,14 +4466,14 @@ public:
         auto upPoint = std::make_unique<Node>("Up Point", pNewNodeOwner.get());
         auto downPoint = std::make_unique<Node>("Down Point", pNewNodeOwner.get());
 
-        upPoint->SetLocalPosition(DirectX::XMFLOAT3(-10.0f, 2.0f, 33.0f));
-        downPoint->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 0.0f, -33.0f));
-        leftPoint->SetLocalPosition(DirectX::XMFLOAT3(-34.0f, 1.0f, 5.0f));
-        rightPoint->SetLocalPosition(DirectX::XMFLOAT3(34.0f, 0.0f, -10.0f));
+        upPoint->SetLocalPosition(DirectX::XMFLOAT3(-10.00f, 4.10f, 33.00f));
+        downPoint->SetLocalPosition(DirectX::XMFLOAT3(0.00f, 0.00f, -26.80f));
+        leftPoint->SetLocalPosition(DirectX::XMFLOAT3(-30.50f, 2.10f, 5.00f));
+        rightPoint->SetLocalPosition(DirectX::XMFLOAT3(34.00f, 0.00f, -10.00f));
         //pIsland->halfExtents = { 11.0f, 2.0f, 11.0f };
-        pIsland->halfExtents = { (rightPoint->GetLocalPosition().x - leftPoint->GetLocalPosition().x) / 2.0f - 1.0f,
+        /*pIsland->halfExtents = { (rightPoint->GetLocalPosition().x - leftPoint->GetLocalPosition().x) / 2.0f - 1.0f,
                                 2.0f,
-                                (upPoint->GetLocalPosition().z - downPoint->GetLocalPosition().z) / 2.0f - 1.0f };
+                                (upPoint->GetLocalPosition().z - downPoint->GetLocalPosition().z) / 2.0f - 1.0f };*/
         /*upPoint->AddComponent(
             std::make_unique<ModelComponent>(upPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
         );
@@ -4492,19 +4500,30 @@ public:
 
         Node* pNewNode = pNewNodeOwner.get();
 
-        //Node* stone1 = InstantiateStone1(pNewNode, -10.2f, 15.0f, 8.2f, 2.0f);
-        InstantiateStick1(pNewNode, Vector3(-14.0f, 15.0f, -15.0f), 0.5f);
-        InstantiateStick2(pNewNode, Vector3(15.2f, 15.0f, -19.2f), 1.0f);
-        InstantiateStone1(pNewNode, Vector3(-9.2f, 15.0f, 16.2f), 2.0f);
-        InstantiateStone1(pNewNode, Vector3(19.2f, 15.0f, -5.2f), 2.0f);
-        //InstantiateColumn(pNewNode, 17.5f, 0.0f, -7.0f, 1.0f);
-        //InstantiateColumn(pNewNode, -4.5f, 0.0f, 1.0f, 1.0f);
-        InstantiatePlatform2(pNewNode, Vector3(-7.2f, 0.0f, 7.7f), 0.75f);
+        InstantiateBrick(pNewNode, Vector3(-13.98f, 0.69f, -11.85f), 0.5f);
+        InstantiateStone1(pNewNode, Vector3(15.12f, 1.45f, -17.33f), 2.0f);
+        InstantiateStone1(pNewNode, Vector3(-9.2f, 3.0f, 16.2f), 2.0f);
+        InstantiateStone1(pNewNode, Vector3(19.2f, 3.0f, -5.2f), 2.0f);
+        InstantiatePlatform2(pNewNode, Vector3(-7.20f, -0.40f, 11.50f), 0.75f);
 
         auto spawnPoint1 = std::make_unique<Node>("SpawnPoint 1", pNewNodeOwner.get());
-        spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(10.0f, 2.0f, -4.0f));
+        auto spawnPoint2 = std::make_unique<Node>("SpawnPoint 2", pNewNodeOwner.get());
+
+        /*spawnPoint1->AddComponent(
+            std::make_unique<ModelComponent>(spawnPoint1.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        spawnPoint1->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        spawnPoint2->AddComponent(
+            std::make_unique<ModelComponent>(spawnPoint2.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        spawnPoint2->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
+
+        spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(10.00f, 2.00f, -5.10f));
+		spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(-10.00f, 7.80f, 3.10f));
         pIsland->spawnPoints.push_back(spawnPoint1.get());
+		pIsland->spawnPoints.push_back(spawnPoint2.get());
         pNewNode->AddChild(std::move(spawnPoint1));
+		pNewNode->AddChild(std::move(spawnPoint2));
 
         pNewNode->AddChild(std::move(leftPoint));
         pNewNode->AddChild(std::move(rightPoint));
@@ -4546,10 +4565,10 @@ public:
         auto upPoint = std::make_unique<Node>("Up Point", pNewNodeOwner.get());
         auto downPoint = std::make_unique<Node>("Down Point", pNewNodeOwner.get());
 
-        upPoint->SetLocalPosition(DirectX::XMFLOAT3(15.0f, 0.0f, 36.0f));
+        upPoint->SetLocalPosition(DirectX::XMFLOAT3(18.70f, 0.00f, 31.30f));
         downPoint->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 0.0f, -25.0f));
-        leftPoint->SetLocalPosition(DirectX::XMFLOAT3(-33.0f, 0.0f, 6.0f));
-        rightPoint->SetLocalPosition(DirectX::XMFLOAT3(33.0f, 0.0f, 16.0f));
+        leftPoint->SetLocalPosition(DirectX::XMFLOAT3(-30.50f, 0.00f, -4.70f));
+        rightPoint->SetLocalPosition(DirectX::XMFLOAT3(33.00f, 0.00f, -8.50f));
         //pIsland->halfExtents = { 11.0f, 2.0f, 11.0f };
         pIsland->halfExtents = { (rightPoint->GetLocalPosition().x - leftPoint->GetLocalPosition().x) / 2.0f - 1.0f,
                                 2.0f,
@@ -4580,18 +4599,30 @@ public:
 
         Node* pNewNode = pNewNodeOwner.get();
 
-        //Node* stone1 = InstantiateStone1(pNewNode, -10.2f, 15.0f, 8.2f, 2.0f);
-        InstantiateStone1(pNewNode, Vector3(-8.0f, 30.0f, -9.0f), 2.0f);
-        InstantiateStone1(pNewNode, Vector3(18.2f, 30.0f, 3.2f), 2.0f);
-        InstantiateStone1(pNewNode, Vector3(17.2f, 30.0f, 22.2f), 2.0f);
-        //InstantiateStone1(pNewNode, 12.2f, 30.0f, -3.2f, 2.0f);
-        InstantiateStone1(pNewNode, Vector3(-13.2f, 30.0f, -2.2f), 2.0f);
-        InstantiateNewColumn(pNewNode, Vector3(12.0f, 0.0f, -5.0f), 1.0f);
+        InstantiateStone1(pNewNode, Vector3(0.58f, 0.24f, -14.49f), 2.0f);
+        InstantiateStone1(pNewNode, Vector3(18.2f, 3.0f, 3.2f), 2.0f);
+        InstantiateStone1(pNewNode, Vector3(15.29f, 1.04f, 17.81f), 2.0f);
+        InstantiateStone1(pNewNode, Vector3(-13.2f, 3.0f, -2.2f), 2.0f);
+        InstantiateNewColumn(pNewNode, Vector3(12.0f, -0.70f, -5.0f), 1.0f);
 
         auto spawnPoint1 = std::make_unique<Node>("SpawnPoint 1", pNewNodeOwner.get());
-        spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(1.0f, 2.0f, -1.0f));
+		auto spawnPoint2 = std::make_unique<Node>("SpawnPoint 2", pNewNodeOwner.get());
+
+        /*spawnPoint1->AddComponent(
+            std::make_unique<ModelComponent>(spawnPoint1.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        spawnPoint1->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        spawnPoint2->AddComponent(
+            std::make_unique<ModelComponent>(spawnPoint2.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        spawnPoint2->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
+
+        spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(17.20f, 2.00f, -14.00f));
+		spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(-10.00f, 2.00f, -8.10f));
         pIsland->spawnPoints.push_back(spawnPoint1.get());
+		pIsland->spawnPoints.push_back(spawnPoint2.get());
         pNewNode->AddChild(std::move(spawnPoint1));
+		pNewNode->AddChild(std::move(spawnPoint2));
 
         pNewNode->AddChild(std::move(leftPoint));
         pNewNode->AddChild(std::move(rightPoint));
@@ -4604,7 +4635,7 @@ public:
         auto pNewNodeOwner = std::make_unique<Node>("Island S3", nullptr, "GROUND");
 
         pNewNodeOwner->AddComponent(
-            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\wyspy_2\\wyspa_mala_2.obj")
+            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\wyspy_0606\\wyspa_mala.obj")
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
 
@@ -4630,14 +4661,14 @@ public:
         auto upPoint = std::make_unique<Node>("Up Point", pNewNodeOwner.get());
         auto downPoint = std::make_unique<Node>("Down Point", pNewNodeOwner.get());
 
-        upPoint->SetLocalPosition(DirectX::XMFLOAT3(3.0f, 0.0f, 31.0f));
-        downPoint->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 0.0f, -31.0f));
-        leftPoint->SetLocalPosition(DirectX::XMFLOAT3(-33.0f, 0.0f, 8.0f));
-        rightPoint->SetLocalPosition(DirectX::XMFLOAT3(33.0f, 0.0f, -14.0f));
+        upPoint->SetLocalPosition(DirectX::XMFLOAT3(3.00f, 0.00f, 32.60f));
+        downPoint->SetLocalPosition(DirectX::XMFLOAT3(0.00f, 0.00f, -26.60f));
+        leftPoint->SetLocalPosition(DirectX::XMFLOAT3(-29.40f, 0.00f, 8.00f));
+        rightPoint->SetLocalPosition(DirectX::XMFLOAT3(33.50f, 0.00f, 1.00f));
         //pIsland->halfExtents = { 11.0f, 2.0f, 11.0f };
-        pIsland->halfExtents = { (rightPoint->GetLocalPosition().x - leftPoint->GetLocalPosition().x) / 2.0f - 1.0f,
+        /*pIsland->halfExtents = { (rightPoint->GetLocalPosition().x - leftPoint->GetLocalPosition().x) / 2.0f - 1.0f,
                                 2.0f,
-                                (upPoint->GetLocalPosition().z - downPoint->GetLocalPosition().z) / 2.0f - 1.0f };
+                                (upPoint->GetLocalPosition().z - downPoint->GetLocalPosition().z) / 2.0f - 1.0f };*/
         /*upPoint->AddComponent(
             std::make_unique<ModelComponent>(upPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
         );
@@ -4664,20 +4695,906 @@ public:
 
         Node* pNewNode = pNewNodeOwner.get();
 
-        //Node* stone1 = InstantiateStone1(pNewNode, -10.2f, 15.0f, 8.2f, 2.0f);
         InstantiateStone1(pNewNode, Vector3(-9.0f, 15.0f, -9.0f), 2.0f);
         InstantiateStone1(pNewNode, Vector3(8.2f, 15.0f, -10.2f), 2.0f);
         InstantiateStone1(pNewNode, Vector3(-9.2f, 15.0f, 9.2f), 2.0f);
         InstantiateStone1(pNewNode, Vector3(8.2f, 15.0f, 9.2f), 2.0f);
-        InstantiateNewColumn(pNewNode, Vector3(-14.5f, 0.0f, 15.0f), 1.0f);
-        InstantiateNewColumn(pNewNode, Vector3(14.5f, 0.0f, -15.0f), 1.0f);
-        InstantiateNewColumn(pNewNode, Vector3(14.5f, 0.0f, 15.0f), 1.0f);
-        InstantiateNewColumn(pNewNode, Vector3(-14.5f, 0.0f, -15.0f), 1.0f);
+        InstantiateNewColumn(pNewNode, Vector3(-14.50f, 0.00f, 18.50f), 1.0f);
+        InstantiateNewColumn(pNewNode, Vector3(14.50f, 0.00f, -12.00f), 1.0f);
+        InstantiateNewColumn(pNewNode, Vector3(14.50f, 0.00f, 18.50f), 1.0f);
+        InstantiateColumn4(pNewNode, Vector3(-14.50f, 0.00f, -12.00f), 1.0f);
 
         auto spawnPoint1 = std::make_unique<Node>("SpawnPoint 1", pNewNodeOwner.get());
-        spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 2.0f, 0.0f));
+		auto spawnPoint2 = std::make_unique<Node>("SpawnPoint 2", pNewNodeOwner.get());
+
+        /*spawnPoint1->AddComponent(
+            std::make_unique<ModelComponent>(spawnPoint1.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        spawnPoint1->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        spawnPoint2->AddComponent(
+            std::make_unique<ModelComponent>(spawnPoint2.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        spawnPoint2->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
+
+        spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(0.00f, 2.00f, -7.50f));
+		spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(0.00f, 2.00f, 15.20f));
         pIsland->spawnPoints.push_back(spawnPoint1.get());
+		pIsland->spawnPoints.push_back(spawnPoint2.get());
         pNewNode->AddChild(std::move(spawnPoint1));
+		pNewNode->AddChild(std::move(spawnPoint2));
+
+        pNewNode->AddChild(std::move(leftPoint));
+        pNewNode->AddChild(std::move(rightPoint));
+        pNewNode->AddChild(std::move(upPoint));
+        pNewNode->AddChild(std::move(downPoint));
+        parentNode->AddChild(std::move(pNewNodeOwner));
+        return pNewNode;
+    }
+    static Node* InstantiateIslandSmall4(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 }) {
+        auto pNewNodeOwner = std::make_unique<Node>("Island S4", nullptr, "GROUND");
+
+        pNewNodeOwner->AddComponent(
+            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\wyspy_0606\\wyspa_mala.obj")
+        );
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+
+        ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList islandTriangles = PhysicsCommon::MakeTriangleList(islandModel->GetAllTriangles());
+        MeshShapeSettings islandMeshSettings(islandTriangles);
+        Shape::ShapeResult islandMeshCreationResult = islandMeshSettings.Create();
+        ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
+        ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
+        islandMeshShape = islandScaling.Create().Get();
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
+        pNewNodeOwner->AddComponent(
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
+        );
+
+        pNewNodeOwner->AddComponent(
+            std::make_unique<Island>(pNewNodeOwner.get())
+        );
+        Island* pIsland = pNewNodeOwner->GetComponent<Island>();
+        auto leftPoint = std::make_unique<Node>("Left Point", pNewNodeOwner.get());
+        auto rightPoint = std::make_unique<Node>("Right Point", pNewNodeOwner.get());
+        auto upPoint = std::make_unique<Node>("Up Point", pNewNodeOwner.get());
+        auto downPoint = std::make_unique<Node>("Down Point", pNewNodeOwner.get());
+
+        upPoint->SetLocalPosition(DirectX::XMFLOAT3(3.00f, 0.00f, 32.60f));
+        downPoint->SetLocalPosition(DirectX::XMFLOAT3(0.00f, 0.00f, -27.50f));
+        leftPoint->SetLocalPosition(DirectX::XMFLOAT3(-29.60f, 0.00f, 7.50f));
+        rightPoint->SetLocalPosition(DirectX::XMFLOAT3(33.00f, 0.00f, -4.40f));
+        //pIsland->halfExtents = { 11.0f, 2.0f, 11.0f };
+        /*pIsland->halfExtents = { (rightPoint->GetLocalPosition().x - leftPoint->GetLocalPosition().x) / 2.0f - 1.0f,
+                                2.0f,
+                                (upPoint->GetLocalPosition().z - downPoint->GetLocalPosition().z) / 2.0f - 1.0f };*/
+        /*upPoint->AddComponent(
+            std::make_unique<ModelComponent>(upPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        upPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        downPoint->AddComponent(
+            std::make_unique<ModelComponent>(downPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        downPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        leftPoint->AddComponent(
+            std::make_unique<ModelComponent>(leftPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        leftPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        rightPoint->AddComponent(
+            std::make_unique<ModelComponent>(rightPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        rightPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
+        pIsland->leftPoint = leftPoint.get();
+        pIsland->rightPoint = rightPoint.get();
+        pIsland->upPoint = upPoint.get();
+        pIsland->downPoint = downPoint.get();
+        pNewNodeOwner->SetLocalPosition(position);
+        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+        pNewNodeOwner->SetLocalRotation(rotation);
+
+        Node* pNewNode = pNewNodeOwner.get();
+
+        InstantiateStone1(pNewNode, Vector3(-12.92f, 1.97f, 1.39f), 2.0f);
+        InstantiateStone1(pNewNode, Vector3(16.37f, 0.90f, -13.52f), 2.0f);
+        InstantiateStone1(pNewNode, Vector3(13.66f, 0.91f, 17.48f), 2.0f);
+        InstantiateStoneStack1(pNewNode, Vector3(8.70f, 15.00f, -7.60f), 1.0f);
+        InstantiateRock1(pNewNode, Vector3(-12.70f, 0.00f, 18.30f), 1.0f);
+
+        auto spawnPoint1 = std::make_unique<Node>("SpawnPoint 1", pNewNodeOwner.get());
+		auto spawnPoint2 = std::make_unique<Node>("SpawnPoint 2", pNewNodeOwner.get());
+
+       /* spawnPoint1->AddComponent(
+            std::make_unique<ModelComponent>(spawnPoint1.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        spawnPoint1->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        spawnPoint2->AddComponent(
+            std::make_unique<ModelComponent>(spawnPoint2.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        spawnPoint2->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
+
+        spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(3.90f, 2.00f, 11.50f));
+		spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(-4.30f, 2.00f, -9.10f));
+        pIsland->spawnPoints.push_back(spawnPoint1.get());
+		pIsland->spawnPoints.push_back(spawnPoint2.get());
+        pNewNode->AddChild(std::move(spawnPoint1));
+		pNewNode->AddChild(std::move(spawnPoint2));
+
+        pNewNode->AddChild(std::move(leftPoint));
+        pNewNode->AddChild(std::move(rightPoint));
+        pNewNode->AddChild(std::move(upPoint));
+        pNewNode->AddChild(std::move(downPoint));
+        parentNode->AddChild(std::move(pNewNodeOwner));
+        return pNewNode;
+    }
+    static Node* InstantiateIslandSmall5(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 }) {
+        auto pNewNodeOwner = std::make_unique<Node>("Island S5", nullptr, "GROUND");
+
+        pNewNodeOwner->AddComponent(
+            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\wyspy_0606\\wyspa_mala.obj")
+        );
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+
+        ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList islandTriangles = PhysicsCommon::MakeTriangleList(islandModel->GetAllTriangles());
+        MeshShapeSettings islandMeshSettings(islandTriangles);
+        Shape::ShapeResult islandMeshCreationResult = islandMeshSettings.Create();
+        ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
+        ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
+        islandMeshShape = islandScaling.Create().Get();
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
+        pNewNodeOwner->AddComponent(
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
+        );
+
+        pNewNodeOwner->AddComponent(
+            std::make_unique<Island>(pNewNodeOwner.get())
+        );
+        Island* pIsland = pNewNodeOwner->GetComponent<Island>();
+        auto leftPoint = std::make_unique<Node>("Left Point", pNewNodeOwner.get());
+        auto rightPoint = std::make_unique<Node>("Right Point", pNewNodeOwner.get());
+        auto upPoint = std::make_unique<Node>("Up Point", pNewNodeOwner.get());
+        auto downPoint = std::make_unique<Node>("Down Point", pNewNodeOwner.get());
+
+        upPoint->SetLocalPosition(DirectX::XMFLOAT3(3.00f, 0.00f, 32.60f));
+        downPoint->SetLocalPosition(DirectX::XMFLOAT3(0.00f, 0.00f, -27.50f));
+        leftPoint->SetLocalPosition(DirectX::XMFLOAT3(-29.60f, 0.00f, 7.50f));
+        rightPoint->SetLocalPosition(DirectX::XMFLOAT3(33.00f, 0.00f, -4.40f));
+        //pIsland->halfExtents = { 11.0f, 2.0f, 11.0f };
+        /*pIsland->halfExtents = { (rightPoint->GetLocalPosition().x - leftPoint->GetLocalPosition().x) / 2.0f - 1.0f,
+                                2.0f,
+                                (upPoint->GetLocalPosition().z - downPoint->GetLocalPosition().z) / 2.0f - 1.0f };*/
+        /*upPoint->AddComponent(
+            std::make_unique<ModelComponent>(upPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        upPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        downPoint->AddComponent(
+            std::make_unique<ModelComponent>(downPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        downPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        leftPoint->AddComponent(
+            std::make_unique<ModelComponent>(leftPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        leftPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        rightPoint->AddComponent(
+            std::make_unique<ModelComponent>(rightPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        rightPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
+        pIsland->leftPoint = leftPoint.get();
+        pIsland->rightPoint = rightPoint.get();
+        pIsland->upPoint = upPoint.get();
+        pIsland->downPoint = downPoint.get();
+        pNewNodeOwner->SetLocalPosition(position);
+        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+        pNewNodeOwner->SetLocalRotation(rotation);
+
+        Node* pNewNode = pNewNodeOwner.get();
+
+        InstantiateStone1(pNewNode, Vector3(1.02f, 7.23f, 1.34f), 2.0f);
+        InstantiateStone1(pNewNode, Vector3(5.53f, 0.90f, -16.31f), 2.0f);
+        InstantiateStone1(pNewNode, Vector3(4.76f, 0.91f, 21.68f), 2.0f);
+		InstantiateFire1(pNewNode, Vector3(-13.80f, 0.20f, 19.90f), 1.0f);
+        InstantiateNewColumn(pNewNode, Vector3(16.70f, -0.10f, -13.30f), 1.0f);
+        InstantiatePlatform3(pNewNode, Vector3(-0.30f, -0.10f, 0.80f), 0.4f);
+
+        auto spawnPoint1 = std::make_unique<Node>("SpawnPoint 1", pNewNodeOwner.get());
+        auto spawnPoint2 = std::make_unique<Node>("SpawnPoint 2", pNewNodeOwner.get());
+
+        /*spawnPoint1->AddComponent(
+            std::make_unique<ModelComponent>(spawnPoint1.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        spawnPoint1->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        spawnPoint2->AddComponent(
+            std::make_unique<ModelComponent>(spawnPoint2.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        spawnPoint2->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
+
+        spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(16.70f, 2.00f, 16.90f));
+        spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(-8.90f, 2.00f, -12.70f));
+        pIsland->spawnPoints.push_back(spawnPoint1.get());
+        pIsland->spawnPoints.push_back(spawnPoint2.get());
+        pNewNode->AddChild(std::move(spawnPoint1));
+        pNewNode->AddChild(std::move(spawnPoint2));
+
+        pNewNode->AddChild(std::move(leftPoint));
+        pNewNode->AddChild(std::move(rightPoint));
+        pNewNode->AddChild(std::move(upPoint));
+        pNewNode->AddChild(std::move(downPoint));
+        parentNode->AddChild(std::move(pNewNodeOwner));
+        return pNewNode;
+    }
+    static Node* InstantiateIslandSmall6(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 }) {
+        auto pNewNodeOwner = std::make_unique<Node>("Island S6", nullptr, "GROUND");
+
+        pNewNodeOwner->AddComponent(
+            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\wyspy_0606\\wyspa_mala.obj")
+        );
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+
+        ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList islandTriangles = PhysicsCommon::MakeTriangleList(islandModel->GetAllTriangles());
+        MeshShapeSettings islandMeshSettings(islandTriangles);
+        Shape::ShapeResult islandMeshCreationResult = islandMeshSettings.Create();
+        ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
+        ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
+        islandMeshShape = islandScaling.Create().Get();
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
+        pNewNodeOwner->AddComponent(
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
+        );
+
+        pNewNodeOwner->AddComponent(
+            std::make_unique<Island>(pNewNodeOwner.get())
+        );
+        Island* pIsland = pNewNodeOwner->GetComponent<Island>();
+        auto leftPoint = std::make_unique<Node>("Left Point", pNewNodeOwner.get());
+        auto rightPoint = std::make_unique<Node>("Right Point", pNewNodeOwner.get());
+        auto upPoint = std::make_unique<Node>("Up Point", pNewNodeOwner.get());
+        auto downPoint = std::make_unique<Node>("Down Point", pNewNodeOwner.get());
+
+        upPoint->SetLocalPosition(DirectX::XMFLOAT3(3.00f, 0.00f, 32.60f));
+        downPoint->SetLocalPosition(DirectX::XMFLOAT3(0.00f, 0.00f, -27.50f));
+        leftPoint->SetLocalPosition(DirectX::XMFLOAT3(-29.60f, 0.00f, 7.50f));
+        rightPoint->SetLocalPosition(DirectX::XMFLOAT3(33.00f, 0.00f, -4.40f));
+        //pIsland->halfExtents = { 11.0f, 2.0f, 11.0f };
+        /*pIsland->halfExtents = { (rightPoint->GetLocalPosition().x - leftPoint->GetLocalPosition().x) / 2.0f - 1.0f,
+                                2.0f,
+                                (upPoint->GetLocalPosition().z - downPoint->GetLocalPosition().z) / 2.0f - 1.0f };*/
+        /*upPoint->AddComponent(
+            std::make_unique<ModelComponent>(upPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        upPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        downPoint->AddComponent(
+            std::make_unique<ModelComponent>(downPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        downPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        leftPoint->AddComponent(
+            std::make_unique<ModelComponent>(leftPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        leftPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        rightPoint->AddComponent(
+            std::make_unique<ModelComponent>(rightPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        rightPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
+        pIsland->leftPoint = leftPoint.get();
+        pIsland->rightPoint = rightPoint.get();
+        pIsland->upPoint = upPoint.get();
+        pIsland->downPoint = downPoint.get();
+        pNewNodeOwner->SetLocalPosition(position);
+        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+        pNewNodeOwner->SetLocalRotation(rotation);
+
+        Node* pNewNode = pNewNodeOwner.get();
+
+        InstantiateStone1(pNewNode, Vector3(-12.09f, 0.90f, -2.74f), 2.0f);
+        InstantiateStone1(pNewNode, Vector3(11.53f, 0.90f, -15.91f), 2.0f);
+        InstantiateStone1(pNewNode, Vector3(0.16f, 0.91f, 21.68f), 2.0f);
+        InstantiateMushroom1(pNewNode, Vector3(16.50f, 0.20f, -8.40f), 0.35f, Vector3(0.00f, -2.58f, 0.00f));
+        InstantiateNewColumn(pNewNode, Vector3(-9.50f, -0.10f, 12.40f), 1.0f);
+        InstantiateWall1(pNewNode, Vector3(-20.20f, -0.10f, -4.20f), 1.0f, Vector3(0.00f, -0.24f, 0.00f));
+
+        auto spawnPoint1 = std::make_unique<Node>("SpawnPoint 1", pNewNodeOwner.get());
+        auto spawnPoint2 = std::make_unique<Node>("SpawnPoint 2", pNewNodeOwner.get());
+
+        /*spawnPoint1->AddComponent(
+            std::make_unique<ModelComponent>(spawnPoint1.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        spawnPoint1->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        spawnPoint2->AddComponent(
+            std::make_unique<ModelComponent>(spawnPoint2.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        spawnPoint2->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
+
+        spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(11.30f, 2.00f, 9.70f));
+        spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(-2.90f, 2.00f, -8.30f));
+        pIsland->spawnPoints.push_back(spawnPoint1.get());
+        pIsland->spawnPoints.push_back(spawnPoint2.get());
+        pNewNode->AddChild(std::move(spawnPoint1));
+        pNewNode->AddChild(std::move(spawnPoint2));
+
+        pNewNode->AddChild(std::move(leftPoint));
+        pNewNode->AddChild(std::move(rightPoint));
+        pNewNode->AddChild(std::move(upPoint));
+        pNewNode->AddChild(std::move(downPoint));
+        parentNode->AddChild(std::move(pNewNodeOwner));
+        return pNewNode;
+    }
+    static Node* InstantiateIslandSmall7(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 }) {
+        auto pNewNodeOwner = std::make_unique<Node>("Island S7", nullptr, "GROUND");
+
+        pNewNodeOwner->AddComponent(
+            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\wyspy_0606\\wyspa_mala.obj")
+        );
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+
+        ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList islandTriangles = PhysicsCommon::MakeTriangleList(islandModel->GetAllTriangles());
+        MeshShapeSettings islandMeshSettings(islandTriangles);
+        Shape::ShapeResult islandMeshCreationResult = islandMeshSettings.Create();
+        ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
+        ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
+        islandMeshShape = islandScaling.Create().Get();
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
+        pNewNodeOwner->AddComponent(
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
+        );
+
+        pNewNodeOwner->AddComponent(
+            std::make_unique<Island>(pNewNodeOwner.get())
+        );
+        Island* pIsland = pNewNodeOwner->GetComponent<Island>();
+        auto leftPoint = std::make_unique<Node>("Left Point", pNewNodeOwner.get());
+        auto rightPoint = std::make_unique<Node>("Right Point", pNewNodeOwner.get());
+        auto upPoint = std::make_unique<Node>("Up Point", pNewNodeOwner.get());
+        auto downPoint = std::make_unique<Node>("Down Point", pNewNodeOwner.get());
+
+        upPoint->SetLocalPosition(DirectX::XMFLOAT3(3.00f, 0.00f, 32.60f));
+        downPoint->SetLocalPosition(DirectX::XMFLOAT3(0.00f, 0.00f, -27.50f));
+        leftPoint->SetLocalPosition(DirectX::XMFLOAT3(-29.60f, 0.00f, 7.50f));
+        rightPoint->SetLocalPosition(DirectX::XMFLOAT3(33.00f, 0.00f, -4.40f));
+        //pIsland->halfExtents = { 11.0f, 2.0f, 11.0f };
+        /*pIsland->halfExtents = { (rightPoint->GetLocalPosition().x - leftPoint->GetLocalPosition().x) / 2.0f - 1.0f,
+                                2.0f,
+                                (upPoint->GetLocalPosition().z - downPoint->GetLocalPosition().z) / 2.0f - 1.0f };*/
+        /*upPoint->AddComponent(
+            std::make_unique<ModelComponent>(upPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        upPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        downPoint->AddComponent(
+            std::make_unique<ModelComponent>(downPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        downPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        leftPoint->AddComponent(
+            std::make_unique<ModelComponent>(leftPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        leftPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        rightPoint->AddComponent(
+            std::make_unique<ModelComponent>(rightPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        rightPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
+        pIsland->leftPoint = leftPoint.get();
+        pIsland->rightPoint = rightPoint.get();
+        pIsland->upPoint = upPoint.get();
+        pIsland->downPoint = downPoint.get();
+        pNewNodeOwner->SetLocalPosition(position);
+        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+        pNewNodeOwner->SetLocalRotation(rotation);
+
+        Node* pNewNode = pNewNodeOwner.get();
+
+        InstantiateStone1(pNewNode, Vector3(-12.09f, 0.90f, -2.74f), 2.0f);
+        InstantiateStone1(pNewNode, Vector3(19.27f, 0.90f, -1.42f), 2.0f);
+        InstantiateStone1(pNewNode, Vector3(0.16f, 0.91f, 21.68f), 2.0f);
+        InstantiateBrick(pNewNode, Vector3(-0.70f, 0.20f, -10.76f), 0.5f, Vector3(0.00f, -2.58f, 0.00f));
+        InstantiateNewColumn(pNewNode, Vector3(-9.10f, -0.10f, 13.60f), 1.0f);
+        InstantiateColumn3(pNewNode, Vector3(12.00f, -0.10f, -9.80f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
+
+        auto spawnPoint1 = std::make_unique<Node>("SpawnPoint 1", pNewNodeOwner.get());
+        auto spawnPoint2 = std::make_unique<Node>("SpawnPoint 2", pNewNodeOwner.get());
+
+        /*spawnPoint1->AddComponent(
+            std::make_unique<ModelComponent>(spawnPoint1.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        spawnPoint1->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        spawnPoint2->AddComponent(
+            std::make_unique<ModelComponent>(spawnPoint2.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        spawnPoint2->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
+
+        spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(11.80f, 2.00f, 10.70f));
+        spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(-2.90f, 2.00f, -0.70f));
+        pIsland->spawnPoints.push_back(spawnPoint1.get());
+        pIsland->spawnPoints.push_back(spawnPoint2.get());
+        pNewNode->AddChild(std::move(spawnPoint1));
+        pNewNode->AddChild(std::move(spawnPoint2));
+
+        pNewNode->AddChild(std::move(leftPoint));
+        pNewNode->AddChild(std::move(rightPoint));
+        pNewNode->AddChild(std::move(upPoint));
+        pNewNode->AddChild(std::move(downPoint));
+        parentNode->AddChild(std::move(pNewNodeOwner));
+        return pNewNode;
+    }
+    static Node* InstantiateIslandSmall8(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 }) {
+        auto pNewNodeOwner = std::make_unique<Node>("Island S8", nullptr, "GROUND");
+
+        pNewNodeOwner->AddComponent(
+            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\wyspy_0606\\wyspa_mala.obj")
+        );
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+
+        ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList islandTriangles = PhysicsCommon::MakeTriangleList(islandModel->GetAllTriangles());
+        MeshShapeSettings islandMeshSettings(islandTriangles);
+        Shape::ShapeResult islandMeshCreationResult = islandMeshSettings.Create();
+        ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
+        ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
+        islandMeshShape = islandScaling.Create().Get();
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
+        pNewNodeOwner->AddComponent(
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
+        );
+
+        pNewNodeOwner->AddComponent(
+            std::make_unique<Island>(pNewNodeOwner.get())
+        );
+        Island* pIsland = pNewNodeOwner->GetComponent<Island>();
+        auto leftPoint = std::make_unique<Node>("Left Point", pNewNodeOwner.get());
+        auto rightPoint = std::make_unique<Node>("Right Point", pNewNodeOwner.get());
+        auto upPoint = std::make_unique<Node>("Up Point", pNewNodeOwner.get());
+        auto downPoint = std::make_unique<Node>("Down Point", pNewNodeOwner.get());
+
+        upPoint->SetLocalPosition(DirectX::XMFLOAT3(3.00f, 0.00f, 32.60f));
+        downPoint->SetLocalPosition(DirectX::XMFLOAT3(0.00f, 0.00f, -27.50f));
+        leftPoint->SetLocalPosition(DirectX::XMFLOAT3(-29.60f, 0.00f, 7.50f));
+        rightPoint->SetLocalPosition(DirectX::XMFLOAT3(33.00f, 0.00f, -4.40f));
+        //pIsland->halfExtents = { 11.0f, 2.0f, 11.0f };
+        /*pIsland->halfExtents = { (rightPoint->GetLocalPosition().x - leftPoint->GetLocalPosition().x) / 2.0f - 1.0f,
+                                2.0f,
+                                (upPoint->GetLocalPosition().z - downPoint->GetLocalPosition().z) / 2.0f - 1.0f };*/
+                                /*upPoint->AddComponent(
+                                    std::make_unique<ModelComponent>(upPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+                                );
+                                upPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+                                downPoint->AddComponent(
+                                    std::make_unique<ModelComponent>(downPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+                                );
+                                downPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+                                leftPoint->AddComponent(
+                                    std::make_unique<ModelComponent>(leftPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+                                );
+                                leftPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+                                rightPoint->AddComponent(
+                                    std::make_unique<ModelComponent>(rightPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+                                );
+                                rightPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
+        pIsland->leftPoint = leftPoint.get();
+        pIsland->rightPoint = rightPoint.get();
+        pIsland->upPoint = upPoint.get();
+        pIsland->downPoint = downPoint.get();
+        pNewNodeOwner->SetLocalPosition(position);
+        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+        pNewNodeOwner->SetLocalRotation(rotation);
+
+        Node* pNewNode = pNewNodeOwner.get();
+
+        InstantiateStone1(pNewNode, Vector3(-16.19f, 0.90f, 6.96f), 2.0f);
+        InstantiateStone1(pNewNode, Vector3(19.59f, 0.90f, -13.37f), 2.0f);
+        InstantiateStone1(pNewNode, Vector3(13.22f, 2.21f, 16.74f), 2.0f);
+        InstantiatePot3(pNewNode, Vector3(3.78f, 0.66f, 4.93f), 0.5f);
+        InstantiateFire1(pNewNode, Vector3(-5.80f, 0.20f, -8.76f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
+        InstantiatePlatform2(pNewNode, Vector3(10.60f, -2.60f, 14.20f), 0.5f, Vector3(0.00f, 0.00f, 0.00f));
+
+        auto spawnPoint1 = std::make_unique<Node>("SpawnPoint 1", pNewNodeOwner.get());
+        auto spawnPoint2 = std::make_unique<Node>("SpawnPoint 2", pNewNodeOwner.get());
+
+        /*spawnPoint1->AddComponent(
+            std::make_unique<ModelComponent>(spawnPoint1.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        spawnPoint1->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        spawnPoint2->AddComponent(
+            std::make_unique<ModelComponent>(spawnPoint2.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        spawnPoint2->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
+
+        spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(13.90f, 2.00f, -3.40f));
+        spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(-3.10f, 2.00f, 13.30f));
+        pIsland->spawnPoints.push_back(spawnPoint1.get());
+        pIsland->spawnPoints.push_back(spawnPoint2.get());
+        pNewNode->AddChild(std::move(spawnPoint1));
+        pNewNode->AddChild(std::move(spawnPoint2));
+
+        pNewNode->AddChild(std::move(leftPoint));
+        pNewNode->AddChild(std::move(rightPoint));
+        pNewNode->AddChild(std::move(upPoint));
+        pNewNode->AddChild(std::move(downPoint));
+        parentNode->AddChild(std::move(pNewNodeOwner));
+        return pNewNode;
+    }
+    static Node* InstantiateIslandSmall9(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 }) {
+        auto pNewNodeOwner = std::make_unique<Node>("Island S9", nullptr, "GROUND");
+
+        pNewNodeOwner->AddComponent(
+            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\wyspy_0606\\wyspa_mala.obj")
+        );
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+
+        ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList islandTriangles = PhysicsCommon::MakeTriangleList(islandModel->GetAllTriangles());
+        MeshShapeSettings islandMeshSettings(islandTriangles);
+        Shape::ShapeResult islandMeshCreationResult = islandMeshSettings.Create();
+        ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
+        ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
+        islandMeshShape = islandScaling.Create().Get();
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
+        pNewNodeOwner->AddComponent(
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
+        );
+
+        pNewNodeOwner->AddComponent(
+            std::make_unique<Island>(pNewNodeOwner.get())
+        );
+        Island* pIsland = pNewNodeOwner->GetComponent<Island>();
+        auto leftPoint = std::make_unique<Node>("Left Point", pNewNodeOwner.get());
+        auto rightPoint = std::make_unique<Node>("Right Point", pNewNodeOwner.get());
+        auto upPoint = std::make_unique<Node>("Up Point", pNewNodeOwner.get());
+        auto downPoint = std::make_unique<Node>("Down Point", pNewNodeOwner.get());
+
+        upPoint->SetLocalPosition(DirectX::XMFLOAT3(3.00f, 0.00f, 32.60f));
+        downPoint->SetLocalPosition(DirectX::XMFLOAT3(0.00f, 0.00f, -27.50f));
+        leftPoint->SetLocalPosition(DirectX::XMFLOAT3(-29.60f, 0.00f, 7.50f));
+        rightPoint->SetLocalPosition(DirectX::XMFLOAT3(33.00f, 0.00f, -4.40f));
+        //pIsland->halfExtents = { 11.0f, 2.0f, 11.0f };
+        /*pIsland->halfExtents = { (rightPoint->GetLocalPosition().x - leftPoint->GetLocalPosition().x) / 2.0f - 1.0f,
+                                2.0f,
+                                (upPoint->GetLocalPosition().z - downPoint->GetLocalPosition().z) / 2.0f - 1.0f };*/
+        /*upPoint->AddComponent(
+            std::make_unique<ModelComponent>(upPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        upPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        downPoint->AddComponent(
+            std::make_unique<ModelComponent>(downPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        downPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        leftPoint->AddComponent(
+            std::make_unique<ModelComponent>(leftPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        leftPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        rightPoint->AddComponent(
+            std::make_unique<ModelComponent>(rightPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        rightPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
+        pIsland->leftPoint = leftPoint.get();
+        pIsland->rightPoint = rightPoint.get();
+        pIsland->upPoint = upPoint.get();
+        pIsland->downPoint = downPoint.get();
+        pNewNodeOwner->SetLocalPosition(position);
+        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+        pNewNodeOwner->SetLocalRotation(rotation);
+
+        Node* pNewNode = pNewNodeOwner.get();
+
+        InstantiateStone1(pNewNode, Vector3(-14.69f, 0.90f, -3.04f), 2.0f);
+        InstantiateStone1(pNewNode, Vector3(15.59f, 0.90f, 5.53f), 2.0f);
+        InstantiatePot3(pNewNode, Vector3(10.43f, 2.00f, -15.37f), 0.5f);
+        InstantiatePot4(pNewNode, Vector3(-2.05f, 0.66f, 12.33f), 0.5f);
+        InstantiateMushroom2(pNewNode, Vector3(-7.80f, 0.20f, 9.34f), 0.35f, Vector3(0.00f, 0.72f, 0.00f));
+        InstantiateRock2(pNewNode, Vector3(-14.80f, 0.00f, -17.40f), 1.0f, Vector3(0.00f, 0.77f, 0.00f));
+        InstantiateRock5(pNewNode, Vector3(18.50f, -0.60f, 20.10f), 1.0f, Vector3(0.00f, -0.45f, 0.00f));
+		InstantiateColumn4(pNewNode, Vector3(15.40f, -0.10f, -10.50f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
+
+        auto spawnPoint1 = std::make_unique<Node>("SpawnPoint 1", pNewNodeOwner.get());
+        auto spawnPoint2 = std::make_unique<Node>("SpawnPoint 2", pNewNodeOwner.get());
+
+        /*spawnPoint1->AddComponent(
+            std::make_unique<ModelComponent>(spawnPoint1.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        spawnPoint1->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        spawnPoint2->AddComponent(
+            std::make_unique<ModelComponent>(spawnPoint2.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        spawnPoint2->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
+
+        spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(10.60f, 2.00f, -3.40f));
+        spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(-13.60f, 2.00f, 7.90f));
+        pIsland->spawnPoints.push_back(spawnPoint1.get());
+        pIsland->spawnPoints.push_back(spawnPoint2.get());
+        pNewNode->AddChild(std::move(spawnPoint1));
+        pNewNode->AddChild(std::move(spawnPoint2));
+
+        pNewNode->AddChild(std::move(leftPoint));
+        pNewNode->AddChild(std::move(rightPoint));
+        pNewNode->AddChild(std::move(upPoint));
+        pNewNode->AddChild(std::move(downPoint));
+        parentNode->AddChild(std::move(pNewNodeOwner));
+        return pNewNode;
+    }
+    static Node* InstantiateIslandSmall10(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 }) {
+        auto pNewNodeOwner = std::make_unique<Node>("Island S10", nullptr, "GROUND");
+
+        pNewNodeOwner->AddComponent(
+            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\wyspy_0606\\wyspa_mala_L.obj")
+        );
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+
+        ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList islandTriangles = PhysicsCommon::MakeTriangleList(islandModel->GetAllTriangles());
+        MeshShapeSettings islandMeshSettings(islandTriangles);
+        Shape::ShapeResult islandMeshCreationResult = islandMeshSettings.Create();
+        ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
+        ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
+        islandMeshShape = islandScaling.Create().Get();
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
+        pNewNodeOwner->AddComponent(
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
+        );
+
+        pNewNodeOwner->AddComponent(
+            std::make_unique<Island>(pNewNodeOwner.get())
+        );
+        Island* pIsland = pNewNodeOwner->GetComponent<Island>();
+        auto leftPoint = std::make_unique<Node>("Left Point", pNewNodeOwner.get());
+        auto rightPoint = std::make_unique<Node>("Right Point", pNewNodeOwner.get());
+        auto upPoint = std::make_unique<Node>("Up Point", pNewNodeOwner.get());
+        auto downPoint = std::make_unique<Node>("Down Point", pNewNodeOwner.get());
+
+        upPoint->SetLocalPosition(DirectX::XMFLOAT3(16.20f, 0.00f, 32.60f));
+        downPoint->SetLocalPosition(DirectX::XMFLOAT3(7.30f, 0.00f, -27.50f));
+        leftPoint->SetLocalPosition(DirectX::XMFLOAT3(-30.20f, 0.00f, 2.90f));
+        rightPoint->SetLocalPosition(DirectX::XMFLOAT3(33.00f, 0.00f, -4.40f));
+        //pIsland->halfExtents = { 11.0f, 2.0f, 11.0f };
+        /*pIsland->halfExtents = { (rightPoint->GetLocalPosition().x - leftPoint->GetLocalPosition().x) / 2.0f - 1.0f,
+                                2.0f,
+                                (upPoint->GetLocalPosition().z - downPoint->GetLocalPosition().z) / 2.0f - 1.0f };*/
+        /*upPoint->AddComponent(
+            std::make_unique<ModelComponent>(upPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        upPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        downPoint->AddComponent(
+            std::make_unique<ModelComponent>(downPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        downPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        leftPoint->AddComponent(
+            std::make_unique<ModelComponent>(leftPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        leftPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        rightPoint->AddComponent(
+            std::make_unique<ModelComponent>(rightPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        rightPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
+        pIsland->leftPoint = leftPoint.get();
+        pIsland->rightPoint = rightPoint.get();
+        pIsland->upPoint = upPoint.get();
+        pIsland->downPoint = downPoint.get();
+        pNewNodeOwner->SetLocalPosition(position);
+        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+        pNewNodeOwner->SetLocalRotation(rotation);
+
+        Node* pNewNode = pNewNodeOwner.get();
+
+        InstantiateStone1(pNewNode, Vector3(-11.79f, 0.22f, 3.06f), 2.0f);
+        InstantiateStone1(pNewNode, Vector3(19.87f, 0.22f, -2.51f), 2.0f);
+        InstantiateStone1(pNewNode, Vector3(10.06f, 0.84f, -13.87f), 2.0f);
+        InstantiateMushroom2(pNewNode, Vector3(-5.50f, -0.50f, -11.26f), 0.35f, Vector3(0.00f, -0.52f, 0.00f));
+        InstantiateMushroom3(pNewNode, Vector3(19.50f, -0.50f, 2.64f), 0.35f, Vector3(0.00f, 0.72f, 0.00f));
+        InstantiateRock4(pNewNode, Vector3(-15.40f, -0.60f, -14.60f), 1.0f, Vector3(0.00f, -1.43f, 0.00f));
+
+        auto spawnPoint1 = std::make_unique<Node>("SpawnPoint 1", pNewNodeOwner.get());
+        auto spawnPoint2 = std::make_unique<Node>("SpawnPoint 2", pNewNodeOwner.get());
+
+        /*spawnPoint1->AddComponent(
+            std::make_unique<ModelComponent>(spawnPoint1.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        spawnPoint1->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        spawnPoint2->AddComponent(
+            std::make_unique<ModelComponent>(spawnPoint2.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        spawnPoint2->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
+
+        spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(7.20f, 2.00f, -3.40f));
+        spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(17.10f, 2.00f, 14.60f));
+        pIsland->spawnPoints.push_back(spawnPoint1.get());
+        pIsland->spawnPoints.push_back(spawnPoint2.get());
+        pNewNode->AddChild(std::move(spawnPoint1));
+        pNewNode->AddChild(std::move(spawnPoint2));
+
+        pNewNode->AddChild(std::move(leftPoint));
+        pNewNode->AddChild(std::move(rightPoint));
+        pNewNode->AddChild(std::move(upPoint));
+        pNewNode->AddChild(std::move(downPoint));
+        parentNode->AddChild(std::move(pNewNodeOwner));
+        return pNewNode;
+    }
+    static Node* InstantiateIslandSmall11(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 }) {
+        auto pNewNodeOwner = std::make_unique<Node>("Island S11", nullptr, "GROUND");
+
+        pNewNodeOwner->AddComponent(
+            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\wyspy_0606\\wyspa_mala_L.obj")
+        );
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+
+        ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList islandTriangles = PhysicsCommon::MakeTriangleList(islandModel->GetAllTriangles());
+        MeshShapeSettings islandMeshSettings(islandTriangles);
+        Shape::ShapeResult islandMeshCreationResult = islandMeshSettings.Create();
+        ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
+        ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
+        islandMeshShape = islandScaling.Create().Get();
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
+        pNewNodeOwner->AddComponent(
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
+        );
+
+        pNewNodeOwner->AddComponent(
+            std::make_unique<Island>(pNewNodeOwner.get())
+        );
+        Island* pIsland = pNewNodeOwner->GetComponent<Island>();
+        auto leftPoint = std::make_unique<Node>("Left Point", pNewNodeOwner.get());
+        auto rightPoint = std::make_unique<Node>("Right Point", pNewNodeOwner.get());
+        auto upPoint = std::make_unique<Node>("Up Point", pNewNodeOwner.get());
+        auto downPoint = std::make_unique<Node>("Down Point", pNewNodeOwner.get());
+
+        upPoint->SetLocalPosition(DirectX::XMFLOAT3(13.70f, 0.00f, 31.10f));
+        downPoint->SetLocalPosition(DirectX::XMFLOAT3(0.00f, 0.00f, -27.50f));
+        leftPoint->SetLocalPosition(DirectX::XMFLOAT3(-29.30f, 0.00f, -13.80f));
+        rightPoint->SetLocalPosition(DirectX::XMFLOAT3(33.20f, 0.00f, -14.10f));
+        //pIsland->halfExtents = { 11.0f, 2.0f, 11.0f };
+        /*pIsland->halfExtents = { (rightPoint->GetLocalPosition().x - leftPoint->GetLocalPosition().x) / 2.0f - 1.0f,
+                                2.0f,
+                                (upPoint->GetLocalPosition().z - downPoint->GetLocalPosition().z) / 2.0f - 1.0f };*/
+       /* upPoint->AddComponent(
+            std::make_unique<ModelComponent>(upPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        upPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        downPoint->AddComponent(
+            std::make_unique<ModelComponent>(downPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        downPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        leftPoint->AddComponent(
+            std::make_unique<ModelComponent>(leftPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        leftPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        rightPoint->AddComponent(
+            std::make_unique<ModelComponent>(rightPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        rightPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
+        pIsland->leftPoint = leftPoint.get();
+        pIsland->rightPoint = rightPoint.get();
+        pIsland->upPoint = upPoint.get();
+        pIsland->downPoint = downPoint.get();
+        pNewNodeOwner->SetLocalPosition(position);
+        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+        pNewNodeOwner->SetLocalRotation(rotation);
+
+        Node* pNewNode = pNewNodeOwner.get();
+
+        InstantiateStone1(pNewNode, Vector3(-4.68f, 0.23f, 3.05f), 2.0f);
+        InstantiateStone1(pNewNode, Vector3(18.47f, 0.22f, 21.19f), 2.0f);
+        InstantiateBrick(pNewNode, Vector3(-0.79f, 2.84f, -16.19f), 0.5f);
+        InstantiateFire1(pNewNode, Vector3(6.10f, -0.50f, -2.06f), 1.0f, Vector3(0.00f, -0.52f, 0.00f));
+        InstantiateColumn2(pNewNode, Vector3(15.20f, -0.50f, -9.96f), 1.0f, Vector3(0.00f, 0.72f, 0.00f));
+        InstantiateRock5(pNewNode, Vector3(-17.50f, -1.00f, 0.50f), 1.0f, Vector3(0.00f, -1.43f, 0.00f));
+
+        auto spawnPoint1 = std::make_unique<Node>("SpawnPoint 1", pNewNodeOwner.get());
+        auto spawnPoint2 = std::make_unique<Node>("SpawnPoint 2", pNewNodeOwner.get());
+
+        /*spawnPoint1->AddComponent(
+            std::make_unique<ModelComponent>(spawnPoint1.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        spawnPoint1->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        spawnPoint2->AddComponent(
+            std::make_unique<ModelComponent>(spawnPoint2.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        spawnPoint2->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
+
+        spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(-8.80f, 2.00f, -13.70f));
+        spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(11.40f, 2.00f, 8.90f));
+        pIsland->spawnPoints.push_back(spawnPoint1.get());
+        pIsland->spawnPoints.push_back(spawnPoint2.get());
+        pNewNode->AddChild(std::move(spawnPoint1));
+        pNewNode->AddChild(std::move(spawnPoint2));
+
+        pNewNode->AddChild(std::move(leftPoint));
+        pNewNode->AddChild(std::move(rightPoint));
+        pNewNode->AddChild(std::move(upPoint));
+        pNewNode->AddChild(std::move(downPoint));
+        parentNode->AddChild(std::move(pNewNodeOwner));
+        return pNewNode;
+    }
+    static Node* InstantiateIslandSmall12(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 }) {
+        auto pNewNodeOwner = std::make_unique<Node>("Island S12", nullptr, "GROUND");
+
+        pNewNodeOwner->AddComponent(
+            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\wyspy_0606\\wyspa_mala_L.obj")
+        );
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+
+        ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList islandTriangles = PhysicsCommon::MakeTriangleList(islandModel->GetAllTriangles());
+        MeshShapeSettings islandMeshSettings(islandTriangles);
+        Shape::ShapeResult islandMeshCreationResult = islandMeshSettings.Create();
+        ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
+        ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
+        islandMeshShape = islandScaling.Create().Get();
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
+        pNewNodeOwner->AddComponent(
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
+        );
+
+        pNewNodeOwner->AddComponent(
+            std::make_unique<Island>(pNewNodeOwner.get())
+        );
+        Island* pIsland = pNewNodeOwner->GetComponent<Island>();
+        auto leftPoint = std::make_unique<Node>("Left Point", pNewNodeOwner.get());
+        auto rightPoint = std::make_unique<Node>("Right Point", pNewNodeOwner.get());
+        auto upPoint = std::make_unique<Node>("Up Point", pNewNodeOwner.get());
+        auto downPoint = std::make_unique<Node>("Down Point", pNewNodeOwner.get());
+
+        upPoint->SetLocalPosition(DirectX::XMFLOAT3(13.70f, 0.00f, 31.10f));
+        downPoint->SetLocalPosition(DirectX::XMFLOAT3(0.00f, 0.00f, -27.50f));
+        leftPoint->SetLocalPosition(DirectX::XMFLOAT3(-27.70f, 0.00f, -0.40f));
+        rightPoint->SetLocalPosition(DirectX::XMFLOAT3(33.20f, 0.00f, -14.10f));
+        //pIsland->halfExtents = { 11.0f, 2.0f, 11.0f };
+        /*pIsland->halfExtents = { (rightPoint->GetLocalPosition().x - leftPoint->GetLocalPosition().x) / 2.0f - 1.0f,
+                                2.0f,
+                                (upPoint->GetLocalPosition().z - downPoint->GetLocalPosition().z) / 2.0f - 1.0f };*/
+        /*upPoint->AddComponent(
+            std::make_unique<ModelComponent>(upPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        upPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        downPoint->AddComponent(
+            std::make_unique<ModelComponent>(downPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        downPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        leftPoint->AddComponent(
+            std::make_unique<ModelComponent>(leftPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        leftPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        rightPoint->AddComponent(
+            std::make_unique<ModelComponent>(rightPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        rightPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
+        pIsland->leftPoint = leftPoint.get();
+        pIsland->rightPoint = rightPoint.get();
+        pIsland->upPoint = upPoint.get();
+        pIsland->downPoint = downPoint.get();
+        pNewNodeOwner->SetLocalPosition(position);
+        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+        pNewNodeOwner->SetLocalRotation(rotation);
+
+        Node* pNewNode = pNewNodeOwner.get();
+
+        InstantiateStone1(pNewNode, Vector3(-6.38f, 0.23f, 0.65f), 2.0f);
+        InstantiateStone1(pNewNode, Vector3(17.17f, 0.22f, 13.89f), 2.0f);
+        InstantiateStoneStack1(pNewNode, Vector3(2.41f, 2.84f, -13.59f), 1.0f);
+        InstantiateRock3(pNewNode, Vector3(20.70f, -0.50f, -0.86f), 1.0f, Vector3(0.00f, 0.51f, 0.00f));
+        InstantiatePlatform3(pNewNode, Vector3(-17.70f, -2.20f, -1.40f), 0.3f, Vector3(0.00f, -0.23f, 0.00f));
+
+        auto spawnPoint1 = std::make_unique<Node>("SpawnPoint 1", pNewNodeOwner.get());
+        auto spawnPoint2 = std::make_unique<Node>("SpawnPoint 2", pNewNodeOwner.get());
+
+        /*spawnPoint1->AddComponent(
+            std::make_unique<ModelComponent>(spawnPoint1.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        spawnPoint1->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        spawnPoint2->AddComponent(
+            std::make_unique<ModelComponent>(spawnPoint2.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
+        );
+        spawnPoint2->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
+
+        spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(-7.40f, 2.00f, -15.00f));
+        spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(10.40f, 2.00f, -4.20f));
+        pIsland->spawnPoints.push_back(spawnPoint1.get());
+        pIsland->spawnPoints.push_back(spawnPoint2.get());
+        pNewNode->AddChild(std::move(spawnPoint1));
+        pNewNode->AddChild(std::move(spawnPoint2));
 
         pNewNode->AddChild(std::move(leftPoint));
         pNewNode->AddChild(std::move(rightPoint));
