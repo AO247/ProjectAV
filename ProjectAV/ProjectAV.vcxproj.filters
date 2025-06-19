@@ -417,8 +417,14 @@
     <ClCompile Include="MainRenderGraph.cpp">
       <Filter>Source Files\Jobber</Filter>
     </ClCompile>
-    <ClCompile Include="ShadowRasterizer.cpp">
+    <ClCompile Include="ShadowCbuf.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ShadowMappingPass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ComparisonSampler.cpp">
+      <Filter>Source Files\Bindable</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -854,10 +860,13 @@
     <ClInclude Include="ShadowMappingPass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ShadowCameraCBuf.h">
-      <Filter>Header Files\Bindable</Filter>
+    <ClInclude Include="ShadowCbuf.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ShadowRasterizer.h">
+    <ClInclude Include="WindTunnelEffect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ComparisonSampler.h">
       <Filter>Header Files\Bindable</Filter>
     </ClInclude>
   </ItemGroup>
@@ -967,6 +976,9 @@
     </FxCompile>
     <FxCompile Include="Shadow_VS.hlsl">
       <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shadow.hlsl">
+      <Filter>Shaders\Common</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

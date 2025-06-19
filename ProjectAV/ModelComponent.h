@@ -91,8 +91,6 @@ public:
     std::vector<ModelComponent::Triangle> GetAllTriangles() const;
 
     std::vector<std::unique_ptr<Mesh>> meshPtrs;
-    void AddTechnique(Technique technique);
-    std::vector<Technique> techniques;
 private:
     std::unique_ptr<ModelInternalNode> ParseNodeRecursive(int& nextId, const aiNode& node, float scale);
 

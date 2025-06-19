@@ -20,7 +20,8 @@
 #include <Jolt/ConfigurationString.h>
 #include <Jolt/Physics/Collision/Shape/CapsuleShape.h>
 #include "imgui/imgui_impl_dx11.h"
-
+#include "TransformCbuf.h"
+#include "ShadowCbuf.h"
 namespace dx = DirectX;
 
 App::App(const std::string& commandLine)
@@ -505,9 +506,14 @@ void App::DoFrame(float dt)
 	/*DebugLine line(wnd.Gfx(), pEnemy->GetComponent<StateMachine>()->pos, pEnemy->GetComponent<StateMachine>()->cen, { 0.0f, 0.0f, 1.0f, 1.0f });
     line.Submit(fc);*/ // for idle
     // --- Bind Lights ---
+    Bind::TransformCbuf::SetLight(&dirLight);
+    Bind::ShadowCbuf::SetLight(&dirLight);
 
-    //pointLight.Bind(wnd.Gfx(), viewMatrix);
-    dirLight.Bind(wnd.Gfx(), viewMatrix);
+    dirLight.Update(wnd.Gfx(), { 0.0f, 0.0f, 0.0f });
+
+    // --- Bind Lights ---
+    // pointLight.Bind(wnd.Gfx(), viewMatrix);
+    dirLight.Bind(wnd.Gfx());
 
     FrustumCalculating(); // Draw with FRUSTUM CULLING
     //pSceneRoot->Submit(fc, wnd.Gfx()); // Draw without FRUSTUM CULLING you have to also uncomment the draw method in Node.cpp
