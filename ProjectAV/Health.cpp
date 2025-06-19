@@ -13,7 +13,7 @@ void Health::DrawImGuiControls()
 	ImGui::Text("Max Health: %f", maxHealth);
 }
 
-void Health::TakeDamage(float damage, bool heavy)
+void Health::TakeDamage(float damage, bool heavy, bool isFire)
 {
 	if (tank)
 	{
@@ -30,6 +30,10 @@ void Health::TakeDamage(float damage, bool heavy)
 		currentHealth -= damage;
 	}
 
+	if (isFire && !fireType)
+	{
+		currentHealth -= damage;
+	}
 
 	if (currentHealth > maxHealth)
 	{

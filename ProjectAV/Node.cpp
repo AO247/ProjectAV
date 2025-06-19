@@ -518,10 +518,24 @@ void Node::Update(float dt)
     }
 
    
-
-    for (auto& child : children) {
-        child->Update(dt);
-    }
+    for(int i = 0; i < children.size(); ++i)
+    {
+        if(!children[i]->markedForDestruction)
+        {
+			children[i]->Update(dt);
+		}
+        else
+        {
+			RemoveChild(children[i].get());
+        }
+	}
+    //for (auto& child : children) 
+    //{
+    //    if (!child->markedForDestruction)
+    //    {
+    //        child->Update(dt);
+    //    }
+    //}
 
     transformationOutsidePhysicsTriggered = false;
 }

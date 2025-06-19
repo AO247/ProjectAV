@@ -847,6 +847,13 @@ void App::CleanupDestroyedNodes(Node* currentNode)
 {
     if (!currentNode) return;
 
+    /*for(int i = 0; i < currentNode->children.size(); ++i) {
+        if (currentNode->children[i]->IsMarkedForDestruction())
+        {
+			CleanupDestroyedNodes(currentNode->children[i].get());
+        }
+	}*/
+
 
     auto& children_ref = currentNode->GetChildren_NonConst();
     for (size_t i = 0; i < children_ref.size(); ++i) {
