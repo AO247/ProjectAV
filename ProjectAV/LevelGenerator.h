@@ -13,9 +13,9 @@ public:
 	LevelGenerator(Node* owner, Node* pPlayer, bool rot);
 	virtual ~LevelGenerator() = default;
 
-	int bigIslandCount = 2;
-	int mediumIslandCount = 1;
-	int smallIslandCount = 2;
+	int bigIslandCount = 10;
+	int mediumIslandCount = 0;
+	int smallIslandCount = 0;
 
 	int numberOfHardEnemies = 2;
 	int numberOfMediumEnemies = 2;

@@ -583,10 +583,10 @@ void App::DoFrame(float dt)
 
     pUpgradeHandler->DrawUpgradeMenu();
 
-    /*
-	tutorialNode->GetComponent<Tutorial>()->DrawNote();
+    
+	//tutorialNode->GetComponent<Tutorial>()->DrawNote();
 
-    if(pSceneRoot->GetComponent<Global>()->drawLoadingScreen || bonusTime > 0.0f)
+    /*if(pSceneRoot->GetComponent<Global>()->drawLoadingScreen || bonusTime > 0.0f)
     {
         if (!pSceneRoot->GetComponent<Global>()->drawLoadingScreen)
         {
