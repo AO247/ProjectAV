@@ -12,11 +12,11 @@ void Throwable::OnCollisionEnter(Node* object)
 	Vec3 position = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
 	float l = position.Length();
 
-	/*if (pOwner->GetComponent<SoundEffectsPlayer>())
+	if (pOwner->GetComponent<SoundEffectsPlayer>())
 	{
 		float p = (rand() % 2);
 		pOwner->GetComponent<SoundEffectsPlayer>()->Play(p);
-	}*/
+	}
 
 	if (l < speed) return;
 
