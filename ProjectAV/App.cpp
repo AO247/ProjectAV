@@ -148,7 +148,7 @@ App::App(const std::string& commandLine)
         std::make_unique<Ability1>(pAbility1, wnd, pCamera)
     );
     pAbility1->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 0.0f, 10.0f));
-    pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility1;
+    pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility4;
 
 
     BodyCreationSettings a2odySettings(new JPH::SphereShape(5.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);

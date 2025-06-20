@@ -135,7 +135,7 @@ void ParticleSystemComponent::Update(float dt)
 
     // --- 4. CORRECTED: Self-Destruction Logic ---
     // This check is placed at the end of Update to use the freshly calculated state.
-    if (destroyAfterEmission && m_playbackMode == PlaybackMode::OneShot && !m_isEmitting && activeParticleCount == 0)
+    if (destroyAfterEmission && !m_isEmitting && activeParticleCount == 0)
     {
         // Conditions met:
         // 1. The user has opted in (destroyAfterEmission == true).
