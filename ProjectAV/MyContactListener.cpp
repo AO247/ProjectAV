@@ -182,25 +182,29 @@ void MyContactListener::ExecuteTriggerActivationQueue()
     {
         Node* triggerNode = reinterpret_cast<Node*>(PhysicsCommon::physicsSystem->GetBodyInterface().GetUserData(triggerActivationQueue[i].trigger));
         Node* activatorNode = reinterpret_cast<Node*>(PhysicsCommon::physicsSystem->GetBodyInterface().GetUserData(triggerActivationQueue[i].activator));
-        if (triggerActivationQueue[i].activationType == ENTER)
+        if (triggerNode == nullptr || activatorNode == nullptr) continue;
+        if (PhysicsCommon::physicsSystem->GetBodyInterface().IsAdded(triggerActivationQueue[i].trigger))
         {
-            const auto& components = triggerNode->GetComponents();
-            for (const auto& component : components) {
-                component->OnTriggerEnter(activatorNode);
+            if (triggerActivationQueue[i].activationType == ENTER)
+            {
+                const auto& components = triggerNode->GetComponents();
+                for (const auto& component : components) {
+                    component->OnTriggerEnter(activatorNode);
+                }
             }
-        }
-        if (triggerActivationQueue[i].activationType == STAY)
-        {
-            const auto& components = triggerNode->GetComponents();
-            for (const auto& component : components) {
-                component->OnTriggerStay(activatorNode);
+            if (triggerActivationQueue[i].activationType == STAY)
+            {
+                const auto& components = triggerNode->GetComponents();
+                for (const auto& component : components) {
+                    component->OnTriggerStay(activatorNode);
+                }
             }
-        }
-        if (triggerActivationQueue[i].activationType == EXIT)
-        {
-            const auto& components = triggerNode->GetComponents();
-            for (const auto& component : components) {
-                component->OnTriggerExit(activatorNode);
+            if (triggerActivationQueue[i].activationType == EXIT)
+            {
+                const auto& components = triggerNode->GetComponents();
+                for (const auto& component : components) {
+                    component->OnTriggerExit(activatorNode);
+                }
             }
         }
     }
@@ -224,6 +228,7 @@ void MyContactListener::ExecuteCollisionActivationQueue()
     {
         Node* triggerNode = reinterpret_cast<Node*>(PhysicsCommon::physicsSystem->GetBodyInterface().GetUserData(collisionActivationQueue[i].trigger));
         Node* activatorNode = reinterpret_cast<Node*>(PhysicsCommon::physicsSystem->GetBodyInterface().GetUserData(collisionActivationQueue[i].activator));
+        if (triggerNode == nullptr || activatorNode == nullptr) continue;
         if (collisionActivationQueue[i].activationType == ENTER)
         {
             const auto& components = triggerNode->GetComponents();
@@ -259,7 +264,6 @@ void MyContactListener::RemoveTriggerData(BodyID id)
             triggerActivationQueue.erase(triggerActivationQueue.begin() + i);
         }
     }*/
-	PhysicsCommon::physicsSystem->GetBodyInterface().SetUserData(id, reinterpret_cast<uint64>(nullptr));
     contacts.erase(id);
     std::map<BodyID, std::map<BodyID, int>>::iterator it;
     for (it = contacts.begin(); it != contacts.end(); it++)
@@ -280,7 +284,6 @@ void MyContactListener::RemoveRigidbodyData(BodyID id)
             collisionActivationQueue.erase(collisionActivationQueue.begin() + i);
         }
     }*/
-    PhysicsCommon::physicsSystem->GetBodyInterface().SetUserData(id, reinterpret_cast<uint64>(nullptr));
     collisionContacts.erase(id);
     std::map<BodyID, std::map<BodyID, int>>::iterator it;
     for (it = collisionContacts.begin(); it != collisionContacts.end(); it++)

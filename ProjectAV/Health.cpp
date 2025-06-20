@@ -42,7 +42,7 @@ void Health::TakeDamage(float damage, bool heavy, bool isFire)
 	if (currentHealth <= 0.0f)
 	{
 		if (pOwner->tag != "PLAYER") {
-			pOwner->GetComponent<StateMachine>()->Die();
+			pOwner->GetComponent<StateMachine>()->eatedPills = true;
 		}
 		else {
 			pOwner->GetComponent<PlayerController>()->alive = false;

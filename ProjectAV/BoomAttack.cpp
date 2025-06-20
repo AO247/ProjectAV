@@ -12,7 +12,7 @@ void BoomAttack::Attack(float dt)
 {
 	if (attacked)
 	{
-		//pOwner->GetParent()->Destroy();
+		pOwner->GetParent()->Destroy();
 		return;
 	}
 	attackRange = 1000.0f;
@@ -28,6 +28,7 @@ void BoomAttack::Attack(float dt)
 void BoomAttack::OnTriggerStay(Node* object)
 {
 	if (!attacked) return;
+	if (object == nullptr) return;
 	if (object->tag == "PLAYER" || object->tag == "ENEMY" || object->tag == "STONE")
 	{
 		Vector3 currentPos = pOwner->GetWorldPosition();

@@ -181,7 +181,7 @@ App::App(const std::string& commandLine)
         std::make_unique<Ability4>(pAbility4, wnd, pCamera)
     );
     //pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility4;
-    pAbility4->GetComponent<Ability4>()->baseAbility = pAbility1->GetComponent<Ability1>();
+    //pAbility4->GetComponent<Ability4>()->baseAbility = pAbility1->GetComponent<Ability1>();
 
 
     pAbility5->AddComponent(
@@ -395,9 +395,9 @@ int App::Go()
         const float dt = timer.Mark();
         lag += dt;
 
-        constexpr float MAX_LAG = 0.5f;
+        /*constexpr float MAX_LAG = 0.5f;
         if (lag > MAX_LAG)
-            lag = MAX_LAG;
+            lag = MAX_LAG;*/
 
         while (lag >= FIXED_TIME_STEP)
         {
@@ -515,6 +515,7 @@ void App::HandleInput(float dt)
 
 void App::DoFrame(float dt)
 {
+    //fizyka
     auto* contact = dynamic_cast<MyContactListener*>(physicsSystem->GetContactListener());
     contact->ExecuteTriggerActivationQueue();
     contact->ExecuteCollisionActivationQueue();
@@ -635,6 +636,8 @@ void App::RemoveRigidbody(Node* currentNode)
         {
             PhysicsCommon::physicsSystem->GetBodyInterface().DeactivateBody(currentNode->GetComponent<Rigidbody>()->GetBodyID());
             PhysicsCommon::physicsSystem->GetBodyInterface().RemoveBody(currentNode->GetComponent<Rigidbody>()->GetBodyID());
+            PhysicsCommon::physicsSystem->GetBodyInterface().DestroyBody(currentNode->GetComponent<Rigidbody>()->GetBodyID());
+
         }
     }
 }
@@ -930,7 +933,6 @@ void App::CleanupDestroyedNodes(Node* currentNode)
                     }
                     if (pChildNode->GetComponent<Trigger>() != nullptr)
                     {
-                        dynamic_cast<MyContactListener*>(PhysicsCommon::physicsSystem->GetContactListener())->RemoveTriggerData(pChildNode->GetComponent<Trigger>()->GetBodyID());
                     }
 
                     const auto& components = pChildNode->GetComponents();

@@ -35,6 +35,8 @@ public:
 
 	bool isFlying = false;
 	bool isDead = false;
+	bool canDropPills = true;
+	bool eatedPills = false;
 
 	Component* pMovementComponent = nullptr;
 	Component* pAttackComponent = nullptr;

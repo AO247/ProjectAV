@@ -84,33 +84,36 @@ void Ability3::Activated()
 {
     for (int i = 0; i < objects.size(); i++)
     {
-        if (objects[i]->tag == "ENEMY" || objects[i]->tag == "STONE")
+        if (objects[i] != nullptr)
         {
-            Vector3 objPos = objects[i]->GetWorldPosition();
-            Vector3 aPos = pOwner->GetWorldPosition();
-			aPos.y += 1.0f; 
-            Vector3 direction = aPos - objPos;
+            if (objects[i]->tag == "ENEMY" || objects[i]->tag == "STONE")
+            {
+                Vector3 objPos = objects[i]->GetWorldPosition();
+                Vector3 aPos = pOwner->GetWorldPosition();
+                aPos.y += 1.0f;
+                Vector3 direction = aPos - objPos;
 
-            float distance = direction.Length();
-           
+                float distance = direction.Length();
 
-            distance = std::clamp(distance, 0.1f, maxDistance);
 
-            float scaledForce = maxForce * (1.0f - (distance / maxDistance));
-            scaledForce = std::max(scaledForce, minForce);
-            direction.Normalize();
+                distance = std::clamp(distance, 0.1f, maxDistance);
 
-            PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), Vec3(0.0f, 0.0f, 0.0f));
-            PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), Vec3(direction.x, direction.y, direction.z) * scaledForce);
-            //OutputDebugStringA(("Ability3 hit: " + objects[i]->GetName() + "\n").c_str());
-        }
-        else if (objects[i]->tag == "BULLET")
-        {
-            Vec3 direction = Vec3(pOwner->Forward().x, pOwner->Forward().y, pOwner->Forward().z);
-            Bullet* bullet = objects[i]->GetComponent<Bullet>();
-            bullet->pushedByPlayer = true;
-            bullet->ignore = nullptr;
-            PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), direction * force * 0.04f);
+                float scaledForce = maxForce * (1.0f - (distance / maxDistance));
+                scaledForce = std::max(scaledForce, minForce);
+                direction.Normalize();
+
+                PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), Vec3(0.0f, 0.0f, 0.0f));
+                PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), Vec3(direction.x, direction.y, direction.z) * scaledForce);
+                //OutputDebugStringA(("Ability3 hit: " + objects[i]->GetName() + "\n").c_str());
+            }
+            else if (objects[i]->tag == "BULLET")
+            {
+                Vec3 direction = Vec3(pOwner->Forward().x, pOwner->Forward().y, pOwner->Forward().z);
+                Bullet* bullet = objects[i]->GetComponent<Bullet>();
+                bullet->pushedByPlayer = true;
+                bullet->ignore = nullptr;
+                PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), direction * force * 0.04f);
+            }
         }
     }
 }
