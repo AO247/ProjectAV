@@ -29,7 +29,7 @@ private:
     bool m_initialized = false;
     std::vector<ALuint> m_sources;
     Node* m_playerNode = nullptr;
-    float m_maxAudibleDistance = 600.0f;
+    float m_maxAudibleDistance = 400.0f;
     int m_nextSourceIndex = 0;
 
     std::unordered_map<std::string, ALuint> m_soundCache;

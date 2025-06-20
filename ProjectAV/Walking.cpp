@@ -126,15 +126,8 @@ void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 		}
 	}
 
-	if (pOwner->GetComponent<SoundEffectsPlayer>()) {
-		float p = (rand() % 4);
-		pOwner->GetComponent<SoundEffectsPlayer>()->Play(p);
-	}
 
-	if (stepSoundTimer > 0.0f)
-	{
-		stepSoundTimer -= dt;
-	}
+	stepSoundTimer -= dt;
 
 	if (pOwner->GetComponent<SoundEffectsPlayer>() && currentVelocity.LengthSquared() > 0.1f && grounded)
 	{
