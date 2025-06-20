@@ -1952,10 +1952,6 @@ public:
         InstantiateColumn(pNewNode, Vector3(-14.0f, 0.0f, 20.0f), 4.0f);
         InstantiateColumn(pNewNode, Vector3(-14.0f, 0.0f, -19.0f), 4.0f);
 		InstantiateBaseColumn(pNewNode, Vector3(0.00f, -3.10f, 0.00f), 4.0f, 1.0f);
-		InstantiateBush1(pNewNode, Vector3(0.0f, 10.0f, 20.0f), 12.0f);
-		InstantiateBush2(pNewNode, Vector3(0.0f, 10.0f, -20.0f), 12.0f);
-		InstantiateBush3(pNewNode, Vector3(20.0f, 10.0f, 0.0f), 12.0f);
-		InstantiateBush4(pNewNode, Vector3(-20.0f, 10.0f, 0.0f), 12.0f);
         //InstantiateAnimationTest(pNewNode, Vector3(0.0f, 5.0f, 0.0f), 1.0f);
 
 
