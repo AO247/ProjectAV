@@ -8,6 +8,7 @@ BrokenPart::BrokenPart(Node* owner) : Component(owner)
 
 void BrokenPart::OnCollisionEnter(Node* object)
 {
+	if (object == nullptr) return;
 	if (pOwner->GetParent() != object && !broked && object->tag != "TRIGGER")
 	{
 

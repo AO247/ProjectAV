@@ -183,7 +183,7 @@ App::App(const std::string& commandLine)
         std::make_unique<Ability4>(pAbility4, wnd, pCamera)
     );
     //pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility4;
-    pAbility4->GetComponent<Ability4>()->baseAbility = pAbility1->GetComponent<Ability1>();
+    //pAbility4->GetComponent<Ability4>()->baseAbility = pAbility1->GetComponent<Ability1>();
 
 
     pAbility5->AddComponent(
@@ -288,6 +288,7 @@ App::App(const std::string& commandLine)
 	//PrefabManager::InstantiateIslandBig10(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
 	//tutorialNode = PrefabManager::InstantiateTutorialIslands(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
     //pSceneRoot->GetComponent<Global>()->tut = tutorialNode->GetComponent<Tutorial>();
+
 
     const int screenWidth = 1920;
     const int screenHeight = 1080;
@@ -398,9 +399,9 @@ int App::Go()
         const float dt = timer.Mark();
         lag += dt;
 
-        constexpr float MAX_LAG = 0.5f;
+        /*constexpr float MAX_LAG = 0.5f;
         if (lag > MAX_LAG)
-            lag = MAX_LAG;
+            lag = MAX_LAG;*/
 
         while (lag >= FIXED_TIME_STEP)
         {
@@ -518,11 +519,13 @@ void App::HandleInput(float dt)
 
 void App::DoFrame(float dt)
 {
-	pSceneRoot->Update(dt);
+    //fizyka
     auto* contact = dynamic_cast<MyContactListener*>(physicsSystem->GetContactListener());
     contact->ExecuteTriggerActivationQueue();
     contact->ExecuteCollisionActivationQueue();
-    CleanupDestroyedNodes(pSceneRoot.get());
+    CleanupDestroyedNodes(pSceneRoot.get());    //data removed
+	pSceneRoot->Update(dt);
+    RemoveRigidbody(pSceneRoot.get());//rigidbody remove if destruction
 
     wnd.Gfx().BeginFrame(0.5f, 0.5f, 1.0f);
 
@@ -623,6 +626,25 @@ void App::DoFrame(float dt)
     rg.Reset();
 }
 
+void App::RemoveRigidbody(Node* currentNode)
+{
+    if (!currentNode) return;
+
+    for (int i = 0; i < currentNode->GetChildren().size(); ++i) {
+        RemoveRigidbody(currentNode->GetChildren()[i].get());
+    }
+
+    if (currentNode->markedForDestruction)
+    {
+        if (currentNode->GetComponent<Rigidbody>() != nullptr) 
+        {
+            PhysicsCommon::physicsSystem->GetBodyInterface().DeactivateBody(currentNode->GetComponent<Rigidbody>()->GetBodyID());
+            PhysicsCommon::physicsSystem->GetBodyInterface().RemoveBody(currentNode->GetComponent<Rigidbody>()->GetBodyID());
+            PhysicsCommon::physicsSystem->GetBodyInterface().DestroyBody(currentNode->GetComponent<Rigidbody>()->GetBodyID());
+
+        }
+    }
+}
 
 void App::FrustumCalculating() {
     dx::XMMATRIX camWorldTransform = pCamera->GetWorldTransform();
@@ -851,12 +873,39 @@ void App::CleanupDestroyedNodes(Node* currentNode)
 {
     if (!currentNode) return;
 
-    /*for(int i = 0; i < currentNode->children.size(); ++i) {
-        if (currentNode->children[i]->IsMarkedForDestruction())
-        {
-			CleanupDestroyedNodes(currentNode->children[i].get());
-        }
-	}*/
+    //for (int i = 0; i < currentNode->GetChildren().size(); ++i) {
+    //    CleanupDestroyedNodes(currentNode->GetChildren()[i].get());
+    //}
+
+    //if (currentNode->markedForDestruction)
+    //{
+    //    for (int i = 0; i < currentNode->GetChildren().size(); ++i)
+    //    {
+    //        Node* pChildNode = currentNode->GetChildren()[i].get();
+    //        if (pSelectedSceneNode == pChildNode) { pSelectedSceneNode = nullptr; }
+    //        if (pChildNode->GetComponent<Rigidbody>() != nullptr) 
+    //        {
+    //            dynamic_cast<MyContactListener*>(PhysicsCommon::physicsSystem->GetContactListener())->RemoveRigidbodyData(pChildNode->GetComponent<Rigidbody>()->GetBodyID());
+    //            //PhysicsCommon::physicsSystem->GetBodyInterface().DeactivateBody(pChildNode->GetComponent<Rigidbody>()->GetBodyID());
+    //            //PhysicsCommon::physicsSystem->GetBodyInterface().RemoveBody(pChildNode->GetComponent<Rigidbody>()->GetBodyID());
+    //        }
+    //        if (pChildNode->GetComponent<Trigger>() != nullptr)
+    //        {
+    //            dynamic_cast<MyContactListener*>(PhysicsCommon::physicsSystem->GetContactListener())->RemoveTriggerData(pChildNode->GetComponent<Trigger>()->GetBodyID());
+    //        }
+    //        currentNode->RemoveChild(currentNode->GetChildren()[i].get());
+    //    }
+    //}
+    //else
+    //{
+    //    return;
+    //}
+    //if (currentNode == pSceneRoot.get()) return;
+    //if (!currentNode->GetParent()->markedForDestruction)
+    //{
+    //    if (pSelectedSceneNode == currentNode) { pSelectedSceneNode = nullptr; }
+    //    currentNode->GetParent()->RemoveChild(currentNode);
+    //}
 
 
     auto& children_ref = currentNode->GetChildren_NonConst();
@@ -876,11 +925,19 @@ void App::CleanupDestroyedNodes(Node* currentNode)
                 if (pChildNode->IsMarkedForDestruction()) {
                     OutputDebugStringA(("Cleanup: Preparing to remove node: " + pChildNode->GetName() + "\n").c_str());
 
-                    if (pChildNode->GetComponent<Rigidbody>() != nullptr) {
+                  /*  if (pChildNode->GetComponent<Rigidbody>() != nullptr) {
                         PhysicsCommon::physicsSystem->GetBodyInterface().DeactivateBody(pChildNode->GetComponent<Rigidbody>()->GetBodyID());
                         PhysicsCommon::physicsSystem->GetBodyInterface().RemoveBody(pChildNode->GetComponent<Rigidbody>()->GetBodyID());
+                    }*/
+                    if (pChildNode->GetComponent<Rigidbody>() != nullptr)
+                    {
+                        dynamic_cast<MyContactListener*>(PhysicsCommon::physicsSystem->GetContactListener())->RemoveRigidbodyData(pChildNode->GetComponent<Rigidbody>()->GetBodyID());
+                        //PhysicsCommon::physicsSystem->GetBodyInterface().DeactivateBody(pChildNode->GetComponent<Rigidbody>()->GetBodyID());
+                        //PhysicsCommon::physicsSystem->GetBodyInterface().RemoveBody(pChildNode->GetComponent<Rigidbody>()->GetBodyID());
                     }
-
+                    if (pChildNode->GetComponent<Trigger>() != nullptr)
+                    {
+                    }
 
                     const auto& components = pChildNode->GetComponents();
                     for (const auto& compUniquePtr : components) {

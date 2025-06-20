@@ -634,26 +634,38 @@ std::vector<Node*> Node::FindAllChildrenByTag(const std::string& searchTag)
 }
 void Node::Destroy()
 {
-    if(!markedForDestruction)
+    if (!markedForDestruction)
     {
         if (GetComponent<Rigidbody>() != nullptr)
         {
-            dynamic_cast<MyContactListener*>(PhysicsCommon::physicsSystem->GetContactListener())->RemoveRigidbodyData(GetComponent<Rigidbody>()->GetBodyID());
+            //dynamic_cast<MyContactListener*>(PhysicsCommon::physicsSystem->GetContactListener())->RemoveRigidbodyData(GetComponent<Rigidbody>()->GetBodyID());
+            PhysicsCommon::physicsSystem->GetBodyInterface().SetUserData(GetComponent<Rigidbody>()->GetBodyID(), reinterpret_cast<uint64>(nullptr));
         }
         if (GetComponent<Trigger>() != nullptr)
         {
-            dynamic_cast<MyContactListener*>(PhysicsCommon::physicsSystem->GetContactListener())->RemoveTriggerData(GetComponent<Trigger>()->GetBodyID());
+            //dynamic_cast<MyContactListener*>(PhysicsCommon::physicsSystem->GetContactListener())->RemoveTriggerData(GetComponent<Trigger>()->GetBodyID());
+            PhysicsCommon::physicsSystem->GetBodyInterface().SetUserData(GetComponent<Trigger>()->GetBodyID(), reinterpret_cast<uint64>(nullptr));
+
         }
     }
     markedForDestruction = true;
 
-    for (const auto& child : children)
+
+    for (int i = 0; i < children.size(); i++)
+    {
+        if (!children[i]->markedForDestruction)
+        {
+            children[i]->Destroy();
+        }
+    }
+
+    /*for (const auto& child : children)
     {
         if (child)
         {
             child->Destroy();
         }
-    }
+    }*/
 
 
 

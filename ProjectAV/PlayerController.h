@@ -55,6 +55,7 @@ private:
 	bool dashed = false;
 	bool doubleJumped = false;
 	float autoJumpRange = 1.0f;
+	float autoJumpHeight = 2.0f;
 	void KeyboardInput();
 	void MovePlayer(float dt);
 	void SpeedControl(float dt);

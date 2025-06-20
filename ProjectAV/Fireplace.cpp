@@ -32,6 +32,7 @@ void Fireplace::Update(float dt)
 
 void Fireplace::OnTriggerStay(Node* object)
 {
+	if (object == nullptr) return;
 	if (!isActive) return;
 	if (object->tag == "PLAYER" || object->tag == "ENEMY")
 	{

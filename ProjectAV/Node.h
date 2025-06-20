@@ -75,6 +75,8 @@ public:
     Node* parent = nullptr;
 
     bool isMarkedForDeletion = false;
+    bool markedForDestruction = false;
+
     void Destroy();
     bool IsMarkedForDestruction() const;
     void RemoveChild(Node* childToRemove);
@@ -100,7 +102,6 @@ private:
 
     bool localTransformDirty = true; 
     bool worldTransformDirty = true; 
-    bool markedForDestruction = false;
 };
 
 template<typename T> T* Node::GetComponent() const

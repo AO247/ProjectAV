@@ -42,6 +42,12 @@ void Ability1::Pressed()
         {
 			Vec3 direction = Vec3(pOwner->Forward().x, pOwner->Forward().y, pOwner->Forward().z);
             PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), direction * force);
+          /*  if (objects[i]->tag == "ENEMY")
+            {
+                objects[i]->AddComponent(
+                    std::make_unique<OnFire>(objects[i])
+                );
+            }*/
         }
         else if (objects[i]->tag == "BULLET")
         {

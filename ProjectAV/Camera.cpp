@@ -16,7 +16,7 @@ Camera::Camera(Node* owner, Window& window)
 
 void Camera::Update(float dt)
 {
-    if (!wnd.CursorEnabled() && GetOwner() && active && !wnd.playerLocked)
+    if (!wnd.CursorEnabled() && pOwner != nullptr && active && !wnd.playerLocked)
     {
         HandleMouseLook(dt);
     }
@@ -43,13 +43,13 @@ void Camera::HandleMouseLook(float dt)
     DirectX::XMFLOAT4 quatFloat4;
     DirectX::XMStoreFloat4(&quatFloat4, quat);
 
-    GetOwner()->SetLocalRotation(quatFloat4);      
+    pOwner->SetLocalRotation(quatFloat4);
 }
 
 
 DirectX::XMMATRIX Camera::GetViewMatrix() const noexcept
 {
-    dx::XMMATRIX cameraWorldTransform = GetOwner()->GetWorldTransform();
+    dx::XMMATRIX cameraWorldTransform = pOwner->GetWorldTransform();
 
     dx::XMVECTOR determinant = dx::XMMatrixDeterminant(cameraWorldTransform);
     return dx::XMMatrixInverse(&determinant, cameraWorldTransform);

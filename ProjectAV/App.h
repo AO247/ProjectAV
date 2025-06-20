@@ -75,6 +75,7 @@ private:
     void DrawNodeRecursive(Graphics& gfx, Node* node);
     void CleanupDestroyedNodes(Node* currentNode);
 
+    void RemoveRigidbody(Node* currentNode);
     bool showDemoWindow = false;
     bool cursorEnabled = false;
     bool showControlWindow = false;
@@ -89,7 +90,6 @@ private:
     std::unique_ptr<Sprite> loadingScreen3;
     float countLoding = 0.0f;
     float bonusTime = 5.0f;
-
 
 
 

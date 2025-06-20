@@ -14,7 +14,7 @@ public:
 	float damage = 1.0f;
 	virtual void DrawImGuiControls() override;
 	void OnCollisionEnter(Node* object) override;
-	float speed = 35.0f;
+	float speed = 30.0f;
 	bool pot = false;
 	bool heavy = false;
 private:

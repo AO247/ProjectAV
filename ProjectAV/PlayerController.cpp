@@ -65,8 +65,8 @@ void PlayerController::SpeedControl(float dt)
             vel.SetZ(vel.GetZ() * 0.92f);
         }
         else {
-            vel.SetX(vel.GetX() * 0.99f);
-            vel.SetZ(vel.GetZ() * 0.99f);
+            vel.SetX(vel.GetX() * 0.98f);
+            vel.SetZ(vel.GetZ() * 0.98f);
         }
 		PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rigidbody->GetBodyID(), vel);
 	}
@@ -176,7 +176,7 @@ void PlayerController::PlayerGroundCheck()
         grounded = true;
     }
 
-    pos = playerPos + moveDirection;
+   /* pos = playerPos + moveDirection;
 
     RRayCast rayForward = RRayCast(
         RVec3(pos.x, pos.y, pos.z),
@@ -188,7 +188,7 @@ void PlayerController::PlayerGroundCheck()
         IgnoreMultipleObjectLayerFilter({ Layers::PLAYER, Layers::TRIGGER })))
     {
         grounded = true;
-    }
+    }*/
 
 
     if (grounded)
@@ -208,7 +208,28 @@ void PlayerController::MovePlayer(float dt)
         float currentLength = currentVel.Length();
         currentVel = currentVel.Normalized();
 
-        if ((desiredVel - currentVel).Length() > 0.2f)
+        if ((desiredVel - currentVel).Length() > 1.9f)
+        {
+            copy.SetX(copy.GetX() * 0.92f);
+            copy.SetZ(copy.GetZ() * 0.92f);
+            PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rigidbody->GetBodyID(), copy);
+
+        }
+       /* else if ((desiredVel - currentVel).Length() > 1.0f)
+        {
+            copy.SetX(copy.GetX() * 0.98f);
+            copy.SetZ(copy.GetZ() * 0.98f);
+            PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rigidbody->GetBodyID(), copy);
+
+        }
+        else if ((desiredVel - currentVel).Length() > 1.2f)
+        {
+            copy.SetX(copy.GetX() * 0.96f);
+            copy.SetZ(copy.GetZ() * 0.96f);
+            PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rigidbody->GetBodyID(), copy);
+
+        }*/
+        else if ((desiredVel - currentVel).Length() > 0.2f)
         {
             Vec3 newVelocity = desiredVel * currentLength;
             newVelocity.SetY(copy.GetY());
@@ -250,46 +271,51 @@ void PlayerController::AutoJump()
 
         Vector3 leftPos = playerPos + leftDir * autoJumpRange;
         Vector3 rightPos = playerPos + rightDir * autoJumpRange;
+        pos.y += 10.0f;
+        leftPos.y += 10.0f;
+        rightPos.y += 1.0f;
+
+        Vec3 direction = Vec3(0.0f, -(height / 2 + 0.2f + 10.0f), 0.0f);
 
         // Central raycast (original)
         RRayCast rayFront = RRayCast(
             RVec3(pos.x, pos.y, pos.z),
-            Vec3(0.0f, -(height / 2 + 0.2f), 0.0f)
+            direction
         );
         RayCastResult resultFront;
 
         RRayCast rayLeft = RRayCast(
             RVec3(leftPos.x, leftPos.y, leftPos.z),
-            Vec3(0.0f, -(height / 2 + 0.2f), 0.0f)
+            direction
         );
         RayCastResult resultLeft;
 
         RRayCast rayRight = RRayCast(
             RVec3(rightPos.x, rightPos.y, rightPos.z),
-            Vec3(0.0f, -(height / 2 + 0.2f), 0.0f)
+            direction
         );
         RayCastResult resultRight;
 
         if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(rayFront, resultFront,
-            IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::PLAYER, BroadPhaseLayers::TRIGGER }),
-            IgnoreMultipleObjectLayerFilter({ Layers::PLAYER, Layers::TRIGGER })))
+            IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::PLAYER, BroadPhaseLayers::ENEMY, BroadPhaseLayers::TRIGGER }),
+            IgnoreMultipleObjectLayerFilter({ Layers::PLAYER, Layers::ENEMY, Layers::TRIGGER})))
         {
             Vec3 hitPos = rayFront.mOrigin + rayFront.mDirection * resultFront.mFraction;
             Vec3 playerDownPos = Vec3(playerPos.x, playerPos.y - (height / 2), playerPos.z);
             float diffrence = (hitPos.GetY() - playerDownPos.GetY());
-            if (diffrence < 2.5f && diffrence > 0.5f)
+            if (diffrence < autoJumpHeight && diffrence > 0.5f)
             {
 				PhysicsCommon::physicsSystem->GetBodyInterface().SetPosition(rigidbody->GetBodyID(), Vec3(playerPos.x, playerPos.y + diffrence, playerPos.z), EActivation::Activate);
             }
         }
         else if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(rayLeft, resultLeft,
-            IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::PLAYER, BroadPhaseLayers::TRIGGER }),
-            IgnoreMultipleObjectLayerFilter({ Layers::PLAYER, Layers::TRIGGER })))
+            IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::PLAYER, BroadPhaseLayers::ENEMY, BroadPhaseLayers::TRIGGER }),
+            IgnoreMultipleObjectLayerFilter({ Layers::PLAYER, Layers::ENEMY, Layers::TRIGGER })))
         {
             Vec3 hitPos = rayLeft.mOrigin + rayLeft.mDirection * resultLeft.mFraction;
             Vec3 playerDownPos = Vec3(playerPos.x, playerPos.y - (height / 2), playerPos.z);
             float diffrence = (hitPos.GetY() - playerDownPos.GetY());
-            if (diffrence < 2.5f && diffrence > 0.5f)
+            if (diffrence < autoJumpHeight && diffrence > 0.5f)
             {
                 PhysicsCommon::physicsSystem->GetBodyInterface().SetPosition(rigidbody->GetBodyID(), Vec3(playerPos.x, playerPos.y + diffrence, playerPos.z), EActivation::Activate);
             }
@@ -297,13 +323,13 @@ void PlayerController::AutoJump()
 
 
         else if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(rayRight, resultRight,
-            IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::PLAYER, BroadPhaseLayers::TRIGGER }),
-            IgnoreMultipleObjectLayerFilter({ Layers::PLAYER, Layers::TRIGGER })))
+            IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::PLAYER, BroadPhaseLayers::ENEMY, BroadPhaseLayers::TRIGGER }),
+            IgnoreMultipleObjectLayerFilter({ Layers::PLAYER, Layers::ENEMY, Layers::TRIGGER })))
         {
             Vec3 hitPos = rayRight.mOrigin + rayRight.mDirection * resultRight.mFraction;
             Vec3 playerDownPos = Vec3(playerPos.x, playerPos.y - (height / 2), playerPos.z);
             float diffrence = (hitPos.GetY() - playerDownPos.GetY());
-            if (diffrence < 2.5f && diffrence > 0.5f)
+            if (diffrence < autoJumpHeight && diffrence > 0.5f)
             {
                 PhysicsCommon::physicsSystem->GetBodyInterface().SetPosition(rigidbody->GetBodyID(), Vec3(playerPos.x, playerPos.y + diffrence, playerPos.z), EActivation::Activate);
             }
@@ -431,6 +457,7 @@ void PlayerController::DrawImGuiControls()
     ImGui::Checkbox("Double Jumped", &doubleJumped);
 	ImGui::Checkbox("Alive", &alive);
     ImGui::InputFloat("Auto Jump Range", &autoJumpRange);
+	ImGui::InputFloat("Auto Jump Height", &autoJumpHeight);
 
 
 }
