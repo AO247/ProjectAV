@@ -3894,6 +3894,41 @@ public:
         return pNewNode;
     }
 
+    static Node* InstantiateAbility3CoreParticles(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 })
+    {
+        auto pNewNodeOwner = std::make_unique<Node>("Ability3CoreParticles", nullptr);
+        Node* pNewNode = pNewNodeOwner.get();
+
+        pNewNode->AddComponent(
+            std::make_unique<ParticleSystemComponent>(pNewNode, wind->Gfx(), "Models\\rzut.png", 200, std::make_unique<PointEmitterLogic>())
+        );
+        ParticleSystemComponent* particles = pNewNode->GetComponent<ParticleSystemComponent>();
+        particles->SetPlaybackMode(ParticleSystemComponent::PlaybackMode::OneShot);
+        particles->destroyAfterEmission = true;
+        particles->ParticleLifetime = 0.7f;
+        particles->EmissionDuration = 1.0f;
+        particles->EmissionRate = 200.0f;
+        particles->ParticleVelocity = { 0.0f, 0.0f, 0.0f };
+        particles->ParticleVelocityVariance = { 4.0f, 4.0f, 4.0f };
+        particles->StartSize = 5.0f;
+        particles->EndSize = 5.0f;
+        particles->EndRotation = 0.0f;
+        particles->lockRotationOnYAxis = true;
+        particles->textureAtlasColumns = 2;
+        particles->textureAtlasRows = 2;
+
+        particles->Play();
+        particles->Link(*rg);
+
+        pNewNodeOwner->SetWorldPosition(position);
+        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+        pNewNodeOwner->SetLocalRotation(rotation);
+
+        parentNode->AddChild(std::move(pNewNodeOwner));
+
+        return pNewNode;
+    }
+
     static Node* InstantiateAbility4SelectParticles(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 })
     {
         auto pNewNodeOwner = std::make_unique<Node>("Ability2Particles", nullptr);
