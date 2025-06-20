@@ -456,6 +456,9 @@
     <ClCompile Include="Fireplace.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
+    <ClCompile Include="StaticSoundPlayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Win.h">
@@ -913,6 +916,9 @@
     </ClInclude>
     <ClInclude Include="Fireplace.h">
       <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticSoundPlayer.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

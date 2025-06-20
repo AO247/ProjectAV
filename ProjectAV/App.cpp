@@ -9,8 +9,8 @@
 #include "TexturePreprocessor.h"
 #include "SolidCapsule.h"
 #include "SoundDevice.h"
-#include "SoundEffectsLibrary.h"
 #include "SoundEffectsPlayer.h"
+#include "StaticSoundPlayer.h"
 #include "DebugLine.h"
 #include "Testing.h"
 #include "PrefabManager.h"
@@ -64,8 +64,10 @@ App::App(const std::string& commandLine)
     soundDevice = LISTENER->Get();
     ALint attentuation = AL_INVERSE_DISTANCE_CLAMPED;
 	soundDevice->SetAttenuation(attentuation);
+	StaticSoundPlayer::Get().Init(64);
     myMusic = std::make_unique<MusicBuffer>("Music\\windererfull.mp3");
     myMusic->setGain(1.0f);
+
 	auto base = std::make_unique<Node>("Base");
 	auto playerThings = std::make_unique<Node>("Player Things");
     auto pCameraNodeOwner = std::make_unique<Node>("Camera", nullptr, "CAMERA");
@@ -211,6 +213,7 @@ App::App(const std::string& commandLine)
     pPlayer->AddComponent(
         std::make_unique<SoundEffectsPlayer>(pPlayer)
     );
+	StaticSoundPlayer::Get().SetPlayerNode(pPlayer);
     SoundEffectsPlayer* pSoundEffectsPlayer = pPlayer->GetComponent<SoundEffectsPlayer>();
     pSoundEffectsPlayer->AddSound("Models\\turn.ogg");
     pSoundEffectsPlayer->AddSound("Sounds\\push1.ogg");
@@ -367,6 +370,7 @@ App::App(const std::string& commandLine)
 
 App::~App()
 {
+	StaticSoundPlayer::Get().Shutdown();
     std::ofstream outFile("scene_transforms.txt");
     if (outFile.is_open())
     {

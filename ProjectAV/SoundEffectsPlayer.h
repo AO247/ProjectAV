@@ -1,31 +1,18 @@
 #pragma once
-#include <AL\al.h>
-#include "Node.h"
+#include "Component.h"
+#include <vector>
+#include <string>
 
 class SoundEffectsPlayer : public Component
 {
 public:
-	SoundEffectsPlayer(Node* owner, int sourceCount = 4);
-	~SoundEffectsPlayer();
+	SoundEffectsPlayer(Node* owner);
+	~SoundEffectsPlayer() = default;
 
-	void Play(int index);
-	void Stop(int index);
-	void StopAll();
-;	void Pause(int index);
-	void Resume(int index);
+	void AddSound(const std::string& filename);
 
-	void SetBufferToPlay(const ALuint& buffer_to_play);
-	void SetLooping(int soundIndex, const bool& loop);
-	void SetPosition(const float& x, const float& y, const float& z);
+	void Play(int soundIndex, float gain = 1.0f);
 
-	virtual void Update(float dt) override;
-	void AddSound(const std::string& path);
-	std::vector<ALuint> soundBuffers;
-	Node* player;
 private:
-	float m_maxAudibleDistance = 300.0f;
-	ALuint GetAvailableSource();
-	std::vector<ALuint> m_sources;
-	std::vector<ALuint> m_soundBufferIDs;
+	std::vector<std::string> m_soundPlaylist;
 };
-

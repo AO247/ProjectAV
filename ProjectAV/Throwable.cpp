@@ -11,7 +11,15 @@ void Throwable::OnCollisionEnter(Node* object)
 	if (object->tag == "TRIGGER") return;
 	Vec3 position = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
 	float l = position.Length();
+
+	/*if (pOwner->GetComponent<SoundEffectsPlayer>())
+	{
+		float p = (rand() % 2);
+		pOwner->GetComponent<SoundEffectsPlayer>()->Play(p);
+	}*/
+
 	if (l < speed) return;
+
 	if (object->tag == "ENEMY" || object->tag == "PLAYER")
 	{
 		if (object->GetComponent<Health>())
@@ -19,11 +27,7 @@ void Throwable::OnCollisionEnter(Node* object)
 			object->GetComponent<Health>()->TakeDamage(damage, heavy);
 		}
 	}
-	if (pOwner->GetComponent<SoundEffectsPlayer>())
-	{
-		float p = (rand() % 2);
-		pOwner->GetComponent<SoundEffectsPlayer>()->Play(p);
-	}
+	
 	if (pot)
 	{
 		pOwner->Destroy();
