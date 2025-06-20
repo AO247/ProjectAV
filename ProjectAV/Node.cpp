@@ -634,7 +634,7 @@ std::vector<Node*> Node::FindAllChildrenByTag(const std::string& searchTag)
 }
 void Node::Destroy()
 {
-    if(!markedForDestruction)
+    /*if (!markedForDestruction)
     {
         if (GetComponent<Rigidbody>() != nullptr)
         {
@@ -644,16 +644,24 @@ void Node::Destroy()
         {
             dynamic_cast<MyContactListener*>(PhysicsCommon::physicsSystem->GetContactListener())->RemoveTriggerData(GetComponent<Trigger>()->GetBodyID());
         }
-    }
+    }*/
     markedForDestruction = true;
 
-    for (const auto& child : children)
+    for (int i = 0; i < children.size(); i++)
+    {
+        if (!children[i]->markedForDestruction)
+        {
+            children[i]->Destroy();
+        }
+    }
+
+    /*for (const auto& child : children)
     {
         if (child)
         {
             child->Destroy();
         }
-    }
+    }*/
 
 
 

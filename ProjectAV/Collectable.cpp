@@ -32,6 +32,7 @@ void Collectable::Update(float dt)
 
 void Collectable::OnTriggerEnter(Node* object)
 {
+	if (object == nullptr) return;
 	if (object->tag == "PLAYER")
 	{
 		if (health)

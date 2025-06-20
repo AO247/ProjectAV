@@ -48,6 +48,7 @@ void BasicAttack::CheckAttack()
 }
 
 void BasicAttack::OnTriggerEnter(Node* object) {
+	if (object == nullptr) return;
 	if (object->tag != "PLAYER") return;
 	for (int i = 0; i < objects.size(); i++)
 	{
@@ -57,6 +58,7 @@ void BasicAttack::OnTriggerEnter(Node* object) {
 	OutputDebugStringA(("Enemy OnTriggerEnter: " + object->GetName() + "\n").c_str());
 }
 void BasicAttack::OnTriggerExit(Node* object) {
+	if (object == nullptr) return;
 	if (object->tag != "PLAYER") return;
 	auto it = std::remove(objects.begin(), objects.end(), object);
 	if (it != objects.end()) {

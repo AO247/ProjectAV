@@ -69,6 +69,7 @@ void Global::Update(float dt)
 		endingRemover--;
 		if(endingRemover < 0)
 		{
+			levels.clear();
 			StartRun();
 			ending = false;
 		}

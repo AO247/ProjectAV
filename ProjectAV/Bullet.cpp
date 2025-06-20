@@ -14,6 +14,7 @@ void Bullet::Update(float dt)
 
 void Bullet::OnTriggerEnter(Node* object)
 {
+	if (object == nullptr) return;
 	if (object->tag == "TRIGGER"|| object == pOwner || object == ignore) return;
 	if (object->tag == "PLAYER") 
 	{
@@ -27,6 +28,7 @@ void Bullet::OnTriggerEnter(Node* object)
 }
 void Bullet::OnCollisionEnter(Node* object)
 {
+	if (object == nullptr) return;
 	if (object->tag == "TRIGGER" || object == pOwner || object == ignore) return;
 	pOwner->Destroy();
 }

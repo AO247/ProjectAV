@@ -75,6 +75,7 @@ private:
     void DrawNodeRecursive(Graphics& gfx, Node* node);
     void CleanupDestroyedNodes(Node* currentNode);
 
+    void RemoveRigidbody(Node* currentNode);
     bool showDemoWindow = false;
     bool cursorEnabled = false;
     bool showControlWindow = false;
