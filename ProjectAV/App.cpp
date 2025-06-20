@@ -586,7 +586,7 @@ void App::DoFrame(float dt)
     
 	//tutorialNode->GetComponent<Tutorial>()->DrawNote();
 
-    /*if(pSceneRoot->GetComponent<Global>()->drawLoadingScreen || bonusTime > 0.0f)
+    if(pSceneRoot->GetComponent<Global>()->drawLoadingScreen || bonusTime > 0.0f)
     {
         if (!pSceneRoot->GetComponent<Global>()->drawLoadingScreen)
         {
