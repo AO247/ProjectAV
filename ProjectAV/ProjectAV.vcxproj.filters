@@ -82,6 +82,12 @@
     <Filter Include="Source Files\Components\Abilities">
       <UniqueIdentifier>{5f630209-bb52-45b6-969b-a911ac9ac3bc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Components\Enemies">
+      <UniqueIdentifier>{9c555987-76e0-4d38-8e3e-1e36b1e1e614}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Components\Enemies">
+      <UniqueIdentifier>{6e3d2293-c7ad-40f8-aed5-7ca90d77af66}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinMain.cpp">
@@ -222,9 +228,6 @@
     <ClCompile Include="DirectionalLight.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Walking.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
     <ClCompile Include="TexturePreprocessor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -298,18 +301,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Health.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="BasicAttack.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="ShootAttack.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Bullet.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Flying.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
     <ClCompile Include="PhysicsCommon.cpp">
@@ -393,9 +384,6 @@
     <ClCompile Include="UpgradeHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Fire.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
     <ClCompile Include="FireStatue.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
@@ -436,6 +424,36 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Tutorial.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet.cpp">
+      <Filter>Source Files\Components\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="BasicAttack.cpp">
+      <Filter>Source Files\Components\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="Flying.cpp">
+      <Filter>Source Files\Components\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="Walking.cpp">
+      <Filter>Source Files\Components\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="ShootAttack.cpp">
+      <Filter>Source Files\Components\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="SpawnAttack.cpp">
+      <Filter>Source Files\Components\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="BoomAttack.cpp">
+      <Filter>Source Files\Components\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="Spikes.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="OnFire.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Fireplace.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
   </ItemGroup>
@@ -638,9 +656,6 @@
     <ClInclude Include="DirectionalLight.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Walking.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
     <ClInclude Include="Components.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
@@ -731,18 +746,6 @@
     <ClInclude Include="Health.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
-    <ClInclude Include="BasicAttack.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="ShootAttack.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Bullet.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Flying.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
     <ClInclude Include="PhysicsCommon.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -830,12 +833,6 @@
     <ClInclude Include="MainRenderGraph.h">
       <Filter>Header Files\Jobber\Graphlib</Filter>
     </ClInclude>
-    <ClInclude Include="Fire.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FireStatue.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Skybox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -882,6 +879,39 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Tutorial.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="BasicAttack.h">
+      <Filter>Header Files\Components\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="Bullet.h">
+      <Filter>Header Files\Components\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="Flying.h">
+      <Filter>Header Files\Components\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="ShootAttack.h">
+      <Filter>Header Files\Components\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="Walking.h">
+      <Filter>Header Files\Components\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="SpawnAttack.h">
+      <Filter>Header Files\Components\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="BoomAttack.h">
+      <Filter>Header Files\Components\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="Spikes.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="OnFire.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="FireStatue.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Fireplace.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
   </ItemGroup>

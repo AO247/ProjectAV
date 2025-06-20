@@ -1,7 +1,8 @@
 #include "AttackState.h"
 #include "StateMachine.h"
 #include "Node.h" 
-
+#include "EnemyConfig.h"
+#include "AnimationComponent.h"
 
 #include "Win.h" 
 
@@ -24,6 +25,21 @@ void AttackState::Enter(StateMachine* pOwner)
 		pOwner->GetOwner()->SetLocalRotation({ 0.0f, targetYaw, 0.0f });
 
 	}
+
+	AnimationComponent* animComp = pOwner->GetOwnerNode()->GetComponent<AnimationComponent>();
+	if (animComp) {
+		switch (pOwner->enemyType)
+		{
+		case EnemyType::BASIC:
+			int randomAttack = std::rand() % 2;  
+			if (randomAttack == 0)
+				animComp->PlayAnimation(EnemyAnimationIndices::BASIC_ATTACK1);
+			else
+				animComp->PlayAnimation(EnemyAnimationIndices::BASIC_ATTACK2);
+			break;
+		}
+	}
+
 }
 
 void AttackState::Update(StateMachine* pOwner, float dt)

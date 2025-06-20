@@ -221,9 +221,9 @@ App::App(const std::string& commandLine)
     pFreeViewCamera->SetLocalPosition({ 4.0f, 11.0f, -28.0f });
     pPlayer->SetLocalPosition({ 0.0f, 80.0f, -24.0f });
 
-    /*pSceneRoot->AddComponent(
+    pSceneRoot->AddComponent(
         std::make_unique<Global>(pSceneRoot.get(), wnd, pPlayer, pBase)
-    );*/
+    );
 
     pLeftHandNormal->AddComponent(
         std::make_unique<ModelComponent>(pLeftHandNormal, wnd.Gfx(), "Models\\hands\\left.obj")
@@ -280,9 +280,9 @@ App::App(const std::string& commandLine)
 	pUpgradeHandler->ability6Node = pAbility6;
     pUpgradeHandler->playerController = pPlayer->GetComponent<PlayerController>();
     pUpgradeHandler->SetBasicValues();
-    //pSceneRoot->GetComponent<Global>()->upgradeHandler = pUpgradeHandler;
+    pSceneRoot->GetComponent<Global>()->upgradeHandler = pUpgradeHandler;
 
-	PrefabManager::InstantiateIslandBig2(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
+	//PrefabManager::InstantiateIslandBig10(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
 	//tutorialNode = PrefabManager::InstantiateTutorialIslands(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
     //pSceneRoot->GetComponent<Global>()->tut = tutorialNode->GetComponent<Tutorial>();
 
@@ -613,7 +613,7 @@ void App::DoFrame(float dt)
         {
             loadingScreen1->Draw(wnd.Gfx().GetContext());
         }
-    }*/
+    }
 
     wnd.Gfx().EndFrame();
     rg.Reset();
@@ -846,6 +846,13 @@ void App::ShowControlWindows()
 void App::CleanupDestroyedNodes(Node* currentNode)
 {
     if (!currentNode) return;
+
+    /*for(int i = 0; i < currentNode->children.size(); ++i) {
+        if (currentNode->children[i]->IsMarkedForDestruction())
+        {
+			CleanupDestroyedNodes(currentNode->children[i].get());
+        }
+	}*/
 
 
     auto& children_ref = currentNode->GetChildren_NonConst();
