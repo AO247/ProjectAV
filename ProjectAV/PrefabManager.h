@@ -205,6 +205,123 @@ public:
 
         return pNewNode;
     }
+
+    static Node* InstantiateBush1(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 }) {
+        auto pNewNodeOwner = std::make_unique<Node>("Bush1", nullptr, "WALL");
+
+        pNewNodeOwner->AddComponent(
+            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\dekoracje\\1.obj")
+        );
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        /*ModelComponent* model = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList modelTriangles = PhysicsCommon::MakeTriangleList(model->GetAllTriangles());
+        MeshShapeSettings modelMeshSettings(modelTriangles);
+        Shape::ShapeResult modelMeshCreationResult = modelMeshSettings.Create();
+        ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
+        ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
+        modelMeshShape = modelScaling.Create().Get();
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
+        pNewNodeOwner->AddComponent(
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
+        );*/
+
+        pNewNodeOwner->SetLocalPosition(position);
+        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+        pNewNodeOwner->SetLocalRotation(rotation);
+
+        Node* pNewNode = pNewNodeOwner.get();
+        parentNode->AddChild(std::move(pNewNodeOwner));
+
+        return pNewNode;
+    }
+    static Node* InstantiateBush2(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 }) {
+        auto pNewNodeOwner = std::make_unique<Node>("Bush2", nullptr, "WALL");
+
+        pNewNodeOwner->AddComponent(
+            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\dekoracje\\2.fbx")
+        );
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        /*ModelComponent* model = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList modelTriangles = PhysicsCommon::MakeTriangleList(model->GetAllTriangles());
+        MeshShapeSettings modelMeshSettings(modelTriangles);
+        Shape::ShapeResult modelMeshCreationResult = modelMeshSettings.Create();
+        ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
+        ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
+        modelMeshShape = modelScaling.Create().Get();
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
+        pNewNodeOwner->AddComponent(
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
+        );*/
+
+        pNewNodeOwner->SetLocalPosition(position);
+        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+        pNewNodeOwner->SetLocalRotation(rotation);
+
+        Node* pNewNode = pNewNodeOwner.get();
+        parentNode->AddChild(std::move(pNewNodeOwner));
+
+        return pNewNode;
+    }
+    static Node* InstantiateBush3(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 }) {
+        auto pNewNodeOwner = std::make_unique<Node>("Bush3", nullptr, "WALL");
+
+        pNewNodeOwner->AddComponent(
+            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\dekoracje\\3.fbx")
+        );
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        /*ModelComponent* model = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList modelTriangles = PhysicsCommon::MakeTriangleList(model->GetAllTriangles());
+        MeshShapeSettings modelMeshSettings(modelTriangles);
+        Shape::ShapeResult modelMeshCreationResult = modelMeshSettings.Create();
+        ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
+        ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
+        modelMeshShape = modelScaling.Create().Get();
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
+        pNewNodeOwner->AddComponent(
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
+        );*/
+
+        pNewNodeOwner->SetLocalPosition(position);
+        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+        pNewNodeOwner->SetLocalRotation(rotation);
+
+        Node* pNewNode = pNewNodeOwner.get();
+        parentNode->AddChild(std::move(pNewNodeOwner));
+
+        return pNewNode;
+    }
+    static Node* InstantiateBush4(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 }) {
+        auto pNewNodeOwner = std::make_unique<Node>("Bush4", nullptr, "WALL");
+
+        pNewNodeOwner->AddComponent(
+            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\dekoracje\\4.fbx")
+        );
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        /*ModelComponent* model = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList modelTriangles = PhysicsCommon::MakeTriangleList(model->GetAllTriangles());
+        MeshShapeSettings modelMeshSettings(modelTriangles);
+        Shape::ShapeResult modelMeshCreationResult = modelMeshSettings.Create();
+        ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
+        ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
+        modelMeshShape = modelScaling.Create().Get();
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
+        pNewNodeOwner->AddComponent(
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
+        );*/
+
+        pNewNodeOwner->SetLocalPosition(position);
+        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+        pNewNodeOwner->SetLocalRotation(rotation);
+
+        Node* pNewNode = pNewNodeOwner.get();
+        parentNode->AddChild(std::move(pNewNodeOwner));
+
+        return pNewNode;
+    }
 #pragma endregion
 
 #pragma region WALLS AND OBJECTS
@@ -782,36 +899,6 @@ public:
 
         return pNewNode;
     }
-    /*static Node* InstantiateStatue(Node* parentNode, Vector3 position, float scale)
-    {
-        auto pNewNodeOwner = std::make_unique<Node>("Statue", nullptr, "WALL");
-
-        pNewNodeOwner->AddComponent(
-            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\enviro_male\\kolce_1.obj")
-        );
-        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-        ModelComponent* model = pNewNodeOwner->GetComponent<ModelComponent>();
-        TriangleList modelTriangles = PhysicsCommon::MakeTriangleList(model->GetAllTriangles());
-        MeshShapeSettings modelMeshSettings(modelTriangles);
-        Shape::ShapeResult modelMeshCreationResult = modelMeshSettings.Create();
-        ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
-        ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
-        modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
-        bodySettings.mFriction = 1.0f;
-        pNewNodeOwner->AddComponent(
-            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
-        );
-
-        pNewNodeOwner->SetLocalPosition(position);
-        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
-        pNewNodeOwner->SetLocalRotation(rotation);
-
-        Node* pNewNode = pNewNodeOwner.get();
-        parentNode->AddChild(std::move(pNewNodeOwner));
-
-        return pNewNode;
-    }*/
     static Node* InstantiateColumn(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("Column", nullptr, "WALL");
@@ -1865,6 +1952,10 @@ public:
         InstantiateColumn(pNewNode, Vector3(-14.0f, 0.0f, 20.0f), 4.0f);
         InstantiateColumn(pNewNode, Vector3(-14.0f, 0.0f, -19.0f), 4.0f);
 		InstantiateBaseColumn(pNewNode, Vector3(0.00f, -3.10f, 0.00f), 4.0f, 1.0f);
+		InstantiateBush1(pNewNode, Vector3(0.0f, 10.0f, 20.0f), 12.0f);
+		InstantiateBush2(pNewNode, Vector3(0.0f, 10.0f, -20.0f), 12.0f);
+		InstantiateBush3(pNewNode, Vector3(20.0f, 10.0f, 0.0f), 12.0f);
+		InstantiateBush4(pNewNode, Vector3(-20.0f, 10.0f, 0.0f), 12.0f);
         //InstantiateAnimationTest(pNewNode, Vector3(0.0f, 5.0f, 0.0f), 1.0f);
 
 
@@ -2442,7 +2533,7 @@ public:
        /* pIsland->halfExtents = { (rightPoint->GetLocalPosition().x - leftPoint->GetLocalPosition().x) / 2.0f - 1.0f,
                                 2.0f,
                                 (upPoint->GetLocalPosition().z - downPoint->GetLocalPosition().z) / 2.0f - 1.0f };*/
-        upPoint->AddComponent(
+        /*upPoint->AddComponent(
             std::make_unique<ModelComponent>(upPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
         );
 		upPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
@@ -2457,7 +2548,7 @@ public:
         rightPoint->AddComponent(
             std::make_unique<ModelComponent>(rightPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
         );
-		rightPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+		rightPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
         pIsland->leftPoint = leftPoint.get();
         pIsland->rightPoint = rightPoint.get();
         pIsland->upPoint = upPoint.get();
@@ -3133,7 +3224,7 @@ public:
         pIsland->halfExtents = { (rightPoint->GetLocalPosition().x - leftPoint->GetLocalPosition().x) / 2.0f - 1.0f,
                                 2.0f,
                                 (upPoint->GetLocalPosition().z - downPoint->GetLocalPosition().z) / 2.0f - 1.0f };
-        upPoint->AddComponent(
+        /*upPoint->AddComponent(
             std::make_unique<ModelComponent>(upPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
         );
         upPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
@@ -3148,7 +3239,7 @@ public:
         rightPoint->AddComponent(
             std::make_unique<ModelComponent>(rightPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
         );
-        rightPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        rightPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
         pIsland->leftPoint = leftPoint.get();
         pIsland->rightPoint = rightPoint.get();
         pIsland->upPoint = upPoint.get();
@@ -6541,6 +6632,10 @@ public:
 
         return pNewNode;
     }
+
+#pragma endregion
+
+#pragma region PREFAB UTILITY
 
     ///////////////////////////////
     ////////PREFAB UTILITY/////////
