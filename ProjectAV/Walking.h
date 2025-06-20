@@ -40,6 +40,9 @@ public:
 	float avoidObjectDistance = 2.0f;
 	Vector3 lastIslandPos = { 0.0f, 0.0f, 0.0f };
 
+	float stepSoundInterval = 1.6f; 
+	float stepSoundTimer = 0.0f;
+
 private:
 	Rigidbody* rigidbody;
 

@@ -5,7 +5,7 @@
 class SoundEffectsPlayer : public Component
 {
 public:
-	SoundEffectsPlayer(Node* owner, int sourceCount = 6);
+	SoundEffectsPlayer(Node* owner, int sourceCount = 4);
 	~SoundEffectsPlayer();
 
 	void Play(int index);
@@ -21,7 +21,9 @@ public:
 	virtual void Update(float dt) override;
 	void AddSound(const std::string& path);
 	std::vector<ALuint> soundBuffers;
+	Node* player;
 private:
+	float m_maxAudibleDistance = 300.0f;
 	ALuint GetAvailableSource();
 	std::vector<ALuint> m_sources;
 	std::vector<ALuint> m_soundBufferIDs;

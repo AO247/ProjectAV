@@ -1,6 +1,6 @@
 #include "SoundEffectsPlayer.h"
 #include "SoundEffectsLibrary.h"
-#include <iostream>
+#include "PrefabManager.h"
 
 SoundEffectsPlayer::SoundEffectsPlayer(Node* owner, int sourceCount) : Component(owner)
 {
@@ -22,7 +22,7 @@ SoundEffectsPlayer::SoundEffectsPlayer(Node* owner, int sourceCount) : Component
 		alSourcei(source, AL_SOURCE_RELATIVE, AL_FALSE);
 		alSourcef(source, AL_ROLLOFF_FACTOR, 1.0f);
 		alSourcef(source, AL_REFERENCE_DISTANCE, 15.0f);
-		alSourcef(source, AL_MAX_DISTANCE, 600.0f);
+		alSourcef(source, AL_MAX_DISTANCE, m_maxAudibleDistance);
 		alSourcef(source, AL_GAIN, 1.0f);
 	}
 }
@@ -55,6 +55,20 @@ SoundEffectsPlayer::~SoundEffectsPlayer()
 
 void SoundEffectsPlayer::Play(int index)
 {
+	Node* playerNode = PrefabManager::player;
+
+	if (playerNode)
+	{
+		DirectX::SimpleMath::Vector3 playerPos(playerNode->GetWorldPosition());
+		DirectX::SimpleMath::Vector3 sourcePos(pOwner->GetWorldPosition());
+
+		float distanceSq = DirectX::SimpleMath::Vector3::DistanceSquared(playerPos, sourcePos);
+		if (distanceSq > (m_maxAudibleDistance * m_maxAudibleDistance))
+		{
+			return;
+		}
+	}
+	
 	if (m_sources.empty() || index >= m_soundBufferIDs.size())
 	{
 		return;

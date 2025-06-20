@@ -2578,7 +2578,7 @@ public:
         auto spawnPoint4 = std::make_unique<Node>("SpawnPoint 4", pNewNodeOwner.get());
         auto spawnPoint5 = std::make_unique<Node>("SpawnPoint 5", pNewNodeOwner.get());
         auto spawnPoint6 = std::make_unique<Node>("SpawnPoint 6", pNewNodeOwner.get());
-        spawnPoint1->AddComponent(
+        /*spawnPoint1->AddComponent(
             std::make_unique<ModelComponent>(spawnPoint1.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
         );
         spawnPoint1->GetComponent<ModelComponent>()->LinkTechniques(*rg);
@@ -2601,7 +2601,7 @@ public:
         spawnPoint6->AddComponent(
             std::make_unique<ModelComponent>(spawnPoint6.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
         );
-        spawnPoint6->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        spawnPoint6->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
 
         spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(30.40f, 2.00f, -14.20f));
         spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(-33.40f, 22.50f, 4.00f));
@@ -5138,7 +5138,7 @@ public:
         InstantiateThrowable(pNewNode, Vector3(1.02f, 7.23f, 1.34f), 0.4f);
         InstantiateThrowable(pNewNode, Vector3(5.53f, 0.90f, -16.31f), 0.4f);
         InstantiateThrowable(pNewNode, Vector3(4.76f, 0.91f, 21.68f), 0.4f);
-		InstantiateFire1(pNewNode, Vector3(-13.80f, 0.20f, 19.90f), 1.0f);
+		InstantiateFire1(pNewNode, Vector3(-13.80f, 0.30f, 19.90f), 1.0f);
         InstantiateNewColumn(pNewNode, Vector3(16.70f, -0.10f, -13.30f), 1.0f);
         InstantiatePlatform3(pNewNode, Vector3(-0.30f, -0.10f, 0.80f), 0.4f);
 
@@ -5430,7 +5430,7 @@ public:
         InstantiateThrowable(pNewNode, Vector3(19.59f, 0.90f, -13.37f), 0.4f);
         InstantiateThrowable(pNewNode, Vector3(13.22f, 2.21f, 16.74f), 0.4f);
         InstantiatePot3(pNewNode, Vector3(3.78f, 0.66f, 4.93f), 0.5f);
-        InstantiateFire1(pNewNode, Vector3(-5.80f, 0.20f, -8.76f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
+        InstantiateFire1(pNewNode, Vector3(-5.80f, 0.30f, -8.76f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
         InstantiatePlatform2(pNewNode, Vector3(10.60f, -2.60f, 14.20f), 0.5f, Vector3(0.00f, 0.00f, 0.00f));
 
         auto spawnPoint1 = std::make_unique<Node>("SpawnPoint 1", pNewNodeOwner.get());
@@ -5722,7 +5722,7 @@ public:
         InstantiateThrowable(pNewNode, Vector3(-4.68f, 0.23f, 3.05f), 0.4f);
         InstantiateThrowable(pNewNode, Vector3(18.47f, 0.22f, 21.19f), 0.4f);
         InstantiateBrick(pNewNode, Vector3(-0.79f, 2.84f, -16.19f), 0.5f);
-        InstantiateFire1(pNewNode, Vector3(6.10f, -0.50f, -2.06f), 1.0f, Vector3(0.00f, -0.52f, 0.00f));
+        InstantiateFire1(pNewNode, Vector3(6.10f, -0.40f, -2.06f), 1.0f, Vector3(0.00f, -0.52f, 0.00f));
         InstantiateColumn2(pNewNode, Vector3(15.20f, -0.50f, -9.96f), 1.0f, Vector3(0.00f, 0.72f, 0.00f));
         InstantiateRock5(pNewNode, Vector3(-17.50f, -1.00f, 0.50f), 1.0f, Vector3(0.00f, -1.43f, 0.00f));
 

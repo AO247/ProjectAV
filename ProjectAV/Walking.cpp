@@ -126,9 +126,22 @@ void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 		}
 	}
 
-	if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+	/*if (pOwner->GetComponent<SoundEffectsPlayer>()) {
 		float p = (rand() % 4);
 		pOwner->GetComponent<SoundEffectsPlayer>()->Play(p);
+	}*/
+
+	stepSoundTimer -= dt;
+
+	if (pOwner->GetComponent<SoundEffectsPlayer>() && currentVelocity.LengthSquared() > 0.1f && grounded)
+	{
+		if (stepSoundTimer <= 0.0f)
+		{
+			float p = (rand() % 4);
+			pOwner->GetComponent<SoundEffectsPlayer>()->Play(p);
+			// Zresetuj timer
+			stepSoundTimer = stepSoundInterval;
+		}
 	}
 
 	PhysicsCommon::physicsSystem->GetBodyInterface().SetFriction(rigidbody->GetBodyID(), 0.5f);
