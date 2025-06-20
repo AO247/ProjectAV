@@ -166,7 +166,7 @@ App::App(const std::string& commandLine)
 
     //ability2Particles->Link(rg);
 
-    pPlayer->GetComponent<PlayerController>()->abilitySlot2 = pAbility2;
+    pPlayer->GetComponent<PlayerController>()->abilitySlot2 = pAbility5;
 
 
     BodyCreationSettings a3odySettings(new JPH::SphereShape(40.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);

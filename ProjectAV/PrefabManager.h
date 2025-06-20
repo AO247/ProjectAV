@@ -3935,6 +3935,47 @@ public:
         return pNewNode;
     }
 
+    static Node* InstantiateAbility5Particles(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 }, float duration = 1.0f)
+    {
+        auto pNewNodeOwner = std::make_unique<Node>("Ability5Particles", nullptr);
+        Node* pNewNode = pNewNodeOwner.get();
+
+        auto pCircleLogic = std::make_unique<CircleEmitterLogic>();
+        pCircleLogic->Radius = 2.0f;
+        pCircleLogic->Orientation = CircleEmitterLogic::Plane::XZ;
+        pCircleLogic->ParticlesPerSecond = 30.0f;
+        pCircleLogic->bFill = true;
+
+        pNewNode->AddComponent(
+            std::make_unique<ParticleSystemComponent>(pNewNode, wind->Gfx(), "Models\\rzut.png", 200, std::move(pCircleLogic))
+        );
+        ParticleSystemComponent* particles = pNewNode->GetComponent<ParticleSystemComponent>();
+        particles->SetPlaybackMode(ParticleSystemComponent::PlaybackMode::OneShot);
+        particles->destroyAfterEmission = true;
+        particles->ParticleLifetime = 1.2f;
+        particles->EmissionDuration = duration;
+        particles->EmissionRate = 40.0f;
+        particles->ParticleVelocity = { 0.0f, 10.0f, 0.0f };
+        particles->ParticleVelocityVariance = { 0.0f, 5.0f, 0.0f };
+        particles->StartSize = 2.0f;
+        particles->EndSize = 1.0f;
+        particles->EndRotation = 0.0f;
+        particles->lockRotationOnYAxis = true;
+        particles->textureAtlasColumns = 2;
+        particles->textureAtlasRows = 2;
+
+        particles->Play();
+        particles->Link(*rg);
+
+        pNewNodeOwner->SetWorldPosition(position);
+        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+        pNewNodeOwner->SetLocalRotation(rotation);
+
+        parentNode->AddChild(std::move(pNewNodeOwner));
+
+        return pNewNode;
+    }
+
     static Node* InstantiateAbility4ReleaseParticles(Node* parentNode, Vector3 position, float scale, DirectX::XMFLOAT4 rotation)
     {
         auto pNewNodeOwner = std::make_unique<Node>("Ability4ReleaseParticles", nullptr);
