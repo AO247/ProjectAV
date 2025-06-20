@@ -2046,9 +2046,9 @@ public:
         pNewNodeOwner->SetLocalRotation(rotation);
         Node* pNewNode = pNewNodeOwner.get();
 
-		InstantiateThrowable(pNewNode, Vector3(-3.84f, 0.66f, 14.90f), 2.0f);
-        InstantiateThrowable(pNewNode, Vector3(-17.13f, 0.64f, -14.36f), 2.0f);
-        InstantiateThrowable(pNewNode, Vector3(8.31f, 0.64f, -5.58f), 2.0f);
+		InstantiateThrowable(pNewNode, Vector3(-3.84f, 0.66f, 14.90f), 0.4f);
+        InstantiateThrowable(pNewNode, Vector3(-17.13f, 0.64f, -14.36f), 0.4f);
+        InstantiateThrowable(pNewNode, Vector3(8.31f, 0.64f, -5.58f), 0.4f);
         InstantiateStoneStack1(pNewNode, Vector3(-7.92f, 1.72f, -11.22f), 1.0f);
         InstantiateNewColumn(pNewNode, Vector3(-13.62f, 0.0f, 9.78f), 1.0f);
         InstantiateRock1(pNewNode, Vector3(-6.90f, 5.20f, 28.00f), 1.0f, Vector3(0.00f, 0.63f, 3.14f));
@@ -2142,7 +2142,7 @@ public:
         /*pIsland->halfExtents = { (rightPoint->GetLocalPosition().x - leftPoint->GetLocalPosition().x) / 2.0f - 1.0f,
                                 2.0f,
                                 (upPoint->GetLocalPosition().z - downPoint->GetLocalPosition().z) / 2.0f - 1.0f };*/
-                                /*upPoint->AddComponent(
+                               /* upPoint->AddComponent(
                                     std::make_unique<ModelComponent>(upPoint.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
                                 );
                                 upPoint->GetComponent<ModelComponent>()->LinkTechniques(*rg);
@@ -2271,7 +2271,7 @@ public:
         auto downPoint = std::make_unique<Node>("Down Point", pNewNodeOwner.get());
 
         leftPoint->SetLocalPosition(DirectX::XMFLOAT3(-56.00f, 3.00f, -9.90f));
-        rightPoint->SetLocalPosition(DirectX::XMFLOAT3(67.00f, 0.00f, 0.00f));
+        rightPoint->SetLocalPosition(DirectX::XMFLOAT3(67.00f, 0.00f, 6.00f));
         upPoint->SetLocalPosition(DirectX::XMFLOAT3(-7.00f, 10.50f, 60.70f));
         downPoint->SetLocalPosition(DirectX::XMFLOAT3(4.00f, 0.00f, -58.00f));
         pIsland->halfExtents = { 63.0f, 2.0f, 63.0f };
@@ -4635,9 +4635,9 @@ public:
         Node* pNewNode = pNewNodeOwner.get();
 
         InstantiateBrick(pNewNode, Vector3(-13.98f, 0.69f, -11.85f), 0.5f);
-        InstantiateThrowable(pNewNode, Vector3(15.12f, 1.45f, -17.33f), 2.0f);
-        InstantiateThrowable(pNewNode, Vector3(-9.2f, 3.0f, 16.2f), 2.0f);
-        InstantiateThrowable(pNewNode, Vector3(19.2f, 3.0f, -5.2f), 2.0f);
+        InstantiateThrowable(pNewNode, Vector3(15.12f, 1.45f, -17.33f), 0.4f);
+        InstantiateThrowable(pNewNode, Vector3(-9.2f, 3.0f, 16.2f), 0.4f);
+        InstantiateThrowable(pNewNode, Vector3(19.2f, 3.0f, -5.2f), 0.4f);
         InstantiatePlatform2(pNewNode, Vector3(-7.20f, -0.40f, 11.50f), 0.75f);
 
         auto spawnPoint1 = std::make_unique<Node>("SpawnPoint 1", pNewNodeOwner.get());
@@ -4733,10 +4733,10 @@ public:
 
         Node* pNewNode = pNewNodeOwner.get();
 
-        InstantiateThrowable(pNewNode, Vector3(0.58f, 0.24f, -14.49f), 2.0f);
-        InstantiateThrowable(pNewNode, Vector3(18.2f, 3.0f, 3.2f), 2.0f);
-        InstantiateThrowable(pNewNode, Vector3(15.29f, 1.04f, 17.81f), 2.0f);
-        InstantiateThrowable(pNewNode, Vector3(-13.2f, 3.0f, -2.2f), 2.0f);
+        InstantiateThrowable(pNewNode, Vector3(0.58f, 0.24f, -14.49f), 0.4f);
+        InstantiateThrowable(pNewNode, Vector3(18.2f, 3.0f, 3.2f), 0.4f);
+        InstantiateThrowable(pNewNode, Vector3(15.29f, 1.04f, 17.81f), 0.4f);
+        InstantiateThrowable(pNewNode, Vector3(-13.2f, 3.0f, -2.2f), 0.4f);
         InstantiateNewColumn(pNewNode, Vector3(12.0f, -0.70f, -5.0f), 1.0f);
 
         auto spawnPoint1 = std::make_unique<Node>("SpawnPoint 1", pNewNodeOwner.get());
@@ -4829,10 +4829,10 @@ public:
 
         Node* pNewNode = pNewNodeOwner.get();
 
-        InstantiateThrowable(pNewNode, Vector3(-9.0f, 15.0f, -9.0f), 2.0f);
-        InstantiateThrowable(pNewNode, Vector3(8.2f, 15.0f, -10.2f), 2.0f);
-        InstantiateThrowable(pNewNode, Vector3(-9.2f, 15.0f, 9.2f), 2.0f);
-        InstantiateThrowable(pNewNode, Vector3(8.2f, 15.0f, 9.2f), 2.0f);
+        InstantiateThrowable(pNewNode, Vector3(-9.0f, 15.0f, -9.0f), 0.4f);
+        InstantiateThrowable(pNewNode, Vector3(8.2f, 15.0f, -10.2f), 0.4f);
+        InstantiateThrowable(pNewNode, Vector3(-9.2f, 15.0f, 9.2f), 0.4f);
+        InstantiateThrowable(pNewNode, Vector3(8.2f, 15.0f, 9.2f), 0.4f);
         InstantiateNewColumn(pNewNode, Vector3(-14.50f, 0.00f, 18.50f), 1.0f);
         InstantiateNewColumn(pNewNode, Vector3(14.50f, 0.00f, -12.00f), 1.0f);
         InstantiateNewColumn(pNewNode, Vector3(14.50f, 0.00f, 18.50f), 1.0f);
@@ -4928,9 +4928,9 @@ public:
 
         Node* pNewNode = pNewNodeOwner.get();
 
-        InstantiateThrowable(pNewNode, Vector3(-12.92f, 1.97f, 1.39f), 2.0f);
-        InstantiateThrowable(pNewNode, Vector3(16.37f, 0.90f, -13.52f), 2.0f);
-        InstantiateThrowable(pNewNode, Vector3(13.66f, 0.91f, 17.48f), 2.0f);
+        InstantiateThrowable(pNewNode, Vector3(-12.92f, 1.97f, 1.39f), 0.4f);
+        InstantiateThrowable(pNewNode, Vector3(16.37f, 0.90f, -13.52f), 0.4f);
+        InstantiateThrowable(pNewNode, Vector3(13.66f, 0.91f, 17.48f), 0.4f);
         InstantiateStoneStack1(pNewNode, Vector3(8.70f, 15.00f, -7.60f), 1.0f);
         InstantiateRock1(pNewNode, Vector3(-12.70f, 0.00f, 18.30f), 1.0f);
 
@@ -5024,9 +5024,9 @@ public:
 
         Node* pNewNode = pNewNodeOwner.get();
 
-        InstantiateThrowable(pNewNode, Vector3(1.02f, 7.23f, 1.34f), 2.0f);
-        InstantiateThrowable(pNewNode, Vector3(5.53f, 0.90f, -16.31f), 2.0f);
-        InstantiateThrowable(pNewNode, Vector3(4.76f, 0.91f, 21.68f), 2.0f);
+        InstantiateThrowable(pNewNode, Vector3(1.02f, 7.23f, 1.34f), 0.4f);
+        InstantiateThrowable(pNewNode, Vector3(5.53f, 0.90f, -16.31f), 0.4f);
+        InstantiateThrowable(pNewNode, Vector3(4.76f, 0.91f, 21.68f), 0.4f);
 		InstantiateFire1(pNewNode, Vector3(-13.80f, 0.20f, 19.90f), 1.0f);
         InstantiateNewColumn(pNewNode, Vector3(16.70f, -0.10f, -13.30f), 1.0f);
         InstantiatePlatform3(pNewNode, Vector3(-0.30f, -0.10f, 0.80f), 0.4f);
@@ -5121,9 +5121,9 @@ public:
 
         Node* pNewNode = pNewNodeOwner.get();
 
-        InstantiateThrowable(pNewNode, Vector3(-12.09f, 0.90f, -2.74f), 2.0f);
-        InstantiateThrowable(pNewNode, Vector3(11.53f, 0.90f, -15.91f), 2.0f);
-        InstantiateThrowable(pNewNode, Vector3(0.16f, 0.91f, 21.68f), 2.0f);
+        InstantiateThrowable(pNewNode, Vector3(-12.09f, 0.90f, -2.74f), 0.4f);
+        InstantiateThrowable(pNewNode, Vector3(11.53f, 0.90f, -15.91f), 0.4f);
+        InstantiateThrowable(pNewNode, Vector3(0.16f, 0.91f, 21.68f), 0.4f);
         InstantiateMushroom1(pNewNode, Vector3(16.50f, 0.20f, -8.40f), 0.35f, Vector3(0.00f, -2.58f, 0.00f));
         InstantiateNewColumn(pNewNode, Vector3(-9.50f, -0.10f, 12.40f), 1.0f);
         InstantiateWall1(pNewNode, Vector3(-20.20f, -0.10f, -4.20f), 1.0f, Vector3(0.00f, -0.24f, 0.00f));
@@ -5218,9 +5218,9 @@ public:
 
         Node* pNewNode = pNewNodeOwner.get();
 
-        InstantiateThrowable(pNewNode, Vector3(-12.09f, 0.90f, -2.74f), 2.0f);
-        InstantiateThrowable(pNewNode, Vector3(19.27f, 0.90f, -1.42f), 2.0f);
-        InstantiateThrowable(pNewNode, Vector3(0.16f, 0.91f, 21.68f), 2.0f);
+        InstantiateThrowable(pNewNode, Vector3(-12.09f, 0.90f, -2.74f), 0.4f);
+        InstantiateThrowable(pNewNode, Vector3(19.27f, 0.90f, -1.42f), 0.4f);
+        InstantiateThrowable(pNewNode, Vector3(0.16f, 0.91f, 21.68f), 0.4f);
         InstantiateBrick(pNewNode, Vector3(-0.70f, 0.20f, -10.76f), 0.5f, Vector3(0.00f, -2.58f, 0.00f));
         InstantiateNewColumn(pNewNode, Vector3(-9.10f, -0.10f, 13.60f), 1.0f);
         InstantiateColumn3(pNewNode, Vector3(12.00f, -0.10f, -9.80f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
@@ -5315,9 +5315,9 @@ public:
 
         Node* pNewNode = pNewNodeOwner.get();
 
-        InstantiateThrowable(pNewNode, Vector3(-16.19f, 0.90f, 6.96f), 2.0f);
-        InstantiateThrowable(pNewNode, Vector3(19.59f, 0.90f, -13.37f), 2.0f);
-        InstantiateThrowable(pNewNode, Vector3(13.22f, 2.21f, 16.74f), 2.0f);
+        InstantiateThrowable(pNewNode, Vector3(-16.19f, 0.90f, 6.96f), 0.4f);
+        InstantiateThrowable(pNewNode, Vector3(19.59f, 0.90f, -13.37f), 0.4f);
+        InstantiateThrowable(pNewNode, Vector3(13.22f, 2.21f, 16.74f), 0.4f);
         InstantiatePot3(pNewNode, Vector3(3.78f, 0.66f, 4.93f), 0.5f);
         InstantiateFire1(pNewNode, Vector3(-5.80f, 0.20f, -8.76f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
         InstantiatePlatform2(pNewNode, Vector3(10.60f, -2.60f, 14.20f), 0.5f, Vector3(0.00f, 0.00f, 0.00f));
@@ -5412,8 +5412,8 @@ public:
 
         Node* pNewNode = pNewNodeOwner.get();
 
-        InstantiateThrowable(pNewNode, Vector3(-14.69f, 0.90f, -3.04f), 2.0f);
-        InstantiateThrowable(pNewNode, Vector3(15.59f, 0.90f, 5.53f), 2.0f);
+        InstantiateThrowable(pNewNode, Vector3(-14.69f, 0.90f, -3.04f), 0.4f);
+        InstantiateThrowable(pNewNode, Vector3(15.59f, 0.90f, 5.53f), 0.4f);
         InstantiatePot3(pNewNode, Vector3(10.43f, 2.00f, -15.37f), 0.5f);
         InstantiatePot4(pNewNode, Vector3(-2.05f, 0.66f, 12.33f), 0.5f);
         InstantiateMushroom2(pNewNode, Vector3(-7.80f, 0.20f, 9.34f), 0.35f, Vector3(0.00f, 0.72f, 0.00f));
@@ -5511,9 +5511,9 @@ public:
 
         Node* pNewNode = pNewNodeOwner.get();
 
-        InstantiateThrowable(pNewNode, Vector3(-11.79f, 0.22f, 3.06f), 2.0f);
-        InstantiateThrowable(pNewNode, Vector3(19.87f, 0.22f, -2.51f), 2.0f);
-        InstantiateThrowable(pNewNode, Vector3(10.06f, 0.84f, -13.87f), 2.0f);
+        InstantiateThrowable(pNewNode, Vector3(-11.79f, 0.22f, 3.06f), 0.4f);
+        InstantiateThrowable(pNewNode, Vector3(19.87f, 0.22f, -2.51f), 0.4f);
+        InstantiateThrowable(pNewNode, Vector3(10.06f, 0.84f, -13.87f), 0.4f);
         InstantiateMushroom2(pNewNode, Vector3(-5.50f, -0.50f, -11.26f), 0.35f, Vector3(0.00f, -0.52f, 0.00f));
         InstantiateMushroom3(pNewNode, Vector3(19.50f, -0.50f, 2.64f), 0.35f, Vector3(0.00f, 0.72f, 0.00f));
         InstantiateRock4(pNewNode, Vector3(-15.40f, -0.60f, -14.60f), 1.0f, Vector3(0.00f, -1.43f, 0.00f));
@@ -5608,8 +5608,8 @@ public:
 
         Node* pNewNode = pNewNodeOwner.get();
 
-        InstantiateThrowable(pNewNode, Vector3(-4.68f, 0.23f, 3.05f), 2.0f);
-        InstantiateThrowable(pNewNode, Vector3(18.47f, 0.22f, 21.19f), 2.0f);
+        InstantiateThrowable(pNewNode, Vector3(-4.68f, 0.23f, 3.05f), 0.4f);
+        InstantiateThrowable(pNewNode, Vector3(18.47f, 0.22f, 21.19f), 0.4f);
         InstantiateBrick(pNewNode, Vector3(-0.79f, 2.84f, -16.19f), 0.5f);
         InstantiateFire1(pNewNode, Vector3(6.10f, -0.50f, -2.06f), 1.0f, Vector3(0.00f, -0.52f, 0.00f));
         InstantiateColumn2(pNewNode, Vector3(15.20f, -0.50f, -9.96f), 1.0f, Vector3(0.00f, 0.72f, 0.00f));
@@ -5705,8 +5705,8 @@ public:
 
         Node* pNewNode = pNewNodeOwner.get();
 
-        InstantiateThrowable(pNewNode, Vector3(-6.38f, 0.23f, 0.65f), 2.0f);
-        InstantiateThrowable(pNewNode, Vector3(17.17f, 0.22f, 13.89f), 2.0f);
+        InstantiateThrowable(pNewNode, Vector3(-6.38f, 0.23f, 0.65f), 0.4f);
+        InstantiateThrowable(pNewNode, Vector3(17.17f, 0.22f, 13.89f), 0.4f);
         InstantiateStoneStack1(pNewNode, Vector3(2.41f, 2.84f, -13.59f), 1.0f);
         InstantiateRock3(pNewNode, Vector3(20.70f, -0.50f, -0.86f), 1.0f, Vector3(0.00f, 0.51f, 0.00f));
         InstantiatePlatform3(pNewNode, Vector3(-17.70f, -2.20f, -1.40f), 0.3f, Vector3(0.00f, -0.23f, 0.00f));

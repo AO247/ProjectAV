@@ -207,10 +207,10 @@ void LevelGenerator::GenerateIslands()
                     else if(randLarge == 1){
                         islandInfo.name = "BIG2";
                         islandInfo.pos = { 0.0f, 0.0f, 0.0f };
-                        islandInfo.leftPoint = { -56.00f, 3.00f, -15.90f };
-                        islandInfo.upPoint = { -7.00f, 10.50f, 54.70f };
-                        islandInfo.rightPoint = { 67.00f, 0.00f, 0.00f };
-                        islandInfo.downPoint = { 4.00f, 0.00f, -64.00f };
+                        islandInfo.leftPoint = { -56.00f, 3.00f, -9.90f };
+                        islandInfo.upPoint = { -7.00f, 10.50f, 60.70f };
+                        islandInfo.rightPoint = { 67.00f, 0.00f, 6.00f };
+                        islandInfo.downPoint = { 4.00f, 0.00f, -58.00f };
                     }
                     else if (randLarge == 2) {
 						islandInfo.name = "BIG3";
@@ -247,34 +247,34 @@ void LevelGenerator::GenerateIslands()
                     else if (randLarge == 6) {
 						islandInfo.name = "BIG7";
 						islandInfo.pos = { 0.0f, 0.0f, 0.0f };
-						islandInfo.leftPoint = { -54.60f, 4.30f, 5.10f };
-						islandInfo.upPoint = { -7.00f, 0.00f, 58.00f };
-						islandInfo.rightPoint = { 67.00f, 0.00f, -18.00f };
-						islandInfo.downPoint = { -7.50f, 0.00f, -62.70f };
+						islandInfo.leftPoint = { -54.60f, 4.30f, 11.10f };
+						islandInfo.upPoint = { -7.00f, 0.00f, 64.00f };
+						islandInfo.rightPoint = { 67.00f, 0.00f, -12.00f };
+						islandInfo.downPoint = { -7.50f, 0.00f, -56.70f };
                     }
                     else if (randLarge == 7) {
 						islandInfo.name = "BIG8";
 						islandInfo.pos = { 0.0f, 0.0f, 0.0f };
-						islandInfo.leftPoint = { -53.70f, 0.00f, -8.60f };
-						islandInfo.upPoint = { -7.00f, 0.00f, 55.70f };
-						islandInfo.rightPoint = { 67.00f, 0.00f, -18.00f };
-						islandInfo.downPoint = { 12.00f, 3.40f, -61.00f };
+						islandInfo.leftPoint = { -53.70f, 0.00f, -2.60f };
+						islandInfo.upPoint = { -7.00f, 0.00f, 61.70f };
+						islandInfo.rightPoint = { 67.00f, 0.00f, -12.00f };
+						islandInfo.downPoint = { 12.00f, 3.40f, -55.00f };
                     }
                     else if(randLarge == 8) {
                         islandInfo.name = "BIG9";
                         islandInfo.pos = { 0.0f, 0.0f, 0.0f };
-                        islandInfo.leftPoint = { -52.10f, 0.00f, -8.10f };
-                        islandInfo.upPoint = { -7.60f, -3.00f, 56.30f };
-                        islandInfo.rightPoint = { 67.00f, 0.00f, -25.90f };
-                        islandInfo.downPoint = { -15.70f, 0.00f, -62.50f };
+                        islandInfo.leftPoint = { -52.10f, 0.00f, -2.10f };
+                        islandInfo.upPoint = { -7.60f, -3.00f, 62.30f };
+                        islandInfo.rightPoint = { 67.00f, 0.00f, -19.90f };
+                        islandInfo.downPoint = { -15.70f, 0.00f, -56.50f };
                     } 
                     else {
 						islandInfo.name = "BIG10";
 						islandInfo.pos = { 0.0f, 0.0f, 0.0f };
-						islandInfo.leftPoint = { -56.10f, 6.10f, 21.60f };
-						islandInfo.upPoint = { 5.70f, 5.00f, 58.00f };
-						islandInfo.rightPoint = { 67.00f, 0.00f, -18.00f };
-						islandInfo.downPoint = { 0.40f, 18.00f, -64.00f };
+						islandInfo.leftPoint = { -56.10f, 6.10f, 27.60f };
+						islandInfo.upPoint = { 5.70f, 5.00f, 64.00f };
+						islandInfo.rightPoint = { 67.00f, 0.00f, -12.00f };
+						islandInfo.downPoint = { 0.40f, 18.00f, -58.00f };
                     }
                     bigIslandCount--;
                     break;
