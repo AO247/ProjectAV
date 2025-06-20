@@ -9,6 +9,7 @@
 #include <DirectXMath.h>
 #include <algorithm>
 #include <string>
+#include "PrefabManager.h"
 
 namespace dx = DirectX;
 Ability3::Ability3(Node* owner, Window& window, Node* camera)
@@ -72,6 +73,7 @@ void Ability3::Pressed()
     timer = duration;
     cooldownTimer = cooldown;
     abilityReady = false;
+    PrefabManager::InstantiateAbility3Particles(pOwner->GetParent(), Vector3(pOwner->GetLocalPosition().x, pOwner->GetLocalPosition().y, pOwner->GetLocalPosition().z), 1.0);
 }
 void Ability3::Released()
 {

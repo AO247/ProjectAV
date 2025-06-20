@@ -10,6 +10,7 @@
 #include "TrailEmitterLogic.h"
 #include "PointEmitterLogic.h"
 #include "CircleEmitterLogic.h"
+#include "SphereToCenterEmitterLogic.h"
 
 //class PhysicsEngine;
 class ShootAttack;
@@ -3897,22 +3898,24 @@ public:
         auto pNewNodeOwner = std::make_unique<Node>("Ability3Particles", nullptr);
         Node* pNewNode = pNewNodeOwner.get();
 
-        auto pCircleLogic = std::make_unique<CircleEmitterLogic>();
-        pCircleLogic->Radius = 2.5f;
-        pCircleLogic->Orientation = CircleEmitterLogic::Plane::XZ;
-        pCircleLogic->ParticlesPerSecond = 100.0f;
+        auto sphereEmitter = std::make_unique<SphereToCenterEmitterLogic>();
+
+        // Make the implosion very chaotic
+        sphereEmitter->SpeedRandomness = 0.5f;
+        sphereEmitter->SpawnRadius = 20.0f;
+        sphereEmitter->TravelSpeed = 30.0f;
 
         pNewNode->AddComponent(
-            std::make_unique<ParticleSystemComponent>(pNewNode, wind->Gfx(), "Models\\windAtlas.png", 200, std::move(pCircleLogic))
+            std::make_unique<ParticleSystemComponent>(pNewNode, wind->Gfx(), "Models\\windAtlas.png", 200, std::move(sphereEmitter))
         );
         ParticleSystemComponent* particles = pNewNode->GetComponent<ParticleSystemComponent>();
         particles->SetPlaybackMode(ParticleSystemComponent::PlaybackMode::OneShot);
         particles->destroyAfterEmission = true;
-        particles->ParticleLifetime = 0.7f;
-        particles->EmissionDuration = 0.1f;
+        particles->ParticleLifetime = 0.5f;
+        particles->EmissionDuration = 1.0f;
         particles->EmissionRate = 40.0f;
-        particles->ParticleVelocity = { 0.0f, 20.0f, 0.0f };
-        particles->ParticleVelocityVariance = { 0.0f, 10.0f, 0.0f };
+        //particles->ParticleVelocity = { 0.0f, 20.0f, 0.0f };
+        //particles->ParticleVelocityVariance = { 0.0f, 10.0f, 0.0f };
         particles->StartSize = 2.0f;
         particles->EndSize = 1.0f;
         particles->EndRotation = 0.0f;

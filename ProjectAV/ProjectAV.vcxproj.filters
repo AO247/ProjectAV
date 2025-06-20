@@ -462,6 +462,9 @@
     <ClCompile Include="CircleEmitterLogic.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SphereToCenterEmitterLogic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Win.h">
@@ -930,6 +933,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CircleEmitterLogic.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SphereToCenterEmitterLogic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
