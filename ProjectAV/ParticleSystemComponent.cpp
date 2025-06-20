@@ -158,7 +158,9 @@ void ParticleSystemComponent::EmitParticle(const DirectX::XMFLOAT3& position)
     {
         if (!p.active)
         {
-            std::uniform_real_distribution<float> dist(-1.0f, 1.0f);
+            // +++ NEW: Get the owner node's world transformation matrix +++
+            // This matrix contains the final world position, rotation, and scale of the node.
+            const auto ownerWorldTransform = GetOwner()->GetWorldTransform();
 
             p.active = true;
             p.age = 0.0f;
@@ -171,26 +173,43 @@ void ParticleSystemComponent::EmitParticle(const DirectX::XMFLOAT3& position)
             p.startRotation = StartRotation;
             p.endRotation = EndRotation;
 
+            // Handle atlas randomization (from previous step)
             std::uniform_int_distribution<UINT> row_dist(0, textureAtlasRows - 1);
             std::uniform_int_distribution<UINT> col_dist(0, textureAtlasColumns - 1);
             UINT randomRow = row_dist(rng);
             UINT randomCol = col_dist(rng);
-
-            // Calculate the UV offset for the top-left corner of this sub-texture.
-            // This will be stored with the instance data and sent to the GPU.
             p.atlasOffset.x = (float)randomCol / textureAtlasColumns;
             p.atlasOffset.y = (float)randomRow / textureAtlasRows;
 
-            dx::XMVECTOR basePos = dx::XMLoadFloat3(&position);
-            dx::XMVECTOR offsetPos = dx::XMLoadFloat3(&EmitterPositionOffset);
-            dx::XMStoreFloat3(&p.position, dx::XMVectorAdd(basePos, offsetPos));
 
-            dx::XMFLOAT3 randomizedVel = {
+            // --- POSITION LOGIC ---
+            // The 'position' parameter is the node's world-space origin.
+            // We now transform the local-space EmitterPositionOffset into a world-space offset
+            // and add it to the origin.
+            dx::XMVECTOR localOffsetVec = dx::XMLoadFloat3(&EmitterPositionOffset);
+
+            // Use XMVector3TransformNormal to apply only rotation and scale to the offset vector.
+            dx::XMVECTOR worldOffsetVec = dx::XMVector3TransformNormal(localOffsetVec, ownerWorldTransform);
+
+            dx::XMVECTOR basePos = dx::XMLoadFloat3(&position);
+            dx::XMStoreFloat3(&p.position, dx::XMVectorAdd(basePos, worldOffsetVec));
+
+
+            // --- VELOCITY LOGIC ---
+            // Create a randomized velocity vector in LOCAL space first.
+            std::uniform_real_distribution<float> dist(-1.0f, 1.0f);
+            dx::XMFLOAT3 localRandomizedVel = {
                 ParticleVelocity.x + ParticleVelocityVariance.x * dist(rng),
                 ParticleVelocity.y + ParticleVelocityVariance.y * dist(rng),
                 ParticleVelocity.z + ParticleVelocityVariance.z * dist(rng)
             };
-            p.velocity = randomizedVel;
+
+            // Now, transform this local-space velocity into a world-space velocity.
+            // Again, XMVector3TransformNormal is correct because it applies rotation
+            // but ignores the translation component of the matrix.
+            dx::XMVECTOR localVelVec = dx::XMLoadFloat3(&localRandomizedVel);
+            dx::XMVECTOR worldVelVec = dx::XMVector3TransformNormal(localVelVec, ownerWorldTransform);
+            dx::XMStoreFloat3(&p.velocity, worldVelVec);
 
             return;
         }

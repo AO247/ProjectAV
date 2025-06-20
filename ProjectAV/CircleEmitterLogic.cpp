@@ -1,3 +1,5 @@
+// In CircleEmitterLogic.cpp
+
 #include "CircleEmitterLogic.h"
 #include "ParticleSystemComponent.h"
 #include "Node.h"
@@ -19,7 +21,11 @@ void CircleEmitterLogic::Update(float dt, ParticleSystemComponent& system)
 {
     // 1. Control the rate of emission
     timeSinceLastEmission += dt;
+    if (ParticlesPerSecond <= 0.0f) return; // Prevent division by zero
     const float emissionPeriod = 1.0f / ParticlesPerSecond;
+
+    // --- Get owner's transform ONCE outside the loop for efficiency ---
+    const auto ownerWorldTransform = system.GetOwner()->GetWorldTransform();
 
     while (timeSinceLastEmission > emissionPeriod)
     {
@@ -37,35 +43,37 @@ void CircleEmitterLogic::Update(float dt, ParticleSystemComponent& system)
             spawnRadius = Radius * sqrtf(radius_dist(rng));
         }
 
-        // 4. Calculate the local position of the particle on the circle
+        // 4. Calculate the LOCAL position of the particle on the circle
         dx::XMFLOAT3 localPos = {};
         switch (Orientation)
         {
-        case Plane::XY: // Upright circle facing forward
+        case Plane::XY: // Upright circle facing forward (local Z)
             localPos.x = spawnRadius * cosf(randomAngle);
             localPos.y = spawnRadius * sinf(randomAngle);
             localPos.z = 0.0f;
             break;
 
-        case Plane::XZ: // Flat circle on the ground
+        case Plane::XZ: // Flat circle on the ground (local Y plane)
             localPos.x = spawnRadius * cosf(randomAngle);
             localPos.y = 0.0f;
             localPos.z = spawnRadius * sinf(randomAngle);
             break;
 
-        case Plane::YZ: // Upright circle facing sideways
+        case Plane::YZ: // Upright circle facing sideways (local X)
             localPos.x = 0.0f;
             localPos.y = spawnRadius * cosf(randomAngle);
             localPos.z = spawnRadius * sinf(randomAngle);
             break;
         }
 
-        // 5. Transform the local position to world space
-        const auto ownerPos = system.GetOwner()->GetWorldPosition();
-        dx::XMVECTOR finalPosVec = dx::XMVectorAdd(dx::XMLoadFloat3(&localPos), dx::XMLoadFloat3(&ownerPos));
+        // 5. +++ CORRECTED: Transform the local position to world space +++
+        // We now use XMVector3TransformCoord to transform our calculated local point
+        // into world space, respecting the node's position, rotation, and scale.
+        dx::XMVECTOR localPosVec = dx::XMLoadFloat3(&localPos);
+        dx::XMVECTOR worldPosVec = dx::XMVector3TransformCoord(localPosVec, ownerWorldTransform);
 
         dx::XMFLOAT3 finalPos;
-        dx::XMStoreFloat3(&finalPos, finalPosVec);
+        dx::XMStoreFloat3(&finalPos, worldPosVec);
 
         // 6. Tell the system to emit a particle at this final calculated position
         system.EmitParticle(finalPos);
