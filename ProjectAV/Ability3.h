@@ -20,8 +20,7 @@ public:
 
 	virtual void Update(float dt) override;
 	virtual void DrawImGuiControls() override;
-	void OnTriggerEnter(Node* other) override;
-	void OnTriggerExit(Node* other) override;
+	void OnTriggerStay(Node* other) override;
 	void Pressed() override;
 	void Released() override;
 	void Activated();

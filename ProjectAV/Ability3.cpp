@@ -38,6 +38,7 @@ void Ability3::Update(float dt)
         }
         Cooldowns(dt);
     }
+    objects.clear();
 }
 void Ability3::Positioning()
 {
@@ -134,10 +135,7 @@ void Ability3::Cooldowns(float dt)
 
 }
 
-
-
-
-void Ability3::OnTriggerEnter(Node* object) {
+void Ability3::OnTriggerStay(Node* object) {
     if (object == nullptr) return;
     if (object->tag != "ENEMY" && object->tag != "STONE" && object->tag != "BULLET") return;
     if (object->GetComponent<Rigidbody>() == nullptr) return;
@@ -146,18 +144,8 @@ void Ability3::OnTriggerEnter(Node* object) {
         if (objects[i] == object) return;
     }
     objects.push_back(object);
-    //OutputDebugStringA(("Ability2 OnTriggerEnter: " + object->GetName() + "\n").c_str());
 }
-void Ability3::OnTriggerExit(Node* object) {
-    if (object == nullptr) return;
-    if (object->tag != "ENEMY" && object->tag != "STONE" && object->tag != "BULLET") return;
-    if (object->GetComponent<Rigidbody>() == nullptr) return;
-    auto it = std::remove(objects.begin(), objects.end(), object);
-    if (it != objects.end()) {
-        objects.erase(it, objects.end());
-    }
-    //OutputDebugStringA(("Ability2 OnTriggerExit: " + object->GetName() + "\n").c_str());
-}
+
 
 void Ability3::DrawImGuiControls()
 {

@@ -65,7 +65,7 @@ void StateMachine::Stop(float time)
 }
 void StateMachine::Update(float dt)
 {
-	if (timer < 4.0f && canDropPills)
+	if (timer < 2.0f && canDropPills)
 	{
 		timer += dt;
 		pOwner->SetWorldPosition(basePos);
