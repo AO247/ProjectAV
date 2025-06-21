@@ -91,6 +91,7 @@ public:
     DirectX::XMFLOAT4 EndColor = { 1.0f, 1.0f, 1.0f, 0.0f };
     float StartSize = 1.0f;
     float EndSize = 0.1f;
+    float StartSizeVariance = 0.0f;
     float StartRotation = 0.0f;
     float EndRotation = 3.14159f;
     bool destroyAfterEmission = false;
