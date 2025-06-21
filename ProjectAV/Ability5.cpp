@@ -64,6 +64,8 @@ void Ability5::Pressed()
     rightHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
     timeToChange = 0.3f;
     PrefabManager::InstantiateAbility5Extend(pOwner->GetParent(), pOwner->GetWorldPosition(), 1.0f, force, duration);
+    PrefabManager::InstantiateAbility5Particles(pOwner->GetParent(), pOwner->GetWorldPosition(), 1.0f, { 0,0,0 }, duration);
+    cooldownTimer = cooldown;
     cooldownTimer = cooldown;
     abilityReady = false;
 }

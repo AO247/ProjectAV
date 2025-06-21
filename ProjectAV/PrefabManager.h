@@ -6,6 +6,12 @@
 #include "MainRenderGraph.h"
 #include "Window.h"
 #include "AnimationComponent.h"
+#include "ParticleSystemComponent.h"
+#include "TrailEmitterLogic.h"
+#include "PointEmitterLogic.h"
+#include "CircleEmitterLogic.h"
+#include "SphereToCenterEmitterLogic.h"
+
  
 
 //class PhysicsEngine;
@@ -6005,6 +6011,372 @@ public:
 
         return pNewNode;
     }
+    static Node* InstantiateAbility2Particles(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 })
+    {
+        auto pNewNodeOwner = std::make_unique<Node>("Ability2Particles", nullptr);
+        Node* pNewNode = pNewNodeOwner.get();
+
+        auto pCircleLogic = std::make_unique<CircleEmitterLogic>();
+        pCircleLogic->Radius = 5.0f;                
+        pCircleLogic->Orientation = CircleEmitterLogic::Plane::XZ; 
+        pCircleLogic->ParticlesPerSecond = 250.0f;
+        pCircleLogic->bFill = true;
+
+        pNewNode->AddComponent(
+            std::make_unique<ParticleSystemComponent>(pNewNode, wind->Gfx(), "Models\\rzut.png", 200, std::move(pCircleLogic))
+        );
+        ParticleSystemComponent* particles = pNewNode->GetComponent<ParticleSystemComponent>();
+        particles->SetPlaybackMode(ParticleSystemComponent::PlaybackMode::OneShot);
+        particles->destroyAfterEmission = true;
+        particles->ParticleLifetime = 0.7f;
+        particles->EmissionDuration = 0.1f;
+        particles->EmissionRate = 40.0f;
+        particles->ParticleVelocity = { 0.0f, 20.0f, 0.0f };
+        particles->ParticleVelocityVariance = { 0.0f, 10.0f, 0.0f };
+        particles->StartSize = 2.0f;
+        particles->EndSize = 1.0f;
+        particles->EndRotation = 0.0f;
+        particles->lockRotationOnYAxis = true;
+        particles->textureAtlasColumns = 2;
+        particles->textureAtlasRows = 2;
+        
+        particles->Play();
+        particles->Link(*rg);
+
+        pNewNodeOwner->SetLocalPosition(position);
+        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+        pNewNodeOwner->SetLocalRotation(rotation);
+
+        parentNode->AddChild(std::move(pNewNodeOwner));
+
+        return pNewNode;
+    }
+
+    static Node* InstantiateAbility3CoreParticles(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 })
+    {
+        auto pNewNodeOwner = std::make_unique<Node>("Ability3CoreParticles", nullptr);
+        Node* pNewNode = pNewNodeOwner.get();
+
+        pNewNode->AddComponent(
+            std::make_unique<ParticleSystemComponent>(pNewNode, wind->Gfx(), "Models\\rzut.png", 200, std::make_unique<PointEmitterLogic>())
+        );
+        ParticleSystemComponent* particles = pNewNode->GetComponent<ParticleSystemComponent>();
+        particles->SetPlaybackMode(ParticleSystemComponent::PlaybackMode::OneShot);
+        particles->destroyAfterEmission = true;
+        particles->ParticleLifetime = 0.7f;
+        particles->EmissionDuration = 1.0f;
+        particles->EmissionRate = 200.0f;
+        particles->ParticleVelocity = { 0.0f, 0.0f, 0.0f };
+        particles->ParticleVelocityVariance = { 4.0f, 4.0f, 4.0f };
+        particles->StartSize = 5.0f;
+        particles->EndSize = 5.0f;
+        particles->EndRotation = 0.0f;
+        particles->lockRotationOnYAxis = true;
+        particles->textureAtlasColumns = 2;
+        particles->textureAtlasRows = 2;
+
+        particles->Play();
+        particles->Link(*rg);
+
+        pNewNodeOwner->SetWorldPosition(position);
+        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+        pNewNodeOwner->SetLocalRotation(rotation);
+
+        parentNode->AddChild(std::move(pNewNodeOwner));
+
+        return pNewNode;
+    }
+
+    static Node* InstantiateAbility4SelectParticles(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 })
+    {
+        auto pNewNodeOwner = std::make_unique<Node>("Ability2Particles", nullptr);
+        Node* pNewNode = pNewNodeOwner.get();
+
+        auto pCircleLogic = std::make_unique<CircleEmitterLogic>();
+        pCircleLogic->Radius = 2.0f;
+        pCircleLogic->Orientation = CircleEmitterLogic::Plane::XZ;
+        pCircleLogic->ParticlesPerSecond = 50.0f;
+        pCircleLogic->bFill = true;
+
+        pNewNode->AddComponent(
+            std::make_unique<ParticleSystemComponent>(pNewNode, wind->Gfx(), "Models\\rzut.png", 200, std::move(pCircleLogic))
+        );
+        ParticleSystemComponent* particles = pNewNode->GetComponent<ParticleSystemComponent>();
+        particles->SetPlaybackMode(ParticleSystemComponent::PlaybackMode::Loop);
+        particles->destroyAfterEmission = true;
+        particles->ParticleLifetime = 0.7f;
+        particles->EmissionDuration = 0.1f;
+        particles->EmissionRate = 40.0f;
+        particles->ParticleVelocity = { 0.0f, 5.0f, 0.0f };
+        particles->ParticleVelocityVariance = { 0.0f, 3.0f, 0.0f };
+        particles->StartSize = 2.0f;
+        particles->EndSize = 1.0f;
+        particles->EndRotation = 0.0f;
+        particles->lockRotationOnYAxis = true;
+        particles->textureAtlasColumns = 2;
+        particles->textureAtlasRows = 2;
+
+        particles->Play();
+        particles->Link(*rg);
+
+        pNewNodeOwner->SetWorldPosition(position);
+        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+        pNewNodeOwner->SetLocalRotation(rotation);
+
+        parentNode->AddChild(std::move(pNewNodeOwner));
+
+        return pNewNode;
+    }
+
+    static Node* InstantiateAbility6HoldParticles(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 })
+    {
+        auto pNewNodeOwner = std::make_unique<Node>("Ability6HoldParticles", nullptr);
+        Node* pNewNode = pNewNodeOwner.get();
+
+        auto pCircleLogic = std::make_unique<CircleEmitterLogic>();
+        pCircleLogic->Radius = 2.0f;
+        pCircleLogic->Orientation = CircleEmitterLogic::Plane::XZ;
+        pCircleLogic->ParticlesPerSecond = 50.0f;
+        pCircleLogic->bFill = true;
+
+        pNewNode->AddComponent(
+            std::make_unique<ParticleSystemComponent>(pNewNode, wind->Gfx(), "Models\\rzut.png", 200, std::move(pCircleLogic))
+        );
+        ParticleSystemComponent* particles = pNewNode->GetComponent<ParticleSystemComponent>();
+        particles->SetPlaybackMode(ParticleSystemComponent::PlaybackMode::Loop);
+        particles->destroyAfterEmission = true;
+        particles->ParticleLifetime = 0.7f;
+        particles->EmissionDuration = 0.1f;
+        particles->EmissionRate = 40.0f;
+        particles->ParticleVelocity = { 0.0f, 5.0f, 0.0f };
+        particles->ParticleVelocityVariance = { 0.0f, 3.0f, 0.0f };
+        particles->StartSize = 2.0f;
+        particles->EndSize = 1.0f;
+        particles->EndRotation = 0.0f;
+        particles->lockRotationOnYAxis = true;
+        particles->textureAtlasColumns = 2;
+        particles->textureAtlasRows = 2;
+
+        particles->Play();
+        particles->Link(*rg);
+
+        pNewNodeOwner->SetWorldPosition(position);
+        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+        pNewNodeOwner->SetLocalRotation(rotation);
+
+        parentNode->AddChild(std::move(pNewNodeOwner));
+
+        return pNewNode;
+    }
+
+    static Node* InstantiateAbility5Particles(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 }, float duration = 1.0f)
+    {
+        auto pNewNodeOwner = std::make_unique<Node>("Ability5Particles", nullptr);
+        Node* pNewNode = pNewNodeOwner.get();
+
+        auto pCircleLogic = std::make_unique<CircleEmitterLogic>();
+        pCircleLogic->Radius = 2.0f;
+        pCircleLogic->Orientation = CircleEmitterLogic::Plane::XZ;
+        pCircleLogic->ParticlesPerSecond = 30.0f;
+        pCircleLogic->bFill = true;
+
+        pNewNode->AddComponent(
+            std::make_unique<ParticleSystemComponent>(pNewNode, wind->Gfx(), "Models\\rzut.png", 200, std::move(pCircleLogic))
+        );
+        ParticleSystemComponent* particles = pNewNode->GetComponent<ParticleSystemComponent>();
+        particles->SetPlaybackMode(ParticleSystemComponent::PlaybackMode::OneShot);
+        particles->destroyAfterEmission = true;
+        particles->ParticleLifetime = 1.2f;
+        particles->EmissionDuration = duration;
+        particles->EmissionRate = 40.0f;
+        particles->ParticleVelocity = { 0.0f, 10.0f, 0.0f };
+        particles->ParticleVelocityVariance = { 0.0f, 5.0f, 0.0f };
+        particles->StartSize = 2.0f;
+        particles->EndSize = 1.0f;
+        particles->EndRotation = 0.0f;
+        particles->lockRotationOnYAxis = true;
+        particles->textureAtlasColumns = 2;
+        particles->textureAtlasRows = 2;
+
+        particles->Play();
+        particles->Link(*rg);
+
+        pNewNodeOwner->SetWorldPosition(position);
+        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+        pNewNodeOwner->SetLocalRotation(rotation);
+
+        parentNode->AddChild(std::move(pNewNodeOwner));
+
+        return pNewNode;
+    }
+
+    static Node* InstantiateAbility4ReleaseParticles(Node* parentNode, Vector3 position, float scale, DirectX::XMFLOAT4 rotation)
+    {
+        auto pNewNodeOwner = std::make_unique<Node>("Ability4ReleaseParticles", nullptr);
+        Node* pNewNode = pNewNodeOwner.get();
+
+        auto pCircleLogic = std::make_unique<CircleEmitterLogic>();
+        pCircleLogic->Radius = 5.0f;
+        pCircleLogic->Orientation = CircleEmitterLogic::Plane::XZ;
+        pCircleLogic->ParticlesPerSecond = 250.0f;
+        pCircleLogic->bFill = true;
+
+        pNewNode->AddComponent(
+            std::make_unique<ParticleSystemComponent>(pNewNode, wind->Gfx(), "Models\\rzut.png", 200, std::move(pCircleLogic))
+        );
+        ParticleSystemComponent* particles = pNewNode->GetComponent<ParticleSystemComponent>();
+        particles->SetPlaybackMode(ParticleSystemComponent::PlaybackMode::OneShot);
+        particles->destroyAfterEmission = true;
+        particles->ParticleLifetime = 0.7f;
+        particles->EmissionDuration = 0.1f;
+        particles->EmissionRate = 40.0f;
+        particles->ParticleVelocity = { 0.0f, 0.0f, 35.0f };
+        particles->ParticleVelocityVariance = { 0.0f, 0.0f, 33.0f };
+        particles->StartSize = 2.0f;
+        particles->EndSize = 1.0f;
+        particles->StartRotation = 1.57079f;
+        particles->EndRotation = 1.57079f;
+        particles->lockRotationOnYAxis = true;
+        particles->textureAtlasColumns = 2;
+        particles->textureAtlasRows = 2;
+
+        particles->Play();
+        particles->Link(*rg);
+
+        pNewNodeOwner->SetWorldPosition(position);
+        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+        pNewNodeOwner->SetLocalRotation(rotation);
+
+        parentNode->AddChild(std::move(pNewNodeOwner));
+
+        return pNewNode;
+    }
+
+    static Node* InstantiateAbility6PullingParticles(Node* parentNode, Vector3 position, float scale, DirectX::XMFLOAT4 rotation)
+    {
+        auto pNewNodeOwner = std::make_unique<Node>("Ability6PullingParticles", nullptr);
+        Node* pNewNode = pNewNodeOwner.get();
+
+        auto pCircleLogic = std::make_unique<CircleEmitterLogic>();
+        pCircleLogic->Radius = 2.0f;
+        pCircleLogic->Orientation = CircleEmitterLogic::Plane::XY;
+        pCircleLogic->ParticlesPerSecond = 250.0f;
+        pCircleLogic->bFill = true;
+
+        pNewNode->AddComponent(
+            std::make_unique<ParticleSystemComponent>(pNewNode, wind->Gfx(), "Models\\rzut.png", 200, std::move(pCircleLogic))
+        );
+        ParticleSystemComponent* particles = pNewNode->GetComponent<ParticleSystemComponent>();
+        particles->SetPlaybackMode(ParticleSystemComponent::PlaybackMode::Loop);
+        particles->destroyAfterEmission = true;
+        particles->ParticleLifetime = 0.2f;
+        //particles->EmissionDuration = 0.1f;
+        particles->EmissionRate = 40.0f;
+        particles->ParticleVelocity = { 0.0f, 0.0f, 35.0f };
+        particles->ParticleVelocityVariance = { 0.0f, 0.0f, 33.0f };
+        particles->StartSize = 2.0f;
+        particles->EndSize = 1.0f;
+        particles->StartRotation = 1.57079f;
+        particles->EndRotation = 1.57079f;
+        particles->lockRotationOnYAxis = true;
+        particles->textureAtlasColumns = 2;
+        particles->textureAtlasRows = 2;
+
+        particles->Play();
+        particles->Link(*rg);
+
+        pNewNodeOwner->SetWorldPosition(position);
+        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+        pNewNodeOwner->SetLocalRotation(rotation);
+
+        parentNode->AddChild(std::move(pNewNodeOwner));
+
+        return pNewNode;
+    }
+
+    static Node* InstantiateAbility3Particles(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 })
+    {
+        auto pNewNodeOwner = std::make_unique<Node>("Ability3Particles", nullptr);
+        Node* pNewNode = pNewNodeOwner.get();
+
+        auto sphereEmitter = std::make_unique<SphereToCenterEmitterLogic>();
+
+        // Make the implosion very chaotic
+        sphereEmitter->SpeedRandomness = 0.5f;
+        sphereEmitter->SpawnRadius = 20.0f;
+        sphereEmitter->TravelSpeed = 30.0f;
+
+        pNewNode->AddComponent(
+            std::make_unique<ParticleSystemComponent>(pNewNode, wind->Gfx(), "Models\\windAtlas.png", 200, std::move(sphereEmitter))
+        );
+        ParticleSystemComponent* particles = pNewNode->GetComponent<ParticleSystemComponent>();
+        particles->SetPlaybackMode(ParticleSystemComponent::PlaybackMode::OneShot);
+        particles->destroyAfterEmission = true;
+        particles->ParticleLifetime = 0.5f;
+        particles->EmissionDuration = 1.0f;
+        particles->EmissionRate = 40.0f;
+        //particles->ParticleVelocity = { 0.0f, 20.0f, 0.0f };
+        //particles->ParticleVelocityVariance = { 0.0f, 10.0f, 0.0f };
+        particles->StartSize = 2.0f;
+        particles->EndSize = 1.0f;
+        particles->EndRotation = 0.0f;
+        particles->lockRotationOnYAxis = true;
+        particles->textureAtlasColumns = 2;
+        particles->textureAtlasRows = 2;
+
+        particles->Play();
+        particles->Link(*rg);
+
+        pNewNodeOwner->SetLocalPosition(position);
+        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+        pNewNodeOwner->SetLocalRotation(rotation);
+
+        parentNode->AddChild(std::move(pNewNodeOwner));
+
+        return pNewNode;
+    }
+
+    static Node* InstantiateAbility1Particles(Node* parentNode, Vector3 position, float scale, DirectX::XMFLOAT4 rotation)
+    {
+        auto pNewNodeOwner = std::make_unique<Node>("Ability1Particles", nullptr);
+        Node* pNewNode = pNewNodeOwner.get();
+
+        auto pCircleLogic = std::make_unique<CircleEmitterLogic>();
+        pCircleLogic->Radius = 4.0f;
+        pCircleLogic->Orientation = CircleEmitterLogic::Plane::XY;
+        pCircleLogic->ParticlesPerSecond = 300.0f;
+        pCircleLogic->bFill = true;
+
+        pNewNode->AddComponent(
+            std::make_unique<ParticleSystemComponent>(pNewNode, wind->Gfx(), "Models\\pchniecie.png", 200, std::move(pCircleLogic))
+        );
+        ParticleSystemComponent* particles = pNewNode->GetComponent<ParticleSystemComponent>();
+        particles->SetPlaybackMode(ParticleSystemComponent::PlaybackMode::OneShot);
+        particles->destroyAfterEmission = true;
+        particles->ParticleLifetime = 0.7f; // 0.7f
+        particles->EmissionDuration = 0.1f;
+        //particles->EmissionRate = 40.0f;
+        particles->ParticleVelocity = { 0.0f, 0.0f, 50.0f };
+        particles->ParticleVelocityVariance = { 0.0f, 0.0f, 50.0f };
+        particles->EmitterPositionOffset = { 0.0f, 0.0f, 5.0f };
+        particles->StartSize = 2.0f;
+        particles->EndSize = 1.0f;
+        particles->EndRotation = 0.0f;
+        particles->lockRotationOnYAxis = true;
+        particles->textureAtlasColumns = 2;
+        particles->textureAtlasRows = 2;
+
+        particles->Play();
+        particles->Link(*rg);
+
+        pNewNodeOwner->SetLocalPosition(position);
+        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+        pNewNodeOwner->SetLocalRotation(rotation);
+
+        parentNode->AddChild(std::move(pNewNodeOwner));
+
+        return pNewNode;
+    }
 
 #pragma endregion
 
@@ -6026,9 +6398,27 @@ public:
         pNewNode->AddComponent(
             std::make_unique<AnimationComponent>(pNewNode, "", "Models\\char_basic2.glb")
         );
+        pNewNode->AddComponent(
+            std::make_unique<ParticleSystemComponent>(pNewNode, wind->Gfx(), "Models\\flame.png", 200, std::make_unique<PointEmitterLogic>())
+        );
+        ParticleSystemComponent* pParticleSystem = pNewNode->GetComponent<ParticleSystemComponent>();
+        pParticleSystem->EmissionRate = 10.0f;              // Particles per second
+        pParticleSystem->ParticleLifetime = 0.3f;            // How long each particle lives
+        pParticleSystem->EmitterPositionOffset = { 0.0f, 1.0f, 0.0f }; // Start slightly above the node's origin
+        pParticleSystem->ParticleVelocity = { 0.0f, 10.0f, 0.0f }; // Strong upward velocity
+        pParticleSystem->ParticleVelocityVariance = { 2.5f, 1.0f, 2.5f }; // Spread them out horizontally
+        pParticleSystem->StartColor = { 1.0f, 1.0f, 1.0f, 1.0f }; // Bluish water color
+        pParticleSystem->EndColor = { 1.0f, 1.0f, 1.0f, 1.0f };   // Fade to a light blue and then disappear
+        pParticleSystem->StartSize = 1.5f;
+        pParticleSystem->EndSize = 0.3f;
+        pParticleSystem->StartRotation = 0.0f;
+        pParticleSystem->EndRotation = 0.0f; // Two full rotations over its lifetime
+
+
         AnimationComponent* animComp = pNewNode->GetComponent<AnimationComponent>();
         animComp->PlayAnimation(3);
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        pParticleSystem->Link(*rg);
         parentNode->AddChild(std::move(pNewNodeOwner));
 
         pNewNode->SetLocalPosition(DirectX::XMFLOAT3(position.x, position.y, position.z));

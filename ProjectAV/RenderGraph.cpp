@@ -22,6 +22,11 @@ namespace Rgph
 		AddGlobalSink( DirectBufferSink<Bind::RenderTarget>::Make( "backbuffer",backBufferTarget ) );
 	}
 
+	Rgph::ParticlePass& RenderGraph::GetParticlePass()
+	{
+		throw RGC_EXCEPTION("GetParticlePass() not implemented in this RenderGraph class.");
+	}
+
 	RenderGraph::~RenderGraph()
 	{}
 

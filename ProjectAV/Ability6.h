@@ -36,11 +36,16 @@ public:
 	Node* leftHandAbility = nullptr;
 	Node* selectedNode = nullptr;
 	Ability* baseAbility = nullptr;
+
+	Node* pullingParticles = nullptr;
+	Node* holdParticles = nullptr;
+	Vector3 selectedNodeLastPosition;
 private:
 	Node* player = nullptr;
 	void KeyboardInput();
 	void Cooldowns(float dt);
 	void Positioning();
 	void Pulling(float dt);
+	void PullingParticlesPositioning();
 	float cooldownTimer = 0.0f;
 };

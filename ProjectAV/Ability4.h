@@ -37,6 +37,8 @@ public:
 	Node* leftHandAbility = nullptr;
 	Node* selectedNode = nullptr;
 	Ability* baseAbility = nullptr;
+
+	Node* selectionParticles = nullptr;
 private:
 	Node* player = nullptr;
 	void KeyboardInput();

@@ -5,6 +5,7 @@
 #include "imgui/imgui.h"
 #include <cmath> 
 #include "Rigidbody.h"
+#include "ParticleSystemComponent.h"
 
 
 namespace dx = DirectX;
@@ -542,11 +543,24 @@ void Node::Update(float dt)
 
 void Node::Submit(Graphics& gfx) const
 {
+    // The world transform is used by multiple potential components,
+    // so it's efficient to get it once.
+    const auto worldTransform = GetWorldTransform();
+
+    // Your existing check for the ModelComponent
     if (auto* modelComp = GetComponent<ModelComponent>())
     {
-        modelComp->Submit(gfx, GetWorldTransform());
+        modelComp->Submit(gfx, worldTransform);
     }
-    
+
+    // NEW: Add a check for the ParticleSystemComponent
+    if (auto* particleComp = GetComponent<ParticleSystemComponent>())
+    {
+        // Note: The ParticleSystemComponent's Submit method in my implementation
+        // ignores the worldTransform, as particles are simulated in world space.
+        // However, we pass it for a consistent interface.
+        particleComp->Submit(gfx, worldTransform);
+    }
 }
 
 void Node::ShowNodeTree(Node*& pSelectedNode) noexcept

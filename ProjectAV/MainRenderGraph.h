@@ -16,6 +16,7 @@ namespace Rgph
 	{
 	public:
 		MainRenderGraph(Graphics& gfx);
+		Rgph::ParticlePass& GetParticlePass() override;
 	private:
 		void SetKernelGauss(int radius, float sigma) noxnd;
 		void SetKernelBox(int radius) noxnd;
@@ -29,5 +30,6 @@ namespace Rgph
 		float sigma = 2.0f;
 		std::shared_ptr<Bind::CachingPixelConstantBufferEx> blurKernel;
 		std::shared_ptr<Bind::CachingPixelConstantBufferEx> blurDirection;
+		Rgph::ParticlePass* pParticlePass = nullptr;
 	};
 }

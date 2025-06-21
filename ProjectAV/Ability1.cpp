@@ -8,6 +8,7 @@
 #include <DirectXMath.h>
 #include <algorithm>
 #include <string>
+#include "PrefabManager.h"
 #include "Components.h"
 
 namespace dx = DirectX;
@@ -60,6 +61,7 @@ void Ability1::Pressed()
     }
     cooldownTimer = cooldown;
     abilityReady = false;
+    PrefabManager::InstantiateAbility1Particles(pOwner->GetParent(), Vector3(pOwner->GetLocalPosition().x, pOwner->GetLocalPosition().y, pOwner->GetLocalPosition().z), 1.0, pOwner->GetLocalRotationQuaternion());
 }
 void Ability1::Released()
 {

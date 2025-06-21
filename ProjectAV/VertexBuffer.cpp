@@ -8,7 +8,10 @@ namespace Bind
 		VertexBuffer(gfx, "?", vbuf)
 	{
 	}
-
+	ID3D11Buffer* VertexBuffer::Get() const noexcept
+	{
+		return pVertexBuffer.Get();
+	}
 	VertexBuffer::VertexBuffer(Graphics& gfx, const std::string& tag_in, const Dvtx::VertexBuffer& vbuf)
 		:
 		tag(tag_in),

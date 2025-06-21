@@ -8,6 +8,9 @@
 #include <DirectXMath.h>
 #include <algorithm>
 #include <string>
+#include "PrefabManager.h"
+#include "ParticleSystemComponent.h"
+
 #include "Components.h"
 namespace dx = DirectX;
 Ability2::Ability2(Node* owner, Window& window, Node* camera)
@@ -88,6 +91,9 @@ void Ability2::Pressed()
     }
     cooldownTimer = cooldown;
     abilityReady = false;
+    PrefabManager::InstantiateAbility2Particles(pOwner->GetParent(), Vector3(pOwner->GetLocalPosition().x, pOwner->GetLocalPosition().y, pOwner->GetLocalPosition().z), 1.0);
+    //PrefabManager::InstantiateAbility3CoreParticles(pOwner->GetParent(), Vector3(pOwner->GetLocalPosition().x, pOwner->GetLocalPosition().y, pOwner->GetLocalPosition().z), 1.0);
+
 }
 void Ability2::Released()
 {

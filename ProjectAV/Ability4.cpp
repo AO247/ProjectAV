@@ -9,6 +9,7 @@
 #include <DirectXMath.h>
 #include <algorithm> 
 #include <string>
+#include "PrefabManager.h"
 
 namespace dx = DirectX;
 Ability4::Ability4(Node* owner, Window& window, Node* camera)
@@ -60,12 +61,23 @@ void Ability4::Pressed()
     leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
     leftHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
     cameraRotation = camera->GetLocalRotationEuler();
+    if (selectedNode != nullptr)
+    {
+        selectionParticles = PrefabManager::InstantiateAbility4SelectParticles(pOwner->GetParent(), Vector3(selectedNode->GetWorldPosition().x, selectedNode->GetWorldPosition().y, selectedNode->GetWorldPosition().z), 1.0);
+    }
 }
 void Ability4::Released()
 {
     if (!isPressed) return;
     isPressed = false;
     if (!abilityReady) return;
+
+    if (selectionParticles != nullptr)
+    {
+        selectionParticles->GetComponent<ParticleSystemComponent>()->Stop();
+        selectionParticles = nullptr;
+    }
+
     leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 4.0f });
     timeToChange = 0.3f;
 
@@ -114,6 +126,22 @@ void Ability4::Released()
 
             direction.Normalize();
         }
+
+        Vector3 target = Vector3(selectedNode->GetWorldPosition().x, selectedNode->GetWorldPosition().y, selectedNode->GetWorldPosition().z) + direction;
+
+        DirectX::XMVECTOR viewerPosition = DirectX::XMVectorSet(selectedNode->GetWorldPosition().x, selectedNode->GetWorldPosition().y, selectedNode->GetWorldPosition().z, 0.0f);
+        DirectX::XMVECTOR targetPosition = DirectX::XMVectorSet(target.x, target.y, target.z, 0.0f);
+        DirectX::XMVECTOR up = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+
+        DirectX::XMMATRIX lookAtMatrix = DirectX::XMMatrixLookAtLH(viewerPosition, targetPosition, up);
+
+        DirectX::XMMATRIX objectRotationMatrix = DirectX::XMMatrixInverse(nullptr, lookAtMatrix);
+
+        DirectX::XMVECTOR lookAtQuaternion = DirectX::XMQuaternionRotationMatrix(objectRotationMatrix);
+        DirectX::XMFLOAT4 quatFloat4;
+        DirectX::XMStoreFloat4(&quatFloat4, lookAtQuaternion);
+
+        PrefabManager::InstantiateAbility4ReleaseParticles(pOwner->GetParent(), Vector3(selectedNode->GetWorldPosition().x, selectedNode->GetWorldPosition().y, selectedNode->GetWorldPosition().z), 1.0, quatFloat4);
 
         PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(selectedNode->GetComponent<Rigidbody>()->GetBodyID(), Vec3(0.0f, 0.0f, 0.0f));
         PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(selectedNode->GetComponent<Rigidbody>()->GetBodyID(), Vec3(direction.x, direction.y, direction.z) * force);
