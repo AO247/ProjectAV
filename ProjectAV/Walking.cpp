@@ -144,6 +144,8 @@ void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 }
 bool Walking::GroundCheck()
 {
+	grounded = false;
+	canAttack = false;
 	Vector3 pos = pOwner->GetWorldPosition();
 	Vec3 center = {pos.x, pos.y, pos.z};
 	Vec3 forwardDir = Vec3(pOwner->Forward().x, 0.0f, pOwner->Forward().z);
@@ -154,6 +156,13 @@ bool Walking::GroundCheck()
 	Vec3 right = center + rightDir * radius;
 	Vec3 left = center - rightDir * radius;
 
+	front.SetY(center.GetY());
+	back.SetY(center.GetY());
+	left.SetY(center.GetY());
+	right.SetY(center.GetY());
+
+
+
 	Vec3 direction = Vec3(0.0f, -(height / 2 + 0.2f), 0.0f);
 
 	RRayCast rayCenter = RRayCast(
@@ -162,8 +171,8 @@ bool Walking::GroundCheck()
 	);
 	RayCastResult resultCenter;
 	if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(rayCenter, resultCenter,
-		IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::ENEMY, BroadPhaseLayers::PLAYER, BroadPhaseLayers::TRIGGER }),
-		IgnoreMultipleObjectLayerFilter({ Layers::ENEMY, Layers::PLAYER,  Layers::TRIGGER })))
+		MultipleBroadPhaseLayerFilter({ BroadPhaseLayers::GROUND, BroadPhaseLayers::WALL }),
+		MultipleObjectLayerFilter({ Layers::GROUND, Layers::WALL})))
 	{
 		grounded = true;
 		canAttack = true;
@@ -181,8 +190,8 @@ bool Walking::GroundCheck()
 	);
 	RayCastResult resultFront;
 	if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(rayFront, resultFront,
-		IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::ENEMY, BroadPhaseLayers::PLAYER, BroadPhaseLayers::TRIGGER }),
-		IgnoreMultipleObjectLayerFilter({ Layers::ENEMY, Layers::PLAYER,  Layers::TRIGGER })))
+		MultipleBroadPhaseLayerFilter({ BroadPhaseLayers::GROUND, BroadPhaseLayers::WALL }),
+		MultipleObjectLayerFilter({ Layers::GROUND, Layers::WALL})))
 	{
 		grounded = true;
 		canAttack = true;
@@ -195,8 +204,8 @@ bool Walking::GroundCheck()
 	);
 	RayCastResult resultBack;
 	if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(rayBack, resultBack,
-		IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::ENEMY, BroadPhaseLayers::PLAYER, BroadPhaseLayers::TRIGGER }),
-		IgnoreMultipleObjectLayerFilter({ Layers::ENEMY, Layers::PLAYER,  Layers::TRIGGER })))
+		MultipleBroadPhaseLayerFilter({ BroadPhaseLayers::GROUND, BroadPhaseLayers::WALL }),
+		MultipleObjectLayerFilter({ Layers::GROUND, Layers::WALL})))
 	{
 		grounded = true;
 		canAttack = true;
@@ -209,8 +218,8 @@ bool Walking::GroundCheck()
 	);
 	RayCastResult resultRight;
 	if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(rayRight, resultRight,
-		IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::ENEMY, BroadPhaseLayers::PLAYER, BroadPhaseLayers::TRIGGER }),
-		IgnoreMultipleObjectLayerFilter({ Layers::ENEMY, Layers::PLAYER,  Layers::TRIGGER })))
+		MultipleBroadPhaseLayerFilter({ BroadPhaseLayers::GROUND, BroadPhaseLayers::WALL }),
+		MultipleObjectLayerFilter({ Layers::GROUND, Layers::WALL})))
 	{
 		grounded = true;
 		canAttack = true;
@@ -223,8 +232,8 @@ bool Walking::GroundCheck()
 	);
 	RayCastResult resultLeft;
 	if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(rayLeft, resultLeft,
-		IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::ENEMY, BroadPhaseLayers::TRIGGER }),
-		IgnoreMultipleObjectLayerFilter({ Layers::ENEMY, Layers::TRIGGER })))
+		MultipleBroadPhaseLayerFilter({ BroadPhaseLayers::GROUND, BroadPhaseLayers::WALL }),
+		MultipleObjectLayerFilter({ Layers::GROUND, Layers::WALL})))
 	{
 		grounded = true;
 		canAttack = true;
@@ -232,8 +241,7 @@ bool Walking::GroundCheck()
 	}
 
 
-	grounded = false;
-	canAttack = false;
+
 	return false;
 }
 

@@ -399,9 +399,9 @@ int App::Go()
         const float dt = timer.Mark();
         lag += dt;
 
-        /*constexpr float MAX_LAG = 0.5f;
+        constexpr float MAX_LAG = 0.5f;
         if (lag > MAX_LAG)
-            lag = MAX_LAG;*/
+            lag = MAX_LAG;
 
         while (lag >= FIXED_TIME_STEP)
         {
