@@ -118,7 +118,39 @@ void ParticleSystemComponent::Update(float dt)
 
         InstanceData& idata = instanceData[activeParticleCount];
         idata.instancePos = p.position;
-        dx::XMStoreFloat4(&idata.instanceColor, dx::XMVectorLerp(dx::XMLoadFloat4(&p.startColor), dx::XMLoadFloat4(&p.endColor), t));
+
+        // +++ NEW TWO-STAGE COLOR INTERPOLATION LOGIC +++
+        dx::XMVECTOR finalColor;
+        if (bUseMidColor)
+        {
+            // --- THREE-COLOR LOGIC (WHEN ENABLED) ---
+            if (t < ColorMidpoint)
+            {
+                // First half of life: Interpolate from StartColor to MidColor
+                float stage_t = t / ColorMidpoint;
+                dx::XMVECTOR start = dx::XMLoadFloat4(&StartColor);
+                dx::XMVECTOR mid = dx::XMLoadFloat4(&MidColor);
+                finalColor = dx::XMVectorLerp(start, mid, stage_t);
+            }
+            else
+            {
+                // Second half of life: Interpolate from MidColor to EndColor
+                float stage_t = (t - ColorMidpoint) / (1.0f - ColorMidpoint);
+                dx::XMVECTOR mid = dx::XMLoadFloat4(&MidColor);
+                dx::XMVECTOR end = dx::XMLoadFloat4(&EndColor);
+                finalColor = dx::XMVectorLerp(mid, end, stage_t);
+            }
+        }
+        else
+        {
+            // --- ORIGINAL TWO-COLOR LOGIC (DEFAULT) ---
+            dx::XMVECTOR start = dx::XMLoadFloat4(&StartColor);
+            dx::XMVECTOR end = dx::XMLoadFloat4(&EndColor);
+            finalColor = dx::XMVectorLerp(start, end, t);
+        }
+        dx::XMStoreFloat4(&idata.instanceColor, finalColor);
+        // +++ END OF NEW LOGIC +++
+
         idata.instanceSize.x = std::lerp(p.startSize, p.endSize, t);
         idata.instanceSize.y = idata.instanceSize.x;
         idata.instanceRot = std::lerp(p.startRotation, p.endRotation, t);

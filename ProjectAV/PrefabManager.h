@@ -6028,17 +6028,22 @@ public:
         ParticleSystemComponent* particles = pNewNode->GetComponent<ParticleSystemComponent>();
         particles->SetPlaybackMode(ParticleSystemComponent::PlaybackMode::OneShot);
         particles->destroyAfterEmission = true;
-        particles->ParticleLifetime = 0.7f;
+        particles->ParticleLifetime = 0.3f;
         particles->EmissionDuration = 0.1f;
         particles->EmissionRate = 40.0f;
         particles->ParticleVelocity = { 0.0f, 1.0f, 0.0f };
         particles->ParticleVelocityVariance = { 0.0f, 70.0f, 0.0f };
         particles->StartSize = 2.0f;
-        particles->EndSize = 1.0f;
+        particles->EndSize = 2.0f;
         particles->EndRotation = 0.0f;
         particles->lockRotationOnYAxis = true;
         particles->textureAtlasColumns = 2;
         particles->textureAtlasRows = 2;
+        particles->bUseMidColor = true;
+        particles->StartColor = { 1.0f, 1.0f, 1.0f, 0.0f };
+        particles->ColorMidpoint = 0.1f;
+        particles->MidColor = {1.0f, 1.0f, 1.0f, 1.0f};
+        particles->EndColor = { 1.0f, 1.0f, 1.0f, 0.0f };
         
         particles->Play();
         particles->Link(*rg);
@@ -6095,7 +6100,7 @@ public:
         auto pCircleLogic = std::make_unique<CircleEmitterLogic>();
         pCircleLogic->Radius = 2.0f;
         pCircleLogic->Orientation = CircleEmitterLogic::Plane::XZ;
-        pCircleLogic->ParticlesPerSecond = 50.0f;
+        pCircleLogic->ParticlesPerSecond = 25.0f;
         pCircleLogic->bFill = true;
 
         pNewNode->AddComponent(
@@ -6115,6 +6120,11 @@ public:
         particles->lockRotationOnYAxis = true;
         particles->textureAtlasColumns = 2;
         particles->textureAtlasRows = 2;
+        particles->bUseMidColor = true;
+        particles->StartColor = { 1.0f, 1.0f, 1.0f, 0.0f };
+        particles->ColorMidpoint = 0.1f;
+        particles->MidColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+        particles->EndColor = { 1.0f, 1.0f, 1.0f, 0.0f };
 
         particles->Play();
         particles->Link(*rg);
@@ -6136,7 +6146,7 @@ public:
         auto pCircleLogic = std::make_unique<CircleEmitterLogic>();
         pCircleLogic->Radius = 2.0f;
         pCircleLogic->Orientation = CircleEmitterLogic::Plane::XZ;
-        pCircleLogic->ParticlesPerSecond = 50.0f;
+        pCircleLogic->ParticlesPerSecond = 25.0f;
         pCircleLogic->bFill = true;
 
         pNewNode->AddComponent(
@@ -6145,17 +6155,23 @@ public:
         ParticleSystemComponent* particles = pNewNode->GetComponent<ParticleSystemComponent>();
         particles->SetPlaybackMode(ParticleSystemComponent::PlaybackMode::Loop);
         particles->destroyAfterEmission = true;
-        particles->ParticleLifetime = 0.7f;
+        particles->ParticleLifetime = 0.3f;
         particles->EmissionDuration = 0.1f;
         particles->EmissionRate = 40.0f;
         particles->ParticleVelocity = { 0.0f, 5.0f, 0.0f };
         particles->ParticleVelocityVariance = { 0.0f, 3.0f, 0.0f };
+        particles->EmitterPositionOffset = {0.0f, -1.5f, 0.0f};
         particles->StartSize = 2.0f;
         particles->EndSize = 1.0f;
         particles->EndRotation = 0.0f;
         particles->lockRotationOnYAxis = true;
         particles->textureAtlasColumns = 2;
         particles->textureAtlasRows = 2;
+        particles->bUseMidColor = true;
+        particles->StartColor = { 1.0f, 1.0f, 1.0f, 0.0f };
+        particles->ColorMidpoint = 0.1f;
+        particles->MidColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+        particles->EndColor = { 1.0f, 1.0f, 1.0f, 0.0f };
 
         particles->Play();
         particles->Link(*rg);
@@ -6186,7 +6202,7 @@ public:
         ParticleSystemComponent* particles = pNewNode->GetComponent<ParticleSystemComponent>();
         particles->SetPlaybackMode(ParticleSystemComponent::PlaybackMode::OneShot);
         particles->destroyAfterEmission = true;
-        particles->ParticleLifetime = 1.2f;
+        particles->ParticleLifetime = 0.9f;
         particles->EmissionDuration = duration;
         particles->EmissionRate = 40.0f;
         particles->ParticleVelocity = { 0.0f, 10.0f, 0.0f };
@@ -6197,6 +6213,11 @@ public:
         particles->lockRotationOnYAxis = true;
         particles->textureAtlasColumns = 2;
         particles->textureAtlasRows = 2;
+        particles->bUseMidColor = true;
+        particles->StartColor = { 1.0f, 1.0f, 1.0f, 0.0f };
+        particles->ColorMidpoint = 0.1f;
+        particles->MidColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+        particles->EndColor = { 1.0f, 1.0f, 1.0f, 0.0f };
 
         particles->Play();
         particles->Link(*rg);
@@ -6216,9 +6237,9 @@ public:
         Node* pNewNode = pNewNodeOwner.get();
 
         auto pCircleLogic = std::make_unique<CircleEmitterLogic>();
-        pCircleLogic->Radius = 5.0f;
+        pCircleLogic->Radius = 2.0f;
         pCircleLogic->Orientation = CircleEmitterLogic::Plane::XY;
-        pCircleLogic->ParticlesPerSecond = 250.0f;
+        pCircleLogic->ParticlesPerSecond = 350.0f;
         pCircleLogic->bFill = true;
 
         pNewNode->AddComponent(
@@ -6227,7 +6248,7 @@ public:
         ParticleSystemComponent* particles = pNewNode->GetComponent<ParticleSystemComponent>();
         particles->SetPlaybackMode(ParticleSystemComponent::PlaybackMode::OneShot);
         particles->destroyAfterEmission = true;
-        particles->ParticleLifetime = 0.7f;
+        particles->ParticleLifetime = 0.2f;
         particles->EmissionDuration = 0.1f;
         particles->EmissionRate = 40.0f;
         particles->ParticleVelocity = { 0.0f, 0.0f, 1.0f };
@@ -6239,6 +6260,11 @@ public:
         particles->lockRotationOnYAxis = true;
         particles->textureAtlasColumns = 2;
         particles->textureAtlasRows = 2;
+        particles->bUseMidColor = true;
+        particles->StartColor = { 1.0f, 1.0f, 1.0f, 0.0f };
+        particles->ColorMidpoint = 0.1f;
+        particles->MidColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+        particles->EndColor = { 1.0f, 1.0f, 1.0f, 0.0f };
 
         particles->Play();
         particles->Link(*rg);
@@ -6260,7 +6286,7 @@ public:
         auto pCircleLogic = std::make_unique<CircleEmitterLogic>();
         pCircleLogic->Radius = 2.0f;
         pCircleLogic->Orientation = CircleEmitterLogic::Plane::XY;
-        pCircleLogic->ParticlesPerSecond = 250.0f;
+        pCircleLogic->ParticlesPerSecond = 100.0f;
         pCircleLogic->bFill = true;
 
         pNewNode->AddComponent(
@@ -6281,6 +6307,11 @@ public:
         particles->lockRotationOnYAxis = true;
         particles->textureAtlasColumns = 2;
         particles->textureAtlasRows = 2;
+        particles->bUseMidColor = true;
+        particles->StartColor = { 1.0f, 1.0f, 1.0f, 0.0f };
+        particles->ColorMidpoint = 0.1f;
+        particles->MidColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+        particles->EndColor = { 1.0f, 1.0f, 1.0f, 0.0f };
 
         particles->Play();
         particles->Link(*rg);
@@ -6344,7 +6375,7 @@ public:
         auto pCircleLogic = std::make_unique<CircleEmitterLogic>();
         pCircleLogic->Radius = 4.0f;
         pCircleLogic->Orientation = CircleEmitterLogic::Plane::XY;
-        pCircleLogic->ParticlesPerSecond = 300.0f;
+        pCircleLogic->ParticlesPerSecond = 100.0f;
         pCircleLogic->bFill = true;
 
         pNewNode->AddComponent(
@@ -6365,6 +6396,11 @@ public:
         particles->lockRotationOnYAxis = true;
         particles->textureAtlasColumns = 2;
         particles->textureAtlasRows = 2;
+        particles->bUseMidColor = true;
+        particles->StartColor = { 1.0f, 1.0f, 1.0f, 0.0f };
+        particles->ColorMidpoint = 0.1f;
+        particles->MidColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+        particles->EndColor = { 1.0f, 1.0f, 1.0f, 0.0f };
 
         particles->Play();
         particles->Link(*rg);

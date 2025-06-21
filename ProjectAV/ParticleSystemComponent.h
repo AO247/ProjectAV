@@ -98,6 +98,10 @@ public:
     bool lockRotationOnYAxis = false;
     UINT textureAtlasRows = 1;
     UINT textureAtlasColumns = 1;
+    DirectX::XMFLOAT4 MidColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+    // The point in the particle's lifetime (0.0 to 1.0) at which it reaches the MidColor.
+    float ColorMidpoint = 0.5f;
+    bool bUseMidColor = false;
 
 private:
     // Private function containing the actual GPU rendering commands
