@@ -168,7 +168,16 @@ void ParticleSystemComponent::EmitParticle(const DirectX::XMFLOAT3& position)
 
             p.startColor = StartColor;
             p.endColor = EndColor;
-            p.startSize = StartSize;
+
+
+            // +++ THIS IS THE KEY CHANGE +++
+            // Calculate a random variance amount.
+            // dist(rng) returns a value from -1.0 to 1.0.
+            std::uniform_real_distribution<float> distt(0.0f, 1.0f);
+            const float randomVariance = StartSizeVariance * distt(rng);
+
+            // Assign the final start size, ensuring it doesn't go below zero.
+            p.startSize = std::max(0.0f, StartSize + randomVariance);
             p.endSize = EndSize;
             p.startRotation = StartRotation;
             p.endRotation = EndRotation;
@@ -197,7 +206,7 @@ void ParticleSystemComponent::EmitParticle(const DirectX::XMFLOAT3& position)
 
             // --- VELOCITY LOGIC ---
             // Create a randomized velocity vector in LOCAL space first.
-            std::uniform_real_distribution<float> dist(-1.0f, 1.0f);
+            std::uniform_real_distribution<float> dist(0.0f, 1.0f);
             dx::XMFLOAT3 localRandomizedVel = {
                 ParticleVelocity.x + ParticleVelocityVariance.x * dist(rng),
                 ParticleVelocity.y + ParticleVelocityVariance.y * dist(rng),
