@@ -1982,7 +1982,7 @@ public:
         InstantiateColumn(pNewNode, Vector3(-14.0f, 0.0f, 20.0f), 4.0f);
         InstantiateColumn(pNewNode, Vector3(-14.0f, 0.0f, -19.0f), 4.0f);
 		InstantiateBaseColumn(pNewNode, Vector3(0.00f, -3.10f, 0.00f), 4.0f, 1.0f);
-        InstantiateAnimationTest(pNewNode, Vector3(0.0f, 2.0f, 0.0f), 1.0f);
+        //InstantiateAnimationTest(pNewNode, Vector3(0.0f, 2.0f, 0.0f), 1.0f);
 
 
         pNewNode->AddChild(std::move(leftPoint));
