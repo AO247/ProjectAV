@@ -20,12 +20,12 @@ void Global::Update(float dt)
 {
 	if (started)
 	{
-		if (levels[levels.size() - 3]->GetComponent<LevelGenerator>()->isFinished) {
-			if (levels[levels.size() - 3]->FindAllChildrenByTag("ENEMY").size() <= 0)
+		if (levels[2]->GetComponent<LevelGenerator>()->isFinished) {
+			if (levels[2]->FindAllChildrenByTag("ENEMY").size() <= 0)
 			{
 				if (!completed)
 				{
-					spawn = levels[levels.size() - 3]->FindFirstChildByTag("SPAWN");
+					spawn = levels[2]->FindFirstChildByTag("SPAWN");
 					spawn->GetComponent<SpawnJump>()->Activate();
 					completed = true;
 
@@ -38,15 +38,15 @@ void Global::Update(float dt)
 	{
 		if (playerNode->GetLocalPosition().y > 30.0f)
 		{
-			levels[levels.size() - 3]->GetComponent<LevelGenerator>()->startEnemyGenerating = true;
+			levels[2]->GetComponent<LevelGenerator>()->startEnemyGenerating = true;
 			currentLevel = 1;
 			started = true;
 			drawLoadingScreen = false;
 		}
-		if (levels[levels.size() - 1] && !ending)
+		if (levels[4])
 		{
-			if (!(levels[levels.size() - 1]->GetComponent<LevelGenerator>()->islandGenerated) && !(levels[levels.size() - 2]->GetComponent<LevelGenerator>()->islandGenerated)
-				&& !(levels[levels.size() - 3]->GetComponent<LevelGenerator>()->islandGenerated))
+			if (!(levels[4]->GetComponent<LevelGenerator>()->islandGenerated) && !(levels[3]->GetComponent<LevelGenerator>()->islandGenerated)
+				&& !(levels[2]->GetComponent<LevelGenerator>()->islandGenerated))
 			{
 				drawLoadingScreen = true;
 			}
@@ -59,8 +59,9 @@ void Global::Update(float dt)
 	if (playerNode->GetLocalPosition().y < ((currentLevel - 1) * 400.0f) - 50.0f || playerNode->GetComponent<Health>()->currentHealth <= 0.0f)
 	{
 		EndRun();
+		StartRun();
 	}
-	if (ending)
+	/*if (ending)
 	{
 		if (levels[endingRemover] != nullptr)
 		{
@@ -73,7 +74,7 @@ void Global::Update(float dt)
 			StartRun();
 			ending = false;
 		}
-	}
+	}*/
 	if (!upgradeHandler->upgradeMenuOpen && upgradeOpen)
 	{
 		upgradeOpen = false;
@@ -84,9 +85,11 @@ void Global::NextStage()
 {
 	upgradeHandler->ShowUpgradeMenu();
 	upgradeOpen = true;
-	levels[levels.size() - 2]->GetComponent<LevelGenerator>()->startEnemyGenerating = true;
-	levels[levels.size() - 5]->Destroy();
+	levels[0]->Destroy();
+	auto it = levels.begin();
+	levels.erase(it);
 	AddSpecialLevel();
+	levels[2]->GetComponent<LevelGenerator>()->startEnemyGenerating = true;
 	currentLevel++;
 }
 
@@ -145,6 +148,12 @@ void Global::EndRun()
 		playerNode->SetLocalPosition(tut->checkpoints[tut->currentCheckpointIndex]);
 		return;
 	}*/
+	levels[0]->Destroy();
+	levels[1]->Destroy();
+	levels[2]->Destroy();
+	levels[3]->Destroy();
+	levels[4]->Destroy();
+	levels.clear();
 	ending = true;
 	endingRemover = levels.size() - 1;
 	playerNode->SetLocalPosition(enterPoint);
