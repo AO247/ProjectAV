@@ -268,9 +268,9 @@ App::App(const std::string& commandLine)
     pFreeViewCamera->SetLocalPosition({ 4.0f, 11.0f, -28.0f });
     pPlayer->SetLocalPosition({ 0.0f, 80.0f, -24.0f });
 
-    pSceneRoot->AddComponent(
+    /*pSceneRoot->AddComponent(
         std::make_unique<Global>(pSceneRoot.get(), wnd, pPlayer, pBase)
-    );
+    );*/
 
     pLeftHandNormal->AddComponent(
         std::make_unique<ModelComponent>(pLeftHandNormal, wnd.Gfx(), "Models\\hands\\left.obj")
@@ -327,11 +327,11 @@ App::App(const std::string& commandLine)
 	pUpgradeHandler->ability6Node = pAbility6;
     pUpgradeHandler->playerController = pPlayer->GetComponent<PlayerController>();
     pUpgradeHandler->SetBasicValues();
-    pSceneRoot->GetComponent<Global>()->upgradeHandler = pUpgradeHandler;
+   // pSceneRoot->GetComponent<Global>()->upgradeHandler = pUpgradeHandler;
 
-	//PrefabManager::InstantiateIslandBig10(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
-	//tutorialNode = PrefabManager::InstantiateTutorialIslands(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
-    //pSceneRoot->GetComponent<Global>()->tut = tutorialNode->GetComponent<Tutorial>();
+	PrefabManager::InstantiateIslandBig10(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
+	/*tutorialNode = PrefabManager::InstantiateTutorialIslands(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
+    pSceneRoot->GetComponent<Global>()->tut = tutorialNode->GetComponent<Tutorial>();*/
 
 
     const int screenWidth = 1920;
@@ -637,7 +637,7 @@ void App::DoFrame(float dt)
     
 	//tutorialNode->GetComponent<Tutorial>()->DrawNote();
 
-    if(pSceneRoot->GetComponent<Global>()->drawLoadingScreen || bonusTime > 0.0f)
+   /* if(pSceneRoot->GetComponent<Global>()->drawLoadingScreen || bonusTime > 0.0f)
     {
         if (!pSceneRoot->GetComponent<Global>()->drawLoadingScreen)
         {
@@ -664,7 +664,7 @@ void App::DoFrame(float dt)
         {
             loadingScreen1->Draw(wnd.Gfx().GetContext());
         }
-    }
+    }*/
 
     wnd.Gfx().EndFrame();
     rg.Reset();

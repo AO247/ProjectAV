@@ -27,7 +27,6 @@ void Throwable::OnCollisionEnter(Node* object)
 
 			float gain = std::clamp(volumeFactor, 0.0f, 1.0f);
 
-			// 4. Odtwórz losowy dŸwiêk uderzenia z obliczon¹ g³oœnoœci¹
 			int soundIndex = rand() % 5;
 			pOwner->GetComponent<SoundEffectsPlayer>()->Play(soundIndex);
 		}

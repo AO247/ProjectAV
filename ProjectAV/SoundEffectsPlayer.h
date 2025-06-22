@@ -2,6 +2,7 @@
 #include "Component.h"
 #include <vector>
 #include <string>
+#include <AL/al.h>
 
 class SoundEffectsPlayer : public Component
 {
@@ -11,7 +12,7 @@ public:
 
 	void AddSound(const std::string& filename);
 
-	void Play(int soundIndex, float gain = 1.0f);
+	ALuint Play(int soundIndex, float gain = 1.0f, bool loop = false);
 
 	void Stop(int soundIndex);
 
@@ -19,4 +20,6 @@ public:
 
 private:
 	std::vector<std::string> m_soundPlaylist;
+
+	std::unordered_map<int, ALuint> m_activeSounds;
 };
