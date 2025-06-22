@@ -11,8 +11,10 @@
 #include "PointEmitterLogic.h"
 #include "CircleEmitterLogic.h"
 #include "SphereToCenterEmitterLogic.h"
-
- 
+#include "ModelCache.h" // Potrzebujemy dostêpu do naszego cache'u
+#include "ModelException.h" // Potrzebujemy naszego typu wyj¹tku
+#include <filesystem> // <-- Do³¹cz ten nag³ówek
+#include <iostream>
 
 //class PhysicsEngine;
 class ShootAttack;
@@ -29,7 +31,86 @@ public:
     static Rgph::MainRenderGraph* rg;
 
 
+    
+    static void PreloadAllModels()
+    {
+        namespace fs = std::filesystem;
+        std::vector<std::string> modelsToPreload;
+        const std::string rootDirectory = "Models";
+        const std::vector<std::string> allowedExtensions = {
+       ".obj", ".fbx", ".gltf", ".glb"
+        };
 
+        try
+        {
+            // SprawdŸ, czy katalog "Models" istnieje
+            if (!fs::exists(rootDirectory) || !fs::is_directory(rootDirectory))
+            {
+                std::string errorMsg = "ERROR: Preloading directory not found: " + rootDirectory + "\n";
+                OutputDebugStringA(errorMsg.c_str());
+                return;
+            }
+
+            // Rekursywnie przeszukaj katalog "Models" i wszystkie jego podkatalogi
+            for (const auto& entry : fs::recursive_directory_iterator(rootDirectory))
+            {
+                if (entry.is_regular_file())
+                {
+                    const fs::path& path = entry.path();
+                    std::string extension = path.extension().string();
+
+                    // SprawdŸ, czy rozszerzenie pliku jest na naszej liœcie
+                    for (const auto& allowedExt : allowedExtensions)
+                    {
+                        // Porównanie bez uwzglêdniania wielkoœci liter (opcjonalne, ale dobre)
+                        if (_stricmp(extension.c_str(), allowedExt.c_str()) == 0)
+                        {
+                            // Zapisz œcie¿kê w formacie, którego u¿ywasz (z podwójnymi backslashami)
+                            std::string modelPathStr = path.string();
+                            // std::filesystem zwraca œcie¿ki z pojedynczymi backslashami, które s¹ OK
+                            // dla wiêkszoœci funkcji, ale jeœli potrzebujesz podwójnych, musisz je zamieniæ.
+                            // Zak³adaj¹c, ¿e pojedyncze s¹ w porz¹dku, po prostu dodajemy.
+                            modelsToPreload.push_back(modelPathStr);
+
+                            // Zaloguj znaleziony model (do debugowania)
+                            std::string logMsg = "Found model to preload: " + modelPathStr + "\n";
+                            OutputDebugStringA(logMsg.c_str());
+                            break; // Znaleziono pasuj¹ce rozszerzenie, przejdŸ do nastêpnego pliku
+                        }
+                    }
+                }
+            }
+        }
+        catch (const fs::filesystem_error& e)
+        {
+            std::string errorMsg = "Filesystem error during preloading: " + std::string(e.what()) + "\n";
+            OutputDebugStringA(errorMsg.c_str());
+            return;
+        }
+
+        
+        OutputDebugStringA("--- Preloading GPU assets... ---\n");
+
+        for (const auto& modelPath : modelsToPreload)
+        {
+            auto dummyOwner = std::make_unique<Node>("DummyPreloadNode");
+            try
+            {
+                const auto& cachedData = ModelCache::Get().LoadOrGet(modelPath);
+                bool hasBones = cachedData.BoneCounter > 0;
+                dummyOwner->AddComponent(
+                    std::make_unique<ModelComponent>(dummyOwner.get(), wind->Gfx(), modelPath, 1.0f, hasBones)
+				);
+            }
+            catch (const std::exception& e) // U¿yj ogólniejszego wyj¹tku
+            {
+                std::string errorMsg = "ERROR preloading model (GPU phase): " + modelPath + "\n" + e.what() + "\n";
+                OutputDebugStringA(errorMsg.c_str());
+            }
+        }
+
+        OutputDebugStringA("--- All preloading finished. ---\n");
+    }
 #pragma region  ENVIROMENT
     
     ///////////////////////////////
@@ -1982,7 +2063,7 @@ public:
         InstantiateColumn(pNewNode, Vector3(-14.0f, 0.0f, 20.0f), 4.0f);
         InstantiateColumn(pNewNode, Vector3(-14.0f, 0.0f, -19.0f), 4.0f);
 		InstantiateBaseColumn(pNewNode, Vector3(0.00f, -3.10f, 0.00f), 4.0f, 1.0f);
-        InstantiateAnimationTest(pNewNode, Vector3(0.0f, 2.0f, 0.0f), 1.0f);
+        //InstantiateAnimationTest(pNewNode, Vector3(0.0f, 2.0f, 0.0f), 1.0f);
 
 
         pNewNode->AddChild(std::move(leftPoint));

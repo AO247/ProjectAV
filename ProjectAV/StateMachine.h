@@ -25,6 +25,7 @@ public:
 
 	sm::Vector3 pos;
 	sm::Vector3 cen;
+	sm::Vector3 basePos;
 	Node* GetOwnerNode() const;
 	Node* pPlayer = nullptr;
 

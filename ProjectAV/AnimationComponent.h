@@ -3,24 +3,21 @@
 #include "Component.h"
 #include "Animator.h"
 #include <string>
-
+#include "ModelCache.h" 
 class AnimationComponent : public Component
 {
 public:
-	AnimationComponent(Node* owner, std::string tag = "", std::string animationPath = "") : Component(owner, tag)
+	AnimationComponent(Node* owner, std::string tag = "", std::string animationPath = "")
+		: Component(owner, tag)
 	{
-		Assimp::Importer importer;
-		constexpr unsigned int kImportFlags =
-			aiProcess_Triangulate |
-			aiProcess_ConvertToLeftHanded |
-			aiProcess_LimitBoneWeights |
-			aiProcess_JoinIdenticalVertices |
-			aiProcess_ImproveCacheLocality |
-			aiProcess_GenSmoothNormals;
-		const aiScene* scene = importer.ReadFile(animationPath, kImportFlags);
-		for (int i = 0; i < scene->mNumAnimations; i++)
+		// Pobierz scenê z cache'a RAZ
+		const aiScene* pScene = ModelCache::Get().LoadOrGet(animationPath).pScene;
+
+		// U¿yj tej samej, wczytanej sceny do stworzenia wszystkich animacji
+		for (unsigned int i = 0; i < pScene->mNumAnimations; i++)
 		{
-			animations.push_back(new Animation(animationPath, owner->GetComponent<ModelComponent>(), i));
+			// Przeka¿ wskaŸnik do sceny, a nie œcie¿kê do pliku
+			animations.push_back(new Animation(pScene, owner->GetComponent<ModelComponent>(), i));
 		}
 
 		animator = new Animator(animations[0]);

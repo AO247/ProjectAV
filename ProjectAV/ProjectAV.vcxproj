@@ -196,6 +196,7 @@
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Component.cpp" />
+    <ClCompile Include="ModelCache.cpp" />
     <ClCompile Include="OnFire.cpp" />
     <ClCompile Include="FireStatue.cpp" />
     <ClCompile Include="FullscreenPass.cpp" />
@@ -258,6 +259,7 @@
     <ClInclude Include="BufferClearPass.h" />
     <ClInclude Include="BufferResource.h" />
     <ClInclude Include="Cube.h" />
+    <ClInclude Include="ModelCache.h" />
     <ClInclude Include="OnFire.h" />
     <ClInclude Include="FireStatue.h" />
     <ClInclude Include="FullscreenPass.h" />

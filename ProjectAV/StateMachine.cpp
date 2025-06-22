@@ -31,7 +31,7 @@ StateMachine::StateMachine(Node* owner, StateType initialState)
 		currentStateType = StateType::IDLE;
 		ChangeState(StateType::IDLE); 
 	}
-	Stop(3.0f);
+	//Stop(3.0f);
 	//for (const auto& component : pOwner->GetComponents())
 	//{
 	//	std::string tagName = "MOVEMENT";
@@ -47,6 +47,7 @@ StateMachine::StateMachine(Node* owner, StateType initialState)
 	//	}
 	//}
 	pPlayer = pOwner->GetRoot()->FindFirstChildByTag("PLAYER");
+	basePos = pOwner->GetWorldPosition();
 }
 StateMachine::~StateMachine()
 {
@@ -64,7 +65,14 @@ void StateMachine::Stop(float time)
 }
 void StateMachine::Update(float dt)
 {
-	if (timer < 6.0f) timer += dt;
+	if (timer < 2.0f && canDropPills)
+	{
+		timer += dt;
+		pOwner->SetWorldPosition(basePos);
+		eatedPills = false;
+		pOwner->GetComponent<Health>()->currentHealth = pOwner->GetComponent<Health>()->maxHealth;
+	}
+
 	if (currentState)
 	{
 		currentState->Update(this, dt);
@@ -98,6 +106,7 @@ void StateMachine::Update(float dt)
 	{
 		if(pMovementComponent->GroundCheck())
 		{
+			
 		Vec3 velocity = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(pOwner->GetComponent<Rigidbody>()->GetBodyID());
 		velocity.SetX(velocity.GetX() * 0.97f);
 		velocity.SetZ(velocity.GetZ() * 0.97f);
@@ -175,11 +184,6 @@ void StateMachine::Die()
 {
 	/*pPlayer->GetComponent<PlayerController>()->abilitySlot3->GetComponent<Ability>()->killsCount++;
 	pPlayer->GetComponent<Health>()->TakeDamage(-1);*/
-	if (timer < 6.0f)
-	{
-		pOwner->GetComponent<Health>()->currentHealth = pOwner->GetComponent<Health>()->maxHealth;
-		return;
-	}
 	if (!isDead)
 	{
 		isDead = true;
