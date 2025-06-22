@@ -14,6 +14,7 @@
 #include <set>
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
+#include "ModelCache.h" // <--- DODAJ TEN INCLUDE
 
 namespace dx = DirectX;
 
@@ -21,38 +22,33 @@ namespace dx = DirectX;
 
 ModelComponent::ModelComponent(Node* owner, Graphics& gfx, const std::string& modelFile, float scale, bool isSkinned)
 	: Component(owner),
-	skinnedCharacter(isSkinned) // Inicjalizacja sk³adowej
+	skinnedCharacter(isSkinned)
 {
-	Assimp::Importer importer;
-	const auto pScene = importer.ReadFile(modelFile.c_str(),
-		aiProcess_Triangulate |
-		aiProcess_JoinIdenticalVertices |
-		aiProcess_ConvertToLeftHanded |
-		aiProcess_GenNormals |
-		aiProcess_CalcTangentSpace
-	);
+	// Zamiast tylko sceny, pobieramy ca³¹ strukturê z danymi
+	const CachedModelData& cachedModel = ModelCache::Get().LoadOrGet(modelFile);
+	const aiScene* pScene = cachedModel.pScene;
 
-	if (!pScene || !pScene->mRootNode || pScene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) {
-		throw ModelException(__LINE__, __FILE__, "Assimp error: " + std::string(importer.GetErrorString()));
-	}
-
-	// Wyodrêbnij informacje o koœciach tylko, jeœli model jest oznaczony jako "skinned"
+	// Jeœli model jest animowany, SKOPIUJ dane o koœciach z cache'a do tej instancji
 	if (skinnedCharacter)
 	{
-		ExtractBoneInfo(*pScene);
+		// Ju¿ nie wywo³ujemy ExtractBoneInfo()!
+		// ExtractBoneInfo(*pScene); 
+
+		// Zamiast tego kopiujemy ju¿ przetworzone dane.
+		// To jest bardzo szybka operacja w porównaniu do ponownego przetwarzania.
+		m_BoneInfoMap = cachedModel.BoneInfoMap;
+		m_BoneCounter = cachedModel.BoneCounter;
 	}
 
 	std::filesystem::path filePath(modelFile);
 
-	// Za³aduj materia³y
+	// Reszta konstruktora bez zmian...
 	std::vector<Material> materials;
 	materials.reserve(pScene->mNumMaterials);
 	for (size_t i = 0; i < pScene->mNumMaterials; ++i) {
-		// Przeka¿ flagê `skinnedCharacter` do konstruktora materia³u
 		materials.emplace_back(gfx, *pScene->mMaterials[i], filePath, skinnedCharacter);
 	}
 
-	// Za³aduj wszystkie siatki (meshe) z modelu do p³askiej listy
 	meshPtrs.reserve(pScene->mNumMeshes);
 	for (unsigned int i = 0; i < pScene->mNumMeshes; ++i) {
 		const auto& assimpMesh = *pScene->mMeshes[i];

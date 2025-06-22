@@ -24,24 +24,13 @@ class Animation
 public:
     Animation() = default;
 
-    Animation(const std::string& animationPath, ModelComponent* model, int index)
+    Animation(const aiScene* pScene, ModelComponent* model, int index)
     {
-        Assimp::Importer importer;
-        constexpr unsigned int kImportFlags =
-            aiProcess_Triangulate |
-            aiProcess_ConvertToLeftHanded | 
-            aiProcess_LimitBoneWeights | 
-            aiProcess_JoinIdenticalVertices |
-            aiProcess_ImproveCacheLocality |
-            aiProcess_GenSmoothNormals;
-
-        const aiScene* scene = importer.ReadFile(animationPath, kImportFlags);
-        //const aiScene* scene = importer.ReadFile(animationPath, aiProcess_Triangulate);
-        assert(scene && scene->mRootNode);
-        auto animation = scene->mAnimations[index];
+        assert(pScene && pScene->mRootNode);
+        auto animation = pScene->mAnimations[index];
         m_Duration = animation->mDuration;
         m_TicksPerSecond = animation->mTicksPerSecond;
-        ReadHeirarchyData(m_RootNode, scene->mRootNode);
+        ReadHeirarchyData(m_RootNode, pScene->mRootNode);
         ReadMissingBones(animation, *model);
     }
 
