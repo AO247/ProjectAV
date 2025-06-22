@@ -7,18 +7,12 @@
 #include "ConditionalNoexcept.h"
 #include <SimpleMath.h>
 #include "Technique.h"
-#include <map> // Added for bone info map
+#include <map>
 #include <assimp/scene.h>
 
 class Mesh;
 class Graphics;
 class FrameCommander;
-class ModelControlWindow;
-namespace Assimp { class Importer; }
-struct aiNode;
-struct aiMesh;
-struct aiMaterial;
-
 namespace Rgph
 {
     class RenderGraph;
@@ -32,35 +26,11 @@ struct XMFLOAT3Less {
     }
 };
 
-
-class ModelInternalNode
-{
-    friend class ModelComponent;
-public:
-    ModelInternalNode(int id, const std::string& name, std::vector<Mesh*> meshPtrs, const DirectX::XMMATRIX& transform) noxnd;
-    const std::string& GetName() const noexcept { return name; }
-    void Submit(Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform, const std::vector<DirectX::XMMATRIX>* pBoneTransforms) const noxnd;
-    void ShowTree(int& nodeIndexTracker, ModelInternalNode*& pSelectedNode) const noexcept;
-    void SetAppliedTransform(DirectX::FXMMATRIX transform) noexcept;
-    void LinkTechniques(Rgph::RenderGraph&);
-    int GetId() const noexcept;
-private:
-    void AddChild(std::unique_ptr<ModelInternalNode> pChild) noxnd;
-private:
-    std::string name;
-    int id;
-    std::vector<std::unique_ptr<ModelInternalNode>> childPtrs;
-    std::vector<Mesh*> meshPtrs;
-    DirectX::XMFLOAT4X4 transform;
-    DirectX::XMFLOAT4X4 appliedTransform;
-};
-
-
 class ModelComponent : public Component
 {
 public:
     //================================================================================
-    // NEW BONE INFO STRUCTURE
+    // NOWA STRUKTURA INFORMACJI O KOŒCIACH
     //================================================================================
     struct BoneInfo
     {
@@ -85,7 +55,6 @@ public:
     virtual ~ModelComponent() = default;
 
     void Submit(Graphics& gfx, DirectX::FXMMATRIX worldTransform) const noxnd;
-    void ShowWindow(Graphics& gfx, const char* windowName = nullptr) noexcept;
     void LinkTechniques(Rgph::RenderGraph&);
 
     std::vector<DirectX::SimpleMath::Vector3> GetAllUniqueVertices() const;
@@ -96,7 +65,7 @@ public:
     std::vector<Technique> techniques;
 
     //================================================================================
-    // BONE INFO MAP AND COUNTER
+    // MAPA INFORMACJI O KOŒCIACH I LICZNIK
     //================================================================================
     std::map<std::string, BoneInfo>& GetBoneInfoMap() { return m_BoneInfoMap; }
     int& GetBoneCount() { return m_BoneCounter; }
@@ -105,12 +74,7 @@ public:
 
 private:
     void ExtractBoneInfo(const aiScene& scene);
-    std::unique_ptr<ModelInternalNode> ParseNodeRecursive(int& nextId, const aiNode& node, float scale);
 
     std::map<std::string, BoneInfo> m_BoneInfoMap;
     int m_BoneCounter = 0;
-
-    std::unique_ptr<ModelInternalNode> pRootInternal;
-
-    std::unique_ptr<ModelControlWindow> pControlWindow;
 };

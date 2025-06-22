@@ -8,8 +8,6 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
-#include "imgui/imgui.h"
-#include <unordered_map>
 #include <sstream>
 #include <filesystem>
 #include <stdexcept>
@@ -19,152 +17,11 @@
 
 namespace dx = DirectX;
 
-struct TransformParameters
-{
-	float roll = 0.0f;
-	float pitch = 0.0f;
-	float yaw = 0.0f;
-	float x = 0.0f;
-	float y = 0.0f;
-	float z = 0.0f;
-};
-
-
-
-class ModelControlWindow
-{
-public:
-
-	void Show(const char* windowName, const ModelInternalNode& root, ModelInternalNode*& pSelectedNode,
-		std::unordered_map<int, TransformParameters>& transforms) noexcept
-	{
-		windowName = windowName ? windowName : "Model Controls";
-		if (ImGui::Begin(windowName))
-		{
-			ImGui::Columns(2, nullptr, true);
-
-			int nodeIndexTracker = 0;
-			root.ShowTree(nodeIndexTracker, pSelectedNode);
-
-			ImGui::NextColumn();
-			if (pSelectedNode != nullptr)
-			{
-				const int selectedId = pSelectedNode->GetId();
-
-				auto& transform = transforms[selectedId];
-
-
-				ImGui::Text("Node: %s", pSelectedNode->GetName().c_str());
-				ImGui::Separator();
-				ImGui::Text("Orientation (Local Offset)");
-				ImGui::SliderAngle("Roll", &transform.roll, -180.0f, 180.0f);
-				ImGui::SliderAngle("Pitch", &transform.pitch, -180.0f, 180.0f);
-				ImGui::SliderAngle("Yaw", &transform.yaw, -180.0f, 180.0f);
-				ImGui::Text("Position (Local Offset)");
-				ImGui::SliderFloat("X", &transform.x, -20.0f, 20.0f);
-				ImGui::SliderFloat("Y", &transform.y, -20.0f, 20.0f);
-				ImGui::SliderFloat("Z", &transform.z, -20.0f, 20.0f);
-
-
-			}
-			else
-			{
-				ImGui::Text("Select a node in the tree.");
-			}
-		}
-		ImGui::End();
-	}
-
-
-	ModelInternalNode* pSelectedNode = nullptr;
-
-	std::unordered_map<int, TransformParameters> transforms;
-};
-
-
-
-
-ModelInternalNode::ModelInternalNode(int id, const std::string& name, std::vector<Mesh*> meshPtrs, const dx::XMMATRIX& transform_in) noxnd
-	: id(id), name(name), meshPtrs(std::move(meshPtrs))
-{
-	dx::XMStoreFloat4x4(&transform, transform_in);
-	dx::XMStoreFloat4x4(&appliedTransform, dx::XMMatrixIdentity());
-}
-
-void ModelInternalNode::AddChild(std::unique_ptr<ModelInternalNode> pChild) noxnd
-{
-	assert(pChild);
-	childPtrs.push_back(std::move(pChild));
-}
-
-void ModelInternalNode::Submit(Graphics& gfx, dx::FXMMATRIX accumulatedTransform, const std::vector<DirectX::XMMATRIX>* pBoneTransforms) const noxnd
-{
-	const auto modelNodeTransform =
-		dx::XMLoadFloat4x4(&appliedTransform) *
-		dx::XMLoadFloat4x4(&transform) *
-		accumulatedTransform;
-
-	// For each mesh in this node, submit it with the final transform AND the bone data
-	for (const auto pm : meshPtrs)
-	{
-		// The Mesh::Submit overload will handle the pBoneTransforms pointer (even if null)
-		pm->Submit(modelNodeTransform, pBoneTransforms);
-	}
-
-	// Recursively call submit for all children, passing the bone data down
-	for (const auto& pc : childPtrs)
-	{
-		pc->Submit(gfx, modelNodeTransform, pBoneTransforms);
-	}
-}
-
-int ModelInternalNode::GetId() const noexcept
-{
-	return id;
-}
-
-void ModelInternalNode::SetAppliedTransform(DirectX::FXMMATRIX transform) noexcept
-{
-	dx::XMStoreFloat4x4(&appliedTransform, transform);
-}
-
-
-void ModelInternalNode::ShowTree(int& nodeIndexTracker, ModelInternalNode*& pSelectedNode) const noexcept
-{
-
-	nodeIndexTracker++;
-
-	const int currentId = GetId();
-	const bool isSelected = (pSelectedNode != nullptr) && (pSelectedNode->GetId() == currentId);
-
-	const auto node_flags = ImGuiTreeNodeFlags_OpenOnArrow |
-		(isSelected ? ImGuiTreeNodeFlags_Selected : 0) |
-		(childPtrs.empty() ? ImGuiTreeNodeFlags_Leaf : 0);
-
-	const bool expanded = ImGui::TreeNodeEx(
-		(void*)(intptr_t)(currentId + nodeIndexTracker * 10000),
-		node_flags, name.c_str()
-	);
-
-	if (ImGui::IsItemClicked())
-	{
-		pSelectedNode = const_cast<ModelInternalNode*>(this);
-	}
-
-	if (expanded)
-	{
-		for (const auto& pChild : childPtrs)
-		{
-			pChild->ShowTree(nodeIndexTracker, pSelectedNode);
-		}
-		ImGui::TreePop();
-	}
-}
+// Usuniêto klasy ModelControlWindow i ModelInternalNode oraz ich implementacje
 
 ModelComponent::ModelComponent(Node* owner, Graphics& gfx, const std::string& modelFile, float scale, bool isSkinned)
 	: Component(owner),
-	pControlWindow(std::make_unique<ModelControlWindow>()),
-	skinnedCharacter(isSkinned) // Initialize the member
+	skinnedCharacter(isSkinned) // Inicjalizacja sk³adowej
 {
 	Assimp::Importer importer;
 	const auto pScene = importer.ReadFile(modelFile.c_str(),
@@ -178,8 +35,8 @@ ModelComponent::ModelComponent(Node* owner, Graphics& gfx, const std::string& mo
 	if (!pScene || !pScene->mRootNode || pScene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) {
 		throw ModelException(__LINE__, __FILE__, "Assimp error: " + std::string(importer.GetErrorString()));
 	}
- 
-	// Only extract bone info if the model is marked as skinned
+
+	// Wyodrêbnij informacje o koœciach tylko, jeœli model jest oznaczony jako "skinned"
 	if (skinnedCharacter)
 	{
 		ExtractBoneInfo(*pScene);
@@ -187,26 +44,25 @@ ModelComponent::ModelComponent(Node* owner, Graphics& gfx, const std::string& mo
 
 	std::filesystem::path filePath(modelFile);
 
+	// Za³aduj materia³y
 	std::vector<Material> materials;
 	materials.reserve(pScene->mNumMaterials);
 	for (size_t i = 0; i < pScene->mNumMaterials; ++i) {
-		// PASS THE FLAG to the material constructor
+		// Przeka¿ flagê `skinnedCharacter` do konstruktora materia³u
 		materials.emplace_back(gfx, *pScene->mMaterials[i], filePath, skinnedCharacter);
 	}
 
+	// Za³aduj wszystkie siatki (meshe) z modelu do p³askiej listy
 	meshPtrs.reserve(pScene->mNumMeshes);
 	for (unsigned int i = 0; i < pScene->mNumMeshes; ++i) {
 		const auto& assimpMesh = *pScene->mMeshes[i];
 		meshPtrs.push_back(std::make_unique<Mesh>(gfx, materials[assimpMesh.mMaterialIndex], assimpMesh, scale));
 	}
-
-	int nextId = 0;
-	pRootInternal = ParseNodeRecursive(nextId, *pScene->mRootNode, scale);
 }
 
 void ModelComponent::ExtractBoneInfo(const aiScene& scene)
 {
-	// Iterate through all meshes in the scene to find all unique bones
+	// Przechodzi przez wszystkie siatki w scenie, aby znaleŸæ wszystkie unikalne koœci
 	for (unsigned int meshIdx = 0; meshIdx < scene.mNumMeshes; ++meshIdx)
 	{
 		const auto& mesh = *scene.mMeshes[meshIdx];
@@ -215,19 +71,19 @@ void ModelComponent::ExtractBoneInfo(const aiScene& scene)
 			continue;
 		}
 
-		// Iterate through all bones in the current mesh
+		// Przechodzi przez wszystkie koœci w bie¿¹cej siatce
 		for (unsigned int boneIdx = 0; boneIdx < mesh.mNumBones; ++boneIdx)
 		{
 			const auto& bone = *mesh.mBones[boneIdx];
 			std::string boneName = bone.mName.C_Str();
 
-			// If we haven't seen this bone before, add it to our map
+			// Jeœli nie widzieliœmy tej koœci wczeœniej, dodaj j¹ do naszej mapy
 			if (m_BoneInfoMap.find(boneName) == m_BoneInfoMap.end())
 			{
 				BoneInfo newBoneInfo;
 				newBoneInfo.id = m_BoneCounter;
-				// Assimp matrix needs to be converted and transposed for DirectX.
-				// This matrix transforms vertices from model space to the bone's local space.
+				// Macierz z Assimp musi zostaæ przekonwertowana i transponowana dla DirectX.
+				// Ta macierz transformuje wierzcho³ki z przestrzeni modelu do lokalnej przestrzeni koœci.
 				newBoneInfo.offset = dx::XMMatrixTranspose(dx::XMLoadFloat4x4(
 					reinterpret_cast<const dx::XMFLOAT4X4*>(&bone.mOffsetMatrix)
 				));
@@ -240,56 +96,27 @@ void ModelComponent::ExtractBoneInfo(const aiScene& scene)
 
 void ModelComponent::Submit(Graphics& gfx, dx::FXMMATRIX worldTransform) const noxnd
 {
-	if (pRootInternal) {
-		AnimationComponent* animationComponent = pOwner->GetComponent<AnimationComponent>();
-		if (animationComponent != nullptr)
-		{
-			// Get the latest bone matrices from the animator
-			const auto& boneMatrices = animationComponent->animator->GetFinalBoneMatrices();
-			// Pass the world transform and the bone matrices into the recursive submit
-			pRootInternal->Submit(gfx, worldTransform, &boneMatrices);
-		}
-		else
-		{
-			pRootInternal->Submit(gfx, worldTransform, nullptr);
-		}
-	}
-}
+	// SprawdŸ, czy istnieje komponent animacji, aby uzyskaæ dane o koœciach
+	AnimationComponent* animationComponent = pOwner->GetComponent<AnimationComponent>();
+	const std::vector<DirectX::XMMATRIX>* pBoneTransforms = nullptr;
 
-std::unique_ptr<ModelInternalNode> ModelComponent::ParseNodeRecursive(int& nextId, const aiNode& node, float scale)
-{
-	namespace dx = DirectX;
+	// Zmienna lokalna do przechowywania macierzy koœci. Musi istnieæ tak d³ugo, 
+	// jak d³ugo wskaŸnik pBoneTransforms jest u¿ywany.
+	std::vector<dx::XMMATRIX> boneMatrices;
 
-	const auto transformMatrix = dx::XMMatrixTranspose(dx::XMLoadFloat4x4(
-		reinterpret_cast<const dx::XMFLOAT4X4*>(&node.mTransformation)
-	));
-
-	dx::XMMATRIX finalNodeTransform = transformMatrix;
-
-	std::vector<Mesh*> currentNodeMeshPtrs;
-	currentNodeMeshPtrs.reserve(node.mNumMeshes);
-	for (unsigned int i = 0; i < node.mNumMeshes; ++i) {
-		const auto meshIndex = node.mMeshes[i];
-		if (meshIndex < meshPtrs.size()) {
-			currentNodeMeshPtrs.push_back(meshPtrs[meshIndex].get());
-		}
-		else {
-			OutputDebugStringA(("Warning: Mesh index out of bounds in node " + std::string(node.mName.C_Str()) + "\n").c_str());
-		}
+	if (animationComponent != nullptr)
+	{
+		// 1. Pobierz macierze (jako kopiê) do naszej zmiennej lokalnej.
+		boneMatrices = animationComponent->animator->GetFinalBoneMatrices();
+		// 2. Teraz mo¿emy bezpiecznie pobraæ adres naszej zmiennej lokalnej (l-wartoœci).
+		pBoneTransforms = &boneMatrices;
 	}
 
-	auto pNode = std::make_unique<ModelInternalNode>(nextId++, node.mName.C_Str(), std::move(currentNodeMeshPtrs), finalNodeTransform);
-
-	for (unsigned int i = 0; i < node.mNumChildren; ++i) {
-		pNode->AddChild(ParseNodeRecursive(nextId, *node.mChildren[i], scale));
-	}
-	return pNode;
-}
-
-void ModelComponent::ShowWindow(Graphics& gfx, const char* windowName) noexcept
-{
-	if (pRootInternal && pControlWindow) {
-		pControlWindow->Show(windowName, *pRootInternal, pControlWindow->pSelectedNode, pControlWindow->transforms);
+	// PrzejdŸ przez wszystkie siatki w modelu i wyœlij je do renderowania
+	for (const auto& pMesh : meshPtrs)
+	{
+		// Metoda Submit siatki obs³u¿y wskaŸnik pBoneTransforms (nawet jeœli jest to nullptr)
+		pMesh->Submit(worldTransform, pBoneTransforms);
 	}
 }
 
