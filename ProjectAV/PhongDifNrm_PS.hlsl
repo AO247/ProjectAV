@@ -29,6 +29,7 @@ float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float3 vi
     const float3 materialColor = tex.Sample(splr, tc).rgb;
     float shadowFactor = CalculateShadowFactor(posLight);
     
+    
     float3 total_ambient = dir_ambient;
     if (enabled)
     {

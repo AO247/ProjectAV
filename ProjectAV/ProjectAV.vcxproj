@@ -143,7 +143,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>assimp-vc140-mt.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;DirectXTex.lib;Jolt.lib;DirectXTK.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\Users\Zuzia\Desktop\studia\vcpkg\installed\x64-windows-static\debug\lib;$(SolutionDir)ProjectAV\Library\x64\moje;D:\vcpkg-master\installed\x64-windows-static\debug\lib;D:\vcpkg\installed\x64-windows-static\debug\lib;D:\GameDev\vcpkg\installed\x64-windows-static\debug\lib;C:\semestr_6\ZTGK\vcpkg\installed\x64-windows-static\debug\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\Zuzia\Desktop\studia\vcpkg\installed\x64-windows-static\debug\lib;$(SolutionDir)ProjectAV\Library\x64\mojeDebug;D:\vcpkg-master\installed\x64-windows-static\debug\lib;D:\vcpkg\installed\x64-windows-static\debug\lib;D:\GameDev\vcpkg\installed\x64-windows-static\debug\lib;C:\semestr_6\ZTGK\vcpkg\installed\x64-windows-static\debug\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

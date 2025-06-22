@@ -35,5 +35,6 @@ namespace Rgph
 			ID3D11ShaderResourceView* const pNullSrv = nullptr;
 			gfx.GetContext()->PSSetShaderResources(3, 1, &pNullSrv);
 		}
+
 	};
 }

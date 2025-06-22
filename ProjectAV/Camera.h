@@ -17,6 +17,7 @@ public:
 
 	// Calculates and returns the View Matrix
 	DirectX::XMMATRIX GetViewMatrix() const noexcept;
+	DirectX::XMFLOAT3 GetPos() const noexcept;
 
 	// Optional: Set sensitivity
 	void SetSensitivity(float xSens, float ySens) { sensX = xSens; sensY = ySens; }

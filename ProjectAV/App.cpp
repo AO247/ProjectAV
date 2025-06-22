@@ -508,8 +508,15 @@ void App::DoFrame(float dt)
     // --- Bind Lights ---
     Bind::TransformCbuf::SetLight(&dirLight);
     Bind::ShadowCbuf::SetLight(&dirLight);
-
-    dirLight.Update(wnd.Gfx(), { 0.0f, 0.0f, 0.0f });
+    DirectX::XMFLOAT3 focusPos = pPlayer->GetWorldPosition();
+    Camera* activePlayerCamera = nullptr;
+    if (freeViewCamera) {
+        activePlayerCamera = pFreeViewCamera->GetComponent<Camera>();
+    }
+    else {
+        activePlayerCamera = pCamera->GetComponent<Camera>();
+    }
+    dirLight.Update(wnd.Gfx(), focusPos, *activePlayerCamera);
 
     // --- Bind Lights ---
     // pointLight.Bind(wnd.Gfx(), viewMatrix);

@@ -2,7 +2,7 @@
 #include "Graphics.h"
 #include "ConstantBuffers.h"
 #include <DirectXMath.h>
-
+class Camera;
 class DirectionalLight
 {
 public:
@@ -10,7 +10,7 @@ public:
 	void SpawnControlWindow() noexcept;
 	void Reset() noexcept;
 	void Bind(Graphics& gfx) const noexcept;
-	void Update(Graphics& gfx, const DirectX::XMFLOAT3& lookAt) noexcept;
+	void Update(Graphics& gfx, const DirectX::XMFLOAT3& playerWorldPosition, Camera& playerCamera);
 	DirectX::XMMATRIX GetViewMatrix() const noexcept;
 	DirectX::XMMATRIX GetProjectionMatrix() const noexcept;
 
