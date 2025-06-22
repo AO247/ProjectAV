@@ -14,7 +14,6 @@ void Island::Rotate(int rot)
     randomRotate = randomRotate * 90;
 	if (rot != 0) randomRotate = rot;
 	pOwner->SetLocalRotation(DirectX::XMFLOAT3(0.0f, to_rad(randomRotate), 0.0f));
-	//OutputDebugStringA(("\nRotating island: " + pOwner->GetName() + " o " + std::to_string(randomRotate) + " stopni " + std::to_string(to_rad(randomRotate))).c_str());
     if (randomRotate == 90)
     {
         Vector3 pos = upPoint->GetLocalPosition();;

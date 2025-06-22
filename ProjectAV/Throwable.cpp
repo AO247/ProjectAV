@@ -5,19 +5,40 @@ Throwable::Throwable(Node* owner) : Component(owner)
 	rigidbody = pOwner->GetComponent<Rigidbody>();
 }
 
+void Throwable::Update(float dt)
+{
+	velocity = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
+}
+
 void Throwable::OnCollisionEnter(Node* object)
 {
+	if (object == nullptr) return;
+	if (object->tag == "TRIGGER") return;
 	Vec3 position = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
-	float l = position.Length();
-	if (l < speed) return;
-	if (object->GetComponent<Health>())
-	{
-		object->GetComponent<Health>()->TakeDamage(damage);
-	}
+	float l = velocity.Length();
+
 	if (pOwner->GetComponent<SoundEffectsPlayer>())
 	{
 		float p = (rand() % 2);
 		pOwner->GetComponent<SoundEffectsPlayer>()->Play(p);
+	}
+	if (object->tag == "ENEMY")
+	{
+		OutputDebugStringA(("\n\nThrowable hit enemy: " + object->GetName() + " wiht speed: " + std::to_string(l)).c_str());
+	}
+	if (l < speed) return;
+
+	if (object->tag == "ENEMY" || object->tag == "PLAYER")
+	{
+		if (object->GetComponent<Health>())
+		{
+			object->GetComponent<Health>()->TakeDamage(damage, heavy);
+		}
+	}
+	
+	if (pot)
+	{
+		pOwner->Destroy();
 	}
 }
 

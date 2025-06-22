@@ -46,7 +46,6 @@ TestCube::TestCube(Graphics& gfx, float size)
 			buf["specularGloss"] = 20.0f;
 			only.AddBindable(std::make_shared<Bind::CachingPixelConstantBufferEx>(gfx, buf, 1u));
 
-			//only.AddBindable(InputLayout::Resolve(gfx, model.vertices.GetLayout(), pvsbc));
 
 			only.AddBindable(Rasterizer::Resolve(gfx, false));
 
@@ -62,12 +61,9 @@ TestCube::TestCube(Graphics& gfx, float size)
 		{
 			Step mask("outlineMask");
 
-			// TODO: better sub-layout generation tech for future consideration maybe
-			//mask.AddBindable(InputLayout::Resolve(gfx, model.vertices.GetLayout(), VertexShader::Resolve(gfx, "Solid_VS.cso")->GetBytecode()));
 
 			mask.AddBindable(std::move(tcb));
 
-			// TODO: might need to specify rasterizer when doubled-sided models start being used
 
 			outline.AddStep(std::move(mask));
 		}
@@ -80,12 +76,9 @@ TestCube::TestCube(Graphics& gfx, float size)
 			buf["color"] = DirectX::XMFLOAT4{ 1.0f,0.4f,0.4f,1.0f };
 			draw.AddBindable(std::make_shared<Bind::CachingPixelConstantBufferEx>(gfx, buf, 1u));
 
-			// TODO: better sub-layout generation tech for future consideration maybe
-			//draw.AddBindable(InputLayout::Resolve(gfx, model.vertices.GetLayout(), VertexShader::Resolve(gfx, "Solid_VS.cso")->GetBytecode()));
 
 			draw.AddBindable(std::make_shared<TransformCbuf>(gfx));
 
-			// TODO: might need to specify rasterizer when doubled-sided models start being used
 
 			outline.AddStep(std::move(draw));
 		}

@@ -16,7 +16,7 @@
 namespace wrl = Microsoft::WRL;
 namespace dx = DirectX;
 
-// Local struct for the constant buffer
+
 struct SkyboxTransforms
 {
 	dx::XMMATRIX view;
@@ -33,7 +33,7 @@ Skybox::Skybox(Graphics& gfx, const std::vector<std::string>& facePaths)
 		throw std::runtime_error("Skybox requires 6 texture face paths.");
 	}
 
-	// Use a sphere for seamless geometry
+
 	auto model = Sphere::Make(dvtx::VertexLayout{}.Append(dvtx::VertexLayout::Position3D));
 	pVertices = VertexBuffer::Resolve(gfx, "$skybox_v", model.vertices);
 	pIndices = IndexBuffer::Resolve(gfx, "$skybox_i", model.indices);
@@ -47,25 +47,24 @@ Skybox::Skybox(Graphics& gfx, const std::vector<std::string>& facePaths)
 	pVcbuf = std::make_unique<VertexConstantBuffer<SkyboxTransforms>>(gfx, 0u);
 
 	pSampler = Sampler::Resolve(gfx, Sampler::Type::Bilinear);
-	// Flip the sphere inside out so back-face culling works from the inside
+
 	pRasterizer = Rasterizer::Resolve(gfx, true);
 
-	// === Create custom Depth Stencil State (as requested) ===
 	D3D11_DEPTH_STENCIL_DESC dsDesc = {};
 	dsDesc.DepthEnable = TRUE;
-	dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO; // Don't write to depth buffer
-	dsDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;      // Draw if pixel is behind or at same depth
+	dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO; 
+	dsDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;      
 	dsDesc.StencilEnable = FALSE;
 	INFOMAN(gfx);
 	HRESULT hr;
 	D3D11_RASTERIZER_DESC rasterDesc = CD3D11_RASTERIZER_DESC(CD3D11_DEFAULT{});
-	rasterDesc.CullMode = D3D11_CULL_FRONT; // Cull front faces as we are inside the sphere
+	rasterDesc.CullMode = D3D11_CULL_FRONT;
 	wrl::ComPtr<ID3D11RasterizerState> tempRasterizer;
 	GFX_THROW_INFO(gfx.GetDevice()->CreateRasterizerState(&rasterDesc, &tempRasterizer));
 	pRasterizer = std::make_shared<Bind::Rasterizer>(gfx, tempRasterizer.Get());
 	GFX_THROW_INFO(gfx.GetDevice()->CreateDepthStencilState(&dsDesc, &pDepthStencilState));
 
-	// Load cubemap texture
+
 	std::vector<Surface> surfaces;
 	surfaces.reserve(6);
 	for (const auto& path : facePaths)
@@ -107,14 +106,14 @@ Skybox::Skybox(Graphics& gfx, const std::vector<std::string>& facePaths)
 
 void Skybox::Draw(Graphics& gfx) const
 {
-	// Update constant buffer
+
 	const SkyboxTransforms tf = {
 		dx::XMMatrixTranspose(gfx.GetCamera()),
 		dx::XMMatrixTranspose(gfx.GetProjection())
 	};
 	pVcbuf->Update(gfx, tf);
 
-	// Bind all resources
+
 	pVcbuf->Bind(gfx);
 	pVertices->Bind(gfx);
 	pIndices->Bind(gfx);
@@ -125,10 +124,9 @@ void Skybox::Draw(Graphics& gfx) const
 	pSampler->Bind(gfx);
 	pRasterizer->Bind(gfx);
 
-	// Bind custom resources
+
 	gfx.GetContext()->OMSetDepthStencilState(pDepthStencilState.Get(), 0xFF);
 	gfx.GetContext()->PSSetShaderResources(0, 1, pTextureView.GetAddressOf());
 
-	// Draw the geometry
 	gfx.DrawIndexed(pIndices->GetCount());
 }

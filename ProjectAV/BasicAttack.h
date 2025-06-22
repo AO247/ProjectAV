@@ -1,10 +1,9 @@
 #pragma once
 #include "Component.h"
-#include "Window.h" // Needs access to Window for input
+#include "Window.h"
 #include <DirectXMath.h>
 #include "Components.h"
-// Forward declare Node to avoid circular include if necessary,
-// but including Node.h is often fine here.
+
 class Node;
 
 class BasicAttack : public Component
@@ -19,7 +18,6 @@ public:
 	float knockbackForce = 1500.0f;
 	void OnTriggerEnter(Node* object) override;
 	void OnTriggerExit(Node* object) override;
-	//OBB* damageArea;
 
 	virtual void Attack(float dt);
 	virtual void DrawImGuiControls() override;

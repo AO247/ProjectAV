@@ -8,11 +8,11 @@ BrokenPart::BrokenPart(Node* owner) : Component(owner)
 
 void BrokenPart::OnCollisionEnter(Node* object)
 {
+	if (object == nullptr) return;
 	if (pOwner->GetParent() != object && !broked && object->tag != "TRIGGER")
 	{
-		//pOwner->SetParent(pOwner->GetParent()->GetParent());
+
 		rigidbody->DisconnectConnectedBody();
-		//PhysicsCommon::physicsSystem->GetBodyInterface().SetMotionType(rigidbody->GetBodyID(), EMotionType::Dynamic, EActivation::Activate);
 		broked = true;
 	}
 }

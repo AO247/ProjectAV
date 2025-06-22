@@ -1,11 +1,6 @@
 #pragma once
 #include <AL\alc.h>
 
-/// <summary>
-/// Singleton class that initilizes our sound hardware device and allows
-/// us to change our listener values.
-/// </summary>
-
 #define SD_INIT SoundDevice::Init();
 #define LISTENER SoundDevice::Get()
 

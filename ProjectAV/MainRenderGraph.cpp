@@ -1,6 +1,8 @@
 #include "MainRenderGraph.h"
 #include "BufferClearPass.h"
 #include "LambertianPass.h"
+#include "ParticlePass.h"
+#include "Source.h"
 #include "SkyboxPass.h"
 #include "ShadowMappingPass.h"
 #include "Source.h"
@@ -11,6 +13,13 @@
 
 namespace Rgph
 {
+	// GetParticlePass implementation remains the same
+	Rgph::ParticlePass& MainRenderGraph::GetParticlePass()
+	{
+		assert(pParticlePass != nullptr && "Particle pass has not been created or linked in MainRenderGraph");
+		return *pParticlePass;
+	}
+
 	MainRenderGraph::MainRenderGraph(Graphics& gfx)
 		: RenderGraph(gfx)
 	{
@@ -68,12 +77,29 @@ namespace Rgph
 		// Pass 6: Skybox
 		{
 			auto pass = std::make_unique<SkyboxPass>(gfx, "skybox");
+			// It reads from the output of the lambertian pass...
 			pass->SetSinkLinkage("renderTarget", "lambertian.renderTarget");
 			pass->SetSinkLinkage("depthStencil", "lambertian.depthStencil");
 			AppendPass(std::move(pass));
 		}
 
 		SetSinkTarget("backbuffer", "skybox.renderTarget");
+
+		// 4. Draw all transparent geometry (particles) last.
+		{
+			auto pass = std::make_unique<ParticlePass>(gfx, "particles");
+			// It reads from the output of the SKYBOX pass. This means the skybox
+			// is already in the color buffer, and particles will blend ON TOP of it.
+			pass->SetSinkLinkage("renderTarget", "skybox.renderTarget");
+			pass->SetSinkLinkage("depthStencil", "skybox.depthStencil");
+
+			pParticlePass = static_cast<ParticlePass*>(pass.get());
+			AppendPass(std::move(pass));
+		}
+
+		// 5. The final output of the graph is now the particle pass's render target.
+		SetSinkTarget("backbuffer", "particles.renderTarget");
+
 		Finalize();
 	}
 }

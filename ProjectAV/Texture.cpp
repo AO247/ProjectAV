@@ -14,11 +14,9 @@ namespace Bind
 	{
 		INFOMAN(gfx);
 
-		// load surface
 		const auto s = Surface::FromFile(path);
 		hasAlpha = s.AlphaLoaded();
 
-		// create texture resource
 		D3D11_TEXTURE2D_DESC textureDesc = {};
 		textureDesc.Width = s.GetWidth();
 		textureDesc.Height = s.GetHeight();
@@ -36,12 +34,10 @@ namespace Bind
 			&textureDesc, nullptr, &pTexture
 		));
 
-		// write image data into top mip level
 		GetContext(gfx)->UpdateSubresource(
 			pTexture.Get(), 0u, nullptr, s.GetBufferPtrConst(), s.GetWidth() * sizeof(Surface::Color), 0u
 		);
 
-		// create the resource view on the texture
 		D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 		srvDesc.Format = textureDesc.Format;
 		srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
@@ -51,7 +47,6 @@ namespace Bind
 			pTexture.Get(), &srvDesc, &pTextureView
 		));
 
-		// generate the mip chain using the gpu rendering pipeline
 		GetContext(gfx)->GenerateMips(pTextureView.Get());
 	}
 

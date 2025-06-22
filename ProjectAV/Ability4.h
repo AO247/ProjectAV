@@ -1,13 +1,15 @@
+////////////////////////////////
+// Evolve of ability 1        //
+// Pick item then pick a spot //
+////////////////////////////////
 #pragma once
 
 #include "Ability.h"
-#include "Window.h" // Needs access to Window for input
+#include "Window.h"
 #include <DirectXMath.h>
 #include "Rigidbody.h"
 #include "SoundEffectsPlayer.h"
 
-// Forward declare Node to avoid circular include if necessary,
-// but including Node.h is often fine here.
 class Node;
 
 class Ability4 : public Ability
@@ -18,14 +20,12 @@ public:
 
 	virtual void Update(float dt) override;
 	virtual void DrawImGuiControls() override;
-	void OnTriggerEnter(Node* other) override;
-	void OnTriggerExit(Node* other) override;
 	void Pressed() override;
 	void Released() override;
-	void Activated();
 
 	float cooldown = 1.5f;
 	float timeToChange = 0.0f;
+	float pressedTime = 0.0f;
 	bool stop = true;
 
 	float force = 600.0f;
@@ -35,6 +35,10 @@ public:
 
 	Node* leftHandNormal = nullptr;
 	Node* leftHandAbility = nullptr;
+	Node* selectedNode = nullptr;
+	Ability* baseAbility = nullptr;
+
+	Node* selectionParticles = nullptr;
 private:
 	Node* player = nullptr;
 	void KeyboardInput();

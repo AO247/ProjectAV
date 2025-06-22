@@ -5,23 +5,14 @@
 #include <string>
 #include <DirectXMath.h>
 #include "ConditionalNoexcept.h"
-// #include "AggregateVertex.h" // No longer needed
-
-// Include DirectX Simple Math
 #include <SimpleMath.h>
 #include "Technique.h"
+#include <map>
+#include <assimp/scene.h>
 
-
-// Forward Declarations
 class Mesh;
 class Graphics;
 class FrameCommander;
-class ModelControlWindow;
-namespace Assimp { class Importer; }
-struct aiNode;
-struct aiMesh;
-struct aiMaterial;
-
 namespace Rgph
 {
     class RenderGraph;
@@ -29,42 +20,23 @@ namespace Rgph
 
 struct XMFLOAT3Less {
     bool operator()(const DirectX::XMFLOAT3& a, const DirectX::XMFLOAT3& b) const {
-        // Lexicographical comparison
         if (a.x != b.x) return a.x < b.x;
         if (a.y != b.y) return a.y < b.y;
         return a.z < b.z;
-        // Alternative using std::tie (cleaner, include <tuple>):
-        // return std::tie(a.x, a.y, a.z) < std::tie(b.x, b.y, b.z);
     }
 };
-
-
-class ModelInternalNode
-{
-    friend class ModelComponent;
-public:
-    ModelInternalNode(int id, const std::string& name, std::vector<Mesh*> meshPtrs, const DirectX::XMMATRIX& transform) noxnd;
-    const std::string& GetName() const noexcept { return name; }
-    void Submit(Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform) const noxnd;
-    void ShowTree(int& nodeIndexTracker, ModelInternalNode*& pSelectedNode) const noexcept;
-    void SetAppliedTransform(DirectX::FXMMATRIX transform) noexcept;
-    void LinkTechniques(Rgph::RenderGraph&);
-    int GetId() const noexcept;
-private:
-    void AddChild(std::unique_ptr<ModelInternalNode> pChild) noxnd;
-private:
-    std::string name;
-    int id;
-    std::vector<std::unique_ptr<ModelInternalNode>> childPtrs;
-    std::vector<Mesh*> meshPtrs;
-    DirectX::XMFLOAT4X4 transform;
-    DirectX::XMFLOAT4X4 appliedTransform;
-};
-
 
 class ModelComponent : public Component
 {
 public:
+    //================================================================================
+    // NOWA STRUKTURA INFORMACJI O KOŒCIACH
+    //================================================================================
+    struct BoneInfo
+    {
+        int id;
+        DirectX::XMMATRIX offset;
+    };
 
     struct Triangle
     {
@@ -79,22 +51,30 @@ public:
         }
     };
 
-    ModelComponent(Node* owner, Graphics& gfx, const std::string& modelFile, float scale = 1.0f);
+    ModelComponent(Node* owner, Graphics& gfx, const std::string& modelFile, float scale = 1.0f, bool isSkinned = false);
     virtual ~ModelComponent() = default;
 
     void Submit(Graphics& gfx, DirectX::FXMMATRIX worldTransform) const noxnd;
-    void ShowWindow(Graphics& gfx, const char* windowName = nullptr) noexcept;
     void LinkTechniques(Rgph::RenderGraph&);
 
-    // **** MODIFIED METHOD DECLARATION ****
     std::vector<DirectX::SimpleMath::Vector3> GetAllUniqueVertices() const;
     std::vector<ModelComponent::Triangle> GetAllTriangles() const;
 
     std::vector<std::unique_ptr<Mesh>> meshPtrs;
-private:
-    std::unique_ptr<ModelInternalNode> ParseNodeRecursive(int& nextId, const aiNode& node, float scale);
+    void AddTechnique(Technique technique);
+    std::vector<Technique> techniques;
 
-    std::unique_ptr<ModelInternalNode> pRootInternal;
-    
-    std::unique_ptr<ModelControlWindow> pControlWindow;
+    //================================================================================
+    // MAPA INFORMACJI O KOŒCIACH I LICZNIK
+    //================================================================================
+    std::map<std::string, BoneInfo>& GetBoneInfoMap() { return m_BoneInfoMap; }
+    int& GetBoneCount() { return m_BoneCounter; }
+
+    const bool skinnedCharacter;
+
+private:
+    void ExtractBoneInfo(const aiScene& scene);
+
+    std::map<std::string, BoneInfo> m_BoneInfoMap;
+    int m_BoneCounter = 0;
 };

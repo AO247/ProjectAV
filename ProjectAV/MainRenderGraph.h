@@ -17,12 +17,10 @@ namespace Rgph
 	{
 	public:
 		MainRenderGraph(Graphics& gfx);
+		Rgph::ParticlePass& GetParticlePass() override;
 	private:
-		// Funkcje do rozmycia (zostawiamy bez zmian)
 		void SetKernelGauss(int radius, float sigma) noxnd;
 		void SetKernelBox(int radius) noxnd;
-
-		// Dane do rozmycia (zostawiamy bez zmian)
 		enum class KernelType
 		{
 			Gauss,
@@ -36,5 +34,6 @@ namespace Rgph
 
 		// To pole jest teraz poprawne, bo kompilator wie, czym jest BufferResource
 		std::shared_ptr<Bind::BufferResource> shadowMap;
+		Rgph::ParticlePass* pParticlePass = nullptr;
 	};
 }

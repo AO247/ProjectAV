@@ -5,84 +5,99 @@ UpgradeHandler::UpgradeHandler(Node* owner, Window& window)
 {
 	cardSprite1 = std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
-		80,               // int x  
-		180,                // int y  
-		350,               // size x  
-		600,                // size y  
+		wnd.Gfx().GetContext(),
+
+		80,              
+		180,             
+		350,             
+		600,             
 		L"Images\\a1Card.png"
 	);
 	cardSprite2 = std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
-		475,               // int x  
-		180,                // int y  
-		350,               // size x  
-		600,                // size y  
+		wnd.Gfx().GetContext(),
+		475,              
+		180,              
+		350,              
+		600,              
 		L"Images\\a2Card.png"
 	);
 	cardSprite3 = std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
-		870,               // int x  
-		180,                // int y  
-		350,               // size x  
-		600,                // size y  
+		wnd.Gfx().GetContext(),
+		870,             
+		180,             
+		350,             
+		600,             
 		L"Images\\dashCard.png"
 	);
 	cardSprite4 = std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
-		870,               // int x  
-		180,                // int y  
-		350,               // size x  
-		600,                // size y  
+		wnd.Gfx().GetContext(),
+		870,              
+		180,              
+		350,              
+		600,              
 		L"Images\\jumpCard.png"
 	);
 
 	heart1Sprite = std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
-		100,                // int x  
-		360,                // int y  
-		50,            // int width
-		50,           // int height
+		wnd.Gfx().GetContext(),
+		100,       
+		360,       
+		50,        
+		50,        
 		L"Images\\heart.png"
 	);
 
 	heart2Sprite = std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
-		495,                // int x  
-		360,                // int y (center Y)
-		50,            // int width
-		50,           // int height
+		wnd.Gfx().GetContext(),
+		495,      
+		360,      
+		50,       
+		50,       
 		L"Images\\heart.png"
 	);
 
 	heart3Sprite = std::make_unique<Sprite>(
-		wnd.Gfx().GetDevice(),      // ID3D11Device*
-		890,                // int x (center X)
-		360,                // int y (center Y)
-		50,            // int width
-		50,           // int height
+		wnd.Gfx().GetDevice(),    
+		wnd.Gfx().GetContext(),
+		890,        
+		360,        
+		50,         
+		50,         
 		L"Images\\heart.png"
 	);
 
 	testButton1 = std::make_unique<Button>(
 		wnd.Gfx().GetDevice(),
-		wnd.Gfx().GetContext(), // Pass the immediate context
-		card1Pos, 70, 350, 600,        // x, y, width, height
-		L" ",           // Text
-		L"myfile.spritefont" // Path to your .spritefont file
+		wnd.Gfx().GetContext(),
+		card1Pos, 70, 350, 600,        
+		L" ",         
+		L"myfile.spritefont" 
 	);
 	testButton2 = std::make_unique<Button>(
 		wnd.Gfx().GetDevice(),
-		wnd.Gfx().GetContext(), // Pass the immediate context
-		card2Pos, 70, 350, 600,        // x, y, width, height
-		L" ",           // Text
-		L"myfile.spritefont" // Path to your .spritefont file
+		wnd.Gfx().GetContext(), 
+		card2Pos, 70, 350, 600,        
+		L" ",           
+		L"myfile.spritefont"
 	);
 	testButton3 = std::make_unique<Button>(
 		wnd.Gfx().GetDevice(),
-		wnd.Gfx().GetContext(), // Pass the immediate context
-		card3Pos, 70, 350, 600,        // x, y, width, height
-		L" ",           // Text
-		L"myfile.spritefont" // Path to your .spritefont file
+		wnd.Gfx().GetContext(),
+		card3Pos, 70, 350, 600,       
+		L" ",         
+		L"myfile.spritefont" 
+	);
+
+	ability4Gif = std::make_unique<Sprite>(
+		wnd.Gfx().GetDevice(),
+		wnd.Gfx().GetContext(),
+		22, 34, 337, 190, 
+		L"Images\\ability4.gif"
 	);
 
 }
@@ -92,7 +107,8 @@ void UpgradeHandler::Update(float dt)
 {
 	if (upgradeMenuOpen && !upgraded && missclickTimer < 0.0f)
 	{
-		if (wnd.mouse.LeftIsPressed()) { // Or your mouse down event
+		ability4Gif->Update(dt);
+		if (wnd.mouse.IsLeftPressed()) {
 			const auto mousePos = wnd.mouse.GetPos();
 			if (testButton1->IsClicked(mousePos.first, mousePos.second))
 			{
@@ -108,40 +124,40 @@ void UpgradeHandler::Update(float dt)
 			}
 		}
 	}
+	static float animationTime = 0.0f;
+	static int startX = 0, startY = 0, startW = 0, startH = 0;
+	static int targetX = 0, targetY = 0, targetW = 0, targetH = 0;
+
 	if (upgraded && !end)
 	{
-		if (slower == 10)
+		if (animationTime == 0.0f)
 		{
-			bool flag = false;
-			if (selectedCardSprite->x_ < 745 || selectedCardSprite->x_ > 755)
-			{
-				selectedCardSprite->x_ += (750 - selectedCardSprite->x_) / 3;
-				flag = true;
-			}
-			if (selectedCardSprite->y_ < 95 || selectedCardSprite->y_ > 105)
-			{
-				selectedCardSprite->y_ += (100 - selectedCardSprite->y_) / 3;
-				flag = true;
-			}
-			if (selectedCardSprite->width_ <= 440)
-			{
-				selectedCardSprite->width_ += 8;
-				flag = true;
-			}
-			if (selectedCardSprite->height_ <= 690)
-			{
-				selectedCardSprite->height_ += 8;
-				flag = true;
-			}
-			if (!flag)
-			{
-				timer = 1.5f;
-				end = true;
-			}
-			slower = 0;
+			startX = selectedCardSprite->x_;
+			startY = selectedCardSprite->y_;
+			startW = selectedCardSprite->width_;
+			startH = selectedCardSprite->height_;
+
+			int screenW = wnd.Gfx().GetWidth();
+			int screenH = wnd.Gfx().GetHeight();
+			targetW = 500; 
+			targetH = 800;
+			targetX = (screenW - targetW) / 2;
+			targetY = (screenH - targetH) / 2;
 		}
-		else {
-			slower++;
+
+		animationTime += dt;
+		float t = std::min(animationTime / 1.5f, 1.0f);
+
+		selectedCardSprite->x_ = static_cast<int>(startX + (targetX - startX) * t);
+		selectedCardSprite->y_ = static_cast<int>(startY + (targetY - startY) * t);
+		selectedCardSprite->width_ = static_cast<int>(startW + (targetW - startW) * t);
+		selectedCardSprite->height_ = static_cast<int>(startH + (targetH - startH) * t);
+
+		if (t >= 1.0f)
+		{
+			timer = 1.5f;
+			end = true;
+			animationTime = 0.0f;
 		}
 	}
 	if (timer > 0.0f)
@@ -153,10 +169,6 @@ void UpgradeHandler::Update(float dt)
 		timer = 0.0f;
 		CloseUpgradeMenu();
 	}
-	if (waitForGrounded)
-	{
-		ShowUpgradeMenu();
-	}
 	if (missclickTimer > 0.0f)
 	{
 		missclickTimer -= dt;
@@ -166,19 +178,13 @@ void UpgradeHandler::Update(float dt)
 void UpgradeHandler::ShowUpgradeMenu()
 {
 	if (upgradeMenuOpen) return;
-	if (!playerController->grounded)
-	{
-		waitForGrounded = true;
-		return;
-	}
 	missclickTimer = 0.3f;
 	PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(playerController->rigidbody->GetBodyID(), Vec3(0.0f,0.0f,0.0f));
-	waitForGrounded = false;
 	upgradeMenuOpen = true;
 	end = false;
 	upgraded = false;
 	wnd.EnableCursor();
-	wnd.mouse.DisableRaw();
+	wnd.mouse.DisableRawInput();
 	RandomUpgrades();
 }
 void UpgradeHandler::CloseUpgradeMenu()
@@ -191,7 +197,7 @@ void UpgradeHandler::CloseUpgradeMenu()
 	upgraded = false;
 	end = false;
 	wnd.DisableCursor();
-	wnd.mouse.EnableRaw();
+	wnd.mouse.EnableRawInput();
 }
 void UpgradeHandler::DrawUpgradeMenu()
 {
@@ -203,12 +209,12 @@ void UpgradeHandler::DrawUpgradeMenu()
 		}
 		else
 		{
+
 			card1->Draw(wnd.Gfx().GetContext());
 			card2->Draw(wnd.Gfx().GetContext());
 			card3->Draw(wnd.Gfx().GetContext());
-			/*heart1Sprite->Draw(wnd.Gfx().GetContext());
-			heart2Sprite->Draw(wnd.Gfx().GetContext());
-			heart3Sprite->Draw(wnd.Gfx().GetContext());*/
+			ability4Gif->Draw(wnd.Gfx().GetContext());
+			
 		}
 	}
 
@@ -217,27 +223,27 @@ void UpgradeHandler::RandomUpgrades()
 {
 	currentUpgrade1 = rand() % 4;
 	currentUpgrade2 = rand() % 4;
-	while(currentUpgrade1 == currentUpgrade2) // Ensure two different upgrades are chosen
+	while(currentUpgrade1 == currentUpgrade2)
 	{
 		currentUpgrade2 = rand() % 4;
 	}
 	currentUpgrade3 = rand() % 4;
-	while(currentUpgrade3 == currentUpgrade1 || currentUpgrade3 == currentUpgrade2) // Ensure three different upgrades are chosen
+	while(currentUpgrade3 == currentUpgrade1 || currentUpgrade3 == currentUpgrade2) 
 	{
 		currentUpgrade3 = rand() % 4;
 	}
 	switch (currentUpgrade1)
 	{
-	case 0: // Upgrade Ability1 Force
+	case 0: 
 		card1 = cardSprite1.get();
 		break;
-	case 1: // Upgrade Ability2 Force
+	case 1: 
 		card1 = cardSprite2.get();
 		break;
-	case 2: // Upgrade Dash Force
+	case 2: 
 		card1 = cardSprite3.get();
 		break;
-	case 3: // Upgrade Jump Force
+	case 3: 
 		card1 = cardSprite4.get();
 		break;
 	}
@@ -245,16 +251,16 @@ void UpgradeHandler::RandomUpgrades()
 
 	switch (currentUpgrade2)
 	{
-	case 0: // Upgrade Ability1 Force
+	case 0: 
 		card2 = cardSprite1.get();
 		break;
-	case 1: // Upgrade Ability2 Force
+	case 1: 
 		card2 = cardSprite2.get();
 		break;
-	case 2: // Upgrade Dash Force
+	case 2: 
 		card2 = cardSprite3.get();
 		break;
-	case 3: // Upgrade Jump Force
+	case 3: 
 		card2 = cardSprite4.get();
 		break;
 	}
@@ -262,22 +268,22 @@ void UpgradeHandler::RandomUpgrades()
 
 	switch (currentUpgrade3)
 	{
-	case 0: // Upgrade Ability1 Force
+	case 0: 
 		card3 = cardSprite1.get();
 		break;
-	case 1: // Upgrade Ability2 Force
+	case 1: 
 		card3 = cardSprite2.get();
 		break;
-	case 2: // Upgrade Dash Force
+	case 2: 
 		card3 = cardSprite3.get();
 		break;
-	case 3: // Upgrade Jump Force
+	case 3: 
 		card3 = cardSprite4.get();
 		break;
 	}
 	card3->x_ = card3Pos;
 
-	//400 425 450 475
+
 	heart1Sprite->x_ = 10 + cardSprite1->x_ + currentUpgrade1 * 90;
 	heart2Sprite->x_ = 10 + cardSprite2->x_ + currentUpgrade2 * 90;
 	heart3Sprite->x_ = 10 + cardSprite3->x_ + currentUpgrade3 * 90;
@@ -303,19 +309,19 @@ void UpgradeHandler::ApplyUpgrade(int upgradeIndex)
 	}
 	switch (x)
 	{
-	case 0: // Upgrade Ability1 Force
+	case 0: 
 		ability1Node->GetComponent<Ability1>()->force += 200.0f;
 		ability1++;
 		break;
-	case 1: // Upgrade Ability2 Force
+	case 1: 
 		ability2Node->GetComponent<Ability2>()->force += 200.0f;
 		ability2++;
 		break;
-	case 2: // Upgrade Dash Force
+	case 2: 
 		playerController->dashForce += 20.0f;
 		dash++;
 		break;
-	case 3: // Upgrade Jump Force
+	case 3:
 		playerController->jumpForce += 10.0f;
 		jump++;
 		break;

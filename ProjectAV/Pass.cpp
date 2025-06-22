@@ -74,7 +74,7 @@ namespace Rgph
 
 	void Pass::RegisterSink( std::unique_ptr<Sink> sink )
 	{
-		// check for overlap of input names
+		
 		for( auto& si : sinks )
 		{
 			if( si->GetRegisteredName() == sink->GetRegisteredName() )
@@ -88,7 +88,7 @@ namespace Rgph
 
 	void Pass::RegisterSource( std::unique_ptr<Source> source )
 	{
-		// check for overlap of output names
+		
 		for( auto& src : sources )
 		{
 			if( src->GetName() == source->GetName() )

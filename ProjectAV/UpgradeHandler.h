@@ -19,6 +19,15 @@ public:
 	virtual void DrawImGuiControls() override;
 
 	PlayerController* playerController = nullptr;
+
+	struct cardData
+	{
+		std::unique_ptr<Sprite> level0;
+		std::unique_ptr<Sprite> level1;
+		std::unique_ptr<Sprite> level2;
+		int count = 0;
+
+	};
 	int ability1 = 0;
 	int ability2 = 0;
 	int dash = 0;
@@ -37,11 +46,12 @@ public:
 	Node* ability2Node = nullptr;
 	Node* ability3Node = nullptr;
 	Node* ability4Node = nullptr;
+	Node* ability5Node = nullptr;
+	Node* ability6Node = nullptr;
 	int slower = 0;
 	bool upgradeMenuOpen = false;
 	bool upgraded = false;
 	bool end = false;
-	bool waitForGrounded = false;
 	float timer = 0.0f;
 	float missclickTimer = 0.0f;
 
@@ -56,6 +66,7 @@ public:
 	std::unique_ptr<Sprite> cardSprite2;
 	std::unique_ptr<Sprite> cardSprite3;
 	std::unique_ptr<Sprite> cardSprite4;
+	std::unique_ptr<Sprite> ability4Gif;
 	std::unique_ptr<Sprite> heart1Sprite;
 	std::unique_ptr<Sprite> heart2Sprite;
 	std::unique_ptr<Sprite> heart3Sprite;

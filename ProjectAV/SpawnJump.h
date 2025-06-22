@@ -7,8 +7,6 @@
 #include "SoundEffectsPlayer.h"
 #include "CMath.h"
 
-// Forward declare Node to avoid circular include if necessary,
-// but including Node.h is often fine here.
 class Node;
 class PrefabManager;
 class LevelGenerator;
@@ -24,17 +22,12 @@ public:
 	virtual void DrawImGuiControls() override;
 
 	Node* playerNode;
-	bool activated = false;
-	float jumpCooldown = 0.0f;
-	Vector3 targetPosition = Vector3::Zero;
-	void Activate(Vector3 targetPos);
-	bool moved = false;
-	bool pushed = false;
+
+	void Activate();
 	bool playerReady = false;
-	bool halfWay = false;
-	bool rotated = false;
-	bool lastRotate = false;
-	float targetYaw = 0.0f;
+	bool activated = false;
+	bool upgraded = false;
+	float jumpCooldown = 0.0f;
 private:
 	Window& wnd;
 };

@@ -9,13 +9,12 @@
 #include "TexturePreprocessor.h"
 #include "SolidCapsule.h"
 #include "SoundDevice.h"
-#include "SoundEffectsLibrary.h"
 #include "SoundEffectsPlayer.h"
+#include "StaticSoundPlayer.h"
 #include "DebugLine.h"
 #include "Testing.h"
 #include "PrefabManager.h"
 #include "LevelGenerator.h"
-#include "WindTunnelEffect.h"
 #include <Jolt/Jolt.h>
 #include <Jolt/ConfigurationString.h>
 #include <Jolt/Physics/Collision/Shape/CapsuleShape.h>
@@ -27,13 +26,12 @@ namespace dx = DirectX;
 App::App(const std::string& commandLine)
     :
     commandLine(commandLine),
-    wnd(1920, 1080, "Project AV"), // Pass window dimensions/title
-    scriptCommander(TokenizeQuoted(commandLine)),
-    pointLight(wnd.Gfx(), 2u), // Initialize PointLight
+    wnd(1920, 1080, "Project AV"), 
+    pointLight(wnd.Gfx(), 2u), 
     dirLight(wnd.Gfx(), 0u),
     pSceneRoot(std::make_unique<Node>("Root"))
 {
-    // Set Projection Matrix (Far plane adjusted for larger scenes potentially)
+
     wnd.Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 2000.0f));
 
 
@@ -63,34 +61,38 @@ App::App(const std::string& commandLine)
     PrefabManager::wind = &wnd;
     PrefabManager::rg = &rg;
     physicsSystem->SetGravity(Vec3(0.0f, -80.0f, 0.0f));
-
-    /*physicsDebugRenderer = new PhysicsDebugRenderer(wnd.Gfx());
-    physicsDebugRenderer->Initialize();*/
+    //PrefabManager::PreloadAllModels();
 
     soundDevice = LISTENER->Get();
     ALint attentuation = AL_INVERSE_DISTANCE_CLAMPED;
 	soundDevice->SetAttenuation(attentuation);
+	StaticSoundPlayer::Get().Init(64);
     myMusic = std::make_unique<MusicBuffer>("Music\\windererfull.mp3");
     myMusic->setGain(1.0f);
 
-    // --- Create Nodes ---
-
+	auto base = std::make_unique<Node>("Base");
+	auto playerThings = std::make_unique<Node>("Player Things");
     auto pCameraNodeOwner = std::make_unique<Node>("Camera", nullptr, "CAMERA");
     pCamera = pCameraNodeOwner.get();
     auto pFreeViewCameraOwner = std::make_unique<Node>("FreeViewCamera");
     pFreeViewCamera = pFreeViewCameraOwner.get();
     auto pPlayerOwner = std::make_unique<Node>("Player", nullptr, "PLAYER");
     pPlayer = pPlayerOwner.get();
+	auto abilities = std::make_unique<Node>("Abilities");
     auto pAbility1Owner = std::make_unique<Node>("Ability1", nullptr, "TRIGGER");
-    pAbility1 = pAbility1Owner.get();
+    Node* pAbility1 = pAbility1Owner.get();
     auto pAbility2Owner = std::make_unique<Node>("Ability2", nullptr, "TRIGGER");
-    pAbility2 = pAbility2Owner.get();
+    Node* pAbility2 = pAbility2Owner.get();
     auto pAbility3Owner = std::make_unique<Node>("Ability3", nullptr, "TRIGGER");
-    pAbility3 = pAbility3Owner.get();
+    Node* pAbility3 = pAbility3Owner.get();
     auto pAbility4Owner = std::make_unique<Node>("Ability4", nullptr, "TRIGGER");
-    pAbility4 = pAbility4Owner.get();
-    auto pPrefabsOwner = std::make_unique<Node>("Prefabs", nullptr, "PREFABS");
-    pPrefabs = pPrefabsOwner.get();
+    Node* pAbility4 = pAbility4Owner.get();
+	auto pAbility5Owner = std::make_unique<Node>("Ability5", nullptr, "TRIGGER");
+    Node* pAbility5 = pAbility5Owner.get();
+    auto pAbility6Owner = std::make_unique<Node>("Ability6", nullptr, "TRIGGER");
+    Node* pAbility6 = pAbility6Owner.get();
+    auto pPrefabsOwner = std::make_unique<Node>("Temporary", nullptr, "PREFABS");
+    Node* pPrefabs = pPrefabsOwner.get();
     auto pLeftHandNormalOwner = std::make_unique<Node>("L Normal", nullptr, "HANDS");
     pLeftHandNormal = pLeftHandNormalOwner.get();
     auto pLeftHandAbilityOwner = std::make_unique<Node>("L Ability", nullptr, "HANDS");
@@ -100,35 +102,35 @@ App::App(const std::string& commandLine)
     auto pRightHandAbilityOwner = std::make_unique<Node>("R Ability", nullptr, "HANDS");
     pRightHandAbility = pRightHandAbilityOwner.get();
 
-
-
-
-
-    // Adding to Scene Graph
-    pSceneRoot->AddChild(std::move(pCameraNodeOwner));
-    pSceneRoot->AddChild(std::move(pFreeViewCameraOwner));
-    pSceneRoot->AddChild(std::move(pPlayerOwner));
-    pSceneRoot->AddChild(std::move(pAbility1Owner));
-    pSceneRoot->AddChild(std::move(pAbility2Owner));
-    pSceneRoot->AddChild(std::move(pAbility3Owner));
-    pSceneRoot->AddChild(std::move(pAbility4Owner));
+	Node* pPlayerThings = playerThings.get();
+	Node* pAbilities = abilities.get();
+	Node* pBase = base.get();
     pSceneRoot->AddChild(std::move(pPrefabsOwner));
+	pSceneRoot->AddChild(std::move(base));
+    pSceneRoot->AddChild(std::move(playerThings));
+    pPlayerThings->AddChild(std::move(pCameraNodeOwner));
+    pPlayerThings->AddChild(std::move(pFreeViewCameraOwner));
+    pPlayerThings->AddChild(std::move(pPlayerOwner));
+	pSceneRoot->AddChild(std::move(abilities));
+    pAbilities->AddChild(std::move(pAbility1Owner));
+    pAbilities->AddChild(std::move(pAbility2Owner));
+    pAbilities->AddChild(std::move(pAbility3Owner));
+    pAbilities->AddChild(std::move(pAbility4Owner));
+    pAbilities->AddChild(std::move(pAbility5Owner));
+    pAbilities->AddChild(std::move(pAbility6Owner));
     pCamera->AddChild(std::move(pLeftHandNormalOwner));
     pCamera->AddChild(std::move(pLeftHandAbilityOwner));
     pCamera->AddChild(std::move(pRightHandNormalOwner));
     pCamera->AddChild(std::move(pRightHandAbilityOwner));
 
+    //PrefabManager::InstantiateStone1(pSceneRoot.get(), Vector3(0.0f, 100.0f, 0.0f), 1.0f);
 
     PrefabManager::root = pPrefabs;
     PrefabManager::player = pPlayer;
 
-    //Heeeej Bracie zaczlooo padac choodz zmieniic gacieee
-    //Heeeej Siostro uciekaajmyy zanim beedzieee mookroooo
-
     BodyCreationSettings bodySettings(new JPH::CapsuleShape(1.0f, 1.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::PLAYER);
     bodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
 
-    //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
     bodySettings.mMassPropertiesOverride.mMass = 1.0f;
     bodySettings.mFriction = 0.0f;
     bodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
@@ -139,7 +141,7 @@ App::App(const std::string& commandLine)
     Rigidbody* pRigidbody = pPlayer->GetComponent<Rigidbody>();
 
     pPlayer->AddComponent(
-        std::make_unique<PlayerController>(pPlayer, wnd) // Add controller first
+        std::make_unique<PlayerController>(pPlayer, wnd)
     );
 
     BodyCreationSettings a1BodySettings(new JPH::CapsuleShape(6.0f, 5.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
@@ -160,10 +162,7 @@ App::App(const std::string& commandLine)
     pAbility2->AddComponent(
         std::make_unique<Ability2>(pAbility2, wnd, pCamera)
     );
-    /* pAbility2->AddComponent(
-         std::make_unique<ModelComponent>(pAbility2, wnd.Gfx(), "Models\\box.glb")
-     );*/
-     //pAbility2->GetComponent<ModelComponent>()->LinkTechniques(rg);
+
     pPlayer->GetComponent<PlayerController>()->abilitySlot2 = pAbility2;
 
 
@@ -174,10 +173,6 @@ App::App(const std::string& commandLine)
     pAbility3->AddComponent(
         std::make_unique<Ability3>(pAbility3, wnd, pCamera)
     );
-    /* pAbility3->AddComponent(
-         std::make_unique<ModelComponent>(pAbility3, wnd.Gfx(), "Models\\box.glb")
-     );
-     pAbility3->GetComponent<ModelComponent>()->LinkTechniques(rg);*/
     pPlayer->GetComponent<PlayerController>()->abilitySlot3 = pAbility3;
 
 
@@ -185,17 +180,25 @@ App::App(const std::string& commandLine)
     pAbility4->AddComponent(
         std::make_unique<Trigger>(pAbility4, a4odySettings, false)
     );
-    /* pAbility4->AddComponent(
-         std::make_unique<ModelComponent>(pAbility4, wnd.Gfx(), "Models\\box.glb")
-     );
-     pAbility4->GetComponent<ModelComponent>()->LinkTechniques(rg);*/
+
     pAbility4->AddComponent(
         std::make_unique<Ability4>(pAbility4, wnd, pCamera)
     );
+    //pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility4;
+    //pAbility4->GetComponent<Ability4>()->baseAbility = pAbility1->GetComponent<Ability1>();
 
-    // pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility4;
 
-     //Adding Other Components
+    pAbility5->AddComponent(
+        std::make_unique<Ability5>(pAbility5, wnd, pCamera)
+    );
+	//pPlayer->GetComponent<PlayerController>()->abilitySlot2 = pAbility5;
+
+    pAbility6->AddComponent(
+        std::make_unique<Ability6>(pAbility6, wnd, pCamera)
+    );
+    pAbility6->GetComponent<Ability6>()->baseAbility = pAbility1->GetComponent<Ability1>();
+    //pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility6;
+
     pFreeViewCamera->AddComponent(
         std::make_unique<Camera>(pFreeViewCamera, wnd)
     );
@@ -212,6 +215,7 @@ App::App(const std::string& commandLine)
     pPlayer->AddComponent(
         std::make_unique<SoundEffectsPlayer>(pPlayer)
     );
+	StaticSoundPlayer::Get().SetPlayerNode(pPlayer);
     SoundEffectsPlayer* pSoundEffectsPlayer = pPlayer->GetComponent<SoundEffectsPlayer>();
     pSoundEffectsPlayer->AddSound("Models\\turn.ogg");
     pSoundEffectsPlayer->AddSound("Sounds\\push1.ogg");
@@ -219,12 +223,11 @@ App::App(const std::string& commandLine)
     pSoundEffectsPlayer->AddSound("Sounds\\toss1.ogg");
     pSoundEffectsPlayer->AddSound("Sounds\\toss2.ogg");
 
-    // Changing position scale etc.]
     pFreeViewCamera->SetLocalPosition({ 4.0f, 11.0f, -28.0f });
     pPlayer->SetLocalPosition({ 0.0f, 80.0f, -24.0f });
 
     pSceneRoot->AddComponent(
-        std::make_unique<Global>(pSceneRoot.get(), wnd, pPlayer)
+        std::make_unique<Global>(pSceneRoot.get(), wnd, pPlayer, pBase)
     );
 
     pLeftHandNormal->AddComponent(
@@ -264,6 +267,12 @@ App::App(const std::string& commandLine)
     pAbility4->GetComponent<Ability4>()->leftHandNormal = pLeftHandNormal;
     pAbility4->GetComponent<Ability4>()->leftHandAbility = pLeftHandAbility;
 
+	pAbility5->GetComponent<Ability5>()->rightHandNormal = pRightHandNormal;
+	pAbility5->GetComponent<Ability5>()->rightHandAbility = pRightHandAbility;
+
+    pAbility6->GetComponent<Ability6>()->leftHandNormal = pLeftHandNormal;
+    pAbility6->GetComponent<Ability6>()->leftHandAbility = pLeftHandAbility;
+
     pSceneRoot->AddComponent(
         std::make_unique<UpgradeHandler>(pSceneRoot.get(), wnd)
     );
@@ -272,10 +281,15 @@ App::App(const std::string& commandLine)
     pUpgradeHandler->ability2Node = pAbility2;
     pUpgradeHandler->ability3Node = pAbility3;
     pUpgradeHandler->ability4Node = pAbility4;
+	pUpgradeHandler->ability5Node = pAbility5;
+	pUpgradeHandler->ability6Node = pAbility6;
     pUpgradeHandler->playerController = pPlayer->GetComponent<PlayerController>();
     pUpgradeHandler->SetBasicValues();
     pSceneRoot->GetComponent<Global>()->upgradeHandler = pUpgradeHandler;
-    //LevelGenerator levelGenerator(prefabManager, pSceneRoot.get(), pPlayer);
+
+	//PrefabManager::InstantiateIslandBig10(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
+	//tutorialNode = PrefabManager::InstantiateTutorialIslands(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
+    //pSceneRoot->GetComponent<Global>()->tut = tutorialNode->GetComponent<Tutorial>();
 
 
     const int screenWidth = 1920;
@@ -287,70 +301,90 @@ App::App(const std::string& commandLine)
 
     targetSprite = std::make_unique<Sprite>(
         wnd.Gfx().GetDevice(),
-        plusSpriteX,                // int x (center X)
-        plusSpriteY,                // int y (center Y)
-        plusSpriteWidth,            // int width
-        plusSpriteHeight,           // int height
+        wnd.Gfx().GetContext(),
+        plusSpriteX,                
+        plusSpriteY,                
+        plusSpriteWidth,            
+        plusSpriteHeight,           
         L"Images\\plus.png"
     );
 
     heart1Sprite = std::make_unique<Sprite>(
         wnd.Gfx().GetDevice(),
-        (screenWidth / 2) - 35 - 80,                // int x  
-        950,                // int y  
-        70,            // int width
-        70,           // int height
+        wnd.Gfx().GetContext(),
+        (screenWidth / 2) - 35 - 80,             
+        950,        
+        70,         
+        70,         
         L"Images\\heart.png"
     );
 
     heart2Sprite = std::make_unique<Sprite>(
         wnd.Gfx().GetDevice(),
-        (screenWidth / 2) - 35,                // int x  
-        950,                // int y (center Y)
-        70,            // int width
-        70,           // int height
+        wnd.Gfx().GetContext(),
+        (screenWidth / 2) - 35,              
+        950,        
+        70,         
+        70,         
         L"Images\\heart.png"
     );
 
     heart3Sprite = std::make_unique<Sprite>(
-        wnd.Gfx().GetDevice(),      // ID3D11Device*
-        (screenWidth / 2) - 35 + 80,                // int x (center X)
-        950,                // int y (center Y)
-        70,            // int width
-        70,           // int height
+        wnd.Gfx().GetDevice(),    
+        wnd.Gfx().GetContext(),
+        (screenWidth / 2) - 35 + 80,               
+        950,         
+        70,          
+        70,          
         L"Images\\heart.png"
     );
-
-
+    loadingScreen1 = std::make_unique<Sprite>(
+        wnd.Gfx().GetDevice(),
+        wnd.Gfx().GetContext(),
+        0,
+        0,
+        1920,
+        1080,
+        L"Images\\Loading_Screen1.png"
+    );
+    loadingScreen2 = std::make_unique<Sprite>(
+        wnd.Gfx().GetDevice(),
+        wnd.Gfx().GetContext(),
+        0,
+        0,
+        1920,
+        1080,
+        L"Images\\Loading_Screen2.png"
+    );
+    loadingScreen3 = std::make_unique<Sprite>(
+        wnd.Gfx().GetDevice(),
+        wnd.Gfx().GetContext(),
+        0,
+        0,
+        1920,
+        1080,
+        L"Images\\Loading_Screen3.png"
+    );
 
     wnd.DisableCursor();
-    wnd.mouse.EnableRaw();
+    wnd.mouse.EnableRawInput();
     cursorEnabled = false;
 
 }
 
 App::~App()
 {
-    //for (auto& pair : sphereCollidersToDraw) {
-    //    delete pair.second; // Delete the ColliderSphere*
-    //}
-    //sphereCollidersToDraw.clear();
-
-    //for (auto& pair : boxCollidersToDraw) {
-    //    delete pair.second; // Delete the SolidBox*
-    //}
-    //boxCollidersToDraw.clear();
-
-    //for (auto& pair : capsuleCollidersToDraw) {
-    //    delete pair.second; // Delete the SolidCapsule*
-    //}
-    //capsuleCollidersToDraw.clear();
-
-    // Delete the member DebugLine pointers
-    /*delete line1; line1 = nullptr;
-    delete line2; line2 = nullptr;
-    delete line3; line3 = nullptr;
-    delete line4; line4 = nullptr;*/
+	StaticSoundPlayer::Get().Shutdown();
+    std::ofstream outFile("scene_transforms.txt");
+    if (outFile.is_open())
+    {
+        if (pSceneRoot)
+        {
+            // Rozpocznij rekurencyjny zapis od korzenia sceny
+            SaveNodeTransformsRecursive(*pSceneRoot, outFile);
+        }
+        outFile.close();
+    }
 }
 
 int App::Go()
@@ -386,25 +420,24 @@ int App::Go()
     }
 }
 
-
-// --- UPDATED HandleInput ---
 void App::HandleInput(float dt)
 {
 
-    // --- Only handle non-player input here ---
-    while (const auto e = wnd.kbd.ReadKey())
+
+    while (const auto e = wnd.kbd.PollKeyEvent())
     {
         if (!e->IsPress()) continue;
 
         switch (e->GetCode())
         {
-        case 'O':
+        case 'P':
         {
-            pSceneRoot->GetComponent<Global>()->AddSpecialLevel();
+            PrefabManager::InstantiateIslandBig1(pSceneRoot.get(), pFreeViewCamera->GetWorldPosition(), 1.0f);
+			PrefabManager::InstantiateNormalEnemy(pSceneRoot.get(), pFreeViewCamera->GetWorldPosition(), 1.0f);
             break;
         }
 
-		case 'M': // Toggle Music
+		case 'M':
 			if (myMusic->isPlaying())
 			{
 				myMusic->Stop();
@@ -414,21 +447,27 @@ void App::HandleInput(float dt)
 				myMusic->Play();
 			}
 			break;
-        case 'C': // Toggle cursor
+        case 'C':
             if (cursorEnabled) {
                 wnd.DisableCursor();
-                wnd.mouse.EnableRaw();
+                wnd.mouse.EnableRawInput();
             }
             else {
                 wnd.EnableCursor();
-                wnd.mouse.DisableRaw();
+                wnd.mouse.DisableRawInput();
             }
             cursorEnabled = !cursorEnabled;
             break;
-        case 'H': // Toggle UI
+        case 'H': 
             showControlWindow = !showControlWindow;
             break;
-        case 'B':
+        case 'X':
+            tutorialNode = PrefabManager::InstantiateTutorialIslands(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
+            break;
+        /*case 'Q':
+			tutorialNode->GetComponent<Tutorial>()->qPressed= true;
+			break;*/
+        /*case 'B':
             if (pPlayer->GetComponent<PlayerController>()->abilitySlot1 == pAbility1)
             {
                 pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility4;
@@ -437,11 +476,11 @@ void App::HandleInput(float dt)
             {
                 pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility1;
             }
-            break;
-        case VK_ESCAPE: // Exit
+            break;*/
+        case VK_ESCAPE:
             PostQuitMessage(0);
             return;
-        case VK_F1: // Toggle ImGui Demo
+        case VK_F1:
             showDemoWindow = !showDemoWindow;
             break;
         case 'V':
@@ -460,24 +499,23 @@ void App::HandleInput(float dt)
         }
     }
 
-    // FreeCamera Movement
     if (freeViewCamera) {
-        if (wnd.kbd.KeyIsPressed('I')) {
+        if (wnd.kbd.IsKeyPressed('I')) {
             pFreeViewCamera->TranslateLocal({ 0.0f, 0.0f, 0.4f });
         }
-        if (wnd.kbd.KeyIsPressed('K')) {
+        if (wnd.kbd.IsKeyPressed('K')) {
             pFreeViewCamera->TranslateLocal({ 0.0f, 0.0f, -0.4f });
         }
-        if (wnd.kbd.KeyIsPressed('J')) {
+        if (wnd.kbd.IsKeyPressed('J')) {
             pFreeViewCamera->TranslateLocal({ -0.4f, 0.0f, 0.0f });
         }
-        if (wnd.kbd.KeyIsPressed('L')) {
+        if (wnd.kbd.IsKeyPressed('L')) {
             pFreeViewCamera->TranslateLocal({ 0.4f, 0.0f, 0.0f });
         }
-        if (wnd.kbd.KeyIsPressed('U')) {
+        if (wnd.kbd.IsKeyPressed('U')) {
             pFreeViewCamera->TranslateLocal({ 0.0f, -0.4f, 0.0f });
         }
-        if (wnd.kbd.KeyIsPressed('O')) {
+        if (wnd.kbd.IsKeyPressed('O')) {
             pFreeViewCamera->TranslateLocal({ 0.0f, 0.4f, 0.0f });
         }
     }
@@ -485,17 +523,16 @@ void App::HandleInput(float dt)
 
 void App::DoFrame(float dt)
 {
-	pSceneRoot->Update(dt); // Update the scene root and all its children
+    //fizyka
     auto* contact = dynamic_cast<MyContactListener*>(physicsSystem->GetContactListener());
     contact->ExecuteTriggerActivationQueue();
     contact->ExecuteCollisionActivationQueue();
-    CleanupDestroyedNodes(pSceneRoot.get());
+    CleanupDestroyedNodes(pSceneRoot.get());    //data removed
+	pSceneRoot->Update(dt);
+    RemoveRigidbody(pSceneRoot.get());//rigidbody remove if destruction
 
     wnd.Gfx().BeginFrame(0.5f, 0.5f, 1.0f);
-    //if (pPlayer->GetLocalPosition().y < -10.0f) {
-    //	pPlayer->SetLocalPosition({ -20.0f, 225.0f, -25.0f });
-    //    pEnemy->SetLocalPosition({ 15.0f, 225.0f, 0.0f });
-    //}
+
     dx::XMMATRIX viewMatrix = pCamera->GetComponent<Camera>()->GetViewMatrix();
     if (freeViewCamera)
     {
@@ -522,8 +559,7 @@ void App::DoFrame(float dt)
     // pointLight.Bind(wnd.Gfx(), viewMatrix);
     dirLight.Bind(wnd.Gfx());
 
-    FrustumCalculating(); // Draw with FRUSTUM CULLING
-    //pSceneRoot->Submit(fc, wnd.Gfx()); // Draw without FRUSTUM CULLING you have to also uncomment the draw method in Node.cpp
+    FrustumCalculating(); 
 
 
 
@@ -547,7 +583,6 @@ void App::DoFrame(float dt)
             pCamera->Up().z
         );
     }
-	//pCamera->Forward();
 
     rg.Execute(wnd.Gfx());
 
@@ -556,7 +591,6 @@ void App::DoFrame(float dt)
     }
 
     
-    pUpgradeHandler->DrawUpgradeMenu();
 
     if (targetSprite ) { 
         targetSprite->Draw(wnd.Gfx().GetContext());
@@ -575,27 +609,76 @@ void App::DoFrame(float dt)
         heart1Sprite->Draw(wnd.Gfx().GetContext());
     }
 
+    pUpgradeHandler->DrawUpgradeMenu();
 
-    //testButton->Draw(wnd.Gfx().GetContext(), (float)wnd.GetWidth(), (float)wnd.GetHeight());
+    
+	//tutorialNode->GetComponent<Tutorial>()->DrawNote();
+
+    if(pSceneRoot->GetComponent<Global>()->drawLoadingScreen || bonusTime > 0.0f)
+    {
+        if (!pSceneRoot->GetComponent<Global>()->drawLoadingScreen)
+        {
+            bonusTime -= dt;
+        }
+        else {
+            bonusTime = 5.0f;
+        }
+        countLoding ++;
+
+        if (countLoding > 2.0f)
+        {
+            if (countLoding > 2.9f)
+            {
+                countLoding = 0.0f;
+            }
+            loadingScreen3->Draw(wnd.Gfx().GetContext());
+        }
+        else if (countLoding > 1.0f)
+        {
+            loadingScreen2->Draw(wnd.Gfx().GetContext());
+        }
+        else
+        {
+            loadingScreen1->Draw(wnd.Gfx().GetContext());
+        }
+    }
 
     wnd.Gfx().EndFrame();
     rg.Reset();
 }
 
+void App::RemoveRigidbody(Node* currentNode)
+{
+    if (!currentNode) return;
+
+    for (int i = 0; i < currentNode->GetChildren().size(); ++i) {
+        RemoveRigidbody(currentNode->GetChildren()[i].get());
+    }
+
+    if (currentNode->markedForDestruction)
+    {
+        if (currentNode->GetComponent<Rigidbody>() != nullptr) 
+        {
+            PhysicsCommon::physicsSystem->GetBodyInterface().DeactivateBody(currentNode->GetComponent<Rigidbody>()->GetBodyID());
+            PhysicsCommon::physicsSystem->GetBodyInterface().RemoveBody(currentNode->GetComponent<Rigidbody>()->GetBodyID());
+            PhysicsCommon::physicsSystem->GetBodyInterface().DestroyBody(currentNode->GetComponent<Rigidbody>()->GetBodyID());
+
+        }
+    }
+}
 
 void App::FrustumCalculating() {
     dx::XMMATRIX camWorldTransform = pCamera->GetWorldTransform();
-    dx::XMVECTOR camWorldPos = camWorldTransform.r[3]; // Default
-    dx::XMVECTOR camWorldForward = dx::XMVector3Normalize(dx::XMVector3TransformNormal(dx::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f), camWorldTransform)); // Default
-    dx::XMVECTOR camWorldUp = dx::XMVector3Normalize(dx::XMVector3TransformNormal(dx::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), camWorldTransform));    // Default
-    dx::XMVECTOR camWorldRight = dx::XMVector3Normalize(dx::XMVector3TransformNormal(dx::XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f), camWorldTransform)); // Default
+    dx::XMVECTOR camWorldPos = camWorldTransform.r[3];
+    dx::XMVECTOR camWorldForward = dx::XMVector3Normalize(dx::XMVector3TransformNormal(dx::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f), camWorldTransform)); 
+    dx::XMVECTOR camWorldUp = dx::XMVector3Normalize(dx::XMVector3TransformNormal(dx::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), camWorldTransform));    
+    dx::XMVECTOR camWorldRight = dx::XMVector3Normalize(dx::XMVector3TransformNormal(dx::XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f), camWorldTransform)); 
 
-    constexpr float fovAngleY = DirectX::XMConvertToRadians(70.0f); // Field of View in Y direction (radians) - MUST MATCH YOUR PROJECTION
-    const float aspectRatio = 16.0f / 9.0f; // MUST MATCH YOUR PROJECTION
-    const float nearDist = 0.5f;         // MUST MATCH YOUR PROJECTION
-    const float farDist = 800.0f;       // MUST MATCH YOUR PROJECTION
+    constexpr float fovAngleY = DirectX::XMConvertToRadians(70.0f);
+    const float aspectRatio = 16.0f / 9.0f; 
+    const float nearDist = 0.5f;        
+    const float farDist = 800.0f;      
 
-    // Half heights/widths at near and far planes
     float halfHeightNear = nearDist * tanf(fovAngleY * 0.5f);
     float halfWidthNear = halfHeightNear * aspectRatio;
     float halfHeightFar = farDist * tanf(fovAngleY * 0.5f);
@@ -604,7 +687,6 @@ void App::FrustumCalculating() {
     dx::XMVECTOR nearCenter = dx::XMVectorAdd(camWorldPos, dx::XMVectorScale(camWorldForward, nearDist));
     dx::XMVECTOR farCenter = dx::XMVectorAdd(camWorldPos, dx::XMVectorScale(camWorldForward, farDist));
 
-    // Calculate the 8 corner points (optional for plane calculation, but useful for verification)
     dx::XMVECTOR nearTopLeft = dx::XMVectorAdd(nearCenter, dx::XMVectorSubtract(dx::XMVectorScale(camWorldUp, halfHeightNear), dx::XMVectorScale(camWorldRight, halfWidthNear)));
     dx::XMVECTOR nearTopRight = dx::XMVectorAdd(nearCenter, dx::XMVectorAdd(dx::XMVectorScale(camWorldUp, halfHeightNear), dx::XMVectorScale(camWorldRight, halfWidthNear)));
     dx::XMVECTOR nearBottomLeft = dx::XMVectorAdd(nearCenter, dx::XMVectorSubtract(dx::XMVectorScale(camWorldUp, -halfHeightNear), dx::XMVectorScale(camWorldRight, halfWidthNear)));
@@ -616,7 +698,6 @@ void App::FrustumCalculating() {
 
     cameraFrustum.Near = 0.5f;
 
-    // Far Plane: Normal = -camWorldForward, Point = farCenter
     cameraFrustum.Far = 800.0f;
 
     float tanHalfFovY = tanf(fovAngleY * 0.5f);
@@ -628,101 +709,66 @@ void App::FrustumCalculating() {
 
     DirectX::XMStoreFloat3(&cameraFrustum.Origin, camWorldPos);
     dx::XMMATRIX worldOrientationMatrix;
-    worldOrientationMatrix.r[0] = camWorldRight;   // World X-axis of the camera
-    worldOrientationMatrix.r[1] = camWorldUp;      // World Y-axis of the camera
-    worldOrientationMatrix.r[2] = camWorldForward; // World Z-axis of the camera
-    worldOrientationMatrix.r[3] = dx::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f); // Set W component for a valid matrix
+    worldOrientationMatrix.r[0] = camWorldRight;   
+    worldOrientationMatrix.r[1] = camWorldUp;      
+    worldOrientationMatrix.r[2] = camWorldForward; 
+    worldOrientationMatrix.r[3] = dx::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f); 
 
-    // 3. Convert the Orientation Matrix to a Quaternion
     DirectX::XMStoreFloat4(&cameraFrustum.Orientation, dx::XMQuaternionRotationMatrix(worldOrientationMatrix));
 
 
-    DrawNodeRecursive(wnd.Gfx(), *pSceneRoot);
+    DrawNodeRecursive(wnd.Gfx(), pSceneRoot.get());
 }
 
-void App::DrawNodeRecursive(Graphics& gfx, Node& node)
+void App::DrawNodeRecursive(Graphics& gfx, Node* node)
 {
-    // --- Culling Check ---
-    bool shouldDraw = true; // Assume we draw by default
-    ModelComponent* modelComp = node.GetComponent<ModelComponent>();
 
-    if (modelComp != nullptr) // Only cull nodes with models (or add BoundsComponent later)
+    bool shouldDraw = true; 
+    ModelComponent* modelComp = node->GetComponent<ModelComponent>();
+
+    if (modelComp != nullptr)
     {
         DirectX::BoundingSphere sphere;
         DirectX::BoundingBox box;
         DirectX::ContainmentType containment = DirectX::DISJOINT;
-        sphere.Center = node.GetWorldPosition();
-        sphere.Radius = node.radius;
-        containment = cameraFrustum.Contains(sphere);
-        //if (node.GetComponent<BoundingSphere>() != nullptr)
-        //{
-        //    sphere.Center = node.GetWorldPosition();
-        //    sphere.Radius = node.GetComponent<BoundingSphere>()->GetRadius();
-        //    containment = cameraFrustum.Contains(sphere);
-        //}
-        //else if (node.GetComponent<OBB>() != nullptr)
-        //{
-        //    box.Center = node.GetWorldPosition();
-        //    box.Extents = node.GetComponent<OBB>()->GetTransformedSize();
-        //    containment = cameraFrustum.Contains(box);
-        //}
-        //else if (node.GetComponent<CapsuleCollider>() != nullptr)
-        //{
-        //    // Assuming you have a method to get the capsule's bounding sphere
-        //    sphere.Center = DirectX::XMFLOAT3(node.GetWorldPosition().x,
-        //        (node.GetWorldPosition().y + 1.5f),
-        //        node.GetWorldPosition().z);
-        //    sphere.Radius = node.GetComponent<CapsuleCollider>()->GetRadius() * 2.5f;
-        //    containment = cameraFrustum.Contains(sphere);
-        //}
 
-        if (containment == DirectX::DISJOINT) // DISJOINT means completely outside
+        sphere.Center = node->GetWorldPosition();
+        sphere.Radius = node->radius;
+        containment = cameraFrustum.Contains(sphere);
+        
+
+        if (containment == DirectX::DISJOINT) 
         {
-            shouldDraw = false; // Don't draw this node or its children
+            shouldDraw = false; 
         }
 
     }
 
     if (shouldDraw)
     {
-        node.Submit(wnd.Gfx());
-        for (const auto& pChild : node.GetChildren())
+        node->Submit(wnd.Gfx());
+    }
+    for (const auto& pChild : node->GetChildren())
+    {
+        if (pChild)
         {
-            if (pChild)
-            {
-                DrawNodeRecursive(gfx, *pChild); // Recurse for children
-            }
+            DrawNodeRecursive(gfx, pChild.get()); 
         }
     }
+
 }
 
 void App::ShowControlWindows()
 {
-	//if (!showControlWindow) return; // If control window is not enabled, exit
-    // --- Existing Windows ---
-	//DrawSphereColliders(wnd.Gfx()); // Call the updated function
-    //DrawBoxColliders(wnd.Gfx()); // Call the updated function
-	//DrawCapsuleColliders(wnd.Gfx());
-    //ForEnemyWalking();
+	
     pointLight.Submit();
     dirLight.SpawnControlWindow();
-    pointLight.SpawnControlWindow(); // Control for Point Light
+    pointLight.SpawnControlWindow(); 
     if (showDemoWindow)
     {
         ImGui::ShowDemoWindow(&showDemoWindow);
     }
 
-    // --- Show Model Component Windows ---
-    //if (pNanosuitNode)
-    //{
-    //    if (auto* modelComp = pNanosuitNode->GetComponent<ModelComponent>())
-    //    {
-    //        modelComp->ShowWindow("Nanosuit Controls");
-    //    }
-    //}
-
-
-    // --- NEW: Scene Hierarchy Window ---
     if (ImGui::Begin("Scene Hierarchy"))
     {
         ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
@@ -738,15 +784,14 @@ void App::ShowControlWindows()
             ImGui::Text("Selected: %s", pSelectedSceneNode->GetName().c_str());
             ImGui::Separator();
 
-            // --- Transform Editor ---
             if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
             {
-                // Get current values
+
                 DirectX::XMFLOAT3 pos = pSelectedSceneNode->GetLocalPosition();
                 DirectX::XMFLOAT3 rotRad = pSelectedSceneNode->GetLocalRotationEuler();
                 DirectX::XMFLOAT3 scale = pSelectedSceneNode->GetLocalScale();
 
-                // Convert rotation to degrees for easier editing
+
                 DirectX::XMFLOAT3 rotDeg = {
                     DirectX::XMConvertToDegrees(rotRad.x),
                     DirectX::XMConvertToDegrees(rotRad.y),
@@ -755,6 +800,17 @@ void App::ShowControlWindows()
 
                 bool transformChanged = false;
 
+                static char posInputBuf[64] = {};
+                snprintf(posInputBuf, sizeof(posInputBuf), "{%.1ff, %.1ff, %.1ff}", pos.x, pos.y, pos.z);
+                if (ImGui::InputText("P", posInputBuf, sizeof(posInputBuf))) {
+                    // Optional: parse the input and update pos if valid
+                    float x, y, z;
+                    if (sscanf_s(posInputBuf, "{%ff, %ff, %ff}", &x, &y, &z) == 3) {
+                        pos = { x, y, z };
+                        pSelectedSceneNode->SetLocalPosition(pos);
+                        transformChanged = true;
+                    }
+                }
                 ImGui::Text("Position"); ImGui::SameLine();
                 if (ImGui::DragFloat3("##Position", &pos.x, 0.1f))
                 {
@@ -763,22 +819,22 @@ void App::ShowControlWindows()
                 }
 
                 ImGui::Text("Rotation"); ImGui::SameLine();
-                if (ImGui::DragFloat3("##Rotation", &rotDeg.x, 1.0f)) // Edit degrees
+                if (ImGui::DragFloat3("##Rotation", &rotDeg.x, 1.0f)) 
                 {
-                    // Convert back to radians before setting
+
                     rotRad = {
                         DirectX::XMConvertToRadians(rotDeg.x),
                         DirectX::XMConvertToRadians(rotDeg.y),
                         DirectX::XMConvertToRadians(rotDeg.z)
                     };
-                    pSelectedSceneNode->SetLocalRotation(rotRad); // Set radians
+                    pSelectedSceneNode->SetLocalRotation(rotRad);
                     transformChanged = true;
                 }
 
-                ImGui::Text("Scale   "); ImGui::SameLine(); // Extra spaces for alignment
-                if (ImGui::DragFloat3("##Scale", &scale.x, 0.01f, 0.01f, 100.0f)) // Add min/max scale
+                ImGui::Text("Scale   "); ImGui::SameLine(); 
+                if (ImGui::DragFloat3("##Scale", &scale.x, 0.01f, 0.01f, 100.0f)) 
                 {
-                    // Prevent zero scale if needed
+
                     scale.x = std::max(scale.x, 0.001f);
                     scale.y = std::max(scale.y, 0.001f);
                     scale.z = std::max(scale.z, 0.001f);
@@ -786,11 +842,10 @@ void App::ShowControlWindows()
                     transformChanged = true;
                 }
 
-                // Note: The Node's worldTransformDirty flag is already set by the SetLocal... methods.
-                // The Node::Update() call later will handle recalculating the world matrix.
+
             }
 
-            // --- Component Viewer ---
+
             if (ImGui::CollapsingHeader("Components", ImGuiTreeNodeFlags_DefaultOpen))
             {
                 const auto& components = pSelectedSceneNode->GetComponents();
@@ -801,20 +856,20 @@ void App::ShowControlWindows()
                     int compIndex = 0;
                     for (const auto& comp : components) {
                         if (comp) {
-                            // Create a unique ID for the component header
+                           
                             std::string compLabel = typeid(*comp).name();
-                            // Remove "class " prefix if present (platform dependent)
+
                             if (compLabel.rfind("class ", 0) == 0) {
                                 compLabel = compLabel.substr(6);
                             }
-                            compLabel += "##" + std::to_string(compIndex++); // Add unique ID
+                            compLabel += "##" + std::to_string(compIndex++); 
 
-                            // Make each component collapsible
+
                             if (ImGui::TreeNode(compLabel.c_str()))
                             {
-                                // --- Call the component's ImGui draw function ---
+
                                 comp->DrawImGuiControls();
-                                // --- End Call ---
+
 
                                 ImGui::TreePop();
                             }
@@ -829,7 +884,7 @@ void App::ShowControlWindows()
             ImGui::Text("Selected: None");
         }
     }
-    ImGui::End(); // End Scene Hierarchy Window
+    ImGui::End(); 
 }
 
 
@@ -839,7 +894,41 @@ void App::CleanupDestroyedNodes(Node* currentNode)
 {
     if (!currentNode) return;
 
-    // 1. Recursively clean children first.
+    //for (int i = 0; i < currentNode->GetChildren().size(); ++i) {
+    //    CleanupDestroyedNodes(currentNode->GetChildren()[i].get());
+    //}
+
+    //if (currentNode->markedForDestruction)
+    //{
+    //    for (int i = 0; i < currentNode->GetChildren().size(); ++i)
+    //    {
+    //        Node* pChildNode = currentNode->GetChildren()[i].get();
+    //        if (pSelectedSceneNode == pChildNode) { pSelectedSceneNode = nullptr; }
+    //        if (pChildNode->GetComponent<Rigidbody>() != nullptr) 
+    //        {
+    //            dynamic_cast<MyContactListener*>(PhysicsCommon::physicsSystem->GetContactListener())->RemoveRigidbodyData(pChildNode->GetComponent<Rigidbody>()->GetBodyID());
+    //            //PhysicsCommon::physicsSystem->GetBodyInterface().DeactivateBody(pChildNode->GetComponent<Rigidbody>()->GetBodyID());
+    //            //PhysicsCommon::physicsSystem->GetBodyInterface().RemoveBody(pChildNode->GetComponent<Rigidbody>()->GetBodyID());
+    //        }
+    //        if (pChildNode->GetComponent<Trigger>() != nullptr)
+    //        {
+    //            dynamic_cast<MyContactListener*>(PhysicsCommon::physicsSystem->GetContactListener())->RemoveTriggerData(pChildNode->GetComponent<Trigger>()->GetBodyID());
+    //        }
+    //        currentNode->RemoveChild(currentNode->GetChildren()[i].get());
+    //    }
+    //}
+    //else
+    //{
+    //    return;
+    //}
+    //if (currentNode == pSceneRoot.get()) return;
+    //if (!currentNode->GetParent()->markedForDestruction)
+    //{
+    //    if (pSelectedSceneNode == currentNode) { pSelectedSceneNode = nullptr; }
+    //    currentNode->GetParent()->RemoveChild(currentNode);
+    //}
+
+
     auto& children_ref = currentNode->GetChildren_NonConst();
     for (size_t i = 0; i < children_ref.size(); ++i) {
         if (children_ref[i]) {
@@ -847,7 +936,7 @@ void App::CleanupDestroyedNodes(Node* currentNode)
         }
     }
 
-    // 2. Now, remove any children of *this* currentNode that are marked.
+
     auto& children = currentNode->GetChildren_NonConst();
     children.erase(
         std::remove_if(children.begin(), children.end(),
@@ -857,53 +946,32 @@ void App::CleanupDestroyedNodes(Node* currentNode)
                 if (pChildNode->IsMarkedForDestruction()) {
                     OutputDebugStringA(("Cleanup: Preparing to remove node: " + pChildNode->GetName() + "\n").c_str());
 
-                    if (pChildNode->GetComponent<Rigidbody>() != nullptr) {
+                  /*  if (pChildNode->GetComponent<Rigidbody>() != nullptr) {
                         PhysicsCommon::physicsSystem->GetBodyInterface().DeactivateBody(pChildNode->GetComponent<Rigidbody>()->GetBodyID());
                         PhysicsCommon::physicsSystem->GetBodyInterface().RemoveBody(pChildNode->GetComponent<Rigidbody>()->GetBodyID());
-                        /*if (pChildNode->GetComponent<Trigger>() != nullptr) {
-                            dynamic_cast<MyContactListener*>(PhysicsCommon::physicsSystem->GetContactListener())->RemoveRigidbodyData(pChildNode->GetComponent<Rigidbody>()->GetBodyID());
-                        }*/
+                    }*/
+                    if (pChildNode->GetComponent<Rigidbody>() != nullptr)
+                    {
+                        dynamic_cast<MyContactListener*>(PhysicsCommon::physicsSystem->GetContactListener())->RemoveRigidbodyData(pChildNode->GetComponent<Rigidbody>()->GetBodyID());
+                        //PhysicsCommon::physicsSystem->GetBodyInterface().DeactivateBody(pChildNode->GetComponent<Rigidbody>()->GetBodyID());
+                        //PhysicsCommon::physicsSystem->GetBodyInterface().RemoveBody(pChildNode->GetComponent<Rigidbody>()->GetBodyID());
                     }
-
+                    if (pChildNode->GetComponent<Trigger>() != nullptr)
+                    {
+                    }
 
                     const auto& components = pChildNode->GetComponents();
                     for (const auto& compUniquePtr : components) {
                         Component* comp = compUniquePtr.get();
                         if (!comp) continue;
-                        //physicsEngine.RemoveCollider(dynamic_cast<Collider*>(comp));
 
 
-                        // FOR DRAWING COLLIDERS
-                        //if (auto* bs = dynamic_cast<BoundingSphere*>(comp)) {
-                        //    physicsEngine.RemoveCollider(bs); // Remove from physics
-                        //    auto mapIt = sphereCollidersToDraw.find(bs);
-                        //    if (mapIt != sphereCollidersToDraw.end()) {
-                        //        delete mapIt->second;
-                        //        sphereCollidersToDraw.erase(mapIt);
-                        //    }
-                        //}
-                        //else if (auto* obb = dynamic_cast<OBB*>(comp)) {
-                        //    auto mapIt = boxCollidersToDraw.find(obb);
-                        //    if (mapIt != boxCollidersToDraw.end()) {
-                        //        delete mapIt->second;
-                        //        boxCollidersToDraw.erase(mapIt);
-                        //    }
-                        //}
-                        //else if (auto* cap = dynamic_cast<CapsuleCollider*>(comp)) {
-                        //    auto mapIt = capsuleCollidersToDraw.find(cap);
-                        //    if (mapIt != capsuleCollidersToDraw.end()) {
-                        //        delete mapIt->second; // Delete the allocated SolidCapsule* drawable
-                        //        capsuleCollidersToDraw.erase(mapIt);
-                        //    }
-                        //}
-						// END FOR DRAWING COLLIDERS
+                      
 
                     }
 
                     if (pSelectedSceneNode == pChildNode.get()) { pSelectedSceneNode = nullptr; }
                     if (pPlayer == pChildNode.get()) { pPlayer = nullptr; }
-                    if (pAbility1 == pChildNode.get()) { pAbility1 = nullptr; }
-                    if (pAbility2 == pChildNode.get()) { pAbility2 = nullptr; }
 
                     OutputDebugStringA(("Cleanup: Node removed from parent: " + pChildNode->GetName() + "\n").c_str());
                     return true;
@@ -915,4 +983,33 @@ void App::CleanupDestroyedNodes(Node* currentNode)
     );
 
     
+}
+
+void App::SaveNodeTransformsRecursive(Node& node, std::ofstream& file)
+{
+    // Pomi� zapisywanie w�z��w "technicznych" lub pustych, je�li chcesz
+    if (node.GetName() != "Root" && node.GetName() != "L Normal" && node.GetName() != "Camera" && node.GetName() != "FreeViewCamera" &&
+        node.GetName() != "L Ability" && node.GetName() != "R Normal" && node.GetName() != "R Ability" && node.GetName() != "Player")
+    {
+        DirectX::XMFLOAT3 pos = node.GetLocalPosition();
+        DirectX::XMFLOAT3 rot = node.GetLocalRotationEuler();
+
+        // Ustaw precyzj� zapisu, aby unikn�� notacji naukowej i uzyska� czytelne liczby
+        file << std::fixed << std::setprecision(2);
+
+        // Zapisz nazw� i pozycj� w jednej linii
+        file << "Object: " << std::setw(20) << std::left << node.GetName()
+            << " Position: {" << pos.x << "f, " << pos.y << "f, " << pos.z << "f}" 
+			<< " Rotation: {" << rot.x << "f, " << rot.y << "f, " << rot.z << "f}"
+            << std::endl;
+    }
+
+    // Wywo�aj rekurencyjnie dla wszystkich dzieci tego w�z�a
+    for (const auto& pChild : node.GetChildren())
+    {
+        if (pChild)
+        {
+            SaveNodeTransformsRecursive(*pChild, file);
+        }
+    }
 }

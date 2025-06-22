@@ -45,10 +45,10 @@ Graphics::Graphics(HWND hWnd, int width, int height)
 	swapCreateFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
 
-	// for checking results of d3d functions
+
 	HRESULT hr;
 
-	// create device and front/back buffers, and swap chain and rendering context
+
 	GFX_THROW_INFO(D3D11CreateDeviceAndSwapChain(
 		nullptr,
 		D3D_DRIVER_TYPE_HARDWARE,
@@ -64,12 +64,11 @@ Graphics::Graphics(HWND hWnd, int width, int height)
 		&pContext
 	));
 
-	// gain access to texture subresource in swap chain (back buffer)
+
 	wrl::ComPtr<ID3D11Texture2D> pBackBuffer;
 	GFX_THROW_INFO(pSwap->GetBuffer(0, __uuidof(ID3D11Texture2D), &pBackBuffer));
 	pTarget = std::shared_ptr<Bind::RenderTarget>{ new Bind::OutputOnlyRenderTarget(*this,pBackBuffer.Get()) };
 
-	// viewport always fullscreen (for now)
 	D3D11_VIEWPORT vp;
 	vp.Width = (float)width;
 	vp.Height = (float)height;
@@ -79,7 +78,7 @@ Graphics::Graphics(HWND hWnd, int width, int height)
 	vp.TopLeftY = 0.0f;
 	pContext->RSSetViewports(1u, &vp);
 
-	// init imgui d3d impl
+
 	ImGui_ImplDX11_Init(pDevice.Get(), pContext.Get());
 }
 
@@ -90,7 +89,7 @@ Graphics::~Graphics()
 
 void Graphics::EndFrame()
 {
-	// imgui frame end
+
 	if (imguiEnabled)
 	{
 		ImGui::Render();
@@ -116,7 +115,7 @@ void Graphics::EndFrame()
 
 void Graphics::BeginFrame(float red, float green, float blue) noexcept
 {
-	// imgui begin frame
+
 	if (imguiEnabled)
 	{
 		ImGui_ImplDX11_NewFrame();
@@ -181,19 +180,19 @@ std::shared_ptr<Bind::RenderTarget> Graphics::GetTarget()
 }
 
 
-// Graphics exception stuff
+
 Graphics::HrException::HrException(int line, const char* file, HRESULT hr, std::vector<std::string> infoMsgs) noexcept
 	:
 	Exception(line, file),
 	hr(hr)
 {
-	// join all info messages with newlines into single string
+
 	for (const auto& m : infoMsgs)
 	{
 		info += m;
 		info.push_back('\n');
 	}
-	// remove final newline if exists
+
 	if (!info.empty())
 	{
 		info.pop_back();
@@ -219,7 +218,7 @@ const char* Graphics::HrException::what() const noexcept
 
 const char* Graphics::HrException::GetType() const noexcept
 {
-	return "Chili Graphics Exception";
+	return "Graphics Exception";
 }
 
 HRESULT Graphics::HrException::GetErrorCode() const noexcept
@@ -247,19 +246,19 @@ std::string Graphics::HrException::GetErrorInfo() const noexcept
 
 const char* Graphics::DeviceRemovedException::GetType() const noexcept
 {
-	return "Chili Graphics Exception [Device Removed] (DXGI_ERROR_DEVICE_REMOVED)";
+	return "Graphics Exception [Device Removed] (DXGI_ERROR_DEVICE_REMOVED)";
 }
 Graphics::InfoException::InfoException(int line, const char* file, std::vector<std::string> infoMsgs) noexcept
 	:
 	Exception(line, file)
 {
-	// join all info messages with newlines into single string
+
 	for (const auto& m : infoMsgs)
 	{
 		info += m;
 		info.push_back('\n');
 	}
-	// remove final newline if exists
+
 	if (!info.empty())
 	{
 		info.pop_back();
@@ -279,7 +278,7 @@ const char* Graphics::InfoException::what() const noexcept
 
 const char* Graphics::InfoException::GetType() const noexcept
 {
-	return "Chili Graphics Imnfo Exception";
+	return "Graphics Imnfo Exception";
 }
 
 std::string Graphics::InfoException::GetErrorInfo() const noexcept

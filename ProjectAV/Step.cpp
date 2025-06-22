@@ -6,7 +6,17 @@
 
 void Step::Submit(const Drawable& drawable) const
 {
-	pTargetPass->Accept(Rgph::Job{ this,&drawable });
+	// Create a lambda function that captures the original drawing logic.
+	// This lambda is the "job" to be executed by the pass.
+	auto jobLambda = [&drawable, this](Graphics& gfx) {
+		drawable.Bind(gfx);
+		this->Bind(gfx);
+		gfx.DrawIndexed(drawable.GetIndexCount());
+		};
+
+	// Pass the new lambda-based job to the RenderQueuePass.
+	// The .Accept() method in your RenderQueuePass is perfect for this.
+	pTargetPass->Accept(Rgph::Job{ jobLambda });
 }
 
 void Step::InitializeParentReferences(const Drawable& parent) noexcept

@@ -83,8 +83,8 @@
     <LibraryPath>$(SolutionDir)ProjectAV\Library\x64\Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)ProjectAV\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)ProjectAV\Library\x64\Release;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)ProjectAV\Include\assimp;$(SolutionDir)ProjectAV\Include;$(SolutionDir)ProjectAV\Include\dxtex;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)ProjectAV\Library\x64\mojeRelease;$(SolutionDir)ProjectAV\Library\x64\Release;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -138,11 +138,12 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <FloatingPointModel>Fast</FloatingPointModel>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <Optimization>Disabled</Optimization>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>assimp-vc140-mt.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;DirectXTex.lib;Jolt.lib;DirectXTK.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>assimp-vc143-mtd.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;DirectXTex.lib;Jolt.lib;DirectXTK.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:\Users\Zuzia\Desktop\studia\vcpkg\installed\x64-windows-static\debug\lib;$(SolutionDir)ProjectAV\Library\x64\mojeDebug;D:\vcpkg-master\installed\x64-windows-static\debug\lib;D:\vcpkg\installed\x64-windows-static\debug\lib;D:\GameDev\vcpkg\installed\x64-windows-static\debug\lib;C:\semestr_6\ZTGK\vcpkg\installed\x64-windows-static\debug\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -152,20 +153,21 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_WINDOWS;_MBCS;%(PreprocessorDefinitions);IS_DEBUG=false;NOMINMAX</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;_MBCS;%(PreprocessorDefinitions);IS_DEBUG=false;NOMINMAX;JPH_FLOATING_POINT_EXCEPTIONS_ENABLED;JPH_DEBUG_RENDERER;JPH_PROFILE_ENABLED;JPH_OBJECT_STREAM;JPH_USE_AVX2;JPH_USE_AVX;JPH_USE_SSE4_1;JPH_USE_SSE4_2;JPH_USE_LZCNT;JPH_USE_TZCNT;JPH_USE_F16C;JPH_USE_FMADD</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FloatingPointModel>Fast</FloatingPointModel>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <Optimization>MinSpace</Optimization>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;assimp-vc140-mt.lib;DirectXTex.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>assimp-vc143-mt.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;DirectXTex.lib;Jolt.lib;DirectXTK.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -173,21 +175,30 @@
     <ClCompile Include="Ability2.cpp" />
     <ClCompile Include="Ability3.cpp" />
     <ClCompile Include="Ability4.cpp" />
+    <ClCompile Include="Ability5.cpp" />
+    <ClCompile Include="Ability5Extend.cpp" />
+    <ClCompile Include="Ability6.cpp" />
     <ClCompile Include="App.cpp" />
     <ClCompile Include="AttackState.cpp" />
     <ClCompile Include="BasicAttack.cpp" />
     <ClCompile Include="BindingPass.cpp" />
     <ClCompile Include="Blender.cpp" />
     <ClCompile Include="ComparisonSampler.cpp" />
+    <ClCompile Include="CircleEmitterLogic.cpp" />
+    <ClCompile Include="BoomAttack.cpp" />
+    <ClCompile Include="Collectable.cpp" />
+    <ClCompile Include="IEmitterLogic.cpp" />
+    <ClCompile Include="InstanceBuffer.cpp" />
+    <ClCompile Include="Fireplace.cpp" />
     <ClCompile Include="MainRenderGraph.cpp" />
     <ClCompile Include="BufferClearPass.cpp" />
     <ClCompile Include="BrokenPart.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="Collider.cpp" />
     <ClCompile Include="Component.cpp" />
-    <ClCompile Include="Fire.cpp" />
+    <ClCompile Include="ModelCache.cpp" />
+    <ClCompile Include="OnFire.cpp" />
     <ClCompile Include="FireStatue.cpp" />
     <ClCompile Include="FullscreenPass.cpp" />
     <ClCompile Include="Global.cpp" />
@@ -233,15 +244,25 @@
     <ClInclude Include="Ability2.h" />
     <ClInclude Include="Ability3.h" />
     <ClInclude Include="Ability4.h" />
+    <ClInclude Include="Ability5.h" />
+    <ClInclude Include="Ability5Extend.h" />
+    <ClInclude Include="Ability6.h" />
+    <ClInclude Include="BoomAttack.h" />
     <ClInclude Include="BrokenPart.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="BindingPass.h" />
     <ClInclude Include="ComparisonSampler.h" />
+    <ClInclude Include="CircleEmitterLogic.h" />
+    <ClInclude Include="Collectable.h" />
+    <ClInclude Include="IEmitterLogic.h" />
+    <ClInclude Include="InstanceBuffer.h" />
+    <ClInclude Include="Fireplace.h" />
     <ClInclude Include="MainRenderGraph.h" />
     <ClInclude Include="BufferClearPass.h" />
     <ClInclude Include="BufferResource.h" />
     <ClInclude Include="Cube.h" />
-    <ClInclude Include="Fire.h" />
+    <ClInclude Include="ModelCache.h" />
+    <ClInclude Include="OnFire.h" />
     <ClInclude Include="FireStatue.h" />
     <ClInclude Include="FullscreenPass.h" />
     <ClInclude Include="Global.h" />
@@ -250,10 +271,14 @@
     <ClInclude Include="MyContactListener.h" />
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="NullPixelShader.cpp" />
+    <ClCompile Include="ParticleCbuf.cpp" />
+    <ClCompile Include="ParticlePass.cpp" />
+    <ClCompile Include="ParticleSystemComponent.cpp" />
     <ClCompile Include="Pass.cpp" />
     <ClCompile Include="PhysicsCommon.cpp" />
     <ClCompile Include="PixelShader.cpp" />
     <ClCompile Include="PlayerController.cpp" />
+    <ClCompile Include="PointEmitterLogic.cpp" />
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="PrefabManager.cpp" />
     <ClCompile Include="Rasterizer.cpp" />
@@ -263,11 +288,11 @@
     <ClCompile Include="RenderTarget.cpp" />
     <ClCompile Include="Rigidbody.cpp" />
     <ClCompile Include="Sampler.cpp" />
-    <ClCompile Include="ScriptCommander.cpp" />
     <ClCompile Include="ShadowCbuf.cpp" />
     <ClCompile Include="ShadowMappingPass.cpp" />
     <ClCompile Include="ShootAttack.cpp" />
     <ClCompile Include="Sink.cpp" />
+    <ClCompile Include="SkinningCBuf.cpp" />
     <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="SkyboxPass.cpp" />
     <ClCompile Include="SolidBox.cpp" />
@@ -276,12 +301,18 @@
     <ClCompile Include="SoundDevice.cpp" />
     <ClCompile Include="SoundEffectsLibrary.cpp" />
     <ClCompile Include="SoundEffectsPlayer.cpp" />
+    <ClCompile Include="SpawnAttack.cpp" />
     <ClCompile Include="SpawnJump.cpp" />
+    <ClCompile Include="SphereToCenterEmitterLogic.cpp" />
+    <ClCompile Include="Spikes.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="StateMachine.cpp" />
+    <ClCompile Include="StaticSoundPlayer.cpp" />
     <ClCompile Include="Step.cpp" />
     <ClCompile Include="StepLinkingProbe.cpp" />
+    <ClCompile Include="StopState.cpp" />
+    <ClCompile Include="StunState.cpp" />
     <ClCompile Include="Surface.cpp" />
     <ClCompile Include="Technique.cpp" />
     <ClCompile Include="TestCube.cpp" />
@@ -292,16 +323,17 @@
     <ClCompile Include="Throwable.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Topology.cpp" />
+    <ClCompile Include="TrailEmitterLogic.cpp" />
     <ClCompile Include="TransformCbuf.cpp" />
     <ClCompile Include="TransformCbufScaling.cpp" />
     <ClCompile Include="Trigger.cpp" />
+    <ClCompile Include="Tutorial.cpp" />
     <ClCompile Include="UpgradeHandler.cpp" />
     <ClCompile Include="Vertex.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
     <ClCompile Include="VertexShader.cpp" />
     <ClCompile Include="Walking.cpp" />
     <ClCompile Include="Window.cpp" />
-    <ClCompile Include="WindowsMessageMap.cpp" />
     <ClCompile Include="WinMain.cpp" />
     <ClCompile Include="XM.cpp" />
   </ItemGroup>
@@ -366,12 +398,16 @@
     <ClInclude Include="MusicBuffer.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="NullPixelShader.h" />
+    <ClInclude Include="ParticleCbuf.h" />
+    <ClInclude Include="ParticlePass.h" />
+    <ClInclude Include="ParticleSystemComponent.h" />
     <ClInclude Include="Pass.h" />
     <ClInclude Include="PerfLog.h" />
     <ClInclude Include="PhysicsCommon.h" />
     <ClInclude Include="PixelShader.h" />
     <ClInclude Include="Plane.h" />
     <ClInclude Include="PlayerController.h" />
+    <ClInclude Include="PointEmitterLogic.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="PrefabManager.h" />
     <ClInclude Include="Rasterizer.h" />
@@ -382,11 +418,11 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="Rigidbody.h" />
     <ClInclude Include="Sampler.h" />
-    <ClInclude Include="ScriptCommander.h" />
     <ClInclude Include="ShadowCbuf.h" />
     <ClInclude Include="ShadowMappingPass.h" />
     <ClInclude Include="ShootAttack.h" />
     <ClInclude Include="Sink.h" />
+    <ClInclude Include="SkinningCBuf.h" />
     <ClInclude Include="Skybox.h" />
     <ClInclude Include="SkyboxPass.h" />
     <ClInclude Include="SolidBox.h" />
@@ -395,31 +431,38 @@
     <ClInclude Include="SoundDevice.h" />
     <ClInclude Include="SoundEffectsLibrary.h" />
     <ClInclude Include="SoundEffectsPlayer.h" />
+    <ClInclude Include="SpawnAttack.h" />
     <ClInclude Include="SpawnJump.h" />
     <ClInclude Include="Source.h" />
     <ClInclude Include="Sphere.h" />
+    <ClInclude Include="SphereToCenterEmitterLogic.h" />
+    <ClInclude Include="Spikes.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="StateType.h" />
     <ClInclude Include="StateMachine.h" />
+    <ClInclude Include="StaticSoundPlayer.h" />
     <ClInclude Include="Stencil.h" />
     <ClInclude Include="Step.h" />
     <ClInclude Include="StepLinkingProbe.h" />
+    <ClInclude Include="StopState.h" />
+    <ClInclude Include="StunState.h" />
     <ClInclude Include="Surface.h" />
     <ClInclude Include="Technique.h" />
     <ClInclude Include="TechniqueProbe.h" />
     <ClInclude Include="TestCube.h" />
     <ClInclude Include="Testing.h" />
-    <ClInclude Include="TestModelProbe.h" />
     <ClInclude Include="TestPlane.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TexturePreprocessor.h" />
     <ClInclude Include="Throwable.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Topology.h" />
+    <ClInclude Include="TrailEmitterLogic.h" />
     <ClInclude Include="TransformCbuf.h" />
     <ClInclude Include="TransformCbufScaling.h" />
     <ClInclude Include="Trigger.h" />
+    <ClInclude Include="Tutorial.h" />
     <ClInclude Include="UpgradeHandler.h" />
     <ClInclude Include="Vertex.h" />
     <ClInclude Include="VertexBuffer.h" />
@@ -427,9 +470,7 @@
     <ClInclude Include="Walking.h" />
     <ClInclude Include="Win.h" />
     <ClInclude Include="Window.h" />
-    <ClInclude Include="WindowsMessageMap.h" />
     <ClInclude Include="WindowsThrowMacros.h" />
-    <ClInclude Include="WindTunnelEffect.h" />
     <ClInclude Include="XM.h" />
   </ItemGroup>
   <ItemGroup>
@@ -512,6 +553,26 @@
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir)%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Particle_PS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)%(Filename).cso</ObjectFileOutput>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)%(Filename).cso</ObjectFileOutput>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="Particle_VS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)%(Filename).cso</ObjectFileOutput>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)%(Filename).cso</ObjectFileOutput>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="PhongDifMskSpcNrm_PS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>

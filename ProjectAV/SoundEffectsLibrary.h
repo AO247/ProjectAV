@@ -7,13 +7,11 @@
 class SoundEffectsLibrary
 {
 public:
-	// Pobranie instancji singletona
+
 	static SoundEffectsLibrary& Get();
 
-	// Wczytuje dŸwiêk, jeœli nie ma go w cache, i zwraca jego ID.
 	ALuint Load(const std::string& filename);
 
-	// Zwalnia wszystkie zasoby
 	void UnloadAll();
 
 private:

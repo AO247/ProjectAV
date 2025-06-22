@@ -1,9 +1,9 @@
-#include "Camera.h" // Include the header for this class
-#include "Node.h"            // Include Node for GetOwner/SetLocalRotation
-#include "Window.h"          // For wnd access
-#include "CMath.h"           // For wrap_angle, PI
+#include "Camera.h" 
+#include "Node.h"          
+#include "Window.h"        
+#include "CMath.h"         
 #include <DirectXMath.h>
-#include <algorithm>        // For std::clamp
+#include <algorithm>       
 
 namespace dx = DirectX;
 
@@ -16,8 +16,7 @@ Camera::Camera(Node* owner, Window& window)
 
 void Camera::Update(float dt)
 {
-    // Don't process look if cursor is enabled OR if required nodes are missing
-    if (!wnd.CursorEnabled() && GetOwner() && active && !wnd.playerLocked)
+    if (!wnd.CursorEnabled() && pOwner != nullptr && active && !wnd.playerLocked)
     {
         HandleMouseLook(dt);
     }
@@ -28,31 +27,29 @@ void Camera::HandleMouseLook(float dt)
     float mouseX = 0.0f;
     float mouseY = 0.0f;
 
-    // Accumulate mouse delta for this frame
-    while (const auto delta = wnd.mouse.ReadRawDelta())
+   
+    while (const auto delta = wnd.mouse.PollRawMovement())
     {
-        mouseX += delta->x;
-        mouseY -= delta->y;
+        mouseX += delta->dx;
+        mouseY -= delta->dy;
     }
 
-    yRotation += mouseX * sensX * 0.01f; // Apply Yaw delta (adjust multiplier)
-    xRotation -= mouseY * sensY * 0.01f; // Apply Pitch delta (inverted Y, adjust multiplier)
+    yRotation += mouseX * sensX * 0.01f; 
+    xRotation -= mouseY * sensY * 0.01f; 
 
-    // Clamp pitch
     xRotation = std::clamp(xRotation, -pitchLimit, pitchLimit);
-    // Wrap Yaw (optional, but good practice)
     yRotation = wrap_angle(yRotation);
     DirectX::XMVECTOR quat = DirectX::XMQuaternionRotationRollPitchYaw(xRotation, yRotation, 0.0f);
     DirectX::XMFLOAT4 quatFloat4;
     DirectX::XMStoreFloat4(&quatFloat4, quat);
 
-    GetOwner()->SetLocalRotation(quatFloat4);      // Apply Pitch to camera node's X axis
+    pOwner->SetLocalRotation(quatFloat4);
 }
 
 
 DirectX::XMMATRIX Camera::GetViewMatrix() const noexcept
 {
-    dx::XMMATRIX cameraWorldTransform = GetOwner()->GetWorldTransform();
+    dx::XMMATRIX cameraWorldTransform = pOwner->GetWorldTransform();
 
     dx::XMVECTOR determinant = dx::XMMatrixDeterminant(cameraWorldTransform);
     return dx::XMMatrixInverse(&determinant, cameraWorldTransform);

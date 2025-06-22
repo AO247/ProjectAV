@@ -1,12 +1,10 @@
 #pragma once
 
 #include "Component.h"
-#include "Window.h" // Needs access to Window for input
+#include "Window.h"
 #include <DirectXMath.h>
 #include "Rigidbody.h"
 
-// Forward declare Node to avoid circular include if necessary,
-// but including Node.h is often fine here.
 class Node;
 
 class Flying : public Component

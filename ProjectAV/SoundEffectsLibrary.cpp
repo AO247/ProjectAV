@@ -2,8 +2,8 @@
 #include <sndfile.h>
 #include <inttypes.h>
 #include <AL/alext.h>
-#include <cstdio> // dla fprintf, stderr
-#include <cstdlib> // dla malloc
+#include <cstdio> 
+#include <cstdlib> 
 
 SoundEffectsLibrary& SoundEffectsLibrary::Get()
 {
@@ -13,17 +13,17 @@ SoundEffectsLibrary& SoundEffectsLibrary::Get()
 
 ALuint SoundEffectsLibrary::Load(const std::string& filename)
 {
-	// Jeœli dŸwiêk jest ju¿ wczytany, zwróæ jego ID
+	
 	if (m_buffers.count(filename))
 	{
 		return m_buffers[filename];
 	}
 
-	// W przeciwnym razie wczytaj z pliku
+
 	ALuint bufferID = LoadFromFile(filename.c_str());
 	if (bufferID != 0)
 	{
-		// Zapisz w cache i zwróæ
+
 		m_buffers[filename] = bufferID;
 	}
 	return bufferID;
@@ -36,7 +36,7 @@ SoundEffectsLibrary::~SoundEffectsLibrary()
 
 void SoundEffectsLibrary::UnloadAll()
 {
-	// Stwórz wektor z samymi ID do usuniêcia
+
 	std::vector<ALuint> buffer_ids;
 	for (auto const& [key, val] : m_buffers)
 	{
@@ -52,7 +52,7 @@ void SoundEffectsLibrary::UnloadAll()
 }
 
 
-// Prywatna metoda wczytuj¹ca, kod z poprzednich implementacji
+
 ALuint SoundEffectsLibrary::LoadFromFile(const char* filename)
 {
 	ALenum err, format;

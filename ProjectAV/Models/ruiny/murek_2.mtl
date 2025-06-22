@@ -1,0 +1,13 @@
+# Blender 4.4.3 MTL File: 'wszystko_2.blend'
+# www.blender.org
+
+newmtl murek_2
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd murek_2_Base_color.png
+map_Kn murek_2_Normal_DirectX.png

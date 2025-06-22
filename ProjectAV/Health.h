@@ -12,8 +12,10 @@ public:
 	virtual ~Health() = default;
 	float maxHealth = 1.0f;
 	float currentHealth;
+	bool tank = false;
+	bool fireType = false;
 	virtual void DrawImGuiControls() override;
-	void TakeDamage(float damage);
+	void TakeDamage(float damage, bool heavy = false, bool isFire = false);
 
 private:
 };

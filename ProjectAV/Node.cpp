@@ -3,12 +3,10 @@
 #include "Graphics.h"       
 #include <DirectXMath.h>
 #include "imgui/imgui.h"
-#include <cmath> // For std::atan2, std::asin, std::copysign
+#include <cmath> 
 #include "Rigidbody.h"
+#include "ParticleSystemComponent.h"
 
-// Forward declare FrameCommander if it's only used as a reference/pointer type in Submit
-// class FrameCommander; 
-// No, Submit needs its definition if methods are called on it. Assume it's included elsewhere or defined.
 
 namespace dx = DirectX;
 
@@ -26,8 +24,8 @@ Node::Node(std::string name, Node* parent, std::string tag)
 }
 
 
-// --- Hierarchy and Component methods remain the same ---
-void Node::AddChild(std::unique_ptr<Node> pChild) { /* ... same ... */
+
+void Node::AddChild(std::unique_ptr<Node> pChild) {
     assert(pChild);
     pChild->parent = this;
     children.push_back(std::move(pChild));
@@ -48,7 +46,6 @@ void Node::SetParent(Node* newParent)
     if (parent == newParent)
         return;
 
-    // If we have a parent, transfer ownership of this node from the old parent to the new parent
     if (parent)
     {
         auto& siblings = parent->GetChildren_NonConst();
@@ -56,7 +53,6 @@ void Node::SetParent(Node* newParent)
             [this](const std::unique_ptr<Node>& n) { return n.get() == this; });
         if (it != siblings.end())
         {
-            // Move the unique_ptr to the new parent's children
             std::unique_ptr<Node> thisNode = std::move(*it);
             siblings.erase(it);
 
@@ -64,18 +60,15 @@ void Node::SetParent(Node* newParent)
             {
                 newParent->AddChild(std::move(thisNode));
             }
-            // If newParent is nullptr, this node is now orphaned and will be deleted unless managed elsewhere
         }
     }
     else if (newParent)
     {
-        // If no current parent, just add to new parent
         newParent->AddChild(std::unique_ptr<Node>(this));
     }
 
     parent = newParent;
 
-    // Mark transforms dirty
     localTransformDirty = true;
     worldTransformDirty = true;
     transformationOutsidePhysicsTriggered = true;
@@ -88,46 +81,39 @@ Component* Node::AddComponent(std::unique_ptr<Component> pComponent) {
 }
 const std::vector<std::unique_ptr<Component>>& Node::GetComponents() const { return components; }
 
-// --- Helper: Quaternion to Euler (Pitch, Yaw, Roll) ---
-// Returns XMFLOAT3 {Pitch, Yaw, Roll} in radians
+
 DirectX::XMFLOAT3 QuaternionToEulerAnglesInternal(DirectX::XMFLOAT4 q)
 {
-    DirectX::XMFLOAT3 angles; // Pitch, Yaw, Roll
+    DirectX::XMFLOAT3 angles;
 
-    // Roll (z-axis rotation)
+
     double sinr_cosp = 2.0 * (q.w * q.z + q.x * q.y);
     double cosr_cosp = 1.0 - 2.0 * (q.y * q.y + q.z * q.z);
     angles.z = static_cast<float>(std::atan2(sinr_cosp, cosr_cosp));
 
-    // Pitch (x-axis rotation)
+
     double sinp = 2.0 * (q.w * q.x - q.y * q.z);
     if (std::abs(sinp) >= 1.0)
-        angles.x = static_cast<float>(std::copysign(DirectX::XM_PI / 2.0, sinp)); // Use 90 degrees if out of range
+        angles.x = static_cast<float>(std::copysign(DirectX::XM_PI / 2.0, sinp)); 
     else
         angles.x = static_cast<float>(std::asin(sinp));
 
-    // Yaw (y-axis rotation)
+
     double siny_cosp = 2.0 * (q.w * q.y + q.z * q.x);
     double cosy_cosp = 1.0 - 2.0 * (q.x * q.x + q.y * q.y);
     angles.y = static_cast<float>(std::atan2(siny_cosp, cosy_cosp));
 
-    return { angles.x, angles.y, angles.z }; // {Pitch, Yaw, Roll}
+    return { angles.x, angles.y, angles.z };
 }
 
-
-
-// --- SetLocal... Methods ---
 
 void Node::SetWorldPosition(const DirectX::XMFLOAT3& worldPos)
 {
     transformationOutsidePhysicsTriggered = true;
-    /*if (GetComponent<Rigidbody>() != nullptr)
-    {
-        PhysicsCommon::physicsSystem->GetBodyInterface().SetPosition(GetComponent<Rigidbody>()->GetBodyID(), RVec3Arg(worldPos.x, worldPos.y, worldPos.z), EActivation::Activate);
-    }*/
+
     if (parent == nullptr)
     {
-        SetLocalPosition(worldPos); // For root node, world position is local position
+        SetLocalPosition(worldPos);
     }
     else
     {
@@ -135,7 +121,7 @@ void Node::SetWorldPosition(const DirectX::XMFLOAT3& worldPos)
         dx::XMMATRIX invParentWorldTransform = dx::XMMatrixInverse(nullptr, parentWorldTransform);
 
         dx::XMVECTOR worldPosVec = dx::XMLoadFloat3(&worldPos);
-        // Transform the desired world position into the parent's local space to find our new local position
+
         dx::XMVECTOR localPosVec = dx::XMVector3TransformCoord(worldPosVec, invParentWorldTransform);
 
         DirectX::XMFLOAT3 newLocalPos;
@@ -146,13 +132,9 @@ void Node::SetWorldPosition(const DirectX::XMFLOAT3& worldPos)
 
 void Node::PhysicsSetWorldPosition(const DirectX::XMFLOAT3& worldPos)
 {
-    /*if (GetComponent<Rigidbody>() != nullptr)
-    {
-        PhysicsCommon::physicsSystem->GetBodyInterface().SetPosition(GetComponent<Rigidbody>()->GetBodyID(), RVec3Arg(worldPos.x, worldPos.y, worldPos.z), EActivation::Activate);
-    }*/
     if (parent == nullptr)
     {
-        PhysicsSetLocalPosition(worldPos); // For root node, world position is local position
+        PhysicsSetLocalPosition(worldPos); 
     }
     else
     {
@@ -160,7 +142,7 @@ void Node::PhysicsSetWorldPosition(const DirectX::XMFLOAT3& worldPos)
         dx::XMMATRIX invParentWorldTransform = dx::XMMatrixInverse(nullptr, parentWorldTransform);
 
         dx::XMVECTOR worldPosVec = dx::XMLoadFloat3(&worldPos);
-        // Transform the desired world position into the parent's local space to find our new local position
+
         dx::XMVECTOR localPosVec = dx::XMVector3TransformCoord(worldPosVec, invParentWorldTransform);
 
         DirectX::XMFLOAT3 newLocalPos;
@@ -172,7 +154,7 @@ void Node::PhysicsSetWorldPosition(const DirectX::XMFLOAT3& worldPos)
 void Node::SetLocalTransform(DirectX::FXMMATRIX transform)
 {
     dx::XMStoreFloat4x4(&localTransform, transform);
-    UpdateStoredComponentsFromMatrix(); // Update stored pos, quat, scale from the new matrix
+    UpdateStoredComponentsFromMatrix(); 
     localTransformDirty = false;
     worldTransformDirty = true;
 }
@@ -182,33 +164,7 @@ void Node::SetLocalPosition(const DirectX::XMFLOAT3& pos)
     transformationOutsidePhysicsTriggered = true;
     if (Vector3(pos) != Vector3(localPosition))
     {
-        /*if (GetComponent<Rigidbody>() != nullptr)
-        {
-            dx::XMMATRIX matS = dx::XMMatrixScaling(localScale.x, localScale.y, localScale.z);
-            dx::XMMATRIX matR = dx::XMMatrixRotationQuaternion(dx::XMLoadFloat4(&localRotationQuaternion));
-            dx::XMMATRIX matT = dx::XMMatrixTranslation(pos.x, pos.y, pos.z);
-
-            dx::XMMATRIX newComputedLocalTransform = matS * matR * matT;
-
-            dx::XMMATRIX newComputedWorldTransform;
-            if (parent)
-            {
-                dx::XMMATRIX parentWorldMatrix = parent->GetWorldTransform();
-                newComputedWorldTransform = dx::XMMatrixMultiply(newComputedLocalTransform, parentWorldMatrix);
-            }
-            else
-            {
-                newComputedWorldTransform = newComputedLocalTransform;
-            }
-
-            DirectX::XMFLOAT3 newWorldPosFloat3;
-            dx::XMStoreFloat3(&newWorldPosFloat3, newComputedWorldTransform.r[3]);
-
-            RVec3Arg joltPhysicsPosition(newWorldPosFloat3.x, newWorldPosFloat3.y, newWorldPosFloat3.z);
-
-            JPH::BodyInterface& bodyInterface = PhysicsCommon::physicsSystem->GetBodyInterface();
-            bodyInterface.SetPosition(GetComponent<Rigidbody>()->GetBodyID(), joltPhysicsPosition, JPH::EActivation::Activate);
-        }*/
+        
         localPosition = pos;
         localTransformDirty = true;
         worldTransformDirty = true;
@@ -225,7 +181,7 @@ void Node::PhysicsSetLocalPosition(const DirectX::XMFLOAT3& pos)
     }
 }
 
-// rotRad is Pitch, Yaw, Roll in Radians
+
 void Node::SetLocalRotation(const DirectX::XMFLOAT3& rotRad)
 {
     dx::XMVECTOR q = dx::XMQuaternionRotationRollPitchYaw(rotRad.x, rotRad.y, rotRad.z);
@@ -235,35 +191,7 @@ void Node::SetLocalRotation(const DirectX::XMFLOAT3& rotRad)
 
     transformationOutsidePhysicsTriggered = true;
 
-    // Ustaw rotacjê rigidbody, jeœli istnieje
-    //if (GetComponent<Rigidbody>() != nullptr)
-    //{
-    //    // Przelicz na world transform, aby uzyskaæ rotacjê w œwiecie
-    //    dx::XMMATRIX matS = dx::XMMatrixScaling(localScale.x, localScale.y, localScale.z);
-    //    dx::XMMATRIX matR = dx::XMMatrixRotationQuaternion(q);
-    //    dx::XMMATRIX matT = dx::XMMatrixTranslation(localPosition.x, localPosition.y, localPosition.z);
-
-    //    dx::XMMATRIX newComputedLocalTransform = matS * matR * matT;
-    //    dx::XMMATRIX newComputedWorldTransform;
-    //    if (parent)
-    //    {
-    //        dx::XMMATRIX parentWorldMatrix = parent->GetWorldTransform();
-    //        newComputedWorldTransform = dx::XMMatrixMultiply(newComputedLocalTransform, parentWorldMatrix);
-    //    }
-    //    else
-    //    {
-    //        newComputedWorldTransform = newComputedLocalTransform;
-    //    }
-
-    //    // Wyci¹gnij rotacjê z macierzy œwiata
-    //    dx::XMVECTOR s, r, t;
-    //    dx::XMMatrixDecompose(&s, &r, &t, newComputedWorldTransform);
-    //    DirectX::XMFLOAT4 worldQuat;
-    //    dx::XMStoreFloat4(&worldQuat, r);
-
-    //    auto& bodyInterface = PhysicsCommon::physicsSystem->GetBodyInterface();
-    //    bodyInterface.SetRotation(GetComponent<Rigidbody>()->GetBodyID(), JPH::Quat(worldQuat.x, worldQuat.y, worldQuat.z, worldQuat.w), JPH::EActivation::Activate);
-    //}
+    
 }
 
 void Node::PhysicsSetLocalRotation(const DirectX::XMFLOAT4& quat)
@@ -280,107 +208,68 @@ void Node::SetLocalRotation(const DirectX::XMFLOAT4& quat)
     worldTransformDirty = true;
     transformationOutsidePhysicsTriggered = true;
 
-    // Ustaw rotacjê rigidbody, jeœli istnieje
-    /*if (GetComponent<Rigidbody>() != nullptr)
-    {
-        dx::XMVECTOR q = dx::XMLoadFloat4(&quat);
-
-        dx::XMMATRIX matS = dx::XMMatrixScaling(localScale.x, localScale.y, localScale.z);
-        dx::XMMATRIX matR = dx::XMMatrixRotationQuaternion(q);
-        dx::XMMATRIX matT = dx::XMMatrixTranslation(localPosition.x, localPosition.y, localPosition.z);
-
-        dx::XMMATRIX newComputedLocalTransform = matS * matR * matT;
-        dx::XMMATRIX newComputedWorldTransform;
-        if (parent)
-        {
-            dx::XMMATRIX parentWorldMatrix = parent->GetWorldTransform();
-            newComputedWorldTransform = dx::XMMatrixMultiply(newComputedLocalTransform, parentWorldMatrix);
-        }
-        else
-        {
-            newComputedWorldTransform = newComputedLocalTransform;
-        }
-
-        dx::XMVECTOR s, r, t;
-        dx::XMMatrixDecompose(&s, &r, &t, newComputedWorldTransform);
-        DirectX::XMFLOAT4 worldQuat;
-        dx::XMStoreFloat4(&worldQuat, r);
-
-        auto& bodyInterface = PhysicsCommon::physicsSystem->GetBodyInterface();
-        bodyInterface.SetRotation(GetComponent<Rigidbody>()->GetBodyID(), JPH::Quat(worldQuat.x, worldQuat.y, worldQuat.z, worldQuat.w), JPH::EActivation::Activate);
-    }*/
+   
 }
 
 void Node::SetWorldRotation(const DirectX::XMFLOAT4& worldQuat)
 {
-    transformationOutsidePhysicsTriggered = true; // This is a manual override
+    transformationOutsidePhysicsTriggered = true; 
 
     if (parent == nullptr)
     {
-        // For a root node, world rotation is local rotation
+       
         SetLocalRotation(worldQuat);
     }
     else
     {
-        // We want: DesiredWorldRotation = NewLocalRotation * ParentWorldRotation
-        // So: NewLocalRotation = DesiredWorldRotation * Inverse(ParentWorldRotation)
-
-        // Get parent's world rotation
+       
         dx::XMFLOAT4 parentWorldRotationQuat = parent->GetWorldRotationQuaternion();
         dx::XMVECTOR parentWorldRotVec = dx::XMLoadFloat4(&parentWorldRotationQuat);
 
-        // Calculate inverse of parent's world rotation
+        
         dx::XMVECTOR invParentWorldRotVec = dx::XMQuaternionInverse(parentWorldRotVec);
 
-        // Load desired world rotation
+        
         dx::XMVECTOR desiredWorldRotVec = dx::XMLoadFloat4(&worldQuat);
 
-        // Calculate new local rotation
-        // Order: R_local = R_world_target * R_parent_world_inverse
+        
         dx::XMVECTOR newLocalRotVec = dx::XMQuaternionMultiply(desiredWorldRotVec, invParentWorldRotVec);
-        newLocalRotVec = dx::XMQuaternionNormalize(newLocalRotVec); // Ensure it's a unit quaternion
+        newLocalRotVec = dx::XMQuaternionNormalize(newLocalRotVec); 
 
         DirectX::XMFLOAT4 newLocalQuat;
         dx::XMStoreFloat4(&newLocalQuat, newLocalRotVec);
-        SetLocalRotation(newLocalQuat); // This will mark dirty flags and handle physics trigger
+        SetLocalRotation(newLocalQuat); 
     }
-    // SetLocalRotation already sets localTransformDirty, worldTransformDirty,
-    // and transformationOutsidePhysicsTriggered appropriately.
 }
 
 void Node::PhysicsSetWorldRotation(const DirectX::XMFLOAT4& worldQuat)
 {
     if (parent == nullptr)
     {
-        // For a root node, world rotation is local rotation
+        
         PhysicsSetLocalRotation(worldQuat);
     }
     else
     {
-        // We want: DesiredWorldRotation = NewLocalRotation * ParentWorldRotation
-        // So: NewLocalRotation = DesiredWorldRotation * Inverse(ParentWorldRotation)
-
-        // Get parent's world rotation
+        
         dx::XMFLOAT4 parentWorldRotationQuat = parent->GetWorldRotationQuaternion();
         dx::XMVECTOR parentWorldRotVec = dx::XMLoadFloat4(&parentWorldRotationQuat);
 
-        // Calculate inverse of parent's world rotation
+
         dx::XMVECTOR invParentWorldRotVec = dx::XMQuaternionInverse(parentWorldRotVec);
 
-        // Load desired world rotation
+
         dx::XMVECTOR desiredWorldRotVec = dx::XMLoadFloat4(&worldQuat);
 
-        // Calculate new local rotation
-        // Order: R_local = R_world_target * R_parent_world_inverse
+
         dx::XMVECTOR newLocalRotVec = dx::XMQuaternionMultiply(desiredWorldRotVec, invParentWorldRotVec);
-        newLocalRotVec = dx::XMQuaternionNormalize(newLocalRotVec); // Ensure it's a unit quaternion
+        newLocalRotVec = dx::XMQuaternionNormalize(newLocalRotVec);
 
         DirectX::XMFLOAT4 newLocalQuat;
         dx::XMStoreFloat4(&newLocalQuat, newLocalRotVec);
-        PhysicsSetLocalRotation(newLocalQuat); // This will mark dirty flags and handle physics trigger
+        PhysicsSetLocalRotation(newLocalQuat);
     }
-    // SetLocalRotation already sets localTransformDirty, worldTransformDirty,
-    // and transformationOutsidePhysicsTriggered appropriately.
+
 }
 
 void Node::SetLocalScale(const DirectX::XMFLOAT3& scale)
@@ -405,7 +294,6 @@ void Node::TranslateLocal(const DirectX::XMFLOAT3& translation)
     worldTransformDirty = true;
 }
 
-// --- GetLocal... Methods ---
 
 DirectX::XMMATRIX Node::GetLocalTransform() const
 {
@@ -423,7 +311,7 @@ DirectX::XMFLOAT3 Node::GetLocalPosition() const
 
 DirectX::XMFLOAT3 Node::GetLocalRotationEuler() const
 {
-    return QuaternionToEulerAnglesInternal(localRotationQuaternion); // Converts stored quaternion
+    return QuaternionToEulerAnglesInternal(localRotationQuaternion); 
 }
 
 DirectX::XMFLOAT4 Node::GetLocalRotationQuaternion() const
@@ -433,24 +321,18 @@ DirectX::XMFLOAT4 Node::GetLocalRotationQuaternion() const
 
 DirectX::XMFLOAT4 Node::GetWorldRotationQuaternion() const
 {
-    // Ensure world transform is up-to-date
+
     dx::XMMATRIX worldMat = GetWorldTransform();
 
-    // Decompose the world transform matrix
+
     dx::XMVECTOR scaleVec;
     dx::XMVECTOR rotationQuatVec;
     dx::XMVECTOR translationVec;
 
-    // XMMatrixDecompose extracts scale, rotation quaternion, and translation.
-    // It's important that the matrix doesn't have shear, or decomposition might not be perfectly accurate
-    // or might fail for some interpretations of "rotation". For standard SRT transforms, this is fine.
+   
     if (!dx::XMMatrixDecompose(&scaleVec, &rotationQuatVec, &translationVec, worldMat))
     {
-        // Decomposition can fail if the matrix is not representable as S*R*T,
-        // e.g., if it includes shear or a non-invertible scale.
-        // Return identity or log an error as a fallback.
-        // For simplicity, returning identity quaternion.
-        // OutputDebugStringA("Warning: XMMatrixDecompose failed in GetGlobalRotation. Returning identity quaternion.\n");
+        
         return { 0.0f, 0.0f, 0.0f, 1.0f };
     }
 
@@ -465,12 +347,11 @@ DirectX::XMFLOAT3 Node::GetLocalScale() const
     return localScale;
 }
 
-// --- Directional Vectors (Forward, Right, Up, etc.) ---
-// These remain unchanged as they rely on GetWorldTransform(), which is now correct.
+
 Vector3 Node::Forward() const
 {
     dx::XMMATRIX worldMat = GetWorldTransform();
-    dx::XMVECTOR localForward = dx::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f); // +Z in local space
+    dx::XMVECTOR localForward = dx::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f); 
     dx::XMVECTOR worldForward = dx::XMVector3TransformNormal(localForward, worldMat);
     worldForward = dx::XMVector3Normalize(worldForward);
     Vector3 result;
@@ -533,7 +414,6 @@ Vector3 Node::Down() const
     return result;
 }
 
-// --- World Transform Methods ---
 DirectX::XMMATRIX Node::GetWorldTransform() const
 {
     if (worldTransformDirty)
@@ -545,9 +425,8 @@ DirectX::XMMATRIX Node::GetWorldTransform() const
 
 DirectX::XMFLOAT3 Node::GetWorldPosition() const
 {
-    DirectX::XMMATRIX worldMat = GetWorldTransform(); // Ensures matrix is up-to-date
+    DirectX::XMMATRIX worldMat = GetWorldTransform();
     DirectX::XMFLOAT3 worldPos;
-    // The position is in the 4th row (r[3]) of a DirectX matrix
     dx::XMStoreFloat3(&worldPos, worldMat.r[3]);
     return worldPos;
 }
@@ -557,35 +436,21 @@ DirectX::XMFLOAT3 Node::GetWorldPosition() const
 void Node::UpdateWorldTransform(bool transformationOutsidePhysicsTriggered)
 {
     this->transformationOutsidePhysicsTriggered = transformationOutsidePhysicsTriggered;
-    dx::XMMATRIX finalLocalTransform = GetLocalTransform(); // Ensures local is up-to-date
+    dx::XMMATRIX finalLocalTransform = GetLocalTransform();
 
     if (parent)
     {
-        dx::XMMATRIX parentWorld = parent->GetWorldTransform(); // Ensures parent is up-to-date
+        dx::XMMATRIX parentWorld = parent->GetWorldTransform();
         dx::XMStoreFloat4x4(&worldTransform, dx::XMMatrixMultiply(finalLocalTransform, parentWorld));
     }
     else
     {
-        dx::XMStoreFloat4x4(&worldTransform, finalLocalTransform); // Root node
+        dx::XMStoreFloat4x4(&worldTransform, finalLocalTransform); 
     }
-    //if (GetComponent<Rigidbody>() != nullptr)
-    //{
-    //    // Wyci¹gnij pozycjê i rotacjê z worldTransform
-    //    DirectX::XMMATRIX worldMat = dx::XMLoadFloat4x4(&worldTransform);
-    //    DirectX::XMFLOAT3 pos;
-    //    DirectX::XMFLOAT4 rot;
-    //    dx::XMVECTOR s, r, t;
-    //    dx::XMMatrixDecompose(&s, &r, &t, worldMat);
-    //    dx::XMStoreFloat3(&pos, t);
-    //    dx::XMStoreFloat4(&rot, r);
-
-    //    auto& bodyInterface = PhysicsCommon::physicsSystem->GetBodyInterface();
-    //    bodyInterface.SetPosition(GetComponent<Rigidbody>()->GetBodyID(), JPH::RVec3(pos.x, pos.y, pos.z), JPH::EActivation::Activate);
-    //    bodyInterface.SetRotation(GetComponent<Rigidbody>()->GetBodyID(), JPH::Quat(rot.x, rot.y, rot.z, rot.w), JPH::EActivation::Activate);
-    //}
+    
     worldTransformDirty = false;
 
-    // When this node's world transform changes, all its children's world transforms are now dirty
+    
     for (auto& child : children)
     {
         child->worldTransformDirty = true;
@@ -605,9 +470,7 @@ void Node::UpdateLocalTransformFromComponents(bool transformationOutsidePhysicsT
         dx::XMMATRIX matR = dx::XMMatrixRotationQuaternion(dx::XMLoadFloat4(&localRotationQuaternion));
         dx::XMMATRIX matT = dx::XMMatrixTranslation(localPosition.x, localPosition.y, localPosition.z);
 
-        // Original order: Scale * Rotate * Translate
-        // This means operations applied to a vector v are: T*v, then R*(T*v), then S*(R*(T*v))
-        // So, Translation first, then Rotation, then Scaling.
+        
         dx::XMStoreFloat4x4(&localTransform, matS * matR * matT);
 
         localTransformDirty = false;
@@ -615,7 +478,7 @@ void Node::UpdateLocalTransformFromComponents(bool transformationOutsidePhysicsT
     }
 }
 
-// --- Helper: Update stored pos/quat/scale when the whole matrix is set ---
+
 void Node::UpdateStoredComponentsFromMatrix()
 {
     dx::XMMATRIX matrix = dx::XMLoadFloat4x4(&localTransform);
@@ -627,44 +490,24 @@ void Node::UpdateStoredComponentsFromMatrix()
     dx::XMStoreFloat3(&localScale, s_vec);
 }
 
-// --- Update & Draw ---
+
 void Node::Update(float dt)
 {
-    // Ensure transforms are up-to-date before components or children use them
-    // If local is dirty, world will be updated by UpdateLocalTransformFromComponents -> UpdateWorldTransform path or by direct call.
-    if (localTransformDirty) { // This will also set worldTransformDirty = true
-        UpdateLocalTransformFromComponents(transformationOutsidePhysicsTriggered); // Rebuilds local, marks world dirty
+    if (this == NULL || this == nullptr) return;
+    if (localTransformDirty) { 
+        UpdateLocalTransformFromComponents(transformationOutsidePhysicsTriggered); 
     }
-    if (worldTransformDirty) { // If local was clean but world was dirty (e.g. parent moved)
-        UpdateWorldTransform(transformationOutsidePhysicsTriggered);         // Rebuilds world
+    if (worldTransformDirty) { 
+        UpdateWorldTransform(transformationOutsidePhysicsTriggered);      
     }
-    // At this point, GetWorldTransform() will return an up-to-date matrix.
-
-    //dx::XMFLOAT4X4 tempLocalTransform = localTransform;
-    //dx::XMFLOAT4X4 tempWorldTransform = worldTransform;
+   
 
     for (auto& comp : components) {
         if (transformationOutsidePhysicsTriggered)
         {
             if (comp->isRigidbody)
             {
-                /*if (parent != nullptr && parent->GetName() == "Level 2")
-                {
-                    OutputDebugString("\n");
-                    OutputDebugString("Nazywam sie ");
-                    OutputDebugString(GetName().c_str());
-                    OutputDebugString("\n");
-                    OutputDebugString("a moj rodzic to ");
-                    if (parent != nullptr)
-                    {
-                        OutputDebugString(parent->GetName().c_str());
-                    }
-                    else
-                    {
-                        OutputDebugString("brak");
-                    }
-                    OutputDebugString("\n");
-                }*/
+                
                 
                 auto& bodyInterface = PhysicsCommon::physicsSystem->GetBodyInterface();
                 bodyInterface.SetPosition(GetComponent<Rigidbody>()->GetBodyID(), JPH::RVec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z), JPH::EActivation::Activate);
@@ -675,68 +518,51 @@ void Node::Update(float dt)
         comp->Update(dt);
     }
 
-    //if (transformationOutsidePhysicsTriggered)
+   
+    for(int i = 0; i < children.size(); ++i)
+    {
+        if(!children[i]->markedForDestruction)
+        {
+			children[i]->Update(dt);
+		}
+        else
+        {
+			RemoveChild(children[i].get());
+        }
+	}
+    //for (auto& child : children) 
     //{
-    //    localTransform = tempLocalTransform;
-    //    worldTransform = tempWorldTransform;
-
-    //    if (GetComponent<Rigidbody>() != nullptr)
+    //    if (!child->markedForDestruction)
     //    {
-    //        myCounter++;
-    //        if (GetName() == "Island B1")
-    //        {
-    //            OutputDebugString("kaunter: ");
-    //            OutputDebugString(std::to_string(myCounter).c_str());
-    //            OutputDebugString("\n");
-    //        }
-    //        // Wyci¹gnij pozycjê i rotacjê z worldTransform
-    //        DirectX::XMMATRIX worldMat = dx::XMLoadFloat4x4(&worldTransform);
-    //        DirectX::XMFLOAT3 worldPos;
-    //        // The position is in the 4th row (r[3]) of a DirectX matrix
-    //        dx::XMStoreFloat3(&worldPos, worldMat.r[3]);
-
-    //        if (GetName() == "Stone")
-    //        {
-    //            OutputDebugString("\n");
-    //            OutputDebugString("body id: ");
-    //            OutputDebugString(std::to_string(GetComponent<Rigidbody>()->GetBodyID().GetIndex()).c_str());
-    //            OutputDebugString(" ");
-    //            OutputDebugString(std::to_string(worldPos.x).c_str());
-    //            OutputDebugString(" ");
-    //            OutputDebugString(std::to_string(worldPos.y).c_str());
-    //            OutputDebugString(" ");
-    //            OutputDebugString(std::to_string(worldPos.z).c_str());
-    //            OutputDebugString(" ");
-    //            OutputDebugString("\n");
-    //        }
-
-    //        auto& bodyInterface = PhysicsCommon::physicsSystem->GetBodyInterface();
-    //        bodyInterface.SetPosition(GetComponent<Rigidbody>()->GetBodyID(), JPH::RVec3(worldPos.x, worldPos.y, worldPos.z), JPH::EActivation::Activate);
-    //        //bodyInterface.SetRotation(GetComponent<Rigidbody>()->GetBodyID(), JPH::Quat(rot.x, rot.y, rot.z, rot.w), JPH::EActivation::Activate);
+    //        child->Update(dt);
     //    }
     //}
-
-    for (auto& child : children) {
-        child->Update(dt);
-    }
 
     transformationOutsidePhysicsTriggered = false;
 }
 
 void Node::Submit(Graphics& gfx) const
 {
+    // The world transform is used by multiple potential components,
+    // so it's efficient to get it once.
+    const auto worldTransform = GetWorldTransform();
+
+    // Your existing check for the ModelComponent
     if (auto* modelComp = GetComponent<ModelComponent>())
     {
-        modelComp->Submit(gfx, GetWorldTransform());
+        modelComp->Submit(gfx, worldTransform);
     }
-    // Original Submit for children was commented out, keeping it that way:
-    //for (const auto& child : children)
-    //{
-    //    child->Submit(frame, gfx);
-    //}
+
+    // NEW: Add a check for the ParticleSystemComponent
+    if (auto* particleComp = GetComponent<ParticleSystemComponent>())
+    {
+        // Note: The ParticleSystemComponent's Submit method in my implementation
+        // ignores the worldTransform, as particles are simulated in world space.
+        // However, we pass it for a consistent interface.
+        particleComp->Submit(gfx, worldTransform);
+    }
 }
 
-// --- ShowNodeTree (unchanged from original provided snippet) ---
 void Node::ShowNodeTree(Node*& pSelectedNode) noexcept
 {
     const intptr_t nodeId = reinterpret_cast<intptr_t>(this);
@@ -766,7 +592,6 @@ void Node::ShowNodeTree(Node*& pSelectedNode) noexcept
     }
 }
 
-// --- FindByTag and GetRoot (unchanged from original provided snippet) ---
 Node* Node::GetRoot() const
 {
     const Node* pCurrent = this;
@@ -797,7 +622,6 @@ Node* Node::FindFirstChildByTag(const std::string& searchTag)
     return nullptr;
 }
 
-// Internal recursive helper (unchanged logic)
 void FindAllChildrenByTagRecursiveInternal(Node* currentNode, const std::string& searchTag, std::vector<Node*>& foundNodes)
 {
     if (!currentNode) return;
@@ -815,46 +639,49 @@ void FindAllChildrenByTagRecursiveInternal(Node* currentNode, const std::string&
 std::vector<Node*> Node::FindAllChildrenByTag(const std::string& searchTag)
 {
     std::vector<Node*> foundNodes;
-    // The original implementation started searching from children of `this` node.
-    // If you want to include `this` node itself in the search if it matches the tag,
-    // and then its descendants, the recursive helper should be called on `this`.
-    // For now, matching the original behavior of only searching children:
+
     for (const auto& child : children) {
-        FindAllChildrenByTagRecursiveInternal(child.get(), searchTag, foundNodes); // Call the renamed internal helper
+        FindAllChildrenByTagRecursiveInternal(child.get(), searchTag, foundNodes); 
     }
 
-    return foundNodes; // Return the collected nodes
+    return foundNodes; 
 }
 void Node::Destroy()
 {
-    if(!markedForDestruction)
+    if (!markedForDestruction)
     {
         if (GetComponent<Rigidbody>() != nullptr)
         {
-            dynamic_cast<MyContactListener*>(PhysicsCommon::physicsSystem->GetContactListener())->RemoveRigidbodyData(GetComponent<Rigidbody>()->GetBodyID());
+            //dynamic_cast<MyContactListener*>(PhysicsCommon::physicsSystem->GetContactListener())->RemoveRigidbodyData(GetComponent<Rigidbody>()->GetBodyID());
+            PhysicsCommon::physicsSystem->GetBodyInterface().SetUserData(GetComponent<Rigidbody>()->GetBodyID(), reinterpret_cast<uint64>(nullptr));
         }
         if (GetComponent<Trigger>() != nullptr)
         {
-            dynamic_cast<MyContactListener*>(PhysicsCommon::physicsSystem->GetContactListener())->RemoveTriggerData(GetComponent<Trigger>()->GetBodyID());
+            //dynamic_cast<MyContactListener*>(PhysicsCommon::physicsSystem->GetContactListener())->RemoveTriggerData(GetComponent<Trigger>()->GetBodyID());
+            PhysicsCommon::physicsSystem->GetBodyInterface().SetUserData(GetComponent<Trigger>()->GetBodyID(), reinterpret_cast<uint64>(nullptr));
+
         }
     }
     markedForDestruction = true;
-    // Recursively mark all children for destruction as well
-    for (const auto& child : children)
+
+
+    for (int i = 0; i < children.size(); i++)
+    {
+        if (!children[i]->markedForDestruction)
+        {
+            children[i]->Destroy();
+        }
+    }
+
+    /*for (const auto& child : children)
     {
         if (child)
         {
             child->Destroy();
         }
-    }
+    }*/
 
-    //ClearComponents();
-    // Note: This node itself doesn't get removed from its parent's list here.
-    // That needs to be handled by the parent or a scene manager.
-    // If it has a parent, it could notify the parent (more complex).
-    // if (parent) {
-    //    parent->RequestChildRemoval(this); // Would require new method in Node
-    // }
+
 
 }
 
@@ -863,14 +690,32 @@ bool Node::IsMarkedForDestruction() const
     return markedForDestruction;
 }
 
-// Helper to get a non-const reference to children vector for removal
+void Node::MoveToTop()
+{
+    if (parent == nullptr)
+    {
+        return;
+    }
+
+    auto& siblings = parent->GetChildren_NonConst();
+
+    auto it = std::find_if(siblings.begin(), siblings.end(),
+        [this](const std::unique_ptr<Node>& pChild) {
+            return pChild.get() == this;
+        });
+
+    if (it != siblings.end())
+    {
+        std::rotate(siblings.begin(), it, it + 1);
+    }
+}
+
 std::vector<std::unique_ptr<Node>>& Node::GetChildren_NonConst()
 {
     return children;
 }
 
-// Helper method for a parent to remove a specific child.
-// This would typically be called by a scene management system.
+
 void Node::RemoveChild(Node* childToRemove)
 {
     children.erase(
@@ -881,7 +726,7 @@ void Node::RemoveChild(Node* childToRemove)
         ),
         children.end()
     );
-    // The unique_ptr going out of scope will call the child's destructor.
+   
 }
 
 void Node::ClearComponents() 
@@ -889,7 +734,7 @@ void Node::ClearComponents()
 
     for (auto& comp : components) {
         if (comp) {
-            comp.reset(); // Explicitly destroy the component (calls destructor)
+            comp.reset(); 
         }
     }
     components.clear();

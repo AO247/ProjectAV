@@ -37,7 +37,7 @@ private:
 	std::shared_ptr<Bind::Topology> pTopology;
 	std::shared_ptr<Bind::Sampler> pSampler;
 	std::shared_ptr<Bind::Rasterizer> pRasterizer;
-	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> pDepthStencilState; // Custom depth state
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> pDepthStencilState;
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> pTextureView;
 	std::unique_ptr<Bind::VertexConstantBuffer<SkyboxTransforms>> pVcbuf;
 };

@@ -16,10 +16,15 @@ namespace Rgph
 		backBufferTarget( gfx.GetTarget() ),
 		masterDepth( std::make_shared<Bind::OutputOnlyDepthStencil>( gfx ) )
 	{
-		// setup global sinks and sources
+		
 		AddGlobalSource( DirectBufferSource<Bind::RenderTarget>::Make( "backbuffer",backBufferTarget ) );
 		AddGlobalSource( DirectBufferSource<Bind::DepthStencil>::Make( "masterDepth",masterDepth ) );
 		AddGlobalSink( DirectBufferSink<Bind::RenderTarget>::Make( "backbuffer",backBufferTarget ) );
+	}
+
+	Rgph::ParticlePass& RenderGraph::GetParticlePass()
+	{
+		throw RGC_EXCEPTION("GetParticlePass() not implemented in this RenderGraph class.");
 	}
 
 	RenderGraph::~RenderGraph()
@@ -74,7 +79,7 @@ namespace Rgph
 	void RenderGraph::AppendPass( std::unique_ptr<Pass> pass )
 	{
 		assert( !finalized );
-		// validate name uniqueness
+		
 		for( const auto& p : passes )
 		{
 			if( pass->GetName() == p->GetName() )
@@ -83,10 +88,10 @@ namespace Rgph
 			}
 		}
 
-		// link outputs from passes (and global outputs) to pass inputs
+		
 		LinkSinks( *pass );
 
-		// add to container of passes
+
 		passes.push_back( std::move( pass ) );
 	}
 
@@ -96,7 +101,7 @@ namespace Rgph
 		{
 			const auto& inputSourcePassName = si->GetPassName();
 
-			// check check whether target source is global
+
 			if( inputSourcePassName == "$" )
 			{
 				bool bound = false;
@@ -116,7 +121,7 @@ namespace Rgph
 					throw RGC_EXCEPTION( oss.str() );
 				}
 			}
-			else // find source from within existing passes
+			else 
 			{
 				for( auto& existingPass : passes )
 				{

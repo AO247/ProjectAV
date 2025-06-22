@@ -1,19 +1,18 @@
 #pragma once
 #include "ConditionalNoexcept.h"
+#include <functional> // <-- Include for std::function
 
-class Drawable;
 class Graphics;
-class Step;
 
 namespace Rgph
 {
 	class Job
 	{
 	public:
-		Job(const Step* pStep, const Drawable* pDrawable);
+		// Change the constructor to take a generic std::function
+		Job(std::function<void(Graphics&)> job);
 		void Execute(Graphics& gfx) const noxnd;
 	private:
-		const class Drawable* pDrawable;
-		const class Step* pStep;
+		std::function<void(Graphics&)> pJob;
 	};
 }

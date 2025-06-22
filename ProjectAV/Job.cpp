@@ -1,21 +1,17 @@
 #include "Job.h"
-#include "Step.h"
-#include "Drawable.h"
-
 
 namespace Rgph
 {
-	Job::Job(const Step* pStep, const Drawable* pDrawable)
+	// Update the constructor implementation
+	Job::Job(std::function<void(Graphics&)> job)
 		:
-		pDrawable{ pDrawable },
-		pStep{ pStep }
+		pJob(std::move(job))
 	{
 	}
 
+	// Update the Execute implementation
 	void Job::Execute(Graphics& gfx) const noxnd
 	{
-		pDrawable->Bind(gfx);
-		pStep->Bind(gfx);
-		gfx.DrawIndexed(pDrawable->GetIndexCount());
+		pJob(gfx);
 	}
 }
