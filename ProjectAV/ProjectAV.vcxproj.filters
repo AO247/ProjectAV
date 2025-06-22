@@ -421,14 +421,7 @@
       <Filter>Source Files\Components\Abilities</Filter>
     </ClCompile>
     <ClCompile Include="SkinningCBuf.cpp">
-    <ClCompile Include="ShadowCbuf.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ShadowMappingPass.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ComparisonSampler.cpp">
-      <Filter>Source Files\Bindable</Filter>
     </ClCompile>
     <ClCompile Include="Tutorial.cpp">
       <Filter>Source Files\Components</Filter>
@@ -491,6 +484,18 @@
       <Filter>Source Files\Components</Filter>
     </ClCompile>
     <ClCompile Include="StaticSoundPlayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ComparisonSampler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelCache.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ShadowCbuf.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ShadowMappingPass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -977,15 +982,35 @@
     </ClInclude>
     <ClInclude Include="Fireplace.h">
       <Filter>Header Files\Components</Filter>
-    <ClInclude Include="ShadowCbuf.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="WindTunnelEffect.h">
+    <ClInclude Include="StaticSoundPlayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ComparisonSampler.h">
-      <Filter>Header Files\Bindable</Filter>
-    <ClInclude Include="StaticSoundPlayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelCache.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ShadowCbuf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ShadowMappingPass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Animator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationComponent.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Bone.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelException.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1093,9 +1118,19 @@
     <FxCompile Include="NullPixelShader.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Particle_PS.hlsl" />
-    <FxCompile Include="Particle_VS.hlsl" />
+    <FxCompile Include="Particle_PS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Particle_VS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
     <FxCompile Include="Shadow_VS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Skinned_PS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Skinned_VS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shadow.hlsl">
