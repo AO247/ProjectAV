@@ -23,11 +23,21 @@ void Ability6::Update(float dt)
 {
     if (!wnd.CursorEnabled())
     {
+		holdSoundTimer -= dt;
         PullingParticlesPositioning();
         Positioning();
         Cooldowns(dt);
         if (isPressed)
         {
+            if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+                if (holdSoundTimer <= 0.0f)
+                {
+                    float randSound = (rand() % 2) + 2;
+                    pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound);
+
+                    holdSoundTimer = holdSoundInterval;
+                }
+            }
             Pulling(dt);
         }
     }
@@ -138,6 +148,11 @@ void Ability6::Pressed()
     if (pullingParticles == nullptr)
     {
         pullingParticles = PrefabManager::InstantiateAbility6PullingParticles(pOwner->GetParent(), Vector3(selectedNode->GetWorldPosition().x, selectedNode->GetWorldPosition().y, selectedNode->GetWorldPosition().z), 1.0, quatFloat4);
+    }
+
+    if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+        float randSound = (rand() % 2);
+        pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound);
     }
 }
 void Ability6::Released()

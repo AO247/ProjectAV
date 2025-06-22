@@ -34,6 +34,12 @@ void Ability1::Positioning() {
 void Ability1::Pressed()
 {
     if (!abilityReady) return;
+
+    if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+        float randSound = (rand() % 4);
+        pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound);
+    }
+
 	timeToChange = 0.3f;
 	leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
 	leftHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
@@ -61,6 +67,7 @@ void Ability1::Pressed()
     }
     cooldownTimer = cooldown;
     abilityReady = false;
+    
     PrefabManager::InstantiateAbility1Particles(pOwner->GetParent(), Vector3(pOwner->GetLocalPosition().x, pOwner->GetLocalPosition().y, pOwner->GetLocalPosition().z), 1.0, pOwner->GetLocalRotationQuaternion());
 }
 void Ability1::Released()

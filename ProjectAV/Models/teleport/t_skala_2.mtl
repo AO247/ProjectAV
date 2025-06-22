@@ -1,0 +1,24 @@
+# Blender 4.4.3 MTL File: 'teleport.blend'
+# www.blender.org
+
+newmtl t_skaly_1
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd t_skaly_1_Base_color.png
+map_Bump -bm 1.000000 t_skaly_1_Normal_DirectX.png
+
+newmtl t_zawijasy
+Ns 261.028107
+Ka 1.000000 1.000000 1.000000
+Ks 0.485455 0.485455 0.485455
+Ke 0.009621 0.041056 0.100000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd t_zawijasy_Base_color.png
+map_Bump -bm 1.000000 t_zawijasy_Normal_DirectX.png

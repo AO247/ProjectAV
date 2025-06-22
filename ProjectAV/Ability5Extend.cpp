@@ -72,6 +72,17 @@ void Ability5Extend::ApplyForce(Node* object, float dt) {
         );
     }
 
+	holdSoundTimer -= dt;
+
+    if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+        if (holdSoundTimer <= 0.0f)
+        {
+            float randSound = (rand() % 2) + 4;
+            pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound);
+
+            holdSoundTimer = holdSoundInterval;
+        }
+    }
 }
 
 void Ability5Extend::OnTriggerEnter(Node* object) {

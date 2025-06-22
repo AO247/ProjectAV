@@ -13,6 +13,10 @@ public:
 
 	void Play(int soundIndex, float gain = 1.0f);
 
+	void Stop(int soundIndex);
+
+	void StopAll();
+
 private:
 	std::vector<std::string> m_soundPlaylist;
 };

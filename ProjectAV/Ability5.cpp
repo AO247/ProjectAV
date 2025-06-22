@@ -60,6 +60,12 @@ void Ability5::Positioning()
 void Ability5::Pressed()
 {
     if (!abilityReady) return;
+
+    if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+        float randSound = (rand() % 4);
+        pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound);
+    }
+
     rightHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
     rightHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
     timeToChange = 0.3f;

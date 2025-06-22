@@ -91,6 +91,10 @@ void Ability2::Pressed()
     }
     cooldownTimer = cooldown;
     abilityReady = false;
+    if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+        float randSound = (rand() % 4);
+        pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound);
+    }
     PrefabManager::InstantiateAbility2Particles(pOwner->GetParent(), Vector3(pOwner->GetLocalPosition().x, pOwner->GetLocalPosition().y, pOwner->GetLocalPosition().z), 1.0);
     //PrefabManager::InstantiateAbility3CoreParticles(pOwner->GetParent(), Vector3(pOwner->GetLocalPosition().x, pOwner->GetLocalPosition().y, pOwner->GetLocalPosition().z), 1.0);
 
