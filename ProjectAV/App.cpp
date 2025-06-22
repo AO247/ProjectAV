@@ -60,6 +60,7 @@ App::App(const std::string& commandLine)
     PrefabManager::wind = &wnd;
     PrefabManager::rg = &rg;
     physicsSystem->SetGravity(Vec3(0.0f, -80.0f, 0.0f));
+    //PrefabManager::PreloadAllModels();
 
     soundDevice = LISTENER->Get();
     ALint attentuation = AL_INVERSE_DISTANCE_CLAMPED;
@@ -407,6 +408,7 @@ App::App(const std::string& commandLine)
         1080,
         L"Images\\Loading_Screen3.png"
     );
+
     wnd.DisableCursor();
     wnd.mouse.EnableRawInput();
     cursorEnabled = false;
@@ -471,9 +473,10 @@ void App::HandleInput(float dt)
 
         switch (e->GetCode())
         {
-        case 'O':
+        case 'P':
         {
-            //pSceneRoot->GetComponent<Global>()->AddSpecialLevel();
+            PrefabManager::InstantiateIslandBig1(pSceneRoot.get(), pFreeViewCamera->GetWorldPosition(), 1.0f);
+			PrefabManager::InstantiateNormalEnemy(pSceneRoot.get(), pFreeViewCamera->GetWorldPosition(), 1.0f);
             break;
         }
 

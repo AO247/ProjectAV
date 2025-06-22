@@ -195,7 +195,7 @@ void LevelGenerator::GenerateIslands()
                 {
                     spawned = false;
                     int randLarge = rand() % 10;
-                    //randLarge = 0;
+                    //randLarge = 1;
                     if (randLarge == 0) {
                         islandInfo.name = "BIG1";
                         islandInfo.pos = { 0.0f, 0.0f, 0.0f };
