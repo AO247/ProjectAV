@@ -258,6 +258,7 @@
     <ClInclude Include="ComparisonSampler.h" />
     <ClInclude Include="CircleEmitterLogic.h" />
     <ClInclude Include="Collectable.h" />
+    <ClInclude Include="EnemyConfig.h" />
     <ClInclude Include="IEmitterLogic.h" />
     <ClInclude Include="InstanceBuffer.h" />
     <ClInclude Include="Fireplace.h" />

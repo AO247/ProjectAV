@@ -20,7 +20,7 @@ public:
 
 	virtual void Update(float dt) override;
 	virtual void DrawImGuiControls() override;
-	void Pressed() override;
+	bool Pressed() override;
 	void Released() override;
 
 	float cooldown = 1.5f;

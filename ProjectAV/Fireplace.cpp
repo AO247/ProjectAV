@@ -30,17 +30,21 @@ void Fireplace::Update(float dt)
 }
 
 
-void Fireplace::OnTriggerStay(Node* object)
+void Fireplace::OnTriggerStay(const std::vector<Node*> others)
 {
-	if (object == nullptr) return;
-	if (!isActive) return;
-	if (object->tag == "PLAYER" || object->tag == "ENEMY")
+	for(int i = 0; i < others.size(); ++i)
 	{
-		if (object->GetComponent<OnFire>() != nullptr) return;
-		object->AddComponent(
-			std::make_unique<OnFire>(object)
-		);
+		if (others[i] == nullptr) return;
+		if (!isActive) return;
+		if (others[i]->tag == "PLAYER" || others[i]->tag == "ENEMY")
+		{
+			if (others[i]->GetComponent<OnFire>() != nullptr) return;
+			others[i]->AddComponent(
+				std::make_unique<OnFire>(others[i])
+			);
+		}
 	}
+	
 }
 
 

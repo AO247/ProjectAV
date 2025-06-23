@@ -15,24 +15,52 @@ void Health::DrawImGuiControls()
 
 void Health::TakeDamage(float damage, bool heavy, bool isFire)
 {
+	bool hitted = false;
 	if (tank)
 	{
 		if (heavy)
 		{
+			hitted = true;
+			pOwner->GetComponent<StateMachine>()->Stop(0.1f);
 			currentHealth -= damage;
 		}
-		else {
+		else 
+		{
+			hitted = true;
 			pOwner->GetComponent<StateMachine>()->Stun(1.6f);
 		}
+
 	}
 	else
-	{
+	{	
+		if (pOwner->tag == "PLAYER" && damage > 0)
+		{
+			if (pOwner->GetComponent<SoundEffectsPlayer>())
+			{
+				float randSound = (rand() % 6 + 6);
+				pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f, false);
+			}
+		}
+		else if (pOwner->tag == "ENEMY")
+		{
+			hitted = true;
+			pOwner->GetComponent<StateMachine>()->Stop(0.1f);
+		}
 		currentHealth -= damage;
+
 	}
 
 	if (isFire && !fireType)
 	{
 		currentHealth -= damage;
+		hitted = true;
+		pOwner->GetComponent<StateMachine>()->Stop(0.1f);
+	}
+
+	if (hitted && pOwner->tag == "ENEMY")
+	{
+		// tutaj dŸwiêk otrzymania obra¿eñ 
+		// animacja otrzymania obra¿eñ
 	}
 
 	if (currentHealth > maxHealth)

@@ -31,9 +31,15 @@ void Ability1::Positioning() {
 	pOwner->SetLocalTransform(camera->GetLocalTransform());
 	pOwner->TranslateLocal(Vector3(0.0f, 0.0f, 8.0f));
 }
-void Ability1::Pressed()
+bool Ability1::Pressed()
 {
-    if (!abilityReady) return;
+    if (!abilityReady) return false;
+
+    if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+        float randSound = (rand() % 4);
+        pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f, false);
+    }
+
 	timeToChange = 0.3f;
 	leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
 	leftHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
@@ -61,7 +67,9 @@ void Ability1::Pressed()
     }
     cooldownTimer = cooldown;
     abilityReady = false;
+    
     PrefabManager::InstantiateAbility1Particles(pOwner->GetParent(), Vector3(pOwner->GetLocalPosition().x, pOwner->GetLocalPosition().y, pOwner->GetLocalPosition().z), 1.0, pOwner->GetLocalRotationQuaternion());
+    return true;
 }
 void Ability1::Released()
 {
@@ -92,26 +100,17 @@ void Ability1::Cooldowns(float dt)
 
 }
 
-void Ability1::OnTriggerEnter(Node* object) {
-    if (object == nullptr) return;
+void Ability1::OnTriggerStay(const std::vector<Node*> others) {
+    objects.clear();
+	objects = others;
+    /*if (object == nullptr) return;
     if (object->tag != "ENEMY" && object->tag != "STONE" && object->tag != "BULLET") return;
     if (object->GetComponent<Rigidbody>() == nullptr) return;
-    for(int i= 0; i < objects.size(); i++)
+    for (int i = 0; i < objects.size(); i++)
     {
         if (objects[i] == object) return;
-	}
-    objects.push_back(object);
-	//OutputDebugStringA(("Ability1 OnTriggerEnter: " + object->GetName() + "\n").c_str());
-}
-void Ability1::OnTriggerExit(Node* object) {
-    if (object == nullptr) return;
-    if (object->tag != "ENEMY" && object->tag != "STONE" && object->tag != "BULLET") return;
-    if (object->GetComponent<Rigidbody>() == nullptr) return;
-    auto it = std::remove(objects.begin(), objects.end(), object);
-    if (it != objects.end()) {
-        objects.erase(it, objects.end());
     }
-	//OutputDebugStringA(("Ability1 OnTriggerExit: " + object->GetName() + "\n").c_str());
+    objects.push_back(object);*/
 }
 void Ability1::DrawImGuiControls()
 {

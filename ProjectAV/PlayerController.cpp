@@ -27,6 +27,7 @@ void PlayerController::Update(float dt)
 		KeyboardInput();
         MovePlayer(dt);
 		SpeedControl(dt);
+        lastVelocity = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
     }
 }
 
@@ -85,16 +86,16 @@ void PlayerController::Jump()
             PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(rigidbody->GetBodyID(), Vec3(0.0f, jumpForce, 0.0f));
 			grounded = false;
             if (pOwner->GetComponent<SoundEffectsPlayer>()) {
-
-                pOwner->GetComponent<SoundEffectsPlayer>()->Play(0);
+				int randSound = rand() % 2;
+                pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f, false);
             }
         }
         else {
             PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(rigidbody->GetBodyID(), Vec3(0.0f, secondJumpForce, 0.0f));
 			doubleJumped = true;
             if (pOwner->GetComponent<SoundEffectsPlayer>()) {
-
-                pOwner->GetComponent<SoundEffectsPlayer>()->Play(0);
+				int randSound = rand() % 2 + 2;
+                pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f, false);
             }
         }
 		jumped = true;
@@ -107,21 +108,31 @@ void PlayerController::Dash()
     dashed = true;
 	canDash = false;
     if (pOwner->GetComponent<SoundEffectsPlayer>()) {
-        pOwner->GetComponent<SoundEffectsPlayer>()->Play(0);
+		int randSound = rand() % 2 + 4;
+        pOwner->GetComponent<SoundEffectsPlayer>()->Play(5, 1.0f, false);
     }
     Vector3 dashDirection = moveDirection;
-    if (moveDirection == pOwner->Forward())
+    if (evolvedDash)
     {
-		dashDirection = camera->Forward();
+        if (moveDirection == pOwner->Forward())
+        {
+            dashDirection = camera->Forward();
+        }
+        else if (moveDirection == pOwner->Back())
+        {
+            dashDirection = camera->Back();
+        }
     }
-    else if (moveDirection == pOwner->Back())
-    {
-        dashDirection = camera->Back();
-    }
-
     if (moveDirection == Vector3(0.0f, 0.0f, 0.0f))
     {
-		dashDirection = camera->Forward();
+        if (evolvedDash)
+        {
+            dashDirection = camera->Forward();
+        }
+        else
+        {
+            dashDirection = pOwner->Forward();
+        }
     }
     dashDirection.y += 0.3f;
     dashDirection.Normalize();
@@ -176,19 +187,60 @@ void PlayerController::PlayerGroundCheck()
         grounded = true;
     }
 
-   /* pos = playerPos + moveDirection;
+    /* pos = playerPos + moveDirection;
 
     RRayCast rayForward = RRayCast(
-        RVec3(pos.x, pos.y, pos.z),
-        direction
+         RVec3(pos.x, pos.y, pos.z),
+         direction
     );
     RayCastResult resultForward;
     if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(rayForward, resultForward,
-        IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::PLAYER, BroadPhaseLayers::TRIGGER }),
-        IgnoreMultipleObjectLayerFilter({ Layers::PLAYER, Layers::TRIGGER })))
+         IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::PLAYER, BroadPhaseLayers::TRIGGER }),
+         IgnoreMultipleObjectLayerFilter({ Layers::PLAYER, Layers::TRIGGER })))
     {
-        grounded = true;
+         grounded = true;
     }*/
+
+
+    if (grounded && lastVelocity.GetY() < -20.0f)
+    {
+        if (enableFallPush && fallPushCooldown <= 0.0f)
+        {
+
+            for (int i = 0; i < objects.size(); i++)
+            {
+                if (objects[i]->tag == "ENEMY" || objects[i]->tag == "STONE" || objects[i]->tag == "BULLET")
+                {
+                    Vector3 direction = objects[i]->GetWorldPosition() - pOwner->GetWorldPosition();
+                    float length = direction.Length();
+
+                    maxDistance = -lastVelocity.GetY() / 4.0f;
+                    if (maxDistance < 10.0f) maxDistance = 10.0f;
+
+                    if(length < maxDistance && direction.y < 7.0f && direction.y > -7.0f)
+                    direction.Normalize();
+                    direction.y = 0.5f;
+                    direction.Normalize();
+                    float force = maxDistance - length;
+                    force *= minFallForce * -lastVelocity.GetY();
+                    if (force < minFallForce)
+                        force = minFallForce;
+                    else if (force > maxFallForce)
+                        force = maxFallForce;
+
+                    PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(objects[i]->GetComponent<Rigidbody>()->GetBodyID(),
+                        Vec3(direction.x, direction.y, direction.z) * force);
+                }
+            }
+            fallPushCooldown = 1.0f;
+        }
+        else
+        {
+
+        }
+        //spad³ na ziemie
+    }
+
 
 
     if (grounded)
@@ -415,6 +467,8 @@ void PlayerController::Cooldowns(float dt)
     {
         canDash = true;
     }
+    if (fallPushCooldown > 0.0f)
+        fallPushCooldown -= dt;
 }
 
 void PlayerController::Positioning()
@@ -435,17 +489,19 @@ void PlayerController::KeyboardInput()
         {
         case Mouse::Event::Type::LPress:
             abilitySlot1->GetComponent<Ability>()->Pressed();
-            if (pOwner->GetComponent<SoundEffectsPlayer>()) {
-                float p = (rand() % 2) + 1;
-                pOwner->GetComponent<SoundEffectsPlayer>()->Play(p);
+            if (!abilitySlot1->GetComponent<Ability>()->Pressed())
+            {
+				int randSound = rand() % 2 + 12;
+                pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f, false);
             }
             break;
 
         case Mouse::Event::Type::RPress:
             abilitySlot2->GetComponent<Ability>()->Pressed();
-            if (pOwner->GetComponent<SoundEffectsPlayer>()) {
-                float p = (rand() % 2) + 3;
-                pOwner->GetComponent<SoundEffectsPlayer>()->Play(p);
+            if (!abilitySlot2->GetComponent<Ability>()->Pressed())
+            {
+                int randSound = rand() % 2 + 12;
+                pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f, false);
             }
             break;
 
@@ -498,6 +554,11 @@ void PlayerController::KeyboardInput()
     {
         Dash();
     }
+}
+
+void PlayerController::OnTriggerStay(const std::vector<Node*> others)
+{
+    objects = others;
 }
 void PlayerController::DrawImGuiControls()
 {

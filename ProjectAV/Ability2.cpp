@@ -59,9 +59,9 @@ void Ability2::Positioning()
         }
     }
 }
-void Ability2::Pressed()
+bool Ability2::Pressed()
 {
-    if (!abilityReady) return;
+    if (!abilityReady) return false;
     rightHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
     rightHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
     timeToChange = 0.3f;
@@ -91,9 +91,13 @@ void Ability2::Pressed()
     }
     cooldownTimer = cooldown;
     abilityReady = false;
+    if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+        float randSound = (rand() % 4);
+        pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f, false);
+    }
     PrefabManager::InstantiateAbility2Particles(pOwner->GetParent(), Vector3(pOwner->GetLocalPosition().x, pOwner->GetLocalPosition().y, pOwner->GetLocalPosition().z), 1.0);
     //PrefabManager::InstantiateAbility3CoreParticles(pOwner->GetParent(), Vector3(pOwner->GetLocalPosition().x, pOwner->GetLocalPosition().y, pOwner->GetLocalPosition().z), 1.0);
-
+    return true;
 }
 void Ability2::Released()
 {
@@ -126,26 +130,9 @@ void Ability2::Cooldowns(float dt)
 }
 
 
-void Ability2::OnTriggerEnter(Node* object) {
-    if (object == nullptr) return;
-    if (object->tag != "ENEMY" && object->tag != "STONE" && object->tag != "BULLET") return;
-    if (object->GetComponent<Rigidbody>() == nullptr) return;
-    for (int i = 0; i < objects.size(); i++)
-    {
-        if (objects[i] == object) return;
-    }
-    objects.push_back(object);
-    //OutputDebugStringA(("Ability2 OnTriggerEnter: " + object->GetName() + "\n").c_str());
-}
-void Ability2::OnTriggerExit(Node* object) {
-    if (object == nullptr) return;
-    if (object->tag != "ENEMY" && object->tag != "STONE" && object->tag != "BULLET") return;
-    if (object->GetComponent<Rigidbody>() == nullptr) return;
-    auto it = std::remove(objects.begin(), objects.end(), object);
-    if (it != objects.end()) {
-        objects.erase(it, objects.end());
-    }
-    //OutputDebugStringA(("Ability2 OnTriggerExit: " + object->GetName() + "\n").c_str());
+void Ability2::OnTriggerStay(const std::vector<Node*> others) {
+	objects.clear();
+    objects = others;
 }
 
 void Ability2::DrawImGuiControls()

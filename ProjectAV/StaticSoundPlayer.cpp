@@ -87,9 +87,9 @@ ALuint StaticSoundPlayer::GetAvailableSource()
     return stolenSource;
 }
 
-void StaticSoundPlayer::Play(const std::string& filename, DirectX::XMFLOAT3 position, float gain)
+ALuint StaticSoundPlayer::Play(const std::string& filename, DirectX::XMFLOAT3 position, float gain, bool loop)
 {
-    if (!m_initialized) return;
+    if (!m_initialized) return 0;
 
     // Culling na podstawie odleg³oœci
     if (m_playerNode)
@@ -99,15 +99,15 @@ void StaticSoundPlayer::Play(const std::string& filename, DirectX::XMFLOAT3 posi
         float distanceSq = DirectX::SimpleMath::Vector3::DistanceSquared(playerPos, sourcePos);
         if (distanceSq > (m_maxAudibleDistance * m_maxAudibleDistance))
         {
-            return;
+            return 0;
         }
     }
 
     ALuint bufferID = LoadAndCacheSound(filename);
-    if (bufferID == 0) return;
+    if (bufferID == 0) return 0;
 
     ALuint source = GetAvailableSource();
-    if (source == 0) return;
+    if (source == 0) return 0;
 
     alSourceStop(source);
     alSourcei(source, AL_BUFFER, bufferID);
@@ -118,6 +118,8 @@ void StaticSoundPlayer::Play(const std::string& filename, DirectX::XMFLOAT3 posi
     alSourcef(source, AL_REFERENCE_DISTANCE, 15.0f);
     alSourcef(source, AL_MAX_DISTANCE, m_maxAudibleDistance);
     alSourcePlay(source);
+
+    return source;
 }
 
 ALuint StaticSoundPlayer::LoadAndCacheSound(const std::string& filename)
@@ -177,4 +179,25 @@ ALuint StaticSoundPlayer::LoadAndCacheSound(const std::string& filename)
 
     m_soundCache[filename] = buffer;
     return buffer;
+}
+
+void StaticSoundPlayer::Stop(ALuint sourceID)
+{
+    if (!m_initialized || sourceID == 0) return;
+
+    bool isValidSource = false;
+    for (ALuint s : m_sources)
+    {
+        if (s == sourceID)
+        {
+            isValidSource = true;
+            break;
+        }
+    }
+
+    if (isValidSource)
+    {
+        alSourceStop(sourceID);
+        alSourcei(sourceID, AL_BUFFER, 0);
+    }
 }

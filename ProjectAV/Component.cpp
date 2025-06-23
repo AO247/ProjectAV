@@ -6,7 +6,7 @@ void Component::OnTriggerEnter(Node* object)
 
 }
 
-void Component::OnTriggerStay(Node* object)
+void Component::OnTriggerStay(const std::vector<Node*> others)
 {
 
 }

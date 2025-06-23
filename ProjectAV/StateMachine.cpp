@@ -14,6 +14,7 @@
 #include <string>
 #include "Win.h"
 #include "PrefabManager.h"
+#include "StaticSoundPlayer.h"
 
 
 
@@ -55,6 +56,8 @@ StateMachine::~StateMachine()
 }
 void StateMachine::Stun(float time)
 {
+	// dŸwiêk stuna 
+	// zatrzymanie w miejscu
 	stunTime = time;
 	RequestStateChange(StateType::STUN);
 }
@@ -68,9 +71,14 @@ void StateMachine::Update(float dt)
 	if (timer < 2.0f && canDropPills)
 	{
 		timer += dt;
-		pOwner->SetWorldPosition(basePos);
+		//pOwner->SetWorldPosition(basePos);
 		eatedPills = false;
 		pOwner->GetComponent<Health>()->currentHealth = pOwner->GetComponent<Health>()->maxHealth;
+	}
+
+	if (hitted)
+	{
+
 	}
 
 	if (currentState)
@@ -89,7 +97,7 @@ void StateMachine::Update(float dt)
 		}
 		
 	}
-	if (pOwner->GetLocalPosition().y < -50.0f && timer >= 2.0f)
+	if (pOwner->GetLocalPosition().y < -50.0f)
 	{
 		pOwner->Destroy();
 	}
@@ -221,6 +229,8 @@ void StateMachine::Die()
 				PrefabManager::InstantiateExpCollectable(pOwner->GetParent(), Vector3(position.x - 0.8f, position.y, position.z - 0.8f), 0.3f, position.y);
 			}
 		}
+		pOwner->GetComponent<SoundEffectsPlayer>()->StopAll();
+		StaticSoundPlayer::Get().Play("Sounds\\player\\damage1.wav", pOwner->GetWorldPosition(), 1.0f);
 		pOwner->Destroy();
 	}
 }

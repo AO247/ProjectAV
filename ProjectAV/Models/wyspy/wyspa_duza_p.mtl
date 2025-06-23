@@ -1,13 +1,24 @@
-# Blender 4.4.3 MTL File: 'wyspa_temp.blend'
+# Blender 4.4.3 MTL File: 'wyspy_2206.blend'
 # www.blender.org
 
 newmtl wyspa_duza_p
-Ns 10.000000
+Ns 250.000000
 Ka 1.000000 1.000000 1.000000
-Ks 0.250000 0.250000 0.250000
+Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
 map_Kd wyspa_duza_p_Base_color.png
 map_Kn wyspa_duza_p_Normal_DirectX.png
+
+newmtl wyspa_duza_p_top
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd wyspa_duza_p_top_Base_color.png
+map_Kn wyspa_duza_p_top_Normal_DirectX.png
