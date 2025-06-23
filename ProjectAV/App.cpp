@@ -546,13 +546,13 @@ void App::DoFrame(float dt)
     Bind::TransformCbuf::SetLight(&dirLight);
     Bind::ShadowCbuf::SetLight(&dirLight);
     DirectX::XMFLOAT3 focusPos = pPlayer->GetWorldPosition();
-    Camera* activePlayerCamera = nullptr;
-    if (freeViewCamera) {
+    Camera* activePlayerCamera = pCamera->GetComponent<Camera>();
+   /* if (freeViewCamera) {
         activePlayerCamera = pFreeViewCamera->GetComponent<Camera>();
     }
     else {
         activePlayerCamera = pCamera->GetComponent<Camera>();
-    }
+    }*/
     dirLight.Update(wnd.Gfx(), focusPos, *activePlayerCamera);
 
     // --- Bind Lights ---
