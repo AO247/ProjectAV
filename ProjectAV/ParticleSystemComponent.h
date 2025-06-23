@@ -96,6 +96,7 @@ public:
     float EndRotation = 3.14159f;
     bool destroyAfterEmission = false;
     bool lockRotationOnYAxis = false;
+    bool bAnimateSize = true;
     UINT textureAtlasRows = 1;
     UINT textureAtlasColumns = 1;
     DirectX::XMFLOAT4 MidColor = { 1.0f, 1.0f, 1.0f, 1.0f };

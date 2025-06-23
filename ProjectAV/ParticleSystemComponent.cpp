@@ -150,8 +150,16 @@ void ParticleSystemComponent::Update(float dt)
         }
         dx::XMStoreFloat4(&idata.instanceColor, finalColor);
         // +++ END OF NEW LOGIC +++
-
-        idata.instanceSize.x = std::lerp(p.startSize, p.endSize, t);
+        if (bAnimateSize)
+        {
+            // If animation is enabled, interpolate from start to end size.
+            idata.instanceSize.x = std::lerp(p.startSize, p.endSize, t);
+        }
+        else
+        {
+            // If animation is disabled, just use the particle's unique start size.
+            idata.instanceSize.x = p.startSize;
+        }
         idata.instanceSize.y = idata.instanceSize.x;
         idata.instanceRot = std::lerp(p.startRotation, p.endRotation, t);
         idata.atlasOffset = p.atlasOffset;

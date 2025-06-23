@@ -6100,11 +6100,11 @@ public:
         auto pCircleLogic = std::make_unique<CircleEmitterLogic>();
         pCircleLogic->Radius = 5.0f;                
         pCircleLogic->Orientation = CircleEmitterLogic::Plane::XZ; 
-        pCircleLogic->ParticlesPerSecond = 250.0f;
+        pCircleLogic->ParticlesPerSecond = 150.0f;
         pCircleLogic->bFill = true;
 
         pNewNode->AddComponent(
-            std::make_unique<ParticleSystemComponent>(pNewNode, wind->Gfx(), "Models\\rzut.png", 200, std::move(pCircleLogic))
+            std::make_unique<ParticleSystemComponent>(pNewNode, wind->Gfx(), "Models\\long.png", 2000, std::move(pCircleLogic))
         );
         ParticleSystemComponent* particles = pNewNode->GetComponent<ParticleSystemComponent>();
         particles->SetPlaybackMode(ParticleSystemComponent::PlaybackMode::OneShot);
@@ -6114,8 +6114,9 @@ public:
         particles->EmissionRate = 40.0f;
         particles->ParticleVelocity = { 0.0f, 1.0f, 0.0f };
         particles->ParticleVelocityVariance = { 0.0f, 70.0f, 0.0f };
-        particles->StartSize = 2.0f;
-        particles->EndSize = 2.0f;
+        particles->StartSize = 3.0f;
+        particles->bAnimateSize = false;
+        particles->StartSizeVariance = 8.0f;
         particles->EndRotation = 0.0f;
         particles->lockRotationOnYAxis = true;
         particles->textureAtlasColumns = 2;
@@ -6123,9 +6124,103 @@ public:
         particles->bUseMidColor = true;
         particles->StartColor = { 1.0f, 1.0f, 1.0f, 0.0f };
         particles->ColorMidpoint = 0.1f;
-        particles->MidColor = {1.0f, 1.0f, 1.0f, 1.0f};
+        particles->MidColor = {1.0f, 1.0f, 1.0f, 0.8f};
         particles->EndColor = { 1.0f, 1.0f, 1.0f, 0.0f };
         
+        particles->Play();
+        particles->Link(*rg);
+
+        pNewNodeOwner->SetLocalPosition(position);
+        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+        pNewNodeOwner->SetLocalRotation(rotation);
+
+        parentNode->AddChild(std::move(pNewNodeOwner));
+
+        return pNewNode;
+    }
+
+    static Node* InstantiateAbility2ParticlesSmoke(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 })
+    {
+        auto pNewNodeOwner = std::make_unique<Node>("Ability2Particles", nullptr);
+        Node* pNewNode = pNewNodeOwner.get();
+
+        auto pCircleLogic = std::make_unique<CircleEmitterLogic>();
+        pCircleLogic->Radius = 5.0f;
+        pCircleLogic->Orientation = CircleEmitterLogic::Plane::XZ;
+        pCircleLogic->ParticlesPerSecond = 70.0f;
+        pCircleLogic->bFill = true;
+
+        pNewNode->AddComponent(
+            std::make_unique<ParticleSystemComponent>(pNewNode, wind->Gfx(), "Models\\fat.png", 200, std::move(pCircleLogic))
+        );
+        ParticleSystemComponent* particles = pNewNode->GetComponent<ParticleSystemComponent>();
+        particles->SetPlaybackMode(ParticleSystemComponent::PlaybackMode::OneShot);
+        particles->destroyAfterEmission = true;
+        particles->ParticleLifetime = 0.3f;
+        particles->EmissionDuration = 0.22f;
+        particles->EmissionRate = 40.0f;
+        particles->ParticleVelocity = { 0.0f, 1.0f, 0.0f };
+        particles->ParticleVelocityVariance = { 0.0f, 70.0f, 0.0f };
+        particles->StartSize = 3.0f;
+        particles->bAnimateSize = false;
+        particles->StartSizeVariance = 3.0f;
+        particles->EndRotation = 0.0f;
+        particles->lockRotationOnYAxis = true;
+        particles->textureAtlasColumns = 2;
+        particles->textureAtlasRows = 2;
+        particles->bUseMidColor = true;
+        particles->StartColor = { 1.0f, 1.0f, 1.0f, 0.0f };
+        particles->ColorMidpoint = 0.1f;
+        particles->MidColor = { 1.0f, 1.0f, 1.0f, 0.3f };
+        particles->EndColor = { 1.0f, 1.0f, 1.0f, 0.0f };
+
+        particles->Play();
+        particles->Link(*rg);
+
+        pNewNodeOwner->SetLocalPosition(position);
+        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+        pNewNodeOwner->SetLocalRotation(rotation);
+
+        parentNode->AddChild(std::move(pNewNodeOwner));
+
+        return pNewNode;
+    }
+
+    static Node* InstantiateAbility1ParticlesSmoke(Node* parentNode, Vector3 position, float scale, DirectX::XMFLOAT4 rotation)
+    {
+        auto pNewNodeOwner = std::make_unique<Node>("Ability2Particles", nullptr);
+        Node* pNewNode = pNewNodeOwner.get();
+
+        auto pCircleLogic = std::make_unique<CircleEmitterLogic>();
+        pCircleLogic->Radius = 5.0f;
+        pCircleLogic->Orientation = CircleEmitterLogic::Plane::XY;
+        pCircleLogic->ParticlesPerSecond = 70.0f;
+        pCircleLogic->bFill = true;
+
+        pNewNode->AddComponent(
+            std::make_unique<ParticleSystemComponent>(pNewNode, wind->Gfx(), "Models\\fat.png", 200, std::move(pCircleLogic))
+        );
+        ParticleSystemComponent* particles = pNewNode->GetComponent<ParticleSystemComponent>();
+        particles->SetPlaybackMode(ParticleSystemComponent::PlaybackMode::OneShot);
+        particles->destroyAfterEmission = true;
+        particles->ParticleLifetime = 0.3f;
+        particles->EmissionDuration = 0.22f;
+        particles->EmissionRate = 40.0f;
+        particles->ParticleVelocity = { 0.0f, 0.0f, 1.0f };
+        particles->ParticleVelocityVariance = { 0.0f, 0.0f, 70.0f };
+        particles->StartSize = 3.0f;
+        particles->bAnimateSize = false;
+        particles->StartSizeVariance = 3.0f;
+        particles->EndRotation = 0.0f;
+        particles->lockRotationOnYAxis = false;
+        particles->textureAtlasColumns = 2;
+        particles->textureAtlasRows = 2;
+        particles->bUseMidColor = true;
+        particles->StartColor = { 1.0f, 1.0f, 1.0f, 0.0f };
+        particles->ColorMidpoint = 0.1f;
+        particles->MidColor = { 1.0f, 1.0f, 1.0f, 0.3f };
+        particles->EndColor = { 1.0f, 1.0f, 1.0f, 0.0f };
+
         particles->Play();
         particles->Link(*rg);
 
