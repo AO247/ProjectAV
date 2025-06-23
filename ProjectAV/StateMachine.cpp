@@ -68,7 +68,7 @@ void StateMachine::Update(float dt)
 	if (timer < 2.0f && canDropPills)
 	{
 		timer += dt;
-		pOwner->SetWorldPosition(basePos);
+		//pOwner->SetWorldPosition(basePos);
 		eatedPills = false;
 		pOwner->GetComponent<Health>()->currentHealth = pOwner->GetComponent<Health>()->maxHealth;
 	}
@@ -89,7 +89,7 @@ void StateMachine::Update(float dt)
 		}
 		
 	}
-	if (pOwner->GetLocalPosition().y < -50.0f && timer >= 2.0f)
+	if (pOwner->GetLocalPosition().y < -50.0f)
 	{
 		pOwner->Destroy();
 	}

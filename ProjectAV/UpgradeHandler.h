@@ -22,25 +22,27 @@ public:
 
 	struct cardData
 	{
-		std::unique_ptr<Sprite> level0;
-		std::unique_ptr<Sprite> level1;
-		std::unique_ptr<Sprite> level2;
+		std::vector<std::unique_ptr<Sprite>> cardSprites;
 		int count = 0;
 
 	};
-	int ability1 = 0;
-	int ability2 = 0;
-	int dash = 0;
-	int jump = 0;
 
-	int currentUpgrade1 = 0;
-	int currentUpgrade2 = 0;
-	int currentUpgrade3 = 0;
+	cardData ability1;
+	cardData ability2;
+	cardData dash;
+	cardData jump;
+
+
 
 	float basicJumpForce = 0.0f;
 	float basicDashForce = 0.0f;
 	float basicAbility1Force = 0.0f;
 	float basicAbility2Force = 0.0f;
+
+	cardData* cardData1;
+	cardData* cardData2;
+	cardData* cardData3;
+	cardData* selectedCardData;
 
 	Node* ability1Node = nullptr;
 	Node* ability2Node = nullptr;

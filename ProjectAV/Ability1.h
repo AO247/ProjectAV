@@ -19,8 +19,7 @@ public:
 
 	virtual void Update(float dt) override;
 	virtual void DrawImGuiControls() override;
-	void OnTriggerEnter(Node* other) override;
-	void OnTriggerExit(Node* other) override;
+	void OnTriggerStay(const std::vector<Node*> others) override;
 	void Pressed() override;
 	void Released() override;
 	float cooldown = 1.2f;
@@ -30,7 +29,6 @@ public:
 	bool stop = true;
 	Node* leftHandNormal = nullptr;
 	Node* leftHandAbility = nullptr;
-
 private:
 	void KeyboardInput();
 	void Cooldowns(float dt);

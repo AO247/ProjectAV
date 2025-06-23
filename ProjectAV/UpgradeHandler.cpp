@@ -3,73 +3,92 @@ namespace dx = DirectX;
 UpgradeHandler::UpgradeHandler(Node* owner, Window& window)
 	: Component(owner), wnd(window)
 {
-	cardSprite1 = std::make_unique<Sprite>(
+	ability1.cardSprites.push_back(std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
 		wnd.Gfx().GetContext(),
-
-		80,              
-		180,             
-		350,             
-		600,             
+		0, 180, 350, 600,             
 		L"Images\\a1Card.png"
-	);
-	cardSprite2 = std::make_unique<Sprite>(
+	));
+	ability1.cardSprites.push_back(std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
 		wnd.Gfx().GetContext(),
-		475,              
-		180,              
-		350,              
-		600,              
+		0, 180, 350, 600,
+		L"Images\\a1Card.png"
+	));
+
+	ability1.cardSprites.push_back(std::make_unique<Sprite>(
+		wnd.Gfx().GetDevice(),
+		wnd.Gfx().GetContext(),
+		0, 180, 350, 600,
+		L"Images\\upgrade1_1.png"
+	));
+	ability1.cardSprites.push_back(std::make_unique<Sprite>(
+		wnd.Gfx().GetDevice(),
+		wnd.Gfx().GetContext(),
+		0, 180, 350, 600,
+		L"Images\\upgrade1_2.png"
+	));
+
+
+
+
+	ability2.cardSprites.push_back(std::make_unique<Sprite>(
+		wnd.Gfx().GetDevice(),
+		wnd.Gfx().GetContext(),
+		0, 180, 350, 600,
 		L"Images\\a2Card.png"
-	);
-	cardSprite3 = std::make_unique<Sprite>(
+	));
+	ability2.cardSprites.push_back(std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
 		wnd.Gfx().GetContext(),
-		870,             
-		180,             
-		350,             
-		600,             
+		0, 180, 350, 600,
+		L"Images\\a2Card.png"
+	));
+	ability2.cardSprites.push_back(std::make_unique<Sprite>(
+		wnd.Gfx().GetDevice(),
+		wnd.Gfx().GetContext(),
+		0, 180, 350, 600,
+		L"Images\\upgrade2_1.png"
+	));
+
+	dash.cardSprites.push_back(std::make_unique<Sprite>(
+		wnd.Gfx().GetDevice(),
+		wnd.Gfx().GetContext(),
+		0, 180, 350, 600,
 		L"Images\\dashCard.png"
-	);
-	cardSprite4 = std::make_unique<Sprite>(
+	));
+	dash.cardSprites.push_back(std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
 		wnd.Gfx().GetContext(),
-		870,              
-		180,              
-		350,              
-		600,              
+		0, 180, 350, 600,
+		L"Images\\dashCard.png"
+	));
+	dash.cardSprites.push_back(std::make_unique<Sprite>(
+		wnd.Gfx().GetDevice(),
+		wnd.Gfx().GetContext(),
+		0, 180, 350, 600,
+		L"Images\\dashCard.png"
+	));
+
+	jump.cardSprites.push_back(std::make_unique<Sprite>(
+		wnd.Gfx().GetDevice(),
+		wnd.Gfx().GetContext(),
+		0, 180, 350, 600,
 		L"Images\\jumpCard.png"
-	);
-
-	heart1Sprite = std::make_unique<Sprite>(
+	));
+	jump.cardSprites.push_back(std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
 		wnd.Gfx().GetContext(),
-		100,       
-		360,       
-		50,        
-		50,        
-		L"Images\\heart.png"
-	);
-
-	heart2Sprite = std::make_unique<Sprite>(
+		0, 180, 350, 600,
+		L"Images\\jumpCard.png"
+	));
+	jump.cardSprites.push_back(std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
 		wnd.Gfx().GetContext(),
-		495,      
-		360,      
-		50,       
-		50,       
-		L"Images\\heart.png"
-	);
+		0, 180, 350, 600,
+		L"Images\\jumpCard.png"
+	));
 
-	heart3Sprite = std::make_unique<Sprite>(
-		wnd.Gfx().GetDevice(),    
-		wnd.Gfx().GetContext(),
-		890,        
-		360,        
-		50,         
-		50,         
-		L"Images\\heart.png"
-	);
 
 	testButton1 = std::make_unique<Button>(
 		wnd.Gfx().GetDevice(),
@@ -92,14 +111,6 @@ UpgradeHandler::UpgradeHandler(Node* owner, Window& window)
 		L" ",         
 		L"myfile.spritefont" 
 	);
-
-	ability4Gif = std::make_unique<Sprite>(
-		wnd.Gfx().GetDevice(),
-		wnd.Gfx().GetContext(),
-		22, 34, 337, 190, 
-		L"Images\\ability4.gif"
-	);
-
 }
 
 
@@ -107,21 +118,35 @@ void UpgradeHandler::Update(float dt)
 {
 	if (upgradeMenuOpen && !upgraded && missclickTimer < 0.0f)
 	{
-		ability4Gif->Update(dt);
-		if (wnd.mouse.IsLeftPressed()) {
-			const auto mousePos = wnd.mouse.GetPos();
-			if (testButton1->IsClicked(mousePos.first, mousePos.second))
-			{
+
+		const auto mousePos = wnd.mouse.GetPos();
+		if (testButton1->IsClicked(mousePos.first, mousePos.second) && card1 != nullptr && cardData1 != nullptr)
+		{
+			if (wnd.mouse.IsLeftPressed()) {
+				selectedCardSprite = card1;
+				selectedCardData = cardData1;
 				ApplyUpgrade(0);
 			}
-			else if (testButton2->IsClicked(mousePos.first, mousePos.second))
-			{
+		}
+		else if (testButton2->IsClicked(mousePos.first, mousePos.second) && card2 != nullptr && cardData2 != nullptr)
+		{
+			if (wnd.mouse.IsLeftPressed()) {
+				selectedCardSprite = card2;
+				selectedCardData = cardData2;
 				ApplyUpgrade(1);
 			}
-			else if (testButton3->IsClicked(mousePos.first, mousePos.second))
-			{
+		}
+		else if (testButton3->IsClicked(mousePos.first, mousePos.second) && card3 != nullptr && cardData3 != nullptr)
+		{
+			if (wnd.mouse.IsLeftPressed()) {
+				selectedCardSprite = card3;
+				selectedCardData = cardData3;
 				ApplyUpgrade(2);
 			}
+		}
+		if (card1 == nullptr && card2 == nullptr && card3 == nullptr)
+		{
+			CloseUpgradeMenu();
 		}
 	}
 	static float animationTime = 0.0f;
@@ -177,6 +202,7 @@ void UpgradeHandler::Update(float dt)
 
 void UpgradeHandler::ShowUpgradeMenu()
 {
+
 	if (upgradeMenuOpen) return;
 	missclickTimer = 0.3f;
 	PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(playerController->rigidbody->GetBodyID(), Vec3(0.0f,0.0f,0.0f));
@@ -189,13 +215,23 @@ void UpgradeHandler::ShowUpgradeMenu()
 }
 void UpgradeHandler::CloseUpgradeMenu()
 {
-	selectedCardSprite->x_ = safeValues.x;
-	selectedCardSprite->y_ = safeValues.y;
-	selectedCardSprite->width_ = safeValues.z;
-	selectedCardSprite->height_ = safeValues.w;
+	if (selectedCardSprite != nullptr)
+	{
+		selectedCardSprite->x_ = safeValues.x;
+		selectedCardSprite->y_ = safeValues.y;
+		selectedCardSprite->width_ = safeValues.z;
+		selectedCardSprite->height_ = safeValues.w;
+	}
+	selectedCardSprite == nullptr;
 	upgradeMenuOpen = false;
 	upgraded = false;
 	end = false;
+	cardData1 = nullptr;
+	cardData2 = nullptr;
+	cardData3 = nullptr;
+	card1 = nullptr;
+	card2 = nullptr;
+	card3 = nullptr;
 	wnd.DisableCursor();
 	wnd.mouse.EnableRawInput();
 }
@@ -209,11 +245,14 @@ void UpgradeHandler::DrawUpgradeMenu()
 		}
 		else
 		{
-
-			card1->Draw(wnd.Gfx().GetContext());
-			card2->Draw(wnd.Gfx().GetContext());
-			card3->Draw(wnd.Gfx().GetContext());
-			ability4Gif->Draw(wnd.Gfx().GetContext());
+			if(card1 != nullptr)
+				card1->Draw(wnd.Gfx().GetContext());
+			
+			if (card2 != nullptr)
+				card2->Draw(wnd.Gfx().GetContext());
+			
+			if (card3 != nullptr)
+				card3->Draw(wnd.Gfx().GetContext());
 			
 		}
 	}
@@ -221,119 +260,268 @@ void UpgradeHandler::DrawUpgradeMenu()
 }
 void UpgradeHandler::RandomUpgrades()
 {
-	currentUpgrade1 = rand() % 4;
-	currentUpgrade2 = rand() % 4;
-	while(currentUpgrade1 == currentUpgrade2)
-	{
-		currentUpgrade2 = rand() % 4;
-	}
-	currentUpgrade3 = rand() % 4;
-	while(currentUpgrade3 == currentUpgrade1 || currentUpgrade3 == currentUpgrade2) 
-	{
-		currentUpgrade3 = rand() % 4;
-	}
-	switch (currentUpgrade1)
-	{
-	case 0: 
-		card1 = cardSprite1.get();
-		break;
-	case 1: 
-		card1 = cardSprite2.get();
-		break;
-	case 2: 
-		card1 = cardSprite3.get();
-		break;
-	case 3: 
-		card1 = cardSprite4.get();
-		break;
-	}
-	card1->x_ = card1Pos;
 
-	switch (currentUpgrade2)
+	std::vector<cardData*> cards;
+	int currentUpgrade1 = -1, currentUpgrade2 = -1, currentUpgrade3 = -1;
+	if (ability1.count <2)
 	{
-	case 0: 
-		card2 = cardSprite1.get();
-		break;
-	case 1: 
-		card2 = cardSprite2.get();
-		break;
-	case 2: 
-		card2 = cardSprite3.get();
-		break;
-	case 3: 
-		card2 = cardSprite4.get();
-		break;
+		cards.push_back(&ability1);
 	}
-	card2->x_ = card2Pos;
-
-	switch (currentUpgrade3)
+	if (ability2.count < 2)
 	{
-	case 0: 
-		card3 = cardSprite1.get();
-		break;
-	case 1: 
-		card3 = cardSprite2.get();
-		break;
-	case 2: 
-		card3 = cardSprite3.get();
-		break;
-	case 3: 
-		card3 = cardSprite4.get();
-		break;
+		cards.push_back(&ability2);
 	}
-	card3->x_ = card3Pos;
+	if (dash.count < 2)
+	{
+		cards.push_back(&dash);
+	}
+	if (jump.count < 2)
+	{
+		cards.push_back(&jump);
+	}
 
+	if (ability1.count == 2)
+	{
+		if(cards.size() > 0 )
+			currentUpgrade3 = rand() % cards.size();
 
-	heart1Sprite->x_ = 10 + cardSprite1->x_ + currentUpgrade1 * 90;
-	heart2Sprite->x_ = 10 + cardSprite2->x_ + currentUpgrade2 * 90;
-	heart3Sprite->x_ = 10 + cardSprite3->x_ + currentUpgrade3 * 90;
+		cardData1 = &ability1;
+		card1 = ability1.cardSprites[2].get();
+
+		cardData2 = &ability1;
+		card2 = ability1.cardSprites[3].get();
+
+		if (currentUpgrade3 > -1)
+		{
+			cardData3 = cards[currentUpgrade3];
+			card3 = cardData3->cardSprites[cards[currentUpgrade3]->count].get();
+		}
+	}
+	else if (ability2.count == 2)
+	{
+		if (cards.size() > 0)
+		{
+			currentUpgrade1 = rand() % cards.size();
+			currentUpgrade3 = rand() % cards.size();
+			int count = 0;
+			while (currentUpgrade1 == currentUpgrade3 && count < 15)
+			{
+				currentUpgrade3 = rand() % cards.size();
+				count++;
+			}
+			if (currentUpgrade1 == currentUpgrade3)
+				currentUpgrade3 = -1;
+		}
+
+		if (currentUpgrade1 > -1)
+		{
+			cardData1 = cards[currentUpgrade1];
+			card1 = cardData1->cardSprites[cards[currentUpgrade1]->count].get();
+		}
+
+		cardData2 = &ability2;
+		card2 = ability2.cardSprites[2].get();
+
+		if (currentUpgrade3 > -1)
+		{
+			cardData3 = cards[currentUpgrade3];
+			card3 = cardData3->cardSprites[cards[currentUpgrade3]->count].get();
+		}
+	}
+	else if (dash.count == 2)
+	{
+		if (cards.size() > 0)
+		{
+			currentUpgrade1 = rand() % cards.size();
+			currentUpgrade3 = rand() % cards.size();
+			int count = 0;
+			while (currentUpgrade1 == currentUpgrade3 && count < 15)
+			{
+				currentUpgrade3 = rand() % cards.size();
+				count++;
+			}
+			if (currentUpgrade1 == currentUpgrade3)
+				currentUpgrade3 = -1;
+		}
+
+		if (currentUpgrade1 > -1)
+		{
+			cardData1 = cards[currentUpgrade1];
+			card1 = cardData1->cardSprites[cards[currentUpgrade1]->count].get();
+		}
+
+		cardData2 = &dash;
+		card2 = dash.cardSprites[2].get();
+
+		if (currentUpgrade3 > -1)
+		{
+			cardData3 = cards[currentUpgrade3];
+			card3 = cardData3->cardSprites[cards[currentUpgrade3]->count].get();
+		}
+
+	}
+	else if (jump.count == 2)
+	{
+		if (cards.size() > 0)
+		{
+			currentUpgrade1 = rand() % cards.size();
+			currentUpgrade3 = rand() % cards.size();
+			int count = 0;
+			while (currentUpgrade1 == currentUpgrade3 && count < 15)
+			{
+				currentUpgrade3 = rand() % cards.size();
+				count++;
+			}
+			if (currentUpgrade1 == currentUpgrade3)
+				currentUpgrade3 = -1;
+		}
+
+		if (currentUpgrade1 > -1)
+		{
+			cardData1 = cards[currentUpgrade1];
+			card1 = cardData1->cardSprites[cards[currentUpgrade1]->count].get();
+		}
+
+		cardData2 = &jump;
+		card2 = jump.cardSprites[2].get();
+
+		if (currentUpgrade3 > -1)
+		{
+			cardData3 = cards[currentUpgrade3];
+			card3 = cardData3->cardSprites[cards[currentUpgrade3]->count].get();
+		}
+	}
+	else
+	{
+		if (cards.size() > 0)
+		{
+			currentUpgrade1 = rand() % cards.size();
+			currentUpgrade2 = rand() % cards.size();
+			int count = 0;
+			while (currentUpgrade1 == currentUpgrade2 && count < 15)
+			{
+				currentUpgrade2 = rand() % cards.size();
+				count++;
+			}
+			if (currentUpgrade1 == currentUpgrade2)
+				currentUpgrade2 = -1;
+			currentUpgrade3 = rand() % cards.size();
+			count = 0;
+			while ((currentUpgrade3 == currentUpgrade1 || currentUpgrade3 == currentUpgrade2) && count < 15)
+			{
+				currentUpgrade3 = rand() % cards.size();
+				count++;
+			}
+			if (currentUpgrade1 == currentUpgrade3 || currentUpgrade2 == currentUpgrade3)
+				currentUpgrade3 = -1;
+		}
+		if (currentUpgrade1 > -1)
+		{
+			cardData1 = cards[currentUpgrade1];
+			card1 = cardData1->cardSprites[cards[currentUpgrade1]->count].get();
+		}
+		if (currentUpgrade2 > -1)
+		{
+			cardData2 = cards[currentUpgrade2];
+			card2 = cardData2->cardSprites[cards[currentUpgrade2]->count].get();
+		}
+		if (currentUpgrade3 > -1)
+		{
+			cardData3 = cards[currentUpgrade3];
+			card3 = cardData3->cardSprites[cards[currentUpgrade3]->count].get();
+		}
+	}
+	if(card1 != nullptr)
+		card1->x_ = card1Pos;
+
+	if (card2 != nullptr)
+		card2->x_ = card2Pos;
+
+	if (card3 != nullptr)
+		card3->x_ = card3Pos;
 }
 void UpgradeHandler::ApplyUpgrade(int upgradeIndex)
 {
 	if (upgraded) return;
-	int x = 0;
-	if (upgradeIndex == 0)
+	
+	if (selectedCardData == &ability1)
 	{
-		x = currentUpgrade1;
-		selectedCardSprite = card1;
+		if (ability1.count == 2)
+		{
+			if (upgradeIndex == 0)
+			{
+				playerController->abilitySlot1 = ability4Node;
+			}
+			else if (upgradeIndex == 1)
+			{
+				playerController->abilitySlot1 = ability6Node;
+			}
+		}
+		else
+		{
+			ability1Node->GetComponent<Ability1>()->force += 200.0f;
+		}
+		ability1.count++;
+
 	}
-	else if (upgradeIndex == 1)
+	else if (selectedCardData == &ability2)
 	{
-		x = currentUpgrade2;
-		selectedCardSprite = card2;
+		if (ability2.count == 2)
+		{
+			if (upgradeIndex == 1)
+			{
+				playerController->abilitySlot2 = ability5Node;
+			}
+		}
+		else 
+		{
+			ability2Node->GetComponent<Ability2>()->force += 200.0f;
+		}
+		ability2.count++;
 	}
-	else if (upgradeIndex == 2)
+	else if (selectedCardData == &dash)
 	{
-		x = currentUpgrade3;
-		selectedCardSprite = card3;
+		if (dash.count == 2)
+		{
+			playerController->evolvedDash = true;
+		}
+		else
+		{
+			playerController->dashForce += 20.0f;
+		}
+		dash.count++;
 	}
-	switch (x)
+	else if (selectedCardData == &jump)
 	{
-	case 0: 
-		ability1Node->GetComponent<Ability1>()->force += 200.0f;
-		ability1++;
-		break;
-	case 1: 
-		ability2Node->GetComponent<Ability2>()->force += 200.0f;
-		ability2++;
-		break;
-	case 2: 
-		playerController->dashForce += 20.0f;
-		dash++;
-		break;
-	case 3:
-		playerController->jumpForce += 10.0f;
-		jump++;
-		break;
+		if (jump.count == 2)
+		{
+			playerController->enableFallPush = true;
+		}
+		else
+		{
+			playerController->secondJumpForce += 10.0f;
+		}
+		jump.count++;
 	}
-	upgraded = true;
+
 	safeValues.x = selectedCardSprite->x_;
 	safeValues.y = selectedCardSprite->y_;
 	safeValues.z = selectedCardSprite->width_;
 	safeValues.w = selectedCardSprite->height_;
+	upgraded = true;
 }
 void UpgradeHandler::ResetUpgrades()
 {
+	playerController->abilitySlot1 = ability1Node;
+	playerController->abilitySlot2 = ability2Node;
+	playerController->evolvedDash = false;
+	playerController->enableFallPush = false;
+
+	ability1.count = 0;
+	ability2.count = 0;
+	dash.count = 0;
+	jump.count = 0;
+
 	ability1Node->GetComponent<Ability1>()->force = basicAbility1Force;
 	ability2Node->GetComponent<Ability2>()->force = basicAbility2Force;
 	playerController->dashForce = basicDashForce;

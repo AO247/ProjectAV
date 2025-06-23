@@ -19,7 +19,7 @@ public:
     virtual void Update(float dt) {}
 
     virtual void OnTriggerEnter(Node* object);
-    virtual void OnTriggerStay(Node* object);
+    virtual void OnTriggerStay(const std::vector<Node*> others);
     virtual void OnTriggerExit(Node* object);
     virtual void OnCollisionEnter(Node* object);
     virtual void OnCollisionStay(Node* object);

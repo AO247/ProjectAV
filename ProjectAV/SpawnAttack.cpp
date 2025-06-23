@@ -10,17 +10,19 @@ SpawnAttack::SpawnAttack(Node* owner, Node* player, std::string tag)
 
 void SpawnAttack::Attack(float dt)
 {
-	Vector3 playerPos = player->GetWorldPosition();
+	if (undercover)
+	{
+		Vector3 playerPos = player->GetWorldPosition();
 
-	sm::Vector3 facingDirection = sm::Vector3(playerPos)
-		- sm::Vector3(pOwner->GetWorldPosition());
-	facingDirection.Normalize();
+		sm::Vector3 facingDirection = sm::Vector3(playerPos)
+			- sm::Vector3(pOwner->GetWorldPosition());
+		facingDirection.Normalize();
 
-	float targetYaw = atan2f(facingDirection.x, facingDirection.z);
+		float targetYaw = atan2f(facingDirection.x, facingDirection.z);
 
-	Quat q = Quat::sEulerAngles(Vec3(0.0f, targetYaw, 0.0f));
-	PhysicsCommon::physicsSystem->GetBodyInterface().SetRotation(pOwner->GetComponent<Rigidbody>()->GetBodyID(), q, EActivation::Activate);
-
+		Quat q = Quat::sEulerAngles(Vec3(0.0f, targetYaw, 0.0f));
+		PhysicsCommon::physicsSystem->GetBodyInterface().SetRotation(pOwner->GetComponent<Rigidbody>()->GetBodyID(), q, EActivation::Activate);
+	}
 	timer += dt;
 	if (timer >= cooldownTime)
 	{

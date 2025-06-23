@@ -92,26 +92,17 @@ void Ability1::Cooldowns(float dt)
 
 }
 
-void Ability1::OnTriggerEnter(Node* object) {
-    if (object == nullptr) return;
+void Ability1::OnTriggerStay(const std::vector<Node*> others) {
+    objects.clear();
+	objects = others;
+    /*if (object == nullptr) return;
     if (object->tag != "ENEMY" && object->tag != "STONE" && object->tag != "BULLET") return;
     if (object->GetComponent<Rigidbody>() == nullptr) return;
-    for(int i= 0; i < objects.size(); i++)
+    for (int i = 0; i < objects.size(); i++)
     {
         if (objects[i] == object) return;
-	}
-    objects.push_back(object);
-	//OutputDebugStringA(("Ability1 OnTriggerEnter: " + object->GetName() + "\n").c_str());
-}
-void Ability1::OnTriggerExit(Node* object) {
-    if (object == nullptr) return;
-    if (object->tag != "ENEMY" && object->tag != "STONE" && object->tag != "BULLET") return;
-    if (object->GetComponent<Rigidbody>() == nullptr) return;
-    auto it = std::remove(objects.begin(), objects.end(), object);
-    if (it != objects.end()) {
-        objects.erase(it, objects.end());
     }
-	//OutputDebugStringA(("Ability1 OnTriggerExit: " + object->GetName() + "\n").c_str());
+    objects.push_back(object);*/
 }
 void Ability1::DrawImGuiControls()
 {

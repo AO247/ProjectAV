@@ -15,6 +15,7 @@ public:
 	float cooldownTime = 3.0f;
 	virtual void Attack(float dt);
 	virtual void DrawImGuiControls() override;
+	bool undercover = true;
 
 private:
 	bool attacked = false;

@@ -99,7 +99,7 @@ void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 		steeringForce = (steeringForce / steeringMagnitude) * maxSpeed;
 	//}
 
-	PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(steeringForce.x, currentVelocityJPH.GetY(), steeringForce.z) * 1000.0f * dt);
+	PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(steeringForce.x, 0.0f, steeringForce.z) * 1000.0f * dt);
 
 
 	currentVelocityJPH = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
@@ -177,11 +177,14 @@ bool Walking::GroundCheck()
 		grounded = true;
 		canAttack = true;
 		Node* no = reinterpret_cast<Node*>(PhysicsCommon::physicsSystem->GetBodyInterface().GetUserData(resultCenter.mBodyID));
-		if (no->tag == "GROUND")
+		if (no != nullptr)
 		{
-			lastIslandPos = no->GetWorldPosition();
+			if (no->tag == "GROUND")
+			{
+				lastIslandPos = no->GetWorldPosition();
+			}
+			return true;
 		}
-		return true;
 	}
 
 	RRayCast rayFront = RRayCast(
@@ -256,7 +259,7 @@ Vector3 Walking::CalculateAvoidanceForce()
 
 
 	Vector3 pos = pOwner->GetWorldPosition();
-	pos.y += -(height/2.0f) + 1.0f;
+	pos.y += -(height/2.0f) + 0.3f;
 	Vector3 forward = temporaryDirection;
 	forward.y = 0.0f;
 	Vector3 right = Vector3(forward.z, 0.0f, -forward.x);

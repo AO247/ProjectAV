@@ -38,7 +38,6 @@ void Ability3::Update(float dt)
         }
         Cooldowns(dt);
     }
-    objects.clear();
 }
 void Ability3::Positioning()
 {
@@ -135,15 +134,9 @@ void Ability3::Cooldowns(float dt)
 
 }
 
-void Ability3::OnTriggerStay(Node* object) {
-    if (object == nullptr) return;
-    if (object->tag != "ENEMY" && object->tag != "STONE" && object->tag != "BULLET") return;
-    if (object->GetComponent<Rigidbody>() == nullptr) return;
-    for (int i = 0; i < objects.size(); i++)
-    {
-        if (objects[i] == object) return;
-    }
-    objects.push_back(object);
+void Ability3::OnTriggerStay(const std::vector<Node*> others) {
+    objects.clear();
+    objects = others;
 }
 
 

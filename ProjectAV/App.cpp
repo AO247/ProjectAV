@@ -143,6 +143,11 @@ App::App(const std::string& commandLine)
         std::make_unique<PlayerController>(pPlayer, wnd)
     );
 
+    BodyCreationSettings p1TBodySettings(new JPH::SphereShape(12.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
+    pPlayer->AddComponent(
+        std::make_unique<Trigger>(pPlayer, p1TBodySettings, false)
+    );
+
     BodyCreationSettings a1BodySettings(new JPH::CapsuleShape(6.0f, 5.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
     pAbility1->AddComponent(
         std::make_unique<Trigger>(pAbility1, a1BodySettings, false)
@@ -183,8 +188,8 @@ App::App(const std::string& commandLine)
     pAbility4->AddComponent(
         std::make_unique<Ability4>(pAbility4, wnd, pCamera)
     );
+    pAbility4->GetComponent<Ability4>()->baseAbility = pAbility1->GetComponent<Ability1>();
     //pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility4;
-    //pAbility4->GetComponent<Ability4>()->baseAbility = pAbility1->GetComponent<Ability1>();
 
 
     pAbility5->AddComponent(
@@ -722,6 +727,10 @@ void App::DrawNodeRecursive(Graphics& gfx, Node* node)
         if (containment == DirectX::DISJOINT) 
         {
             shouldDraw = false; 
+            if(node->GetComponent<SpawnAttack>() != nullptr)
+            {
+                node->GetComponent<SpawnAttack>()->undercover = true;
+			}
         }
 
     }
@@ -729,6 +738,10 @@ void App::DrawNodeRecursive(Graphics& gfx, Node* node)
     if (shouldDraw)
     {
         node->Submit(wnd.Gfx());
+        if (node->GetComponent<SpawnAttack>() != nullptr)
+        {
+            node->GetComponent<SpawnAttack>()->undercover = false;
+        }
     }
     for (const auto& pChild : node->GetChildren())
     {

@@ -6955,7 +6955,7 @@ public:
         );
         SpawnAttack* spawnAttack = pNewNode->GetComponent<SpawnAttack>();
         spawnAttack->attackRange = 150.0f;
-        spawnAttack->cooldownTime = 20.0f;
+        spawnAttack->cooldownTime = 6.0f;
         
 
         //MOVEMENT
@@ -6988,7 +6988,7 @@ public:
         pNewNode->SetLocalPosition(position);
         pNewNode->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
-
+        pNewNode->radius = 13.0f;
 
         return pNewNode;
     }
