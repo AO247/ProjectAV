@@ -95,7 +95,6 @@ Sprite::Sprite(ID3D11Device* device, ID3D11DeviceContext* deviceContext, int x, 
     DirectX::XMStoreFloat4x4(&projectionMatrix_, DirectX::XMMatrixIdentity());
     DirectX::XMStoreFloat4x4(&worldMatrix_, DirectX::XMMatrixIdentity());
 
-    // Initialize WIC Factory if it hasn't been already
     InitializeWICFactory();
 
     if (IsGifExtension(spritePath) && s_wicFactoryInitialized) {
@@ -103,17 +102,24 @@ Sprite::Sprite(ID3D11Device* device, ID3D11DeviceContext* deviceContext, int x, 
         hr = LoadGifAnimation(device, spritePath);
         if (SUCCEEDED(hr) && !gifFrameSRVs_.empty()) {
             isAnimatedGif_ = true;
-            texture_ = gifFrameSRVs_[0].Get(); // Set current texture to the first frame
-            // If width/height were passed as 0, LoadGifAnimation might have updated them
-            // The vertex buffer created later will use these potentially updated dimensions
+            texture_ = gifFrameSRVs_[0].Get();
             OutputDebugStringW(L"Sprite Info: GIF animation loaded successfully.\n");
         }
         else {
             OutputDebugStringW(L"Sprite Warning: Failed to load GIF as animation. Falling back to static image load.\n");
-            // Fallback: Try to load as a static image (first frame)
-            hr = DirectX::CreateWICTextureFromFile(device, deviceContext, spritePath.c_str(), nullptr, &texture_);
+            hr = DirectX::CreateWICTextureFromFileEx(
+                device,
+                spritePath.c_str(),
+                0, // maxSize
+                D3D11_USAGE_DEFAULT,
+                D3D11_BIND_SHADER_RESOURCE,
+                0, // cpuAccessFlags
+                0, // miscFlags
+                DirectX::WIC_LOADER_FORCE_SRGB, // Force sRGB interpretation
+                nullptr, // ID3D11Resource** ppTexture
+                &texture_  // ID3D11ShaderResourceView** ppSRV
+            );
             if (FAILED(hr)) {
-                // Log failure for static load
                 std::vector<wchar_t> buffer(256);
                 swprintf_s(buffer.data(), buffer.size(), L"Sprite Error: Fallback static texture load failed for %s. HRESULT: 0x%X\n", spritePath.c_str(), hr);
                 OutputDebugStringW(buffer.data());
@@ -122,12 +128,22 @@ Sprite::Sprite(ID3D11Device* device, ID3D11DeviceContext* deviceContext, int x, 
     }
     else {
         OutputDebugStringW(L"Sprite Info: Loading as static texture.\n");
-        hr = DirectX::CreateWICTextureFromFile(device, deviceContext, spritePath.c_str(), nullptr, &texture_);
+        hr = DirectX::CreateWICTextureFromFileEx(
+            device,
+            spritePath.c_str(),
+            0, // maxSize
+            D3D11_USAGE_DEFAULT,
+            D3D11_BIND_SHADER_RESOURCE,
+            0, // cpuAccessFlags
+            0, // miscFlags
+            DirectX::WIC_LOADER_FORCE_SRGB, // Force sRGB interpretation
+            nullptr, // ID3D11Resource** ppTexture
+            &texture_  // ID3D11ShaderResourceView** ppSRV
+        );
         if (FAILED(hr)) {
             std::vector<wchar_t> buffer(256);
             swprintf_s(buffer.data(), buffer.size(), L"Sprite Error: Failed to load sprite texture: %s HRESULT: 0x%X\n", spritePath.c_str(), hr);
             OutputDebugStringW(buffer.data());
-            // texture_ will be nullptr, Draw call should handle this
         }
     }
 
@@ -138,10 +154,6 @@ Sprite::Sprite(ID3D11Device* device, ID3D11DeviceContext* deviceContext, int x, 
         OutputDebugStringW(L"Sprite Error: Texture resource view is NULL after loading attempts.\n");
     }
 
-
-    // Vertex Buffer (uses width_ and height_ which might have been updated by GIF loading if they were 0)
-    // Note: Your Draw() method re-creates vertices and updates the buffer every frame,
-    // so the initial vertex values here are somewhat less critical if width_/height_ are correct by Draw time.
     Vertex vertices[] = {
         {{0.0f,           0.0f,          0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}},
         {{(float)width_,  0.0f,          0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {1.0f, 0.0f}},
@@ -150,17 +162,16 @@ Sprite::Sprite(ID3D11Device* device, ID3D11DeviceContext* deviceContext, int x, 
     };
 
     D3D11_BUFFER_DESC bd = {};
-    bd.Usage = D3D11_USAGE_DYNAMIC; // Keep as DYNAMIC since Draw() updates it
+    bd.Usage = D3D11_USAGE_DYNAMIC;
     bd.ByteWidth = sizeof(vertices);
     bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
     bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
     D3D11_SUBRESOURCE_DATA initData = {};
     initData.pSysMem = vertices;
     hr = device_->CreateBuffer(&bd, &initData, &vertexBuffer_);
-    if (FAILED(hr)) { /* ... error handling ... */ return; }
+    if (FAILED(hr)) { OutputDebugStringA("Sprite Error: Failed to create vertex buffer.\n"); return; }
     else { OutputDebugStringA("Sprite Info: Vertex buffer created.\n"); }
 
-    // Index Buffer (remains the same)
     WORD indices[] = { 0, 1, 2, 0, 2, 3 };
     D3D11_BUFFER_DESC ibd = {};
     ibd.Usage = D3D11_USAGE_DEFAULT;
@@ -170,12 +181,9 @@ Sprite::Sprite(ID3D11Device* device, ID3D11DeviceContext* deviceContext, int x, 
     D3D11_SUBRESOURCE_DATA iinitData = {};
     iinitData.pSysMem = indices;
     hr = device_->CreateBuffer(&ibd, &iinitData, &indexBuffer_);
-    if (FAILED(hr)) { /* ... error handling ... */ return; }
+    if (FAILED(hr)) { OutputDebugStringA("Sprite Error: Failed to create index buffer.\n"); return; }
     else { OutputDebugStringA("Sprite Info: Index buffer created.\n"); }
 
-    // Shaders, Input Layout, Constant Buffer, Sampler, BlendState (remain the same)
-    // ... (copy the rest of your original constructor code for these D3D resources) ...
-    // Make sure to use the CompileShaderFromMemory_Sprite static function.
     const char* vertexShaderSource =
         "cbuffer MatrixBuffer : register(b0) {\n"
         "    matrix projectionMatrix;\n"
@@ -326,6 +334,7 @@ struct ColorBGRA {
     BYTE b, g, r, a;
 };
 
+
 HRESULT Sprite::LoadGifAnimation(ID3D11Device* device, const std::wstring& filePath) {
     if (!s_wicFactory) {
         OutputDebugStringA("LoadGifAnimation Error: WIC Factory not available.\n");
@@ -342,11 +351,10 @@ HRESULT Sprite::LoadGifAnimation(ID3D11Device* device, const std::wstring& fileP
         return hr;
     }
 
-    // --- Get GIF Global Metadata ---
     UINT logicalScreenWidth = 0, logicalScreenHeight = 0;
     ColorBGRA gifBackgroundColor = { 0, 0, 0, 0 }; // Default: transparent black
     bool hasGlobalColorTable = false;
-    std::vector<WICColor> globalColorTableData; // Renamed to avoid conflict
+    std::vector<WICColor> globalColorTableData;
 
     Microsoft::WRL::ComPtr<IWICMetadataQueryReader> gifMetadataReader;
     if (SUCCEEDED(decoder->GetMetadataQueryReader(&gifMetadataReader))) {
@@ -376,9 +384,9 @@ HRESULT Sprite::LoadGifAnimation(ID3D11Device* device, const std::wstring& fileP
                 palette->GetColorCount(&colorCount);
                 if (colorCount > 0) {
                     globalColorTableData.resize(colorCount);
-                    palette->GetColors(colorCount, globalColorTableData.data(), &colorCount); // Corrected variable name
+                    palette->GetColors(colorCount, globalColorTableData.data(), &colorCount);
                     if (backgroundColorIndex < colorCount) {
-                        WICColor bgWicColor = globalColorTableData[backgroundColorIndex]; // Corrected variable name
+                        WICColor bgWicColor = globalColorTableData[backgroundColorIndex]; // WICColor to AARRGGBB
                         gifBackgroundColor.r = (bgWicColor >> 16) & 0xFF;
                         gifBackgroundColor.g = (bgWicColor >> 8) & 0xFF;
                         gifBackgroundColor.b = bgWicColor & 0xFF;
@@ -386,14 +394,10 @@ HRESULT Sprite::LoadGifAnimation(ID3D11Device* device, const std::wstring& fileP
                     }
                 }
             }
-            else {
-                OutputDebugStringA("LoadGifAnimation Warning: Failed to copy global palette.\n");
-            }
+            else { OutputDebugStringA("LoadGifAnimation Warning: Failed to copy global palette.\n"); }
         }
     }
-    else {
-        OutputDebugStringA("LoadGifAnimation Warning: Could not get GIF global metadata reader. Using defaults.\n");
-    }
+    else { OutputDebugStringA("LoadGifAnimation Warning: Could not get GIF global metadata reader. Using defaults.\n"); }
 
     UINT frameCount = 0;
     hr = decoder->GetFrameCount(&frameCount);
@@ -405,8 +409,8 @@ HRESULT Sprite::LoadGifAnimation(ID3D11Device* device, const std::wstring& fileP
     wchar_t w_msg[512];
     char a_msg[256];
 
-    swprintf_s(w_msg, L"Sprite Info: GIF '%s' has %u frames. Initial Logical Size: %ux%u\n",
-        filePath.c_str(), frameCount, logicalScreenWidth, logicalScreenHeight);
+    swprintf_s(w_msg, L"Sprite Info: GIF '%s' has %u frames. Initial Logical Size: %ux%u. BG Color (BGRA): %02X %02X %02X %02X\n",
+        filePath.c_str(), frameCount, logicalScreenWidth, logicalScreenHeight, gifBackgroundColor.b, gifBackgroundColor.g, gifBackgroundColor.r, gifBackgroundColor.a);
     OutputDebugStringW(w_msg);
 
     std::vector<ColorBGRA> canvas;
@@ -431,8 +435,6 @@ HRESULT Sprite::LoadGifAnimation(ID3D11Device* device, const std::wstring& fileP
         }
 
         float delaySeconds = 0.1f;
-        BOOL transparencyFlag = FALSE;
-        BYTE transparentColorIndex = 0;
         UINT disposalMethod = 0;
         UINT frameLeft = 0, frameTop = 0, frameWidth = 0, frameHeight = 0;
 
@@ -443,16 +445,13 @@ HRESULT Sprite::LoadGifAnimation(ID3D11Device* device, const std::wstring& fileP
             continue;
         }
 
-
         Microsoft::WRL::ComPtr<IWICMetadataQueryReader> frameMetadataReader;
         if (SUCCEEDED(wicFrame->GetMetadataQueryReader(&frameMetadataReader))) {
             PROPVARIANT propValue; PropVariantInit(&propValue);
             if (SUCCEEDED(frameMetadataReader->GetMetadataByName(L"/imgdesc/Left", &propValue)) && propValue.vt == VT_UI2) frameLeft = propValue.uiVal; PropVariantClear(&propValue);
             if (SUCCEEDED(frameMetadataReader->GetMetadataByName(L"/imgdesc/Top", &propValue)) && propValue.vt == VT_UI2) frameTop = propValue.uiVal; PropVariantClear(&propValue);
-
-            if (SUCCEEDED(frameMetadataReader->GetMetadataByName(L"/grctlext/Delay", &propValue)) && propValue.vt == VT_UI2) delaySeconds = std::max(0.01f, static_cast<float>(propValue.uiVal) / 100.0f); PropVariantClear(&propValue);            if (SUCCEEDED(frameMetadataReader->GetMetadataByName(L"/grctlext/Disposal", &propValue)) && propValue.vt == VT_UI1) disposalMethod = propValue.bVal; PropVariantClear(&propValue);
-            if (SUCCEEDED(frameMetadataReader->GetMetadataByName(L"/grctlext/TransparencyFlag", &propValue)) && propValue.vt == VT_BOOL) transparencyFlag = propValue.boolVal; PropVariantClear(&propValue);
-            if (transparencyFlag && SUCCEEDED(frameMetadataReader->GetMetadataByName(L"/grctlext/TransparentColorIndex", &propValue)) && propValue.vt == VT_UI1) transparentColorIndex = propValue.bVal; PropVariantClear(&propValue);
+            if (SUCCEEDED(frameMetadataReader->GetMetadataByName(L"/grctlext/Delay", &propValue)) && propValue.vt == VT_UI2) delaySeconds = std::max(0.01f, static_cast<float>(propValue.uiVal) / 100.0f); PropVariantClear(&propValue);
+            if (SUCCEEDED(frameMetadataReader->GetMetadataByName(L"/grctlext/Disposal", &propValue)) && propValue.vt == VT_UI1) disposalMethod = propValue.bVal; PropVariantClear(&propValue);
         }
         else {
             sprintf_s(a_msg, "LoadGifAnimation Warning: Could not get metadata reader for frame %u.\n", i);
@@ -478,7 +477,7 @@ HRESULT Sprite::LoadGifAnimation(ID3D11Device* device, const std::wstring& fileP
             if (prevFrameDisposal == 2) {
                 sprintf_s(a_msg, "Frame %d: Prev frame disposal was 2 (Restore BG). Area: L%u T%u W%u H%u\n", i, prevFrameLeft, prevFrameTop, prevFrameWidth, prevFrameHeight);
                 OutputDebugStringA(a_msg);
-                for (UINT y_disp = 0; y_disp < prevFrameHeight; ++y_disp) { // Renamed loop variables
+                for (UINT y_disp = 0; y_disp < prevFrameHeight; ++y_disp) {
                     for (UINT x_disp = 0; x_disp < prevFrameWidth; ++x_disp) {
                         UINT canvasX = prevFrameLeft + x_disp;
                         UINT canvasY = prevFrameTop + y_disp;
@@ -501,13 +500,13 @@ HRESULT Sprite::LoadGifAnimation(ID3D11Device* device, const std::wstring& fileP
             continue;
         }
 
-        hr = converter->Initialize(wicFrame.Get(), GUID_WICPixelFormat32bppBGRA, WICBitmapDitherTypeNone, nullptr, 0.f, WICBitmapPaletteTypeMedianCut);
+        hr = converter->Initialize(wicFrame.Get(), GUID_WICPixelFormat32bppPBGRA, WICBitmapDitherTypeNone, nullptr, 0.f, WICBitmapPaletteTypeMedianCut);
         if (FAILED(hr)) {
-            sprintf_s(a_msg, "LoadGifAnimation Warning: Initialize to BGRA for frame %u failed. Trying PBGRA. HRESULT: 0x%X.\n", i, hr);
+            sprintf_s(a_msg, "LoadGifAnimation Warning: Initialize to PBGRA for frame %u failed. Trying BGRA. HRESULT: 0x%X.\n", i, hr);
             OutputDebugStringA(a_msg);
-            hr = converter->Initialize(wicFrame.Get(), GUID_WICPixelFormat32bppPBGRA, WICBitmapDitherTypeNone, nullptr, 0.f, WICBitmapPaletteTypeMedianCut);
+            hr = converter->Initialize(wicFrame.Get(), GUID_WICPixelFormat32bppBGRA, WICBitmapDitherTypeNone, nullptr, 0.f, WICBitmapPaletteTypeMedianCut);
             if (FAILED(hr)) {
-                sprintf_s(a_msg, "LoadGifAnimation Error: Initialize to PBGRA for frame %u also failed. HRESULT: 0x%X. Skipping frame.\n", i, hr);
+                sprintf_s(a_msg, "LoadGifAnimation Error: Initialize to BGRA for frame %u also failed. HRESULT: 0x%X. Skipping frame.\n", i, hr);
                 OutputDebugStringA(a_msg);
                 continue;
             }
@@ -521,11 +520,7 @@ HRESULT Sprite::LoadGifAnimation(ID3D11Device* device, const std::wstring& fileP
             continue;
         }
 
-        sprintf_s(a_msg, "Frame %d: Compositing. TransFlag: %s, TransIdx: %u. Frame L%u T%u W%u H%u\n",
-            i, transparencyFlag ? "TRUE" : "FALSE", transparentColorIndex, frameLeft, frameTop, frameWidth, frameHeight);
-        OutputDebugStringA(a_msg);
-
-        for (UINT y_comp = 0; y_comp < frameHeight; ++y_comp) { // Renamed loop variables
+        for (UINT y_comp = 0; y_comp < frameHeight; ++y_comp) {
             for (UINT x_comp = 0; x_comp < frameWidth; ++x_comp) {
                 UINT canvasX = frameLeft + x_comp;
                 UINT canvasY = frameTop + y_comp;
@@ -537,12 +532,12 @@ HRESULT Sprite::LoadGifAnimation(ID3D11Device* device, const std::wstring& fileP
                     BYTE r = framePixelBuffer[framePixelIdx + 2];
                     BYTE a_from_wic = framePixelBuffer[framePixelIdx + 3];
 
-                    if (!transparencyFlag || a_from_wic != 0) {
-                        size_t canvasIdx = static_cast<size_t>(canvasY) * logicalScreenWidth + canvasX;
+                    size_t canvasIdx = static_cast<size_t>(canvasY) * logicalScreenWidth + canvasX;
+                    if (a_from_wic > 0) {
                         canvas[canvasIdx].b = b;
                         canvas[canvasIdx].g = g;
                         canvas[canvasIdx].r = r;
-                        canvas[canvasIdx].a = 255;
+                        canvas[canvasIdx].a = a_from_wic;
                     }
                 }
             }
@@ -553,7 +548,7 @@ HRESULT Sprite::LoadGifAnimation(ID3D11Device* device, const std::wstring& fileP
             d3dPixelBuffer[k * 4 + 0] = canvas[k].b;
             d3dPixelBuffer[k * 4 + 1] = canvas[k].g;
             d3dPixelBuffer[k * 4 + 2] = canvas[k].r;
-            d3dPixelBuffer[k * 4 + 3] = 0xFF;
+            d3dPixelBuffer[k * 4 + 3] = canvas[k].a;
         }
 
         if (i == 0 && (width_ == 0 || height_ == 0) && logicalScreenWidth > 0 && logicalScreenHeight > 0) {
@@ -566,8 +561,10 @@ HRESULT Sprite::LoadGifAnimation(ID3D11Device* device, const std::wstring& fileP
         D3D11_TEXTURE2D_DESC texDesc = {};
         texDesc.Width = logicalScreenWidth;
         texDesc.Height = logicalScreenHeight;
-        texDesc.MipLevels = 1; texDesc.ArraySize = 1; texDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
-        texDesc.SampleDesc.Count = 1; texDesc.SampleDesc.Quality = 0; texDesc.Usage = D3D11_USAGE_IMMUTABLE;
+        texDesc.MipLevels = 1; texDesc.ArraySize = 1;
+        texDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM_SRGB; // U¿yj formatu sRGB
+        texDesc.SampleDesc.Count = 1; texDesc.SampleDesc.Quality = 0;
+        texDesc.Usage = D3D11_USAGE_IMMUTABLE;
         texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 
         D3D11_SUBRESOURCE_DATA subresourceData = {};
@@ -584,20 +581,22 @@ HRESULT Sprite::LoadGifAnimation(ID3D11Device* device, const std::wstring& fileP
         gifFrameTextures_.push_back(d3dFrameTexture);
 
         D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-        srvDesc.Format = texDesc.Format; srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-        srvDesc.Texture2D.MostDetailedMip = 0; srvDesc.Texture2D.MipLevels = 1;
+        srvDesc.Format = texDesc.Format;
+        srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+        srvDesc.Texture2D.MostDetailedMip = 0;
+        srvDesc.Texture2D.MipLevels = 1;
         Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> frameSRV;
         hr = device->CreateShaderResourceView(d3dFrameTexture.Get(), &srvDesc, &frameSRV);
         if (FAILED(hr)) {
             sprintf_s(a_msg, "LoadGifAnimation Error: CreateShaderResourceView for frame %u failed with HRESULT: 0x%X. Skipping frame.\n", i, hr);
             OutputDebugStringA(a_msg);
-            gifFrameTextures_.pop_back(); // Remove the texture if SRV creation failed
+            gifFrameTextures_.pop_back();
             continue;
         }
         gifFrameSRVs_.push_back(frameSRV);
 
         if (i == 0 && !canvas.empty() && d3dPixelBuffer.size() >= 8) {
-            if (canvas.size() > 1 && d3dPixelBuffer.size() > 8) { // Check canvas has at least 2 pixels
+            if (canvas.size() > 1 && d3dPixelBuffer.size() > 8) {
                 sprintf_s(a_msg, "Canvas Frame 0, Pixel 0 (Final D3D BGRA): %02X %02X %02X %02X || P1: %02X %02X %02X %02X\n",
                     d3dPixelBuffer[0], d3dPixelBuffer[1], d3dPixelBuffer[2], d3dPixelBuffer[3],
                     d3dPixelBuffer[4], d3dPixelBuffer[5], d3dPixelBuffer[6], d3dPixelBuffer[7]);
@@ -618,6 +617,7 @@ HRESULT Sprite::LoadGifAnimation(ID3D11Device* device, const std::wstring& fileP
     }
     return S_OK;
 }
+
 void Sprite::Update(float deltaTime) {
     if (isAnimatedGif_ && !gifFrameSRVs_.empty() && !frameDelays_.empty() && gifFrameSRVs_.size() == frameDelays_.size()) {
         animationTimer_ += deltaTime;
