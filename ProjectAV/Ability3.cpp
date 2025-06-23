@@ -23,8 +23,17 @@ void Ability3::Update(float dt)
 {
     if (!wnd.CursorEnabled())
     {
+		holdSoundInterval -= dt;
         if (timer > 0.0f)
         {
+            if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+                if (holdSoundTimer <= 0.0f)
+                {
+                    pOwner->GetComponent<SoundEffectsPlayer>()->Play(3);
+
+                    holdSoundTimer = holdSoundInterval;
+                }
+            }
             Activated();
             timer -= dt;
             if (timer <= 0.0f)
@@ -74,6 +83,11 @@ void Ability3::Positioning()
 void Ability3::Pressed()
 {
     if (killsCount < 3) return;
+
+	if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+		pOwner->GetComponent<SoundEffectsPlayer>()->Play(0);
+	}
+
     killsCount = 0;
     timer = duration;
     cooldownTimer = cooldown;
@@ -83,6 +97,9 @@ void Ability3::Pressed()
 }
 void Ability3::Released()
 {
+    if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+        pOwner->GetComponent<SoundEffectsPlayer>()->Play(1);
+    }
 }
 void Ability3::Activated()
 {
@@ -119,6 +136,9 @@ void Ability3::Activated()
                 PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), direction * force * 0.04f);
             }
         }
+    }
+    if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+        pOwner->GetComponent<SoundEffectsPlayer>()->Play(2);
     }
 }
 

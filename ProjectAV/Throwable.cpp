@@ -27,8 +27,8 @@ void Throwable::OnCollisionEnter(Node* object)
 
 			float gain = std::clamp(volumeFactor, 0.0f, 1.0f);
 
-			int soundIndex = rand() % 5;
-			pOwner->GetComponent<SoundEffectsPlayer>()->Play(soundIndex);
+			int randSound = rand() % 5;
+			pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound);
 		}
 	}
 

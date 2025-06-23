@@ -133,8 +133,8 @@ void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 	{
 		if (stepSoundTimer <= 0.0f)
 		{
-			float p = (rand() % 4);
-			pOwner->GetComponent<SoundEffectsPlayer>()->Play(p);
+			float randSound = (rand() % 4);
+			pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound);
 			
 			stepSoundTimer = stepSoundInterval;
 		}

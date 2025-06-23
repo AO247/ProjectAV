@@ -32,8 +32,7 @@ void Ability6::Update(float dt)
             if (pOwner->GetComponent<SoundEffectsPlayer>()) {
                 if (holdSoundTimer <= 0.0f)
                 {
-                    float randSound = (rand() % 2) + 2;
-                    pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound);
+                    pOwner->GetComponent<SoundEffectsPlayer>()->Play(2);
 
                     holdSoundTimer = holdSoundInterval;
                 }

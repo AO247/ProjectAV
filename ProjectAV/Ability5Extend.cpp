@@ -77,8 +77,7 @@ void Ability5Extend::ApplyForce(Node* object, float dt) {
     if (pOwner->GetComponent<SoundEffectsPlayer>()) {
         if (holdSoundTimer <= 0.0f)
         {
-            float randSound = (rand() % 2) + 4;
-            pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound);
+            pOwner->GetComponent<SoundEffectsPlayer>()->Play(4);
 
             holdSoundTimer = holdSoundInterval;
         }

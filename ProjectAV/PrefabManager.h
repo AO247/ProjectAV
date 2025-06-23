@@ -1226,6 +1226,249 @@ public:
 
         return pNewNode;
     }
+
+    static Node* InstantiateSpawnRockBase(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 })
+    {
+        auto pNewNodeOwner = std::make_unique<Node>("SpawnRockBase", nullptr, "WALL");
+
+        pNewNodeOwner->AddComponent(
+            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\teleport\\t_podest.obj")
+        );
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        ModelComponent* model = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList modelTriangles = PhysicsCommon::MakeTriangleList(model->GetAllTriangles());
+        MeshShapeSettings modelMeshSettings(modelTriangles);
+        Shape::ShapeResult modelMeshCreationResult = modelMeshSettings.Create();
+        ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
+        ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
+        modelMeshShape = modelScaling.Create().Get();
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
+        pNewNodeOwner->AddComponent(
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
+        );
+
+        pNewNodeOwner->SetLocalPosition(position);
+        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+        pNewNodeOwner->SetLocalRotation(rotation);
+
+        Node* pNewNode = pNewNodeOwner.get();
+        parentNode->AddChild(std::move(pNewNodeOwner));
+
+        return pNewNode;
+    }
+    static Node* InstantiateSpawnRock1(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 })
+    {
+        auto pNewNodeOwner = std::make_unique<Node>("SpawnRock1", nullptr, "WALL");
+
+        pNewNodeOwner->AddComponent(
+            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\teleport\\t_skala_1.obj")
+        );
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        ModelComponent* model = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList modelTriangles = PhysicsCommon::MakeTriangleList(model->GetAllTriangles());
+        MeshShapeSettings modelMeshSettings(modelTriangles);
+        Shape::ShapeResult modelMeshCreationResult = modelMeshSettings.Create();
+        ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
+        ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
+        modelMeshShape = modelScaling.Create().Get();
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
+        pNewNodeOwner->AddComponent(
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
+        );
+
+        pNewNodeOwner->SetLocalPosition(position);
+        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+        pNewNodeOwner->SetLocalRotation(rotation);
+
+        Node* pNewNode = pNewNodeOwner.get();
+        parentNode->AddChild(std::move(pNewNodeOwner));
+
+        return pNewNode;
+    }
+    static Node* InstantiateSpawnRock2(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 })
+    {
+        auto pNewNodeOwner = std::make_unique<Node>("SpawnRock2", nullptr, "WALL");
+
+        pNewNodeOwner->AddComponent(
+            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\teleport\\t_skala_2.obj")
+        );
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        ModelComponent* model = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList modelTriangles = PhysicsCommon::MakeTriangleList(model->GetAllTriangles());
+        MeshShapeSettings modelMeshSettings(modelTriangles);
+        Shape::ShapeResult modelMeshCreationResult = modelMeshSettings.Create();
+        ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
+        ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
+        modelMeshShape = modelScaling.Create().Get();
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
+        pNewNodeOwner->AddComponent(
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
+        );
+
+        pNewNodeOwner->SetLocalPosition(position);
+        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+        pNewNodeOwner->SetLocalRotation(rotation);
+
+        Node* pNewNode = pNewNodeOwner.get();
+        parentNode->AddChild(std::move(pNewNodeOwner));
+
+        return pNewNode;
+    }
+    /*static Node* InstantiateSpawnRock3(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 })
+    {
+        auto pNewNodeOwner = std::make_unique<Node>("SpawnRock3", nullptr, "WALL");
+
+        pNewNodeOwner->AddComponent(
+            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\teleport\\t_skala_3.obj")
+        );
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        ModelComponent* model = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList modelTriangles = PhysicsCommon::MakeTriangleList(model->GetAllTriangles());
+        MeshShapeSettings modelMeshSettings(modelTriangles);
+        Shape::ShapeResult modelMeshCreationResult = modelMeshSettings.Create();
+        ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
+        ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
+        modelMeshShape = modelScaling.Create().Get();
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
+        pNewNodeOwner->AddComponent(
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
+        );
+
+        pNewNodeOwner->SetLocalPosition(position);
+        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+        pNewNodeOwner->SetLocalRotation(rotation);
+
+        Node* pNewNode = pNewNodeOwner.get();
+        parentNode->AddChild(std::move(pNewNodeOwner));
+
+        return pNewNode;
+    }
+    */
+    static Node* InstantiateSpawnRock4(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 })
+    {
+        auto pNewNodeOwner = std::make_unique<Node>("SpawnRock4", nullptr, "WALL");
+
+        pNewNodeOwner->AddComponent(
+            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\teleport\\t_skala_4.obj")
+        );
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        ModelComponent* model = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList modelTriangles = PhysicsCommon::MakeTriangleList(model->GetAllTriangles());
+        MeshShapeSettings modelMeshSettings(modelTriangles);
+        Shape::ShapeResult modelMeshCreationResult = modelMeshSettings.Create();
+        ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
+        ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
+        modelMeshShape = modelScaling.Create().Get();
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
+        pNewNodeOwner->AddComponent(
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
+        );
+
+        pNewNodeOwner->SetLocalPosition(position);
+        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+        pNewNodeOwner->SetLocalRotation(rotation);
+
+        Node* pNewNode = pNewNodeOwner.get();
+        parentNode->AddChild(std::move(pNewNodeOwner));
+
+        return pNewNode;
+    }
+    /*static Node* InstantiateSpawnRock5(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 })
+    {
+        auto pNewNodeOwner = std::make_unique<Node>("SpawnRock5", nullptr, "WALL");
+
+        pNewNodeOwner->AddComponent(
+            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\teleport\\t_skala_5.obj")
+        );
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        ModelComponent* model = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList modelTriangles = PhysicsCommon::MakeTriangleList(model->GetAllTriangles());
+        MeshShapeSettings modelMeshSettings(modelTriangles);
+        Shape::ShapeResult modelMeshCreationResult = modelMeshSettings.Create();
+        ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
+        ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
+        modelMeshShape = modelScaling.Create().Get();
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
+        pNewNodeOwner->AddComponent(
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
+        );
+
+        pNewNodeOwner->SetLocalPosition(position);
+        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+        pNewNodeOwner->SetLocalRotation(rotation);
+
+        Node* pNewNode = pNewNodeOwner.get();
+        parentNode->AddChild(std::move(pNewNodeOwner));
+
+        return pNewNode;
+    }
+    static Node* InstantiateSpawnRock6(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 })
+    {
+        auto pNewNodeOwner = std::make_unique<Node>("SpawnRock6", nullptr, "WALL");
+
+        pNewNodeOwner->AddComponent(
+            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\teleport\\t_skala_6.obj")
+        );
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        ModelComponent* model = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList modelTriangles = PhysicsCommon::MakeTriangleList(model->GetAllTriangles());
+        MeshShapeSettings modelMeshSettings(modelTriangles);
+        Shape::ShapeResult modelMeshCreationResult = modelMeshSettings.Create();
+        ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
+        ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
+        modelMeshShape = modelScaling.Create().Get();
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
+        pNewNodeOwner->AddComponent(
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
+        );
+
+        pNewNodeOwner->SetLocalPosition(position);
+        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+        pNewNodeOwner->SetLocalRotation(rotation);
+
+        Node* pNewNode = pNewNodeOwner.get();
+        parentNode->AddChild(std::move(pNewNodeOwner));
+
+        return pNewNode;
+    }*/
+    static Node* InstantiateSpawnRock7(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 })
+    {
+        auto pNewNodeOwner = std::make_unique<Node>("SpawnRock7", nullptr, "WALL");
+
+        pNewNodeOwner->AddComponent(
+            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\teleport\\t_skala_7.obj")
+        );
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        ModelComponent* model = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList modelTriangles = PhysicsCommon::MakeTriangleList(model->GetAllTriangles());
+        MeshShapeSettings modelMeshSettings(modelTriangles);
+        Shape::ShapeResult modelMeshCreationResult = modelMeshSettings.Create();
+        ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
+        ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
+        modelMeshShape = modelScaling.Create().Get();
+        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
+        pNewNodeOwner->AddComponent(
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
+        );
+
+        pNewNodeOwner->SetLocalPosition(position);
+        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+        pNewNodeOwner->SetLocalRotation(rotation);
+
+        Node* pNewNode = pNewNodeOwner.get();
+        parentNode->AddChild(std::move(pNewNodeOwner));
+
+        return pNewNode;
+    }
+
 #pragma endregion
 
 #pragma region THROWABLE
@@ -2091,12 +2334,14 @@ public:
 
         Node* pNewNode = pNewNodeOwner.get();
 
-        InstantiateColumn(pNewNode, Vector3(21.0f, 0.0f, 20.0f), 4.0f);
-        InstantiateColumn(pNewNode, Vector3(22.0f, 0.0f, -19.0f), 4.0f);
-        InstantiateColumn(pNewNode, Vector3(-14.0f, 0.0f, 20.0f), 4.0f);
-        InstantiateColumn(pNewNode, Vector3(-14.0f, 0.0f, -19.0f), 4.0f);
-		InstantiateBaseColumn(pNewNode, Vector3(0.00f, -3.10f, 0.00f), 4.0f, 1.0f);
-        //InstantiateAnimationTest(pNewNode, Vector3(0.0f, 2.0f, 0.0f), 1.0f);
+        InstantiateSpawnRock1(pNewNode, Vector3(20.20f, 7.00f, 21.40f), 1.0f, Vector3(0.00f, -0.42f, 0.00f));
+        InstantiateSpawnRock2(pNewNode, Vector3(21.80f, 6.00f, -18.40f), 1.0f, Vector3(0.00f, 0.21f, 0.00f));
+        //InstantiateSpawnRock3(pNewNode, Vector3(21.0f, 0.0f, 20.0f), 1.0f);
+        InstantiateSpawnRock4(pNewNode, Vector3(-15.30f, 6.00f, -17.40f), 1.0f, Vector3(0.00f, -0.99f, 0.00f));
+        //InstantiateSpawnRock5(pNewNode, Vector3(21.0f, 0.0f, 20.0f), 1.0f);
+        //InstantiateSpawnRock6(pNewNode, Vector3(21.0f, 0.0f, 20.0f), 1.0f);
+        InstantiateSpawnRock7(pNewNode, Vector3(-15.70f, 6.00f, 24.50f), 1.0f, Vector3(-0.26f, 0.00f, -0.18f));
+		InstantiateSpawnRockBase(pNewNode, Vector3(0.00f, 0.00f, 0.00f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
 
 
         pNewNode->AddChild(std::move(leftPoint));
@@ -2559,10 +2804,11 @@ public:
 
         Node* pNewNode = pNewNodeOwner.get();
 
+        InstantiateRock1(pNewNode, Vector3(-12.30f, 0.10f, 48.80f), 1.0f, Vector3(-0.00f, 1.40f, 0.70f));
         InstantiateRock2(pNewNode, Vector3(-30.20f, 0.00f, 33.40f), 1.5f);
-        InstantiateRock2(pNewNode, Vector3(-37.00f, 0.00f, 21.00f), 1.2f, Vector3(0.0f, 1.57f, 0.0f));
+        InstantiateRock2(pNewNode, Vector3(-33.50f, 0.60f, 23.00f), 1.4f, Vector3(0.0f, 0.38f, 0.0f));
         InstantiateRock3(pNewNode, Vector3(27.30f, 0.00f, -30.70f), 1.0f);
-        InstantiateRock5(pNewNode, Vector3(-36.40f, 0.00f, 10.20f), 1.0f);
+        InstantiateRock5(pNewNode, Vector3(-35.80f, -0.70f, 14.10f), 1.2f, Vector3(0.00f, -0.26f, 0.00f));
         InstantiateThrowable(pNewNode, Vector3(16.72f, 1.19f, 13.86f), 0.4f);
         InstantiateThrowable(pNewNode, Vector3(-10.17f, 1.21f, -5.14f), 0.4f);
         InstantiateThrowable(pNewNode, Vector3(-9.81f, 9.06f, 38.49f), 0.4f);
@@ -2704,8 +2950,8 @@ public:
         InstantiateThrowable(pNewNode, Vector3(29.13f, 2.17f, 14.48f), 0.4f);
         InstantiateThrowable(pNewNode, Vector3(44.39f, 1.72f, -17.77f), 0.4f);
         InstantiateThrowable(pNewNode, Vector3(-1.88f, 1.72f, 15.39f), 0.4f);
-        InstantiateRock3(pNewNode, Vector3(-26.10f, 0.00f, -31.90f), 0.7f);
-        InstantiateRock3(pNewNode, Vector3(-43.60f, 0.00f, 25.60f), 0.6f, Vector3(0.00f, -1.22f, 0.00f));
+        InstantiateRock3(pNewNode, Vector3(-28.00f, 0.00f, -32.10f), 0.7f);
+        InstantiateRock3(pNewNode, Vector3(-42.70f, 0.00f, 24.60f), 0.8f, Vector3(0.00f, -1.66f, 0.00f));
         InstantiateNewColumn(pNewNode, Vector3(52.40f, 0.00f, 18.61f), 1.0f);
         InstantiatePot4(pNewNode, Vector3(30.05f, 0.64f, -31.02f), 1.0f);
         InstantiateMushroom1(pNewNode, Vector3(30.90f, 0.00f, 25.20f), 0.4f, Vector3(-0.00f, 1.15f, 0.00f));
@@ -2846,13 +3092,13 @@ public:
         InstantiateNewColumn(pNewNode, Vector3(52.40f, 0.00f, 18.61f), 1.0f);
 		InstantiateRock1(pNewNode, Vector3(18.60f, -0.60f, 38.30f), 0.6f, Vector3(0.00f, 1.13f, -0.00f));
 		InstantiateRock2(pNewNode, Vector3(61.60f, -1.00f, -23.20f), 0.8f, Vector3(-0.26f, -1.51f, 0.00f));
-        InstantiateRock3(pNewNode, Vector3(-47.95f, 0.34f, -23.22f), 1.0f);
-        InstantiateRock5(pNewNode, Vector3(-21.45f, -0.06f, -28.62f), 1.0f, Vector3(0.00f, -0.04f, 0.00f));
+        InstantiateRock3(pNewNode, Vector3(-49.65f, 0.34f, -20.32f), 1.0f, Vector3(0.00f, 0.75f, 0.00f));
+        InstantiateRock5(pNewNode, Vector3(-30.25f, -0.06f, -23.32f), 1.4f, Vector3(0.00f, 0.38f, 0.00f));
         InstantiateMushroom1(pNewNode, Vector3(46.20f, 0.00f, -1.60f), 0.4f, Vector3(-0.00f, 3.14f, 0.00f));
         InstantiateMushroom2(pNewNode, Vector3(-41.90f, 21.00f, -12.60f), 0.4f, Vector3(0.00f, -1.05f, 0.00f));
         InstantiateMushroom2(pNewNode, Vector3(-10.10f, 0.00f, -3.10f), 0.4f);
         InstantiateMushroom3(pNewNode, Vector3(-12.80f, 0.00f, -6.80f), 0.4f);
-        InstantiatePlatform5(pNewNode, Vector3(-34.83f, 1.20f, 5.80f), 1.0f, Vector3(0.00f, 0.18f, 0.00f));
+        InstantiatePlatform5(pNewNode, Vector3(-36.83f, 1.20f, 7.90f), 1.0f, Vector3(0.00f, 0.27f, 0.00f));
         InstantiateWall3(pNewNode, Vector3(32.60f, 0.00f, -29.90f), 1.0f, Vector3(0.00f, 1.41f, 0.0f));
         InstantiateWall3(pNewNode, Vector3(46.70f, 0.00f, 31.90f), 1.0f, Vector3(0.00f, -1.29f, 0.0f));
 
@@ -2983,14 +3229,14 @@ public:
         InstantiateThrowable(pNewNode, Vector3(56.80f, 1.10f, -9.90f), 0.4f);
         InstantiateThrowable(pNewNode, Vector3(-3.29f, 1.10f, 13.21f), 0.4f);
         InstantiateStoneStack1(pNewNode, Vector3(27.43f, 0.0f, 23.43f), 1.0f);
-        InstantiateRock3(pNewNode, Vector3(-46.85f, 0.64f, -25.32f), 1.0f);
-		InstantiateRock3(pNewNode, Vector3(-2.85f, -0.66f, 40.08f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
-        InstantiateRock5(pNewNode, Vector3(-17.35f, -0.26f, -29.62f), 1.0f, Vector3(0.00f, 0.19f, 0.00f));
+        InstantiateRock3(pNewNode, Vector3(-49.45f, 0.64f, -21.82f), 1.3f, Vector3(0.30f, 0.12f, 0.00f));
+		InstantiateRock3(pNewNode, Vector3(-4.05f, -0.66f, 41.58f), 1.0f, Vector3(0.00f, 0.73f, 0.00f));
+        InstantiateRock5(pNewNode, Vector3(-31.95f, -0.26f, -24.12f), 1.1f, Vector3(0.00f, 0.45f, 0.00f));
         InstantiateRockDouble(pNewNode, Vector3(41.15f, 0.24f, -25.82f), 1.0f, Vector3(0.00f, 1.54f, 0.00f));
-        InstantiatePlatform5(pNewNode, Vector3(-35.23f, 1.20f, 3.40f), 1.0f, Vector3(0.00f, 0.18f, 0.00f));
+        InstantiatePlatform5(pNewNode, Vector3(-36.73f, 1.20f, 8.80f), 1.0f, Vector3(0.00f, 0.32f, 0.00f));
         InstantiateFire1(pNewNode, Vector3(25.70f, 0.50f, 2.20f), 1.0f, Vector3(-0.00f, 3.14f, 0.00f));
-        InstantiateColumn2(pNewNode, Vector3(-39.60f, 20.50f, -12.60f), 1.0f, Vector3(0.00f, -1.05f, 0.00f));
-        InstantiateSpike1(pNewNode, Vector3(-16.20f, 0.10f, -2.50f), 1.0f, Vector3(0.00f, -0.21f, 0.09f));
+        InstantiateColumn2(pNewNode, Vector3(-39.50f, 20.70f, -6.80f), 1.0f, Vector3(0.00f, -1.05f, 0.00f));
+        InstantiateSpike1(pNewNode, Vector3(-18.90f, 0.10f, 1.40f), 1.0f, Vector3(0.00f, 0.02f, 0.14f));
         InstantiateWall1(pNewNode, Vector3(14.40f, 0.00f, 42.80f), 1.0f, Vector3(0.00f, -1.48f, 0.0f));
 
         auto spawnPoint1 = std::make_unique<Node>("SpawnPoint 1", pNewNodeOwner.get());
@@ -3126,9 +3372,11 @@ public:
         InstantiateRockDouble(pNewNode, Vector3(48.75f, 0.64f, -24.12f), 1.0f, Vector3(0.00f, -1.64f, 0.00f));
         InstantiateRock2(pNewNode, Vector3(-12.85f, 0.64f, 42.28f), 1.0f, Vector3(0.00f, -0.78f, 0.0f));
         InstantiateRock2(pNewNode, Vector3(-33.25f, 0.64f, 39.08f), 1.0f, Vector3(0.00f, -1.64f, 0.0f));
+        InstantiateRock1(pNewNode, Vector3(-40.35f, 1.04f, 29.38f), 0.7f, Vector3(1.03f, -1.19f, -0.21f));
+        InstantiateRock4(pNewNode, Vector3(-24.65f, -4.06f, 41.58f), 0.8f, Vector3(0.00f, 0.30f, 0.0f));
         InstantiatePlatform1(pNewNode, Vector3(-40.73f, -0.10f, 7.40f), 1.0f, Vector3(0.00f, 0.18f, 0.00f));
         InstantiatePlatform1(pNewNode, Vector3(-25.13f, -0.20f, 26.20f), 1.0f, Vector3(0.00f, 1.09f, 0.00f));
-        InstantiatePlatform1(pNewNode, Vector3(1.77f, -0.20f, 30.40f), 1.0f, Vector3(0.00f, 1.37f, 0.00f));
+        InstantiatePlatform1(pNewNode, Vector3(1.47f, -0.20f, 32.70f), 1.0f, Vector3(0.00f, 1.58f, 0.00f));
 
         auto spawnPoint1 = std::make_unique<Node>("SpawnPoint 1", pNewNodeOwner.get());
         auto spawnPoint2 = std::make_unique<Node>("SpawnPoint 2", pNewNodeOwner.get());
@@ -3259,7 +3507,7 @@ public:
         InstantiateThrowable(pNewNode, Vector3(-0.37f, 1.81f, 23.97f), 0.4f);
         InstantiateThrowable(pNewNode, Vector3(3.77f, 13.25f, 6.87f), 0.4f);
         InstantiateWall2(pNewNode, Vector3(-41.65f, 0.14f, 11.98f), 1.0f, Vector3(0.00f, 0.12f, 0.00f));
-        InstantiateRock3(pNewNode, Vector3(53.85f, -0.26f, 29.08f), 1.0f, Vector3(0.00f, 1.74f, 0.00f));
+        InstantiateRock3(pNewNode, Vector3(54.95f, -0.26f, 26.68f), 1.0f, Vector3(0.00f, 2.44f, 0.00f));
         InstantiateRock3(pNewNode, Vector3(-44.45f, -0.26f, -14.62f), 1.0f, Vector3(0.00f, 0.28f, 0.00f));
         InstantiateRock1(pNewNode, Vector3(-0.95f, -0.26f, 6.38f), 0.8f, Vector3(0.00f, 0.28f, 0.00f));
         InstantiateWall1(pNewNode, Vector3(15.55f, 0.24f, -47.92f), 1.0f, Vector3(0.00f, -1.64f, 0.00f));
@@ -3400,7 +3648,7 @@ public:
         InstantiateWall2(pNewNode, Vector3(10.65f, 0.04f, -47.82f), 1.0f, Vector3(0.00f, -1.64f, 0.00f));
         InstantiateRock3(pNewNode, Vector3(51.65f, -0.26f, 25.68f), 1.0f, Vector3(0.00f, 0.19f, 0.00f));
         InstantiateRock3(pNewNode, Vector3(-41.15f, -0.26f, -24.22f), 1.0f, Vector3(0.00f, 0.68f, 0.00f));
-        InstantiateRock1(pNewNode, Vector3(50.45f, -0.36f, 12.58f), 1.0f, Vector3(0.00f, 0.31f, 0.00f));
+        InstantiateRock1(pNewNode, Vector3(50.65f, 0.54f, 13.18f), 1.0f, Vector3(0.00f, 1.06f, 0.00f));
         InstantiateRuin3(pNewNode, Vector3(7.75f, 0.44f, 9.18f), 1.0f, Vector3(0.00f, -1.64f, 0.0f));
         InstantiateStoneStack1(pNewNode, Vector3(1.97f, 2.10f, 31.30f), 1.0f);
         InstantiateStoneStack1(pNewNode, Vector3(31.37f, 1.20f, -33.20f), 1.0f);
@@ -3535,9 +3783,13 @@ public:
         InstantiateThrowable(pNewNode, Vector3(46.30f, 1.19f, -12.50f), 0.4f);
         InstantiateThrowable(pNewNode, Vector3(26.39f, 1.19f, -33.83f), 0.4f);
         InstantiateThrowable(pNewNode, Vector3(-41.25f, 1.20f, 5.77f), 0.4f);
+        InstantiateRock1(pNewNode, Vector3(18.05f, -1.56f, 44.48f), 1.0f, Vector3(0.19f, 1.95f, 0.72f));
 		InstantiateRock2(pNewNode, Vector3(1.75f, -1.56f, 35.58f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
         InstantiateRock3(pNewNode, Vector3(19.90f, 0.74f, 42.90f), 0.7f, Vector3(0.00f, -2.64f, 0.0f));
-        InstantiateRockDouble(pNewNode, Vector3(50.20f, 0.34f, -2.20f), 0.7f, Vector3(0.00f, 0.0f, 0.00f));
+        InstantiateRock3(pNewNode, Vector3(26.50f, -1.96f, 28.70f), 0.9f, Vector3(0.00f, -2.03f, 0.0f));
+        InstantiateRock4(pNewNode, Vector3(27.10f, 0.14f, 47.50f), 0.8f, Vector3(0.00f, -0.23f, 0.00f));
+        InstantiateRock5(pNewNode, Vector3(16.30f, 0.94f, 36.40f), 0.8f, Vector3(0.00f, 0.79f, 0.00f));
+        InstantiateRockDouble(pNewNode, Vector3(50.50f, 0.34f, 1.70f), 0.7f, Vector3(0.00f, -0.14f, 0.00f));
         InstantiateRuin3(pNewNode, Vector3(8.40f, 5.64f, 45.10f), 1.0f, Vector3(-0.54f, 1.77f, -3.14f));
 		InstantiateRuin3(pNewNode, Vector3(8.80f, 0.44f, 31.10f), 0.9f, Vector3(0.00f, -1.54f, 0.00f));
         InstantiateWall3(pNewNode, Vector3(22.95f, 0.04f, 21.28f), 1.0f, Vector3(0.00f, -0.90f, 0.00f));
@@ -4309,7 +4561,7 @@ public:
         auto spawnPoint3 = std::make_unique<Node>("SpawnPoint 3", pNewNodeOwner.get());
         auto spawnPoint4 = std::make_unique<Node>("SpawnPoint 4", pNewNodeOwner.get());
 
-       /* spawnPoint1->AddComponent(
+        /*spawnPoint1->AddComponent(
             std::make_unique<ModelComponent>(spawnPoint1.get(), wind->Gfx(), "Models\\kolumna\\kolumna.obj")
         );
         spawnPoint1->GetComponent<ModelComponent>()->LinkTechniques(*rg);
@@ -4327,7 +4579,7 @@ public:
         spawnPoint4->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
 
 
-        spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(19.70f, 5.60f, 5.00f));
+        spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(19.70f, 9.00f, 5.00f));
         spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(-13.40f, 2.90f, 2.40f));
 		spawnPoint3->SetLocalPosition(DirectX::XMFLOAT3(21.90f, 2.00f, -16.60f));
 		spawnPoint4->SetLocalPosition(DirectX::XMFLOAT3(-7.00f, 3.40f, -19.50f));
