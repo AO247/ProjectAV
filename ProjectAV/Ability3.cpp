@@ -24,16 +24,17 @@ void Ability3::Update(float dt)
     if (!wnd.CursorEnabled())
     {
 		holdSoundTimer -= dt;
+        //DŸwiêk trzymania  trochê nie wiem gdzie powinien byæ i brakuje warunku isPressed
+        /*if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+            if (holdSoundTimer <= 0.0f)
+            {
+                pOwner->GetComponent<SoundEffectsPlayer>()->Play(3, 1.0f, false);
+
+                holdSoundTimer = holdSoundInterval;
+            }
+        }*/
         if (timer > 0.0f)
         {
-            if (pOwner->GetComponent<SoundEffectsPlayer>()) {
-                if (holdSoundTimer <= 0.0f)
-                {
-                    pOwner->GetComponent<SoundEffectsPlayer>()->Play(3, 1.0f, false);
-
-                    holdSoundTimer = holdSoundInterval;
-                }
-            }
             Activated();
             timer -= dt;
             if (timer <= 0.0f)
@@ -97,7 +98,9 @@ bool Ability3::Pressed()
 }
 void Ability3::Released()
 {
+    //DŸwiêk rzutu
     if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+        pOwner->GetComponent<SoundEffectsPlayer>()->Stop(3);
         pOwner->GetComponent<SoundEffectsPlayer>()->Play(1, 1.0f, false);
     }
 }
@@ -137,9 +140,12 @@ void Ability3::Activated()
             }
         }
     }
-    if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+    //DŸwiêk koñczoñcy czarn¹ dziurê, ma byæ zagrany raz i nie jest zabezpieczony przed
+    // wielokrotnym uruchomieniem wiêc musi byæ w miejscu które wywo³uje siê tylko raz
+
+    /*if (pOwner->GetComponent<SoundEffectsPlayer>()) {
         pOwner->GetComponent<SoundEffectsPlayer>()->Play(2, 1.0f, false);
-    }
+    }*/
 }
 
 void Ability3::Cooldowns(float dt)

@@ -101,6 +101,7 @@ void Ability4::Released()
     if (pressedTime < 0.2f || selectedNode == nullptr)
     {
         pressedTime = 0.0f;
+		pOwner->GetComponent<SoundEffectsPlayer>()->Stop(2);
         baseAbility->Pressed();
     }
     else
@@ -163,6 +164,11 @@ void Ability4::Released()
         PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(selectedNode->GetComponent<Rigidbody>()->GetBodyID(), Vec3(0.0f, 0.0f, 0.0f));
         PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(selectedNode->GetComponent<Rigidbody>()->GetBodyID(), Vec3(direction.x, direction.y, direction.z) * force);
 
+        if (baseAbility->GetOwner()->GetComponent<SoundEffectsPlayer>()) {
+            pOwner->GetComponent<SoundEffectsPlayer>()->Stop(2);
+            float randSound = rand() % 4;
+            baseAbility->GetOwner()->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f);
+        }
     }
     cooldownTimer = cooldown;
     abilityReady = false;

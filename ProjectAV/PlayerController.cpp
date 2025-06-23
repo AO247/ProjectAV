@@ -518,8 +518,17 @@ void PlayerController::KeyboardInput()
 
     if (wnd.kbd.IsKeyPressed('Q'))
     {
-        abilitySlot3->GetComponent<Ability>()->Pressed();
+		//DŸwiêk cooldownu dla czarnej dziury, ale przez IsKeyPressed odtwarza siê w ka¿dej klatke kiedy jest wcisniête,
+        // a nie tylko w momencie wcisniêcia a¿ do momentu zwolnienia
+
+        /*abilitySlot3->GetComponent<Ability>()->Pressed();
+        if (!abilitySlot3->GetComponent<Ability>()->Pressed())
+        {
+            int randSound = rand() % 2 + 12;
+            pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f, false);
+        }*/
 	}
+
 
 
     moveDirection = Vector3(0.0f, 0.0f, 0.0f);

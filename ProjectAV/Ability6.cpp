@@ -163,6 +163,7 @@ void Ability6::Released()
     leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 4.0f });
     timeToChange = 0.3f;
    
+	pOwner->GetComponent<SoundEffectsPlayer>()->Stop(2);
     baseAbility->Pressed();
 
     if (pullingParticles != nullptr)
