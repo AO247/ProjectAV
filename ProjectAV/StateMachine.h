@@ -34,6 +34,7 @@ public:
 	float stunTime = 1.0f;
 	float stopTime = 1.0f;
 
+	float hitted = true;
 	bool isFlying = false;
 	bool isDead = false;
 	bool canDropPills = true;

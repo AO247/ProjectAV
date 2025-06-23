@@ -56,6 +56,8 @@ StateMachine::~StateMachine()
 }
 void StateMachine::Stun(float time)
 {
+	// dŸwiêk stuna 
+	// zatrzymanie w miejscu
 	stunTime = time;
 	RequestStateChange(StateType::STUN);
 }
@@ -69,9 +71,14 @@ void StateMachine::Update(float dt)
 	if (timer < 2.0f && canDropPills)
 	{
 		timer += dt;
-		pOwner->SetWorldPosition(basePos);
+		//pOwner->SetWorldPosition(basePos);
 		eatedPills = false;
 		pOwner->GetComponent<Health>()->currentHealth = pOwner->GetComponent<Health>()->maxHealth;
+	}
+
+	if (hitted)
+	{
+
 	}
 
 	if (currentState)
@@ -90,7 +97,7 @@ void StateMachine::Update(float dt)
 		}
 		
 	}
-	if (pOwner->GetLocalPosition().y < -50.0f && timer >= 2.0f)
+	if (pOwner->GetLocalPosition().y < -50.0f)
 	{
 		pOwner->Destroy();
 	}
@@ -223,7 +230,7 @@ void StateMachine::Die()
 			}
 		}
 		pOwner->GetComponent<SoundEffectsPlayer>()->StopAll();
-		StaticSoundPlayer::Get().Play("Sounds\\player\\damage1.ogg", pOwner->GetWorldPosition(), 1.0f);
+		StaticSoundPlayer::Get().Play("Sounds\\player\\damage1.wav", pOwner->GetWorldPosition(), 1.0f);
 		pOwner->Destroy();
 	}
 }

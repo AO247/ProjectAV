@@ -709,7 +709,7 @@ void LevelGenerator::SpawnEnemies()
 
             if (randEnemy == 0)
             {
-                enemy = PrefabManager::InstantiateMageEnemy(pOwner, Vector3(0.0f, 0.0f, 0.0f), 1.9f);
+				enemy = PrefabManager::InstantiateMageEnemy(pOwner, Vector3(0.0f, 0.0f, 0.0f), 1.9f);
                 enemy->SetWorldPosition(pos);
             }
             else if (randEnemy == 1)
@@ -717,7 +717,6 @@ void LevelGenerator::SpawnEnemies()
                 enemy = PrefabManager::InstantiateFlyingEnemy(pOwner, Vector3(0.0f, 0.0f, 0.0f), 1.6f);
                 enemy->SetWorldPosition(pos);
             }
-
 
             numberOfHardEnemies--;
         }

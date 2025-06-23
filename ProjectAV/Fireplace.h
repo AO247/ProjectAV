@@ -13,7 +13,7 @@ public:
 	Fireplace(Node* owner, std::string tag = "FIRE");
 	virtual ~Fireplace() = default;
 	virtual void Update(float dt) override;
-	void OnTriggerStay(Node* other) override;
+	void OnTriggerStay(const std::vector<Node*> others) override;
 	virtual void DrawImGuiControls() override;
 	float activeTime = 5.0f;
 	float cooldownTime = 5.0f;

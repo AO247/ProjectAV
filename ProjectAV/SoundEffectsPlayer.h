@@ -21,6 +21,7 @@ public:
 	float volumeGlobal = 0.7f;
 	float volumePos = 0.7f;
 	float volumePlayer = 0.4f;
+	float volumeGlobal = 0.7f;
 
 private:
 	std::vector<std::string> m_soundPlaylist;

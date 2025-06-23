@@ -15,16 +15,19 @@ void SpawnAttack::Attack(float dt)
 	AnimationComponent* animComp = pOwner->GetComponent<AnimationComponent>();
 
 	Vector3 playerPos = player->GetWorldPosition();
+	if (undercover)
+	{
+		Vector3 playerPos = player->GetWorldPosition();
 
-	sm::Vector3 facingDirection = sm::Vector3(playerPos)
-		- sm::Vector3(pOwner->GetWorldPosition());
-	facingDirection.Normalize();
+		sm::Vector3 facingDirection = sm::Vector3(playerPos)
+			- sm::Vector3(pOwner->GetWorldPosition());
+		facingDirection.Normalize();
 
-	float targetYaw = atan2f(facingDirection.x, facingDirection.z);
+		float targetYaw = atan2f(facingDirection.x, facingDirection.z);
 
-	Quat q = Quat::sEulerAngles(Vec3(0.0f, targetYaw, 0.0f));
-	PhysicsCommon::physicsSystem->GetBodyInterface().SetRotation(pOwner->GetComponent<Rigidbody>()->GetBodyID(), q, EActivation::Activate);
-
+		Quat q = Quat::sEulerAngles(Vec3(0.0f, targetYaw, 0.0f));
+		PhysicsCommon::physicsSystem->GetBodyInterface().SetRotation(pOwner->GetComponent<Rigidbody>()->GetBodyID(), q, EActivation::Activate);
+	}
 	timer += dt;
 	if (timer >= cooldownTime)
 	{
@@ -43,6 +46,12 @@ void SpawnAttack::Attack(float dt)
 			animComp->PlayAnimation(EnemyAnimationIndices::MAGE_ATTACK4, 0.5f, false);
 		}
 
+		if (pOwner->GetComponent<SoundEffectsPlayer>())
+		{
+			float randSound = (rand() % 4 + 4);
+			pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound);
+		}
+
 		timer = 0.0f;
 		endAttack = false;
 		Vector3 pos = pOwner->GetLocalPosition();
@@ -51,18 +60,6 @@ void SpawnAttack::Attack(float dt)
 		enemy->MoveToTop();
 	}
 
-	attackSoundTimer -= dt;
-
-	if (pOwner->GetComponent<SoundEffectsPlayer>())
-	{
-		if (attackSoundTimer <= 0.0f)
-		{
-			float randSound = (rand() % 4 + 4);
-			pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound);
-
-			attackSoundTimer = attackSoundInterval;
-		}
-	}
 }
 
 

@@ -21,30 +21,42 @@ void BoomAttack::Attack(float dt)
 	if (timer >= boomTime)
 	{
 		timer = 0.0f;
-		attacked = true;
+		Boom();
+		/*if (pOwner->GetComponent<SoundEffectsPlayer>())
+		{
+			float randSound = (rand() % 4 + 4);
+			pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound);
+		}*/
 	}
 
 }
-void BoomAttack::OnTriggerStay(Node* object)
+
+void BoomAttack::Boom()
 {
-	if (!attacked) return;
-	if (object == nullptr) return;
-	if (object->tag == "PLAYER" || object->tag == "ENEMY" || object->tag == "STONE")
+	for (int i = 0; i < objects.size(); i++)
 	{
-		Vector3 currentPos = pOwner->GetWorldPosition();
-		Vector3 objPos = object->GetWorldPosition();
-		Vector3 direction = objPos - currentPos;
-		float power = knockRange - direction.Length();
-		direction.Normalize();
+		if (objects[i] == nullptr) return;
+		if (objects[i]->tag == "PLAYER" || objects[i]->tag == "ENEMY" || objects[i]->tag == "STONE")
+		{
+			Vector3 currentPos = pOwner->GetWorldPosition();
+			Vector3 objPos = objects[i]->GetWorldPosition();
+			Vector3 direction = objPos - currentPos;
+			float power = knockRange - direction.Length();
+			direction.Normalize();
 
-		PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(object->GetComponent<Rigidbody>()->GetBodyID(), Vec3(direction.x, direction.y, direction.z) * power * 500.0f);
+			PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), Vec3(direction.x, direction.y, direction.z) * power * 500.0f);
 
+		}
+		if (objects[i]->tag == "PLAYER" || objects[i]->tag == "ENEMY")
+		{
+			objects[i]->GetComponent<Health>()->TakeDamage(1.0f, true);
+		}
 	}
-	if (object->tag == "PLAYER" || object->tag == "ENEMY")
-	{
-		object->GetComponent<Health>()->TakeDamage(1.0f, true);
-	}
+}
 
+void BoomAttack::OnTriggerStay(const std::vector<Node*> others) {
+	objects.clear();
+	objects = others;
 }
 
 

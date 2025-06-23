@@ -20,6 +20,9 @@ void Flying::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 	if (!rigidbody) {
 		return;
 	}
+
+	// tutaj dŸwiêk
+
 	targetPosition = targetPos;
 	if (sp > 1.0f)
 	{

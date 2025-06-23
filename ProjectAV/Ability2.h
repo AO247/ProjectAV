@@ -19,8 +19,8 @@ public:
 
 	virtual void Update(float dt) override;
 	virtual void DrawImGuiControls() override;
-	void OnTriggerEnter(Node* other) override;
-	void OnTriggerExit(Node* other) override;
+	void OnTriggerStay(const std::vector<Node*> others) override;
+
 	bool Pressed() override;
 	void Released() override;
 	float cooldown = 1.2f;
