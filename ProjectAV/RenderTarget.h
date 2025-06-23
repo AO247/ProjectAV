@@ -23,7 +23,7 @@ namespace Bind
 		void BindAsBuffer(Graphics& gfx, ID3D11DepthStencilView* pDepthStencilView) noxnd;
 	protected:
 		RenderTarget(Graphics& gfx, ID3D11Texture2D* pTexture);
-		RenderTarget(Graphics& gfx, UINT width, UINT height);
+		RenderTarget(Graphics& gfx, UINT width, UINT height, bool sRGB = false);
 		UINT width;
 		UINT height;
 		Microsoft::WRL::ComPtr<ID3D11RenderTargetView> pTargetView;
@@ -32,7 +32,7 @@ namespace Bind
 	class ShaderInputRenderTarget : public RenderTarget
 	{
 	public:
-		ShaderInputRenderTarget(Graphics& gfx, UINT width, UINT height, UINT slot);
+		ShaderInputRenderTarget(Graphics& gfx, UINT width, UINT height, UINT slot, bool sRGB = false);
 		void Bind(Graphics& gfx) noxnd override;
 		Surface ToSurface(Graphics& gfx) const;
 	private:

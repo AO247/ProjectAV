@@ -209,15 +209,26 @@ Sprite::Sprite(ID3D11Device* device, ID3D11DeviceContext* deviceContext, int x, 
         "}\n";
 
     const char* pixelShaderSource =
-        "Texture2D spriteTexture : register(t0);\n"
+        "Texture2D spriteTexture : register(t0);\n" // Ta tekstura jest ³adowana jako _SRGB
         "SamplerState spriteSampler : register(s0);\n"
         "struct PS_INPUT {\n"
         "  float4 Position : SV_POSITION;\n"
         "  float4 Color : COLOR;\n"
         "  float2 TexCoord : TEXCOORD;\n"
         "};\n"
+        "\n"
         "float4 main(PS_INPUT input) : SV_TARGET {\n"
-        "  return input.Color * spriteTexture.Sample(spriteSampler, input.TexCoord);\n"
+        // 1. spriteTexture.Sample() pobiera kolor z tekstury _SRGB i AUTOMATYCZNIE\n"
+        //    konwertuje go do przestrzeni LINIOWEJ. Np. sRGB(0.5) -> Linear(0.214).\n"
+        "  float4 linearColor = spriteTexture.Sample(spriteSampler, input.TexCoord);\n"
+        "\n"
+        // 2. Nasz render target jest LINIOWY (_UNORM). Jeœli zapiszemy do niego\n"
+        //    linearColor, bêdzie wygl¹daæ na ciemny na monitorze. Musimy wiêc rêcznie\n"
+        //    skonwertowaæ go z powrotem do sRGB przed zapisem.\n"
+        "  float3 srgb_color = pow(abs(linearColor.rgb), 1.0f / 2.2f);\n"
+        "\n"
+        // 3. Mno¿ymy przez kolor wierzcho³ka i zachowujemy oryginaln¹ alfê.\n"
+        "  return float4(srgb_color * input.Color.rgb, linearColor.a * input.Color.a);\n"
         "}\n";
 
     ID3DBlob* vsBlob = nullptr;
