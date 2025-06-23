@@ -290,28 +290,28 @@ App::App(const std::string& commandLine)
     );
 
     pLeftHandNormal->AddComponent(
-        std::make_unique<ModelComponent>(pLeftHandNormal, wnd.Gfx(), "Models\\hands\\left.obj")
+        std::make_unique<ModelComponent>(pLeftHandNormal, wnd.Gfx(), "Models\\hands\\left.obj", 1.0f, false, false)
     );
     pLeftHandNormal->GetComponent<ModelComponent>()->LinkTechniques(rg);
     pLeftHandNormal->SetLocalScale({ 0.1f, 0.1f, 0.1f });
     pLeftHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
 
     pLeftHandAbility->AddComponent(
-        std::make_unique<ModelComponent>(pLeftHandAbility, wnd.Gfx(), "Models\\hands\\push.obj")
+        std::make_unique<ModelComponent>(pLeftHandAbility, wnd.Gfx(), "Models\\hands\\push.obj", 1.0f, false, false)
     );
     pLeftHandAbility->GetComponent<ModelComponent>()->LinkTechniques(rg);
     pLeftHandAbility->SetLocalScale({ 0.1f, 0.1f, 0.1f });
     pLeftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
 
     pRightHandNormal->AddComponent(
-        std::make_unique<ModelComponent>(pRightHandNormal, wnd.Gfx(), "Models\\hands\\right.obj")
+        std::make_unique<ModelComponent>(pRightHandNormal, wnd.Gfx(), "Models\\hands\\right.obj", 1.0f, false, false)
     );
     pRightHandNormal->GetComponent<ModelComponent>()->LinkTechniques(rg);
     pRightHandNormal->SetLocalScale({ 0.1f, 0.1f, 0.1f });
     pRightHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
 
     pRightHandAbility->AddComponent(
-        std::make_unique<ModelComponent>(pRightHandAbility, wnd.Gfx(), "Models\\hands\\toss.obj")
+        std::make_unique<ModelComponent>(pRightHandAbility, wnd.Gfx(), "Models\\hands\\toss.obj", 1.0f, false, false)
     );
     pRightHandAbility->GetComponent<ModelComponent>()->LinkTechniques(rg);
     pRightHandAbility->SetLocalScale({ 0.1f, 0.1f, 0.1f });
