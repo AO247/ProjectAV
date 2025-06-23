@@ -32,7 +32,7 @@ void Ability6::Update(float dt)
             if (pOwner->GetComponent<SoundEffectsPlayer>()) {
                 if (holdSoundTimer <= 0.0f)
                 {
-                    pOwner->GetComponent<SoundEffectsPlayer>()->Play(2);
+                    pOwner->GetComponent<SoundEffectsPlayer>()->Play(2, 1.0f, false);
 
                     holdSoundTimer = holdSoundInterval;
                 }
@@ -119,11 +119,11 @@ void Ability6::PullingParticlesPositioning()
         pullingParticles->SetWorldRotation(quatFloat4);
     }
 }
-void Ability6::Pressed()
+bool Ability6::Pressed()
 {
-    if (!abilityReady) return;
+    if (!abilityReady) return false;
     isPressed = true;
-    if (selectedNode == nullptr) return;
+    if (selectedNode == nullptr) return false;
     leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
     leftHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
 
@@ -151,8 +151,9 @@ void Ability6::Pressed()
 
     if (pOwner->GetComponent<SoundEffectsPlayer>()) {
         float randSound = (rand() % 2);
-        pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound);
+        pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f, false);
     }
+    return true;
 }
 void Ability6::Released()
 {

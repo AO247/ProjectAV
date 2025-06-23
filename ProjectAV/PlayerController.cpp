@@ -86,7 +86,7 @@ void PlayerController::Jump()
 			grounded = false;
             if (pOwner->GetComponent<SoundEffectsPlayer>()) {
 				int randSound = rand() % 2;
-                pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound);
+                pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f, false);
             }
         }
         else {
@@ -94,7 +94,7 @@ void PlayerController::Jump()
 			doubleJumped = true;
             if (pOwner->GetComponent<SoundEffectsPlayer>()) {
 				int randSound = rand() % 2 + 2;
-                pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound);
+                pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f, false);
             }
         }
 		jumped = true;
@@ -108,7 +108,7 @@ void PlayerController::Dash()
 	canDash = false;
     if (pOwner->GetComponent<SoundEffectsPlayer>()) {
 		int randSound = rand() % 2 + 4;
-        pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound);
+        pOwner->GetComponent<SoundEffectsPlayer>()->Play(5, 1.0f, false);
     }
     Vector3 dashDirection = moveDirection;
     if (moveDirection == pOwner->Forward())
@@ -436,10 +436,20 @@ void PlayerController::KeyboardInput()
         {
         case Mouse::Event::Type::LPress:
             abilitySlot1->GetComponent<Ability>()->Pressed();
+            if (!abilitySlot1->GetComponent<Ability>()->Pressed())
+            {
+				int randSound = rand() % 2 + 12;
+                pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f, false);
+            }
             break;
 
         case Mouse::Event::Type::RPress:
             abilitySlot2->GetComponent<Ability>()->Pressed();
+            if (!abilitySlot2->GetComponent<Ability>()->Pressed())
+            {
+                int randSound = rand() % 2 + 12;
+                pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f, false);
+            }
             break;
 
         case Mouse::Event::Type::LRelease:

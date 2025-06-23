@@ -269,13 +269,19 @@ App::App(const std::string& commandLine)
     pSoundEffectsPlayer->AddSound("Sounds\\player\\damage4.wav");
     pSoundEffectsPlayer->AddSound("Sounds\\player\\damage5.wav");
     pSoundEffectsPlayer->AddSound("Sounds\\player\\damage6.wav"); // 12
+    pSoundEffectsPlayer->AddSound("Sounds\\player\\cooldown1.wav"); 
+    pSoundEffectsPlayer->AddSound("Sounds\\player\\cooldown2.wav"); // 14
+	pSoundEffectsPlayer->AddSound("Sounds\\teleport\\teleport1.wav");
+	pSoundEffectsPlayer->AddSound("Sounds\\teleport\\teleport2.wav"); // 16
+	pSoundEffectsPlayer->AddSound("Sounds\\teleport\\end_level.wav");
+	pSoundEffectsPlayer->AddSound("Sounds\\teleport\\shrine_active_shorter.wav");
 
     pFreeViewCamera->SetLocalPosition({ 4.0f, 11.0f, -28.0f });
     pPlayer->SetLocalPosition({ 0.0f, 80.0f, -24.0f });
 
-    /*pSceneRoot->AddComponent(
+    pSceneRoot->AddComponent(
         std::make_unique<Global>(pSceneRoot.get(), wnd, pPlayer, pBase)
-    );*/
+    );
 
     pLeftHandNormal->AddComponent(
         std::make_unique<ModelComponent>(pLeftHandNormal, wnd.Gfx(), "Models\\hands\\left.obj")
@@ -332,9 +338,9 @@ App::App(const std::string& commandLine)
 	pUpgradeHandler->ability6Node = pAbility6;
     pUpgradeHandler->playerController = pPlayer->GetComponent<PlayerController>();
     pUpgradeHandler->SetBasicValues();
-    //pSceneRoot->GetComponent<Global>()->upgradeHandler = pUpgradeHandler;
+    pSceneRoot->GetComponent<Global>()->upgradeHandler = pUpgradeHandler;
 
-	PrefabManager::InstantiateIslandMedium5(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
+	//PrefabManager::InstantiateIslandMedium5(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
 	/*tutorialNode = PrefabManager::InstantiateTutorialIslands(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
     pSceneRoot->GetComponent<Global>()->tut = tutorialNode->GetComponent<Tutorial>();*/
 

@@ -21,7 +21,7 @@ public:
 	virtual void DrawImGuiControls() override;
 	void OnTriggerEnter(Node* other) override;
 	void OnTriggerExit(Node* other) override;
-	void Pressed() override;
+	bool Pressed() override;
 	void Released() override;
 	float cooldown = 1.2f;
 	float timeToChange = 0.0f;

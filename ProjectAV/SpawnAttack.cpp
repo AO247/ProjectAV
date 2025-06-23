@@ -32,6 +32,18 @@ void SpawnAttack::Attack(float dt)
 		enemy->MoveToTop();
 	}
 
+	attackSoundTimer -= dt;
+
+	if (pOwner->GetComponent<SoundEffectsPlayer>())
+	{
+		if (attackSoundTimer <= 0.0f)
+		{
+			float randSound = (rand() % 4 + 4);
+			pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound);
+
+			attackSoundTimer = attackSoundInterval;
+		}
+	}
 }
 
 

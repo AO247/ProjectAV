@@ -48,6 +48,7 @@ void Throwable::OnCollisionEnter(Node* object)
 	
 	if (pot)
 	{
+		pOwner->GetComponent<SoundEffectsPlayer>()->Play(0);
 		pOwner->Destroy();
 	}
 }

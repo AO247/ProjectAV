@@ -31,13 +31,13 @@ void Ability1::Positioning() {
 	pOwner->SetLocalTransform(camera->GetLocalTransform());
 	pOwner->TranslateLocal(Vector3(0.0f, 0.0f, 8.0f));
 }
-void Ability1::Pressed()
+bool Ability1::Pressed()
 {
-    if (!abilityReady) return;
+    if (!abilityReady) return false;
 
     if (pOwner->GetComponent<SoundEffectsPlayer>()) {
         float randSound = (rand() % 4);
-        pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound);
+        pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f, false);
     }
 
 	timeToChange = 0.3f;
@@ -69,6 +69,7 @@ void Ability1::Pressed()
     abilityReady = false;
     
     PrefabManager::InstantiateAbility1Particles(pOwner->GetParent(), Vector3(pOwner->GetLocalPosition().x, pOwner->GetLocalPosition().y, pOwner->GetLocalPosition().z), 1.0, pOwner->GetLocalRotationQuaternion());
+    return true;
 }
 void Ability1::Released()
 {

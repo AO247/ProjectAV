@@ -93,7 +93,6 @@ void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 		steeringForce += avoidanceForce;
 	}
 
-
 	float steeringMagnitude = steeringForce.Length();
 	//if (steeringMagnitude > maxSpeed) {
 		steeringForce = (steeringForce / steeringMagnitude) * maxSpeed;
@@ -126,6 +125,7 @@ void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 		}
 	}
 
+	PhysicsCommon::physicsSystem->GetBodyInterface().SetFriction(rigidbody->GetBodyID(), 0.5f);
 
 	stepSoundTimer -= dt;
 
@@ -135,12 +135,10 @@ void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 		{
 			float randSound = (rand() % 4);
 			pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound);
-			
+
 			stepSoundTimer = stepSoundInterval;
 		}
 	}
-
-	PhysicsCommon::physicsSystem->GetBodyInterface().SetFriction(rigidbody->GetBodyID(), 0.5f);
 }
 bool Walking::GroundCheck()
 {

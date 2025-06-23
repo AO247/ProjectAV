@@ -11,7 +11,7 @@ void SoundEffectsPlayer::AddSound(const std::string& filename)
 	m_soundPlaylist.push_back(filename);
 }
 
-ALuint SoundEffectsPlayer::Play(int soundIndex, float gain, bool loop)
+ALuint SoundEffectsPlayer::Play(int soundIndex, float gain, bool isPositional, bool loop)
 {
     if (soundIndex >= m_soundPlaylist.size())
     {
@@ -25,10 +25,18 @@ ALuint SoundEffectsPlayer::Play(int soundIndex, float gain, bool loop)
 
     const std::string& filename = m_soundPlaylist[soundIndex];
 
+    float volume = 1.0f;
+    if (!isPositional) {
+        volume = volumePlayer;
+    }
+    else {
+        volume = volumePos;
+    }
+
     ALuint sourceID = StaticSoundPlayer::Get().Play(
         filename,
         pOwner->GetWorldPosition(),
-        gain,
+        gain * volume,
         loop
     );
 

@@ -12,7 +12,7 @@ public:
 
     virtual ~Ability() = default;
 
-    virtual void Pressed() = 0;
+    virtual bool Pressed() = 0;
     virtual void Released() = 0;
     virtual void Update(float dt) override
     {

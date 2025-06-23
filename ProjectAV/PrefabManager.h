@@ -1773,6 +1773,11 @@ public:
         auto pNewNodeOwner = std::make_unique<Node>("Pot1", nullptr, "STONE");
 
         pNewNodeOwner->AddComponent(
+            std::make_unique<SoundEffectsPlayer>(pNewNodeOwner.get())
+        );
+        pNewNodeOwner->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enviro\\vase.ogg");
+
+        pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\enviro_male\\waza_1.obj")
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
@@ -1806,6 +1811,11 @@ public:
     static Node* InstantiatePot3(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("Pot3", nullptr, "STONE");
+
+        pNewNodeOwner->AddComponent(
+            std::make_unique<SoundEffectsPlayer>(pNewNodeOwner.get())
+        );
+        pNewNodeOwner->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enviro\\vase.ogg");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\enviro_male\\waza_3.obj")
@@ -1842,6 +1852,11 @@ public:
     static Node* InstantiatePot4(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("Pot4", nullptr, "STONE");
+
+        pNewNodeOwner->AddComponent(
+            std::make_unique<SoundEffectsPlayer>(pNewNodeOwner.get())
+        );
+        pNewNodeOwner->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enviro\\vase.ogg");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\enviro_male\\waza_4.obj")
@@ -6888,13 +6903,13 @@ public:
         pNewNode->AddComponent(
             std::make_unique<SoundEffectsPlayer>(pNewNode)
         );
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic\\basic1.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic\\basic2.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic\\basic3.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic\\basic4.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic\\basic_attack1.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic\\basic_attack2.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic\\basic_attack3.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic1.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic2.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic3.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic4.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic_attack1.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic_attack2.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic_attack3.ogg");
 
         pNewNode->AddComponent(
             std::make_unique<ModelComponent>(pNewNode, wind->Gfx(), "Models\\basic_gltf\\basic1.gltf", 1.0f, true)
@@ -6978,13 +6993,13 @@ public:
         pNewNode->AddComponent(
             std::make_unique<SoundEffectsPlayer>(pNewNode)
         );
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic1.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic2.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic3.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic4.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic_attack1.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic_attack2.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic_attack3.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\tank\\idle1.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\tank\\idle2.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\tank\\idle3.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\tank\\idle4.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\tank\\attack1.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\tank\\attack2.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\tank\\attack2.wav");
 
         pNewNode->AddComponent(
             std::make_unique<ModelComponent>(pNewNode, wind->Gfx(), "Models\\enemy\\Tank\\tank.obj")
@@ -7133,13 +7148,11 @@ public:
         pNewNode->AddComponent(
             std::make_unique<SoundEffectsPlayer>(pNewNode)
         );
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic1.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic2.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic3.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic4.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic_attack1.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic_attack2.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic_attack3.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\ranged\\idle1.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\ranged\\idle2.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\ranged\\idle3.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\ranged\\idle3.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\ranged\\attack1.wav");
 
 
         pNewNode->AddComponent(
@@ -7214,13 +7227,14 @@ public:
         pNewNode->AddComponent(
             std::make_unique<SoundEffectsPlayer>(pNewNode)
         );
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic1.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic2.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic3.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic4.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic_attack1.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic_attack2.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic_attack3.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\mage\\idle1.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\mage\\idle2.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\mage\\idle3.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\mage\\idle4.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\mage\\attack1.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\mage\\attack2.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\mage\\attack3.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\mage\\attack4.wav");
 
         pNewNode->AddComponent(
             std::make_unique<ModelComponent>(pNewNode, wind->Gfx(), "Models\\enemy\\Mage\\mage.obj")

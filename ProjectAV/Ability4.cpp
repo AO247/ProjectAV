@@ -29,7 +29,7 @@ void Ability4::Update(float dt)
             if (pOwner->GetComponent<SoundEffectsPlayer>()) {
                 if (holdSoundTimer <= 0.0f)
                 {
-                    pOwner->GetComponent<SoundEffectsPlayer>()->Play(2);
+                    pOwner->GetComponent<SoundEffectsPlayer>()->Play(2, 1.0f, false);
 
                     holdSoundTimer = holdSoundInterval;
                 }
@@ -62,13 +62,13 @@ void Ability4::Positioning()
         selectedNode = nullptr;
     }
 }
-void Ability4::Pressed()
+bool Ability4::Pressed()
 {
-    if (!abilityReady) return;
+    if (!abilityReady) return false;
 
     if (pOwner->GetComponent<SoundEffectsPlayer>()) {
         float randSound = (rand() % 2);
-        pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound);
+        pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f, false);
     }
 
     isPressed = true;
@@ -80,6 +80,8 @@ void Ability4::Pressed()
     {
         selectionParticles = PrefabManager::InstantiateAbility4SelectParticles(pOwner->GetParent(), Vector3(selectedNode->GetWorldPosition().x, selectedNode->GetWorldPosition().y, selectedNode->GetWorldPosition().z), 1.0);
     }
+
+    return true;
 }
 void Ability4::Released()
 {
