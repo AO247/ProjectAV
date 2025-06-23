@@ -57,9 +57,15 @@ void Ability5::Positioning()
         }
     }
 }
-void Ability5::Pressed()
+bool Ability5::Pressed()
 {
-    if (!abilityReady) return;
+    if (!abilityReady) return false;
+
+    if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+        float randSound = (rand() % 4);
+        pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f, false);
+    }
+
     rightHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
     rightHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
     timeToChange = 0.3f;
@@ -68,6 +74,8 @@ void Ability5::Pressed()
     cooldownTimer = cooldown;
     cooldownTimer = cooldown;
     abilityReady = false;
+
+    return true;
 }
 void Ability5::Released()
 {

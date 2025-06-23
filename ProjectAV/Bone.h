@@ -102,66 +102,63 @@ public:
     // Gets the current index on mKeyPositions to interpolate to based on
     //the current animation time
     int GetPositionIndex(float animationTime)
-    {
+    { 
         for (int index = 0; index < m_NumPositions - 1; ++index)
         {
             if (animationTime < m_Positions[index + 1].timeStamp)
                 return index;
-        }
-        assert(0);
+        } 
+        return m_NumPositions - 2;  
     }
 
-    //Gets the current index on mKeyRotations to interpolate to based on the
-    //current animation time
     int GetRotationIndex(float animationTime)
-    {
+    { 
         for (int index = 0; index < m_NumRotations - 1; ++index)
         {
             if (animationTime < m_Rotations[index + 1].timeStamp)
                 return index;
         }
-        assert(0);
+        return m_NumRotations - 2;  
     }
 
-    //Gets the current index on mKeyScalings to interpolate to based on the
-    //current animation time
     int GetScaleIndex(float animationTime)
-    {
+    { 
         for (int index = 0; index < m_NumScalings - 1; ++index)
         {
             if (animationTime < m_Scales[index + 1].timeStamp)
                 return index;
         }
-        assert(0);
+        return m_NumScalings - 2;  
     }
 
 private:
 
-    /* Gets normalized value for Lerp & Slerp*/
     float GetScaleFactor(float lastTimeStamp, float nextTimeStamp, float animationTime)
     {
         float scaleFactor = 0.0f;
         float midWayLength = animationTime - lastTimeStamp;
-        float framesDiff = nextTimeStamp - lastTimeStamp;
+        float framesDiff = nextTimeStamp - lastTimeStamp; 
+        if (framesDiff == 0.0f)
+            return 0.0f; 
         scaleFactor = midWayLength / framesDiff;
         return scaleFactor;
     }
 
-    //figures out which position keys to interpolate and performs the interpolation
-    //and returns the translation matrix
     DirectX::XMMATRIX InterpolatePosition(float animationTime)
     {
-        if (1 == m_NumPositions)
-            //return glm::translate(glm::mat4(1.0f), m_Positions[0].position);
+        // Przypadek 1: Brak klatek kluczowych pozycji
+        if (m_NumPositions == 0)
+            return DirectX::XMMatrixIdentity();  
+
+        // Przypadek 2: Jedna klatka kluczowa pozycji
+        if (m_NumPositions == 1)
             return DirectX::XMMatrixTranslation(m_Positions[0].position.x, m_Positions[0].position.y, m_Positions[0].position.z);
 
+        // Przypadek 3: Dwie lub wiêcej klatek kluczowych (GetPositionIndex jest teraz bezpieczne)
         int p0Index = GetPositionIndex(animationTime);
         int p1Index = p0Index + 1;
         float scaleFactor = GetScaleFactor(m_Positions[p0Index].timeStamp,
             m_Positions[p1Index].timeStamp, animationTime);
-
-       // glm::vec3 finalPosition = glm::mix(m_Positions[p0Index].position,
-        //    m_Positions[p1Index].position, scaleFactor);
 
         DirectX::XMVECTOR pos0 = XMLoadFloat3(&m_Positions[p0Index].position);
         DirectX::XMVECTOR pos1 = XMLoadFloat3(&m_Positions[p1Index].position);
@@ -172,63 +169,57 @@ private:
         return DirectX::XMMatrixTranslation(finalPosition.x, finalPosition.y, finalPosition.z);
     }
 
-    //figures out which rotations keys to interpolate b/w and performs the interpolation
-    //and returns the rotation matrix
     DirectX::XMMATRIX InterpolateRotation(float animationTime)
     {
-        if (1 == m_NumRotations)
+        // Przypadek 1: Brak klatek kluczowych rotacji
+        if (m_NumRotations == 0)
+            return DirectX::XMMatrixIdentity(); 
+
+        // Przypadek 2: Jedna klatka kluczowa rotacji
+        if (m_NumRotations == 1)
         {
-            DirectX::XMVECTOR v = DirectX::XMLoadFloat4(&m_Rotations[0].orientation);
-            DirectX::XMVECTOR vNormalized = DirectX::XMVector4Normalize(v);
+            DirectX::XMVECTOR v = DirectX::XMLoadFloat4(&m_Rotations[0].orientation); 
+            DirectX::XMVECTOR vNormalized = DirectX::XMQuaternionNormalize(v);
             return DirectX::XMMatrixRotationQuaternion(vNormalized);
-            //auto rotation = glm::normalize(m_Rotations[0].orientation);
-            //return glm::toMat4(rotation);
         }
 
+        // Przypadek 3: Dwie lub wiêcej klatek kluczowych
         int p0Index = GetRotationIndex(animationTime);
         int p1Index = p0Index + 1;
         float scaleFactor = GetScaleFactor(m_Rotations[p0Index].timeStamp,
             m_Rotations[p1Index].timeStamp, animationTime);
 
         DirectX::XMVECTOR quat0 = DirectX::XMLoadFloat4(&m_Rotations[p0Index].orientation);
-        DirectX::XMVECTOR quat1 = DirectX::XMLoadFloat4(&m_Rotations[p1Index].orientation);
+        DirectX::XMVECTOR quat1 = DirectX::XMLoadFloat4(&m_Rotations[p1Index].orientation); 
         DirectX::XMVECTOR finalRotation = DirectX::XMQuaternionSlerp(quat0, quat1, scaleFactor);
-        finalRotation = DirectX::XMQuaternionNormalize(finalRotation);
-        DirectX::XMMATRIX rotationMatrix = DirectX::XMMatrixRotationQuaternion(finalRotation);
+        finalRotation = DirectX::XMQuaternionNormalize(finalRotation);  
 
-        return rotationMatrix;
-        //glm::quat finalRotation = glm::slerp(m_Rotations[p0Index].orientation,
-        //    m_Rotations[p1Index].orientation, scaleFactor);
-
-        //finalRotation = glm::normalize(finalRotation);
-        //return glm::toMat4(finalRotation);
+        return DirectX::XMMatrixRotationQuaternion(finalRotation);
     }
 
-    //figures out which scaling keys to interpolate b/w and performs the interpolation
-    //and returns the scale matrix
     DirectX::XMMATRIX InterpolateScaling(float animationTime)
     {
-        if (1 == m_NumScalings)
-            //return glm::scale(glm::mat4(1.0f), m_Scales[0].scale);
+        // Przypadek 1: Brak klatek kluczowych skali
+        if (m_NumScalings == 0)
+            return DirectX::XMMatrixIdentity();  
+
+        // Przypadek 2: Jedna klatka kluczowa skali
+        if (m_NumScalings == 1)
             return DirectX::XMMatrixScaling(m_Scales[0].scale.x, m_Scales[0].scale.y, m_Scales[0].scale.z);
 
+        // Przypadek 3: Dwie lub wiêcej klatek kluczowych
         int p0Index = GetScaleIndex(animationTime);
         int p1Index = p0Index + 1;
         float scaleFactor = GetScaleFactor(m_Scales[p0Index].timeStamp,
             m_Scales[p1Index].timeStamp, animationTime);
 
-        //glm::vec3 finalScale = glm::mix(m_Scales[p0Index].scale, m_Scales[p1Index].scale
-        //    , scaleFactor);
+        DirectX::XMVECTOR scaleVec0 = XMLoadFloat3(&m_Scales[p0Index].scale);
+        DirectX::XMVECTOR scaleVec1 = XMLoadFloat3(&m_Scales[p1Index].scale);
+        DirectX::XMVECTOR finalScaleVec = DirectX::XMVectorLerp(scaleVec0, scaleVec1, scaleFactor);
+        DirectX::XMFLOAT3 finalScale;
+        DirectX::XMStoreFloat3(&finalScale, finalScaleVec);
 
-        //return glm::scale(glm::mat4(1.0f), finalScale);
-
-        DirectX::XMVECTOR pos0 = XMLoadFloat3(&m_Scales[p0Index].scale);
-        DirectX::XMVECTOR pos1 = XMLoadFloat3(&m_Scales[p1Index].scale);
-        DirectX::XMVECTOR finalPositionVec = DirectX::XMVectorLerp(pos0, pos1, scaleFactor);
-        DirectX::XMFLOAT3 finalPosition;
-        DirectX::XMStoreFloat3(&finalPosition, finalPositionVec);
-
-        return DirectX::XMMatrixScaling(finalPosition.x, finalPosition.y, finalPosition.z);
+        return DirectX::XMMatrixScaling(finalScale.x, finalScale.y, finalScale.z);
     }
 
 };

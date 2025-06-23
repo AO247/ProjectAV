@@ -49,7 +49,7 @@ public:
 	void Stop(float time);
 	float timer = 0.0f;
 
-	EnemyType enemyType = EnemyType::BASIC;
+	EnemyType enemyType = EnemyType::NONE;
 
 
 private:

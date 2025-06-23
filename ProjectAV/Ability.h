@@ -12,7 +12,7 @@ public:
 
     virtual ~Ability() = default;
 
-    virtual void Pressed() = 0;
+    virtual bool Pressed() = 0;
     virtual void Released() = 0;
     virtual void Update(float dt) override
     {
@@ -21,6 +21,8 @@ public:
     std::vector<Node*> objects;
     float force;
     int killsCount = 3;
+    float holdSoundTimer = 0.0f;
+    float holdSoundInterval = 2.0f;
 protected:
     Window& wnd;
     Node* camera;

@@ -23,8 +23,17 @@ void Ability3::Update(float dt)
 {
     if (!wnd.CursorEnabled())
     {
+		holdSoundInterval -= dt;
         if (timer > 0.0f)
         {
+            if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+                if (holdSoundTimer <= 0.0f)
+                {
+                    pOwner->GetComponent<SoundEffectsPlayer>()->Play(3, 1.0f, false);
+
+                    holdSoundTimer = holdSoundInterval;
+                }
+            }
             Activated();
             timer -= dt;
             if (timer <= 0.0f)
@@ -70,18 +79,27 @@ void Ability3::Positioning()
         }
     }
 }
-void Ability3::Pressed()
+bool Ability3::Pressed()
 {
-    if (killsCount < 3) return;
+    if (killsCount < 3) return false;
+
+	if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+		pOwner->GetComponent<SoundEffectsPlayer>()->Play(0, 1.0f, false);
+	}
+
     killsCount = 0;
     timer = duration;
     cooldownTimer = cooldown;
     abilityReady = false;
     PrefabManager::InstantiateAbility3Particles(pOwner->GetParent(), Vector3(pOwner->GetLocalPosition().x, pOwner->GetLocalPosition().y, pOwner->GetLocalPosition().z), 1.0);
     PrefabManager::InstantiateAbility3CoreParticles(pOwner->GetParent(), Vector3(pOwner->GetLocalPosition().x, pOwner->GetLocalPosition().y, pOwner->GetLocalPosition().z), 1.0);
+    return true;
 }
 void Ability3::Released()
 {
+    if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+        pOwner->GetComponent<SoundEffectsPlayer>()->Play(1, 1.0f, false);
+    }
 }
 void Ability3::Activated()
 {
@@ -118,6 +136,9 @@ void Ability3::Activated()
                 PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), direction * force * 0.04f);
             }
         }
+    }
+    if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+        pOwner->GetComponent<SoundEffectsPlayer>()->Play(2, 1.0f, false);
     }
 }
 

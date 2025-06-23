@@ -86,16 +86,16 @@ void PlayerController::Jump()
             PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(rigidbody->GetBodyID(), Vec3(0.0f, jumpForce, 0.0f));
 			grounded = false;
             if (pOwner->GetComponent<SoundEffectsPlayer>()) {
-
-                pOwner->GetComponent<SoundEffectsPlayer>()->Play(0);
+				int randSound = rand() % 2;
+                pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f, false);
             }
         }
         else {
             PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(rigidbody->GetBodyID(), Vec3(0.0f, secondJumpForce, 0.0f));
 			doubleJumped = true;
             if (pOwner->GetComponent<SoundEffectsPlayer>()) {
-
-                pOwner->GetComponent<SoundEffectsPlayer>()->Play(0);
+				int randSound = rand() % 2 + 2;
+                pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f, false);
             }
         }
 		jumped = true;
@@ -108,7 +108,8 @@ void PlayerController::Dash()
     dashed = true;
 	canDash = false;
     if (pOwner->GetComponent<SoundEffectsPlayer>()) {
-        pOwner->GetComponent<SoundEffectsPlayer>()->Play(0);
+		int randSound = rand() % 2 + 4;
+        pOwner->GetComponent<SoundEffectsPlayer>()->Play(5, 1.0f, false);
     }
     Vector3 dashDirection = moveDirection;
     if (evolvedDash)
@@ -488,17 +489,19 @@ void PlayerController::KeyboardInput()
         {
         case Mouse::Event::Type::LPress:
             abilitySlot1->GetComponent<Ability>()->Pressed();
-            if (pOwner->GetComponent<SoundEffectsPlayer>()) {
-                float p = (rand() % 2) + 1;
-                pOwner->GetComponent<SoundEffectsPlayer>()->Play(p);
+            if (!abilitySlot1->GetComponent<Ability>()->Pressed())
+            {
+				int randSound = rand() % 2 + 12;
+                pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f, false);
             }
             break;
 
         case Mouse::Event::Type::RPress:
             abilitySlot2->GetComponent<Ability>()->Pressed();
-            if (pOwner->GetComponent<SoundEffectsPlayer>()) {
-                float p = (rand() % 2) + 3;
-                pOwner->GetComponent<SoundEffectsPlayer>()->Play(p);
+            if (!abilitySlot2->GetComponent<Ability>()->Pressed())
+            {
+                int randSound = rand() % 2 + 12;
+                pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f, false);
             }
             break;
 

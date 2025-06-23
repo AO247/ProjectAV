@@ -26,7 +26,15 @@ void Health::TakeDamage(float damage, bool heavy, bool isFire)
 		}
 	}
 	else
-	{
+	{	
+		if (pOwner->tag == "PLAYER" && damage > 0)
+		{
+			if (pOwner->GetComponent<SoundEffectsPlayer>())
+			{
+				float randSound = (rand() % 6 + 6);
+				pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f, false);
+			}
+		}
 		currentHealth -= damage;
 	}
 

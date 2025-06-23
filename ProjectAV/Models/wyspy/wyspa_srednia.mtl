@@ -1,8 +1,8 @@
-# Blender 4.4.3 MTL File: 'wyspa_temp.blend'
+# Blender 4.4.3 MTL File: 'wyspy_2206.blend'
 # www.blender.org
 
 newmtl wyspa_srednia
-Ns 10.000000
+Ns 233.904144
 Ka 1.000000 1.000000 1.000000
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
@@ -10,5 +10,15 @@ Ni 1.500000
 d 1.000000
 illum 2
 map_Kd wyspa_srednia_Base_color.png
-map_Ns wyspa_srednia_Roughness.png
-map_Bump -bm 1.000000 wyspa_srednia_Normal_DirectX.png
+map_Kn wyspa_srednia_Normal_DirectX.png
+
+newmtl wyspa_srednia_top
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd wyspa_srednia_top_Base_color.png
+map_Kn wyspa_srednia_top_Normal_DirectX.png

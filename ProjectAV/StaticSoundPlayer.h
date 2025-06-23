@@ -15,7 +15,8 @@ public:
     void SetPlayerNode(Node* player);
     void Shutdown();
 
-    void Play(const std::string& filename, DirectX::XMFLOAT3 position, float gain = 1.0f);
+    ALuint Play(const std::string& filename, DirectX::XMFLOAT3 position, float gain = 1.0f, bool loop = false);
+    void Stop(ALuint sourceID);
 
 private:
     StaticSoundPlayer() = default;

@@ -155,9 +155,16 @@ App::App(const std::string& commandLine)
     pAbility1->AddComponent(
         std::make_unique<Ability1>(pAbility1, wnd, pCamera)
     );
+    pAbility1->AddComponent(
+        std::make_unique<SoundEffectsPlayer>(pAbility1)
+    );
+	pAbility1->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\push1.wav");
+    pAbility1->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\push2.wav");
+    pAbility1->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\push3.wav");
+    pAbility1->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\push4.wav");
     pAbility1->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 0.0f, 10.0f));
     pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility1;
-
+   
 
     BodyCreationSettings a2odySettings(new JPH::SphereShape(5.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
     pAbility2->AddComponent(
@@ -166,7 +173,13 @@ App::App(const std::string& commandLine)
     pAbility2->AddComponent(
         std::make_unique<Ability2>(pAbility2, wnd, pCamera)
     );
-
+    pAbility2->AddComponent(
+        std::make_unique<SoundEffectsPlayer>(pAbility2)
+    );
+    pAbility2->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\toss1.wav");
+    pAbility2->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\toss2.wav");
+    pAbility2->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\toss3.wav");
+    pAbility2->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\toss4.wav");
     pPlayer->GetComponent<PlayerController>()->abilitySlot2 = pAbility2;
 
 
@@ -177,6 +190,13 @@ App::App(const std::string& commandLine)
     pAbility3->AddComponent(
         std::make_unique<Ability3>(pAbility3, wnd, pCamera)
     );
+    pAbility3->AddComponent(
+        std::make_unique<SoundEffectsPlayer>(pAbility3)
+    );
+    pAbility3->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\black_hole_start.wav");
+    pAbility3->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\black_hole_throw.wav");
+    pAbility3->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\black_hole_end.wav");
+    pAbility3->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\hold.wav");
     pPlayer->GetComponent<PlayerController>()->abilitySlot3 = pAbility3;
 
 
@@ -188,6 +208,12 @@ App::App(const std::string& commandLine)
     pAbility4->AddComponent(
         std::make_unique<Ability4>(pAbility4, wnd, pCamera)
     );
+    pAbility4->AddComponent(
+        std::make_unique<SoundEffectsPlayer>(pAbility4)
+    );
+    pAbility4->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\sznurek1.wav");
+    pAbility4->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\sznurek2.wav");
+    pAbility4->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\hold.wav");
     pAbility4->GetComponent<Ability4>()->baseAbility = pAbility1->GetComponent<Ability1>();
     //pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility4;
 
@@ -195,11 +221,26 @@ App::App(const std::string& commandLine)
     pAbility5->AddComponent(
         std::make_unique<Ability5>(pAbility5, wnd, pCamera)
     );
+    pAbility5->AddComponent(
+        std::make_unique<SoundEffectsPlayer>(pAbility5)
+    );
+    pAbility5->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\toss1.wav");
+    pAbility5->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\toss2.wav");
+    pAbility5->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\toss3.wav");
+    pAbility5->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\toss4.wav");
+    pAbility5->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\hold.wav");
+	//pPlayer->GetComponent<PlayerController>()->abilitySlot3 = pAbility5;
 	//pPlayer->GetComponent<PlayerController>()->abilitySlot2 = pAbility5;
 
     pAbility6->AddComponent(
         std::make_unique<Ability6>(pAbility6, wnd, pCamera)
     );
+    pAbility6->AddComponent(
+        std::make_unique<SoundEffectsPlayer>(pAbility6)
+    );
+    pAbility6->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\gravity1.wav");
+    pAbility6->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\gravity2.wav");
+    pAbility6->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\hold.wav");
     pAbility6->GetComponent<Ability6>()->baseAbility = pAbility1->GetComponent<Ability1>();
     //pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility6;
 
@@ -221,11 +262,24 @@ App::App(const std::string& commandLine)
     );
 	StaticSoundPlayer::Get().SetPlayerNode(pPlayer);
     SoundEffectsPlayer* pSoundEffectsPlayer = pPlayer->GetComponent<SoundEffectsPlayer>();
-    pSoundEffectsPlayer->AddSound("Models\\turn.ogg");
-    pSoundEffectsPlayer->AddSound("Sounds\\push1.ogg");
-    pSoundEffectsPlayer->AddSound("Sounds\\push2.ogg");
-    pSoundEffectsPlayer->AddSound("Sounds\\toss1.ogg");
-    pSoundEffectsPlayer->AddSound("Sounds\\toss2.ogg");
+    pSoundEffectsPlayer->AddSound("Sounds\\player\\jump1.wav");
+    pSoundEffectsPlayer->AddSound("Sounds\\player\\jump2.wav"); // 2
+    pSoundEffectsPlayer->AddSound("Sounds\\player\\double1.wav");
+    pSoundEffectsPlayer->AddSound("Sounds\\player\\double2.wav"); // 4
+    pSoundEffectsPlayer->AddSound("Sounds\\player\\dash1.wav");
+    pSoundEffectsPlayer->AddSound("Sounds\\player\\dash2.wav"); // 6
+    pSoundEffectsPlayer->AddSound("Sounds\\player\\damage1.wav");
+    pSoundEffectsPlayer->AddSound("Sounds\\player\\damage2.wav");
+    pSoundEffectsPlayer->AddSound("Sounds\\player\\damage3.wav");
+    pSoundEffectsPlayer->AddSound("Sounds\\player\\damage4.wav");
+    pSoundEffectsPlayer->AddSound("Sounds\\player\\damage5.wav");
+    pSoundEffectsPlayer->AddSound("Sounds\\player\\damage6.wav"); // 12
+    pSoundEffectsPlayer->AddSound("Sounds\\player\\cooldown1.wav"); 
+    pSoundEffectsPlayer->AddSound("Sounds\\player\\cooldown2.wav"); // 14
+	pSoundEffectsPlayer->AddSound("Sounds\\teleport\\teleport1.wav");
+	pSoundEffectsPlayer->AddSound("Sounds\\teleport\\teleport2.wav"); // 16
+	pSoundEffectsPlayer->AddSound("Sounds\\teleport\\end_level.wav");
+	pSoundEffectsPlayer->AddSound("Sounds\\teleport\\shrine_active_shorter.wav");
 
     pFreeViewCamera->SetLocalPosition({ 4.0f, 11.0f, -28.0f });
     pPlayer->SetLocalPosition({ 0.0f, 80.0f, -24.0f });
@@ -291,9 +345,9 @@ App::App(const std::string& commandLine)
     pUpgradeHandler->SetBasicValues();
     pSceneRoot->GetComponent<Global>()->upgradeHandler = pUpgradeHandler;
 
-	//PrefabManager::InstantiateIslandBig10(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
-	//tutorialNode = PrefabManager::InstantiateTutorialIslands(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
-    //pSceneRoot->GetComponent<Global>()->tut = tutorialNode->GetComponent<Tutorial>();
+	//PrefabManager::InstantiateIslandMedium5(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
+	/*tutorialNode = PrefabManager::InstantiateTutorialIslands(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
+    pSceneRoot->GetComponent<Global>()->tut = tutorialNode->GetComponent<Tutorial>();*/
 
 
     const int screenWidth = 1920;
@@ -601,7 +655,7 @@ void App::DoFrame(float dt)
     
 	//tutorialNode->GetComponent<Tutorial>()->DrawNote();
 
-    if(pSceneRoot->GetComponent<Global>()->drawLoadingScreen || bonusTime > 0.0f)
+   /* if(pSceneRoot->GetComponent<Global>()->drawLoadingScreen || bonusTime > 0.0f)
     {
         if (!pSceneRoot->GetComponent<Global>()->drawLoadingScreen)
         {
@@ -628,7 +682,7 @@ void App::DoFrame(float dt)
         {
             loadingScreen1->Draw(wnd.Gfx().GetContext());
         }
-    }
+    }*/
 
     wnd.Gfx().EndFrame();
     rg.Reset();

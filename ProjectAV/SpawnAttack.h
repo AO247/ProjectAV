@@ -17,6 +17,9 @@ public:
 	virtual void DrawImGuiControls() override;
 	bool undercover = true;
 
+	float attackSoundTimer = 0.0f;
+	float attackSoundInterval = 5.0f;
+
 private:
 	bool attacked = false;
 	float timer = 0.0f;

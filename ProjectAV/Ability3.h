@@ -21,7 +21,7 @@ public:
 	virtual void Update(float dt) override;
 	virtual void DrawImGuiControls() override;
 	void OnTriggerStay(const std::vector<Node*> others) override;
-	void Pressed() override;
+	bool Pressed() override;
 	void Released() override;
 	void Activated();
 	float timer = 0.0f;

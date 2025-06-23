@@ -72,6 +72,16 @@ void Ability5Extend::ApplyForce(Node* object, float dt) {
         );
     }
 
+	holdSoundTimer -= dt;
+
+    if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+        if (holdSoundTimer <= 0.0f)
+        {
+            pOwner->GetComponent<SoundEffectsPlayer>()->Play(4);
+
+            holdSoundTimer = holdSoundInterval;
+        }
+    }
 }
 
 void Ability5Extend::OnTriggerEnter(Node* object) {

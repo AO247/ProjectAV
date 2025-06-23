@@ -59,9 +59,9 @@ void Ability2::Positioning()
         }
     }
 }
-void Ability2::Pressed()
+bool Ability2::Pressed()
 {
-    if (!abilityReady) return;
+    if (!abilityReady) return false;
     rightHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
     rightHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
     timeToChange = 0.3f;
@@ -91,9 +91,13 @@ void Ability2::Pressed()
     }
     cooldownTimer = cooldown;
     abilityReady = false;
+    if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+        float randSound = (rand() % 4);
+        pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f, false);
+    }
     PrefabManager::InstantiateAbility2Particles(pOwner->GetParent(), Vector3(pOwner->GetLocalPosition().x, pOwner->GetLocalPosition().y, pOwner->GetLocalPosition().z), 1.0);
     //PrefabManager::InstantiateAbility3CoreParticles(pOwner->GetParent(), Vector3(pOwner->GetLocalPosition().x, pOwner->GetLocalPosition().y, pOwner->GetLocalPosition().z), 1.0);
-
+    return true;
 }
 void Ability2::Released()
 {

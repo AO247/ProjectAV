@@ -14,6 +14,7 @@
 #include <string>
 #include "Win.h"
 #include "PrefabManager.h"
+#include "StaticSoundPlayer.h"
 
 
 
@@ -221,6 +222,8 @@ void StateMachine::Die()
 				PrefabManager::InstantiateExpCollectable(pOwner->GetParent(), Vector3(position.x - 0.8f, position.y, position.z - 0.8f), 0.3f, position.y);
 			}
 		}
+		pOwner->GetComponent<SoundEffectsPlayer>()->StopAll();
+		StaticSoundPlayer::Get().Play("Sounds\\player\\damage1.ogg", pOwner->GetWorldPosition(), 1.0f);
 		pOwner->Destroy();
 	}
 }
