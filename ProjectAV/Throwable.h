@@ -21,4 +21,5 @@ public:
 	Vec3 velocity = Vec3(0.0f, 0.0f, 0.0f);
 private:
 	Rigidbody* rigidbody;
+	
 };

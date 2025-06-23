@@ -17,6 +17,8 @@ public:
 	virtual void DrawImGuiControls() override;
 	float boomTime = 5.0f;
 	float knockRange = 10.0f;
+	float minForce = 100.0f;
+	float maxForce = 600.0f;
 	std::vector<Node*> objects;
 
 	void Boom();

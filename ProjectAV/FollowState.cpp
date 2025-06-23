@@ -42,7 +42,7 @@ void FollowState::Update(StateMachine* pOwner, float dt)
         pOwner->RequestStateChange(StateType::IDLE);
         return;
     }
-    if (ownerPos.Distance(ownerPos, playerPos) < pOwner->attackRange)
+    if (ownerPos.Distance(ownerPos, playerPos) < pOwner->attackRange && pOwner->pMovementComponent->canAttack)
     {
         sm::Vector3 temporaryDirection = playerPos - ownerPos;
 		float length = temporaryDirection.Length();

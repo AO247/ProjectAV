@@ -29,7 +29,10 @@ void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 	Vector3 currentPos = pOwner->GetWorldPosition();
 	Vec3 currentVelocityJPH = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
 
-	GroundCheck();
+	if (GroundCheck())
+	{
+		canAttack = true;
+	}
 	if (VoidCheck() && grounded)
 	{
 		if (Jump())
@@ -130,7 +133,7 @@ void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 		}
 	}
 
-	PhysicsCommon::physicsSystem->GetBodyInterface().SetFriction(rigidbody->GetBodyID(), 0.5f);
+	//PhysicsCommon::physicsSystem->GetBodyInterface().SetFriction(rigidbody->GetBodyID(), 0.5f);
 
 	stepSoundTimer -= dt;
 

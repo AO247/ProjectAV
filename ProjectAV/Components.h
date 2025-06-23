@@ -19,6 +19,7 @@
 #include "Bullet.h"
 #include "Flying.h"
 #include "Island.h"
+#include "FallDamage.h"
 #include "Trigger.h"
 #include "BrokenPart.h"
 #include "SpawnJump.h"

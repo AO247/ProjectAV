@@ -14,12 +14,12 @@ public:
 	virtual ~LevelGenerator() = default;
 
 	int bigIslandCount = 0;
-	int mediumIslandCount = 0;
-	int smallIslandCount = 3;
+	int mediumIslandCount = 3;
+	int smallIslandCount = 0;
 
 	int numberOfHardEnemies = 0;
 	int numberOfMediumEnemies = 0;
-	int numberOfEasyEnemies = 1;
+	int numberOfEasyEnemies = 0;
 
 
 	virtual void Update(float dt) override;

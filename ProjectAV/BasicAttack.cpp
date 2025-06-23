@@ -18,6 +18,8 @@ void BasicAttack::Attack(float dt)
 		} 
 		//miejsce na animacje !!!
 	}
+	Vec3 direction = Vec3(pOwner->Forward().x, 0.0f, pOwner->Forward().z);
+	//PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(pOwner->GetComponent<Rigidbody>()->GetBodyID(), direction * moveForce * dt);
 	timer += dt;
 	if (timer >= wholeAttackTime) {
 		attacked = false;
@@ -82,5 +84,7 @@ void BasicAttack::DrawImGuiControls()
 	ImGui::InputFloat("Stop Damage Time", &stopDmgTime);
 	ImGui::InputFloat("Knockback Force", &knockbackForce);
 	ImGui::InputFloat("Attack Timer", &timer);
+	ImGui::InputFloat("Move Force", &moveForce);
 	ImGui::Checkbox("Attacked", &attacked);
+
 }

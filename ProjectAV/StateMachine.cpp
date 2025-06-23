@@ -48,7 +48,7 @@ StateMachine::StateMachine(Node* owner, StateType initialState)
 	//	}
 	//}
 	pPlayer = pOwner->GetRoot()->FindFirstChildByTag("PLAYER");
-	basePos = pOwner->GetWorldPosition();
+	//basePos = pOwner->GetWorldPosition();
 }
 StateMachine::~StateMachine()
 {
@@ -63,22 +63,19 @@ void StateMachine::Stun(float time)
 }
 void StateMachine::Stop(float time)
 {
-	stopTime = time;
 	RequestStateChange(StateType::STOP);
 }
 void StateMachine::Update(float dt)
 {
-	if (timer < 2.0f && canDropPills)
+	if (timer < 5.0f && canDropPills)
 	{
 		timer += dt;
-		//pOwner->SetWorldPosition(basePos);
+		PhysicsCommon::physicsSystem->GetBodyInterface().SetPosition(pOwner->GetComponent<Rigidbody>()->GetBodyID(), 
+			Vec3(basePos.x, basePos.y, basePos.z), EActivation::Activate);
+		PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(pOwner->GetComponent<Rigidbody>()->GetBodyID(),
+			Vec3(0.0f, 0.0f, 0.0f));
 		eatedPills = false;
 		pOwner->GetComponent<Health>()->currentHealth = pOwner->GetComponent<Health>()->maxHealth;
-	}
-
-	if (hitted)
-	{
-
 	}
 
 	if (currentState)
@@ -107,18 +104,56 @@ void StateMachine::Update(float dt)
 	}
 	if (isFlying) {
 		Vec3 velocity = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(pOwner->GetComponent<Rigidbody>()->GetBodyID());
-		velocity *= 0.95f;
-		PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(pOwner->GetComponent<Rigidbody>()->GetBodyID(),velocity);
+		float dampingFactor = powf(flyingDamping, dt);
+		velocity *= dampingFactor;
+		PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(pOwner->GetComponent<Rigidbody>()->GetBodyID(), velocity);
+		Vector3 pos = pOwner->GetWorldPosition();
+
+		RRayCast ray = RRayCast(
+			RVec3(pos.x, pos.y, pos.z),
+			RVec3(0.0f, -100, 0.0f)
+		);
+		RayCastResult result;
+		if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(ray, result, SpecifiedBroadPhaseLayerFilter(BroadPhaseLayers::GROUND), SpecifiedObjectLayerFilter(Layers::GROUND)))
+		{
+			Vec3 position = ray.mOrigin + ray.mDirection * result.mFraction;
+			pos.y = position.GetY() + pMovementComponent->flyingHeight;
+			Vector3 force = pos - pOwner->GetWorldPosition();
+			if (force.Length() < 3.0f)
+			{
+				pMovementComponent->canAttack = true;
+			}
+			else
+			{
+				pMovementComponent->canAttack = false;
+			}
+			OutputDebugStringA(("force length: " + std::to_string(force.Length())).c_str());
+		}
+		else
+		{
+			Vector3 position = pPlayer->GetWorldPosition();
+			pos.y = position.y + pMovementComponent->flyingHeight - 2.0f;
+			Vector3 force = pos - pOwner->GetWorldPosition();
+			if (force.Length() < 3.0f)
+			{
+				pMovementComponent->canAttack = true;
+			}
+			else
+			{
+				pMovementComponent->canAttack = false;
+			}
+		}
+
 	}
 	else
 	{
 		if(pMovementComponent->GroundCheck())
 		{
-			
-		Vec3 velocity = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(pOwner->GetComponent<Rigidbody>()->GetBodyID());
-		velocity.SetX(velocity.GetX() * 0.97f);
-		velocity.SetZ(velocity.GetZ() * 0.97f);
-		PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(pOwner->GetComponent<Rigidbody>()->GetBodyID(), velocity);
+			Vec3 velocity = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(pOwner->GetComponent<Rigidbody>()->GetBodyID());
+			float dampingFactor = powf(groundDamping, dt);
+			velocity.SetX(velocity.GetX() * dampingFactor);
+			velocity.SetZ(velocity.GetZ() * dampingFactor);
+			PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(pOwner->GetComponent<Rigidbody>()->GetBodyID(), velocity);
 		}
 	}
 }
@@ -245,4 +280,6 @@ void StateMachine::DrawImGuiControls()
 	ImGui::Text("State Machine Properties:");
 	ImGui::InputFloat("Start Following distance", &followDistance);
 	ImGui::InputFloat("Attack Range", &attackRange);
+	ImGui::SliderFloat("Flying Damping", &flyingDamping, 0.0f, 0.99f);
+	ImGui::SliderFloat("Ground Damping", &groundDamping, 0.0f, 0.99f);
 }

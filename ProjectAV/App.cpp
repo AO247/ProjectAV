@@ -143,10 +143,20 @@ App::App(const std::string& commandLine)
         std::make_unique<PlayerController>(pPlayer, wnd)
     );
 
+
+    auto legsOwner = std::make_unique<Node>("Legs", nullptr, "TRIGGER");
     BodyCreationSettings p1TBodySettings(new JPH::SphereShape(12.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
-    pPlayer->AddComponent(
-        std::make_unique<Trigger>(pPlayer, p1TBodySettings, false)
+    legsOwner->AddComponent(
+        std::make_unique<Trigger>(legsOwner.get(), p1TBodySettings, false)
     );
+    legsOwner->AddComponent(
+        std::make_unique<FallDamage>(legsOwner.get(), pPlayer)
+    );
+    legsOwner->SetLocalPosition({ 0.0f, -pPlayer->GetComponent<PlayerController>()->height / 2, 0.0f });
+    pPlayer->AddChild(std::move(legsOwner));
+
+
+
 
     BodyCreationSettings a1BodySettings(new JPH::CapsuleShape(6.0f, 5.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
     pAbility1->AddComponent(
@@ -182,6 +192,25 @@ App::App(const std::string& commandLine)
     pAbility2->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\toss4.wav");
     pPlayer->GetComponent<PlayerController>()->abilitySlot2 = pAbility2;
 
+
+
+    BodyCreationSettings a3RbodySettings(new JPH::SphereShape(1.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::TRIGGER);
+    a3RbodySettings.mGravityFactor = 0.0f;
+    a3RbodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
+
+    a3RbodySettings.mMassPropertiesOverride.mMass = 1.0f;
+    a3RbodySettings.mFriction = 0.0f;
+    a3RbodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
+    a3RbodySettings.mMotionQuality = EMotionQuality::LinearCast;
+
+    pAbility3->AddComponent(
+        std::make_unique<Rigidbody>(pAbility3, a3RbodySettings)
+    );
+
+    pAbility3->AddComponent(
+        std::make_unique<ModelComponent>(pAbility3, wnd.Gfx(), "Models\\box.glb")
+    );
+    pAbility3->GetComponent<ModelComponent>()->LinkTechniques(rg);
 
     BodyCreationSettings a3odySettings(new JPH::SphereShape(40.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
     pAbility3->AddComponent(
@@ -482,78 +511,68 @@ void App::HandleInput(float dt)
 {
 
 
-    while (const auto e = wnd.kbd.PollKeyEvent())
+    if (wnd.kbd.IsJustPressed('P'))
     {
-        if (!e->IsPress()) continue;
+        PrefabManager::InstantiateIslandBig1(pSceneRoot.get(), pFreeViewCamera->GetWorldPosition(), 1.0f);
+        PrefabManager::InstantiateNormalEnemy(pSceneRoot.get(), pFreeViewCamera->GetWorldPosition(), 1.0f);
+    }
 
-        switch (e->GetCode())
+    if (wnd.kbd.IsJustPressed('M'))
+    {
+        if (myMusic->isPlaying())
         {
-        case 'P':
-        {
-            PrefabManager::InstantiateIslandBig1(pSceneRoot.get(), pFreeViewCamera->GetWorldPosition(), 1.0f);
-			PrefabManager::InstantiateNormalEnemy(pSceneRoot.get(), pFreeViewCamera->GetWorldPosition(), 1.0f);
-            break;
+            myMusic->Stop();
         }
+        else
+        {
+            myMusic->Play();
+        }
+    }
 
-		case 'M':
-			if (myMusic->isPlaying())
-			{
-				myMusic->Stop();
-			}
-			else
-			{
-				myMusic->Play();
-			}
-			break;
-        case 'C':
-            if (cursorEnabled) {
-                wnd.DisableCursor();
-                wnd.mouse.EnableRawInput();
-            }
-            else {
-                wnd.EnableCursor();
-                wnd.mouse.DisableRawInput();
-            }
-            cursorEnabled = !cursorEnabled;
-            break;
-        case 'H': 
-            showControlWindow = !showControlWindow;
-            break;
-        case 'X':
-            tutorialNode = PrefabManager::InstantiateTutorialIslands(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
-            break;
-        /*case 'Q':
-			tutorialNode->GetComponent<Tutorial>()->qPressed= true;
-			break;*/
-        /*case 'B':
-            if (pPlayer->GetComponent<PlayerController>()->abilitySlot1 == pAbility1)
-            {
-                pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility4;
-            }
-            else
-            {
-                pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility1;
-            }
-            break;*/
-        case VK_ESCAPE:
-            PostQuitMessage(0);
-            return;
-        case VK_F1:
-            showDemoWindow = !showDemoWindow;
-            break;
-        case 'V':
-        {
-            freeViewCamera = !freeViewCamera;
-            if (freeViewCamera) {
-                pCamera->GetComponent<Camera>()->active = false;
-                pFreeViewCamera->GetComponent<Camera>()->active = true;
-            }
-            else {
-                pCamera->GetComponent<Camera>()->active = true;
-                pFreeViewCamera->GetComponent<Camera>()->active = false;
-            }
-            break;
+    if (wnd.kbd.IsJustPressed('C'))
+    {
+        if (cursorEnabled) {
+            wnd.DisableCursor();
+            wnd.mouse.EnableRawInput();
         }
+        else {
+            wnd.EnableCursor();
+            wnd.mouse.DisableRawInput();
+        }
+        cursorEnabled = !cursorEnabled;
+    }
+
+    if (wnd.kbd.IsJustPressed('H'))
+    {
+        showControlWindow = !showControlWindow;
+    }
+
+    if (wnd.kbd.IsJustPressed('X'))
+    {
+        tutorialNode = PrefabManager::InstantiateTutorialIslands(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
+    }
+
+    if (wnd.kbd.IsJustPressed(VK_ESCAPE))
+    {
+        PostQuitMessage(0);
+        return; // Zwróć od razu, aby uniknąć dalszego przetwarzania
+    }
+
+    if (wnd.kbd.IsJustPressed(VK_F1))
+    {
+        showDemoWindow = !showDemoWindow;
+    }
+
+    if (wnd.kbd.IsJustPressed('V'))
+    {
+        freeViewCamera = !freeViewCamera;
+        if (freeViewCamera) {
+            pCamera->GetComponent<Camera>()->active = false;
+            pFreeViewCamera->GetComponent<Camera>()->active = true;
+        }
+        else {
+            pCamera->GetComponent<Camera>()->active = true;
+            pFreeViewCamera->GetComponent<Camera>()->active = false;
         }
     }
 
@@ -588,7 +607,18 @@ void App::DoFrame(float dt)
     CleanupDestroyedNodes(pSceneRoot.get());    //data removed
 	pSceneRoot->Update(dt);
     RemoveRigidbody(pSceneRoot.get());//rigidbody remove if destruction
-
+    JPH::BodyIDVector bodyIDs;
+    PhysicsCommon::physicsSystem->GetBodies(bodyIDs);
+    for (JPH::BodyID bodyID : bodyIDs)
+    {
+        JPH::uint64 data = PhysicsCommon::physicsSystem->GetBodyInterface().GetUserData(bodyID);
+        if (data == 0)
+        {
+            PhysicsCommon::physicsSystem->GetBodyInterface().DeactivateBody(bodyID);
+            PhysicsCommon::physicsSystem->GetBodyInterface().RemoveBody(bodyID);
+            PhysicsCommon::physicsSystem->GetBodyInterface().DestroyBody(bodyID);
+        }
+    }
     wnd.Gfx().BeginFrame(0.5f, 0.5f, 1.0f);
 
     dx::XMMATRIX viewMatrix = pCamera->GetComponent<Camera>()->GetViewMatrix();
@@ -683,6 +713,7 @@ void App::DoFrame(float dt)
             loadingScreen1->Draw(wnd.Gfx().GetContext());
         }
     }*/
+    wnd.kbd.UpdateFrameState();
 
     wnd.Gfx().EndFrame();
     rg.Reset();
@@ -703,7 +734,6 @@ void App::RemoveRigidbody(Node* currentNode)
             PhysicsCommon::physicsSystem->GetBodyInterface().DeactivateBody(currentNode->GetComponent<Rigidbody>()->GetBodyID());
             PhysicsCommon::physicsSystem->GetBodyInterface().RemoveBody(currentNode->GetComponent<Rigidbody>()->GetBodyID());
             PhysicsCommon::physicsSystem->GetBodyInterface().DestroyBody(currentNode->GetComponent<Rigidbody>()->GetBodyID());
-
         }
     }
 }

@@ -49,6 +49,10 @@ bool Ability1::Pressed()
         {
 			Vec3 direction = Vec3(pOwner->Forward().x, pOwner->Forward().y, pOwner->Forward().z);
             PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), direction * force);
+            if (objects[i]->tag == "ENEMY")
+            {
+                objects[i]->GetComponent<StateMachine>()->Stop(0.1f);
+            }
           /*  if (objects[i]->tag == "ENEMY")
             {
                 objects[i]->AddComponent(
