@@ -8,20 +8,19 @@ namespace wrl = Microsoft::WRL;
 
 namespace Bind
 {
-	RenderTarget::RenderTarget(Graphics& gfx, UINT width, UINT height)
+	RenderTarget::RenderTarget(Graphics& gfx, UINT width, UINT height, bool sRGB)
 		:
 		width(width),
 		height(height)
 	{
 		INFOMAN(gfx);
 
-
 		D3D11_TEXTURE2D_DESC textureDesc = {};
 		textureDesc.Width = width;
 		textureDesc.Height = height;
 		textureDesc.MipLevels = 1;
 		textureDesc.ArraySize = 1;
-		textureDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+		textureDesc.Format = sRGB ? DXGI_FORMAT_B8G8R8A8_UNORM_SRGB : DXGI_FORMAT_B8G8R8A8_UNORM;
 		textureDesc.SampleDesc.Count = 1;
 		textureDesc.SampleDesc.Quality = 0;
 		textureDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -33,7 +32,6 @@ namespace Bind
 			&textureDesc, nullptr, &pTexture
 		));
 
-
 		D3D11_RENDER_TARGET_VIEW_DESC rtvDesc = {};
 		rtvDesc.Format = textureDesc.Format;
 		rtvDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
@@ -42,6 +40,7 @@ namespace Bind
 			pTexture.Get(), &rtvDesc, &pTargetView
 		));
 	}
+
 
 	RenderTarget::RenderTarget(Graphics& gfx, ID3D11Texture2D* pTexture)
 	{
@@ -117,9 +116,9 @@ namespace Bind
 	}
 
 
-	ShaderInputRenderTarget::ShaderInputRenderTarget(Graphics& gfx, UINT width, UINT height, UINT slot)
+	ShaderInputRenderTarget::ShaderInputRenderTarget(Graphics& gfx, UINT width, UINT height, UINT slot, bool sRGB)
 		:
-		RenderTarget(gfx, width, height),
+		RenderTarget(gfx, width, height, sRGB), // Przekazanie flagi do konstruktora bazowego
 		slot(slot)
 	{
 		INFOMAN(gfx);
@@ -127,8 +126,13 @@ namespace Bind
 		wrl::ComPtr<ID3D11Resource> pRes;
 		pTargetView->GetResource(&pRes);
 
+		wrl::ComPtr<ID3D11Texture2D> pTex;
+		pRes.As(&pTex);
+		D3D11_TEXTURE2D_DESC texDesc;
+		pTex->GetDesc(&texDesc);
+
 		D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-		srvDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+		srvDesc.Format = texDesc.Format; // U¿yj formatu z tekstury (który teraz mo¿e byæ _SRGB)
 		srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 		srvDesc.Texture2D.MostDetailedMip = 0;
 		srvDesc.Texture2D.MipLevels = 1;
@@ -136,6 +140,7 @@ namespace Bind
 			pRes.Get(), &srvDesc, &pShaderResourceView
 		));
 	}
+
 
 	Surface Bind::ShaderInputRenderTarget::ToSurface(Graphics& gfx) const
 	{

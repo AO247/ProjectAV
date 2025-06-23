@@ -19,7 +19,8 @@
 #include <Jolt/ConfigurationString.h>
 #include <Jolt/Physics/Collision/Shape/CapsuleShape.h>
 #include "imgui/imgui_impl_dx11.h"
-
+#include "TransformCbuf.h"
+#include "ShadowCbuf.h"
 namespace dx = DirectX;
 
 App::App(const std::string& commandLine)
@@ -318,28 +319,28 @@ App::App(const std::string& commandLine)
     );
 
     pLeftHandNormal->AddComponent(
-        std::make_unique<ModelComponent>(pLeftHandNormal, wnd.Gfx(), "Models\\hands\\left.obj")
+        std::make_unique<ModelComponent>(pLeftHandNormal, wnd.Gfx(), "Models\\hands\\left.obj", 1.0f, false, false)
     );
     pLeftHandNormal->GetComponent<ModelComponent>()->LinkTechniques(rg);
     pLeftHandNormal->SetLocalScale({ 0.1f, 0.1f, 0.1f });
     pLeftHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
 
     pLeftHandAbility->AddComponent(
-        std::make_unique<ModelComponent>(pLeftHandAbility, wnd.Gfx(), "Models\\hands\\push.obj")
+        std::make_unique<ModelComponent>(pLeftHandAbility, wnd.Gfx(), "Models\\hands\\push.obj", 1.0f, false, false)
     );
     pLeftHandAbility->GetComponent<ModelComponent>()->LinkTechniques(rg);
     pLeftHandAbility->SetLocalScale({ 0.1f, 0.1f, 0.1f });
     pLeftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
 
     pRightHandNormal->AddComponent(
-        std::make_unique<ModelComponent>(pRightHandNormal, wnd.Gfx(), "Models\\hands\\right.obj")
+        std::make_unique<ModelComponent>(pRightHandNormal, wnd.Gfx(), "Models\\hands\\right.obj", 1.0f, false, false)
     );
     pRightHandNormal->GetComponent<ModelComponent>()->LinkTechniques(rg);
     pRightHandNormal->SetLocalScale({ 0.1f, 0.1f, 0.1f });
     pRightHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
 
     pRightHandAbility->AddComponent(
-        std::make_unique<ModelComponent>(pRightHandAbility, wnd.Gfx(), "Models\\hands\\toss.obj")
+        std::make_unique<ModelComponent>(pRightHandAbility, wnd.Gfx(), "Models\\hands\\toss.obj", 1.0f, false, false)
     );
     pRightHandAbility->GetComponent<ModelComponent>()->LinkTechniques(rg);
     pRightHandAbility->SetLocalScale({ 0.1f, 0.1f, 0.1f });
@@ -627,8 +628,25 @@ void App::DoFrame(float dt)
         viewMatrix = pFreeViewCamera->GetComponent<Camera>()->GetViewMatrix();
     }
     wnd.Gfx().SetCamera(viewMatrix);
+    //fc.ShowWindows(wnd.Gfx());
+	/*DebugLine line(wnd.Gfx(), pEnemy->GetComponent<StateMachine>()->pos, pEnemy->GetComponent<StateMachine>()->cen, { 0.0f, 0.0f, 1.0f, 1.0f });
+    line.Submit(fc);*/ // for idle
+    // --- Bind Lights ---
+    Bind::TransformCbuf::SetLight(&dirLight);
+    Bind::ShadowCbuf::SetLight(&dirLight);
+    DirectX::XMFLOAT3 focusPos = pPlayer->GetWorldPosition();
+    Camera* activePlayerCamera = pCamera->GetComponent<Camera>();
+   /* if (freeViewCamera) {
+        activePlayerCamera = pFreeViewCamera->GetComponent<Camera>();
+    }
+    else {
+        activePlayerCamera = pCamera->GetComponent<Camera>();
+    }*/
+    dirLight.Update(wnd.Gfx(), focusPos, *activePlayerCamera);
 
-    dirLight.Bind(wnd.Gfx(), viewMatrix);
+    // --- Bind Lights ---
+    // pointLight.Bind(wnd.Gfx(), viewMatrix);
+    dirLight.Bind(wnd.Gfx());
 
     FrustumCalculating(); 
 

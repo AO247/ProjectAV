@@ -11,23 +11,28 @@ namespace Bind
 	{
 		INFOMAN(gfx);
 
-
 		wrl::ComPtr<ID3D11Texture2D> pDepthStencil;
 		D3D11_TEXTURE2D_DESC descDepth = {};
 		descDepth.Width = width;
 		descDepth.Height = height;
 		descDepth.MipLevels = 1u;
 		descDepth.ArraySize = 1u;
-		descDepth.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		// ZMIANA: U¿ywamy formatu bez-typowego, jeœli chcemy czytaæ teksturê w shaderze
+		descDepth.Format = canBindShaderInput ? DXGI_FORMAT_R24G8_TYPELESS : DXGI_FORMAT_D24_UNORM_S8_UINT;
 		descDepth.SampleDesc.Count = 1u;
 		descDepth.SampleDesc.Quality = 0u;
 		descDepth.Usage = D3D11_USAGE_DEFAULT;
 		descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL | (canBindShaderInput ? D3D11_BIND_SHADER_RESOURCE : 0);
 		GFX_THROW_INFO(GetDevice(gfx)->CreateTexture2D(&descDepth, nullptr, &pDepthStencil));
 
-
+		// ZMIANA: Jawnie tworzymy widok (View) z konkretnym formatem do zapisu g³êbi
+		D3D11_DEPTH_STENCIL_VIEW_DESC descView = {};
+		descView.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		descView.Flags = 0;
+		descView.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+		descView.Texture2D.MipSlice = 0;
 		GFX_THROW_INFO(GetDevice(gfx)->CreateDepthStencilView(
-			pDepthStencil.Get(), nullptr, &pDepthStencilView 
+			pDepthStencil.Get(), &descView, &pDepthStencilView
 		));
 	}
 
@@ -71,7 +76,8 @@ namespace Bind
 		pDepthStencilView->GetResource(&pRes);
 
 		D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-		srvDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT; 
+		// ZMIANA: U¿ywamy formatu do odczytu, który ignoruje 8 bitów stencila
+		srvDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
 		srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 		srvDesc.Texture2D.MostDetailedMip = 0;
 		srvDesc.Texture2D.MipLevels = 1;
