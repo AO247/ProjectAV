@@ -10,7 +10,7 @@ SpawnJump::SpawnJump(Node* owner, Window& window, Node* player)
 void SpawnJump::Update(float dt)
 {
 	if (activated)
-	{
+	{//player y - this y.length() < 100.0f
 		if (playerNode != nullptr)
 		{
 			jumpSoundTimer -= dt;

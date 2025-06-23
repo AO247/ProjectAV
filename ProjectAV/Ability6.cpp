@@ -27,18 +27,18 @@ void Ability6::Update(float dt)
         PullingParticlesPositioning();
         Positioning();
         Cooldowns(dt);
-        if (isPressed)
-        {
-            if (pOwner->GetComponent<SoundEffectsPlayer>()) {
-                if (holdSoundTimer <= 0.0f)
-                {
-                    pOwner->GetComponent<SoundEffectsPlayer>()->Play(2, 1.0f, false);
+    }
+    if (isPressed)
+    {
+        if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+            if (holdSoundTimer <= 0.0f)
+            {
+                pOwner->GetComponent<SoundEffectsPlayer>()->Play(2, 1.0f, false);
 
-                    holdSoundTimer = holdSoundInterval;
-                }
+                holdSoundTimer = holdSoundInterval;
             }
-            Pulling(dt);
         }
+        Pulling(dt);
     }
 }
 void Ability6::Positioning()

@@ -58,10 +58,15 @@ void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 			targetYaw = wrap_angle(currentYaw + yawDifference * rotationLerpFactor);
 			Quat q = Quat::sEulerAngles(Vec3(0.0f, targetYaw, 0.0f));
 			PhysicsCommon::physicsSystem->GetBodyInterface().SetRotation(rigidbody->GetBodyID(), q, EActivation::Activate);
+			//tutaj animacja stania
+
 			return;
 		}
 
 	}
+
+	// tutaj dŸwiêk i animacja chodzenia
+	
 	//AutoJump();
 	if (timerForChangedDirection > 0.0f)
 	{

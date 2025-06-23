@@ -22,6 +22,11 @@ void BoomAttack::Attack(float dt)
 	{
 		timer = 0.0f;
 		Boom();
+		/*if (pOwner->GetComponent<SoundEffectsPlayer>())
+		{
+			float randSound = (rand() % 4 + 4);
+			pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound);
+		}*/
 	}
 
 }

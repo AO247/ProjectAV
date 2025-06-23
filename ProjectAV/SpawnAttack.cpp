@@ -46,6 +46,12 @@ void SpawnAttack::Attack(float dt)
 			animComp->PlayAnimation(EnemyAnimationIndices::MAGE_ATTACK4, 0.5f, false);
 		}
 
+		if (pOwner->GetComponent<SoundEffectsPlayer>())
+		{
+			float randSound = (rand() % 4 + 4);
+			pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound);
+		}
+
 		timer = 0.0f;
 		endAttack = false;
 		Vector3 pos = pOwner->GetLocalPosition();
@@ -54,18 +60,6 @@ void SpawnAttack::Attack(float dt)
 		enemy->MoveToTop();
 	}
 
-	attackSoundTimer -= dt;
-
-	if (pOwner->GetComponent<SoundEffectsPlayer>())
-	{
-		if (attackSoundTimer <= 0.0f)
-		{
-			float randSound = (rand() % 4 + 4);
-			pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound);
-
-			attackSoundTimer = attackSoundInterval;
-		}
-	}
 }
 
 

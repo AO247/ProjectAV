@@ -10,6 +10,14 @@ BasicAttack::BasicAttack(Node* owner, std::string tag)
 
 void BasicAttack::Attack(float dt)
 {
+	if (timer == 0.0f)
+	{
+		if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+			float randSound = (rand() % 3) + 4;
+			pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound);
+		} 
+		//miejsce na animacje !!!
+	}
 	timer += dt;
 	if (timer >= wholeAttackTime) {
 		attacked = false;
@@ -17,11 +25,8 @@ void BasicAttack::Attack(float dt)
 		endAttack = true;
 		return;
 	}
+
 	if (attacked) {
-		if (pOwner->GetComponent<SoundEffectsPlayer>()) {
-			float randSound = (rand() % 3) + 4;
-			pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound);
-		}
 		return;
 	}
 	if (timer < startDmgTime) {
