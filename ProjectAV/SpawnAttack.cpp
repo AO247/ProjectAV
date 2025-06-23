@@ -1,6 +1,8 @@
 #include "SpawnAttack.h"
 #include "Node.h"       
 #include "PrefabManager.h"
+#include "EnemyConfig.h"
+#include "AnimationComponent.h"
 
 namespace dx = DirectX;
 SpawnAttack::SpawnAttack(Node* owner, Node* player, std::string tag)
@@ -10,6 +12,8 @@ SpawnAttack::SpawnAttack(Node* owner, Node* player, std::string tag)
 
 void SpawnAttack::Attack(float dt)
 {
+	AnimationComponent* animComp = pOwner->GetComponent<AnimationComponent>();
+
 	Vector3 playerPos = player->GetWorldPosition();
 
 	sm::Vector3 facingDirection = sm::Vector3(playerPos)
@@ -24,6 +28,21 @@ void SpawnAttack::Attack(float dt)
 	timer += dt;
 	if (timer >= cooldownTime)
 	{
+
+		int randomAttack = std::rand() % 4;
+		if (randomAttack == 0) {
+			animComp->PlayAnimation(EnemyAnimationIndices::MAGE_ATTACK1, 0.5f, false);
+		}
+		else if (randomAttack == 1) {
+			animComp->PlayAnimation(EnemyAnimationIndices::MAGE_ATTACK2, 0.5f, false);
+		}
+		else if (randomAttack == 2) {
+			animComp->PlayAnimation(EnemyAnimationIndices::MAGE_ATTACK3, 0.5f, false);
+		}
+		else {
+			animComp->PlayAnimation(EnemyAnimationIndices::MAGE_ATTACK4, 0.5f, false);
+		}
+
 		timer = 0.0f;
 		endAttack = false;
 		Vector3 pos = pOwner->GetLocalPosition();

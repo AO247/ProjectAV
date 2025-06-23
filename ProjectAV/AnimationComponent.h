@@ -36,10 +36,10 @@ public:
 		animator->UpdateAnimation(dt);
 	}
 
-	void PlayAnimation(int index, float transitionDuration = 0.2f)
+	void PlayAnimation(int index, float transitionDuration = 0.2f, bool loop = true)
 	{
-		if (animator && index >= 0 && index < animations.size()) {
-			animator->PlayAnimation(animations[index], transitionDuration);
+		if (animator && index >= 0 && static_cast<size_t>(index) < animations.size()) { 
+			animator->PlayAnimation(animations[index], transitionDuration, loop);
 		}
 	}
 

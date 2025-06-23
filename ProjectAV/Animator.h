@@ -2,17 +2,28 @@
 
 #include "Animation.h"
 #include <DirectXMath.h>
+#include <string>
+#include <vector>
+#include <map>
+#include <algorithm> 
+#include <cmath>   
+
 
 class Animator
 {
 public:
-    Animator(Animation* Animation)
+     Animator(Animation* animation, bool initialLoop = true) :
+        m_CurrentAnimation(animation),
+        m_CurrentTime(0.0f),
+        m_bLoopCurrentAnimation(initialLoop),  
+        m_TargetAnimation(nullptr),
+        m_TargetTime(0.0f),
+        m_bLoopTargetAnimation(true), 
+        m_BlendFactor(0.0f),
+        m_TransitionDuration(0.0f),
+        m_DeltaTime(0.0f)  
     {
-        m_CurrentTime = 0.0;
-        m_CurrentAnimation = Animation;
-
         m_FinalBoneMatrices.reserve(100);
-
         for (int i = 0; i < 100; i++)
             m_FinalBoneMatrices.push_back(DirectX::XMMatrixIdentity());
     }
@@ -25,36 +36,53 @@ public:
         {
             return;
         }
-
-        if (m_CurrentAnimation->GetTicksPerSecond() > 0 && m_CurrentAnimation->GetDuration() > 0)
+         
+        if (m_CurrentAnimation->GetTicksPerSecond() > 0.0f && m_CurrentAnimation->GetDuration() > 0.0f)
         {
             m_CurrentTime += m_CurrentAnimation->GetTicksPerSecond() * dt;
-            m_CurrentTime = fmod(m_CurrentTime, m_CurrentAnimation->GetDuration());
-            //DirectX::XMMATRIX identityMatrix = DirectX::XMMatrixIdentity();
-            //CalculateBoneTransform(&m_CurrentAnimation->GetRootNode(), identityMatrix);
+            if (m_bLoopCurrentAnimation)
+            {
+                m_CurrentTime = fmod(m_CurrentTime, m_CurrentAnimation->GetDuration());
+            }
+            else
+            { 
+                if (m_CurrentTime >= m_CurrentAnimation->GetDuration())
+                {
+                    m_CurrentTime = m_CurrentAnimation->GetDuration();
+                }
+            }
         }
         else
-        {
-            m_CurrentTime = 0.0f;
-        }
-
+        { 
+            if (m_CurrentAnimation->GetDuration() <= 0.0f) m_CurrentTime = 0.0f;
+        } 
         if (m_TargetAnimation)
         {
-            if (m_TargetAnimation->GetTicksPerSecond() > 0 && m_TargetAnimation->GetDuration() > 0)
+            if (m_TargetAnimation->GetTicksPerSecond() > 0.0f && m_TargetAnimation->GetDuration() > 0.0f)
             {
                 m_TargetTime += m_TargetAnimation->GetTicksPerSecond() * dt;
-                m_TargetTime = fmod(m_TargetTime, m_TargetAnimation->GetDuration());
+                 if (m_bLoopTargetAnimation)
+                {
+                    m_TargetTime = fmod(m_TargetTime, m_TargetAnimation->GetDuration());
+                }
+                else
+                {
+                    if (m_TargetTime >= m_TargetAnimation->GetDuration())
+                    {
+                        m_TargetTime = m_TargetAnimation->GetDuration();
+                    }
+                }
             }
             else
             {
-                m_TargetTime = 0.0f;
+                if (m_TargetAnimation->GetDuration() <= 0.0f) m_TargetTime = 0.0f;
             }
 
             if (m_TransitionDuration > 0.0f)
             {
                 m_BlendFactor += dt / m_TransitionDuration;
             }
-            else
+            else  
             {
                 m_BlendFactor = 1.0f;
             }
@@ -63,39 +91,68 @@ public:
             if (m_BlendFactor >= 1.0f)
             {
                 m_CurrentAnimation = m_TargetAnimation;
-                m_CurrentTime = m_TargetTime;
+                m_CurrentTime = m_TargetTime;  
+                m_bLoopCurrentAnimation = m_bLoopTargetAnimation; 
 
                 m_TargetAnimation = nullptr;
                 m_TargetTime = 0.0f;
+                m_bLoopTargetAnimation = true; 
                 m_BlendFactor = 0.0f;
+                m_TransitionDuration = 0.0f;
             }
-
         }
-
+          
         DirectX::XMMATRIX identityMatrix = DirectX::XMMatrixIdentity();
         CalculateBoneTransform(&m_CurrentAnimation->GetRootNode(), identityMatrix);
-
+ 
     }
-
-    void PlayAnimation(Animation* pAnimation, float transitionDuration = 0.2f)
+     
+    void PlayAnimation(Animation* pAnimation, float transitionDuration = 0.5f, bool loop = true)
     {
-        if (!pAnimation || pAnimation == m_CurrentAnimation)
-        {
-            if (pAnimation == m_CurrentAnimation && !m_TargetAnimation) return;
-            if (pAnimation == m_TargetAnimation) return;
+        if (!pAnimation)
+        { 
+            return;
         }
 
-        if (!m_CurrentAnimation || transitionDuration <= 0.0f || pAnimation == m_CurrentAnimation)
+        // Przypadek 1: Ta sama animacja jest ju¿ bie¿¹ca I NIE ma przejœcia w toku
+        if (pAnimation == m_CurrentAnimation && !m_TargetAnimation)
+        {
+            if (m_bLoopCurrentAnimation != loop)  
+            {
+                m_bLoopCurrentAnimation = loop; 
+                if (loop && m_CurrentAnimation->GetDuration() > 0.0f && m_CurrentTime >= m_CurrentAnimation->GetDuration()) {
+                    m_CurrentTime = 0.0f;
+                }
+            }
+            return;
+        }
+
+        // Przypadek 2: Animacja jest ju¿ ustawiona jako docelowa
+        if (pAnimation == m_TargetAnimation)
+        {
+            m_bLoopTargetAnimation = loop; 
+            return;
+        }
+
+        // G³ówna logika ustawiania animacji
+        if (!m_CurrentAnimation || transitionDuration <= 0.0f)  
         {
             m_CurrentAnimation = pAnimation;
             m_CurrentTime = 0.0f;
+            m_bLoopCurrentAnimation = loop;
+
             m_TargetAnimation = nullptr;
+            m_TargetTime = 0.0f;
+            m_bLoopTargetAnimation = true; 
             m_BlendFactor = 0.0f;
+            m_TransitionDuration = 0.0f;
         }
-        else
+        else 
         {
             m_TargetAnimation = pAnimation;
-            m_TargetTime = 0.0f;
+            m_TargetTime = 0.0f;  
+            m_bLoopTargetAnimation = loop;
+
             m_BlendFactor = 0.0f;
             m_TransitionDuration = transitionDuration;
         }
@@ -104,60 +161,69 @@ public:
     void CalculateBoneTransform(const AssimpNodeData* node, DirectX::XMMATRIX& parentTransform)
     {
         std::string nodeName = node->name;
-        DirectX::XMMATRIX nodeTransform = node->transformation;
+        DirectX::XMMATRIX nodeTransform = node->transformation;  
 
-        Bone* BoneC = m_CurrentAnimation->FindBone(nodeName);
-
-        if (BoneC)
+        Bone* currentBone = nullptr;
+        if (m_CurrentAnimation)  
         {
-            BoneC->Update(m_CurrentTime);
-            nodeTransform = BoneC->GetLocalTransform();
+            currentBone = m_CurrentAnimation->FindBone(nodeName);
+            if (currentBone)
+            {
+                currentBone->Update(m_CurrentTime);
+                nodeTransform = currentBone->GetLocalTransform();
+            }
         }
 
-        DirectX::XMMATRIX nodeTransformTargetFinal = nodeTransform;
+        DirectX::XMMATRIX blendedTransform = nodeTransform; 
+
         if (m_TargetAnimation && m_BlendFactor > 0.0f)
         {
-            DirectX::XMMATRIX nodeTransformTarget = node->transformation;
-            Bone* boneTarget = m_TargetAnimation->FindBone(nodeName);
+            DirectX::XMMATRIX targetNodeTransform = node->transformation;  
+            Bone* targetBone = m_TargetAnimation->FindBone(nodeName);
 
-            if (boneTarget)
+            if (targetBone)
             {
-                boneTarget->Update(m_TargetTime);
-                nodeTransformTarget = boneTarget->GetLocalTransform();
+                targetBone->Update(m_TargetTime);
+                targetNodeTransform = targetBone->GetLocalTransform();
             }
-
+             
             DirectX::XMVECTOR scaleA, rotQuatA, transA;
-            DirectX::XMMatrixDecompose(&scaleA, &rotQuatA, &transA, nodeTransform);
+            DirectX::XMMatrixDecompose(&scaleA, &rotQuatA, &transA, nodeTransform);  
 
             DirectX::XMVECTOR scaleB, rotQuatB, transB;
-            DirectX::XMMatrixDecompose(&scaleB, &rotQuatB, &transB, nodeTransformTarget);
+            DirectX::XMMatrixDecompose(&scaleB, &rotQuatB, &transB, targetNodeTransform);
 
             DirectX::XMVECTOR blendedScale = DirectX::XMVectorLerp(scaleA, scaleB, m_BlendFactor);
             DirectX::XMVECTOR blendedRotQuat = DirectX::XMQuaternionSlerp(rotQuatA, rotQuatB, m_BlendFactor);
             DirectX::XMVECTOR blendedTrans = DirectX::XMVectorLerp(transA, transB, m_BlendFactor);
 
-            nodeTransformTargetFinal = DirectX::XMMatrixScalingFromVector(blendedScale) *
+            blendedTransform = DirectX::XMMatrixScalingFromVector(blendedScale) *
                 DirectX::XMMatrixRotationQuaternion(blendedRotQuat) *
                 DirectX::XMMatrixTranslationFromVector(blendedTrans);
-
         }
 
+        DirectX::XMMATRIX globalTransformation = blendedTransform * parentTransform;
 
-        DirectX::XMMATRIX globalTransformation = nodeTransformTargetFinal * parentTransform;
-
-        std::map<std::string, ModelComponent::BoneInfo>& boneInfoMap = m_CurrentAnimation->GetBoneIDMap();
-        if (boneInfoMap.find(nodeName) != boneInfoMap.end())
+        if (m_CurrentAnimation) 
         {
-            int index = boneInfoMap[nodeName].id;
-            DirectX::XMMATRIX offset = boneInfoMap[nodeName].offset;
-            m_FinalBoneMatrices[index] = offset * globalTransformation;
+            std::map<std::string, ModelComponent::BoneInfo>& boneInfoMap = m_CurrentAnimation->GetBoneIDMap();
+            auto it = boneInfoMap.find(nodeName);
+            if (it != boneInfoMap.end())
+            {
+                int boneID = it->second.id;
+                DirectX::XMMATRIX offsetMatrix = it->second.offset;
+                if (boneID >= 0 && static_cast<size_t>(boneID) < m_FinalBoneMatrices.size())
+                {
+                    m_FinalBoneMatrices[boneID] = offsetMatrix * globalTransformation;
+                }
+            }
         }
 
         for (int i = 0; i < node->childrenCount; i++)
             CalculateBoneTransform(&node->children[i], globalTransformation);
     }
 
-    std::vector<DirectX::XMMATRIX> GetFinalBoneMatrices()
+    std::vector<DirectX::XMMATRIX> GetFinalBoneMatrices() const
     {
         return m_FinalBoneMatrices;
     }
@@ -166,14 +232,25 @@ public:
         return m_CurrentAnimation;
     }
 
+    bool IsCurrentAnimationLooping() const {
+        if (m_TargetAnimation && m_BlendFactor < 1.0f) {  
+            return m_bLoopTargetAnimation; 
+        }
+        return m_bLoopCurrentAnimation;
+    }
+
+
 private:
     std::vector<DirectX::XMMATRIX> m_FinalBoneMatrices;
     Animation* m_CurrentAnimation;
     float m_CurrentTime;
-    float m_DeltaTime;
+    bool  m_bLoopCurrentAnimation;  
 
     Animation* m_TargetAnimation;
     float m_TargetTime;
+    bool  m_bLoopTargetAnimation;  
+
     float m_BlendFactor;
     float m_TransitionDuration;
+    float m_DeltaTime;  
 };
