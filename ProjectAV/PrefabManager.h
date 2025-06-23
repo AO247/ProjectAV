@@ -7491,6 +7491,10 @@ public:
         auto pNewNodeOwner = std::make_unique<Node>("Ability5Extend", nullptr, "TRIGGER");
         Node* pNewNode = pNewNodeOwner.get();
 
+		pNewNode->AddComponent(
+			std::make_unique<SoundEffectsPlayer>(pNewNode)
+		);
+		pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\hold.wav");
 
         pNewNode->AddComponent(
             std::make_unique<ModelComponent>(pNewNode, wind->Gfx(), "Models\\box.glb")
