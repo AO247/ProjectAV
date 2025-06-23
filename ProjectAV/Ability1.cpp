@@ -35,6 +35,9 @@ bool Ability1::Pressed()
 {
     if (!abilityReady) return false;
 
+    // animacja popchniêcia 
+    // particle
+    // dŸwiêk popchniêcia
     if (pOwner->GetComponent<SoundEffectsPlayer>()) {
         float randSound = (rand() % 4);
         pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f, false);

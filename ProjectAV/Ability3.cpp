@@ -30,17 +30,18 @@ void Ability3::Update(float dt)
                 Vec3(0.0f, 0.0f, 0.0f));
             PhysicsCommon::physicsSystem->GetBodyInterface().SetPosition(pOwner->GetComponent<Rigidbody>()->GetBodyID(),
                 pos, EActivation::DontActivate);
-            if (pOwner->GetComponent<SoundEffectsPlayer>()) {
-                if (holdSoundTimer <= 0.0f)
-                {
-                    pOwner->GetComponent<SoundEffectsPlayer>()->Play(3, 1.0f, false);
+            
 
-                    holdSoundTimer = holdSoundInterval;
-                }
-            }
             if (duration - timer > 0.3f)
             {
+                // particle ju¿ aktywowanej
+                // dŸwiêk ju¿ aktywowanej
                 Activated();
+            }
+            else if (timer == duration)
+            {
+                // particle po wyl¹dowaniu
+                // dŸwiêk po wyl¹dowaniu
             }
             timer -= dt;
 
@@ -54,8 +55,31 @@ void Ability3::Update(float dt)
         else {
             Positioning();
         }
-        Cooldowns(dt);
-
+    }
+    if (animTimer > 0.0f)
+    {
+        animTimer -= dt;
+    }
+    else if (readyToActive)
+    {
+        // animacja rzucenia czarnej dziury
+        // particle rzucenia czarnej dziury
+        // dŸwiêk rzucenia czarnej dziury
+        if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+            pOwner->GetComponent<SoundEffectsPlayer>()->Play(1, 1.0f, false);
+        }
+        released = true;
+        PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(pOwner->GetComponent<Rigidbody>()->GetBodyID(),
+            Vec3(camera->Forward().x, camera->Forward().y, camera->Forward().z) * 60.0f);
+        if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+            pOwner->GetComponent<SoundEffectsPlayer>()->Play(1, 1.0f, false);
+        }
+    }
+    else
+    {
+        // animacja trzymania czarnej dziury
+        // particle trzymania czarnej dziury
+        // dŸwiêk trzymania czarnej dziury
     }
 }
 void Ability3::Positioning()
@@ -86,6 +110,10 @@ void Ability3::OnCollisionEnter(Node* object)
 bool Ability3::Pressed()
 {
     if (killsCount < 3) return false;
+    // animacja tworzenia czarnej dziury
+    // particle tworzenia czarnej dziury
+    // dŸwiêk tworzenia czarnej dziury
+    animTimer = 0.3f; //czas zakonczenia tworzenia czarnej dziury i przejscie do trzymania
     isPressed = true;
     released = false;
 	if (pOwner->GetComponent<SoundEffectsPlayer>()) {
@@ -100,13 +128,7 @@ void Ability3::Released()
     if (!isPressed || released) return;
     isPressed = false;
     killsCount = 0;
-    released = true;
-
-    PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(pOwner->GetComponent<Rigidbody>()->GetBodyID(),
-        Vec3(camera->Forward().x, camera->Forward().y, camera->Forward().z) * 60.0f);
-    if (pOwner->GetComponent<SoundEffectsPlayer>()) {
-        pOwner->GetComponent<SoundEffectsPlayer>()->Play(1, 1.0f, false);
-    }
+    readyToActive = true;
 }
 void Ability3::Activated()
 {
@@ -149,9 +171,7 @@ void Ability3::Activated()
     }
 }
 
-void Ability3::Cooldowns(float dt)
-{
-}
+
 
 void Ability3::OnTriggerStay(const std::vector<Node*> others) {
     objects.clear();

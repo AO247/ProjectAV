@@ -32,12 +32,13 @@ public:
 	float maxDistance = 40.0f;
 	float minForce = 50.0f;
 	float maxForce = 800.0f;
+	float animTimer = 0.0f;
 	bool released = false;
 	bool activated = false;
+	bool readyToActive = false;
 	Vec3 pos = Vec3(0.0f, 0.0f, 0.0f);
 private:
 	void KeyboardInput();
-	void Cooldowns(float dt);
 	void Positioning();
 	float cooldownTimer = 0.0f;
 };

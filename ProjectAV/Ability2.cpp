@@ -62,6 +62,10 @@ void Ability2::Positioning()
 bool Ability2::Pressed()
 {
     if (!abilityReady) return false;
+
+    // animacja
+    // particle
+    // dŸwiêk 
     rightHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
     rightHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
     timeToChange = 0.3f;
