@@ -16,7 +16,10 @@ namespace Bind
 			pVcbuf = std::make_unique<VertexConstantBuffer<Transforms>>(gfx, slot);
 		}
 	}
-
+	ShadowCbuf::ShadowCbuf() noexcept
+		: slot(0u) // Slot jest dziedziczony z pierwszego obiektu, ale tutaj mo¿na ustawiæ domyœlny
+	{
+	}
 	void ShadowCbuf::Bind(Graphics& gfx) noxnd
 	{
 		UpdateBindImpl(gfx, GetTransforms(gfx));
@@ -45,9 +48,10 @@ namespace Bind
 	}
 
 	std::unique_ptr<CloningBindable> ShadowCbuf::Clone() const noexcept
-	{
-		// Teraz to zadzia³a, bo domyœlny konstruktor kopiuj¹cy nie musi kopiowaæ `unique_ptr`
-		return std::make_unique<ShadowCbuf>(*this);
+	{ 
+		auto pClone = std::unique_ptr<ShadowCbuf>(new ShadowCbuf());
+		pClone->slot = this->slot; // Klon musi wiedzieæ na którym slocie ma dzia³aæ
+		return pClone;
 	}
 
 	void ShadowCbuf::SetLight(const DirectionalLight* pLight_in)

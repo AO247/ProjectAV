@@ -26,8 +26,10 @@ namespace Bind
 		Transforms GetTransforms(Graphics& gfx) noxnd;
 
 	private:
+		ShadowCbuf() noexcept;
 		const Drawable* pParent = nullptr;
 		static const DirectionalLight* pLight;
 		static std::unique_ptr<VertexConstantBuffer<Transforms>> pVcbuf;
+		UINT slot;
 	};
 }

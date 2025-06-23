@@ -216,18 +216,35 @@ modelPath(path.string())
 	}
 	//SHadow technique
 	{
-		OutputDebugStringA(("Name: " + name + "\n").c_str());
-		Technique shadow("Shadow");
-		Step step("shadow");
-		auto pvs = VertexShader::Resolve(gfx, "Shadow_VS.cso");
+		if (isSkinned) {
+			OutputDebugStringA(("Name: " + name + "\n").c_str());
+			Technique shadow("Shadow");
+			Step step("shadow");
+			auto pvs = VertexShader::Resolve(gfx, "ShadowSkinned_VS.cso");
 
-		step.AddBindable(std::make_shared<ShadowCbuf>(gfx));
-		step.AddBindable(InputLayout::Resolve(gfx, vtxLayout, *pvs));
-		step.AddBindable(std::move(pvs));
-		step.AddBindable(NullPixelShader::Resolve(gfx));
+			step.AddBindable(std::make_shared<ShadowCbuf>(gfx));
+			step.AddBindable(InputLayout::Resolve(gfx, vtxLayout, *pvs));
+			step.AddBindable(std::move(pvs));
+			step.AddBindable(NullPixelShader::Resolve(gfx));
 
-		shadow.AddStep(std::move(step));
-		techniques.push_back(std::move(shadow));
+			shadow.AddStep(std::move(step));
+			techniques.push_back(std::move(shadow));
+		}
+		else {
+			OutputDebugStringA(("Name: " + name + "\n").c_str());
+			Technique shadow("Shadow");
+			Step step("shadow");
+			auto pvs = VertexShader::Resolve(gfx, "Shadow_VS.cso");
+
+			step.AddBindable(std::make_shared<ShadowCbuf>(gfx));
+			step.AddBindable(InputLayout::Resolve(gfx, vtxLayout, *pvs));
+			step.AddBindable(std::move(pvs));
+			step.AddBindable(NullPixelShader::Resolve(gfx));
+
+			shadow.AddStep(std::move(step));
+			techniques.push_back(std::move(shadow));
+		}
+		
 	}
 }
 Dvtx::VertexBuffer Material::ExtractVertices(const aiMesh& mesh) const noexcept
