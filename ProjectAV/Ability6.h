@@ -39,7 +39,7 @@ public:
 
 	Node* pullingParticles = nullptr;
 	Node* holdParticles = nullptr;
-	Vector3 selectedNodeLastPosition;
+	Node* holdSmokeParticles = nullptr;
 private:
 	Node* player = nullptr;
 	void KeyboardInput();

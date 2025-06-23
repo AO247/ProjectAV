@@ -64,6 +64,7 @@ void Ability4::Pressed()
     if (selectedNode != nullptr)
     {
         selectionParticles = PrefabManager::InstantiateAbility4SelectParticles(pOwner->GetParent(), Vector3(selectedNode->GetWorldPosition().x, selectedNode->GetWorldPosition().y, selectedNode->GetWorldPosition().z), 1.0);
+        selectionParticlesSmoke = PrefabManager::InstantiateAbility4SelectSmokeParticles(pOwner->GetParent(), Vector3(selectedNode->GetWorldPosition().x, selectedNode->GetWorldPosition().y, selectedNode->GetWorldPosition().z), 1.0);
     }
 }
 void Ability4::Released()
@@ -76,6 +77,12 @@ void Ability4::Released()
     {
         selectionParticles->GetComponent<ParticleSystemComponent>()->Stop();
         selectionParticles = nullptr;
+    }
+
+    if (selectionParticlesSmoke != nullptr)
+    {
+        selectionParticlesSmoke->GetComponent<ParticleSystemComponent>()->Stop();
+        selectionParticlesSmoke = nullptr;
     }
 
     leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 4.0f });
@@ -142,6 +149,7 @@ void Ability4::Released()
         DirectX::XMStoreFloat4(&quatFloat4, lookAtQuaternion);
 
         PrefabManager::InstantiateAbility4ReleaseParticles(pOwner->GetParent(), Vector3(selectedNode->GetWorldPosition().x, selectedNode->GetWorldPosition().y, selectedNode->GetWorldPosition().z), 1.0, quatFloat4);
+        PrefabManager::InstantiateAbility4ReleaseSmokeParticles(pOwner->GetParent(), Vector3(selectedNode->GetWorldPosition().x, selectedNode->GetWorldPosition().y, selectedNode->GetWorldPosition().z), 1.0, quatFloat4);
 
         PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(selectedNode->GetComponent<Rigidbody>()->GetBodyID(), Vec3(0.0f, 0.0f, 0.0f));
         PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(selectedNode->GetComponent<Rigidbody>()->GetBodyID(), Vec3(direction.x, direction.y, direction.z) * force);
