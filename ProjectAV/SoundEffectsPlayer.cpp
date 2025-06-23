@@ -6,6 +6,13 @@ SoundEffectsPlayer::SoundEffectsPlayer(Node* owner) : Component(owner)
     
 }
 
+SoundEffectsPlayer::~SoundEffectsPlayer()
+{
+	StopAll();
+	m_soundPlaylist.clear();
+	m_activeSounds.clear();
+}
+
 void SoundEffectsPlayer::AddSound(const std::string& filename)
 {
 	m_soundPlaylist.push_back(filename);
@@ -40,7 +47,7 @@ ALuint SoundEffectsPlayer::Play(int soundIndex, float gain, bool isPositional, b
         loop
     );
 
-    if (sourceID != 0 && loop)
+    if (sourceID != 0)
     {
         m_activeSounds[soundIndex] = sourceID;
     }

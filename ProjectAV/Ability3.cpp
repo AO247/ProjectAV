@@ -23,7 +23,7 @@ void Ability3::Update(float dt)
 {
     if (!wnd.CursorEnabled())
     {
-		holdSoundInterval -= dt;
+		holdSoundTimer -= dt;
         if (timer > 0.0f)
         {
             if (pOwner->GetComponent<SoundEffectsPlayer>()) {

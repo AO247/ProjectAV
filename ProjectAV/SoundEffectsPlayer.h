@@ -8,7 +8,7 @@ class SoundEffectsPlayer : public Component
 {
 public:
 	SoundEffectsPlayer(Node* owner);
-	~SoundEffectsPlayer() = default;
+	~SoundEffectsPlayer();
 
 	void AddSound(const std::string& filename);
 
@@ -21,8 +21,11 @@ public:
 	float volumeGlobal = 0.7f;
 	float volumePos = 0.7f;
 	float volumePlayer = 0.4f;
-	float volumeGlobal = 0.7f;
 
+	void Update(float dt) 
+	{
+		
+	}
 private:
 	std::vector<std::string> m_soundPlaylist;
 
