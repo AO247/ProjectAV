@@ -67,7 +67,7 @@ App::App(const std::string& commandLine)
 	soundDevice->SetAttenuation(attentuation);
 	StaticSoundPlayer::Get().Init(64);
     myMusic = std::make_unique<MusicBuffer>("Music\\windererfull.mp3");
-    myMusic->setGain(1.0f);
+    myMusic->setGain(0.05f);
 
 	auto base = std::make_unique<Node>("Base");
 	auto playerThings = std::make_unique<Node>("Player Things");
@@ -273,8 +273,6 @@ App::App(const std::string& commandLine)
     pSoundEffectsPlayer->AddSound("Sounds\\player\\cooldown2.wav"); // 14
 	pSoundEffectsPlayer->AddSound("Sounds\\teleport\\teleport1.wav");
 	pSoundEffectsPlayer->AddSound("Sounds\\teleport\\teleport2.wav"); // 16
-	pSoundEffectsPlayer->AddSound("Sounds\\teleport\\end_level.wav");
-	pSoundEffectsPlayer->AddSound("Sounds\\teleport\\shrine_active_shorter.wav");
 
     pFreeViewCamera->SetLocalPosition({ 4.0f, 11.0f, -28.0f });
     pPlayer->SetLocalPosition({ 0.0f, 80.0f, -24.0f });
@@ -422,7 +420,6 @@ App::App(const std::string& commandLine)
     wnd.DisableCursor();
     wnd.mouse.EnableRawInput();
     cursorEnabled = false;
-
 }
 
 App::~App()
@@ -581,7 +578,7 @@ void App::DoFrame(float dt)
     contact->ExecuteTriggerActivationQueue();
     contact->ExecuteCollisionActivationQueue();
     CleanupDestroyedNodes(pSceneRoot.get());    //data removed
-	pSceneRoot->Update(dt);
+    pSceneRoot->Update(dt);
     RemoveRigidbody(pSceneRoot.get());//rigidbody remove if destruction
 
     wnd.Gfx().BeginFrame(0.5f, 0.5f, 1.0f);
@@ -595,14 +592,8 @@ void App::DoFrame(float dt)
 
     dirLight.Bind(wnd.Gfx(), viewMatrix);
 
-    FrustumCalculating(); 
+    FrustumCalculating();
 
-
-
-    if (myMusic->isPlaying())
-    {
-        myMusic->UpdateBufferStream();
-    }
     if (pPlayer != nullptr) {
         soundDevice->SetLocation(
             pPlayer->GetWorldPosition().x,
@@ -626,9 +617,9 @@ void App::DoFrame(float dt)
         ShowControlWindows();
     }
 
-    
 
-    if (targetSprite ) { 
+
+    if (targetSprite) {
         targetSprite->Draw(wnd.Gfx().GetContext());
     }
 
@@ -647,10 +638,10 @@ void App::DoFrame(float dt)
 
     pUpgradeHandler->DrawUpgradeMenu();
 
-    
-	//tutorialNode->GetComponent<Tutorial>()->DrawNote();
 
-   /* if(pSceneRoot->GetComponent<Global>()->drawLoadingScreen || bonusTime > 0.0f)
+    //tutorialNode->GetComponent<Tutorial>()->DrawNote();
+
+    if (pSceneRoot->GetComponent<Global>()->drawLoadingScreen || bonusTime > 0.0f)
     {
         if (!pSceneRoot->GetComponent<Global>()->drawLoadingScreen)
         {
@@ -659,7 +650,7 @@ void App::DoFrame(float dt)
         else {
             bonusTime = 5.0f;
         }
-        countLoding ++;
+        countLoding++;
 
         if (countLoding > 2.0f)
         {
@@ -677,10 +668,21 @@ void App::DoFrame(float dt)
         {
             loadingScreen1->Draw(wnd.Gfx().GetContext());
         }
-    }*/
+    }
 
     wnd.Gfx().EndFrame();
     rg.Reset();
+
+    if (!pSceneRoot->GetComponent<Global>()->drawLoadingScreen) {
+        if (myMusic->musicStart) {
+            myMusic->Play();
+            myMusic->musicStart = false;
+        }
+        if (myMusic->isPlaying())
+        {
+            myMusic->UpdateBufferStream();
+        }
+    }
 }
 
 void App::RemoveRigidbody(Node* currentNode)
@@ -1023,24 +1025,20 @@ void App::CleanupDestroyedNodes(Node* currentNode)
 
 void App::SaveNodeTransformsRecursive(Node& node, std::ofstream& file)
 {
-    // Pomi� zapisywanie w�z��w "technicznych" lub pustych, je�li chcesz
     if (node.GetName() != "Root" && node.GetName() != "L Normal" && node.GetName() != "Camera" && node.GetName() != "FreeViewCamera" &&
         node.GetName() != "L Ability" && node.GetName() != "R Normal" && node.GetName() != "R Ability" && node.GetName() != "Player")
     {
         DirectX::XMFLOAT3 pos = node.GetLocalPosition();
         DirectX::XMFLOAT3 rot = node.GetLocalRotationEuler();
 
-        // Ustaw precyzj� zapisu, aby unikn�� notacji naukowej i uzyska� czytelne liczby
         file << std::fixed << std::setprecision(2);
 
-        // Zapisz nazw� i pozycj� w jednej linii
         file << "Object: " << std::setw(20) << std::left << node.GetName()
             << " Position: {" << pos.x << "f, " << pos.y << "f, " << pos.z << "f}" 
 			<< " Rotation: {" << rot.x << "f, " << rot.y << "f, " << rot.z << "f}"
             << std::endl;
     }
 
-    // Wywo�aj rekurencyjnie dla wszystkich dzieci tego w�z�a
     for (const auto& pChild : node.GetChildren())
     {
         if (pChild)

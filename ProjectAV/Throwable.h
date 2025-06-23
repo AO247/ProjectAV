@@ -19,6 +19,8 @@ public:
 	bool pot = false;
 	bool heavy = false;
 	Vec3 velocity = Vec3(0.0f, 0.0f, 0.0f);
+	float minSoundSpeed = 20.0f;
+	float maxSoundSpeed = 60.0f;
 private:
 	Rigidbody* rigidbody;
 };

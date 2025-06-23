@@ -2286,6 +2286,13 @@ public:
     {
         auto pNewNodeOwner = std::make_unique<Node>("Spawn", nullptr, "SPAWN");
 
+		pNewNodeOwner->AddComponent(
+			std::make_unique<SoundEffectsPlayer>(pNewNodeOwner.get())
+		);
+		pNewNodeOwner->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\teleport\\shrine_active_shorter.wav");
+        pNewNodeOwner->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\teleport\\end_level.wav");
+
+
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\wyspy\\wyspa_mala.obj")
         );
@@ -5177,8 +5184,8 @@ public:
         );
         spawnPoint2->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
 
-        spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(10.00f, 2.00f, -5.10f));
-		spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(-10.00f, 7.80f, 3.10f));
+        spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(10.00f, 4.00f, -5.10f));
+		spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(-10.00f, 10.80f, 3.10f));
         pIsland->spawnPoints.push_back(spawnPoint1.get());
 		pIsland->spawnPoints.push_back(spawnPoint2.get());
         pNewNode->AddChild(std::move(spawnPoint1));
@@ -5276,8 +5283,8 @@ public:
         );
         spawnPoint2->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
 
-        spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(17.20f, 2.00f, -14.00f));
-		spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(-10.00f, 2.00f, -8.10f));
+        spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(17.20f, 4.00f, -14.00f));
+		spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(-10.00f, 4.00f, -8.10f));
         pIsland->spawnPoints.push_back(spawnPoint1.get());
 		pIsland->spawnPoints.push_back(spawnPoint2.get());
         pNewNode->AddChild(std::move(spawnPoint1));
@@ -5375,8 +5382,8 @@ public:
         );
         spawnPoint2->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
 
-        spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(0.00f, 2.00f, -7.50f));
-		spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(0.00f, 2.00f, 15.20f));
+        spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(0.00f, 4.00f, -7.50f));
+		spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(0.00f, 4.00f, 15.20f));
         pIsland->spawnPoints.push_back(spawnPoint1.get());
 		pIsland->spawnPoints.push_back(spawnPoint2.get());
         pNewNode->AddChild(std::move(spawnPoint1));
@@ -5471,8 +5478,8 @@ public:
         );
         spawnPoint2->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
 
-        spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(3.90f, 2.00f, 11.50f));
-		spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(-4.30f, 2.00f, -9.10f));
+        spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(3.90f, 4.00f, 11.50f));
+		spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(-4.30f, 4.00f, -9.10f));
         pIsland->spawnPoints.push_back(spawnPoint1.get());
 		pIsland->spawnPoints.push_back(spawnPoint2.get());
         pNewNode->AddChild(std::move(spawnPoint1));
@@ -5568,8 +5575,8 @@ public:
         );
         spawnPoint2->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
 
-        spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(16.70f, 2.00f, 16.90f));
-        spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(-8.90f, 2.00f, -12.70f));
+        spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(16.70f, 4.00f, 16.90f));
+        spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(-8.90f, 4.00f, -12.70f));
         pIsland->spawnPoints.push_back(spawnPoint1.get());
         pIsland->spawnPoints.push_back(spawnPoint2.get());
         pNewNode->AddChild(std::move(spawnPoint1));
@@ -5665,8 +5672,8 @@ public:
         );
         spawnPoint2->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
 
-        spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(11.30f, 2.00f, 9.70f));
-        spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(-2.90f, 2.00f, -8.30f));
+        spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(11.30f, 4.00f, 9.70f));
+        spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(-2.90f, 4.00f, -8.30f));
         pIsland->spawnPoints.push_back(spawnPoint1.get());
         pIsland->spawnPoints.push_back(spawnPoint2.get());
         pNewNode->AddChild(std::move(spawnPoint1));
@@ -5762,8 +5769,8 @@ public:
         );
         spawnPoint2->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
 
-        spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(11.80f, 2.00f, 10.70f));
-        spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(-2.90f, 2.00f, -0.70f));
+        spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(11.80f, 4.00f, 10.70f));
+        spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(-2.90f, 4.00f, -0.70f));
         pIsland->spawnPoints.push_back(spawnPoint1.get());
         pIsland->spawnPoints.push_back(spawnPoint2.get());
         pNewNode->AddChild(std::move(spawnPoint1));
@@ -5859,8 +5866,8 @@ public:
         );
         spawnPoint2->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
 
-        spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(13.90f, 2.00f, -3.40f));
-        spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(-3.10f, 2.00f, 13.30f));
+        spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(13.90f, 4.00f, -3.40f));
+        spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(-3.10f, 4.00f, 13.30f));
         pIsland->spawnPoints.push_back(spawnPoint1.get());
         pIsland->spawnPoints.push_back(spawnPoint2.get());
         pNewNode->AddChild(std::move(spawnPoint1));
@@ -5958,8 +5965,8 @@ public:
         );
         spawnPoint2->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
 
-        spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(10.60f, 2.00f, -3.40f));
-        spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(-13.60f, 2.00f, 7.90f));
+        spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(10.60f, 4.00f, -3.40f));
+        spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(-13.60f, 4.00f, 7.90f));
         pIsland->spawnPoints.push_back(spawnPoint1.get());
         pIsland->spawnPoints.push_back(spawnPoint2.get());
         pNewNode->AddChild(std::move(spawnPoint1));
@@ -6055,8 +6062,8 @@ public:
         );
         spawnPoint2->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
 
-        spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(7.20f, 2.00f, -3.40f));
-        spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(17.10f, 2.00f, 14.60f));
+        spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(7.20f, 4.00f, -3.40f));
+        spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(17.10f, 4.00f, 14.60f));
         pIsland->spawnPoints.push_back(spawnPoint1.get());
         pIsland->spawnPoints.push_back(spawnPoint2.get());
         pNewNode->AddChild(std::move(spawnPoint1));
@@ -6152,8 +6159,8 @@ public:
         );
         spawnPoint2->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
 
-        spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(-8.80f, 2.00f, -13.70f));
-        spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(11.40f, 2.00f, 8.90f));
+        spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(-8.80f, 4.00f, -13.70f));
+        spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(11.40f, 4.00f, 8.90f));
         pIsland->spawnPoints.push_back(spawnPoint1.get());
         pIsland->spawnPoints.push_back(spawnPoint2.get());
         pNewNode->AddChild(std::move(spawnPoint1));
@@ -6248,8 +6255,8 @@ public:
         );
         spawnPoint2->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
 
-        spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(-7.40f, 2.00f, -15.00f));
-        spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(10.40f, 2.00f, -4.20f));
+        spawnPoint1->SetLocalPosition(DirectX::XMFLOAT3(-7.40f, 4.00f, -15.00f));
+        spawnPoint2->SetLocalPosition(DirectX::XMFLOAT3(10.40f, 4.00f, -4.20f));
         pIsland->spawnPoints.push_back(spawnPoint1.get());
         pIsland->spawnPoints.push_back(spawnPoint2.get());
         pNewNode->AddChild(std::move(spawnPoint1));

@@ -13,13 +13,14 @@ void SpawnJump::Update(float dt)
 	{
 		if (playerNode != nullptr)
 		{
+			//if((playerNode->GetWorldPosition() - Vector3(1.0f, 1.0f, 1.0f).Length())
 			jumpSoundTimer -= dt;
 			if (!upgraded) {
 				if (playerNode->GetComponent<SoundEffectsPlayer>())
 				{
 					if (jumpSoundTimer <= 0.0f)
 					{
-						playerNode->GetComponent<SoundEffectsPlayer>()->Play(17);
+						pOwner->GetComponent<SoundEffectsPlayer>()->Play(0, 0.7f);
 
 						jumpSoundTimer = jumpSoundInterval;
 					}
@@ -33,7 +34,7 @@ void SpawnJump::Update(float dt)
 			}
 			if (upgraded)
 			{	
-				playerNode->GetComponent<SoundEffectsPlayer>()->Stop(17);
+				//pOwner->GetComponent<SoundEffectsPlayer>()->Stop(0);
 				if ((pOwner->GetWorldPosition() - playerNode->GetWorldPosition()).Length() < 7.0f && jumpCooldown < 0.1)
 				{
 					if (playerNode->GetComponent<SoundEffectsPlayer>())
@@ -52,7 +53,7 @@ void SpawnJump::Update(float dt)
 
 void SpawnJump::Activate()
 {
-	playerNode->GetComponent<SoundEffectsPlayer>()->Play(16, 1.0f, false);
+	pOwner->GetComponent<SoundEffectsPlayer>()->Play(1, 1.5f, false);
 	activated = true;
 }
 

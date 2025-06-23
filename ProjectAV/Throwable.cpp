@@ -19,10 +19,10 @@ void Throwable::OnCollisionEnter(Node* object)
 
 	if (pOwner->GetComponent<SoundEffectsPlayer>()) {
 
-		if (velocity.Length() > 20.0f)
+		if (velocity.Length() > minSoundSpeed)
 		{
 			float volumeFactor = std::min(1.0f,
-				(velocity.Length() - 20.0f) / (200.0f - 20.0f)
+				(velocity.Length() - minSoundSpeed) / (maxSoundSpeed - minSoundSpeed)
 			);
 
 			float gain = std::clamp(volumeFactor, 0.0f, 1.0f);

@@ -25,12 +25,12 @@ ALuint SoundEffectsPlayer::Play(int soundIndex, float gain, bool isPositional, b
 
     const std::string& filename = m_soundPlaylist[soundIndex];
 
-    float volume = 1.0f;
+    float volume = volumeGlobal;
     if (!isPositional) {
-        volume = volumePlayer;
+        volume *= volumePlayer;
     }
     else {
-        volume = volumePos;
+        volume *= volumePos;
     }
 
     ALuint sourceID = StaticSoundPlayer::Get().Play(
