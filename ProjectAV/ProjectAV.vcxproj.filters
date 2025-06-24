@@ -486,6 +486,12 @@
     <ClCompile Include="StaticSoundPlayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ModelCache.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SphereVolumeEmitterLogic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Win.h">
@@ -972,6 +978,12 @@
       <Filter>Header Files\Components</Filter>
     </ClInclude>
     <ClInclude Include="StaticSoundPlayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelCache.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SphereVolumeEmitterLogic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
