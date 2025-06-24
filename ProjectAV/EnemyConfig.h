@@ -31,4 +31,10 @@ namespace EnemyAnimationIndices {
 
 	constexpr int EXPLOSIVE_WALK = 10;
 	constexpr int EXPLOSIVE_JUMP = 7;
+
+	constexpr int TANK_ATTACK1 = 0;
+	constexpr int TANK_ATTACK2 = 1;
+	constexpr int TANK_POSE = 2;
+	constexpr int TANK_WALK = 4;
+
 }

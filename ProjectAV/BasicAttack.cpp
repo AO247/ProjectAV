@@ -17,6 +17,10 @@ void BasicAttack::Attack(float dt)
 			pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound);
 		} 
 		//miejsce na animacje !!!
+
+		pOwner->GetParent()->GetComponent<AnimationComponent>()->PlayAnimation(rand() % 2, 0.2f, false);
+
+
 	}
 	timer += dt;
 	if (timer < stopMovingTime)

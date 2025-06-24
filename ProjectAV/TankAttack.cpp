@@ -17,6 +17,8 @@ void TankAttack::Attack(float dt)
 			pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound);
 		}
 		//miejsce na animacje !!!
+		pOwner->GetParent()->GetComponent<AnimationComponent>()->PlayAnimation(0, 0.2f, false);
+
 	}
 	timer += dt;
 	if (timer < stopMovingTime)
