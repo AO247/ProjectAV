@@ -61,14 +61,18 @@ void PlayerController::SpeedControl(float dt)
 	{
 		Vec3 vel = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
         if (grounded) {
-            vel.SetX(vel.GetX() * 0.92f);
-            vel.SetZ(vel.GetZ() * 0.92f);
+            float dampingFactor = powf(groundDamping, dt);
+            vel.SetX(vel.GetX() * dampingFactor); // 0.92
+            vel.SetZ(vel.GetZ() * dampingFactor);
         }
         else {
-            vel.SetX(vel.GetX() * 0.98f);
-            vel.SetZ(vel.GetZ() * 0.98f);
+            float dampingFactor = powf(airDamping, dt);
+            vel.SetX(vel.GetX() * dampingFactor);
+            vel.SetZ(vel.GetZ() * dampingFactor);
         }
 		PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rigidbody->GetBodyID(), vel);
+
+
 	}
 }
 
@@ -172,7 +176,7 @@ void PlayerController::PlayerGroundCheck()
         grounded = true;
     }
 
-    pos = playerPos + -moveDirection;
+    pos = playerPos + -moveDirection * 1.6f;
 
     RRayCast rayBack = RRayCast(
         RVec3(pos.x, pos.y, pos.z),
@@ -186,7 +190,7 @@ void PlayerController::PlayerGroundCheck()
         grounded = true;
     }
 
-    /* pos = playerPos + moveDirection;
+    pos = playerPos + moveDirection * 1.6;
 
     RRayCast rayForward = RRayCast(
          RVec3(pos.x, pos.y, pos.z),
@@ -198,7 +202,7 @@ void PlayerController::PlayerGroundCheck()
          IgnoreMultipleObjectLayerFilter({ Layers::PLAYER, Layers::TRIGGER })))
     {
          grounded = true;
-    }*/
+    }
 
 
 
@@ -565,6 +569,7 @@ void PlayerController::DrawImGuiControls()
 	ImGui::Checkbox("Alive", &alive);
     ImGui::InputFloat("Auto Jump Range", &autoJumpRange);
 	ImGui::InputFloat("Auto Jump Height", &autoJumpHeight);
-
+    ImGui::SliderFloat("Air Damping", &airDamping, 0.0f, 0.3f);
+    ImGui::SliderFloat("Ground Damping", &groundDamping, 0.0f, 0.3f);
 
 }

@@ -20,6 +20,8 @@ public:
 	float acceleration = 8.0f;
 	float deceleration = 25.0f;
 	float airControl = 0.5f;
+	float groundDamping = 0.001;
+	float airDamping = 0.04f;
 
 	float maxSpeed = 35.0f;
 
