@@ -91,8 +91,8 @@ App::App(const std::string& commandLine)
     Node* pAbility5 = pAbility5Owner.get();
     auto pAbility6Owner = std::make_unique<Node>("Ability6", nullptr, "TRIGGER");
     Node* pAbility6 = pAbility6Owner.get();
-    auto pPrefabsOwner = std::make_unique<Node>("Temporary", nullptr, "PREFABS");
-    Node* pPrefabs = pPrefabsOwner.get();
+    auto pTemporaryOwner = std::make_unique<Node>("Temporary", nullptr, "TEMPORARY");
+    temporary = pTemporaryOwner.get();
     auto pLeftHandOwner = std::make_unique<Node>("L Normal", nullptr, "HANDS");
     pLeftHand = pLeftHandOwner.get();
     auto pLeftHandAbilityOwner = std::make_unique<Node>("L Ability", nullptr, "HANDS");
@@ -102,13 +102,13 @@ App::App(const std::string& commandLine)
     auto pRightHandAbilityOwner = std::make_unique<Node>("R Ability", nullptr, "HANDS");
     pRightHandAbility = pRightHandAbilityOwner.get();
 	auto handsOwner = std::make_unique<Node>("Hands", nullptr, "HANDS");
-
-
+    auto tutorialOwner = std::make_unique<Node>("Tutorial", nullptr, "TUTORIAL");
+    tutorialNode = tutorialOwner.get();
 	Node* pPlayerThings = playerThings.get();
 	Node* pAbilities = abilities.get();
 	Node* pBase = base.get();
 	Node* pHands = handsOwner.get();
-    pSceneRoot->AddChild(std::move(pPrefabsOwner));
+    pSceneRoot->AddChild(std::move(pTemporaryOwner));
 	pSceneRoot->AddChild(std::move(base));
     pSceneRoot->AddChild(std::move(playerThings));
     pPlayerThings->AddChild(std::move(pCameraNodeOwner));
@@ -126,10 +126,11 @@ App::App(const std::string& commandLine)
     pHands->AddChild(std::move(pLeftHandAbilityOwner));
     pHands->AddChild(std::move(pRightHandOwner));
     pHands->AddChild(std::move(pRightHandAbilityOwner));
+    pSceneRoot->AddChild(std::move(tutorialOwner));
 
     //PrefabManager::InstantiateStone1(pSceneRoot.get(), Vector3(0.0f, 100.0f, 0.0f), 1.0f);
 
-    PrefabManager::root = pPrefabs;
+    PrefabManager::root = temporary;
     PrefabManager::player = pPlayer;
 
     BodyCreationSettings bodySettings(new JPH::CapsuleShape(1.0f, 1.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::PLAYER);
@@ -256,7 +257,7 @@ App::App(const std::string& commandLine)
     pAbility4->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\sznurek2.wav");
     pAbility4->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\hold.wav");
     pAbility4->GetComponent<Ability4>()->baseAbility = pAbility1->GetComponent<Ability1>();
-    pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility4;
+    //pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility4;
 
 
     pAbility5->AddComponent(
@@ -270,8 +271,7 @@ App::App(const std::string& commandLine)
     pAbility5->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\toss3.wav");
     pAbility5->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\toss4.wav");
     pAbility5->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\hold.wav");
-	//pPlayer->GetComponent<PlayerController>()->abilitySlot3 = pAbility5;
-	pPlayer->GetComponent<PlayerController>()->abilitySlot2 = pAbility5;
+	//pPlayer->GetComponent<PlayerController>()->abilitySlot2 = pAbility5;
 
     pAbility6->AddComponent(
         std::make_unique<Ability6>(pAbility6, wnd, pCamera)
@@ -283,7 +283,7 @@ App::App(const std::string& commandLine)
     pAbility6->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\gravity2.wav");
     pAbility6->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\hold.wav");
     pAbility6->GetComponent<Ability6>()->baseAbility = pAbility1->GetComponent<Ability1>();
-    pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility6;
+    //pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility6;
 
     pFreeViewCamera->AddComponent(
         std::make_unique<Camera>(pFreeViewCamera, wnd)
@@ -408,8 +408,13 @@ App::App(const std::string& commandLine)
     pSceneRoot->GetComponent<Global>()->upgradeHandler = pUpgradeHandler;
 
 	//PrefabManager::InstantiateIslandMedium5(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
-	/*tutorialNode = PrefabManager::InstantiateTutorialIslands(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
-    pSceneRoot->GetComponent<Global>()->tut = tutorialNode->GetComponent<Tutorial>();*/
+    tutorialNode->AddComponent(
+        std::make_unique<Tutorial>(tutorialNode, wnd, pPlayer)
+    );
+
+        
+        
+    //pSceneRoot->GetComponent<Global>()->tut = tutorialNode->GetComponent<Tutorial>();
 
 
     const int screenWidth = 1920;
@@ -489,6 +494,7 @@ App::App(const std::string& commandLine)
     wnd.DisableCursor();
     wnd.mouse.EnableRawInput();
     cursorEnabled = false;
+    StartGame();
 }
 
 App::~App()
@@ -524,13 +530,19 @@ int App::Go()
         constexpr float MAX_LAG = 0.5f;
         if (lag > MAX_LAG)
             lag = MAX_LAG;
-
-        while (lag >= FIXED_TIME_STEP)
+        if (!paused || gameReset > 0)
         {
-            physicsSystem->Update(FIXED_TIME_STEP, 1, temp_allocator, job_system);
-            lag -= FIXED_TIME_STEP;
+            while (lag >= FIXED_TIME_STEP)
+            {
+                physicsSystem->Update(FIXED_TIME_STEP, 1, temp_allocator, job_system);
+                lag -= FIXED_TIME_STEP;
+            }
         }
-
+        else
+        {
+            while (lag >= FIXED_TIME_STEP)
+                lag -= FIXED_TIME_STEP;
+        }
         const float alpha = lag / FIXED_TIME_STEP;
 
         HandleInput(dt);
@@ -541,13 +553,6 @@ int App::Go()
 
 void App::HandleInput(float dt)
 {
-
-
-    if (wnd.kbd.IsJustPressed('P'))
-    {
-        PrefabManager::InstantiateIslandBig1(pSceneRoot.get(), pFreeViewCamera->GetWorldPosition(), 1.0f);
-        PrefabManager::InstantiateNormalEnemy(pSceneRoot.get(), pFreeViewCamera->GetWorldPosition(), 1.0f);
-    }
 
     if (wnd.kbd.IsJustPressed('M'))
     {
@@ -578,12 +583,18 @@ void App::HandleInput(float dt)
     {
         showControlWindow = !showControlWindow;
     }
-
+    if (wnd.kbd.IsJustPressed('Z'))
+    {
+        StartGame();
+    }
     if (wnd.kbd.IsJustPressed('X'))
     {
-        tutorialNode = PrefabManager::InstantiateTutorialIslands(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
+        ResetGame();
     }
-
+    if (wnd.kbd.IsJustPressed('P'))
+    {
+        paused = !paused;
+    }
     if (wnd.kbd.IsJustPressed(VK_ESCAPE))
     {
         PostQuitMessage(0);
@@ -633,22 +644,26 @@ void App::HandleInput(float dt)
 void App::DoFrame(float dt)
 {
     //fizyka
-    auto* contact = dynamic_cast<MyContactListener*>(physicsSystem->GetContactListener());
-    contact->ExecuteTriggerActivationQueue();
-    contact->ExecuteCollisionActivationQueue();
-    CleanupDestroyedNodes(pSceneRoot.get());    //data removed
-    pSceneRoot->Update(dt);
-    RemoveRigidbody(pSceneRoot.get());//rigidbody remove if destruction
-    JPH::BodyIDVector bodyIDs;
-    PhysicsCommon::physicsSystem->GetBodies(bodyIDs);
-    for (JPH::BodyID bodyID : bodyIDs)
+    if (!paused || gameReset > 0)
     {
-        JPH::uint64 data = PhysicsCommon::physicsSystem->GetBodyInterface().GetUserData(bodyID);
-        if (data == 0)
+        gameReset--;
+        auto* contact = dynamic_cast<MyContactListener*>(physicsSystem->GetContactListener());
+        contact->ExecuteTriggerActivationQueue();
+        contact->ExecuteCollisionActivationQueue();
+        CleanupDestroyedNodes(pSceneRoot.get());    //data removed
+        pSceneRoot->Update(dt);
+        RemoveRigidbody(pSceneRoot.get());//rigidbody remove if destruction
+        JPH::BodyIDVector bodyIDs;
+        PhysicsCommon::physicsSystem->GetBodies(bodyIDs);
+        for (JPH::BodyID bodyID : bodyIDs)
         {
-            PhysicsCommon::physicsSystem->GetBodyInterface().DeactivateBody(bodyID);
-            PhysicsCommon::physicsSystem->GetBodyInterface().RemoveBody(bodyID);
-            PhysicsCommon::physicsSystem->GetBodyInterface().DestroyBody(bodyID);
+            JPH::uint64 data = PhysicsCommon::physicsSystem->GetBodyInterface().GetUserData(bodyID);
+            if (data == 0)
+            {
+                PhysicsCommon::physicsSystem->GetBodyInterface().DeactivateBody(bodyID);
+                PhysicsCommon::physicsSystem->GetBodyInterface().RemoveBody(bodyID);
+                PhysicsCommon::physicsSystem->GetBodyInterface().DestroyBody(bodyID);
+            }
         }
     }
     wnd.Gfx().BeginFrame(0.5f, 0.5f, 1.0f);
@@ -1117,6 +1132,36 @@ void App::CleanupDestroyedNodes(Node* currentNode)
 
     
 }
+
+void App::StartGame()
+{
+    if (startedGame || !paused) return;
+    startedGame = true;
+    paused = false;
+    PrefabManager::InstantiateTutorialIslands(tutorialNode, tutorialNode->GetComponent<Tutorial>() , Vector3(0.0f, 0.0f, 0.0f), 1.0f);
+    tutorialNode->GetComponent<Tutorial>()->Start();
+    pSceneRoot->GetComponent<Global>()->Start();
+    
+}
+
+void App::ResetGame()
+{
+    if (!startedGame || !paused) return;
+    startedGame = false;
+    gameReset = 2;
+    pSceneRoot->GetComponent<Global>()->Reset();
+    tutorialNode->GetComponent<Tutorial>()->Reset();
+    pSelectedSceneNode = nullptr;
+    if (temporary != nullptr)
+    {
+        temporary->DestroyChilds();
+    }
+    if (tutorialNode != nullptr)
+    {
+        tutorialNode->DestroyChilds();
+    }
+}
+
 
 void App::SaveNodeTransformsRecursive(Node& node, std::ofstream& file)
 {

@@ -1,13 +1,13 @@
 #include "Tutorial.h"
-
+#include "PrefabManager.h"
 namespace dx = DirectX;
-Tutorial::Tutorial(Node* owner, Window* window, Node* player)
+Tutorial::Tutorial(Node* owner, Window& window, Node* player)
 	: Component(owner), wnd(window), player(player)
 {
 
 	note0 = std::make_unique<Sprite>(
-		wnd->Gfx().GetDevice(),
-		wnd->Gfx().GetContext(),
+		wnd.Gfx().GetDevice(),
+		wnd.Gfx().GetContext(),
 		30,
 		30,
 		374,
@@ -15,8 +15,8 @@ Tutorial::Tutorial(Node* owner, Window* window, Node* player)
 		L"Images\\note0.png"
 	);
 	note1 = std::make_unique<Sprite>(
-		wnd->Gfx().GetDevice(),
-		wnd->Gfx().GetContext(),
+		wnd.Gfx().GetDevice(),
+		wnd.Gfx().GetContext(),
 		30,
 		30,
 		374,
@@ -24,8 +24,8 @@ Tutorial::Tutorial(Node* owner, Window* window, Node* player)
 		L"Images\\note1.2.png"
 	);
 	note2 = std::make_unique<Sprite>(
-		wnd->Gfx().GetDevice(),
-		wnd->Gfx().GetContext(),
+		wnd.Gfx().GetDevice(),
+		wnd.Gfx().GetContext(),
 		30,
 		30,
 		374,
@@ -33,8 +33,8 @@ Tutorial::Tutorial(Node* owner, Window* window, Node* player)
 		L"Images\\note2.png"
 	);
 	note3 = std::make_unique<Sprite>(
-		wnd->Gfx().GetDevice(),
-		wnd->Gfx().GetContext(),
+		wnd.Gfx().GetDevice(),
+		wnd.Gfx().GetContext(),
 		30,
 		30,
 		374,
@@ -42,8 +42,8 @@ Tutorial::Tutorial(Node* owner, Window* window, Node* player)
 		L"Images\\note3.png"
 	);
 	note4 = std::make_unique<Sprite>(
-		wnd->Gfx().GetDevice(),
-		wnd->Gfx().GetContext(),
+		wnd.Gfx().GetDevice(),
+		wnd.Gfx().GetContext(),
 		30,
 		30,
 		374,
@@ -51,8 +51,8 @@ Tutorial::Tutorial(Node* owner, Window* window, Node* player)
 		L"Images\\note4.png"
 	);
 	note5 = std::make_unique<Sprite>(
-		wnd->Gfx().GetDevice(),
-		wnd->Gfx().GetContext(),
+		wnd.Gfx().GetDevice(),
+		wnd.Gfx().GetContext(),
 		30,
 		30,
 		374,
@@ -60,8 +60,8 @@ Tutorial::Tutorial(Node* owner, Window* window, Node* player)
 		L"Images\\note5.png"
 	);
 	note6 = std::make_unique<Sprite>(
-		wnd->Gfx().GetDevice(),
-		wnd->Gfx().GetContext(),
+		wnd.Gfx().GetDevice(),
+		wnd.Gfx().GetContext(),
 		30,
 		30,
 		374,
@@ -69,8 +69,8 @@ Tutorial::Tutorial(Node* owner, Window* window, Node* player)
 		L"Images\\note6.png"
 	);
 	note7 = std::make_unique<Sprite>(
-		wnd->Gfx().GetDevice(),
-		wnd->Gfx().GetContext(),
+		wnd.Gfx().GetDevice(),
+		wnd.Gfx().GetContext(),
 		30,
 		30,
 		374,
@@ -88,30 +88,48 @@ Tutorial::Tutorial(Node* owner, Window* window, Node* player)
 	checkpoints.push_back({ 20.5f, 3.2f, -105.1f});
 
 
-	player->SetLocalPosition(checkpoints[0]);
 
 }
 
 
 void Tutorial::Update(float dt)
 {
-	if (completed) return;
-	EnemyHandler();
+	if (completed || !started) return;
 	timer += dt;
+	if (timer > 3.0f && !enemySpawned)
+	{
+		enemySpawned = true;
+		enemy1 = PrefabManager::InstantiateNormalEnemy(temporary, { 187.4f, -18.3f, -267.6f }, 1.6f)->GetComponent<StateMachine>();
+		enemy2 = PrefabManager::InstantiateNormalEnemy(temporary, { 105.0f, -15.5f, -236.4f }, 1.6f)->GetComponent<StateMachine>();
+		enemy3 = PrefabManager::InstantiateNormalEnemy(temporary, { 44.1f, -15.3f, -198.9f }, 1.6f)->GetComponent<StateMachine>();
+		enemy4 = PrefabManager::InstantiateShootingEnemy(temporary, { 32.2f, -15.8f, -203.6f }, 1.6f)->GetComponent<StateMachine>();
+		enemy5 = PrefabManager::InstantiateShootingEnemy(temporary, { 35.2f, -15.8f, -190.6f }, 1.6f)->GetComponent<StateMachine>();
+		enemy1->Stop(1000.0f);
+		enemy2->Stop(1000.0f);
+		enemy3->Stop(1000.0f);
+		enemy4->Stop(1000.0f);
+		enemy5->Stop(1000.0f);
+
+	}
+	//EnemyHandler();
+
 	if(player->GetLocalPosition().y < checkpoints[currentCheckpointIndex].y - 60.0f)
 	{
 		player->SetLocalPosition(checkpoints[currentCheckpointIndex]);
 		playerDeathCount++;
 	}
-	if ((player->GetLocalPosition() - checkpoints[currentCheckpointIndex + 1]).Length() < 10.0f 
-		/*|| (player->GetLocalPosition() - checkpoints[currentCheckpointIndex + 2]).Length() < 10.0f*/)
+	if (currentCheckpointIndex < checkpoints.size() - 1)
 	{
-		currentCheckpointIndex++;
-		currentStage++;
-		timer = 0.0f;
-		playerDeathCount = 0;
-		currentNote = nullptr;
+		if ((player->GetLocalPosition() - checkpoints[currentCheckpointIndex + 1]).Length() < 10.0f
+			/*|| (player->GetLocalPosition() - checkpoints[currentCheckpointIndex + 2]).Length() < 10.0f*/)
+		{
+			currentCheckpointIndex++;
+			currentStage++;
+			timer = 0.0f;
+			playerDeathCount = 0;
+			currentNote = nullptr;
 
+		}
 	}
 	if (currentStage == 1)
 	{
@@ -199,16 +217,23 @@ void Tutorial::DrawNote()
 {
 	if (currentNote == nullptr) return;
 	
-	currentNote->Draw(wnd->Gfx().GetContext());
+	currentNote->Draw(wnd.Gfx().GetContext());
 }
-
-void Tutorial::EnemyHandler()
+void Tutorial::Start()
 {
-	if (enemy1 != nullptr)
-	{
-		enemy1->RequestStateChange(StateType::STOP);
-	}
-
+	started = true;
+	player->SetLocalPosition(checkpoints[0]);
+}
+void Tutorial::Reset()
+{
+	timer = 0.0f;
+	currentCheckpointIndex = 0;
+	currentStage = 0;
+	playerDeathCount = 0;
+	currentNote = nullptr;
+	completed = false;
+	enemySpawned = false;
+	started = false;
 }
 void Tutorial::SetStones()
 {

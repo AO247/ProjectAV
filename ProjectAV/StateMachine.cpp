@@ -63,15 +63,16 @@ void StateMachine::Stun(float time)
 }
 void StateMachine::Stop(float time)
 {
+	stopTime = time;
 	RequestStateChange(StateType::STOP);
 }
 void StateMachine::Update(float dt)
 {
-	if (timer < 5.0f && canDropPills)
+	if (timer < 2.0f && canDropPills)
 	{
 		timer += dt;
-		PhysicsCommon::physicsSystem->GetBodyInterface().SetPosition(pOwner->GetComponent<Rigidbody>()->GetBodyID(), 
-			Vec3(basePos.x, basePos.y, basePos.z), EActivation::Activate);
+		/*PhysicsCommon::physicsSystem->GetBodyInterface().SetPosition(pOwner->GetComponent<Rigidbody>()->GetBodyID(), 
+			Vec3(basePos.x, basePos.y, basePos.z), EActivation::Activate);*/
 		PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(pOwner->GetComponent<Rigidbody>()->GetBodyID(),
 			Vec3(0.0f, 0.0f, 0.0f));
 		eatedPills = false;

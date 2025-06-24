@@ -28,6 +28,7 @@ public:
 	Node* firstSpawn;
 	Node* levelsNode;
 	Node* base;
+	Node* startIsland;
 	Tutorial* tut;
 	std::vector<Node*> enemies;
 	std::vector<Node*> levels;
@@ -43,7 +44,9 @@ public:
 	bool drawLoadingScreen = true;
 	UpgradeHandler* upgradeHandler;
 	void NextStage();
-
+	bool startedGame = false;
+	void Start();
+	void Reset();
 private:
 	Window& wnd;
 	void AddLevel();

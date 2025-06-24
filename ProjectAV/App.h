@@ -68,19 +68,23 @@ private:
 	Node* pRightHand = nullptr;
 	Node* pRightHandAbility = nullptr;
 	Node* tutorialNode = nullptr;
+    Node* temporary = nullptr;
     UpgradeHandler* pUpgradeHandler = nullptr;
 
     TestCube cube{ wnd.Gfx(),4.0f };
     void FrustumCalculating();
     void DrawNodeRecursive(Graphics& gfx, Node* node);
     void CleanupDestroyedNodes(Node* currentNode);
-
+    void StartGame();
+    void ResetGame();
     void RemoveRigidbody(Node* currentNode);
     bool showDemoWindow = false;
     bool cursorEnabled = false;
     bool showControlWindow = false;
 	bool freeViewCamera = false;
-
+    bool paused = true;
+    bool startedGame = false;
+    float gameReset = 0;
     std::unique_ptr<Sprite> targetSprite;
     std::unique_ptr<Sprite> heart1Sprite;
     std::unique_ptr<Sprite> heart2Sprite;

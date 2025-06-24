@@ -18,9 +18,12 @@ void BasicAttack::Attack(float dt)
 		} 
 		//miejsce na animacje !!!
 	}
-	Vec3 direction = Vec3(pOwner->Forward().x, 0.0f, pOwner->Forward().z);
-	//PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(pOwner->GetComponent<Rigidbody>()->GetBodyID(), direction * moveForce * dt);
 	timer += dt;
+	if (timer < stopMovingTime)
+	{
+		Vec3 direction = Vec3(pOwner->Forward().x, 0.0f, pOwner->Forward().z);
+		PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(pOwner->GetParent()->GetComponent<Rigidbody>()->GetBodyID(), direction * moveForce * dt);
+	}
 	if (timer >= wholeAttackTime) {
 		attacked = false;
 		timer = 0.0f;
@@ -28,13 +31,14 @@ void BasicAttack::Attack(float dt)
 		return;
 	}
 
-	if (attacked) {
-		return;
-	}
+
 	if (timer < startDmgTime) {
 		return;
 	}
 	else if (timer > stopDmgTime) {
+		return;
+	}
+	if (attacked) {
 		return;
 	}
 	CheckAttack();
