@@ -13,6 +13,8 @@
 #include "SpawnAttack.h"
 #include "BoomAttack.h"
 #include "TankAttack.h"
+#include "LaunchAttack.h"
+#include "SlashAttack.h"
 #include "Spikes.h"
 #include "OnFire.h"
 #include "FireStatue.h"
