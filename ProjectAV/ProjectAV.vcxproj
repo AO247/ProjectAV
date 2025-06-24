@@ -192,6 +192,7 @@
     <ClCompile Include="IEmitterLogic.cpp" />
     <ClCompile Include="InstanceBuffer.cpp" />
     <ClCompile Include="Fireplace.cpp" />
+    <ClCompile Include="LaunchAttack.cpp" />
     <ClCompile Include="MainRenderGraph.cpp" />
     <ClCompile Include="BufferClearPass.cpp" />
     <ClCompile Include="BrokenPart.cpp" />
@@ -261,11 +262,13 @@
     <ClInclude Include="CircleEmitterLogic.h" />
     <ClInclude Include="Collectable.h" />
     <ClInclude Include="EnemyConfig.h" />
+    <ClInclude Include="SlashAttack.h" />
     <ClInclude Include="Hands.h" />
     <ClInclude Include="IEmitterLogic.h" />
     <ClInclude Include="InstanceBuffer.h" />
     <ClInclude Include="Fireplace.h" />
     <ClInclude Include="FallDamage.h" />
+    <ClInclude Include="LaunchAttack.h" />
     <ClInclude Include="MainRenderGraph.h" />
     <ClInclude Include="BufferClearPass.h" />
     <ClInclude Include="BufferResource.h" />
@@ -305,6 +308,7 @@
     <ClCompile Include="SkinningCBuf.cpp" />
     <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="SkyboxPass.cpp" />
+    <ClCompile Include="SlashAttack.cpp" />
     <ClCompile Include="SolidBox.cpp" />
     <ClCompile Include="SolidCapsule.cpp" />
     <ClCompile Include="SolidSphere.cpp" />

@@ -6808,7 +6808,6 @@ public:
 
         return pNewNode;
     }
-
     static Node* InstantiateFireplaceParticles(Node* parentNode, Vector3 position, float scale)
     {
         auto pNewNodeOwner = std::make_unique<Node>("AnimationTest", nullptr, "ENEMY");
@@ -6845,7 +6844,6 @@ public:
 
         return pNewNode;
     }
-
     static Node* InstantiateCharacterOnFireParticles(Node* parentNode, Vector3 position, float scale)
     {
         auto pNewNodeOwner = std::make_unique<Node>("AnimationTest", nullptr, "ENEMY");
@@ -6882,12 +6880,11 @@ public:
 
         return pNewNode;
     }
-
-    static Node* InstantiateNormalEnemy(Node* parentNode, Vector3 position, float scale)
+    static Node* InstantiateNormalEnemy(Node* parentNode, Vector3 position)
     {
         auto pNewNodeOwner = std::make_unique<Node>("Basic", nullptr, "ENEMY");
         Node* pNewNode = pNewNodeOwner.get();
-
+        float scale = 1.8f;
         pNewNode->AddComponent(
             std::make_unique<SoundEffectsPlayer>(pNewNode)
         );
@@ -6914,15 +6911,12 @@ public:
         );
         AnimationComponent* animComp = pNewNode->GetComponent<AnimationComponent>();
         animComp->PlayAnimation(3);
-
-
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         parentNode->AddChild(std::move(pNewNodeOwner));
 
-        BodyCreationSettings eBodySettings(new JPH::CapsuleShape(2.1f, 1.5f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::ENEMY);
+        BodyCreationSettings eBodySettings(new JPH::CapsuleShape(1.8f, 1.6f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::ENEMY);
         eBodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
 
-        //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
         eBodySettings.mMassPropertiesOverride.mMass = 15.0f;
         eBodySettings.mFriction = 0.2f;
         eBodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
@@ -6952,7 +6946,7 @@ public:
             std::make_unique<Walking>(pNewNode)
         );
         Walking* walking = pNewNode->GetComponent<Walking>();
-        walking->radius = 1.5f;
+        walking->radius = 1.6f;
         walking->maxSpeed = 30.0f;
         walking->height = 7.2f;
 
@@ -6979,39 +6973,44 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateTankEnemy(Node* parentNode, Vector3 position, float scale)
+    static Node* InstantiateTankEnemy(Node* parentNode, Vector3 position)
     {
         auto pNewNodeOwner = std::make_unique<Node>("Tank", nullptr, "ENEMY");
         Node* pNewNode = pNewNodeOwner.get();
-
+        float scale = 1.8f;
         pNewNode->AddComponent(
             std::make_unique<SoundEffectsPlayer>(pNewNode)
         );
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\tank\\idle1.wav");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\tank\\idle2.wav");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\tank\\idle3.wav");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\tank\\idle4.wav");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\tank\\attack1.wav");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\tank\\attack2.wav");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\tank\\attack2.wav");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\tank\\footstep1.wav");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\tank\\footstep2.wav");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\tank\\footstep3.wav");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\tank\\footstep4.wav");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\tank\\footstep5.wav");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\tank\\footstep6.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic1.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic2.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic3.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic4.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic_attack1.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic_attack2.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic_attack3.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footstep1.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footstep2.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footstep3.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footstep4.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footstep5.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footstep6.wav");
 
         pNewNode->AddComponent(
-            std::make_unique<ModelComponent>(pNewNode, wind->Gfx(), "Models\\enemy\\Tank\\tank.obj")
+            std::make_unique<ModelComponent>(pNewNode, wind->Gfx(), "Models\\basic\\basic.gltf", 1.0f, true)
         );
+
+        pNewNode->AddComponent(
+            std::make_unique<AnimationComponent>(pNewNode, "", "Models\\basic\\basic.gltf")
+        );
+        AnimationComponent* animComp = pNewNode->GetComponent<AnimationComponent>();
+        animComp->PlayAnimation(3);
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         parentNode->AddChild(std::move(pNewNodeOwner));
 
-        BodyCreationSettings eBodySettings(new JPH::CapsuleShape(2.1f, 1.5f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::ENEMY);
+        BodyCreationSettings eBodySettings(new JPH::CapsuleShape(1.8f, 1.6f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::ENEMY);
         eBodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
 
-        //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
-        eBodySettings.mMassPropertiesOverride.mMass = 24.0f;
+        eBodySettings.mMassPropertiesOverride.mMass = 15.0f;
         eBodySettings.mFriction = 0.2f;
         eBodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
         eBodySettings.mMotionQuality = EMotionQuality::LinearCast;
@@ -7030,8 +7029,8 @@ public:
         pattackNode->AddComponent(
             std::make_unique<TankAttack>(pattackNode)
         );
-        BasicAttack* basicAttack = pattackNode->GetComponent<BasicAttack>();
-        basicAttack->attackRange = 7.0f;
+        TankAttack* tankAttack = pattackNode->GetComponent<TankAttack>();
+        tankAttack->attackRange = 7.0f;
         pNewNode->SetLocalPosition({ 0.0f, 0.0f, 0.0f });
         pNewNode->AddChild(std::move(attackNodeOwner));
 
@@ -7040,8 +7039,9 @@ public:
             std::make_unique<Walking>(pNewNode)
         );
         Walking* walking = pNewNode->GetComponent<Walking>();
-        walking->radius = 1.5f;
-        walking->maxSpeed = 50.0f;
+        walking->radius = 1.6f;
+        walking->maxSpeed = 30.0f;
+        walking->height = 7.2f;
 
 
         //STATE MACHINE
@@ -7049,15 +7049,14 @@ public:
             std::make_unique<StateMachine>(pNewNode, StateType::IDLE)
         );
         StateMachine* stateMachine = pNewNode->GetComponent<StateMachine>();
+        stateMachine->enemyType = EnemyType::BASIC;
         stateMachine->followDistance = 60.0f;
         stateMachine->pPlayer = player;
-        stateMachine->attackComponents.push_back(basicAttack);
+        stateMachine->attackComponents.push_back(tankAttack);
         stateMachine->pMovementComponent = walking;
         pNewNode->AddComponent(
             std::make_unique<Health>(pNewNode, 1.0f)
         );
-        Health* health = pNewNode->GetComponent<Health>();
-        //health->tank = true;
 
 
         pNewNode->SetLocalPosition(position);
@@ -7065,13 +7064,13 @@ public:
 
         pNewNode->radius = 7.0f;
 
-
         return pNewNode;
     }
-    static Node* InstantiateFlyingEnemy(Node* parentNode, Vector3 position, float scale)
+    static Node* InstantiateFlyingEnemy(Node* parentNode, Vector3 position)
     {
         auto pNewNodeOwner = std::make_unique<Node>("Flying", nullptr, "ENEMY");
         Node* pNewNode = pNewNodeOwner.get();
+        float scale = 1.6f;
 
         pNewNode->AddComponent(
             std::make_unique<SoundEffectsPlayer>(pNewNode)
@@ -7150,11 +7149,11 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateShootingEnemy(Node* parentNode, Vector3 position, float scale)
+    static Node* InstantiateShootingEnemy(Node* parentNode, Vector3 position)
     {
         auto pNewNodeOwner = std::make_unique<Node>("Shooting", nullptr, "ENEMY");
         Node* pNewNode = pNewNodeOwner.get();
-
+        float scale = 1.6f;
         pNewNode->AddComponent(
             std::make_unique<SoundEffectsPlayer>(pNewNode)
         );
@@ -7178,7 +7177,7 @@ public:
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         parentNode->AddChild(std::move(pNewNodeOwner));
 
-        BodyCreationSettings eBodySettings(new JPH::CapsuleShape(1.2f, 1.5f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::ENEMY);
+        BodyCreationSettings eBodySettings(new JPH::CapsuleShape(0.7f, 1.5f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::ENEMY);
         eBodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
 
         //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
@@ -7238,10 +7237,11 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateMageEnemy(Node* parentNode, Vector3 position, float scale)
+    static Node* InstantiateMageEnemy(Node* parentNode, Vector3 position)
     {
         auto pNewNodeOwner = std::make_unique<Node>("Mage", nullptr, "ENEMY");
         Node* pNewNode = pNewNodeOwner.get();
+        float scale = 1.9f;
 
         pNewNode->AddComponent(
             std::make_unique<SoundEffectsPlayer>(pNewNode)
@@ -7323,10 +7323,11 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateExplosiveEnemy(Node* parentNode, Vector3 position, float scale)
+    static Node* InstantiateExplosiveEnemy(Node* parentNode, Vector3 position)
     {
         auto pNewNodeOwner = std::make_unique<Node>("Explosive", nullptr, "ENEMY");
         Node* pNewNode = pNewNodeOwner.get();
+        float scale = 1.3f;
 
         pNewNode->AddComponent(
             std::make_unique<SoundEffectsPlayer>(pNewNode)
@@ -7411,6 +7412,212 @@ public:
         pNewNode->SetLocalPosition(position);
         pNewNode->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
+
+        pNewNode->radius = 7.0f;
+
+        return pNewNode;
+    }
+    static Node* InstantiateFastEnemy(Node* parentNode, Vector3 position)
+    {
+        auto pNewNodeOwner = std::make_unique<Node>("Fast", nullptr, "ENEMY");
+        Node* pNewNode = pNewNodeOwner.get();
+        float scale = 1.8f;
+        pNewNode->AddComponent(
+            std::make_unique<SoundEffectsPlayer>(pNewNode)
+        );
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic1.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic2.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic3.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic4.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic_attack1.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic_attack2.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic_attack3.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footstep1.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footstep2.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footstep3.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footstep4.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footstep5.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footstep6.wav");
+
+        pNewNode->AddComponent(
+            std::make_unique<ModelComponent>(pNewNode, wind->Gfx(), "Models\\basic\\basic.gltf", 1.0f, true)
+        );
+
+        pNewNode->AddComponent(
+            std::make_unique<AnimationComponent>(pNewNode, "", "Models\\basic\\basic.gltf")
+        );
+        AnimationComponent* animComp = pNewNode->GetComponent<AnimationComponent>();
+        animComp->PlayAnimation(3);
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        parentNode->AddChild(std::move(pNewNodeOwner));
+
+        BodyCreationSettings eBodySettings(new JPH::CapsuleShape(1.8f, 1.6f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::ENEMY);
+        eBodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
+
+        eBodySettings.mMassPropertiesOverride.mMass = 15.0f;
+        eBodySettings.mFriction = 0.2f;
+        eBodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
+        eBodySettings.mMotionQuality = EMotionQuality::LinearCast;
+        pNewNode->AddComponent(
+            std::make_unique<Rigidbody>(pNewNode, eBodySettings)
+        );
+
+        // ATTACK
+        auto launchAttackNodeOwner = std::make_unique<Node>("Rush Attack", nullptr, "TRIGGER");
+        Node* plaunchAttackNode = launchAttackNodeOwner.get();
+
+        BodyCreationSettings a1BodySettings(new JPH::CapsuleShape(5.0f, 3.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
+        plaunchAttackNode->AddComponent(
+            std::make_unique<Trigger>(plaunchAttackNode, a1BodySettings, false)
+        );
+        plaunchAttackNode->AddComponent(
+            std::make_unique<LaunchAttack>(plaunchAttackNode)
+        );
+
+        LaunchAttack* launchAttack = plaunchAttackNode->GetComponent<LaunchAttack>();
+        launchAttack->attackRange = 7.0f;
+        pNewNode->SetLocalPosition({ 0.0f, 0.0f, 0.0f });
+        pNewNode->AddChild(std::move(launchAttackNodeOwner));
+
+
+        auto slashAttackNodeOwner = std::make_unique<Node>("Rush Attack", nullptr, "TRIGGER");
+        Node* pslashAttackNode = slashAttackNodeOwner.get();
+
+        BodyCreationSettings a2BodySettings(new JPH::CapsuleShape(5.0f, 3.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
+        pslashAttackNode->AddComponent(
+            std::make_unique<Trigger>(pslashAttackNode, a2BodySettings, false)
+        );
+        pslashAttackNode->AddComponent(
+            std::make_unique<SlashAttack>(pslashAttackNode)
+        );
+
+        SlashAttack* slashAttack = pslashAttackNode->GetComponent<SlashAttack>();
+        slashAttack->attackRange = 7.0f;
+        pNewNode->SetLocalPosition({ 0.0f, 0.0f, 0.0f });
+        pNewNode->AddChild(std::move(slashAttackNodeOwner));
+
+
+        //MOVEMENT
+        pNewNode->AddComponent(
+            std::make_unique<Walking>(pNewNode)
+        );
+        Walking* walking = pNewNode->GetComponent<Walking>();
+        walking->radius = 1.6f;
+        walking->maxSpeed = 30.0f;
+        walking->height = 7.2f;
+
+
+        //STATE MACHINE
+        pNewNode->AddComponent(
+            std::make_unique<StateMachine>(pNewNode, StateType::IDLE)
+        );
+        StateMachine* stateMachine = pNewNode->GetComponent<StateMachine>();
+        stateMachine->enemyType = EnemyType::BASIC;
+        stateMachine->followDistance = 60.0f;
+        stateMachine->pPlayer = player;
+        stateMachine->attackComponents.push_back(slashAttack);
+        stateMachine->attackComponents.push_back(launchAttack);
+        stateMachine->pMovementComponent = walking;
+        pNewNode->AddComponent(
+            std::make_unique<Health>(pNewNode, 1.0f)
+        );
+
+
+        pNewNode->SetLocalPosition(position);
+        pNewNode->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+
+        pNewNode->radius = 7.0f;
+
+        return pNewNode;
+    }
+    static Node* InstantiateBossEnemy(Node* parentNode, Vector3 position)
+    {
+        auto pNewNodeOwner = std::make_unique<Node>("Basic", nullptr, "ENEMY");
+        Node* pNewNode = pNewNodeOwner.get();
+        float scale = 1.8f;
+        pNewNode->AddComponent(
+            std::make_unique<SoundEffectsPlayer>(pNewNode)
+        );
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic1.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic2.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic3.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic4.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic_attack1.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic_attack2.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic_attack3.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footstep1.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footstep2.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footstep3.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footstep4.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footstep5.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footstep6.wav");
+
+        pNewNode->AddComponent(
+            std::make_unique<ModelComponent>(pNewNode, wind->Gfx(), "Models\\basic\\basic.gltf", 1.0f, true)
+        );
+
+        pNewNode->AddComponent(
+            std::make_unique<AnimationComponent>(pNewNode, "", "Models\\basic\\basic.gltf")
+        );
+        AnimationComponent* animComp = pNewNode->GetComponent<AnimationComponent>();
+        animComp->PlayAnimation(3);
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        parentNode->AddChild(std::move(pNewNodeOwner));
+
+        BodyCreationSettings eBodySettings(new JPH::CapsuleShape(1.8f, 1.6f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::ENEMY);
+        eBodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
+
+        eBodySettings.mMassPropertiesOverride.mMass = 15.0f;
+        eBodySettings.mFriction = 0.2f;
+        eBodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
+        eBodySettings.mMotionQuality = EMotionQuality::LinearCast;
+        pNewNode->AddComponent(
+            std::make_unique<Rigidbody>(pNewNode, eBodySettings)
+        );
+
+        // ATTACK
+        auto attackNodeOwner = std::make_unique<Node>("Balerina Attack", nullptr, "TRIGGER");
+        Node* pattackNode = attackNodeOwner.get();
+
+        BodyCreationSettings a1BodySettings(new JPH::CapsuleShape(5.0f, 3.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
+        pattackNode->AddComponent(
+            std::make_unique<Trigger>(pattackNode, a1BodySettings, false)
+        );
+        pattackNode->AddComponent(
+            std::make_unique<BasicAttack>(pattackNode)
+        );
+        BasicAttack* basicAttack = pattackNode->GetComponent<BasicAttack>();
+        basicAttack->attackRange = 7.0f;
+        pNewNode->SetLocalPosition({ 0.0f, 0.0f, 0.0f });
+        pNewNode->AddChild(std::move(attackNodeOwner));
+
+        //MOVEMENT
+        pNewNode->AddComponent(
+            std::make_unique<Walking>(pNewNode)
+        );
+        Walking* walking = pNewNode->GetComponent<Walking>();
+        walking->radius = 1.6f;
+        walking->maxSpeed = 30.0f;
+        walking->height = 7.2f;
+
+
+        //STATE MACHINE
+        pNewNode->AddComponent(
+            std::make_unique<StateMachine>(pNewNode, StateType::IDLE)
+        );
+        StateMachine* stateMachine = pNewNode->GetComponent<StateMachine>();
+        stateMachine->enemyType = EnemyType::BASIC;
+        stateMachine->followDistance = 60.0f;
+        stateMachine->pPlayer = player;
+        stateMachine->attackComponents.push_back(basicAttack);
+        stateMachine->pMovementComponent = walking;
+        pNewNode->AddComponent(
+            std::make_unique<Health>(pNewNode, 1.0f)
+        );
+
+
+        pNewNode->SetLocalPosition(position);
+        pNewNode->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
         pNewNode->radius = 7.0f;
 

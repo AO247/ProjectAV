@@ -19,7 +19,7 @@ public:
 
 	int numberOfHardEnemies = 0;
 	int numberOfMediumEnemies = 0;
-	int numberOfEasyEnemies = 10;
+	int numberOfEasyEnemies = 5;
 
 
 	virtual void Update(float dt) override;

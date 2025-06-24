@@ -507,6 +507,12 @@
     <ClCompile Include="TankAttack.cpp">
       <Filter>Source Files\Components\Enemies</Filter>
     </ClCompile>
+    <ClCompile Include="SlashAttack.cpp">
+      <Filter>Source Files\Components\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="LaunchAttack.cpp">
+      <Filter>Source Files\Components\Enemies</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Win.h">
@@ -1032,6 +1038,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TankAttack.h">
+      <Filter>Header Files\Components\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="LaunchAttack.h">
+      <Filter>Header Files\Components\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="SlashAttack.h">
       <Filter>Header Files\Components\Enemies</Filter>
     </ClInclude>
   </ItemGroup>

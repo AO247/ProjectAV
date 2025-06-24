@@ -133,7 +133,7 @@ App::App(const std::string& commandLine)
     PrefabManager::root = temporary;
     PrefabManager::player = pPlayer;
 
-    BodyCreationSettings bodySettings(new JPH::CapsuleShape(1.0f, 1.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::PLAYER);
+    BodyCreationSettings bodySettings(new JPH::CapsuleShape(1.4f, 1.6f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::PLAYER);
     bodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
 
     bodySettings.mMassPropertiesOverride.mMass = 1.0f;
@@ -490,11 +490,74 @@ App::App(const std::string& commandLine)
         1080,
         L"Images\\Loading_Screen3.png"
     );
+     
 
-    wnd.DisableCursor();
-    wnd.mouse.EnableRawInput();
-    cursorEnabled = false;
-    //StartGame();
+    cursorEnabled = true;
+    wnd.EnableCursor();  
+    wnd.mouse.DisableRawInput();
+
+    // --------------- INICJALIZACJA MENU GŁÓWNEGO ---------------
+
+    mainMenuBackground = std::make_unique<Sprite>(
+        wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
+        0, 0, screenWidth, screenHeight,
+        L"Images\\MainMenu.gif" 
+    );
+
+    const DirectX::XMFLOAT4 buttonIdleColor = { 0.82f, 0.63f, 0.35f, 0.9f };
+    const DirectX::XMFLOAT4 buttonHoverColor = { 1.0f, 0.8f, 0.5f, 1.0f };
+    const DirectX::XMFLOAT4 textColor = { 0.1f, 0.1f, 0.1f, 1.0f };
+
+    startButton = std::make_unique<Button>(
+        wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
+        120, 450, 250, 70,  
+        L"START",
+        L"myfile.spritefont"  
+    );
+    startButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
+    startButton->SetTextColor(textColor);
+ 
+    quitButton = std::make_unique<Button>(
+        wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
+        120, 550, 250, 70,  
+        L"QUIT",
+        L"myfile.spritefont"  
+    );
+    quitButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
+    quitButton->SetTextColor(textColor);
+ 
+
+    // --------------- INICJALIZACJA MENU PAUZY --------------- 
+    pauseMenuOverlay = std::make_unique<Sprite>(
+        wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
+        0, 0, screenWidth, screenHeight,
+        L"Images\\MainMenu.gif"  
+    );
+   
+    int buttonWidth = 350;
+    int buttonHeight = 70;
+    int buttonCenterX = (screenWidth - buttonWidth) / 2;
+     
+
+    resumeButton = std::make_unique<Button>(
+        wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
+        buttonCenterX, 400, buttonWidth, buttonHeight,
+        L"RESUME",
+        L"myfile.spritefont"
+    );
+    resumeButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
+    resumeButton->SetTextColor(textColor);
+ 
+    quitToMenuButton = std::make_unique<Button>(
+        wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
+        buttonCenterX, 500, buttonWidth, buttonHeight,
+        L"QUIT TO MAIN MENU",
+        L"myfile.spritefont"
+    );
+    quitToMenuButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
+    quitToMenuButton->SetTextColor(textColor);
+ 
+
 }
 
 App::~App()
@@ -554,223 +617,247 @@ int App::Go()
 void App::HandleInput(float dt)
 {
 
-    if (wnd.kbd.IsJustPressed('M'))
-    {
-        if (myMusic->isPlaying())
-        {
-            myMusic->Stop();
-        }
-        else
-        {
-            myMusic->Play();
-        }
-    }
 
-    if (wnd.kbd.IsJustPressed('C'))
+    switch (gameState)
     {
-        if (cursorEnabled) {
-            wnd.DisableCursor();
-            wnd.mouse.EnableRawInput();
+    case GameState::MainMenu:
+        if (wnd.kbd.IsJustPressed(VK_ESCAPE))
+        {
+            PostQuitMessage(0);
+            return;
         }
-        else {
+        break;
+    
+
+    case GameState::Gameplay:
+    {
+        if (wnd.kbd.IsJustPressed('M'))
+        {
+            if (myMusic->isPlaying())
+            {
+                myMusic->Stop();
+            }
+            else
+            {
+                myMusic->Play();
+            }
+        }
+
+        if (wnd.kbd.IsJustPressed('C'))
+        {
+            if (cursorEnabled) {
+                wnd.DisableCursor();
+                wnd.mouse.EnableRawInput();
+            }
+            else {
+                wnd.EnableCursor();
+                wnd.mouse.DisableRawInput();
+            }
+            cursorEnabled = !cursorEnabled;
+        }
+
+        if (wnd.kbd.IsJustPressed('H'))
+        {
+            showControlWindow = !showControlWindow;
+        }
+        if (wnd.kbd.IsJustPressed('Z'))
+        {
+            StartGame();
+        }
+        if (wnd.kbd.IsJustPressed('X'))
+        {
+            ResetGame();
+        }
+        if (wnd.kbd.IsJustPressed('P'))
+        {
+            paused = !paused;
+        }
+        if (wnd.kbd.IsJustPressed(VK_ESCAPE))
+        {
+            gameState = GameState::Paused;
+            paused = true;  
             wnd.EnableCursor();
             wnd.mouse.DisableRawInput();
+            cursorEnabled = true;
+            return;
         }
-        cursorEnabled = !cursorEnabled;
-    }
 
-    if (wnd.kbd.IsJustPressed('H'))
-    {
-        showControlWindow = !showControlWindow;
-    }
-    if (wnd.kbd.IsJustPressed('Z'))
-    {
-        StartGame();
-    }
-    if (wnd.kbd.IsJustPressed('X'))
-    {
-        ResetGame();
-    }
-    if (wnd.kbd.IsJustPressed('P'))
-    {
-        paused = !paused;
-    }
-    if (wnd.kbd.IsJustPressed(VK_ESCAPE))
-    {
-        PostQuitMessage(0);
-        return; // Zwróć od razu, aby uniknąć dalszego przetwarzania
-    }
+        if (wnd.kbd.IsJustPressed(VK_F1))
+        {
+            showDemoWindow = !showDemoWindow;
+        }
 
-    if (wnd.kbd.IsJustPressed(VK_F1))
-    {
-        showDemoWindow = !showDemoWindow;
-    }
+        if (wnd.kbd.IsJustPressed('V'))
+        {
+            freeViewCamera = !freeViewCamera;
+            if (freeViewCamera) {
+                pCamera->GetComponent<Camera>()->active = false;
+                pFreeViewCamera->GetComponent<Camera>()->active = true;
+            }
+            else {
+                pCamera->GetComponent<Camera>()->active = true;
+                pFreeViewCamera->GetComponent<Camera>()->active = false;
+            }
+        }
 
-    if (wnd.kbd.IsJustPressed('V'))
-    {
-        freeViewCamera = !freeViewCamera;
         if (freeViewCamera) {
-            pCamera->GetComponent<Camera>()->active = false;
-            pFreeViewCamera->GetComponent<Camera>()->active = true;
+            if (wnd.kbd.IsKeyPressed('I')) {
+                pFreeViewCamera->TranslateLocal({ 0.0f, 0.0f, 0.4f });
+            }
+            if (wnd.kbd.IsKeyPressed('K')) {
+                pFreeViewCamera->TranslateLocal({ 0.0f, 0.0f, -0.4f });
+            }
+            if (wnd.kbd.IsKeyPressed('J')) {
+                pFreeViewCamera->TranslateLocal({ -0.4f, 0.0f, 0.0f });
+            }
+            if (wnd.kbd.IsKeyPressed('L')) {
+                pFreeViewCamera->TranslateLocal({ 0.4f, 0.0f, 0.0f });
+            }
+            if (wnd.kbd.IsKeyPressed('U')) {
+                pFreeViewCamera->TranslateLocal({ 0.0f, -0.4f, 0.0f });
+            }
+            if (wnd.kbd.IsKeyPressed('O')) {
+                pFreeViewCamera->TranslateLocal({ 0.0f, 0.4f, 0.0f });
+            }
         }
-        else {
-            pCamera->GetComponent<Camera>()->active = true;
-            pFreeViewCamera->GetComponent<Camera>()->active = false;
+        break;
+    }
+    case GameState::Paused: 
+        if (wnd.kbd.IsJustPressed(VK_ESCAPE))
+        { 
+            gameState = GameState::Gameplay;
+            paused = false;
+            wnd.DisableCursor();
+            wnd.mouse.EnableRawInput();
+            cursorEnabled = false;
         }
+        break;
     }
 
-    if (freeViewCamera) {
-        if (wnd.kbd.IsKeyPressed('I')) {
-            pFreeViewCamera->TranslateLocal({ 0.0f, 0.0f, 0.4f });
-        }
-        if (wnd.kbd.IsKeyPressed('K')) {
-            pFreeViewCamera->TranslateLocal({ 0.0f, 0.0f, -0.4f });
-        }
-        if (wnd.kbd.IsKeyPressed('J')) {
-            pFreeViewCamera->TranslateLocal({ -0.4f, 0.0f, 0.0f });
-        }
-        if (wnd.kbd.IsKeyPressed('L')) {
-            pFreeViewCamera->TranslateLocal({ 0.4f, 0.0f, 0.0f });
-        }
-        if (wnd.kbd.IsKeyPressed('U')) {
-            pFreeViewCamera->TranslateLocal({ 0.0f, -0.4f, 0.0f });
-        }
-        if (wnd.kbd.IsKeyPressed('O')) {
-            pFreeViewCamera->TranslateLocal({ 0.0f, 0.4f, 0.0f });
-        }
-    }
 }
 
 void App::DoFrame(float dt)
 {
-    //fizyka
-    if (!paused || gameReset > 0)
+
+    wnd.Gfx().BeginFrame(1.0f, 0.0f, 0.0f);
+    switch (gameState)
     {
-        gameReset--;
-        auto* contact = dynamic_cast<MyContactListener*>(physicsSystem->GetContactListener());
-        contact->ExecuteTriggerActivationQueue();
-        contact->ExecuteCollisionActivationQueue();
-        CleanupDestroyedNodes(pSceneRoot.get());    //data removed
-        pSceneRoot->Update(dt);
-        RemoveRigidbody(pSceneRoot.get());//rigidbody remove if destruction
-        JPH::BodyIDVector bodyIDs;
-        PhysicsCommon::physicsSystem->GetBodies(bodyIDs);
-        for (JPH::BodyID bodyID : bodyIDs)
+
+    case GameState::MainMenu:
+    {
+         auto& gfx = wnd.Gfx();
+        gfx.GetTarget()->BindAsBuffer(gfx);
+        mainMenuBackground->Update(dt);
+
+        UpdateMainMenu();
+        DrawMainMenu();
+        break;
+    }
+
+    case GameState::Gameplay:
+    {
+  
+    case GameState::Paused:  
+    { 
+        if (gameState == GameState::Gameplay && (!paused || gameReset > 0))
         {
-            JPH::uint64 data = PhysicsCommon::physicsSystem->GetBodyInterface().GetUserData(bodyID);
-            if (data == 0)
+            gameReset--;
+            auto* contact = dynamic_cast<MyContactListener*>(physicsSystem->GetContactListener());
+            contact->ExecuteTriggerActivationQueue();
+            contact->ExecuteCollisionActivationQueue();
+            CleanupDestroyedNodes(pSceneRoot.get());
+            pSceneRoot->Update(dt);
+            RemoveRigidbody(pSceneRoot.get());
+            JPH::BodyIDVector bodyIDs;
+            PhysicsCommon::physicsSystem->GetBodies(bodyIDs);
+            for (JPH::BodyID bodyID : bodyIDs)
             {
-                PhysicsCommon::physicsSystem->GetBodyInterface().DeactivateBody(bodyID);
-                PhysicsCommon::physicsSystem->GetBodyInterface().RemoveBody(bodyID);
-                PhysicsCommon::physicsSystem->GetBodyInterface().DestroyBody(bodyID);
+                JPH::uint64 data = PhysicsCommon::physicsSystem->GetBodyInterface().GetUserData(bodyID);
+                if (data == 0)
+                {
+                    PhysicsCommon::physicsSystem->GetBodyInterface().DeactivateBody(bodyID);
+                    PhysicsCommon::physicsSystem->GetBodyInterface().RemoveBody(bodyID);
+                    PhysicsCommon::physicsSystem->GetBodyInterface().DestroyBody(bodyID);
+                }
             }
         }
-    }
-    wnd.Gfx().BeginFrame(0.5f, 0.5f, 1.0f);
-
-    dx::XMMATRIX viewMatrix = pCamera->GetComponent<Camera>()->GetViewMatrix();
-    if (freeViewCamera)
-    {
-        viewMatrix = pFreeViewCamera->GetComponent<Camera>()->GetViewMatrix();
-    }
-    wnd.Gfx().SetCamera(viewMatrix);
-    //fc.ShowWindows(wnd.Gfx());
-	/*DebugLine line(wnd.Gfx(), pEnemy->GetComponent<StateMachine>()->pos, pEnemy->GetComponent<StateMachine>()->cen, { 0.0f, 0.0f, 1.0f, 1.0f });
-    line.Submit(fc);*/ // for idle
-    // --- Bind Lights ---
-    Bind::TransformCbuf::SetLight(&dirLight);
-    Bind::ShadowCbuf::SetLight(&dirLight);
-    DirectX::XMFLOAT3 focusPos = pPlayer->GetWorldPosition();
-    Camera* activePlayerCamera = pCamera->GetComponent<Camera>();
-   /* if (freeViewCamera) {
-        activePlayerCamera = pFreeViewCamera->GetComponent<Camera>();
-    }
-    else {
-        activePlayerCamera = pCamera->GetComponent<Camera>();
-    }*/
-    dirLight.Update(wnd.Gfx(), focusPos, *activePlayerCamera);
-
-    // --- Bind Lights ---
-    // pointLight.Bind(wnd.Gfx(), viewMatrix);
-    dirLight.Bind(wnd.Gfx());
-
-    FrustumCalculating();
-
-    if (pPlayer != nullptr) {
-        soundDevice->SetLocation(
-            pPlayer->GetWorldPosition().x,
-            pPlayer->GetWorldPosition().y,
-            pPlayer->GetWorldPosition().z
-        );
-
-        soundDevice->SetOrientation(
-            pCamera->Back().x,
-            pCamera->Back().y,
-            pCamera->Back().z,
-            pCamera->Up().x,
-            pCamera->Up().y,
-            pCamera->Up().z
-        );
-    }
-
-    rg.Execute(wnd.Gfx());
-
-    if (showControlWindow) {
-        ShowControlWindows();
-    }
-
-
-
-    if (targetSprite) {
-        targetSprite->Draw(wnd.Gfx().GetContext());
-    }
-
-    if (pPlayer->GetComponent<Health>()->currentHealth == 3.0f) {
-        heart1Sprite->Draw(wnd.Gfx().GetContext());
-        heart2Sprite->Draw(wnd.Gfx().GetContext());
-        heart3Sprite->Draw(wnd.Gfx().GetContext());
-    }
-    if (pPlayer->GetComponent<Health>()->currentHealth == 2.0f) {
-        heart1Sprite->Draw(wnd.Gfx().GetContext());
-        heart2Sprite->Draw(wnd.Gfx().GetContext());
-    }
-    if (pPlayer->GetComponent<Health>()->currentHealth == 1.0f) {
-        heart1Sprite->Draw(wnd.Gfx().GetContext());
-    }
-
-    pUpgradeHandler->DrawUpgradeMenu();
-
-
-    //tutorialNode->GetComponent<Tutorial>()->DrawNote();
-
-    /*if (pSceneRoot->GetComponent<Global>()->drawLoadingScreen || bonusTime > 0.0f)
-    {
-        if (!pSceneRoot->GetComponent<Global>()->drawLoadingScreen)
+         
+        wnd.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 2000.0f));
+         
+        dx::XMMATRIX viewMatrix = pCamera->GetComponent<Camera>()->GetViewMatrix();
+        if (freeViewCamera)
         {
-            bonusTime -= dt;
+            viewMatrix = pFreeViewCamera->GetComponent<Camera>()->GetViewMatrix();
         }
-        else {
-            bonusTime = 5.0f;
+        wnd.Gfx().SetCamera(viewMatrix);
+         
+        Bind::TransformCbuf::SetLight(&dirLight);
+        Bind::ShadowCbuf::SetLight(&dirLight);
+        DirectX::XMFLOAT3 focusPos = pPlayer->GetWorldPosition();
+        Camera* activePlayerCamera = pCamera->GetComponent<Camera>();
+        dirLight.Update(wnd.Gfx(), focusPos, *activePlayerCamera);
+        dirLight.Bind(wnd.Gfx());
+         
+        FrustumCalculating();
+         
+        if (pPlayer != nullptr) {
+            soundDevice->SetLocation(
+                pPlayer->GetWorldPosition().x,
+                pPlayer->GetWorldPosition().y,
+                pPlayer->GetWorldPosition().z
+            );
+            soundDevice->SetOrientation(
+                pCamera->Back().x, pCamera->Back().y, pCamera->Back().z,
+                pCamera->Up().x, pCamera->Up().y, pCamera->Up().z
+            );
         }
-        countLoding++;
+         
+        rg.Execute(wnd.Gfx());
+         
+        if (showControlWindow) {
+            ShowControlWindows();
+        }
+         
+        if (targetSprite) {
+            targetSprite->Draw(wnd.Gfx().GetContext());
+        }
+        if (pPlayer->GetComponent<Health>()->currentHealth == 3.0f) {
+            heart1Sprite->Draw(wnd.Gfx().GetContext());
+            heart2Sprite->Draw(wnd.Gfx().GetContext());
+            heart3Sprite->Draw(wnd.Gfx().GetContext());
+        }
+        else if (pPlayer->GetComponent<Health>()->currentHealth == 2.0f) {
+            heart1Sprite->Draw(wnd.Gfx().GetContext());
+            heart2Sprite->Draw(wnd.Gfx().GetContext());
+        }
+        else if (pPlayer->GetComponent<Health>()->currentHealth == 1.0f) {
+            heart1Sprite->Draw(wnd.Gfx().GetContext());
+        }
+        pUpgradeHandler->DrawUpgradeMenu();
+         
+        if (pSceneRoot->GetComponent<Global>()->drawLoadingScreen || bonusTime > 0.0f)
+        {
+            if (!pSceneRoot->GetComponent<Global>()->drawLoadingScreen) { bonusTime -= dt; }
+            else { bonusTime = 5.0f; }
+            countLoding++;
+            if (countLoding > 2.0f) { if (countLoding > 2.9f) { countLoding = 0.0f; } loadingScreen3->Draw(wnd.Gfx().GetContext()); }
+            else if (countLoding > 1.0f) { loadingScreen2->Draw(wnd.Gfx().GetContext()); }
+            else { loadingScreen1->Draw(wnd.Gfx().GetContext()); }
+        }
+         
+        if (gameState == GameState::Paused)
+        {
+            pauseMenuOverlay->Update(dt);
 
-        if (countLoding > 2.0f)
-        {
-            if (countLoding > 2.9f)
-            {
-                countLoding = 0.0f;
-            }
-            loadingScreen3->Draw(wnd.Gfx().GetContext());
+            UpdatePauseMenu();
+            DrawPauseMenu();
         }
-        else if (countLoding > 1.0f)
-        {
-            loadingScreen2->Draw(wnd.Gfx().GetContext());
-        }
-        else
-        {
-            loadingScreen1->Draw(wnd.Gfx().GetContext());
-        }
-    }*/
+        break;
+    }
+    }
+
+    }
+    
     wnd.kbd.UpdateFrameState();
 
     wnd.Gfx().EndFrame();
@@ -1185,5 +1272,122 @@ void App::SaveNodeTransformsRecursive(Node& node, std::ofstream& file)
         {
             SaveNodeTransformsRecursive(*pChild, file);
         }
+    }
+}
+ 
+
+void App::UpdateMainMenu()
+{
+    int mouseX = wnd.mouse.GetPosX();
+    int mouseY = wnd.mouse.GetPosY();
+
+    const DirectX::XMFLOAT4 buttonIdleColor = { 0.82f, 0.63f, 0.35f, 0.9f };
+    const DirectX::XMFLOAT4 buttonHoverColor = { 1.0f, 0.8f, 0.5f, 1.0f };
+     
+    bool isMouseLeftPressedThisFrame = wnd.mouse.IsLeftPressed();
+     
+    bool isLeftClick = isMouseLeftPressedThisFrame && !wasMouseLeftPressedLastFrame;
+     
+    if (startButton->IsHovered(mouseX, mouseY)) {
+        startButton->SetColor(buttonHoverColor.x, buttonHoverColor.y, buttonHoverColor.z, buttonHoverColor.w);
+         
+        if (isLeftClick) {
+            gameState = GameState::Gameplay;
+            paused = true;
+            wnd.DisableCursor();
+            wnd.mouse.EnableRawInput();
+            cursorEnabled = false;
+            StartGame();
+        }
+    }
+    else {
+        startButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
+    }
+     
+    if (quitButton->IsHovered(mouseX, mouseY)) {
+        quitButton->SetColor(buttonHoverColor.x, buttonHoverColor.y, buttonHoverColor.z, buttonHoverColor.w);
+         
+        if (isLeftClick) {
+            PostQuitMessage(0);
+        }
+    }
+    else {
+        quitButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
+    }
+     
+    wasMouseLeftPressedLastFrame = isMouseLeftPressedThisFrame;
+}
+
+void App::DrawMainMenu()
+{
+    auto* context = wnd.Gfx().GetContext();
+    const float screenWidth = 1920.0f;
+    const float screenHeight = 1080.0f;
+
+    if (mainMenuBackground) {
+        mainMenuBackground->Draw(context);
+    } 
+    if (startButton) {
+        startButton->Draw(context, screenWidth, screenHeight);
+    }
+    if (quitButton) {
+        quitButton->Draw(context, screenWidth, screenHeight);
+    }
+}
+
+
+void App::UpdatePauseMenu()
+{
+    int mouseX = wnd.mouse.GetPosX();
+    int mouseY = wnd.mouse.GetPosY();
+
+    const DirectX::XMFLOAT4 buttonIdleColor = { 0.82f, 0.63f, 0.35f, 0.9f };
+    const DirectX::XMFLOAT4 buttonHoverColor = { 1.0f, 0.8f, 0.5f, 1.0f };
+
+    bool isMouseLeftPressedThisFrame = wnd.mouse.IsLeftPressed();
+    bool isLeftClick = isMouseLeftPressedThisFrame && !wasMouseLeftPressedLastFrame;
+     
+    if (resumeButton->IsHovered(mouseX, mouseY)) {
+        resumeButton->SetColor(buttonHoverColor.x, buttonHoverColor.y, buttonHoverColor.z, buttonHoverColor.w);
+        if (isLeftClick) {
+            gameState = GameState::Gameplay;
+            paused = false;
+            wnd.DisableCursor();
+            wnd.mouse.EnableRawInput();
+            cursorEnabled = false;
+        }
+    }
+    else {
+        resumeButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
+    }
+
+     if (quitToMenuButton->IsHovered(mouseX, mouseY)) {
+        quitToMenuButton->SetColor(buttonHoverColor.x, buttonHoverColor.y, buttonHoverColor.z, buttonHoverColor.w);
+        if (isLeftClick) {
+            ResetGame();
+            gameState = GameState::MainMenu; 
+        }
+    }
+    else {
+        quitToMenuButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
+    }
+
+    wasMouseLeftPressedLastFrame = isMouseLeftPressedThisFrame;
+}
+
+void App::DrawPauseMenu()
+{
+    auto* context = wnd.Gfx().GetContext();
+    const float screenWidth = 1920.0f;
+    const float screenHeight = 1080.0f;
+     
+    if (pauseMenuOverlay) {
+        pauseMenuOverlay->Draw(context);
+    } 
+    if (resumeButton) {
+        resumeButton->Draw(context, screenWidth, screenHeight);
+    }
+    if (quitToMenuButton) {
+        quitToMenuButton->Draw(context, screenWidth, screenHeight);
     }
 }

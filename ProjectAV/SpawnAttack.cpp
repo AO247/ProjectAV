@@ -52,7 +52,7 @@ void SpawnAttack::Attack(float dt)
 		endAttack = false;
 		Vector3 pos = pOwner->GetLocalPosition();
 		pos += pOwner->Forward() * 5.0f;
-		Node* enemy = PrefabManager::InstantiateExplosiveEnemy(pOwner->GetParent(), Vector3(pos.x, pos.y, pos.z), 1.0f);
+		Node* enemy = PrefabManager::InstantiateExplosiveEnemy(pOwner->GetParent(), Vector3(pos.x, pos.y, pos.z));
 		enemy->MoveToTop();
 		soundTimer = 0.6f;
 		soundPlayed = false;
