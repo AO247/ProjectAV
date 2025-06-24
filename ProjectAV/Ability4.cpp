@@ -136,6 +136,12 @@ void Ability4::Released()
             selectionParticles->GetComponent<ParticleSystemComponent>()->Stop();
             selectionParticles = nullptr;
         }
+
+        if (selectionParticlesSmoke != nullptr)
+        {
+            selectionParticlesSmoke->GetComponent<ParticleSystemComponent>()->Stop();
+            selectionParticlesSmoke = nullptr;
+        }
         pressedTime = 0.0f;
         Vector3 direction = Vector3::Zero;
         Vec3 position = Vec3(camera->GetWorldPosition().x, camera->GetWorldPosition().y, camera->GetWorldPosition().z);

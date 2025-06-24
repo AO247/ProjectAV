@@ -77,7 +77,7 @@ bool Ability1::Pressed()
     cooldownTimer = cooldown;
     abilityReady = false;
     
-    PrefabManager::InstantiateAbility1Particles(pOwner->GetParent(), Vector3(pOwner->GetLocalPosition().x, pOwner->GetLocalPosition().y, pOwner->GetLocalPosition().z), 1.0, pOwner->GetLocalRotationQuaternion());
+    PrefabManager::InstantiateAbility1ParticlesSmoke(pOwner->GetParent(), Vector3(pOwner->GetLocalPosition().x, pOwner->GetLocalPosition().y, pOwner->GetLocalPosition().z), 1.0, pOwner->GetLocalRotationQuaternion());
     return true;
 }
 void Ability1::Released()
