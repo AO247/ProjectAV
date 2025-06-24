@@ -6981,7 +6981,7 @@ public:
     }
     static Node* InstantiateTankEnemy(Node* parentNode, Vector3 position, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Basic", nullptr, "ENEMY");
+        auto pNewNodeOwner = std::make_unique<Node>("Tank", nullptr, "ENEMY");
         Node* pNewNode = pNewNodeOwner.get();
 
         pNewNode->AddComponent(
@@ -7011,7 +7011,7 @@ public:
         eBodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
 
         //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
-        eBodySettings.mMassPropertiesOverride.mMass = 20.0f;
+        eBodySettings.mMassPropertiesOverride.mMass = 24.0f;
         eBodySettings.mFriction = 0.2f;
         eBodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
         eBodySettings.mMotionQuality = EMotionQuality::LinearCast;
@@ -7028,7 +7028,7 @@ public:
             std::make_unique<Trigger>(pattackNode, a1BodySettings, false)
         );
         pattackNode->AddComponent(
-            std::make_unique<BasicAttack>(pattackNode)
+            std::make_unique<TankAttack>(pattackNode)
         );
         BasicAttack* basicAttack = pattackNode->GetComponent<BasicAttack>();
         basicAttack->attackRange = 7.0f;
@@ -7041,7 +7041,7 @@ public:
         );
         Walking* walking = pNewNode->GetComponent<Walking>();
         walking->radius = 1.5f;
-        walking->maxSpeed = 40.0f;
+        walking->maxSpeed = 50.0f;
 
 
         //STATE MACHINE

@@ -13,7 +13,7 @@ Walking::Walking(Node* owner, std::string tag)
 	: Component(owner, std::move(tag))
 {
 	rigidbody = owner->GetComponent<Rigidbody>();
-	PhysicsCommon::physicsSystem->GetBodyInterface().SetFriction(rigidbody->GetBodyID(), 0.05f);
+	PhysicsCommon::physicsSystem->GetBodyInterface().SetFriction(rigidbody->GetBodyID(), 0.01f);
 
 }
 void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)

@@ -731,7 +731,12 @@ void LevelGenerator::SpawnEnemies()
                 enemy->SetWorldPosition(pos);
                 enemy->GetComponent<StateMachine>()->basePos = pos;
             }
-
+            if (randEnemy == 1)
+            {
+                enemy = PrefabManager::InstantiateTankEnemy(pOwner, Vector3(0.0f, 0.0f, 0.0f), 1.6f);
+                enemy->SetWorldPosition(pos);
+                enemy->GetComponent<StateMachine>()->basePos = pos;
+            }
 
             numberOfMediumEnemies--;
         }

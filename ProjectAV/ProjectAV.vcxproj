@@ -324,6 +324,7 @@
     <ClCompile Include="StopState.cpp" />
     <ClCompile Include="StunState.cpp" />
     <ClCompile Include="Surface.cpp" />
+    <ClCompile Include="TankAttack.cpp" />
     <ClCompile Include="Technique.cpp" />
     <ClCompile Include="TestCube.cpp" />
     <ClCompile Include="Testing.cpp" />
@@ -458,6 +459,7 @@
     <ClInclude Include="StopState.h" />
     <ClInclude Include="StunState.h" />
     <ClInclude Include="Surface.h" />
+    <ClInclude Include="TankAttack.h" />
     <ClInclude Include="Technique.h" />
     <ClInclude Include="TechniqueProbe.h" />
     <ClInclude Include="TestCube.h" />

@@ -186,7 +186,7 @@ App::App(const std::string& commandLine)
     pAbility1->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\push3.wav");
     pAbility1->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\push4.wav");
     pAbility1->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 0.0f, 10.0f));
-    //pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility1;
+    pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility1;
    
 
     BodyCreationSettings a2odySettings(new JPH::SphereShape(5.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
@@ -203,7 +203,7 @@ App::App(const std::string& commandLine)
     pAbility2->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\toss2.wav");
     pAbility2->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\toss3.wav");
     pAbility2->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\toss4.wav");
-    //pPlayer->GetComponent<PlayerController>()->abilitySlot2 = pAbility2;
+    pPlayer->GetComponent<PlayerController>()->abilitySlot2 = pAbility2;
 
 
 
@@ -494,7 +494,7 @@ App::App(const std::string& commandLine)
     wnd.DisableCursor();
     wnd.mouse.EnableRawInput();
     cursorEnabled = false;
-    StartGame();
+    //StartGame();
 }
 
 App::~App()

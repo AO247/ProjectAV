@@ -483,7 +483,7 @@
     <ClCompile Include="Fireplace.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
-	<ClCompile Include="Hands.cpp">
+    <ClCompile Include="Hands.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
     <ClCompile Include="StaticSoundPlayer.cpp">
@@ -500,6 +500,12 @@
     </ClCompile>
     <ClCompile Include="ShadowMappingPass.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FallDamage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TankAttack.cpp">
+      <Filter>Source Files\Components\Enemies</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -926,7 +932,7 @@
     <ClInclude Include="Tutorial.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
-	<ClInclude Include="Hands.h">
+    <ClInclude Include="Hands.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
     <ClInclude Include="InstanceBuffer.h">
@@ -1018,6 +1024,15 @@
     </ClInclude>
     <ClInclude Include="ModelException.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyConfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FallDamage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TankAttack.h">
+      <Filter>Header Files\Components\Enemies</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1142,6 +1157,7 @@
     <FxCompile Include="Shadow.hlsl">
       <Filter>Shaders\Common</Filter>
     </FxCompile>
+    <FxCompile Include="ShadowSkinned_VS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DXGetErrorDescription.inl">
