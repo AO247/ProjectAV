@@ -32,7 +32,7 @@ public:
 	Vector3	cameraRotation = Vector3::Zero;
 	bool isPressed = false;
 	bool abilityReady = true;
-
+	bool activated = false;
 	Node* leftHandNormal = nullptr;
 	Node* leftHandAbility = nullptr;
 	Node* selectedNode = nullptr;

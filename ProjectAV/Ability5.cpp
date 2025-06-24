@@ -60,7 +60,9 @@ void Ability5::Positioning()
 bool Ability5::Pressed()
 {
     if (!abilityReady) return false;
-
+    // animacja 
+    // particle
+    // dŸwiêk aktywacji
     if (pOwner->GetComponent<SoundEffectsPlayer>()) {
         float randSound = (rand() % 4);
         pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f, false);

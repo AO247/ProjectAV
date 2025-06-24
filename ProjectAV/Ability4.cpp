@@ -35,6 +35,20 @@ void Ability4::Update(float dt)
                 }
             }
 			pressedTime += dt;
+            if (pressedTime > 0.13f && activated)
+            {
+                activated = false;
+                // animacja wyboru obiektu
+                // dŸwiêk wyboru obiektu
+                // particle wyboru obiektu
+                leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3.0f }); 
+                leftHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
+            }
+            else if (pressedTime > 0.13f)
+            {
+                // animacja trzymania 
+                // dŸwiêk trzymania 
+            }
         }
         Positioning();
         Cooldowns(dt);
@@ -70,11 +84,10 @@ bool Ability4::Pressed()
         float randSound = (rand() % 2);
         pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f, false);
     }
-
+    activated = true;
     isPressed = true;
     pressedTime = 0.0f;
-    leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
-    leftHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
+
     cameraRotation = camera->GetLocalRotationEuler();
     if (selectedNode != nullptr)
     {
@@ -89,22 +102,27 @@ void Ability4::Released()
     isPressed = false;
     if (!abilityReady) return;
 
-    if (selectionParticles != nullptr)
-    {
-        selectionParticles->GetComponent<ParticleSystemComponent>()->Stop();
-        selectionParticles = nullptr;
-    }
+
 
     leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 4.0f });
     timeToChange = 0.3f;
 
-    if (pressedTime < 0.2f || selectedNode == nullptr)
+    if (pressedTime < 0.13f || selectedNode == nullptr)
     {
         pressedTime = 0.0f;
         baseAbility->Pressed();
     }
     else
     {
+        // particle rzutu
+        // animacja rzutu
+        // dŸwiêk rzutu
+
+        if (selectionParticles != nullptr)
+        {
+            selectionParticles->GetComponent<ParticleSystemComponent>()->Stop();
+            selectionParticles = nullptr;
+        }
         pressedTime = 0.0f;
         Vector3 direction = Vector3::Zero;
         Vec3 position = Vec3(camera->GetWorldPosition().x, camera->GetWorldPosition().y, camera->GetWorldPosition().z);

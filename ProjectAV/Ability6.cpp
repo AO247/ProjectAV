@@ -66,6 +66,7 @@ void Ability6::Positioning()
 void Ability6::Pulling(float dt)
 {
 	if (selectedNode == nullptr) return;
+
     Vector3 cameraPos = camera->GetWorldPosition();
     Vector3 targetPosition = cameraPos + camera->Forward() * 8.0f;
     Rigidbody* rb = selectedNode->GetComponent<Rigidbody>();
@@ -92,6 +93,8 @@ void Ability6::Pulling(float dt)
     }
     else
     {
+        // dzwiek trzymania obiektu
+        // animacja trzymania obiektu
         Vector3 dir = targetPosition - selectedNode->GetWorldPosition();
         dir.y *= 10.0f;
         dir.Normalize();
@@ -122,8 +125,11 @@ void Ability6::PullingParticlesPositioning()
 bool Ability6::Pressed()
 {
     if (!abilityReady) return false;
-    isPressed = true;
     if (selectedNode == nullptr) return false;
+    isPressed = true;
+    // animacja przyciagniecia
+    // particle dodanie do obiektu
+    // dzwiek wyboru node
     leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
     leftHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
 
@@ -160,6 +166,7 @@ void Ability6::Released()
     if (!isPressed) return;
     isPressed = false;
     if (!abilityReady) return;
+    // particle wylaczenie 
     leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 4.0f });
     timeToChange = 0.3f;
    

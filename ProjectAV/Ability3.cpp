@@ -154,7 +154,6 @@ void Ability3::Activated()
 
                 PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), Vec3(0.0f, 0.0f, 0.0f));
                 PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), Vec3(direction.x, direction.y, direction.z) * scaledForce);
-                //OutputDebugStringA(("Ability3 hit: " + objects[i]->GetName() + "\n").c_str());
             }
             else if (objects[i]->tag == "BULLET")
             {
