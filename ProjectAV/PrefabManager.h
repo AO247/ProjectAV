@@ -7001,8 +7001,11 @@ public:
         );
         ParticleSystemComponent* pParticleSystem = pNewNode->GetComponent<ParticleSystemComponent>();
         pParticleSystem->SetPlaybackMode(ParticleSystemComponent::PlaybackMode::OneShot);
-        pParticleSystem->ParticleLifetime = 0.6f;      
-        pParticleSystem->BurstAmount = 5;
+        //pParticleSystem->ParticleLifetime = 0.6f;      
+        pParticleSystem->BurstAmount = 12;
+        pParticleSystem->bUseLifetimeRange = true;
+        pParticleSystem->MinLifetime = 0.3f;
+        pParticleSystem->MaxLifetime = 1.2f;
         pParticleSystem->bOneShotIsBurst = true;
         pParticleSystem->destroyAfterEmission = true;
         pParticleSystem->EmitterPositionOffset = { 0.0f, 0.0f, 0.0f }; 
@@ -7014,7 +7017,7 @@ public:
         pParticleSystem->MidColor = { 1.0f, 1.0f, 1.0f, 1.0f };
         pParticleSystem->EndColor = { 1.0f, 1.0f, 1.0f, 0.0f };
         pParticleSystem->StartSize = 4.0f;
-        pParticleSystem->StartSizeVariance = 10.0f;
+        pParticleSystem->StartSizeVariance = 7.0f;
         pParticleSystem->bAnimateSize = false;
         pParticleSystem->StartRotation = 0.0f;
         pParticleSystem->EndRotation = 0.0f;

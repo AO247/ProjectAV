@@ -203,7 +203,19 @@ void ParticleSystemComponent::EmitParticle(const DirectX::XMFLOAT3& position)
             const auto ownerWorldTransform = GetOwner()->GetWorldTransform();
             p.active = true;
             p.age = 0.0f;
-            p.lifetime = ParticleLifetime;
+            // +++ NEW LIFETIME LOGIC +++
+            if (bUseLifetimeRange)
+            {
+                // Create a distribution for the random lifetime
+                std::uniform_real_distribution<float> lifetime_dist(MinLifetime, MaxLifetime);
+                // Assign a random lifetime to the particle, ensuring it's not negative.
+                p.lifetime = std::max(0.0f, lifetime_dist(rng));
+            }
+            else
+            {
+                // Use the fixed, single lifetime value.
+                p.lifetime = ParticleLifetime;
+            }
             p.startColor = StartColor;
             p.endColor = EndColor;
 
