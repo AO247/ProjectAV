@@ -334,42 +334,42 @@ App::App(const std::string& commandLine)
     );
 
     pLeftHand->AddComponent(
-        std::make_unique<ModelComponent>(pLeftHand, wnd.Gfx(), "Models\\left\\left.gltf", 1.0f, true, false)
+        std::make_unique<ModelComponent>(pLeftHand, wnd.Gfx(), "Models\\hands\\left.gltf", 1.0f, true, false)
     );
     pLeftHand->GetComponent<ModelComponent>()->LinkTechniques(rg);
     pLeftHand->SetLocalScale({ 0.1f, 0.1f, 0.1f });
     pLeftHand->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
 
     pLeftHand->AddComponent(
-        std::make_unique<AnimationComponent>(pLeftHand, "", "Models\\left\\left.gltf")
+        std::make_unique<AnimationComponent>(pLeftHand, "", "Models\\hands\\left.gltf")
     );
     AnimationComponent* animCompLeft = pLeftHand->GetComponent<AnimationComponent>();
-    animCompLeft->PlayAnimation(11);
+    animCompLeft->PlayAnimation(13); //POCZĄTKOWE IDLE_RUN
 
 
     pLeftHandAbility->AddComponent(
-        std::make_unique<ModelComponent>(pLeftHandAbility, wnd.Gfx(), "Models\\hands\\push.obj", 1.0f, false, false)
+        std::make_unique<ModelComponent>(pLeftHandAbility, wnd.Gfx(), "Models\\hands\\left.gltf", 1.0f, false, false)
     );
     pLeftHandAbility->GetComponent<ModelComponent>()->LinkTechniques(rg);
     pLeftHandAbility->SetLocalScale({ 0.1f, 0.1f, 0.1f });
     pLeftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
 
     pRightHand->AddComponent(
-        std::make_unique<ModelComponent>(pRightHand, wnd.Gfx(), "Models\\right\\right.gltf", 1.0f, true, false)
+        std::make_unique<ModelComponent>(pRightHand, wnd.Gfx(), "Models\\hands\\right.gltf", 1.0f, true, false)
     );
     pRightHand->GetComponent<ModelComponent>()->LinkTechniques(rg);
     pRightHand->SetLocalScale({ 0.1f, 0.1f, 0.1f });
     pRightHand->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
 
     pRightHand->AddComponent(
-        std::make_unique<AnimationComponent>(pRightHand, "", "Models\\right\\right.gltf")
+        std::make_unique<AnimationComponent>(pRightHand, "", "Models\\hands\\right.gltf")
     );
     AnimationComponent* animCompRight = pRightHand->GetComponent<AnimationComponent>();
-    animCompRight->PlayAnimation(11);
+    animCompRight->PlayAnimation(13); //POCZĄTKOWE IDLE_RUN
 
 
     pRightHandAbility->AddComponent(
-        std::make_unique<ModelComponent>(pRightHandAbility, wnd.Gfx(), "Models\\hands\\toss.obj", 1.0f, false, false)
+        std::make_unique<ModelComponent>(pRightHandAbility, wnd.Gfx(), "Models\\hands\\right.gltf", 1.0f, false, false)
     );
     pRightHandAbility->GetComponent<ModelComponent>()->LinkTechniques(rg);
     pRightHandAbility->SetLocalScale({ 0.1f, 0.1f, 0.1f });
