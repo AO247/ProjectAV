@@ -7192,9 +7192,9 @@ public:
 
         // ATTACK
         pNewNode->AddComponent(
-            std::make_unique<FireBallAttack>(pNewNode, player)
+            std::make_unique<ShootAttack>(pNewNode, player)
         );
-        FireBallAttack* shootAttack = pNewNode->GetComponent<FireBallAttack>();
+        ShootAttack* shootAttack = pNewNode->GetComponent<ShootAttack>();
         shootAttack->bulletSpeed = 50.0f;
         shootAttack->attackRange = 60.0f;
 
