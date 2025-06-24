@@ -40,13 +40,13 @@ void Ability4::Update(float dt)
                 
                 // particle wyboru obiektu
                 //  
-                leftHand->PlayAnimation(2); //na razie loop trzymania
+                leftHand->PlayAnimation(4); //ATTACK_PULL_LOOP
 
             }
             else if (pressedTime > 0.13f)
             {
 
-                leftHand->PlayAnimation(2);
+                leftHand->PlayAnimation(4); //ATTACK_PULL_LOOP
                 // animacja trzymania 
                 // dŸwiêk trzymania 
                 if (pOwner->GetComponent<SoundEffectsPlayer>()) {
@@ -205,14 +205,14 @@ void Ability4::Cooldowns(float dt)
     {
         cooldownTimer -= dt;
         if (leftHand->GetCurrentPlayingAnimationRaw() == nullptr) {
-            leftHand->PlayAnimation(6);
+            leftHand->PlayAnimation(8); //COOLDOWN
         }
     }
     else
     {
         if (!abilityReady)
         {
-            leftHand->PlayAnimation(11);
+            leftHand->PlayAnimation(13);  //IDLE RUN
         }
         abilityReady = true;
     }

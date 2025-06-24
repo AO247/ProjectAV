@@ -6996,11 +6996,11 @@ public:
         pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footstep6.wav");
 
         pNewNode->AddComponent(
-            std::make_unique<ModelComponent>(pNewNode, wind->Gfx(), "Models\\basic\\basic.gltf", 1.0f, true)
+            std::make_unique<ModelComponent>(pNewNode, wind->Gfx(), "Models\\tank\\tank.gltf", 1.0f, true)
         );
 
         pNewNode->AddComponent(
-            std::make_unique<AnimationComponent>(pNewNode, "", "Models\\basic\\basic.gltf")
+            std::make_unique<AnimationComponent>(pNewNode, "", "Models\\tank\\tank.gltf")
         );
         AnimationComponent* animComp = pNewNode->GetComponent<AnimationComponent>();
         animComp->PlayAnimation(3);

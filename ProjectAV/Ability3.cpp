@@ -74,6 +74,9 @@ void Ability3::Update(float dt)
     {
         readyToActive = false;
 		throwSoundTimer -= dt;
+
+        leftHand->PlayAnimation(1, 0.2f, false); //ATTACK_BLACK_HOLE_END
+        rightHand->PlayAnimation(1, 0.2f, false);
         // animacja rzucenia czarnej dziury
         // particle rzucenia czarnej dziury
         // d�wi�k rzucenia czarnej dziury
@@ -92,6 +95,9 @@ void Ability3::Update(float dt)
     }
     else if (isPressed)
     {
+        leftHand->PlayAnimation(2, 0.2f, false); //ATTACK_BLACK_HOLE_HOLD
+        rightHand->PlayAnimation(2, 0.2f, false);
+
         // animacja trzymania czarnej dziury
         // particle trzymania czarnej dziury
         // d�wi�k trzymania czarnej dziury
@@ -142,6 +148,10 @@ bool Ability3::Pressed()
     // animacja tworzenia czarnej dziury
     // particle tworzenia czarnej dziury
     // d�wi�k tworzenia czarnej dziury
+
+    leftHand->PlayAnimation(0, 0.2f, false); //ATTACK_BLACK_HOLE 
+    rightHand->PlayAnimation(0, 0.2f, false);
+
     if (pOwner->GetComponent<SoundEffectsPlayer>()) {
         pOwner->GetComponent<SoundEffectsPlayer>()->Play(0, 1.0f, false);
     }
