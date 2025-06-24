@@ -40,6 +40,11 @@ public:
 	Vec3 pos = Vec3(0.0f, 0.0f, 0.0f);
 	AnimationComponent* leftHand = nullptr;
 	AnimationComponent* rightHand = nullptr;
+
+	float activeSoundTimer = 0.0f;
+	float activeSoundInterval = 1.6f;
+	float throwSoundTimer = 0.0f;
+	float throwSoundInterval = 1.5f;
 private:
 	void KeyboardInput();
 	void Positioning();

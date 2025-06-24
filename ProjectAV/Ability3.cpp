@@ -23,6 +23,7 @@ void Ability3::Update(float dt)
 {
     if (!wnd.CursorEnabled())
     {
+		activeSoundTimer -= dt;
         if (timer > 0.0f)
         {
             PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(pOwner->GetComponent<Rigidbody>()->GetBodyID(),
@@ -35,15 +36,22 @@ void Ability3::Update(float dt)
             {
                 // particle ju� aktywowanej
                 // d�wi�k ju� aktywowanej
-                /*if (pOwner->GetComponent<SoundEffectsPlayer>()) {
-                    pOwner->GetComponent<SoundEffectsPlayer>()->Play(2, 1.0f, false);
-                }*/
+				
                 Activated();
             }
             else if (timer == duration)
             {
+                if (activeSoundTimer <= 0.0f && pOwner->GetComponent<SoundEffectsPlayer>()) {
+                    pOwner->GetComponent<SoundEffectsPlayer>()->Play(2, 1.0f, false);
+                    activeSoundTimer = activeSoundInterval;
+                }
                 // particle po wyl�dowaniu
                 // d�wi�k po wyl�dowaniu
+                /*if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+					pOwner->GetComponent<SoundEffectsPlayer>()->Stop(1);
+                    pOwner->GetComponent<SoundEffectsPlayer>()->Play(2, 1.0f, false);
+                    activeSoundTimer = activeSoundInterval;
+                }*/
             }
             timer -= dt;
 
@@ -64,19 +72,25 @@ void Ability3::Update(float dt)
     }
     else if (readyToActive)
     {
+        readyToActive = false;
+		throwSoundTimer -= dt;
         // animacja rzucenia czarnej dziury
         // particle rzucenia czarnej dziury
         // d�wi�k rzucenia czarnej dziury
-        /*if (pOwner->GetComponent<SoundEffectsPlayer>()) {
-            pOwner->GetComponent<SoundEffectsPlayer>()->Stop(3);
-            pOwner->GetComponent<SoundEffectsPlayer>()->Play(1, 1.0f, false);
-        }*/
+		if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+			if (throwSoundTimer <= 0.0f)
+			{
+                pOwner->GetComponent<SoundEffectsPlayer>()->Stop(3);
+                pOwner->GetComponent<SoundEffectsPlayer>()->Play(1, 1.0f, false);
+				throwSoundTimer = throwSoundInterval;
+			}
+		}
 
         released = true;
         PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(pOwner->GetComponent<Rigidbody>()->GetBodyID(),
             Vec3(camera->Forward().x, camera->Forward().y, camera->Forward().z) * 60.0f);
     }
-    else
+    else if (isPressed)
     {
         // animacja trzymania czarnej dziury
         // particle trzymania czarnej dziury
@@ -119,14 +133,20 @@ void Ability3::OnCollisionEnter(Node* object)
 }
 bool Ability3::Pressed()
 {
-    if (killsCount < 3) return false;
+    if (killsCount < 3 || isPressed) return false;
+    
+    Vector3 cameraPos = camera->GetWorldPosition();
+    Vector3 targetPosition = cameraPos + camera->Forward() * 6.0f;
+    pOwner->SetWorldPosition(targetPosition);
+	
     // animacja tworzenia czarnej dziury
     // particle tworzenia czarnej dziury
     // d�wi�k tworzenia czarnej dziury
     if (pOwner->GetComponent<SoundEffectsPlayer>()) {
         pOwner->GetComponent<SoundEffectsPlayer>()->Play(0, 1.0f, false);
     }
-    animTimer = 0.3f; //czas zakonczenia tworzenia czarnej dziury i przejscie do trzymania
+
+    animTimer = 1.0f; //czas zakonczenia tworzenia czarnej dziury i przejscie do trzymania
     isPressed = true;
     released = false;
 	

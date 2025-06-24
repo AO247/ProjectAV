@@ -127,7 +127,7 @@ App::App(const std::string& commandLine)
     pHands->AddChild(std::move(pRightHandOwner));
     pHands->AddChild(std::move(pRightHandAbilityOwner));
 
-    //PrefabManager::InstantiateStone1(pSceneRoot.get(), Vector3(0.0f, 100.0f, 0.0f), 1.0f);
+    PrefabManager::InstantiateStone1(pSceneRoot.get(), Vector3(0.0f, 100.0f, 0.0f), 1.0f);
 
     PrefabManager::root = pPrefabs;
     PrefabManager::player = pPlayer;
@@ -256,7 +256,7 @@ App::App(const std::string& commandLine)
     pAbility4->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\sznurek2.wav");
     pAbility4->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\hold.wav");
     pAbility4->GetComponent<Ability4>()->baseAbility = pAbility1->GetComponent<Ability1>();
-    pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility4;
+    //pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility4;
 
 
     pAbility5->AddComponent(

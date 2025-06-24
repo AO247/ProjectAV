@@ -44,7 +44,11 @@ ALuint SoundEffectsPlayer::Play(int soundIndex, float gain, bool isPositional, b
         filename,
         pOwner->GetWorldPosition(),
         gain * volume,
-        loop
+        loop,
+		StaticSoundPlayer::Get().rolloff, // rolloff
+		StaticSoundPlayer::Get().refDistance, // refDistance
+		StaticSoundPlayer::Get().m_maxAudibleDistance, // maxDistance
+		StaticSoundPlayer::Get().cullingMode // cullingMode
     );
 
     if (sourceID != 0)

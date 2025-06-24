@@ -23,6 +23,7 @@ void Ability6::Update(float dt)
 {
     if (!wnd.CursorEnabled())
     {
+        pOwner->SetWorldPosition(player->GetWorldPosition());
         PullingParticlesPositioning();
         Positioning();
         Cooldowns(dt);
@@ -83,10 +84,10 @@ void Ability6::Pulling(float dt)
         }
         PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rb->GetBodyID(), Vec3::sZero());
         PhysicsCommon::physicsSystem->GetBodyInterface().SetPosition(rb->GetBodyID(), Vec3(targetPosition.x, targetPosition.y, targetPosition.z), EActivation::Activate);
-    }
-    else
-    {
+
         // dzwiek trzymania obiektu
+       // animacja trzymania obiektu
+        holdSoundTimer -= dt;
         if (pOwner->GetComponent<SoundEffectsPlayer>()) {
             if (holdSoundTimer <= 0.0f)
             {
@@ -95,8 +96,9 @@ void Ability6::Pulling(float dt)
                 holdSoundTimer = holdSoundInterval;
             }
         }
-        // animacja trzymania obiektu
-
+    }
+    else
+    {
         leftHand->PlayAnimation(2);
         Vector3 dir = targetPosition - selectedNode->GetWorldPosition();
         dir.y *= 10.0f;

@@ -87,10 +87,10 @@ ALuint StaticSoundPlayer::GetAvailableSource()
     return stolenSource;
 }
 
-ALuint StaticSoundPlayer::Play(const std::string& filename, DirectX::XMFLOAT3 position, float gain, bool loop)
+void StaticSoundPlayer::Play(const std::string& filename, DirectX::XMFLOAT3 position, float gain, bool loop)
 {
-    Play(filename, position, gain, loop, 1.0f, 15.0f, m_maxAudibleDistance, true);
-    return 0;
+    Play(filename, position, gain, loop, rolloff, refDistance, m_maxAudibleDistance, cullingMode);
+    return;
 }
 
 

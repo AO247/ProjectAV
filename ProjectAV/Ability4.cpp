@@ -23,6 +23,7 @@ void Ability4::Update(float dt)
 {
     if (!wnd.CursorEnabled())
     {
+        pOwner->SetWorldPosition(player->GetWorldPosition());
         holdSoundTimer -= dt;
         if (isPressed)
         {
@@ -33,13 +34,10 @@ void Ability4::Update(float dt)
                 // animacja wyboru obiektu
                 // dŸwiêk wyboru obiektu
                 if (pOwner->GetComponent<SoundEffectsPlayer>()) {
-                    if (holdSoundTimer <= 0.0f)
-                    {
-                    pOwner->GetComponent<SoundEffectsPlayer>()->Play(2, 1.0f, false);
-
-                    holdSoundTimer = holdSoundInterval;
-                    }
+                    float randSound = (rand() % 2);
+                    pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f, false);
                 }
+                
                 // particle wyboru obiektu
                 //  
                 leftHand->PlayAnimation(2); //na razie loop trzymania
@@ -51,6 +49,14 @@ void Ability4::Update(float dt)
                 leftHand->PlayAnimation(2);
                 // animacja trzymania 
                 // dŸwiêk trzymania 
+                if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+                    if (holdSoundTimer <= 0.0f)
+                    {
+                        pOwner->GetComponent<SoundEffectsPlayer>()->Play(2, 1.0f, false);
+
+                        holdSoundTimer = holdSoundInterval;
+                    }
+                }
             }
         }
         Positioning();
@@ -116,10 +122,12 @@ void Ability4::Released()
         // particle rzutu
         // animacja rzutu
         // dŸwiêk rzutu
-        if (pOwner->GetComponent<SoundEffectsPlayer>()) {
-            float randSound = (rand() % 2);
-            pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f, false);
+        if (baseAbility->GetOwner()->GetComponent<SoundEffectsPlayer>()) {
+            pOwner->GetComponent<SoundEffectsPlayer>()->Stop(2);
+            float randSound = rand() % 4;
+            baseAbility->GetOwner()->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f);
         }
+        
 
         leftHand->PlayAnimation(3, 0.2f, false);
         if (selectionParticles != nullptr)
@@ -185,11 +193,6 @@ void Ability4::Released()
         PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(selectedNode->GetComponent<Rigidbody>()->GetBodyID(), Vec3(0.0f, 0.0f, 0.0f));
         PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(selectedNode->GetComponent<Rigidbody>()->GetBodyID(), Vec3(direction.x, direction.y, direction.z) * force);
 
-        if (baseAbility->GetOwner()->GetComponent<SoundEffectsPlayer>()) {
-            pOwner->GetComponent<SoundEffectsPlayer>()->Stop(2);
-            float randSound = rand() % 4;
-            baseAbility->GetOwner()->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f);
-        }
     }
     cooldownTimer = cooldown;
     abilityReady = false;

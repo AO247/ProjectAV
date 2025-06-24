@@ -22,6 +22,7 @@ void Ability5::Update(float dt)
 {
     if (!wnd.CursorEnabled())
     {
+        pOwner->SetWorldPosition(camera->GetWorldPosition());
         Positioning();
         Cooldowns(dt);
     }

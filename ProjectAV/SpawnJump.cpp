@@ -43,11 +43,11 @@ void SpawnJump::Update(float dt)
 				if (jumpSoundTimer <= 0.0f)
 				{
 					if (dir.Length() < 200.0f) {
-						pOwner->GetComponent<SoundEffectsPlayer>()->PlayAdvanced(0, 1.0f, false, 0.4f, 50.0f, 1000.0f, false);
+						//pOwner->GetComponent<SoundEffectsPlayer>()->PlayAdvanced(0, 1.0f, false, 0.4f, 50.0f, 1000.0f, false);
 					}
 					else
 					{
-						pOwner->GetComponent<SoundEffectsPlayer>()->PlayAdvanced(0, 0.1f, false, 5.0f, 1.0f, 5.0f, false);
+						//pOwner->GetComponent<SoundEffectsPlayer>()->PlayAdvanced(0, 0.1f, false, 5.0f, 1.0f, 5.0f, false);
 					}
 
 					jumpSoundTimer = jumpSoundInterval;
