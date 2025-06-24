@@ -13,6 +13,8 @@ namespace Bind
 		void Bind(Graphics& gfx) noxnd override;
 		static std::shared_ptr<Rasterizer> Resolve(Graphics& gfx, bool twoSided, int depthBias, float slopeBias, float clamp);
 		static std::shared_ptr<Rasterizer> Resolve(Graphics& gfx, bool twoSided);
+		//static std::shared_ptr<Rasterizer> Resolve(Graphics& gfx, D3D11_CULL_MODE cullMode);
+
 		static std::string GenerateUID(bool twoSided, int depthBias, float slopeBias, float clamp);
 		static std::string GenerateUID(bool twoSided);
 		std::string GetUID() const noexcept override;

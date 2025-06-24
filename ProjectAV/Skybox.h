@@ -25,7 +25,7 @@ struct SkyboxTransforms;
 class Skybox
 {
 public:
-	Skybox(Graphics& gfx, const std::vector<std::string>& facePaths);
+	Skybox(Graphics& gfx, const std::string& texturePath);
 	void Draw(Graphics& gfx) const;
 
 private:
