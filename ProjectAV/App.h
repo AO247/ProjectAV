@@ -24,6 +24,14 @@
 
 class PlayerController;
 
+enum class GameState
+{
+    MainMenu,
+    Gameplay,
+    Loading,
+    Exiting
+};
+
 class App
 {
 public:
@@ -36,6 +44,11 @@ private:
     void ShowControlWindows();
     void ForEnemyWalking();
     void SaveNodeTransformsRecursive(Node& node, std::ofstream& file);
+
+    void LoadMainMenu();
+    void CleanupMainMenu();
+    void LoadGame();
+    // void CleanupGame(); // Opcjonalnie, jeœli chcesz wracaæ do menu
 
 private:
     std::string commandLine;
@@ -88,9 +101,16 @@ private:
     std::unique_ptr<Sprite> loadingScreen1;
     std::unique_ptr<Sprite> loadingScreen2;
     std::unique_ptr<Sprite> loadingScreen3;
+    std::unique_ptr<Sprite> loadingScreen4;
+    std::unique_ptr<Sprite> loadingScreen5;
     float countLoding = 0.0f;
     float bonusTime = 5.0f;
 
+    GameState currentState = GameState::MainMenu;
+    std::unique_ptr<Sprite> pMenuBackground;
+    std::unique_ptr<Button> pStartButton;
+    std::unique_ptr<Button> pExitButton;
+    std::unique_ptr<Sprite> pLoadingScreenSprite;
 
-
+    std::vector<std::unique_ptr<Sprite>> loadingFrames;
 };
