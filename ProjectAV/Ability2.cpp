@@ -73,7 +73,7 @@ bool Ability2::Pressed()
     //rightHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
     //rightHand->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
 
-    rightHand->PlayAnimation(5, 0.2, false);
+    rightHand->PlayAnimation(7, 0.2, false); //TOSS
     timeToChange = 0.3f;
     for (int i = 0; i < objects.size(); i++)
     {
@@ -115,14 +115,14 @@ void Ability2::Cooldowns(float dt)
     {
         cooldownTimer -= dt;
         if (rightHand->GetCurrentPlayingAnimationRaw() == nullptr) {
-            rightHand->PlayAnimation(6);
+            rightHand->PlayAnimation(8); //COOLDOWN
         }
     }
     else
     {
         if (!abilityReady)
         {
-            rightHand->PlayAnimation(11);
+            rightHand->PlayAnimation(13); //IDLE RUN
         }
         abilityReady = true;
     }

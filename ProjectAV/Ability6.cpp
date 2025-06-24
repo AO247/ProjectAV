@@ -87,6 +87,8 @@ void Ability6::Pulling(float dt)
 
         // dzwiek trzymania obiektu
        // animacja trzymania obiektu
+        leftHand->PlayAnimation(4); //PULL LOOP             TU CZY W ELSE
+
         holdSoundTimer -= dt;
         if (pOwner->GetComponent<SoundEffectsPlayer>()) {
             if (holdSoundTimer <= 0.0f)
@@ -99,7 +101,7 @@ void Ability6::Pulling(float dt)
     }
     else
     {
-        leftHand->PlayAnimation(2);
+        leftHand->PlayAnimation(4); //PULL LOOP
         Vector3 dir = targetPosition - selectedNode->GetWorldPosition();
         dir.y *= 10.0f;
         dir.Normalize();
@@ -142,7 +144,7 @@ bool Ability6::Pressed()
     //leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
     //leftHand->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
 
-    leftHand->PlayAnimation(1, 0.2f, false);
+    leftHand->PlayAnimation(3, 0.2f, false); //ATTACK PULL
     Vector3 target = Vector3(camera->GetWorldPosition().x, camera->GetWorldPosition().y, camera->GetWorldPosition().z);
 
     DirectX::XMVECTOR viewerPosition = DirectX::XMVectorSet(selectedNode->GetWorldPosition().x, selectedNode->GetWorldPosition().y, selectedNode->GetWorldPosition().z, 0.0f);
@@ -202,14 +204,14 @@ void Ability6::Cooldowns(float dt)
     {
         cooldownTimer -= dt;
         if (leftHand->GetCurrentPlayingAnimationRaw() == nullptr) {
-            leftHand->PlayAnimation(6);
+            leftHand->PlayAnimation(8);
         }
     }
     else
     {
         if (!abilityReady)
         {
-            leftHand->PlayAnimation(11);
+            leftHand->PlayAnimation(13);
 
             //leftHand->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
         }

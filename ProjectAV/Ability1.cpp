@@ -38,7 +38,7 @@ bool Ability1::Pressed()
     // animacja popchniêcia 
     // particle
 
-    leftHand->PlayAnimation(4, 0.2, false);
+    leftHand->PlayAnimation(6, 0.2, false); //ATTACK_PUSH_LEFT
     
     if (pOwner->GetComponent<SoundEffectsPlayer>()) {
         float randSound = (rand() % 4);
@@ -89,7 +89,7 @@ void Ability1::Cooldowns(float dt)
     {
         cooldownTimer -= dt;
         if (leftHand->GetCurrentPlayingAnimationRaw() == nullptr) {
-            leftHand->PlayAnimation(6);
+            leftHand->PlayAnimation(8);  //COOLDOWN
         }
         
 
@@ -98,7 +98,7 @@ void Ability1::Cooldowns(float dt)
     {
         if (!abilityReady)
         {
-            leftHand->PlayAnimation(11);
+            leftHand->PlayAnimation(13); //IDLE_RUN
         }
         abilityReady = true;
     }
