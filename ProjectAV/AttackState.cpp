@@ -26,35 +26,33 @@ void AttackState::Enter(StateMachine* pOwner)
 
 	}
 
-	AnimationComponent* animComp = pOwner->GetOwnerNode()->GetComponent<AnimationComponent>();
-	if (animComp) {
-		switch (pOwner->enemyType)
-		{
-		case EnemyType::FLYING:
-			animComp->PlayAnimation(EnemyAnimationIndices::FLYING_ATTACK);
-			break;
-
-		case EnemyType::BASIC:
-		{
-			int randomAttack = std::rand() % 2;
-			if (randomAttack == 0)
-				animComp->PlayAnimation(EnemyAnimationIndices::BASIC_ATTACK1);
-			else
-				animComp->PlayAnimation(EnemyAnimationIndices::BASIC_ATTACK2);
-			break;
-		}
-		case EnemyType::RANGED:
-		{
-			int randomAttack = std::rand() % 2;
-			if (randomAttack == 0)
-				animComp->PlayAnimation(EnemyAnimationIndices::RANGED_ATTACK1);
-			else
-				animComp->PlayAnimation(EnemyAnimationIndices::RANGED_ATTACK2);
-			break;
-		}
-		}
-
-	}
+	//AnimationComponent* animComp = pOwner->GetOwnerNode()->GetComponent<AnimationComponent>();
+	//if (animComp) {
+	//	switch (pOwner->enemyType)
+	//	{
+	//	/*case EnemyType::FLYING:
+	//		animComp->PlayAnimation(EnemyAnimationIndices::FLYING_ATTACK);
+	//		break;
+	//	case EnemyType::BASIC:
+	//	{
+	//		int randomAttack = std::rand() % 2;
+	//		if (randomAttack == 0)
+	//			animComp->PlayAnimation(EnemyAnimationIndices::BASIC_ATTACK1);
+	//		else
+	//			animComp->PlayAnimation(EnemyAnimationIndices::BASIC_ATTACK2);
+	//		break;
+	//	}*/
+	//	case EnemyType::RANGED:
+	//	{
+	//		int randomAttack = std::rand() % 2;
+	//		if (randomAttack == 0)
+	//			animComp->PlayAnimation(EnemyAnimationIndices::RANGED_ATTACK1);
+	//		else
+	//			animComp->PlayAnimation(EnemyAnimationIndices::RANGED_ATTACK2);
+	//		break;
+	//	}
+	//	}
+	//}
 
 }
 

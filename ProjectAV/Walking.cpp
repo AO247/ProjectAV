@@ -18,6 +18,8 @@ Walking::Walking(Node* owner, std::string tag)
 }
 void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 {
+	StateMachine* statemachine = pOwner->GetComponent <StateMachine>();
+
 	if (!rigidbody) {
 		return;
 	}
@@ -63,10 +65,53 @@ void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 			PhysicsCommon::physicsSystem->GetBodyInterface().SetRotation(rigidbody->GetBodyID(), q, EActivation::Activate);
 			//tutaj animacja stania
 
+			if (statemachine->enemyType == EnemyType::BASIC) {
+				pOwner->GetComponent<AnimationComponent>()->PlayAnimation(3);
+
+			}
+			if (statemachine->enemyType == EnemyType::RANGED) {
+				pOwner->GetComponent<AnimationComponent>()->PlayAnimation(3);
+
+			}
+			if (statemachine->enemyType == EnemyType::TANK) {
+				pOwner->GetComponent<AnimationComponent>()->PlayAnimation(2);
+
+			}
+			if (statemachine->enemyType == EnemyType::EXPLOSIVE) {
+				pOwner->GetComponent<AnimationComponent>()->PlayAnimation(10);
+
+			}
+			if (statemachine->enemyType == EnemyType::FRENZY) {
+				pOwner->GetComponent<AnimationComponent>()->PlayAnimation(9);
+
+			}
 			return;
 		}
 
 	}
+
+
+	if (statemachine->enemyType == EnemyType::BASIC) {
+		pOwner->GetComponent<AnimationComponent>()->PlayAnimation(4);
+
+	}
+	if (statemachine->enemyType == EnemyType::RANGED) {
+		pOwner->GetComponent<AnimationComponent>()->PlayAnimation(3);
+
+	} 
+	if (statemachine->enemyType == EnemyType::TANK) {
+		pOwner->GetComponent<AnimationComponent>()->PlayAnimation(4);
+
+	}
+	if (statemachine->enemyType == EnemyType::EXPLOSIVE) {
+		pOwner->GetComponent<AnimationComponent>()->PlayAnimation(10);
+
+	} 
+	if (statemachine->enemyType == EnemyType::FRENZY) {
+		pOwner->GetComponent<AnimationComponent>()->PlayAnimation(9);
+
+	}
+
 
 	stepSoundTimer -= dt;
 	IdleSoundTimer -= dt;

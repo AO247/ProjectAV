@@ -26,6 +26,9 @@ void BoomAttack::Attack(float dt)
 		{
 			pOwner->GetComponent<SoundEffectsPlayer>()->Play(0);
 		}
+
+		pOwner->GetParent()->GetComponent<AnimationComponent>()->PlayAnimation(6, 0.2f, false);
+
 	}
 
 }

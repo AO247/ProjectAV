@@ -6910,7 +6910,8 @@ public:
             std::make_unique<AnimationComponent>(pNewNode, "", "Models\\basic\\basic.gltf")
         );
         AnimationComponent* animComp = pNewNode->GetComponent<AnimationComponent>();
-        animComp->PlayAnimation(3);
+        animComp->PlayAnimation(4);
+       
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         parentNode->AddChild(std::move(pNewNodeOwner));
 
@@ -7019,7 +7020,7 @@ public:
         );
 
         // ATTACK
-        auto attackNodeOwner = std::make_unique<Node>("Basic Attack", nullptr, "TRIGGER");
+        auto attackNodeOwner = std::make_unique<Node>("Tank Attack", nullptr, "TRIGGER");
         Node* pattackNode = attackNodeOwner.get();
 
         BodyCreationSettings a1BodySettings(new JPH::CapsuleShape(5.0f, 3.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
@@ -7049,7 +7050,7 @@ public:
             std::make_unique<StateMachine>(pNewNode, StateType::IDLE)
         );
         StateMachine* stateMachine = pNewNode->GetComponent<StateMachine>();
-        stateMachine->enemyType = EnemyType::BASIC;
+        stateMachine->enemyType = EnemyType::TANK;
         stateMachine->followDistance = 60.0f;
         stateMachine->pPlayer = player;
         stateMachine->attackComponents.push_back(tankAttack);
@@ -7172,7 +7173,7 @@ public:
             std::make_unique<AnimationComponent>(pNewNode, "", "Models\\ranged\\ranged.gltf")
         );
         AnimationComponent* animComp = pNewNode->GetComponent<AnimationComponent>();
-        //animComp->PlayAnimation(3);
+        animComp->PlayAnimation(3);
 
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         parentNode->AddChild(std::move(pNewNodeOwner));
@@ -7440,11 +7441,11 @@ public:
         pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footstep6.wav");
 
         pNewNode->AddComponent(
-            std::make_unique<ModelComponent>(pNewNode, wind->Gfx(), "Models\\basic\\basic.gltf", 1.0f, true)
+            std::make_unique<ModelComponent>(pNewNode, wind->Gfx(), "Models\\frenzy\\frenzy.gltf", 1.0f, true)
         );
 
         pNewNode->AddComponent(
-            std::make_unique<AnimationComponent>(pNewNode, "", "Models\\basic\\basic.gltf")
+            std::make_unique<AnimationComponent>(pNewNode, "", "Models\\frenzy\\frenzy.gltf")
         );
         AnimationComponent* animComp = pNewNode->GetComponent<AnimationComponent>();
         animComp->PlayAnimation(3);
@@ -7512,7 +7513,7 @@ public:
             std::make_unique<StateMachine>(pNewNode, StateType::IDLE)
         );
         StateMachine* stateMachine = pNewNode->GetComponent<StateMachine>();
-        stateMachine->enemyType = EnemyType::BASIC;
+        stateMachine->enemyType = EnemyType::FRENZY;
         stateMachine->followDistance = 60.0f;
         stateMachine->pPlayer = player;
         stateMachine->attackComponents.push_back(slashAttack);

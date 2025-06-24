@@ -34,7 +34,20 @@ void ShootAttack::Attack(float dt)
 			}
 		}
 		// miejsce na animacje
+
+		StateMachine* statemachine = pOwner->GetComponent <StateMachine> ();
+		if (statemachine->enemyType == EnemyType::RANGED) {
+			pOwner->GetComponent<AnimationComponent>()->PlayAnimation(1, 0.2f, false);
+
+		}
+		if (statemachine->enemyType == EnemyType::FLYING) {
+			pOwner->GetComponent<AnimationComponent>()->PlayAnimation(1, 0.2f, false);
+
+		}
+
+
 	}
+
 	timer += dt;
 	if (timer >= wholeAttackTime) {
 		attacked = false;
