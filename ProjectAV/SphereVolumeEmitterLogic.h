@@ -10,7 +10,7 @@ public:
 
     // The Update signature matches the new interface.
     void Update(float dt, ParticleSystemComponent& system) override;
-
+    void EmitBurst(unsigned int count, ParticleSystemComponent& system) override;
 public:
     // --- Public Properties ---
     float SpawnRadius = 3.0f;

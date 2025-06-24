@@ -100,6 +100,8 @@ public:
     UINT textureAtlasRows = 1;
     UINT textureAtlasColumns = 1;
     DirectX::XMFLOAT4 MidColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+    bool bOneShotIsBurst = false;
+    unsigned int BurstAmount = 50;
     // The point in the particle's lifetime (0.0 to 1.0) at which it reaches the MidColor.
     float ColorMidpoint = 0.5f;
     bool bUseMidColor = false;
@@ -163,7 +165,8 @@ private:
     PlaybackMode m_playbackMode = PlaybackMode::Loop;
     bool m_isEmitting = true; // Controls if the emitter is active
     float m_emissionTimer = 0.0f; // Timer for one-shot duration
-
+    std::uniform_real_distribution<float> unit_dist;      // For [0, 1]
+    std::uniform_real_distribution<float> bilateral_dist; // For [-1, 1]
     // GPU-side bindable resources
     std::shared_ptr<Bind::VertexBuffer> pVertexBuffer;
     std::unique_ptr<Bind::InstanceBuffer<InstanceData>> pInstanceBuffer;
