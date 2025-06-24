@@ -35,7 +35,9 @@ public:
     template<typename T> T* GetComponent() const; 
     Component* AddComponent(std::unique_ptr<Component> pComponent);
     const std::vector<std::unique_ptr<Component>>& GetComponents() const; 
+    void RemoveComponent(Component* componentToRemove);
     void ClearComponents();
+
 
 
     void SetLocalTransform(DirectX::FXMMATRIX transform);      

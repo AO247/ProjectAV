@@ -73,6 +73,14 @@ bool Ability1::Pressed()
             bullet->ignore = nullptr;
             PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), direction * force * 0.04f);
         }
+        else if (objects[i]->tag == "FIREBALL")
+        {
+            Vec3 direction = Vec3(pOwner->Forward().x, pOwner->Forward().y, pOwner->Forward().z);
+            FireBall* bullet = objects[i]->GetComponent<FireBall>();
+            bullet->pushedByPlayer = true;
+            bullet->ignore = nullptr;
+            PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), direction * force * 0.04f);
+        }
     }
     cooldownTimer = cooldown;
     abilityReady = false;

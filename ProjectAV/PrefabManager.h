@@ -7191,9 +7191,9 @@ public:
 
         // ATTACK
         pNewNode->AddComponent(
-            std::make_unique<ShootAttack>(pNewNode, player)
+            std::make_unique<FireBallAttack>(pNewNode, player)
         );
-        ShootAttack* shootAttack = pNewNode->GetComponent<ShootAttack>();
+        FireBallAttack* shootAttack = pNewNode->GetComponent<FireBallAttack>();
         shootAttack->bulletSpeed = 50.0f;
         shootAttack->attackRange = 60.0f;
 
@@ -7756,6 +7756,83 @@ public:
 
         return pNewNode;
     }
+    static Node* InstantiateFireBall(Vector3 position, float scale)
+    {
+        auto pNewNodeOwner = std::make_unique<Node>("FireBall", nullptr, "FIREBALL");
+        Node* pNewNode = pNewNodeOwner.get();
+
+
+        pNewNode->AddComponent(
+            std::make_unique<ModelComponent>(pNewNode, wind->Gfx(), "Models\\box.glb", 1.0f)
+        );
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+
+        root->AddChild(std::move(pNewNodeOwner));
+
+
+        BodyCreationSettings BodySettings(new JPH::SphereShape(0.1f), RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+        BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
+        BodySettings.mMassPropertiesOverride.mMass = 0.1f;
+        BodySettings.mFriction = 0.0f;
+        BodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
+        pNewNode->AddComponent(
+            std::make_unique<Rigidbody>(pNewNode, BodySettings)
+        );
+        PhysicsCommon::physicsSystem->GetBodyInterface().SetGravityFactor(pNewNode->GetComponent<Rigidbody>()->GetBodyID(), 0);
+
+        BodyCreationSettings trBodySettings(new JPH::SphereShape(0.7f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::TRIGGER);
+        pNewNode->AddComponent(
+            std::make_unique<Trigger>(pNewNode, trBodySettings, false)
+        );
+
+        pNewNode->AddComponent(
+            std::make_unique<FireBall>(pNewNode)
+        );
+
+        pNewNode->SetLocalPosition(position);
+        pNewNode->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+
+        return pNewNode;
+    }
+    static Node* InstantiateFireBoom(Vector3 position, float scale)
+    {
+        auto pNewNodeOwner = std::make_unique<Node>("FireBoom", nullptr, "TRIGGER");
+        Node* pNewNode = pNewNodeOwner.get();
+
+
+        pNewNode->AddComponent(
+            std::make_unique<ModelComponent>(pNewNode, wind->Gfx(), "Models\\box.glb", 1.0f)
+        );
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+
+        root->AddChild(std::move(pNewNodeOwner));
+
+
+        BodyCreationSettings BodySettings(new JPH::SphereShape(0.1f), RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+        BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
+        BodySettings.mMassPropertiesOverride.mMass = 0.1f;
+        BodySettings.mFriction = 0.0f;
+        BodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
+        pNewNode->AddComponent(
+            std::make_unique<Rigidbody>(pNewNode, BodySettings)
+        );
+        PhysicsCommon::physicsSystem->GetBodyInterface().SetGravityFactor(pNewNode->GetComponent<Rigidbody>()->GetBodyID(), 0);
+
+        BodyCreationSettings trBodySettings(new JPH::BoxShape(Vec3(3.0f, 10.0f, 3.0f)), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::TRIGGER);
+        pNewNode->AddComponent(
+            std::make_unique<Trigger>(pNewNode, trBodySettings, false)
+        );
+
+        pNewNode->AddComponent(
+            std::make_unique<FireBoom>(pNewNode)
+        );
+
+        pNewNode->SetLocalPosition({ position.x, position.y -= 5.0f, position.z });
+        pNewNode->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+
+        return pNewNode;
+    }
+
 
 #pragma endregion
 

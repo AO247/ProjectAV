@@ -513,6 +513,15 @@
     <ClCompile Include="LaunchAttack.cpp">
       <Filter>Source Files\Components\Enemies</Filter>
     </ClCompile>
+    <ClCompile Include="FireBall.cpp">
+      <Filter>Source Files\Components\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="FireBallAttack.cpp">
+      <Filter>Source Files\Components\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="FireBoom.cpp">
+      <Filter>Source Files\Components\Enemies</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Win.h">
@@ -1044,6 +1053,15 @@
       <Filter>Header Files\Components\Enemies</Filter>
     </ClInclude>
     <ClInclude Include="SlashAttack.h">
+      <Filter>Header Files\Components\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="FireBallAttack.h">
+      <Filter>Header Files\Components\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="FireBall.h">
+      <Filter>Header Files\Components\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="FireBoom.h">
       <Filter>Header Files\Components\Enemies</Filter>
     </ClInclude>
   </ItemGroup>
