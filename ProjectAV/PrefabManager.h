@@ -7046,10 +7046,10 @@ public:
         pParticleSystem->ParticleVelocity = { -0.5f, -0.5f, -0.5f };
         pParticleSystem->ParticleVelocityVariance = { 1.0f, 1.0f, 1.0f };
         pParticleSystem->bUseMidColor = true;
-        pParticleSystem->StartColor = { 1.0f, 1.0f, 0.0f, 0.0f };
+        pParticleSystem->StartColor = { 0.67f, 0.61f, 0.29f, 0.0f };
         pParticleSystem->ColorMidpoint = 0.008f;
-        pParticleSystem->MidColor = { 1.0f, 1.0f, 0.0f, 0.5f };
-        pParticleSystem->EndColor = { 1.0f, 1.0f, 0.0f, 0.0f };
+        pParticleSystem->MidColor = { 0.67f, 0.61f, 0.29f, 0.5f };
+        pParticleSystem->EndColor = { 0.67f, 0.61f, 0.29f, 0.0f };
         pParticleSystem->StartSize = 10.0f;
         pParticleSystem->StartSizeVariance = 4.0f;
         pParticleSystem->bAnimateSize = false;
@@ -7071,7 +7071,7 @@ public:
 
     static Node* InstantiateMushroomParticles(Node* parentNode, Vector3 position, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("AnimationTest", nullptr, "ENEMY");
+        auto pNewNodeOwner = std::make_unique<Node>("MushroomParticles", nullptr, "ENEMY");
         Node* pNewNode = pNewNodeOwner.get();
 
         /*pNewNode->AddComponent(
@@ -7087,7 +7087,7 @@ public:
         volumeEmitter->ParticlesPerSecond = 48000.0f;
 
         pNewNode->AddComponent(
-            std::make_unique<ParticleSystemComponent>(pNewNode, wind->Gfx(), "Models\\flame.png", 10000, std::move(volumeEmitter))
+            std::make_unique<ParticleSystemComponent>(pNewNode, wind->Gfx(), "Models\\grzyb.png", 10000, std::move(volumeEmitter))
         );
         ParticleSystemComponent* pParticleSystem = pNewNode->GetComponent<ParticleSystemComponent>();
         pParticleSystem->SetPlaybackMode(ParticleSystemComponent::PlaybackMode::OneShot);
@@ -7102,13 +7102,15 @@ public:
         pParticleSystem->bUseMidColor = true;
         pParticleSystem->StartColor = { 1.0f, 1.0f, 1.0f, 0.0f };
         pParticleSystem->ColorMidpoint = 0.005f;
-        pParticleSystem->MidColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+        pParticleSystem->MidColor = { 1.0f, 1.0f, 1.0f, 0.6f };
         pParticleSystem->EndColor = { 1.0f, 1.0f, 1.0f, 0.0f };
         pParticleSystem->StartSize = 0.5f;
         pParticleSystem->StartSizeVariance = 1.5f;
         pParticleSystem->bAnimateSize = false;
         pParticleSystem->StartRotation = 0.0f;
         pParticleSystem->EndRotation = 0.0f;
+        pParticleSystem->textureAtlasRows = 2;
+        pParticleSystem->textureAtlasColumns = 2;
 
 
         /*AnimationComponent* animComp = pNewNode->GetComponent<AnimationComponent>();
