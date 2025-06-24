@@ -89,13 +89,13 @@ ALuint StaticSoundPlayer::GetAvailableSource()
 
 void StaticSoundPlayer::Play(const std::string& filename, DirectX::XMFLOAT3 position, float gain, bool loop)
 {
-    Play(filename, position, gain, loop, rolloff, refDistance, m_maxAudibleDistance, cullingMode);
+    Play(filename, position, gain, loop, rolloff, refDistance, m_maxAudibleDistance, cullingDistanceModifier, cullingMode);
     return;
 }
 
 
 ALuint StaticSoundPlayer::Play(const std::string& filename, DirectX::XMFLOAT3 position, float gain, bool loop,
-    float rolloff, float refDistance, float maxDistance, bool cullingMode)
+    float rolloff, float refDistance, float maxDistance, float cullingDistanceModifier, bool cullingMode)
 {
     if (!m_initialized) return 0;
 
@@ -105,7 +105,7 @@ ALuint StaticSoundPlayer::Play(const std::string& filename, DirectX::XMFLOAT3 po
         DirectX::SimpleMath::Vector3 playerPos(m_playerNode->GetWorldPosition());
         DirectX::SimpleMath::Vector3 sourcePos(position);
         float distanceSq = DirectX::SimpleMath::Vector3::DistanceSquared(playerPos, sourcePos);
-        if (distanceSq > (m_maxAudibleDistance * m_maxAudibleDistance))
+        if (distanceSq > (maxDistance * maxDistance * cullingDistanceModifier))
         {
             return 0;
         }
