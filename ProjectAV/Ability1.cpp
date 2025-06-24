@@ -37,7 +37,6 @@ bool Ability1::Pressed()
 
     // animacja popchniêcia 
     // particle
-    // dŸwiêk popchniêcia
 
     leftHand->PlayAnimation(4, 0.2, false);
     

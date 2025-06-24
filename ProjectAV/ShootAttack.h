@@ -20,6 +20,8 @@ public:
 	virtual void Attack(float dt);
 	virtual void DrawImGuiControls() override;
 
+	float shootSoundTimer = 0.0f;
+	float shootSoundInterval = wholeAttackTime;
 private:
 	bool attacked = false;
 	float timer = 0.0f;

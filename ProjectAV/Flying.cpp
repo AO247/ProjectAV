@@ -23,6 +23,21 @@ void Flying::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 	}
 
 	// tutaj dŸwiêk
+	flyingSoundTimer -= dt;
+	flyingIdleSoundTimer -= dt;
+	if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+		if (flyingSoundTimer <= 0.0f)
+		{
+			pOwner->GetComponent<SoundEffectsPlayer>()->Play(6);
+			flyingSoundTimer = flyingSoundInterval;
+		}
+		if (flyingIdleSoundTimer <= 0.0f)
+		{
+			float randSound = (rand() % 4);
+			pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound);
+			flyingIdleSoundTimer = flyingSoundInterval * 2.5f;
+		}
+	}
 	
 	targetPosition = targetPos;
 	if (sp > 1.0f)

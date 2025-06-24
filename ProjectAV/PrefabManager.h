@@ -6918,6 +6918,12 @@ public:
         pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic_attack1.ogg");
         pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic_attack2.ogg");
         pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic_attack3.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footstep1.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footstep2.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footstep3.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footstep4.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footstep5.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footstep6.wav");
 
         pNewNode->AddComponent(
             std::make_unique<ModelComponent>(pNewNode, wind->Gfx(), "Models\\basic\\basic.gltf", 1.0f, true)
@@ -7008,6 +7014,12 @@ public:
         pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\tank\\attack1.wav");
         pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\tank\\attack2.wav");
         pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\tank\\attack2.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\tank\\footstep1.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\tank\\footstep2.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\tank\\footstep3.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\tank\\footstep4.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\tank\\footstep5.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\tank\\footstep6.wav");
 
         pNewNode->AddComponent(
             std::make_unique<ModelComponent>(pNewNode, wind->Gfx(), "Models\\enemy\\Tank\\tank.obj")
@@ -7083,13 +7095,13 @@ public:
         pNewNode->AddComponent(
             std::make_unique<SoundEffectsPlayer>(pNewNode)
         );
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic1.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic2.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic3.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic4.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic_attack1.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic_attack2.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic_attack3.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\flying\\idle1.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\flying\\idle2.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\flying\\idle3.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\flying\\idle4.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\flying\\attack1.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\flying\\attack2.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\flying\\fly_loop.wav");
 
 
         pNewNode->AddComponent(
@@ -7168,6 +7180,7 @@ public:
         pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\ranged\\idle2.wav");
         pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\ranged\\idle3.wav");
         pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\ranged\\idle3.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\ranged\\attack1.wav");
         pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\ranged\\attack1.wav");
 
 
@@ -7335,13 +7348,7 @@ public:
         pNewNode->AddComponent(
             std::make_unique<SoundEffectsPlayer>(pNewNode)
         );
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic1.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic2.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic3.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic4.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic_attack1.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic_attack2.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\basic_attack3.ogg");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\exploding\\e_attack1.wav");
 
         pNewNode->AddComponent(
             std::make_unique<ModelComponent>(pNewNode, wind->Gfx(), "Models\\explosive\\explosive.gltf", 1.0f, true)

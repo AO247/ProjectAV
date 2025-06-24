@@ -23,16 +23,6 @@ void Ability3::Update(float dt)
 {
     if (!wnd.CursorEnabled())
     {
-		holdSoundTimer -= dt;
-        //D�wi�k trzymania  troch� nie wiem gdzie powinien by� i brakuje warunku isPressed
-        /*if (pOwner->GetComponent<SoundEffectsPlayer>()) {
-            if (holdSoundTimer <= 0.0f)
-            {
-                pOwner->GetComponent<SoundEffectsPlayer>()->Play(3, 1.0f, false);
-
-                holdSoundTimer = holdSoundInterval;
-            }
-        }*/
         if (timer > 0.0f)
         {
             PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(pOwner->GetComponent<Rigidbody>()->GetBodyID(),
@@ -45,6 +35,9 @@ void Ability3::Update(float dt)
             {
                 // particle ju� aktywowanej
                 // d�wi�k ju� aktywowanej
+                /*if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+                    pOwner->GetComponent<SoundEffectsPlayer>()->Play(2, 1.0f, false);
+                }*/
                 Activated();
             }
             else if (timer == duration)
@@ -74,23 +67,29 @@ void Ability3::Update(float dt)
         // animacja rzucenia czarnej dziury
         // particle rzucenia czarnej dziury
         // d�wi�k rzucenia czarnej dziury
-
-
-        if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+        /*if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+            pOwner->GetComponent<SoundEffectsPlayer>()->Stop(3);
             pOwner->GetComponent<SoundEffectsPlayer>()->Play(1, 1.0f, false);
-        }
+        }*/
+
         released = true;
         PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(pOwner->GetComponent<Rigidbody>()->GetBodyID(),
             Vec3(camera->Forward().x, camera->Forward().y, camera->Forward().z) * 60.0f);
-        if (pOwner->GetComponent<SoundEffectsPlayer>()) {
-            pOwner->GetComponent<SoundEffectsPlayer>()->Play(1, 1.0f, false);
-        }
     }
     else
     {
         // animacja trzymania czarnej dziury
         // particle trzymania czarnej dziury
         // d�wi�k trzymania czarnej dziury
+        holdSoundTimer -= dt;
+        if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+            if (holdSoundTimer <= 0.0f)
+            {
+                pOwner->GetComponent<SoundEffectsPlayer>()->Play(3, 1.0f, false);
+
+                holdSoundTimer = holdSoundInterval;
+            }
+        }
     }
 }
 void Ability3::Positioning()
@@ -124,23 +123,19 @@ bool Ability3::Pressed()
     // animacja tworzenia czarnej dziury
     // particle tworzenia czarnej dziury
     // d�wi�k tworzenia czarnej dziury
+    if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+        pOwner->GetComponent<SoundEffectsPlayer>()->Play(0, 1.0f, false);
+    }
     animTimer = 0.3f; //czas zakonczenia tworzenia czarnej dziury i przejscie do trzymania
     isPressed = true;
     released = false;
-	if (pOwner->GetComponent<SoundEffectsPlayer>()) {
-		pOwner->GetComponent<SoundEffectsPlayer>()->Play(0, 1.0f, false);
-	}
+	
     PrefabManager::InstantiateAbility3Particles(pOwner->GetParent(), Vector3(pOwner->GetLocalPosition().x, pOwner->GetLocalPosition().y, pOwner->GetLocalPosition().z), 1.0);
     PrefabManager::InstantiateAbility3CoreParticles(pOwner->GetParent(), Vector3(pOwner->GetLocalPosition().x, pOwner->GetLocalPosition().y, pOwner->GetLocalPosition().z), 1.0);
     return true;
 }
 void Ability3::Released()
 {
-    //D�wi�k rzutu
-    // if (pOwner->GetComponent<SoundEffectsPlayer>()) {
-    //     pOwner->GetComponent<SoundEffectsPlayer>()->Stop(3);
-    //     pOwner->GetComponent<SoundEffectsPlayer>()->Play(1, 1.0f, false);
-    // }
     if (!isPressed || released) return;
     isPressed = false;
     killsCount = 0;
@@ -181,12 +176,6 @@ void Ability3::Activated()
             }
         }
     }
-    //D�wi�k ko�czo�cy czarn� dziur�, ma by� zagrany raz i nie jest zabezpieczony przed
-    // wielokrotnym uruchomieniem wi�c musi by� w miejscu kt�re wywo�uje si� tylko raz
-
-    /*if (pOwner->GetComponent<SoundEffectsPlayer>()) {
-        pOwner->GetComponent<SoundEffectsPlayer>()->Play(2, 1.0f, false);
-    }*/
 }
 
 

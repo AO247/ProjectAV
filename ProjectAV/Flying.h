@@ -31,6 +31,10 @@ public:
 	Vector3 lastIslandPos = { 0.0f, 0.0f, 0.0f };
 	bool grounded = false;
 	bool goingUp = false;
+
+	float flyingSoundTimer = 0.0f;
+	float flyingIdleSoundTimer = 0.0f;
+	float flyingSoundInterval = 4.0f;
 private:
 	Rigidbody* rigidbody;
 	Vector3 HeightCalculate();

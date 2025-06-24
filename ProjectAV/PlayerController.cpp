@@ -247,6 +247,17 @@ void PlayerController::MovePlayer(float dt)
             PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rigidbody->GetBodyID(), newVelocity);
         }
         PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * acceleration * 1000.0f * dt);
+
+		stepSoundTimer -= dt;
+		if (stepSoundTimer <= 0.0f)
+		{
+			if (pOwner->GetComponent<SoundEffectsPlayer>())
+			{
+                int randSound = rand() % 6 + 16;
+				pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound);
+			}
+			stepSoundTimer = stepSoundInterval;
+		}
     }
     else
     {
@@ -488,12 +499,12 @@ void PlayerController::KeyboardInput()
             switch (e->GetCode())
             {
             case 'Q':
-        //     abilitySlot3->GetComponent<Ability>()->Pressed();
-        // if (!abilitySlot3->GetComponent<Ability>()->Pressed())
-        // {
-        //     int randSound = rand() % 2 + 12;
-        //     pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f, false);
-        // }
+                abilitySlot3->GetComponent<Ability>()->Pressed();
+                if (!abilitySlot3->GetComponent<Ability>()->Pressed())
+                {
+                    int randSound = rand() % 2 + 12;
+                    pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f, false);
+                }
                 abilitySlot3->GetComponent<Ability>()->Released();
                 break;
             }

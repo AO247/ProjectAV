@@ -23,21 +23,12 @@ void Ability6::Update(float dt)
 {
     if (!wnd.CursorEnabled())
     {
-		holdSoundTimer -= dt;
         PullingParticlesPositioning();
         Positioning();
         Cooldowns(dt);
     }
     if (isPressed)
     {
-        if (pOwner->GetComponent<SoundEffectsPlayer>()) {
-            if (holdSoundTimer <= 0.0f)
-            {
-                pOwner->GetComponent<SoundEffectsPlayer>()->Play(2, 1.0f, false);
-
-                holdSoundTimer = holdSoundInterval;
-            }
-        }
         Pulling(dt);
     }
 }
@@ -70,7 +61,9 @@ void Ability6::Pulling(float dt)
     Vector3 cameraPos = camera->GetWorldPosition();
     Vector3 targetPosition = cameraPos + camera->Forward() * 8.0f;
     Rigidbody* rb = selectedNode->GetComponent<Rigidbody>();
-    
+
+    holdSoundTimer -= dt;
+
     Vector3 tempDir = targetPosition - selectedNode->GetWorldPosition();
     tempDir.y = 0.0f;
     if (tempDir.Length() < 3.0f)
@@ -94,6 +87,14 @@ void Ability6::Pulling(float dt)
     else
     {
         // dzwiek trzymania obiektu
+        if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+            if (holdSoundTimer <= 0.0f)
+            {
+                pOwner->GetComponent<SoundEffectsPlayer>()->Play(2, 1.0f, false);
+
+                holdSoundTimer = holdSoundInterval;
+            }
+        }
         // animacja trzymania obiektu
 
         leftHand->PlayAnimation(2);
@@ -132,6 +133,10 @@ bool Ability6::Pressed()
     // animacja przyciagniecia
     // particle dodanie do obiektu
     // dzwiek wyboru node
+    if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+        float randSound = (rand() % 2);
+        pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f, false);
+    }
     //leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
     //leftHand->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
 
@@ -158,10 +163,6 @@ bool Ability6::Pressed()
         pullingParticles = PrefabManager::InstantiateAbility6PullingParticles(pOwner->GetParent(), Vector3(selectedNode->GetWorldPosition().x, selectedNode->GetWorldPosition().y, selectedNode->GetWorldPosition().z), 1.0, quatFloat4);
     }
 
-    if (pOwner->GetComponent<SoundEffectsPlayer>()) {
-        float randSound = (rand() % 2);
-        pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f, false);
-    }
     return true;
 }
 void Ability6::Released()

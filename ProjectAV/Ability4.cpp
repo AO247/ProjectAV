@@ -26,20 +26,20 @@ void Ability4::Update(float dt)
         holdSoundTimer -= dt;
         if (isPressed)
         {
-            if (pOwner->GetComponent<SoundEffectsPlayer>()) {
-                if (holdSoundTimer <= 0.0f)
-                {
-                    pOwner->GetComponent<SoundEffectsPlayer>()->Play(2, 1.0f, false);
-
-                    holdSoundTimer = holdSoundInterval;
-                }
-            }
 			pressedTime += dt;
             if (pressedTime > 0.13f && activated)
             {
                 activated = false;
                 // animacja wyboru obiektu
                 // dŸwiêk wyboru obiektu
+                if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+                    if (holdSoundTimer <= 0.0f)
+                    {
+                    pOwner->GetComponent<SoundEffectsPlayer>()->Play(2, 1.0f, false);
+
+                    holdSoundTimer = holdSoundInterval;
+                    }
+                }
                 // particle wyboru obiektu
                 //  
                 leftHand->PlayAnimation(2); //na razie loop trzymania
@@ -83,10 +83,6 @@ bool Ability4::Pressed()
 {
     if (!abilityReady) return false;
 
-    if (pOwner->GetComponent<SoundEffectsPlayer>()) {
-        float randSound = (rand() % 2);
-        pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f, false);
-    }
     activated = true;
     isPressed = true;
     pressedTime = 0.0f;
@@ -120,6 +116,10 @@ void Ability4::Released()
         // particle rzutu
         // animacja rzutu
         // dŸwiêk rzutu
+        if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+            float randSound = (rand() % 2);
+            pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f, false);
+        }
 
         leftHand->PlayAnimation(3, 0.2f, false);
         if (selectionParticles != nullptr)

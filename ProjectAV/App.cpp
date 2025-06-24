@@ -319,6 +319,12 @@ App::App(const std::string& commandLine)
     pSoundEffectsPlayer->AddSound("Sounds\\player\\cooldown2.wav"); // 14
 	pSoundEffectsPlayer->AddSound("Sounds\\teleport\\teleport1.wav");
 	pSoundEffectsPlayer->AddSound("Sounds\\teleport\\teleport2.wav"); // 16
+    pSoundEffectsPlayer->AddSound("Sounds\\walk\\footstep1.wav");
+    pSoundEffectsPlayer->AddSound("Sounds\\walk\\footstep2.wav");
+    pSoundEffectsPlayer->AddSound("Sounds\\walk\\footstep3.wav");
+    pSoundEffectsPlayer->AddSound("Sounds\\walk\\footstep4.wav");
+    pSoundEffectsPlayer->AddSound("Sounds\\walk\\footstep5.wav");
+    pSoundEffectsPlayer->AddSound("Sounds\\walk\\footstep6.wav"); //22
 
     pFreeViewCamera->SetLocalPosition({ 4.0f, 11.0f, -28.0f });
     pPlayer->SetLocalPosition({ 0.0f, 80.0f, -24.0f });
