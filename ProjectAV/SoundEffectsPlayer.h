@@ -14,7 +14,7 @@ public:
 
 	ALuint Play(int soundIndex, float gain = 1.0f, bool isPositional = true, bool loop = false);
 	ALuint PlayAdvanced(int soundIndex, float gain, bool loop,
-		float rolloff, float refDistance, float maxDistance, bool cullingMode);
+		float rolloff, float refDistance, float maxDistance, float cullingDistanceModifier, bool cullingMode);
 
 	void Stop(int soundIndex);
 

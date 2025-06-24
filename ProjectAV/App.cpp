@@ -103,7 +103,7 @@ App::App(const std::string& commandLine)
     pRightHandAbility = pRightHandAbilityOwner.get();
 	auto handsOwner = std::make_unique<Node>("Hands", nullptr, "HANDS");
     auto tutorialOwner = std::make_unique<Node>("Tutorial", nullptr, "TUTORIAL");
-    tutorialNode = tutorialOwner.get();
+    //tutorialNode = tutorialOwner.get();
 	Node* pPlayerThings = playerThings.get();
 	Node* pAbilities = abilities.get();
 	Node* pBase = base.get();
@@ -408,9 +408,9 @@ App::App(const std::string& commandLine)
     pSceneRoot->GetComponent<Global>()->upgradeHandler = pUpgradeHandler;
 
 	//PrefabManager::InstantiateIslandMedium5(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
-    tutorialNode->AddComponent(
+    /*tutorialNode->AddComponent(
         std::make_unique<Tutorial>(tutorialNode, wnd, pPlayer)
-    );
+    );*/
 
         
         
@@ -743,7 +743,7 @@ void App::DoFrame(float dt)
 
     //tutorialNode->GetComponent<Tutorial>()->DrawNote();
 
-    if (pSceneRoot->GetComponent<Global>()->drawLoadingScreen || bonusTime > 0.0f)
+    /*if (pSceneRoot->GetComponent<Global>()->drawLoadingScreen || bonusTime > 0.0f)
     {
         if (!pSceneRoot->GetComponent<Global>()->drawLoadingScreen)
         {
@@ -770,7 +770,7 @@ void App::DoFrame(float dt)
         {
             loadingScreen1->Draw(wnd.Gfx().GetContext());
         }
-    }
+    }*/
     wnd.kbd.UpdateFrameState();
 
     wnd.Gfx().EndFrame();
@@ -1138,8 +1138,8 @@ void App::StartGame()
     if (startedGame || !paused) return;
     startedGame = true;
     paused = false;
-    PrefabManager::InstantiateTutorialIslands(tutorialNode, tutorialNode->GetComponent<Tutorial>() , Vector3(0.0f, 0.0f, 0.0f), 1.0f);
-    tutorialNode->GetComponent<Tutorial>()->Start();
+    //PrefabManager::InstantiateTutorialIslands(tutorialNode, tutorialNode->GetComponent<Tutorial>() , Vector3(0.0f, 0.0f, 0.0f), 1.0f);
+    //tutorialNode->GetComponent<Tutorial>()->Start();
     pSceneRoot->GetComponent<Global>()->Start();
     
 }
@@ -1150,8 +1150,8 @@ void App::ResetGame()
     startedGame = false;
     gameReset = 2;
     pSceneRoot->GetComponent<Global>()->Reset();
-    tutorialNode->GetComponent<Tutorial>()->Reset();
-    pSelectedSceneNode = nullptr;
+   // tutorialNode->GetComponent<Tutorial>()->Reset();
+    /*pSelectedSceneNode = nullptr;
     if (temporary != nullptr)
     {
         temporary->DestroyChilds();
@@ -1159,7 +1159,7 @@ void App::ResetGame()
     if (tutorialNode != nullptr)
     {
         tutorialNode->DestroyChilds();
-    }
+    }*/
 }
 
 
