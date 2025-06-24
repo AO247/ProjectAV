@@ -45,7 +45,7 @@ void DirectionalLight::Reset() noexcept
 	cbData = {
 		{0.0f, 0.0f, 0.0f}, 0.0f,   // viewLightDirection (obliczane co klatkê)
 		{ 0.15f, 0.15f, 0.15f }, 0.0f, // Ambient
-		{ 1.0f, 1.0f, 1.0f },    // Diffuse Color
+		{ 0.92f, 0.63f, 0.46f },    // Diffuse Color // 236 161 119
 		1.0f,                    // Diffuse Intensity
 	};
 	projWidth = 300.0f;
