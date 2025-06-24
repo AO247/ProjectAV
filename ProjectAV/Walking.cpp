@@ -13,7 +13,7 @@ Walking::Walking(Node* owner, std::string tag)
 	: Component(owner, std::move(tag))
 {
 	rigidbody = owner->GetComponent<Rigidbody>();
-	PhysicsCommon::physicsSystem->GetBodyInterface().SetFriction(rigidbody->GetBodyID(), 0.0f);
+	PhysicsCommon::physicsSystem->GetBodyInterface().SetFriction(rigidbody->GetBodyID(), 0.01f);
 
 }
 void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
@@ -29,7 +29,10 @@ void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 	Vector3 currentPos = pOwner->GetWorldPosition();
 	Vec3 currentVelocityJPH = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
 
-	GroundCheck();
+	if (GroundCheck())
+	{
+		canAttack = true;
+	}
 	if (VoidCheck() && grounded)
 	{
 		if (Jump())
@@ -58,10 +61,15 @@ void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 			targetYaw = wrap_angle(currentYaw + yawDifference * rotationLerpFactor);
 			Quat q = Quat::sEulerAngles(Vec3(0.0f, targetYaw, 0.0f));
 			PhysicsCommon::physicsSystem->GetBodyInterface().SetRotation(rigidbody->GetBodyID(), q, EActivation::Activate);
+			//tutaj animacja stania
+
 			return;
 		}
 
 	}
+
+	// tutaj dŸwiêk i animacja chodzenia
+	
 	//AutoJump();
 	if (timerForChangedDirection > 0.0f)
 	{
@@ -93,13 +101,12 @@ void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 		steeringForce += avoidanceForce;
 	}
 
-
 	float steeringMagnitude = steeringForce.Length();
 	//if (steeringMagnitude > maxSpeed) {
 		steeringForce = (steeringForce / steeringMagnitude) * maxSpeed;
 	//}
 
-	PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(steeringForce.x, currentVelocityJPH.GetY(), steeringForce.z) * 1000.0f * dt);
+	PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(steeringForce.x, 0.0f, steeringForce.z) * 1000.0f * dt);
 
 
 	currentVelocityJPH = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
@@ -126,21 +133,25 @@ void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 		}
 	}
 
+	//PhysicsCommon::physicsSystem->GetBodyInterface().SetFriction(rigidbody->GetBodyID(), 0.5f);
 
 	stepSoundTimer -= dt;
-
+	IdleSoundTimer -= dt;
 	if (pOwner->GetComponent<SoundEffectsPlayer>() && currentVelocity.LengthSquared() > 0.1f && grounded)
 	{
 		if (stepSoundTimer <= 0.0f)
 		{
-			float p = (rand() % 4);
-			pOwner->GetComponent<SoundEffectsPlayer>()->Play(p);
-			
+			float randSound = (rand() % 4);
+			pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound);
+
 			stepSoundTimer = stepSoundInterval;
 		}
+		if (IdleSoundTimer <= 0.0f) {
+			int randSound = rand() % 6 + 6;
+			pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound);
+			IdleSoundTimer = stepSoundInterval/2;
+		}
 	}
-
-	PhysicsCommon::physicsSystem->GetBodyInterface().SetFriction(rigidbody->GetBodyID(), 0.5f);
 }
 bool Walking::GroundCheck()
 {
@@ -177,11 +188,14 @@ bool Walking::GroundCheck()
 		grounded = true;
 		canAttack = true;
 		Node* no = reinterpret_cast<Node*>(PhysicsCommon::physicsSystem->GetBodyInterface().GetUserData(resultCenter.mBodyID));
-		if (no->tag == "GROUND")
+		if (no != nullptr)
 		{
-			lastIslandPos = no->GetWorldPosition();
+			if (no->tag == "GROUND")
+			{
+				lastIslandPos = no->GetWorldPosition();
+			}
+			return true;
 		}
-		return true;
 	}
 
 	RRayCast rayFront = RRayCast(
@@ -256,7 +270,7 @@ Vector3 Walking::CalculateAvoidanceForce()
 
 
 	Vector3 pos = pOwner->GetWorldPosition();
-	pos.y += -(height/2.0f) + 1.0f;
+	pos.y += -(height/2.0f) + 0.3f;
 	Vector3 forward = temporaryDirection;
 	forward.y = 0.0f;
 	Vector3 right = Vector3(forward.z, 0.0f, -forward.x);

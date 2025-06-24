@@ -48,7 +48,7 @@ public:
     void PhysicsSetLocalRotation(const DirectX::XMFLOAT4& quat);
     void SetLocalScale(const DirectX::XMFLOAT3& scale);        
     void TranslateLocal(const DirectX::XMFLOAT3& translation); 
-
+    void DestroyChilds();
     DirectX::XMMATRIX GetLocalTransform() const;               
     DirectX::XMFLOAT3 GetLocalPosition() const;
     DirectX::XMFLOAT3 GetLocalRotationEuler() const;           

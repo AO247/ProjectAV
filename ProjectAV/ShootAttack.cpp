@@ -21,7 +21,20 @@ void ShootAttack::Attack(float dt)
 
 	Quat q = Quat::sEulerAngles(Vec3(0.0f, targetYaw, 0.0f));
 	PhysicsCommon::physicsSystem->GetBodyInterface().SetRotation(pOwner->GetComponent<Rigidbody>()->GetBodyID(), q, EActivation::Activate);
+	shootSoundTimer -= dt;
 
+	if (timer == 0)
+	{
+		if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+			if (shootSoundTimer <= 0.0f)
+			{
+				float randSound = (rand() % 2 + 4); 
+				pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound);
+				shootSoundTimer = shootSoundInterval;
+			}
+		}
+		// miejsce na animacje
+	}
 	timer += dt;
 	if (timer >= wholeAttackTime) {
 		attacked = false;

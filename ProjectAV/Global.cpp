@@ -7,17 +7,12 @@ Global::Global(Node* owner, Window& window, Node* player, Node* base)
 	levelsNode = pLevels.get();
 	pOwner->AddChild(std::move(pLevels));
 
-	player->SetLocalPosition(enterPoint);
-	PrefabManager::InstantiateStartIsland(base, Vector3(0.0f, 0.0f, 0.0f), 2.0f);
-	firstSpawn = PrefabManager::InstantiateFirstIsland(base, Vector3(0.0f, 5.0f, -20.0f), 1.0f);
-	firstSpawn->GetComponent<SpawnJump>()->Activate();
-	firstSpawn->GetComponent<SpawnJump>()->upgraded = true;
-	StartRun();
 }
 
 
 void Global::Update(float dt) 
 {
+	if (!startedGame) return;
 	if (started)
 	{
 		if (levels[2]->GetComponent<LevelGenerator>()->isFinished) {
@@ -120,6 +115,24 @@ void Global::AddSpecialLevel()
 	levelCount++;
 }
 
+
+void Global::Start()
+{
+	startIsland = PrefabManager::InstantiateStartIsland(base, Vector3(0.0f, 0.0f, 0.0f), 1.0f);
+	firstSpawn = PrefabManager::InstantiateFirstIsland(base, Vector3(0.0f, 5.0f, -20.0f), 1.0f);
+	firstSpawn->GetComponent<SpawnJump>()->Activate();
+	firstSpawn->GetComponent<SpawnJump>()->upgraded = true;
+	startedGame = true;
+	StartRun();
+}
+void Global::Reset()
+{
+	EndRun();
+	startedGame = false;
+	firstSpawn->Destroy();
+	startIsland->Destroy();
+}
+
 void Global::StartRun()
 {
 	auto pLevel = std::make_unique<Node>("Level 0-1");
@@ -131,7 +144,6 @@ void Global::StartRun()
 	levelsNode->AddChild(std::move(pLevel2));
 	levels.push_back(level2);
 	AddSpecialLevel();
-
 	AddSpecialLevel();
 	AddSpecialLevel();
 }
@@ -143,6 +155,7 @@ void Global::EndRun()
 	playerNode->GetComponent<PlayerController>()->abilitySlot3->GetComponent<Ability>()->objects.clear();
 	playerNode->GetComponent<Health>()->currentHealth = playerNode->GetComponent<Health>()->maxHealth;
 	playerNode->GetComponent<PlayerController>()->alive = true;
+	upgradeHandler->ResetUpgrades();
 	/*if (!tut->completed)
 	{
 		playerNode->SetLocalPosition(tut->checkpoints[tut->currentCheckpointIndex]);

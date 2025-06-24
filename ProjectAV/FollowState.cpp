@@ -27,20 +27,13 @@ void FollowState::Enter(StateMachine* pOwner)
         pOwner->attackRange = pOwner->pAttackComponent->attackRange;
     }
 
-    AnimationComponent* animComp = pOwner->GetOwnerNode()->GetComponent<AnimationComponent>();
-    if (animComp) {
-        switch (pOwner->enemyType)
-        {
-        case EnemyType::BASIC:
-            animComp->PlayAnimation(EnemyAnimationIndices::BASIC_WALK);
-            break;
-        }
-    }
+
 
 }
 
 void FollowState::Update(StateMachine* pOwner, float dt)
 {
+
     sm::Vector3 ownerPos = pOwner->GetOwner()->GetWorldPosition();
     sm::Vector3 playerPos = pOwner->pPlayer->GetWorldPosition();
 
@@ -49,7 +42,7 @@ void FollowState::Update(StateMachine* pOwner, float dt)
         pOwner->RequestStateChange(StateType::IDLE);
         return;
     }
-    if (ownerPos.Distance(ownerPos, playerPos) < pOwner->attackRange)
+    if (ownerPos.Distance(ownerPos, playerPos) < pOwner->attackRange && pOwner->pMovementComponent->canAttack)
     {
         sm::Vector3 temporaryDirection = playerPos - ownerPos;
 		float length = temporaryDirection.Length();
@@ -66,6 +59,29 @@ void FollowState::Update(StateMachine* pOwner, float dt)
             pOwner->RequestStateChange(StateType::ATTACK);
             return;
         }
+    }
+    AnimationComponent* animComp = pOwner->GetOwnerNode()->GetComponent<AnimationComponent>();
+    if (animComp) {
+        switch (pOwner->enemyType)
+        {
+        case EnemyType::FLYING:
+            animComp->PlayAnimation(EnemyAnimationIndices::FLYING_FLYING);
+            break;
+
+        case EnemyType::BASIC:
+            animComp->PlayAnimation(EnemyAnimationIndices::BASIC_WALK);
+            break;
+
+        case EnemyType::RANGED:
+            animComp->PlayAnimation(EnemyAnimationIndices::RANGED_WALK);
+            break;
+       
+        case EnemyType::EXPLOSIVE:
+            animComp->PlayAnimation(EnemyAnimationIndices::EXPLOSIVE_WALK);
+            break;
+        }
+
+
     }
     if (pOwner->pMovementComponent != nullptr) {
         pOwner->pMovementComponent->Follow(dt, playerPos);

@@ -10,13 +10,15 @@ class Node;
 class Tutorial : public Component
 {
 public:
-	Tutorial(Node* owner, Window* window, Node* player);
+	Tutorial(Node* owner, Window& window, Node* player);
 	virtual ~Tutorial() = default;
 
 	virtual void Update(float dt) override;
 	virtual void DrawImGuiControls() override;
 	void DrawNote();
 	void SetStones();
+	void Start();
+	void Reset();
 	Node* player;
 	std::vector<Node*> enemies;
 	std::vector<Node*> levels;
@@ -30,13 +32,18 @@ public:
 	std::unique_ptr<Sprite> note6;
 	std::unique_ptr<Sprite> note7;
 	Sprite* currentNote;
-
+	bool enemySpawned = false;
 	Node* stone1 = nullptr;
 	Vector3 stone1Pos;
 	Node* stone2 = nullptr;
 	Vector3 stone2Pos;
-
+	Node* temporary = nullptr;
 	StateMachine* enemy1 = nullptr;
+	StateMachine* enemy2 = nullptr;
+	StateMachine* enemy3 = nullptr;
+	StateMachine* enemy4 = nullptr;
+	StateMachine* enemy5 = nullptr;
+
 
 	int currentCheckpointIndex = 0;
 	bool completed = false;
@@ -45,10 +52,10 @@ public:
 	int playerDeathCount = 0;
 	float timer = 0.0f;
 	bool qPressed = false;
+	bool started = false;
 private:
-	Window* wnd;
+	Window& wnd;
 
-	void EnemyHandler();
 	void Stage1(float dt);
 	void Stage2(float dt);
 };

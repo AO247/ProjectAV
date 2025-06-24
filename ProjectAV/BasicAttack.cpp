@@ -10,24 +10,35 @@ BasicAttack::BasicAttack(Node* owner, std::string tag)
 
 void BasicAttack::Attack(float dt)
 {
+	if (timer == 0.0f)
+	{
+		if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+			float randSound = (rand() % 3) + 4;
+			pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound);
+		} 
+		//miejsce na animacje !!!
+	}
 	timer += dt;
+	if (timer < stopMovingTime)
+	{
+		Vec3 direction = Vec3(pOwner->Forward().x, 0.0f, pOwner->Forward().z);
+		PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(pOwner->GetParent()->GetComponent<Rigidbody>()->GetBodyID(), direction * moveForce * dt);
+	}
 	if (timer >= wholeAttackTime) {
 		attacked = false;
 		timer = 0.0f;
 		endAttack = true;
 		return;
 	}
-	if (attacked) {
-		if (pOwner->GetComponent<SoundEffectsPlayer>()) {
-			float p = (rand() % 3) + 4;
-			pOwner->GetComponent<SoundEffectsPlayer>()->Play(p);
-		}
-		return;
-	}
+
+
 	if (timer < startDmgTime) {
 		return;
 	}
 	else if (timer > stopDmgTime) {
+		return;
+	}
+	if (attacked) {
 		return;
 	}
 	CheckAttack();
@@ -77,5 +88,7 @@ void BasicAttack::DrawImGuiControls()
 	ImGui::InputFloat("Stop Damage Time", &stopDmgTime);
 	ImGui::InputFloat("Knockback Force", &knockbackForce);
 	ImGui::InputFloat("Attack Timer", &timer);
+	ImGui::InputFloat("Move Force", &moveForce);
 	ImGui::Checkbox("Attacked", &attacked);
+
 }

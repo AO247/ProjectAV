@@ -17,11 +17,21 @@ void Throwable::OnCollisionEnter(Node* object)
 	Vec3 position = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
 	float l = velocity.Length();
 
-	if (pOwner->GetComponent<SoundEffectsPlayer>())
-	{
-		float p = (rand() % 2);
-		pOwner->GetComponent<SoundEffectsPlayer>()->Play(p);
+	if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+
+		if (velocity.Length() > minSoundSpeed)
+		{
+			float volumeFactor = std::min(1.0f,
+				(velocity.Length() - minSoundSpeed) / (maxSoundSpeed - minSoundSpeed)
+			);
+
+			float gain = std::clamp(volumeFactor, 0.0f, 1.0f);
+
+			int randSound = rand() % 5;
+			pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound);
+		}
 	}
+
 	if (object->tag == "ENEMY")
 	{
 		OutputDebugStringA(("\n\nThrowable hit enemy: " + object->GetName() + " wiht speed: " + std::to_string(l)).c_str());
@@ -38,6 +48,7 @@ void Throwable::OnCollisionEnter(Node* object)
 	
 	if (pot)
 	{
+		pOwner->GetComponent<SoundEffectsPlayer>()->Play(0);
 		pOwner->Destroy();
 	}
 }

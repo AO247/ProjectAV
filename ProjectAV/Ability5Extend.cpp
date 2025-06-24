@@ -7,8 +7,21 @@ Ability5Extend::Ability5Extend(Node* owner, float force, float duration)
 }
 void Ability5Extend::Update(float dt)
 {
+    // particle dzia³ania 
+    // dŸwiêk dzia³ania
 	timer += dt;
+    holdSoundTimer -= dt;
+
+    if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+        if (holdSoundTimer <= 0.0f)
+        {
+            pOwner->GetComponent<SoundEffectsPlayer>()->Play(0, 0.8f);
+
+            holdSoundTimer = holdSoundInterval;
+        }
+    }
 	if (timer >= duration) {
+		pOwner->GetComponent<SoundEffectsPlayer>()->Stop(0);
 		pOwner->Destroy();
 	}
     for(int i = 0; i < objects.size(); i++)
@@ -71,7 +84,6 @@ void Ability5Extend::ApplyForce(Node* object, float dt) {
             Vec3(0, 1, 0) * forceY * dt
         );
     }
-
 }
 
 void Ability5Extend::OnTriggerEnter(Node* object) {

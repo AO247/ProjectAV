@@ -18,6 +18,8 @@ public:
 
 	void setGain(const float& val);
 
+	bool musicStart = true;
+
 	MusicBuffer(const char* filename);
 	~MusicBuffer();
 private:

@@ -51,7 +51,7 @@ public:
         }
     };
 
-    ModelComponent(Node* owner, Graphics& gfx, const std::string& modelFile, float scale = 1.0f, bool isSkinned = false);
+    ModelComponent(Node* owner, Graphics& gfx, const std::string& modelFile, float scale = 1.0f, bool isSkinned = false, bool castsShadowByDefault = true);
     virtual ~ModelComponent() = default;
 
     void Submit(Graphics& gfx, DirectX::FXMMATRIX worldTransform) const noxnd;
@@ -69,6 +69,7 @@ public:
     //================================================================================
     std::map<std::string, BoneInfo>& GetBoneInfoMap() { return m_BoneInfoMap; }
     int& GetBoneCount() { return m_BoneCounter; }
+
 
     const bool skinnedCharacter;
 

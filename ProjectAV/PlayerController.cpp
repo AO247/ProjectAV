@@ -85,16 +85,16 @@ void PlayerController::Jump()
             PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(rigidbody->GetBodyID(), Vec3(0.0f, jumpForce, 0.0f));
 			grounded = false;
             if (pOwner->GetComponent<SoundEffectsPlayer>()) {
-
-                pOwner->GetComponent<SoundEffectsPlayer>()->Play(0);
+				int randSound = rand() % 2;
+                pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f, false);
             }
         }
         else {
             PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(rigidbody->GetBodyID(), Vec3(0.0f, secondJumpForce, 0.0f));
 			doubleJumped = true;
             if (pOwner->GetComponent<SoundEffectsPlayer>()) {
-
-                pOwner->GetComponent<SoundEffectsPlayer>()->Play(0);
+				int randSound = rand() % 2 + 2;
+                pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f, false);
             }
         }
 		jumped = true;
@@ -107,21 +107,31 @@ void PlayerController::Dash()
     dashed = true;
 	canDash = false;
     if (pOwner->GetComponent<SoundEffectsPlayer>()) {
-        pOwner->GetComponent<SoundEffectsPlayer>()->Play(0);
+		int randSound = rand() % 2 + 4;
+        pOwner->GetComponent<SoundEffectsPlayer>()->Play(5, 1.0f, false);
     }
     Vector3 dashDirection = moveDirection;
-    if (moveDirection == pOwner->Forward())
+    if (evolvedDash)
     {
-		dashDirection = camera->Forward();
+        if (moveDirection == pOwner->Forward())
+        {
+            dashDirection = camera->Forward();
+        }
+        else if (moveDirection == pOwner->Back())
+        {
+            dashDirection = camera->Back();
+        }
     }
-    else if (moveDirection == pOwner->Back())
-    {
-        dashDirection = camera->Back();
-    }
-
     if (moveDirection == Vector3(0.0f, 0.0f, 0.0f))
     {
-		dashDirection = camera->Forward();
+        if (evolvedDash)
+        {
+            dashDirection = camera->Forward();
+        }
+        else
+        {
+            dashDirection = pOwner->Forward();
+        }
     }
     dashDirection.y += 0.3f;
     dashDirection.Normalize();
@@ -176,19 +186,20 @@ void PlayerController::PlayerGroundCheck()
         grounded = true;
     }
 
-   /* pos = playerPos + moveDirection;
+    /* pos = playerPos + moveDirection;
 
     RRayCast rayForward = RRayCast(
-        RVec3(pos.x, pos.y, pos.z),
-        direction
+         RVec3(pos.x, pos.y, pos.z),
+         direction
     );
     RayCastResult resultForward;
     if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(rayForward, resultForward,
-        IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::PLAYER, BroadPhaseLayers::TRIGGER }),
-        IgnoreMultipleObjectLayerFilter({ Layers::PLAYER, Layers::TRIGGER })))
+         IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::PLAYER, BroadPhaseLayers::TRIGGER }),
+         IgnoreMultipleObjectLayerFilter({ Layers::PLAYER, Layers::TRIGGER })))
     {
-        grounded = true;
+         grounded = true;
     }*/
+
 
 
     if (grounded)
@@ -236,6 +247,17 @@ void PlayerController::MovePlayer(float dt)
             PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rigidbody->GetBodyID(), newVelocity);
         }
         PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * acceleration * 1000.0f * dt);
+
+		stepSoundTimer -= dt;
+		if (stepSoundTimer <= 0.0f)
+		{
+			if (pOwner->GetComponent<SoundEffectsPlayer>())
+			{
+                int randSound = rand() % 6 + 16;
+				pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound);
+			}
+			stepSoundTimer = stepSoundInterval;
+		}
     }
     else
     {
@@ -419,7 +441,7 @@ void PlayerController::Cooldowns(float dt)
 
 void PlayerController::Positioning()
 {
-    camera->SetLocalPosition({ GetOwner()->GetLocalPosition().x, GetOwner()->GetLocalPosition().y + height * 9 / 10, GetOwner()->GetLocalPosition().z });
+    camera->SetLocalPosition({ GetOwner()->GetLocalPosition().x, GetOwner()->GetLocalPosition().y + (height/2) * 7.5f / 10, GetOwner()->GetLocalPosition().z });
 
     Quat q = Quat::sEulerAngles(Vec3(0.0f, camera->GetLocalRotationEuler().y, 0.0f));
     PhysicsCommon::physicsSystem->GetBodyInterface().SetRotation(rigidbody->GetBodyID(), q, EActivation::Activate);
@@ -435,17 +457,19 @@ void PlayerController::KeyboardInput()
         {
         case Mouse::Event::Type::LPress:
             abilitySlot1->GetComponent<Ability>()->Pressed();
-            if (pOwner->GetComponent<SoundEffectsPlayer>()) {
-                float p = (rand() % 2) + 1;
-                pOwner->GetComponent<SoundEffectsPlayer>()->Play(p);
+            if (!abilitySlot1->GetComponent<Ability>()->Pressed())
+            {
+				int randSound = rand() % 2 + 12;
+                pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f, false);
             }
             break;
 
         case Mouse::Event::Type::RPress:
             abilitySlot2->GetComponent<Ability>()->Pressed();
-            if (pOwner->GetComponent<SoundEffectsPlayer>()) {
-                float p = (rand() % 2) + 3;
-                pOwner->GetComponent<SoundEffectsPlayer>()->Play(p);
+            if (!abilitySlot2->GetComponent<Ability>()->Pressed())
+            {
+                int randSound = rand() % 2 + 12;
+                pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f, false);
             }
             break;
 
@@ -459,11 +483,35 @@ void PlayerController::KeyboardInput()
         }
 
     }
-
-    if (wnd.kbd.IsKeyPressed('Q'))
+    while (const auto e = wnd.kbd.PollKeyEvent())
     {
-        abilitySlot3->GetComponent<Ability>()->Pressed();
-	}
+        if (e->IsPress())
+        {
+            switch (e->GetCode())
+            {
+            case 'Q':
+                abilitySlot3->GetComponent<Ability>()->Pressed();
+                break;
+            }
+        }
+        else if (e->IsRelease())
+        {
+            switch (e->GetCode())
+            {
+            case 'Q':
+                abilitySlot3->GetComponent<Ability>()->Pressed();
+                if (!abilitySlot3->GetComponent<Ability>()->Pressed())
+                {
+                    int randSound = rand() % 2 + 12;
+                    pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f, false);
+                }
+                abilitySlot3->GetComponent<Ability>()->Released();
+                break;
+            }
+        }
+    }
+
+
 
 
     moveDirection = Vector3(0.0f, 0.0f, 0.0f);
@@ -499,6 +547,8 @@ void PlayerController::KeyboardInput()
         Dash();
     }
 }
+
+
 void PlayerController::DrawImGuiControls()
 {
     ImGui::InputFloat("Move Speed", &maxSpeed);

@@ -23,9 +23,41 @@ void Ability4::Update(float dt)
 {
     if (!wnd.CursorEnabled())
     {
+        pOwner->SetWorldPosition(player->GetWorldPosition());
+        holdSoundTimer -= dt;
         if (isPressed)
         {
 			pressedTime += dt;
+            if (pressedTime > 0.13f && activated)
+            {
+                activated = false;
+                // animacja wyboru obiektu
+                // dŸwiêk wyboru obiektu
+                if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+                    float randSound = (rand() % 2);
+                    pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f, false);
+                }
+                
+                // particle wyboru obiektu
+                //  
+                leftHand->PlayAnimation(4); //ATTACK_PULL_LOOP
+
+            }
+            else if (pressedTime > 0.13f)
+            {
+
+                leftHand->PlayAnimation(4); //ATTACK_PULL_LOOP
+                // animacja trzymania 
+                // dŸwiêk trzymania 
+                if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+                    if (holdSoundTimer <= 0.0f)
+                    {
+                        pOwner->GetComponent<SoundEffectsPlayer>()->Play(2, 1.0f, false);
+
+                        holdSoundTimer = holdSoundInterval;
+                    }
+                }
+            }
         }
         Positioning();
         Cooldowns(dt);
@@ -53,19 +85,22 @@ void Ability4::Positioning()
         selectedNode = nullptr;
     }
 }
-void Ability4::Pressed()
+bool Ability4::Pressed()
 {
-    if (!abilityReady) return;
+    if (!abilityReady) return false;
+
+    activated = true;
     isPressed = true;
     pressedTime = 0.0f;
-    leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
-    leftHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
+
     cameraRotation = camera->GetLocalRotationEuler();
     if (selectedNode != nullptr)
     {
         selectionParticles = PrefabManager::InstantiateAbility4SelectParticles(pOwner->GetParent(), Vector3(selectedNode->GetWorldPosition().x, selectedNode->GetWorldPosition().y, selectedNode->GetWorldPosition().z), 1.0);
         selectionParticlesSmoke = PrefabManager::InstantiateAbility4SelectSmokeParticles(pOwner->GetParent(), Vector3(selectedNode->GetWorldPosition().x, selectedNode->GetWorldPosition().y, selectedNode->GetWorldPosition().z), 1.0);
     }
+
+    return true;
 }
 void Ability4::Released()
 {
@@ -73,28 +108,34 @@ void Ability4::Released()
     isPressed = false;
     if (!abilityReady) return;
 
-    if (selectionParticles != nullptr)
-    {
-        selectionParticles->GetComponent<ParticleSystemComponent>()->Stop();
-        selectionParticles = nullptr;
-    }
 
-    if (selectionParticlesSmoke != nullptr)
-    {
-        selectionParticlesSmoke->GetComponent<ParticleSystemComponent>()->Stop();
-        selectionParticlesSmoke = nullptr;
-    }
-
-    leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 4.0f });
+ 
     timeToChange = 0.3f;
 
-    if (pressedTime < 0.2f || selectedNode == nullptr)
+    if (pressedTime < 0.13f || selectedNode == nullptr)
     {
         pressedTime = 0.0f;
+		pOwner->GetComponent<SoundEffectsPlayer>()->Stop(2);
         baseAbility->Pressed();
     }
     else
     {
+        // particle rzutu
+        // animacja rzutu
+        // dŸwiêk rzutu
+        if (baseAbility->GetOwner()->GetComponent<SoundEffectsPlayer>()) {
+            pOwner->GetComponent<SoundEffectsPlayer>()->Stop(2);
+            float randSound = rand() % 4;
+            baseAbility->GetOwner()->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f);
+        }
+        
+
+        leftHand->PlayAnimation(3, 0.2f, false);
+        if (selectionParticles != nullptr)
+        {
+            selectionParticles->GetComponent<ParticleSystemComponent>()->Stop();
+            selectionParticles = nullptr;
+        }
         pressedTime = 0.0f;
         Vector3 direction = Vector3::Zero;
         Vec3 position = Vec3(camera->GetWorldPosition().x, camera->GetWorldPosition().y, camera->GetWorldPosition().z);
@@ -165,12 +206,15 @@ void Ability4::Cooldowns(float dt)
     if (cooldownTimer > 0.0f)
     {
         cooldownTimer -= dt;
+        if (leftHand->GetCurrentPlayingAnimationRaw() == nullptr) {
+            leftHand->PlayAnimation(8); //COOLDOWN
+        }
     }
     else
     {
         if (!abilityReady)
         {
-            leftHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
+            leftHand->PlayAnimation(13);  //IDLE RUN
         }
         abilityReady = true;
     }
@@ -179,8 +223,8 @@ void Ability4::Cooldowns(float dt)
         timeToChange -= dt;
         if (timeToChange <= 0.0f)
         {
-            leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
-            leftHandNormal->SetLocalPosition({ 0.0f, -2.7f, 1.0f });
+            //leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
+            //leftHand->SetLocalPosition({ 0.0f, -2.7f, 1.0f });
         }
     }
 

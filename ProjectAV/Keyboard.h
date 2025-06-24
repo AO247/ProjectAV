@@ -52,6 +52,12 @@ public:
 	void DisableAutorepeat() noexcept;
 	bool IsAutorepeatEnabled() const noexcept;
 
+	bool IsJustPressed(unsigned char keycode) const noexcept;
+	bool IsJustReleased(unsigned char keycode) const noexcept;
+
+	// === NOWA METODA PUBLICZNA (do wywo³ania raz na klatkê) ===
+	void UpdateFrameState() noexcept;
+
 private:
 	void OnKeyPressed(unsigned char keycode) noexcept;
 	void OnKeyReleased(unsigned char keycode) noexcept;
@@ -67,6 +73,7 @@ private:
 	static constexpr unsigned int bufferCapacity = 16u;
 	bool autorepeatEnabled = false;
 	std::bitset<keyCount> keyStates;
+	std::bitset<keyCount> lastKeyStates;
 	std::queue<Event> keyBuffer;
 	std::queue<char> charBuffer;
 };

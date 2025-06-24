@@ -30,12 +30,22 @@ public:
     App(const std::string& commandLine = "");
     int Go();
     ~App();
+
+    enum class GameState {
+        MainMenu,
+        Gameplay,
+        Paused
+    };
+    GameState gameState = GameState::MainMenu;
+
+
 private:
     void DoFrame(float dt);
     void HandleInput(float dt);
     void ShowControlWindows();
     void ForEnemyWalking();
     void SaveNodeTransformsRecursive(Node& node, std::ofstream& file);
+    void StartGame();
 
 private:
     std::string commandLine;
@@ -63,24 +73,27 @@ private:
     Node* pPlayer = nullptr; 
 	Node* pSelectedSceneNode = nullptr; 
 	Node* pSoundEffectsPlayer = nullptr;
-	Node* pLeftHandNormal = nullptr;
+	Node* pLeftHand = nullptr;
 	Node* pLeftHandAbility = nullptr;
-	Node* pRightHandNormal = nullptr;
+	Node* pRightHand = nullptr;
 	Node* pRightHandAbility = nullptr;
 	Node* tutorialNode = nullptr;
+    Node* temporary = nullptr;
     UpgradeHandler* pUpgradeHandler = nullptr;
 
     TestCube cube{ wnd.Gfx(),4.0f };
     void FrustumCalculating();
     void DrawNodeRecursive(Graphics& gfx, Node* node);
     void CleanupDestroyedNodes(Node* currentNode);
-
+    void ResetGame();
     void RemoveRigidbody(Node* currentNode);
     bool showDemoWindow = false;
     bool cursorEnabled = false;
     bool showControlWindow = false;
 	bool freeViewCamera = false;
-
+    bool paused = true;
+    bool startedGame = false;
+    float gameReset = 0;
     std::unique_ptr<Sprite> targetSprite;
     std::unique_ptr<Sprite> heart1Sprite;
     std::unique_ptr<Sprite> heart2Sprite;
@@ -92,5 +105,18 @@ private:
     float bonusTime = 5.0f;
 
 
+    std::unique_ptr<Sprite> mainMenuBackground;
+    std::unique_ptr<Button> startButton;
+    std::unique_ptr<Button> quitButton;
+    void UpdateMainMenu();
+    void DrawMainMenu();
+    bool wasMouseLeftPressedLastFrame = false;
 
+
+    //========== pauza
+    std::unique_ptr<Sprite> pauseMenuOverlay; // Pó³przezroczyste t³o
+    std::unique_ptr<Button> resumeButton;
+    std::unique_ptr<Button> quitToMenuButton;
+    void UpdatePauseMenu();
+    void DrawPauseMenu();
 };

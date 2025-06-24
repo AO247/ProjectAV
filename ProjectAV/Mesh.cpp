@@ -35,7 +35,8 @@ namespace dx = DirectX;
 //================================================================================
 // MESH CONSTRUCTOR (Completely Rewritten)
 //================================================================================
-Mesh::Mesh(Graphics& gfx, const Material& mat, const aiMesh& mesh, float scale)
+Mesh::Mesh(Graphics& gfx, const Material& mat, const aiMesh& mesh, float scale, bool castsShadow)
+    :  m_castsShadow(castsShadow)
 {
     // 1. DYNAMICALLY BUILD THE VERTEX LAYOUT
     Dvtx::VertexLayout layout;
@@ -129,4 +130,19 @@ const std::vector<DirectX::XMMATRIX>* Mesh::GetBoneTransformsPtr() const noexcep
 DirectX::XMMATRIX Mesh::GetTransformXM() const noexcept
 {
     return DirectX::XMLoadFloat4x4(&transform);
+}
+
+void Mesh::LinkTechniques(Rgph::RenderGraph& rg) // Implementacja przes³oniêtej metody
+{
+    for (auto& tech : techniques) // `techniques` jest chronionym cz³onkiem Drawable
+    {
+        if (tech.GetName() == "Shadow")
+        {
+            if (!m_castsShadow) // U¿yj flagi z Mesha
+            {
+                continue; // Pomiñ linkowanie tej techniki "Shadow"
+            }
+        }
+        tech.Link(rg); // Zlinkuj technikê (np. Phong, Skinned, lub Shadow jeœli m_castsShadow jest true)
+    }
 }

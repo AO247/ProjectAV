@@ -9,6 +9,7 @@
 #include <DirectXMath.h>
 #include "Rigidbody.h"
 #include "SoundEffectsPlayer.h"
+#include "AnimationComponent.h"
 
 class Node;
 
@@ -20,7 +21,7 @@ public:
 
 	virtual void Update(float dt) override;
 	virtual void DrawImGuiControls() override;
-	void Pressed() override;
+	bool Pressed() override;
 	void Released() override;
 
 	float cooldown = 1.5f;
@@ -32,7 +33,7 @@ public:
 	bool isPressed = false;
 	bool abilityReady = true;
 
-	Node* leftHandNormal = nullptr;
+	AnimationComponent* leftHand = nullptr;
 	Node* leftHandAbility = nullptr;
 	Node* selectedNode = nullptr;
 	Ability* baseAbility = nullptr;

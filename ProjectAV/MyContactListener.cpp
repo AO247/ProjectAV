@@ -1,5 +1,6 @@
 #include "MyContactListener.h"
-
+#include <map>
+#include <vector>
 void MyContactListener::OnContactAdded(const Body& inBody1, const Body& inBody2, const ContactManifold& inManifold, ContactSettings& ioSettings)
 {
     BodyID body1ID = inBody1.GetID();
@@ -168,48 +169,61 @@ void MyContactListener::AddRigidbody(BodyID id)
 
 void MyContactListener::ExecuteTriggerActivationQueue()
 {
-   /* for (int i = 0; i < triggerActivationQueue.size(); i++)
+    // Mapa do agregacji zdarzeñ STAY.
+    // Klucz: BodyID triggera.
+    // Wartoœæ: Lista wskaŸników na Node'y aktywatorów.
+    std::map<BodyID, std::vector<Node*>> stayEventsMap;
+
+    for (const auto& event : triggerActivationQueue)
     {
-        for (int j = 0; j < triggerDeletionQueue.size(); j++)
+        Node* triggerNode = reinterpret_cast<Node*>(PhysicsCommon::physicsSystem->GetBodyInterface().GetUserData(event.trigger));
+        Node* activatorNode = reinterpret_cast<Node*>(PhysicsCommon::physicsSystem->GetBodyInterface().GetUserData(event.activator));
+
+        if (triggerNode == nullptr || activatorNode == nullptr) continue;
+        if (!PhysicsCommon::physicsSystem->GetBodyInterface().IsAdded(event.trigger)) continue;
+
+        const auto& components = triggerNode->GetComponents();
+
+        if (event.activationType == ENTER)
         {
-            if (triggerDeletionQueue[j] == triggerActivationQueue[i].trigger)
-            {
-                triggerActivationQueue.erase(triggerActivationQueue.begin() + i);
+            for (const auto& component : components) {
+                component->OnTriggerEnter(activatorNode);
             }
         }
-    }*/
-    for (int i = 0; i < triggerActivationQueue.size(); i++)
-    {
-        Node* triggerNode = reinterpret_cast<Node*>(PhysicsCommon::physicsSystem->GetBodyInterface().GetUserData(triggerActivationQueue[i].trigger));
-        Node* activatorNode = reinterpret_cast<Node*>(PhysicsCommon::physicsSystem->GetBodyInterface().GetUserData(triggerActivationQueue[i].activator));
-        if (triggerNode == nullptr || activatorNode == nullptr) continue;
-        if (PhysicsCommon::physicsSystem->GetBodyInterface().IsAdded(triggerActivationQueue[i].trigger))
+        else if (event.activationType == STAY)
         {
-            if (triggerActivationQueue[i].activationType == ENTER)
-            {
-                const auto& components = triggerNode->GetComponents();
-                for (const auto& component : components) {
-                    component->OnTriggerEnter(activatorNode);
-                }
-            }
-            if (triggerActivationQueue[i].activationType == STAY)
-            {
-                const auto& components = triggerNode->GetComponents();
-                for (const auto& component : components) {
-                    component->OnTriggerStay(activatorNode);
-                }
-            }
-            if (triggerActivationQueue[i].activationType == EXIT)
-            {
-                const auto& components = triggerNode->GetComponents();
-                for (const auto& component : components) {
-                    component->OnTriggerExit(activatorNode);
-                }
+            // Zamiast od razu wywo³ywaæ, dodaj do naszej mapy
+            stayEventsMap[event.trigger].push_back(activatorNode);
+        }
+        else if (event.activationType == EXIT)
+        {
+            for (const auto& component : components) {
+                component->OnTriggerExit(activatorNode);
             }
         }
     }
-    triggerActivationQueue = std::vector<TriggerActivationEvent>();
-    //triggerDeletionQueue = std::vector<BodyID>();
+
+    // Teraz, po przetworzeniu ca³ej kolejki, przejdŸ przez nasz¹ mapê
+    // i wywo³aj nowe OnTriggerStay dla ka¿dego triggera.
+    for (const auto& pair : stayEventsMap)
+    {
+        const BodyID& triggerBodyID = pair.first;
+        const std::vector<Node*>& activators = pair.second;
+
+        // Pobierz triggerNode jeszcze raz na podstawie BodyID
+        Node* triggerNode = reinterpret_cast<Node*>(PhysicsCommon::physicsSystem->GetBodyInterface().GetUserData(triggerBodyID));
+        if (triggerNode == nullptr) continue;
+
+        const auto& components = triggerNode->GetComponents();
+        for (const auto& component : components)
+        {
+            // Wywo³aj now¹ wersjê metody z ca³¹ list¹!
+            component->OnTriggerStay(activators);
+        }
+    }
+
+    // Na koñcu wyczyœæ kolejkê
+    triggerActivationQueue.clear(); // U¿yj .clear() zamiast ponownej alokacji
 }
 
 void MyContactListener::ExecuteCollisionActivationQueue()

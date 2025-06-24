@@ -6,6 +6,11 @@
 
 void Step::Submit(const Drawable& drawable) const
 {
+	if (pTargetPass == nullptr)
+	{ 
+		return;
+	}
+
 	// Create a lambda function that captures the original drawing logic.
 	// This lambda is the "job" to be executed by the pass.
 	auto jobLambda = [&drawable, this](Graphics& gfx) {

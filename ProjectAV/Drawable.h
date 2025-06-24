@@ -35,7 +35,7 @@ public:
 	void Bind(Graphics& gfx) const noxnd;
 	void Accept(TechniqueProbe& probe);
 	UINT GetIndexCount() const noxnd;
-	void LinkTechniques(Rgph::RenderGraph&);
+	virtual void LinkTechniques(Rgph::RenderGraph&);
 	virtual ~Drawable();
 	virtual const std::vector<DirectX::XMMATRIX>* GetBoneTransformsPtr() const noexcept;
 

@@ -19,7 +19,8 @@
 #include <Jolt/ConfigurationString.h>
 #include <Jolt/Physics/Collision/Shape/CapsuleShape.h>
 #include "imgui/imgui_impl_dx11.h"
-
+#include "TransformCbuf.h"
+#include "ShadowCbuf.h"
 namespace dx = DirectX;
 
 App::App(const std::string& commandLine)
@@ -67,7 +68,7 @@ App::App(const std::string& commandLine)
 	soundDevice->SetAttenuation(attentuation);
 	StaticSoundPlayer::Get().Init(64);
     myMusic = std::make_unique<MusicBuffer>("Music\\windererfull.mp3");
-    myMusic->setGain(1.0f);
+    myMusic->setGain(0.05f);
 
 	auto base = std::make_unique<Node>("Base");
 	auto playerThings = std::make_unique<Node>("Player Things");
@@ -90,21 +91,24 @@ App::App(const std::string& commandLine)
     Node* pAbility5 = pAbility5Owner.get();
     auto pAbility6Owner = std::make_unique<Node>("Ability6", nullptr, "TRIGGER");
     Node* pAbility6 = pAbility6Owner.get();
-    auto pPrefabsOwner = std::make_unique<Node>("Temporary", nullptr, "PREFABS");
-    Node* pPrefabs = pPrefabsOwner.get();
-    auto pLeftHandNormalOwner = std::make_unique<Node>("L Normal", nullptr, "HANDS");
-    pLeftHandNormal = pLeftHandNormalOwner.get();
+    auto pTemporaryOwner = std::make_unique<Node>("Temporary", nullptr, "TEMPORARY");
+    temporary = pTemporaryOwner.get();
+    auto pLeftHandOwner = std::make_unique<Node>("L Normal", nullptr, "HANDS");
+    pLeftHand = pLeftHandOwner.get();
     auto pLeftHandAbilityOwner = std::make_unique<Node>("L Ability", nullptr, "HANDS");
     pLeftHandAbility = pLeftHandAbilityOwner.get();
-    auto pRightHandNormalOwner = std::make_unique<Node>("R Normal", nullptr, "HANDS");
-    pRightHandNormal = pRightHandNormalOwner.get();
+    auto pRightHandOwner = std::make_unique<Node>("R Normal", nullptr, "HANDS");
+    pRightHand = pRightHandOwner.get();
     auto pRightHandAbilityOwner = std::make_unique<Node>("R Ability", nullptr, "HANDS");
     pRightHandAbility = pRightHandAbilityOwner.get();
-
+	auto handsOwner = std::make_unique<Node>("Hands", nullptr, "HANDS");
+    auto tutorialOwner = std::make_unique<Node>("Tutorial", nullptr, "TUTORIAL");
+    tutorialNode = tutorialOwner.get();
 	Node* pPlayerThings = playerThings.get();
 	Node* pAbilities = abilities.get();
 	Node* pBase = base.get();
-    pSceneRoot->AddChild(std::move(pPrefabsOwner));
+	Node* pHands = handsOwner.get();
+    pSceneRoot->AddChild(std::move(pTemporaryOwner));
 	pSceneRoot->AddChild(std::move(base));
     pSceneRoot->AddChild(std::move(playerThings));
     pPlayerThings->AddChild(std::move(pCameraNodeOwner));
@@ -117,17 +121,19 @@ App::App(const std::string& commandLine)
     pAbilities->AddChild(std::move(pAbility4Owner));
     pAbilities->AddChild(std::move(pAbility5Owner));
     pAbilities->AddChild(std::move(pAbility6Owner));
-    pCamera->AddChild(std::move(pLeftHandNormalOwner));
-    pCamera->AddChild(std::move(pLeftHandAbilityOwner));
-    pCamera->AddChild(std::move(pRightHandNormalOwner));
-    pCamera->AddChild(std::move(pRightHandAbilityOwner));
+	pCamera->AddChild(std::move(handsOwner));
+    pHands->AddChild(std::move(pLeftHandOwner));
+    pHands->AddChild(std::move(pLeftHandAbilityOwner));
+    pHands->AddChild(std::move(pRightHandOwner));
+    pHands->AddChild(std::move(pRightHandAbilityOwner));
+    pSceneRoot->AddChild(std::move(tutorialOwner));
 
-    //PrefabManager::InstantiateStone1(pSceneRoot.get(), Vector3(0.0f, 100.0f, 0.0f), 1.0f);
+    PrefabManager::InstantiateStone1(pSceneRoot.get(), Vector3(0.0f, 100.0f, 0.0f), 1.0f);
 
-    PrefabManager::root = pPrefabs;
+    PrefabManager::root = temporary;
     PrefabManager::player = pPlayer;
 
-    BodyCreationSettings bodySettings(new JPH::CapsuleShape(1.0f, 1.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::PLAYER);
+    BodyCreationSettings bodySettings(new JPH::CapsuleShape(1.4f, 1.6f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::PLAYER);
     bodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
 
     bodySettings.mMassPropertiesOverride.mMass = 1.0f;
@@ -143,6 +149,28 @@ App::App(const std::string& commandLine)
         std::make_unique<PlayerController>(pPlayer, wnd)
     );
 
+
+    auto legsOwner = std::make_unique<Node>("Legs", nullptr, "TRIGGER");
+    BodyCreationSettings p1TBodySettings(new JPH::SphereShape(12.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
+    legsOwner->AddComponent(
+        std::make_unique<Trigger>(legsOwner.get(), p1TBodySettings, false)
+    );
+    legsOwner->AddComponent(
+        std::make_unique<FallDamage>(legsOwner.get(), pPlayer)
+    );
+    legsOwner->SetLocalPosition({ 0.0f, -pPlayer->GetComponent<PlayerController>()->height / 2, 0.0f });
+    pPlayer->AddChild(std::move(legsOwner));
+
+
+    pHands->AddComponent(
+        std::make_unique<Hands>(pHands)
+    );
+    pHands->GetComponent<Hands>()->playerController = pPlayer->GetComponent<PlayerController>();
+	pHands->GetComponent<Hands>()->rigidbody = pPlayer->GetComponent<Rigidbody>();
+    pHands->GetComponent<Hands>()->leftHand = pLeftHand;
+    pHands->GetComponent<Hands>()->rightHand = pRightHand;
+    pHands->GetComponent<Hands>()->cameraNode = pCamera;
+
     BodyCreationSettings a1BodySettings(new JPH::CapsuleShape(6.0f, 5.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
     pAbility1->AddComponent(
         std::make_unique<Trigger>(pAbility1, a1BodySettings, false)
@@ -150,9 +178,16 @@ App::App(const std::string& commandLine)
     pAbility1->AddComponent(
         std::make_unique<Ability1>(pAbility1, wnd, pCamera)
     );
+    pAbility1->AddComponent(
+        std::make_unique<SoundEffectsPlayer>(pAbility1)
+    );
+	pAbility1->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\push1.wav");
+    pAbility1->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\push2.wav");
+    pAbility1->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\push3.wav");
+    pAbility1->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\push4.wav");
     pAbility1->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 0.0f, 10.0f));
     pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility1;
-
+   
 
     BodyCreationSettings a2odySettings(new JPH::SphereShape(5.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
     pAbility2->AddComponent(
@@ -161,9 +196,34 @@ App::App(const std::string& commandLine)
     pAbility2->AddComponent(
         std::make_unique<Ability2>(pAbility2, wnd, pCamera)
     );
-
+    pAbility2->AddComponent(
+        std::make_unique<SoundEffectsPlayer>(pAbility2)
+    );
+    pAbility2->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\toss1.wav");
+    pAbility2->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\toss2.wav");
+    pAbility2->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\toss3.wav");
+    pAbility2->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\toss4.wav");
     pPlayer->GetComponent<PlayerController>()->abilitySlot2 = pAbility2;
 
+
+
+    BodyCreationSettings a3RbodySettings(new JPH::SphereShape(1.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::TRIGGER);
+    a3RbodySettings.mGravityFactor = 0.0f;
+    a3RbodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
+
+    a3RbodySettings.mMassPropertiesOverride.mMass = 1.0f;
+    a3RbodySettings.mFriction = 0.0f;
+    a3RbodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
+    a3RbodySettings.mMotionQuality = EMotionQuality::LinearCast;
+
+    pAbility3->AddComponent(
+        std::make_unique<Rigidbody>(pAbility3, a3RbodySettings)
+    );
+
+    pAbility3->AddComponent(
+        std::make_unique<ModelComponent>(pAbility3, wnd.Gfx(), "Models\\box.glb")
+    );
+    pAbility3->GetComponent<ModelComponent>()->LinkTechniques(rg);
 
     BodyCreationSettings a3odySettings(new JPH::SphereShape(40.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
     pAbility3->AddComponent(
@@ -172,6 +232,13 @@ App::App(const std::string& commandLine)
     pAbility3->AddComponent(
         std::make_unique<Ability3>(pAbility3, wnd, pCamera)
     );
+    pAbility3->AddComponent(
+        std::make_unique<SoundEffectsPlayer>(pAbility3)
+    );
+    pAbility3->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\black_hole_start.wav");
+    pAbility3->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\black_hole_throw.wav");
+    pAbility3->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\black_hole_end.wav");
+    pAbility3->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\hold.wav");
     pPlayer->GetComponent<PlayerController>()->abilitySlot3 = pAbility3;
 
 
@@ -183,20 +250,40 @@ App::App(const std::string& commandLine)
     pAbility4->AddComponent(
         std::make_unique<Ability4>(pAbility4, wnd, pCamera)
     );
-    /*pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility4;
-    pAbility4->GetComponent<Ability4>()->baseAbility = pAbility1->GetComponent<Ability1>();*/
+    pAbility4->AddComponent(
+        std::make_unique<SoundEffectsPlayer>(pAbility4)
+    );
+    pAbility4->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\sznurek1.wav");
+    pAbility4->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\sznurek2.wav");
+    pAbility4->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\hold.wav");
+    pAbility4->GetComponent<Ability4>()->baseAbility = pAbility1->GetComponent<Ability1>();
+    //pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility4;
 
 
     pAbility5->AddComponent(
         std::make_unique<Ability5>(pAbility5, wnd, pCamera)
     );
+    pAbility5->AddComponent(
+        std::make_unique<SoundEffectsPlayer>(pAbility5)
+    );
+    pAbility5->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\toss1.wav");
+    pAbility5->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\toss2.wav");
+    pAbility5->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\toss3.wav");
+    pAbility5->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\toss4.wav");
+    pAbility5->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\hold.wav");
 	//pPlayer->GetComponent<PlayerController>()->abilitySlot2 = pAbility5;
 
     pAbility6->AddComponent(
         std::make_unique<Ability6>(pAbility6, wnd, pCamera)
     );
-    /*pAbility6->GetComponent<Ability6>()->baseAbility = pAbility1->GetComponent<Ability1>();
-    pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility6;*/
+    pAbility6->AddComponent(
+        std::make_unique<SoundEffectsPlayer>(pAbility6)
+    );
+    pAbility6->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\gravity1.wav");
+    pAbility6->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\gravity2.wav");
+    pAbility6->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\hold.wav");
+    pAbility6->GetComponent<Ability6>()->baseAbility = pAbility1->GetComponent<Ability1>();
+    //pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility6;
 
     pFreeViewCamera->AddComponent(
         std::make_unique<Camera>(pFreeViewCamera, wnd)
@@ -216,11 +303,28 @@ App::App(const std::string& commandLine)
     );
 	StaticSoundPlayer::Get().SetPlayerNode(pPlayer);
     SoundEffectsPlayer* pSoundEffectsPlayer = pPlayer->GetComponent<SoundEffectsPlayer>();
-    pSoundEffectsPlayer->AddSound("Models\\turn.ogg");
-    pSoundEffectsPlayer->AddSound("Sounds\\push1.ogg");
-    pSoundEffectsPlayer->AddSound("Sounds\\push2.ogg");
-    pSoundEffectsPlayer->AddSound("Sounds\\toss1.ogg");
-    pSoundEffectsPlayer->AddSound("Sounds\\toss2.ogg");
+    pSoundEffectsPlayer->AddSound("Sounds\\player\\jump1.wav");
+    pSoundEffectsPlayer->AddSound("Sounds\\player\\jump2.wav"); // 2
+    pSoundEffectsPlayer->AddSound("Sounds\\player\\double1.wav");
+    pSoundEffectsPlayer->AddSound("Sounds\\player\\double2.wav"); // 4
+    pSoundEffectsPlayer->AddSound("Sounds\\player\\dash1.wav");
+    pSoundEffectsPlayer->AddSound("Sounds\\player\\dash2.wav"); // 6
+    pSoundEffectsPlayer->AddSound("Sounds\\player\\damage1.wav");
+    pSoundEffectsPlayer->AddSound("Sounds\\player\\damage2.wav");
+    pSoundEffectsPlayer->AddSound("Sounds\\player\\damage3.wav");
+    pSoundEffectsPlayer->AddSound("Sounds\\player\\damage4.wav");
+    pSoundEffectsPlayer->AddSound("Sounds\\player\\damage5.wav");
+    pSoundEffectsPlayer->AddSound("Sounds\\player\\damage6.wav"); // 12
+    pSoundEffectsPlayer->AddSound("Sounds\\player\\cooldown1.wav"); 
+    pSoundEffectsPlayer->AddSound("Sounds\\player\\cooldown2.wav"); // 14
+	pSoundEffectsPlayer->AddSound("Sounds\\teleport\\teleport1.wav");
+	pSoundEffectsPlayer->AddSound("Sounds\\teleport\\teleport2.wav"); // 16
+    pSoundEffectsPlayer->AddSound("Sounds\\walk\\footstep1.wav");
+    pSoundEffectsPlayer->AddSound("Sounds\\walk\\footstep2.wav");
+    pSoundEffectsPlayer->AddSound("Sounds\\walk\\footstep3.wav");
+    pSoundEffectsPlayer->AddSound("Sounds\\walk\\footstep4.wav");
+    pSoundEffectsPlayer->AddSound("Sounds\\walk\\footstep5.wav");
+    pSoundEffectsPlayer->AddSound("Sounds\\walk\\footstep6.wav"); //22
 
     pFreeViewCamera->SetLocalPosition({ 4.0f, 11.0f, -28.0f });
     pPlayer->SetLocalPosition({ 0.0f, 80.0f, -24.0f });
@@ -229,47 +333,64 @@ App::App(const std::string& commandLine)
         std::make_unique<Global>(pSceneRoot.get(), wnd, pPlayer, pBase)
     );
 
-    pLeftHandNormal->AddComponent(
-        std::make_unique<ModelComponent>(pLeftHandNormal, wnd.Gfx(), "Models\\hands\\left.obj")
+    pLeftHand->AddComponent(
+        std::make_unique<ModelComponent>(pLeftHand, wnd.Gfx(), "Models\\hands\\left.gltf", 1.0f, true, false)
     );
-    pLeftHandNormal->GetComponent<ModelComponent>()->LinkTechniques(rg);
-    pLeftHandNormal->SetLocalScale({ 0.1f, 0.1f, 0.1f });
-    pLeftHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
+    pLeftHand->GetComponent<ModelComponent>()->LinkTechniques(rg);
+    pLeftHand->SetLocalScale({ 0.1f, 0.1f, 0.1f });
+    pLeftHand->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
+
+    pLeftHand->AddComponent(
+        std::make_unique<AnimationComponent>(pLeftHand, "", "Models\\hands\\left.gltf")
+    );
+    AnimationComponent* animCompLeft = pLeftHand->GetComponent<AnimationComponent>();
+    animCompLeft->PlayAnimation(13); //POCZĄTKOWE IDLE_RUN
+
 
     pLeftHandAbility->AddComponent(
-        std::make_unique<ModelComponent>(pLeftHandAbility, wnd.Gfx(), "Models\\hands\\push.obj")
+        std::make_unique<ModelComponent>(pLeftHandAbility, wnd.Gfx(), "Models\\hands\\left.gltf", 1.0f, false, false)
     );
     pLeftHandAbility->GetComponent<ModelComponent>()->LinkTechniques(rg);
     pLeftHandAbility->SetLocalScale({ 0.1f, 0.1f, 0.1f });
     pLeftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
 
-    pRightHandNormal->AddComponent(
-        std::make_unique<ModelComponent>(pRightHandNormal, wnd.Gfx(), "Models\\hands\\right.obj")
+    pRightHand->AddComponent(
+        std::make_unique<ModelComponent>(pRightHand, wnd.Gfx(), "Models\\hands\\right.gltf", 1.0f, true, false)
     );
-    pRightHandNormal->GetComponent<ModelComponent>()->LinkTechniques(rg);
-    pRightHandNormal->SetLocalScale({ 0.1f, 0.1f, 0.1f });
-    pRightHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
+    pRightHand->GetComponent<ModelComponent>()->LinkTechniques(rg);
+    pRightHand->SetLocalScale({ 0.1f, 0.1f, 0.1f });
+    pRightHand->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
+
+    pRightHand->AddComponent(
+        std::make_unique<AnimationComponent>(pRightHand, "", "Models\\hands\\right.gltf")
+    );
+    AnimationComponent* animCompRight = pRightHand->GetComponent<AnimationComponent>();
+    animCompRight->PlayAnimation(13); //POCZĄTKOWE IDLE_RUN
+
 
     pRightHandAbility->AddComponent(
-        std::make_unique<ModelComponent>(pRightHandAbility, wnd.Gfx(), "Models\\hands\\toss.obj")
+        std::make_unique<ModelComponent>(pRightHandAbility, wnd.Gfx(), "Models\\hands\\right.gltf", 1.0f, false, false)
     );
     pRightHandAbility->GetComponent<ModelComponent>()->LinkTechniques(rg);
     pRightHandAbility->SetLocalScale({ 0.1f, 0.1f, 0.1f });
     pRightHandAbility->SetLocalPosition({ 0.0f, -2.7f, -3000.0f });
 
-    pAbility1->GetComponent<Ability1>()->leftHandNormal = pLeftHandNormal;
+    pAbility1->GetComponent<Ability1>()->leftHand = pLeftHand->GetComponent<AnimationComponent>();
     pAbility1->GetComponent<Ability1>()->leftHandAbility = pLeftHandAbility;
 
-    pAbility2->GetComponent<Ability2>()->rightHandNormal = pRightHandNormal;
+    pAbility2->GetComponent<Ability2>()->rightHand = pRightHand->GetComponent<AnimationComponent>();
     pAbility2->GetComponent<Ability2>()->rightHandAbility = pRightHandAbility;
 
-    pAbility4->GetComponent<Ability4>()->leftHandNormal = pLeftHandNormal;
+    pAbility3->GetComponent<Ability3>()->leftHand = pLeftHand->GetComponent<AnimationComponent>();
+    pAbility3->GetComponent<Ability3>()->rightHand = pRightHand->GetComponent<AnimationComponent>();
+
+    pAbility4->GetComponent<Ability4>()->leftHand = pLeftHand->GetComponent<AnimationComponent>();
     pAbility4->GetComponent<Ability4>()->leftHandAbility = pLeftHandAbility;
 
-	pAbility5->GetComponent<Ability5>()->rightHandNormal = pRightHandNormal;
+	pAbility5->GetComponent<Ability5>()->rightHand = pRightHand->GetComponent<AnimationComponent>();
 	pAbility5->GetComponent<Ability5>()->rightHandAbility = pRightHandAbility;
 
-    pAbility6->GetComponent<Ability6>()->leftHandNormal = pLeftHandNormal;
+    pAbility6->GetComponent<Ability6>()->leftHand = pLeftHand->GetComponent<AnimationComponent>();
     pAbility6->GetComponent<Ability6>()->leftHandAbility = pLeftHandAbility;
 
     pSceneRoot->AddComponent(
@@ -286,8 +407,13 @@ App::App(const std::string& commandLine)
     pUpgradeHandler->SetBasicValues();
     pSceneRoot->GetComponent<Global>()->upgradeHandler = pUpgradeHandler;
 
-	//PrefabManager::InstantiateIslandBig10(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
-	//tutorialNode = PrefabManager::InstantiateTutorialIslands(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
+	//PrefabManager::InstantiateIslandMedium5(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
+    tutorialNode->AddComponent(
+        std::make_unique<Tutorial>(tutorialNode, wnd, pPlayer)
+    );
+
+        
+        
     //pSceneRoot->GetComponent<Global>()->tut = tutorialNode->GetComponent<Tutorial>();
 
 
@@ -364,10 +490,73 @@ App::App(const std::string& commandLine)
         1080,
         L"Images\\Loading_Screen3.png"
     );
+     
 
-    wnd.DisableCursor();
-    wnd.mouse.EnableRawInput();
-    cursorEnabled = false;
+    cursorEnabled = true;
+    wnd.EnableCursor();  
+    wnd.mouse.DisableRawInput();
+
+    // --------------- INICJALIZACJA MENU GŁÓWNEGO ---------------
+
+    mainMenuBackground = std::make_unique<Sprite>(
+        wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
+        0, 0, screenWidth, screenHeight,
+        L"Images\\MainMenu.gif" 
+    );
+
+    const DirectX::XMFLOAT4 buttonIdleColor = { 0.82f, 0.63f, 0.35f, 0.9f };
+    const DirectX::XMFLOAT4 buttonHoverColor = { 1.0f, 0.8f, 0.5f, 1.0f };
+    const DirectX::XMFLOAT4 textColor = { 0.1f, 0.1f, 0.1f, 1.0f };
+
+    startButton = std::make_unique<Button>(
+        wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
+        120, 450, 250, 70,  
+        L"START",
+        L"myfile.spritefont"  
+    );
+    startButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
+    startButton->SetTextColor(textColor);
+ 
+    quitButton = std::make_unique<Button>(
+        wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
+        120, 550, 250, 70,  
+        L"QUIT",
+        L"myfile.spritefont"  
+    );
+    quitButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
+    quitButton->SetTextColor(textColor);
+ 
+
+    // --------------- INICJALIZACJA MENU PAUZY --------------- 
+    pauseMenuOverlay = std::make_unique<Sprite>(
+        wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
+        0, 0, screenWidth, screenHeight,
+        L"Images\\MainMenu.gif"  
+    );
+   
+    int buttonWidth = 350;
+    int buttonHeight = 70;
+    int buttonCenterX = (screenWidth - buttonWidth) / 2;
+     
+
+    resumeButton = std::make_unique<Button>(
+        wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
+        buttonCenterX, 400, buttonWidth, buttonHeight,
+        L"RESUME",
+        L"myfile.spritefont"
+    );
+    resumeButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
+    resumeButton->SetTextColor(textColor);
+ 
+    quitToMenuButton = std::make_unique<Button>(
+        wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
+        buttonCenterX, 500, buttonWidth, buttonHeight,
+        L"QUIT TO MAIN MENU",
+        L"myfile.spritefont"
+    );
+    quitToMenuButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
+    quitToMenuButton->SetTextColor(textColor);
+ 
 
 }
 
@@ -404,13 +593,19 @@ int App::Go()
         constexpr float MAX_LAG = 0.5f;
         if (lag > MAX_LAG)
             lag = MAX_LAG;
-
-        while (lag >= FIXED_TIME_STEP)
+        if (!paused || gameReset > 0)
         {
-            physicsSystem->Update(FIXED_TIME_STEP, 1, temp_allocator, job_system);
-            lag -= FIXED_TIME_STEP;
+            while (lag >= FIXED_TIME_STEP)
+            {
+                physicsSystem->Update(FIXED_TIME_STEP, 1, temp_allocator, job_system);
+                lag -= FIXED_TIME_STEP;
+            }
         }
-
+        else
+        {
+            while (lag >= FIXED_TIME_STEP)
+                lag -= FIXED_TIME_STEP;
+        }
         const float alpha = lag / FIXED_TIME_STEP;
 
         HandleInput(dt);
@@ -423,30 +618,33 @@ void App::HandleInput(float dt)
 {
 
 
-    while (const auto e = wnd.kbd.PollKeyEvent())
+    switch (gameState)
     {
-        if (!e->IsPress()) continue;
+    case GameState::MainMenu:
+        if (wnd.kbd.IsJustPressed(VK_ESCAPE))
+        {
+            PostQuitMessage(0);
+            return;
+        }
+        break;
+    
 
-        switch (e->GetCode())
+    case GameState::Gameplay:
+    {
+        if (wnd.kbd.IsJustPressed('M'))
         {
-        case 'P':
-        {
-            PrefabManager::InstantiateIslandBig1(pSceneRoot.get(), pFreeViewCamera->GetWorldPosition(), 1.0f);
-			PrefabManager::InstantiateNormalEnemy(pSceneRoot.get(), pFreeViewCamera->GetWorldPosition(), 1.0f);
-            break;
+            if (myMusic->isPlaying())
+            {
+                myMusic->Stop();
+            }
+            else
+            {
+                myMusic->Play();
+            }
         }
 
-		case 'M':
-			if (myMusic->isPlaying())
-			{
-				myMusic->Stop();
-			}
-			else
-			{
-				myMusic->Play();
-			}
-			break;
-        case 'C':
+        if (wnd.kbd.IsJustPressed('C'))
+        {
             if (cursorEnabled) {
                 wnd.DisableCursor();
                 wnd.mouse.EnableRawInput();
@@ -456,33 +654,40 @@ void App::HandleInput(float dt)
                 wnd.mouse.DisableRawInput();
             }
             cursorEnabled = !cursorEnabled;
-            break;
-        case 'H': 
+        }
+
+        if (wnd.kbd.IsJustPressed('H'))
+        {
             showControlWindow = !showControlWindow;
-            break;
-        case 'X':
-            tutorialNode = PrefabManager::InstantiateTutorialIslands(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
-            break;
-        /*case 'Q':
-			tutorialNode->GetComponent<Tutorial>()->qPressed= true;
-			break;*/
-        /*case 'B':
-            if (pPlayer->GetComponent<PlayerController>()->abilitySlot1 == pAbility1)
-            {
-                pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility4;
-            }
-            else
-            {
-                pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility1;
-            }
-            break;*/
-        case VK_ESCAPE:
-            PostQuitMessage(0);
+        }
+        if (wnd.kbd.IsJustPressed('Z'))
+        {
+            StartGame();
+        }
+        if (wnd.kbd.IsJustPressed('X'))
+        {
+            ResetGame();
+        }
+        if (wnd.kbd.IsJustPressed('P'))
+        {
+            paused = !paused;
+        }
+        if (wnd.kbd.IsJustPressed(VK_ESCAPE))
+        {
+            gameState = GameState::Paused;
+            paused = true;  
+            wnd.EnableCursor();
+            wnd.mouse.DisableRawInput();
+            cursorEnabled = true;
             return;
-        case VK_F1:
+        }
+
+        if (wnd.kbd.IsJustPressed(VK_F1))
+        {
             showDemoWindow = !showDemoWindow;
-            break;
-        case 'V':
+        }
+
+        if (wnd.kbd.IsJustPressed('V'))
         {
             freeViewCamera = !freeViewCamera;
             if (freeViewCamera) {
@@ -493,140 +698,181 @@ void App::HandleInput(float dt)
                 pCamera->GetComponent<Camera>()->active = true;
                 pFreeViewCamera->GetComponent<Camera>()->active = false;
             }
-            break;
         }
+
+        if (freeViewCamera) {
+            if (wnd.kbd.IsKeyPressed('I')) {
+                pFreeViewCamera->TranslateLocal({ 0.0f, 0.0f, 0.4f });
+            }
+            if (wnd.kbd.IsKeyPressed('K')) {
+                pFreeViewCamera->TranslateLocal({ 0.0f, 0.0f, -0.4f });
+            }
+            if (wnd.kbd.IsKeyPressed('J')) {
+                pFreeViewCamera->TranslateLocal({ -0.4f, 0.0f, 0.0f });
+            }
+            if (wnd.kbd.IsKeyPressed('L')) {
+                pFreeViewCamera->TranslateLocal({ 0.4f, 0.0f, 0.0f });
+            }
+            if (wnd.kbd.IsKeyPressed('U')) {
+                pFreeViewCamera->TranslateLocal({ 0.0f, -0.4f, 0.0f });
+            }
+            if (wnd.kbd.IsKeyPressed('O')) {
+                pFreeViewCamera->TranslateLocal({ 0.0f, 0.4f, 0.0f });
+            }
         }
+        break;
+    }
+    case GameState::Paused: 
+        if (wnd.kbd.IsJustPressed(VK_ESCAPE))
+        { 
+            gameState = GameState::Gameplay;
+            paused = false;
+            wnd.DisableCursor();
+            wnd.mouse.EnableRawInput();
+            cursorEnabled = false;
+        }
+        break;
     }
 
-    if (freeViewCamera) {
-        if (wnd.kbd.IsKeyPressed('I')) {
-            pFreeViewCamera->TranslateLocal({ 0.0f, 0.0f, 0.4f });
-        }
-        if (wnd.kbd.IsKeyPressed('K')) {
-            pFreeViewCamera->TranslateLocal({ 0.0f, 0.0f, -0.4f });
-        }
-        if (wnd.kbd.IsKeyPressed('J')) {
-            pFreeViewCamera->TranslateLocal({ -0.4f, 0.0f, 0.0f });
-        }
-        if (wnd.kbd.IsKeyPressed('L')) {
-            pFreeViewCamera->TranslateLocal({ 0.4f, 0.0f, 0.0f });
-        }
-        if (wnd.kbd.IsKeyPressed('U')) {
-            pFreeViewCamera->TranslateLocal({ 0.0f, -0.4f, 0.0f });
-        }
-        if (wnd.kbd.IsKeyPressed('O')) {
-            pFreeViewCamera->TranslateLocal({ 0.0f, 0.4f, 0.0f });
-        }
-    }
 }
 
 void App::DoFrame(float dt)
 {
-    //fizyka
-    auto* contact = dynamic_cast<MyContactListener*>(physicsSystem->GetContactListener());
-    contact->ExecuteTriggerActivationQueue();
-    contact->ExecuteCollisionActivationQueue();
-    CleanupDestroyedNodes(pSceneRoot.get());    //data removed
-	pSceneRoot->Update(dt);
-    RemoveRigidbody(pSceneRoot.get());//rigidbody remove if destruction
 
-    wnd.Gfx().BeginFrame(0.5f, 0.5f, 1.0f);
-
-    dx::XMMATRIX viewMatrix = pCamera->GetComponent<Camera>()->GetViewMatrix();
-    if (freeViewCamera)
+    wnd.Gfx().BeginFrame(1.0f, 0.0f, 0.0f);
+    switch (gameState)
     {
-        viewMatrix = pFreeViewCamera->GetComponent<Camera>()->GetViewMatrix();
-    }
-    wnd.Gfx().SetCamera(viewMatrix);
 
-    dirLight.Bind(wnd.Gfx(), viewMatrix);
-
-    FrustumCalculating(); 
-
-
-
-    if (myMusic->isPlaying())
+    case GameState::MainMenu:
     {
-        myMusic->UpdateBufferStream();
-    }
-    if (pPlayer != nullptr) {
-        soundDevice->SetLocation(
-            pPlayer->GetWorldPosition().x,
-            pPlayer->GetWorldPosition().y,
-            pPlayer->GetWorldPosition().z
-        );
+         auto& gfx = wnd.Gfx();
+        gfx.GetTarget()->BindAsBuffer(gfx);
+        mainMenuBackground->Update(dt);
 
-        soundDevice->SetOrientation(
-            pCamera->Back().x,
-            pCamera->Back().y,
-            pCamera->Back().z,
-            pCamera->Up().x,
-            pCamera->Up().y,
-            pCamera->Up().z
-        );
+        UpdateMainMenu();
+        DrawMainMenu();
+        break;
     }
 
-    rg.Execute(wnd.Gfx());
-
-    if (showControlWindow) {
-        ShowControlWindows();
-    }
-
-    
-
-    if (targetSprite ) { 
-        targetSprite->Draw(wnd.Gfx().GetContext());
-    }
-
-    if (pPlayer->GetComponent<Health>()->currentHealth == 3.0f) {
-        heart1Sprite->Draw(wnd.Gfx().GetContext());
-        heart2Sprite->Draw(wnd.Gfx().GetContext());
-        heart3Sprite->Draw(wnd.Gfx().GetContext());
-    }
-    if (pPlayer->GetComponent<Health>()->currentHealth == 2.0f) {
-        heart1Sprite->Draw(wnd.Gfx().GetContext());
-        heart2Sprite->Draw(wnd.Gfx().GetContext());
-    }
-    if (pPlayer->GetComponent<Health>()->currentHealth == 1.0f) {
-        heart1Sprite->Draw(wnd.Gfx().GetContext());
-    }
-
-    pUpgradeHandler->DrawUpgradeMenu();
-
-    
-	//tutorialNode->GetComponent<Tutorial>()->DrawNote();
-
-    if(pSceneRoot->GetComponent<Global>()->drawLoadingScreen || bonusTime > 0.0f)
+    case GameState::Gameplay:
     {
-        if (!pSceneRoot->GetComponent<Global>()->drawLoadingScreen)
+  
+    case GameState::Paused:  
+    { 
+        if (gameState == GameState::Gameplay && (!paused || gameReset > 0))
         {
-            bonusTime -= dt;
-        }
-        else {
-            bonusTime = 5.0f;
-        }
-        countLoding ++;
-
-        if (countLoding > 2.0f)
-        {
-            if (countLoding > 2.9f)
+            gameReset--;
+            auto* contact = dynamic_cast<MyContactListener*>(physicsSystem->GetContactListener());
+            contact->ExecuteTriggerActivationQueue();
+            contact->ExecuteCollisionActivationQueue();
+            CleanupDestroyedNodes(pSceneRoot.get());
+            pSceneRoot->Update(dt);
+            RemoveRigidbody(pSceneRoot.get());
+            JPH::BodyIDVector bodyIDs;
+            PhysicsCommon::physicsSystem->GetBodies(bodyIDs);
+            for (JPH::BodyID bodyID : bodyIDs)
             {
-                countLoding = 0.0f;
+                JPH::uint64 data = PhysicsCommon::physicsSystem->GetBodyInterface().GetUserData(bodyID);
+                if (data == 0)
+                {
+                    PhysicsCommon::physicsSystem->GetBodyInterface().DeactivateBody(bodyID);
+                    PhysicsCommon::physicsSystem->GetBodyInterface().RemoveBody(bodyID);
+                    PhysicsCommon::physicsSystem->GetBodyInterface().DestroyBody(bodyID);
+                }
             }
-            loadingScreen3->Draw(wnd.Gfx().GetContext());
         }
-        else if (countLoding > 1.0f)
+         
+        wnd.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 2000.0f));
+         
+        dx::XMMATRIX viewMatrix = pCamera->GetComponent<Camera>()->GetViewMatrix();
+        if (freeViewCamera)
         {
-            loadingScreen2->Draw(wnd.Gfx().GetContext());
+            viewMatrix = pFreeViewCamera->GetComponent<Camera>()->GetViewMatrix();
         }
-        else
+        wnd.Gfx().SetCamera(viewMatrix);
+         
+        Bind::TransformCbuf::SetLight(&dirLight);
+        Bind::ShadowCbuf::SetLight(&dirLight);
+        DirectX::XMFLOAT3 focusPos = pPlayer->GetWorldPosition();
+        Camera* activePlayerCamera = pCamera->GetComponent<Camera>();
+        dirLight.Update(wnd.Gfx(), focusPos, *activePlayerCamera);
+        dirLight.Bind(wnd.Gfx());
+         
+        FrustumCalculating();
+         
+        if (pPlayer != nullptr) {
+            soundDevice->SetLocation(
+                pPlayer->GetWorldPosition().x,
+                pPlayer->GetWorldPosition().y,
+                pPlayer->GetWorldPosition().z
+            );
+            soundDevice->SetOrientation(
+                pCamera->Back().x, pCamera->Back().y, pCamera->Back().z,
+                pCamera->Up().x, pCamera->Up().y, pCamera->Up().z
+            );
+        }
+         
+        rg.Execute(wnd.Gfx());
+         
+        if (showControlWindow) {
+            ShowControlWindows();
+        }
+         
+        if (targetSprite) {
+            targetSprite->Draw(wnd.Gfx().GetContext());
+        }
+        if (pPlayer->GetComponent<Health>()->currentHealth == 3.0f) {
+            heart1Sprite->Draw(wnd.Gfx().GetContext());
+            heart2Sprite->Draw(wnd.Gfx().GetContext());
+            heart3Sprite->Draw(wnd.Gfx().GetContext());
+        }
+        else if (pPlayer->GetComponent<Health>()->currentHealth == 2.0f) {
+            heart1Sprite->Draw(wnd.Gfx().GetContext());
+            heart2Sprite->Draw(wnd.Gfx().GetContext());
+        }
+        else if (pPlayer->GetComponent<Health>()->currentHealth == 1.0f) {
+            heart1Sprite->Draw(wnd.Gfx().GetContext());
+        }
+        pUpgradeHandler->DrawUpgradeMenu();
+         
+        if (pSceneRoot->GetComponent<Global>()->drawLoadingScreen || bonusTime > 0.0f)
         {
-            loadingScreen1->Draw(wnd.Gfx().GetContext());
+            if (!pSceneRoot->GetComponent<Global>()->drawLoadingScreen) { bonusTime -= dt; }
+            else { bonusTime = 5.0f; }
+            countLoding++;
+            if (countLoding > 2.0f) { if (countLoding > 2.9f) { countLoding = 0.0f; } loadingScreen3->Draw(wnd.Gfx().GetContext()); }
+            else if (countLoding > 1.0f) { loadingScreen2->Draw(wnd.Gfx().GetContext()); }
+            else { loadingScreen1->Draw(wnd.Gfx().GetContext()); }
         }
+         
+        if (gameState == GameState::Paused)
+        {
+            pauseMenuOverlay->Update(dt);
+
+            UpdatePauseMenu();
+            DrawPauseMenu();
+        }
+        break;
     }
+    }
+
+    }
+    
+    wnd.kbd.UpdateFrameState();
 
     wnd.Gfx().EndFrame();
     rg.Reset();
+
+    if (!pSceneRoot->GetComponent<Global>()->drawLoadingScreen) {
+        if (myMusic->musicStart) {
+            myMusic->Play();
+            myMusic->musicStart = false;
+        }
+        if (myMusic->isPlaying())
+        {
+            myMusic->UpdateBufferStream();
+        }
+    }
 }
 
 void App::RemoveRigidbody(Node* currentNode)
@@ -644,7 +890,6 @@ void App::RemoveRigidbody(Node* currentNode)
             PhysicsCommon::physicsSystem->GetBodyInterface().DeactivateBody(currentNode->GetComponent<Rigidbody>()->GetBodyID());
             PhysicsCommon::physicsSystem->GetBodyInterface().RemoveBody(currentNode->GetComponent<Rigidbody>()->GetBodyID());
             PhysicsCommon::physicsSystem->GetBodyInterface().DestroyBody(currentNode->GetComponent<Rigidbody>()->GetBodyID());
-
         }
     }
 }
@@ -722,6 +967,10 @@ void App::DrawNodeRecursive(Graphics& gfx, Node* node)
         if (containment == DirectX::DISJOINT) 
         {
             shouldDraw = false; 
+            if(node->GetComponent<SpawnAttack>() != nullptr)
+            {
+                node->GetComponent<SpawnAttack>()->undercover = true;
+			}
         }
 
     }
@@ -729,6 +978,10 @@ void App::DrawNodeRecursive(Graphics& gfx, Node* node)
     if (shouldDraw)
     {
         node->Submit(wnd.Gfx());
+        if (node->GetComponent<SpawnAttack>() != nullptr)
+        {
+            node->GetComponent<SpawnAttack>()->undercover = false;
+        }
     }
     for (const auto& pChild : node->GetChildren())
     {
@@ -967,31 +1220,174 @@ void App::CleanupDestroyedNodes(Node* currentNode)
     
 }
 
+void App::StartGame()
+{
+    if (startedGame || !paused) return;
+    startedGame = true;
+    paused = false;
+    PrefabManager::InstantiateTutorialIslands(tutorialNode, tutorialNode->GetComponent<Tutorial>() , Vector3(0.0f, 0.0f, 0.0f), 1.0f);
+    tutorialNode->GetComponent<Tutorial>()->Start();
+    pSceneRoot->GetComponent<Global>()->Start();
+    
+}
+
+void App::ResetGame()
+{
+    if (!startedGame || !paused) return;
+    startedGame = false;
+    gameReset = 2;
+    pSceneRoot->GetComponent<Global>()->Reset();
+    tutorialNode->GetComponent<Tutorial>()->Reset();
+    pSelectedSceneNode = nullptr;
+    if (temporary != nullptr)
+    {
+        temporary->DestroyChilds();
+    }
+    if (tutorialNode != nullptr)
+    {
+        tutorialNode->DestroyChilds();
+    }
+}
+
+
 void App::SaveNodeTransformsRecursive(Node& node, std::ofstream& file)
 {
-    // Pomi� zapisywanie w�z��w "technicznych" lub pustych, je�li chcesz
     if (node.GetName() != "Root" && node.GetName() != "L Normal" && node.GetName() != "Camera" && node.GetName() != "FreeViewCamera" &&
         node.GetName() != "L Ability" && node.GetName() != "R Normal" && node.GetName() != "R Ability" && node.GetName() != "Player")
     {
         DirectX::XMFLOAT3 pos = node.GetLocalPosition();
         DirectX::XMFLOAT3 rot = node.GetLocalRotationEuler();
 
-        // Ustaw precyzj� zapisu, aby unikn�� notacji naukowej i uzyska� czytelne liczby
         file << std::fixed << std::setprecision(2);
 
-        // Zapisz nazw� i pozycj� w jednej linii
         file << "Object: " << std::setw(20) << std::left << node.GetName()
             << " Position: {" << pos.x << "f, " << pos.y << "f, " << pos.z << "f}" 
 			<< " Rotation: {" << rot.x << "f, " << rot.y << "f, " << rot.z << "f}"
             << std::endl;
     }
 
-    // Wywo�aj rekurencyjnie dla wszystkich dzieci tego w�z�a
     for (const auto& pChild : node.GetChildren())
     {
         if (pChild)
         {
             SaveNodeTransformsRecursive(*pChild, file);
         }
+    }
+}
+ 
+
+void App::UpdateMainMenu()
+{
+    int mouseX = wnd.mouse.GetPosX();
+    int mouseY = wnd.mouse.GetPosY();
+
+    const DirectX::XMFLOAT4 buttonIdleColor = { 0.82f, 0.63f, 0.35f, 0.9f };
+    const DirectX::XMFLOAT4 buttonHoverColor = { 1.0f, 0.8f, 0.5f, 1.0f };
+     
+    bool isMouseLeftPressedThisFrame = wnd.mouse.IsLeftPressed();
+     
+    bool isLeftClick = isMouseLeftPressedThisFrame && !wasMouseLeftPressedLastFrame;
+     
+    if (startButton->IsHovered(mouseX, mouseY)) {
+        startButton->SetColor(buttonHoverColor.x, buttonHoverColor.y, buttonHoverColor.z, buttonHoverColor.w);
+         
+        if (isLeftClick) {
+            gameState = GameState::Gameplay;
+            paused = true;
+            wnd.DisableCursor();
+            wnd.mouse.EnableRawInput();
+            cursorEnabled = false;
+            StartGame();
+        }
+    }
+    else {
+        startButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
+    }
+     
+    if (quitButton->IsHovered(mouseX, mouseY)) {
+        quitButton->SetColor(buttonHoverColor.x, buttonHoverColor.y, buttonHoverColor.z, buttonHoverColor.w);
+         
+        if (isLeftClick) {
+            PostQuitMessage(0);
+        }
+    }
+    else {
+        quitButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
+    }
+     
+    wasMouseLeftPressedLastFrame = isMouseLeftPressedThisFrame;
+}
+
+void App::DrawMainMenu()
+{
+    auto* context = wnd.Gfx().GetContext();
+    const float screenWidth = 1920.0f;
+    const float screenHeight = 1080.0f;
+
+    if (mainMenuBackground) {
+        mainMenuBackground->Draw(context);
+    } 
+    if (startButton) {
+        startButton->Draw(context, screenWidth, screenHeight);
+    }
+    if (quitButton) {
+        quitButton->Draw(context, screenWidth, screenHeight);
+    }
+}
+
+
+void App::UpdatePauseMenu()
+{
+    int mouseX = wnd.mouse.GetPosX();
+    int mouseY = wnd.mouse.GetPosY();
+
+    const DirectX::XMFLOAT4 buttonIdleColor = { 0.82f, 0.63f, 0.35f, 0.9f };
+    const DirectX::XMFLOAT4 buttonHoverColor = { 1.0f, 0.8f, 0.5f, 1.0f };
+
+    bool isMouseLeftPressedThisFrame = wnd.mouse.IsLeftPressed();
+    bool isLeftClick = isMouseLeftPressedThisFrame && !wasMouseLeftPressedLastFrame;
+     
+    if (resumeButton->IsHovered(mouseX, mouseY)) {
+        resumeButton->SetColor(buttonHoverColor.x, buttonHoverColor.y, buttonHoverColor.z, buttonHoverColor.w);
+        if (isLeftClick) {
+            gameState = GameState::Gameplay;
+            paused = false;
+            wnd.DisableCursor();
+            wnd.mouse.EnableRawInput();
+            cursorEnabled = false;
+        }
+    }
+    else {
+        resumeButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
+    }
+
+     if (quitToMenuButton->IsHovered(mouseX, mouseY)) {
+        quitToMenuButton->SetColor(buttonHoverColor.x, buttonHoverColor.y, buttonHoverColor.z, buttonHoverColor.w);
+        if (isLeftClick) {
+            ResetGame();
+            gameState = GameState::MainMenu; 
+        }
+    }
+    else {
+        quitToMenuButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
+    }
+
+    wasMouseLeftPressedLastFrame = isMouseLeftPressedThisFrame;
+}
+
+void App::DrawPauseMenu()
+{
+    auto* context = wnd.Gfx().GetContext();
+    const float screenWidth = 1920.0f;
+    const float screenHeight = 1080.0f;
+     
+    if (pauseMenuOverlay) {
+        pauseMenuOverlay->Draw(context);
+    } 
+    if (resumeButton) {
+        resumeButton->Draw(context, screenWidth, screenHeight);
+    }
+    if (quitToMenuButton) {
+        quitToMenuButton->Draw(context, screenWidth, screenHeight);
     }
 }

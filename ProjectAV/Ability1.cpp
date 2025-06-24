@@ -31,18 +31,33 @@ void Ability1::Positioning() {
 	pOwner->SetLocalTransform(camera->GetLocalTransform());
 	pOwner->TranslateLocal(Vector3(0.0f, 0.0f, 8.0f));
 }
-void Ability1::Pressed()
+bool Ability1::Pressed()
 {
-    if (!abilityReady) return;
-	timeToChange = 0.3f;
-	leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
-	leftHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
+    if (!abilityReady) return false;
+
+    // animacja popchniêcia 
+    // particle
+
+    leftHand->PlayAnimation(6, 0.2, false); //ATTACK_PUSH_LEFT
+    
+    if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+        float randSound = (rand() % 4);
+        pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f, false);
+    }
+
+	timeToChange = 0.64f;
+	//leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
+	//leftHand->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
     for (int i = 0; i < objects.size(); i++)
     {
         if (objects[i]->tag == "ENEMY" || objects[i]->tag == "STONE")
         {
 			Vec3 direction = Vec3(pOwner->Forward().x, pOwner->Forward().y, pOwner->Forward().z);
             PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), direction * force);
+            if (objects[i]->tag == "ENEMY")
+            {
+                objects[i]->GetComponent<StateMachine>()->Stop(0.1f);
+            }
           /*  if (objects[i]->tag == "ENEMY")
             {
                 objects[i]->AddComponent(
@@ -61,8 +76,9 @@ void Ability1::Pressed()
     }
     cooldownTimer = cooldown;
     abilityReady = false;
-    //PrefabManager::InstantiateAbility1Particles(pOwner->GetParent(), Vector3(pOwner->GetLocalPosition().x, pOwner->GetLocalPosition().y, pOwner->GetLocalPosition().z), 1.0, pOwner->GetLocalRotationQuaternion());
-    PrefabManager::InstantiateAbility1ParticlesSmoke(pOwner->GetParent(), Vector3(pOwner->GetLocalPosition().x, pOwner->GetLocalPosition().y, pOwner->GetLocalPosition().z), 1.0, pOwner->GetLocalRotationQuaternion());
+    
+    PrefabManager::InstantiateAbility1Particles(pOwner->GetParent(), Vector3(pOwner->GetLocalPosition().x, pOwner->GetLocalPosition().y, pOwner->GetLocalPosition().z), 1.0, pOwner->GetLocalRotationQuaternion());
+    return true;
 }
 void Ability1::Released()
 {
@@ -72,12 +88,17 @@ void Ability1::Cooldowns(float dt)
     if (cooldownTimer > 0.0f)
     {
         cooldownTimer -= dt;
+        if (leftHand->GetCurrentPlayingAnimationRaw() == nullptr) {
+            leftHand->PlayAnimation(8);  //COOLDOWN
+        }
+        
+
     }
     else
     {
         if (!abilityReady)
         {
-            leftHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
+            leftHand->PlayAnimation(13); //IDLE_RUN
         }
         abilityReady = true;
     }
@@ -86,33 +107,22 @@ void Ability1::Cooldowns(float dt)
         timeToChange -= dt;
         if (timeToChange <= 0.0f)
         {
-            leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
-            leftHandNormal->SetLocalPosition({ 0.0f, -2.7f, 1.0f });
         }
     }
 
 }
 
-void Ability1::OnTriggerEnter(Node* object) {
-    if (object == nullptr) return;
+void Ability1::OnTriggerStay(const std::vector<Node*> others) {
+    objects.clear();
+	objects = others;
+    /*if (object == nullptr) return;
     if (object->tag != "ENEMY" && object->tag != "STONE" && object->tag != "BULLET") return;
     if (object->GetComponent<Rigidbody>() == nullptr) return;
-    for(int i= 0; i < objects.size(); i++)
+    for (int i = 0; i < objects.size(); i++)
     {
         if (objects[i] == object) return;
-	}
-    objects.push_back(object);
-	//OutputDebugStringA(("Ability1 OnTriggerEnter: " + object->GetName() + "\n").c_str());
-}
-void Ability1::OnTriggerExit(Node* object) {
-    if (object == nullptr) return;
-    if (object->tag != "ENEMY" && object->tag != "STONE" && object->tag != "BULLET") return;
-    if (object->GetComponent<Rigidbody>() == nullptr) return;
-    auto it = std::remove(objects.begin(), objects.end(), object);
-    if (it != objects.end()) {
-        objects.erase(it, objects.end());
     }
-	//OutputDebugStringA(("Ability1 OnTriggerExit: " + object->GetName() + "\n").c_str());
+    objects.push_back(object);*/
 }
 void Ability1::DrawImGuiControls()
 {

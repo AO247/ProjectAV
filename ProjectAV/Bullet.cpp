@@ -22,7 +22,7 @@ void Bullet::OnTriggerEnter(Node* object)
 	}
 	if (pushedByPlayer && object->tag == "ENEMY")
 	{
-		object->GetComponent<StateMachine>()->Stun(1.0f);
+		object->GetComponent<Health>()->TakeDamage(0.0f);
 	}
 	pOwner->Destroy();
 }

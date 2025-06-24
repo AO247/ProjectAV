@@ -1,2 +1,10 @@
-#define MASK_BOI
-#include "PhongDifSpcNrm_PS.hlsl"
+#define MASK_BOI 
+cbuffer CBuf : register(b1)
+{
+    float3 materialColor;
+};
+
+float4 main() : SV_Target
+{
+    return float4(materialColor, 0.3f);
+}

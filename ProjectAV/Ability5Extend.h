@@ -22,6 +22,8 @@ public:
 	Node* ignore = nullptr;
 	std::vector<Node*> objects;
 
+	float holdSoundTimer = 0.0f;
+	float holdSoundInterval = 2.0f;
 private:
 	Rigidbody* rigidbody;
 	void ApplyForce(Node* other, float dt);

@@ -14,7 +14,6 @@ public:
 	virtual ~Flying() = default;
 	float maxSpeed = 18.0f;
 	float maxForce = 200.0f;
-	float flyingHeight = 12.0f;
 	float height = 3.0f;
 	float rotationLerpFactor = 0.08f;
 
@@ -32,6 +31,10 @@ public:
 	Vector3 lastIslandPos = { 0.0f, 0.0f, 0.0f };
 	bool grounded = false;
 	bool goingUp = false;
+
+	float flyingSoundTimer = 0.0f;
+	float flyingIdleSoundTimer = 0.0f;
+	float flyingSoundInterval = 4.0f;
 private:
 	Rigidbody* rigidbody;
 	Vector3 HeightCalculate();

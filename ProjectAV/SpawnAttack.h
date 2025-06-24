@@ -15,6 +15,12 @@ public:
 	float cooldownTime = 3.0f;
 	virtual void Attack(float dt);
 	virtual void DrawImGuiControls() override;
+	bool undercover = true;
+
+	float attackSoundTimer = 0.0f;
+	float attackSoundInterval = 5.0f;
+	float soundTimer = 0.0f;
+	bool soundPlayed = true;
 
 private:
 	bool attacked = false;

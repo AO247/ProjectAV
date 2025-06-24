@@ -33,6 +33,8 @@ public:
 	float attackRange = 8.0f;
 	float stunTime = 1.0f;
 	float stopTime = 1.0f;
+	float groundDamping = 0.035f;
+	float flyingDamping = 0.01f;
 
 	bool isFlying = false;
 	bool isDead = false;
@@ -45,11 +47,11 @@ public:
 	void EndState();
 	void Die();
 	void ChangeState(StateType nextState);
-	void Stun(float time);
-	void Stop(float time);
+	void Stun(float time = 1.0f);
+	void Stop(float time = 1.0f);
 	float timer = 0.0f;
 
-	EnemyType enemyType = EnemyType::BASIC;
+	EnemyType enemyType = EnemyType::NONE;
 
 
 private:
