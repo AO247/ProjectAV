@@ -2584,46 +2584,26 @@ public:
 		parentNode->AddChild(std::move(pNewNodeOwner));
         return pNewNode;
     }
-    static Node* InstantiateTutorialIslands(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 }) {
-        auto pNewNodeOwner = std::make_unique<Node>("Tutorial", nullptr, "GROUND");
+    static Node* InstantiateTutorialIslands(Node* parentNode, Tutorial* tut,  Vector3 position, float scale, Vector3 rotation = { 0,0,0 }) {
+        parentNode->SetLocalPosition({ 185.10f, -19.50f, -448.20f });
+        parentNode->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+        parentNode->SetLocalRotation({ 0.00f, 1.54f, 0.00f });
 
-        pNewNodeOwner->SetLocalPosition({ 185.10f, -19.50f, -448.20f });
-        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
-        pNewNodeOwner->SetLocalRotation({ 0.00f, 1.54f, 0.00f });
-
-        pNewNodeOwner->AddComponent(
-            std::make_unique<Tutorial>(pNewNodeOwner.get(), wind, player)
-        );
-        Tutorial* tut = pNewNodeOwner->GetComponent<Tutorial>();
-
-        Node* JumpIsland = InstantiateJumpIsland(pNewNodeOwner.get(), { -15.0f, 0.0f, -169.0f }, 1.0f, { 0.00f, 1.57f, 0.0f });
-        Node* DoubleJumpIsland = InstantiateDoubleJumpIsland(pNewNodeOwner.get(), { 3.0f, -2.0f, -68.0f }, 1.0f, { 0.00f, 1.01f, 0.00f });
-		Node* AbilityIsland = InstantiateAbilityIsland(pNewNodeOwner.get(), { -92.29f, 0.00f, 50.61f }, 1.0f, { 0.0f, 2.36f, 0.0f });
-		Node* UltIsland = InstantiateUltIsland(pNewNodeOwner.get(), { -250.91f, -0.01f, -137.29f }, 1.0f, { 0.0f, -1.66f, 0.04f });
         
-        tut->stone1 = InstantiateStone1(pNewNodeOwner.get(), { -163.0f, 3.2f, 26.0f }, 0.4f);
-        tut->stone2 = InstantiateStone1(pNewNodeOwner.get(), { -210.0f, 1.8f, -40.0f }, 0.4f);
-        Node* enemy1 = InstantiateNormalEnemy(root, { 187.4f, -18.3f, -267.6f }, 1.6f);
-        Node* enemy2 = InstantiateNormalEnemy(root, { 105.0f, -15.5f, -236.4f }, 1.6f);
-        Node* enemy3 = InstantiateNormalEnemy(root, { 44.1f, -15.3f, -198.9f }, 1.6f);
-        Node* enemy4 = InstantiateShootingEnemy(root, { 32.2f, -15.8f, -203.6f }, 1.6f);
-        Node* enemy5 = InstantiateShootingEnemy(root, { 35.2f, -15.8f, -190.6f }, 1.6f);
 
-        enemy1->GetComponent<Walking>()->maxSpeed = 0.0f;
-        enemy2->GetComponent<Walking>()->maxSpeed = 0.0f;
-        enemy3->GetComponent<Walking>()->maxSpeed = 0.0f;        
-        enemy4->GetComponent<Walking>()->maxSpeed = 0.0f;
-        enemy5->GetComponent<Walking>()->maxSpeed = 0.0f;
+        Node* JumpIsland = InstantiateJumpIsland(parentNode, { -15.0f, 0.0f, -169.0f }, 1.0f, { 0.00f, 1.57f, 0.0f });
+        Node* DoubleJumpIsland = InstantiateDoubleJumpIsland(parentNode, { 3.0f, -2.0f, -68.0f }, 1.0f, { 0.00f, 1.01f, 0.00f });
+		Node* AbilityIsland = InstantiateAbilityIsland(parentNode, { -92.29f, 0.00f, 50.61f }, 1.0f, { 0.0f, 2.36f, 0.0f });
+		Node* UltIsland = InstantiateUltIsland(parentNode, { -250.91f, -0.01f, -137.29f }, 1.0f, { 0.0f, -1.66f, 0.04f });
+        
+        tut->stone1 = InstantiateStone1(parentNode, { -163.0f, 3.2f, 26.0f }, 0.4f);
+        tut->stone2 = InstantiateStone1(parentNode, { -210.0f, 1.8f, -40.0f }, 0.4f);
+        tut->temporary = root;
+    
 
         tut->SetStones();
-		//InstantiateNormalEnemy(pNewNodeOwner.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f, pPlayer);
-		//InstantiateNormalEnemy(pNewNodeOwner.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f, pPlayer);
 
-
-
-        Node* pNewNode = pNewNodeOwner.get();
-        parentNode->AddChild(std::move(pNewNodeOwner));
-        return pNewNode;
+        return parentNode;
     }
 
     static Node* InstantiateIslandBig1(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
@@ -6995,13 +6975,13 @@ public:
         pNewNode->SetLocalPosition(position);
         pNewNode->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
-
+        pNewNode->radius = 7.0f;
 
         return pNewNode;
     }
     static Node* InstantiateTankEnemy(Node* parentNode, Vector3 position, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("Basic", nullptr, "ENEMY");
+        auto pNewNodeOwner = std::make_unique<Node>("Tank", nullptr, "ENEMY");
         Node* pNewNode = pNewNodeOwner.get();
 
         pNewNode->AddComponent(
@@ -7031,7 +7011,7 @@ public:
         eBodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
 
         //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
-        eBodySettings.mMassPropertiesOverride.mMass = 20.0f;
+        eBodySettings.mMassPropertiesOverride.mMass = 24.0f;
         eBodySettings.mFriction = 0.2f;
         eBodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
         eBodySettings.mMotionQuality = EMotionQuality::LinearCast;
@@ -7048,7 +7028,7 @@ public:
             std::make_unique<Trigger>(pattackNode, a1BodySettings, false)
         );
         pattackNode->AddComponent(
-            std::make_unique<BasicAttack>(pattackNode)
+            std::make_unique<TankAttack>(pattackNode)
         );
         BasicAttack* basicAttack = pattackNode->GetComponent<BasicAttack>();
         basicAttack->attackRange = 7.0f;
@@ -7061,7 +7041,7 @@ public:
         );
         Walking* walking = pNewNode->GetComponent<Walking>();
         walking->radius = 1.5f;
-        walking->maxSpeed = 40.0f;
+        walking->maxSpeed = 50.0f;
 
 
         //STATE MACHINE
@@ -7083,6 +7063,7 @@ public:
         pNewNode->SetLocalPosition(position);
         pNewNode->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
+        pNewNode->radius = 7.0f;
 
 
         return pNewNode;
@@ -7165,6 +7146,7 @@ public:
         pNewNode->SetLocalPosition(position);
         pNewNode->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
+        pNewNode->radius = 7.0f;
 
         return pNewNode;
     }
@@ -7252,6 +7234,7 @@ public:
         pNewNode->SetLocalPosition(position);
         pNewNode->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
+        pNewNode->radius = 7.0f;
 
         return pNewNode;
     }
@@ -7336,7 +7319,7 @@ public:
         pNewNode->SetLocalPosition(position);
         pNewNode->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
-        pNewNode->radius = 13.0f;
+        pNewNode->radius = 7.0f;
 
         return pNewNode;
     }
@@ -7429,6 +7412,7 @@ public:
         pNewNode->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
 
+        pNewNode->radius = 7.0f;
 
         return pNewNode;
     }

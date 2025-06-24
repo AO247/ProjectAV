@@ -6,11 +6,11 @@
 
 class Node;
 
-class BasicAttack : public Component
+class TankAttack : public Component
 {
 public:
-	BasicAttack(Node* owner, std::string tag = "ATTACK");
-	virtual ~BasicAttack() = default;
+	TankAttack(Node* owner, std::string tag = "ATTACK");
+	virtual ~TankAttack() = default;
 	float damage = 1.0f;
 	float wholeAttackTime = 1.5f;
 	float startDmgTime = 0.5f;

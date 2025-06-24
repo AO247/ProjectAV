@@ -489,7 +489,16 @@ void Node::UpdateStoredComponentsFromMatrix()
     dx::XMStoreFloat4(&localRotationQuaternion, r_quat_vec);
     dx::XMStoreFloat3(&localScale, s_vec);
 }
-
+void Node::DestroyChilds()
+{
+    if (children.size() > 0)
+    {
+        for (int i = 0; i < children.size(); i++)
+        {
+            children[i]->Destroy();
+        }
+    }
+}
 
 void Node::Update(float dt)
 {

@@ -17,8 +17,8 @@ public:
 	int mediumIslandCount = 3;
 	int smallIslandCount = 0;
 
-	int numberOfHardEnemies = 2;
-	int numberOfMediumEnemies = 2;
+	int numberOfHardEnemies = 0;
+	int numberOfMediumEnemies = 3;
 	int numberOfEasyEnemies = 2;
 
 

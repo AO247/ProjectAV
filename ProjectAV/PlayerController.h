@@ -35,7 +35,7 @@ public:
 	bool alive = true;
 	bool grounded = false;
 	bool evolvedDash = false;
-	bool enableFallPush = true;
+	bool enableFallPush = false;
 
 	std::vector<Node*> objects;
 	//std::optional<Keyboard::Event> e;

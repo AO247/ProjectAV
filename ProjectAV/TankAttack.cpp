@@ -1,21 +1,21 @@
-#include "BasicAttack.h"
+#include "TankAttack.h"
 #include "Node.h"       
 
 
 namespace dx = DirectX;
-BasicAttack::BasicAttack(Node* owner, std::string tag)
+TankAttack::TankAttack(Node* owner, std::string tag)
 	: Component(owner, std::move(tag))
 {
 }
 
-void BasicAttack::Attack(float dt)
+void TankAttack::Attack(float dt)
 {
 	if (timer == 0.0f)
 	{
 		if (pOwner->GetComponent<SoundEffectsPlayer>()) {
 			float randSound = (rand() % 3) + 4;
 			pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound);
-		} 
+		}
 		//miejsce na animacje !!!
 	}
 	timer += dt;
@@ -44,7 +44,7 @@ void BasicAttack::Attack(float dt)
 	CheckAttack();
 }
 
-void BasicAttack::CheckAttack()
+void TankAttack::CheckAttack()
 {
 	if (objects.empty()) return;
 	objects[0]->GetComponent<Health>()->TakeDamage(damage);
@@ -58,7 +58,7 @@ void BasicAttack::CheckAttack()
 	OutputDebugStringA("\nNormal Attack\n");
 }
 
-void BasicAttack::OnTriggerEnter(Node* object) {
+void TankAttack::OnTriggerEnter(Node* object) {
 	if (object == nullptr) return;
 	if (object->tag != "PLAYER") return;
 	for (int i = 0; i < objects.size(); i++)
@@ -68,7 +68,7 @@ void BasicAttack::OnTriggerEnter(Node* object) {
 	objects.push_back(object);
 	OutputDebugStringA(("Enemy OnTriggerEnter: " + object->GetName() + "\n").c_str());
 }
-void BasicAttack::OnTriggerExit(Node* object) {
+void TankAttack::OnTriggerExit(Node* object) {
 	if (object == nullptr) return;
 	if (object->tag != "PLAYER") return;
 	auto it = std::remove(objects.begin(), objects.end(), object);
@@ -79,7 +79,7 @@ void BasicAttack::OnTriggerExit(Node* object) {
 }
 
 
-void BasicAttack::DrawImGuiControls()
+void TankAttack::DrawImGuiControls()
 {
 	ImGui::Text("Tag: %s", tag.c_str());
 	ImGui::InputFloat("Damage", &damage);
