@@ -2449,7 +2449,7 @@ public:
         InstantiateRock2(pNewNode, Vector3(22.00f, 0.50f, -15.20f), 1.0f, Vector3(0.0f, -0.19f, 0.0f));
         InstantiateRock4(pNewNode, Vector3(-15.90f, 0.00f, -7.40f), 1.0f, Vector3(0.00f, -1.29f, 0.00f));
         InstantiateRock1(pNewNode, { -6.06f, 16.70f, 35.21f }, 0.9f, Vector3(0.00f, 0.00f, 3.14f));
-		InstantiateBaseColumn(pNewNode, { 66.9f, -1.4f, -31.9f }, 0.8f, 1.0f);
+		InstantiateBaseColumn(pNewNode, { 66.9f, -3.3f, -31.9f }, 0.8f, 1.0f);
         InstantiatePlatform3(pNewNode, Vector3(0.00f, 0.00f, 8.30f), 1.0f, Vector3(0.00f, 1.75f, 0.00f));
 
         parentNode->AddChild(std::move(pNewNodeOwner));
@@ -3800,7 +3800,7 @@ public:
         InstantiateNewColumn(pNewNode, Vector3(-15.63f, 0.30f, 30.60f), 1.0f, Vector3(0.00f, 0.0f, 0.00f));
         InstantiateNewColumn(pNewNode, Vector3(36.47f, 0.30f, -28.00f), 1.0f, Vector3(0.00f, 0.0f, 0.00f));
         InstantiateColumn2(pNewNode, Vector3(-32.23f, 0.50f, -2.80f), 1.0f, Vector3(0.00f, 0.0f, 0.00f));
-		InstantiateBaseColumn(pNewNode, Vector3(7.67f, -2.50f, -2.50f), 12.0f, 1.0f, Vector3(0.00f, 0.0f, 0.00f));
+		InstantiateBaseColumn(pNewNode, Vector3(7.67f, -4.40f, -2.50f), 12.0f, 1.0f, Vector3(0.00f, 0.0f, 0.00f));
 		InstantiatePlatform3(pNewNode, Vector3(38.27f, 0.40f, 29.60f), 0.8f, Vector3(0.00f, 2.25f, 0.00f));
 
         auto spawnPoint1 = std::make_unique<Node>("SpawnPoint 1", pNewNodeOwner.get());
@@ -6264,7 +6264,7 @@ public:
         pNewNodeOwner->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enviro\\rock_hit5.wav");
 
         pNewNodeOwner->AddComponent(
-            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\ruiny\\kolumna_top.obj")
+            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\ruiny\\kolumna_czesc_top.obj")
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
@@ -6311,7 +6311,7 @@ public:
         pNewNodeOwner->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enviro\\rock_hit5.wav");
 
         pNewNodeOwner->AddComponent(
-            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\ruiny\\kolumna_srodek.obj")
+            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\ruiny\\kolumna_czesc_srodek.obj")
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
@@ -6343,7 +6343,7 @@ public:
         auto pNewNodeOwner = std::make_unique<Node>("Base", nullptr, "WALL");
 
         pNewNodeOwner->AddComponent(
-            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\ruiny\\kolumna_podstawa.obj")
+            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\ruiny\\kolumna_czesc_podstawa.obj")
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
@@ -6373,7 +6373,7 @@ public:
         auto pNewNodeOwner = std::make_unique<Node>("New Column", nullptr, "WALL");
         Node* pNewNode = pNewNodeOwner.get();
 
-        InstantiateBaseColumn(pNewNode, Vector3(0.0f, 2.0f, 0.0f), 1.0f, 1.0f);
+        InstantiateBaseColumn(pNewNode, Vector3(0.0f, 0.1f, 0.0f), 1.0f, 1.0f);
         Node* middle = InstantiateMiddleColumn(pNewNode, Vector3(0.0f, 12.6f, 0.0f), 1.0f);
         Node* top = InstantiateTopColumn(middle, Vector3(0.0f, 7.9f, 0.0f), 1.0f);
         top->GetComponent<Rigidbody>()->ConnectWithOtherBody(middle->GetComponent<Rigidbody>()->GetBodyID(), Vec3(0.0f, 7.9f, 0.0f));
