@@ -23,6 +23,7 @@
 #include "Trigger.h"
 #include "BrokenPart.h"
 #include "SpawnJump.h"
+#include "Hands.h"
 #include "UpgradeHandler.h"
 #include "Collectable.h"
 #include "Ability.h"

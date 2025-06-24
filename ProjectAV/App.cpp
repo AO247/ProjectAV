@@ -101,10 +101,13 @@ App::App(const std::string& commandLine)
     pRightHand = pRightHandOwner.get();
     auto pRightHandAbilityOwner = std::make_unique<Node>("R Ability", nullptr, "HANDS");
     pRightHandAbility = pRightHandAbilityOwner.get();
+	auto handsOwner = std::make_unique<Node>("Hands", nullptr, "HANDS");
+
 
 	Node* pPlayerThings = playerThings.get();
 	Node* pAbilities = abilities.get();
 	Node* pBase = base.get();
+	Node* pHands = handsOwner.get();
     pSceneRoot->AddChild(std::move(pPrefabsOwner));
 	pSceneRoot->AddChild(std::move(base));
     pSceneRoot->AddChild(std::move(playerThings));
@@ -118,10 +121,11 @@ App::App(const std::string& commandLine)
     pAbilities->AddChild(std::move(pAbility4Owner));
     pAbilities->AddChild(std::move(pAbility5Owner));
     pAbilities->AddChild(std::move(pAbility6Owner));
-    pCamera->AddChild(std::move(pLeftHandOwner));
-    pCamera->AddChild(std::move(pLeftHandAbilityOwner));
-    pCamera->AddChild(std::move(pRightHandOwner));
-    pCamera->AddChild(std::move(pRightHandAbilityOwner));
+	pCamera->AddChild(std::move(handsOwner));
+    pHands->AddChild(std::move(pLeftHandOwner));
+    pHands->AddChild(std::move(pLeftHandAbilityOwner));
+    pHands->AddChild(std::move(pRightHandOwner));
+    pHands->AddChild(std::move(pRightHandAbilityOwner));
 
     //PrefabManager::InstantiateStone1(pSceneRoot.get(), Vector3(0.0f, 100.0f, 0.0f), 1.0f);
 
@@ -157,7 +161,14 @@ App::App(const std::string& commandLine)
     pPlayer->AddChild(std::move(legsOwner));
 
 
-
+    pHands->AddComponent(
+        std::make_unique<Hands>(pHands)
+    );
+    pHands->GetComponent<Hands>()->playerController = pPlayer->GetComponent<PlayerController>();
+	pHands->GetComponent<Hands>()->rigidbody = pPlayer->GetComponent<Rigidbody>();
+    pHands->GetComponent<Hands>()->leftHand = pLeftHand;
+    pHands->GetComponent<Hands>()->rightHand = pRightHand;
+    pHands->GetComponent<Hands>()->cameraNode = pCamera;
 
     BodyCreationSettings a1BodySettings(new JPH::CapsuleShape(6.0f, 5.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
     pAbility1->AddComponent(

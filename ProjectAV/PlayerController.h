@@ -44,6 +44,7 @@ public:
 	Node* abilitySlot3;
 	Node* camera;
 	Rigidbody* rigidbody;
+	Vector3 moveDirection;
 
 private:
 	Window& wnd;
@@ -52,7 +53,6 @@ private:
 	bool canDash = true;
 	float airMultiplier = 1.1f;
 
-	Vector3 moveDirection;
 	Vector3 dashDirection;
 	float dashCooldownTimer = 0.0f;
 	float dashTimer = 0.0f;
