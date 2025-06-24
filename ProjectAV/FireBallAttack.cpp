@@ -1,14 +1,14 @@
-#include "ShootAttack.h"
+#include "FireBallAttack.h"
 #include "Node.h"       
 #include "PrefabManager.h"
 
 namespace dx = DirectX;
-ShootAttack::ShootAttack(Node* owner, Node* player, std::string tag)
+FireBallAttack::FireBallAttack(Node* owner, Node* player, std::string tag)
 	: Component(owner, std::move(tag)), player(player)
 {
 }
 
-void ShootAttack::Attack(float dt)
+void FireBallAttack::Attack(float dt)
 {
 	if (player == NULL && player == nullptr) return;
 	Vector3 playerPos = player->GetWorldPosition();
@@ -28,22 +28,13 @@ void ShootAttack::Attack(float dt)
 		if (pOwner->GetComponent<SoundEffectsPlayer>()) {
 			if (shootSoundTimer <= 0.0f)
 			{
-				float randSound = (rand() % 2 + 4); 
+				float randSound = (rand() % 2 + 4);
 				pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound);
 				shootSoundTimer = shootSoundInterval;
 			}
 		}
 		// miejsce na animacje
-
-		StateMachine* statemachine = pOwner->GetComponent<StateMachine>();
-		if (statemachine->enemyType == EnemyType::RANGED) {
-			pOwner->GetComponent<AnimationComponent>()->PlayAnimation(1, 0.2f, false);
-		}
-		if (statemachine->enemyType == EnemyType::FLYING) {
-			pOwner->GetComponent<AnimationComponent>()->PlayAnimation(1, 0.2f, false);
-		}
 	}
-
 	timer += dt;
 	if (timer >= wholeAttackTime) {
 		attacked = false;
@@ -61,19 +52,19 @@ void ShootAttack::Attack(float dt)
 
 	Vector3 pos = pOwner->GetWorldPosition();
 	pos += pOwner->Forward() * 5.0f;
-	Node* bullet = PrefabManager::InstantiateBullet(Vector3(pos.x, pos.y, pos.z), 0.2f);
-	bullet->GetComponent<Bullet>()->ignore = pOwner;
+	Node* fireBall = PrefabManager::InstantiateFireBall(Vector3(pos.x, pos.y, pos.z), 0.2f);
+	fireBall->GetComponent<FireBall>()->ignore = pOwner;
 	playerPos.y += 2.0f;
 	Vector3 dir = playerPos - pos;
 	dir.Normalize();
 	dir *= bulletSpeed;
-	PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(bullet->GetComponent<Rigidbody>()->GetBodyID(), Vec3(dir.x, dir.y, dir.z));
+	PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(fireBall->GetComponent<Rigidbody>()->GetBodyID(), Vec3(dir.x, dir.y, dir.z));
 
 }
 
 
 
-void ShootAttack::DrawImGuiControls()
+void FireBallAttack::DrawImGuiControls()
 {
 	ImGui::Text("Tag: %s", tag.c_str());
 	ImGui::InputFloat("Damage", &damage);

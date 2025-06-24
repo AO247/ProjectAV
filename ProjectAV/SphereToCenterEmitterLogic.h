@@ -25,11 +25,11 @@ public:
     float TravelSpeed = 2.5f;
 
     float SpeedRandomness = 0.2f;
-
+    std::mt19937 rng;
+    std::uniform_real_distribution<float> dist;
 private:
     float timeSinceLastEmission = 0.0f;
 
     // For generating random points on the surface of a sphere
-    std::mt19937 rng;
-    std::uniform_real_distribution<float> dist;
+
 };

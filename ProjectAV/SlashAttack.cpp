@@ -16,6 +16,8 @@ void SlashAttack::Attack(float dt)
 			float randSound = (rand() % 3) + 4;
 			pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound);
 		}
+		pOwner->GetParent()->GetComponent<AnimationComponent>()->PlayAnimation((rand() % 2 == 0) ? 2 : 4, 0.2f, false);
+
 		//miejsce na animacje !!!
 	}
 	timer += dt;

@@ -73,11 +73,19 @@ bool Ability1::Pressed()
             bullet->ignore = nullptr;
             PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), direction * force * 0.04f);
         }
+        else if (objects[i]->tag == "FIREBALL")
+        {
+            Vec3 direction = Vec3(pOwner->Forward().x, pOwner->Forward().y, pOwner->Forward().z);
+            FireBall* bullet = objects[i]->GetComponent<FireBall>();
+            bullet->pushedByPlayer = true;
+            bullet->ignore = nullptr;
+            PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), direction * force * 0.04f);
+        }
     }
     cooldownTimer = cooldown;
     abilityReady = false;
     
-    PrefabManager::InstantiateAbility1Particles(pOwner->GetParent(), Vector3(pOwner->GetLocalPosition().x, pOwner->GetLocalPosition().y, pOwner->GetLocalPosition().z), 1.0, pOwner->GetLocalRotationQuaternion());
+    PrefabManager::InstantiateAbility1ParticlesSmoke(pOwner->GetParent(), Vector3(pOwner->GetLocalPosition().x, pOwner->GetLocalPosition().y, pOwner->GetLocalPosition().z), 1.0, pOwner->GetLocalRotationQuaternion());
     return true;
 }
 void Ability1::Released()

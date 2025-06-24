@@ -40,6 +40,7 @@ public:
 	Ability* baseAbility = nullptr;
 
 	Node* selectionParticles = nullptr;
+	Node* selectionParticlesSmoke = nullptr;
 private:
 	Node* player = nullptr;
 	void KeyboardInput();

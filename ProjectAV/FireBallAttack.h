@@ -7,13 +7,13 @@
 
 class Node;
 
-class ShootAttack : public Component
+class FireBallAttack : public Component
 {
 public:
-	ShootAttack(Node* owner, Node* player = nullptr, std::string tag = "ATTACK");
-	virtual ~ShootAttack() = default;
+	FireBallAttack(Node* owner, Node* player = nullptr, std::string tag = "ATTACK");
+	virtual ~FireBallAttack() = default;
 	float damage = 1.0f;
-	float wholeAttackTime = 1.6f;
+	float wholeAttackTime = 1.5f;
 	float shootTime = 0.5f;
 	float knockbackForce = 1500.0f;
 	float bulletSpeed = 20.0f;

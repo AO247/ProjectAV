@@ -60,29 +60,27 @@ void FollowState::Update(StateMachine* pOwner, float dt)
             return;
         }
     }
-    AnimationComponent* animComp = pOwner->GetOwnerNode()->GetComponent<AnimationComponent>();
-    if (animComp) {
-        switch (pOwner->enemyType)
-        {
-        case EnemyType::FLYING:
-            animComp->PlayAnimation(EnemyAnimationIndices::FLYING_FLYING);
-            break;
+    //AnimationComponent* animComp = pOwner->GetOwnerNode()->GetComponent<AnimationComponent>();
+    //if (animComp) {
+    //    switch (pOwner->enemyType)
+    //    {
+    //    case EnemyType::FLYING:
+    //        animComp->PlayAnimation(EnemyAnimationIndices::FLYING_FLYING);
+    //        break;
 
-        case EnemyType::BASIC:
-            animComp->PlayAnimation(EnemyAnimationIndices::BASIC_WALK);
-            break;
+    //    case EnemyType::BASIC:
+    //        animComp->PlayAnimation(EnemyAnimationIndices::BASIC_WALK);
+    //        break;
 
-        case EnemyType::RANGED:
-            animComp->PlayAnimation(EnemyAnimationIndices::RANGED_WALK);
-            break;
-       
-        case EnemyType::EXPLOSIVE:
-            animComp->PlayAnimation(EnemyAnimationIndices::EXPLOSIVE_WALK);
-            break;
-        }
-
-
-    }
+    //    case EnemyType::RANGED:
+    //        animComp->PlayAnimation(EnemyAnimationIndices::RANGED_WALK);
+    //        break;
+    //   
+    //    case EnemyType::EXPLOSIVE:
+    //        animComp->PlayAnimation(EnemyAnimationIndices::EXPLOSIVE_WALK);
+    //        break;
+    //    }
+    //}
     if (pOwner->pMovementComponent != nullptr) {
         pOwner->pMovementComponent->Follow(dt, playerPos);
     }

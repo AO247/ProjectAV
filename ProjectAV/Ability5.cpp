@@ -76,6 +76,7 @@ bool Ability5::Pressed()
     timeToChange = 0.3f;
     PrefabManager::InstantiateAbility5Extend(pOwner->GetParent(), pOwner->GetWorldPosition(), 1.0f, force, duration);
     PrefabManager::InstantiateAbility5Particles(pOwner->GetParent(), pOwner->GetWorldPosition(), 1.0f, { 0,0,0 }, duration);
+    PrefabManager::InstantiateAbility5SmokeParticles(pOwner->GetParent(), pOwner->GetWorldPosition(), 1.0f, { 0,0,0 }, duration);
     cooldownTimer = cooldown;
     cooldownTimer = cooldown;
     abilityReady = false;

@@ -282,6 +282,8 @@ void StateMachine::Die()
 			break;
 		}
 		
+		PrefabManager::InstantiateEnemyKillParticles(pOwner->GetParent(), Vector3(pOwner->GetWorldPosition().x, pOwner->GetWorldPosition().y, pOwner->GetWorldPosition().z), 1.0f);
+
 		pOwner->Destroy();
 	}
 }
