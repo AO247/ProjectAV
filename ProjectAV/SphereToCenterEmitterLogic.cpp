@@ -1,5 +1,3 @@
-// SphereToCenterEmitterLogic.cpp
-
 #include "SphereToCenterEmitterLogic.h"
 #include "ParticleSystemComponent.h"
 #include "Node.h"
@@ -9,76 +7,70 @@ namespace dx = DirectX;
 
 // Constructor
 SphereToCenterEmitterLogic::SphereToCenterEmitterLogic()
-// The distribution now provides a random number between -1.0 and 1.0,
-// which we will use to scale our randomness factor.
+// Initialize the random distribution to produce values between 0.0 and 1.0.
+// This will be used for calculating the positive speed variance.
+// For directions, we will remap this range to [-1.0, 1.0].
     : rng(std::random_device{}()),
-    dist(-1.0f, 1.0f)
+    dist(0.0f, 1.0f)
 {
 }
 
+// Private helper function to emit one particle.
+// This avoids duplicating the complex logic in both Update and EmitBurst.
+void EmitSingleParticle(SphereToCenterEmitterLogic* emitter, ParticleSystemComponent& system, const DirectX::XMMATRIX& ownerWorldTransform)
+{
+    // --- Generate a random spawn position on the surface of a local-space sphere ---
+    dx::XMVECTOR randomPosVec;
+    float lengthSq;
+    do {
+        // Map the [0,1] distribution to the [-1,1] range needed for a direction vector.
+        randomPosVec = dx::XMVectorSet(
+            emitter->dist(emitter->rng) * 2.0f - 1.0f,
+            emitter->dist(emitter->rng) * 2.0f - 1.0f,
+            emitter->dist(emitter->rng) * 2.0f - 1.0f,
+            0.0f
+        );
+        lengthSq = dx::XMVectorGetX(dx::XMVector3LengthSq(randomPosVec));
+    } while (lengthSq > 1.0f); // Ensure uniform distribution on the sphere
+
+    dx::XMVECTOR localPosVec = dx::XMVectorScale(dx::XMVector3Normalize(randomPosVec), emitter->SpawnRadius);
+    dx::XMVECTOR worldPosVec = dx::XMVector3TransformCoord(localPosVec, ownerWorldTransform);
+    dx::XMFLOAT3 finalSpawnPos;
+    dx::XMStoreFloat3(&finalSpawnPos, worldPosVec);
+
+    // --- Calculate the particle's initial velocity ---
+    // Direction is always towards the center.
+    dx::XMVECTOR localVelocityDir = dx::XMVectorScale(dx::XMVector3Normalize(localPosVec), -1.0f);
+
+    // Calculate a random speed variance. Since dist(rng) is [0, 1], this is always positive.
+    const float speedVariance = emitter->TravelSpeed * emitter->SpeedRandomness * emitter->dist(emitter->rng);
+    const float finalSpeed = emitter->TravelSpeed + speedVariance;
+
+    // Transform direction to world space and apply final speed.
+    dx::XMVECTOR worldVelocityDir = dx::XMVector3TransformNormal(localVelocityDir, ownerWorldTransform);
+    dx::XMFLOAT3 finalVelocity;
+    dx::XMStoreFloat3(&finalVelocity, dx::XMVectorScale(worldVelocityDir, finalSpeed));
+
+    // --- Override properties and emit ---
+    system.ParticleVelocity = finalVelocity;
+    system.ParticleVelocityVariance = { 0.0f, 0.0f, 0.0f }; // We handle all randomness here
+    system.EmitParticle(finalSpawnPos);
+}
+
+// For continuous, timed emission (Looping effects or non-burst One-Shots)
 void SphereToCenterEmitterLogic::Update(float dt, ParticleSystemComponent& system)
 {
-    // 1. Control the rate of emission
+    // For this emitter, a one-shot burst is handled entirely by EmitBurst.
+    // The regular Update should only handle timed emission.
     timeSinceLastEmission += dt;
     if (ParticlesPerSecond <= 0.0f) return;
     const float emissionPeriod = 1.0f / ParticlesPerSecond;
 
-    // Get the owner's world transform once for efficiency
     const auto ownerWorldTransform = system.GetOwner()->GetWorldTransform();
 
     while (timeSinceLastEmission > emissionPeriod)
     {
-        // 2. Generate a random spawn position on the surface of a local-space sphere.
-        dx::XMVECTOR randomPosVec;
-        float lengthSq;
-        do {
-            randomPosVec = dx::XMVectorSet(dist(rng), dist(rng), dist(rng), 0.0f);
-            lengthSq = dx::XMVectorGetX(dx::XMVector3LengthSq(randomPosVec));
-        } while (lengthSq > 1.0f);
-
-        dx::XMVECTOR localPosVec = dx::XMVectorScale(dx::XMVector3Normalize(randomPosVec), SpawnRadius);
-
-
-        // 3. Transform this local position into world space for the spawn location.
-        dx::XMVECTOR worldPosVec = dx::XMVector3TransformCoord(localPosVec, ownerWorldTransform);
-        dx::XMFLOAT3 finalSpawnPos;
-        dx::XMStoreFloat3(&finalSpawnPos, worldPosVec);
-
-
-        // 4. Calculate the particle's initial velocity.
-        // The direction is ALWAYS towards the center (negative of the local position vector).
-        dx::XMVECTOR localVelocityDir = dx::XMVectorScale(dx::XMVector3Normalize(localPosVec), -1.0f);
-
-        // +++ NEW: Add randomness to the TRAVEL SPEED +++
-        // Calculate a random speed variance.
-        // For example, if TravelSpeed is 2.5 and SpeedRandomness is 0.5,
-        // the random part will be between -1.25 and +1.25.
-        const float speedVariance = TravelSpeed * SpeedRandomness * dist(rng);
-        const float finalSpeed = TravelSpeed + speedVariance;
-
-
-        // 5. Transform the direction and apply the final, randomized speed.
-        // Transform the local velocity direction into world space.
-        dx::XMVECTOR worldVelocityDir = dx::XMVector3TransformNormal(localVelocityDir, ownerWorldTransform);
-
-        // Set the final velocity vector using the randomized speed.
-        dx::XMFLOAT3 finalVelocity;
-        dx::XMStoreFloat3(
-            &finalVelocity,
-            dx::XMVectorScale(worldVelocityDir, finalSpeed)
-        );
-
-
-        // 6. Override the properties on the main component.
-        system.ParticleVelocity = finalVelocity;
-        system.ParticleVelocityVariance = { 0.0f, 0.0f, 0.0f };
-
-
-        // 7. Emit the particle.
-        system.EmitParticle(finalSpawnPos);
-
-
-        // 8. Decrement time for the next particle
+        EmitSingleParticle(this, system, ownerWorldTransform);
         timeSinceLastEmission -= emissionPeriod;
     }
 }

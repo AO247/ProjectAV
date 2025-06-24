@@ -6786,6 +6786,95 @@ public:
         return pNewNode;
     }
 
+    static Node* InstantiateRedPillParticles(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 })
+    {
+        auto pNewNodeOwner = std::make_unique<Node>("RedPillParticles", nullptr);
+        Node* pNewNode = pNewNodeOwner.get();
+
+        auto sphereEmitter = std::make_unique<SphereToCenterEmitterLogic>();
+
+        // Make the implosion very chaotic
+        sphereEmitter->SpeedRandomness = 0.5f;
+        sphereEmitter->SpawnRadius = 1.0f;
+        sphereEmitter->TravelSpeed = 0.5f;
+        sphereEmitter->ParticlesPerSecond = 30;
+
+        pNewNode->AddComponent(
+            std::make_unique<ParticleSystemComponent>(pNewNode, wind->Gfx(), "Models\\flame.png", 20000, std::move(sphereEmitter))
+        );
+        ParticleSystemComponent* particles = pNewNode->GetComponent<ParticleSystemComponent>();
+        particles->SetPlaybackMode(ParticleSystemComponent::PlaybackMode::Loop);
+        particles->destroyAfterEmission = true;
+        particles->ParticleLifetime = 1.2f;
+        particles->EmissionDuration = 1.0f;
+        particles->EmissionRate = 4.0f;
+        //particles->ParticleVelocity = { 0.0f, 20.0f, 0.0f };
+        //particles->ParticleVelocityVariance = { 0.0f, 10.0f, 0.0f };
+        particles->StartSize = 0.3f;
+        //particles->EndSize = 1.0f;
+        particles->bAnimateSize = false;
+        particles->EndRotation = 0.0f;
+        particles->bUseMidColor = true;
+        particles->StartColor = { 1.0f, 1.0f, 1.0f, 0.0f };
+        particles->ColorMidpoint = 0.1f;
+        particles->MidColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+        particles->EndColor = { 1.0f, 1.0f, 1.0f, 0.0f };
+
+        particles->Play();
+        particles->Link(*rg);
+
+        pNewNodeOwner->SetLocalPosition(position);
+        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+        pNewNodeOwner->SetLocalRotation(rotation);
+
+        parentNode->AddChild(std::move(pNewNodeOwner));
+
+        return pNewNode;
+    }
+
+    static Node* InstantiateBluePillParticles(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 })
+    {
+        auto pNewNodeOwner = std::make_unique<Node>("BluePillParticles", nullptr);
+        Node* pNewNode = pNewNodeOwner.get();
+
+        auto volumeEmitter = std::make_unique<SphereVolumeEmitterLogic>();
+
+        volumeEmitter->SpawnRadius = 1.0f;
+        volumeEmitter->ParticlesPerSecond = 20;
+
+        pNewNode->AddComponent(
+            std::make_unique<ParticleSystemComponent>(pNewNode, wind->Gfx(), "Models\\flame.png", 20000, std::move(volumeEmitter))
+        );
+        ParticleSystemComponent* particles = pNewNode->GetComponent<ParticleSystemComponent>();
+        particles->SetPlaybackMode(ParticleSystemComponent::PlaybackMode::Loop);
+        particles->destroyAfterEmission = true;
+        particles->ParticleLifetime = 2.0f;
+        particles->EmissionDuration = 1.0f;
+        particles->EmissionRate = 4.0f;
+        particles->ParticleVelocity = { -0.05f, -0.05f, -0.05f };
+        particles->ParticleVelocityVariance = { 0.1f, 0.1f, 0.1f };
+        particles->StartSize = 0.3f;
+        //particles->EndSize = 1.0f;
+        particles->bAnimateSize = false;
+        particles->EndRotation = 0.0f;
+        particles->bUseMidColor = true;
+        particles->StartColor = { 1.0f, 1.0f, 1.0f, 0.0f };
+        particles->ColorMidpoint = 0.1f;
+        particles->MidColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+        particles->EndColor = { 1.0f, 1.0f, 1.0f, 0.0f };
+
+        particles->Play();
+        particles->Link(*rg);
+
+        pNewNodeOwner->SetLocalPosition(position);
+        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+        pNewNodeOwner->SetLocalRotation(rotation);
+
+        parentNode->AddChild(std::move(pNewNodeOwner));
+
+        return pNewNode;
+    }
+
     static Node* InstantiateAbility1Particles(Node* parentNode, Vector3 position, float scale, DirectX::XMFLOAT4 rotation)
     {
         auto pNewNodeOwner = std::make_unique<Node>("Ability1Particles", nullptr);
