@@ -655,7 +655,10 @@ void App::HandleInput(float dt)
             }
             cursorEnabled = !cursorEnabled;
         }
-
+        if (wnd.kbd.IsJustPressed('B'))
+        {
+            PrefabManager::InstantiateNewColumn(temporary, pFreeViewCamera->GetWorldPosition(), 1.0f);
+        }
         if (wnd.kbd.IsJustPressed('H'))
         {
             showControlWindow = !showControlWindow;
@@ -667,6 +670,11 @@ void App::HandleInput(float dt)
         if (wnd.kbd.IsJustPressed('X'))
         {
             ResetGame();
+        }
+        if (wnd.kbd.IsJustPressed('N'))
+        {
+            tutorialNode->GetComponent<Tutorial>()->completed = true;
+            pPlayer->SetWorldPosition({ 0.0f, 20.0f, 10.0f });
         }
         if (wnd.kbd.IsJustPressed('P'))
         {

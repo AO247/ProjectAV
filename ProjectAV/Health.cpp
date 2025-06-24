@@ -61,7 +61,7 @@ void Health::TakeDamage(float damage, bool heavy, bool isFire)
 		hitted = true;
 		pOwner->GetComponent<StateMachine>()->Stop(0.1f);
 	}
-	else
+	else if(isFire && pOwner->tag == "PLAYER")
 	{
 		currentHealth -= damage;
 	}
