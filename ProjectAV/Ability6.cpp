@@ -95,6 +95,8 @@ void Ability6::Pulling(float dt)
     {
         // dzwiek trzymania obiektu
         // animacja trzymania obiektu
+
+        leftHand->PlayAnimation(2);
         Vector3 dir = targetPosition - selectedNode->GetWorldPosition();
         dir.y *= 10.0f;
         dir.Normalize();
@@ -130,9 +132,10 @@ bool Ability6::Pressed()
     // animacja przyciagniecia
     // particle dodanie do obiektu
     // dzwiek wyboru node
-    leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
-    leftHand->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
+    //leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
+    //leftHand->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
 
+    leftHand->PlayAnimation(1, 0.2f, false);
     Vector3 target = Vector3(camera->GetWorldPosition().x, camera->GetWorldPosition().y, camera->GetWorldPosition().z);
 
     DirectX::XMVECTOR viewerPosition = DirectX::XMVectorSet(selectedNode->GetWorldPosition().x, selectedNode->GetWorldPosition().y, selectedNode->GetWorldPosition().z, 0.0f);
@@ -167,7 +170,7 @@ void Ability6::Released()
     isPressed = false;
     if (!abilityReady) return;
     // particle wylaczenie 
-    leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 4.0f });
+    //leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 4.0f });
     timeToChange = 0.3f;
    
     baseAbility->Pressed();
@@ -194,12 +197,17 @@ void Ability6::Cooldowns(float dt)
     if (cooldownTimer > 0.0f)
     {
         cooldownTimer -= dt;
+        if (leftHand->GetCurrentPlayingAnimationRaw() == nullptr) {
+            leftHand->PlayAnimation(6);
+        }
     }
     else
     {
         if (!abilityReady)
         {
-            leftHand->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
+            leftHand->PlayAnimation(11);
+
+            //leftHand->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
         }
         abilityReady = true;
     }
@@ -208,8 +216,8 @@ void Ability6::Cooldowns(float dt)
         timeToChange -= dt;
         if (timeToChange <= 0.0f)
         {
-            leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
-            leftHand->SetLocalPosition({ 0.0f, -2.7f, 1.0f });
+            //leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
+            //leftHand->SetLocalPosition({ 0.0f, -2.7f, 1.0f });
         }
     }
 

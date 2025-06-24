@@ -9,6 +9,7 @@
 #include <DirectXMath.h>
 #include "Rigidbody.h"
 #include "SoundEffectsPlayer.h"
+#include "AnimationComponent.h"
 
 class Node;
 
@@ -33,7 +34,7 @@ public:
 	bool isPressed = false;
 	bool abilityReady = true;
 	bool activated = false;
-	Node* leftHand = nullptr;
+	AnimationComponent* leftHand = nullptr;
 	Node* leftHandAbility = nullptr;
 	Node* selectedNode = nullptr;
 	Ability* baseAbility = nullptr;
