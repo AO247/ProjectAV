@@ -113,8 +113,12 @@ void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 	}
 
 
+	stepSoundTimer -= dt;
+	IdleSoundTimer -= dt;
+
 	// tutaj dŸwiêk i animacja chodzenia
-	
+
+
 	//AutoJump();
 	if (timerForChangedDirection > 0.0f)
 	{
@@ -123,6 +127,25 @@ void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 	}
 
 	Vector3 currentVelocity = { currentVelocityJPH.GetX(), currentVelocityJPH.GetY(), currentVelocityJPH.GetZ() };
+
+	if (pOwner->GetComponent<SoundEffectsPlayer>() && currentVelocity.LengthSquared() > 0.1f && grounded)
+	{
+		if (IdleSoundTimer <= 0.0f)
+		{
+			//Idle sounds
+			float randSound = (rand() % 4);
+			pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f);
+
+			IdleSoundTimer = IdleSoundInterval;
+		}
+		if (stepSoundTimer <= 0.0f) {
+			//Steps sounds
+			int randSound = rand() % 6 + 7;
+			pOwner->GetComponent<SoundEffectsPlayer>()->PlayAdvanced(randSound, 0.4, false, 1.0f, 5.0f, 40.0f, 2.0f, true);
+			stepSoundTimer = stepSoundInterval;
+		}
+	}
+
 	Vector3 desiredDirection = targetPosition - currentPos;
 	desiredDirection.Normalize();
 	Vector3 desiredVelocity;
@@ -179,24 +202,6 @@ void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 	}
 
 	//PhysicsCommon::physicsSystem->GetBodyInterface().SetFriction(rigidbody->GetBodyID(), 0.5f);
-
-	stepSoundTimer -= dt;
-	IdleSoundTimer -= dt;
-	if (pOwner->GetComponent<SoundEffectsPlayer>() && currentVelocity.LengthSquared() > 0.1f && grounded)
-	{
-		if (stepSoundTimer <= 0.0f)
-		{
-			float randSound = (rand() % 4);
-			pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound);
-
-			stepSoundTimer = stepSoundInterval;
-		}
-		if (IdleSoundTimer <= 0.0f) {
-			int randSound = rand() % 6 + 6;
-			pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound);
-			IdleSoundTimer = stepSoundInterval/2;
-		}
-	}
 }
 bool Walking::GroundCheck()
 {

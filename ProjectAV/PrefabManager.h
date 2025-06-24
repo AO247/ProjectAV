@@ -5031,8 +5031,8 @@ public:
         InstantiateMushroom2(pNewNode, Vector3(11.20f, -0.30f, -4.70f), 0.35f, Vector3(-0.00f, 2.02f, 0.00f));
         InstantiateMushroom3(pNewNode, Vector3(-16.40f, -0.30f, -7.10f), 0.2f, Vector3(0.00f, 0.0f, 0.00f));
         InstantiateMushroom3(pNewNode, Vector3(14.40f, -0.30f, -5.00f), 0.2f, Vector3(0.00f, 0.0f, 0.00f));
-		InstantiateNewColumn(pNewNode, Vector3(11.36f, -0.30f, 1.57f), 1.0f, Vector3(0.0f, 0.0f, 0.0f));
-        InstantiateNewColumn(pNewNode, Vector3(-10.84f, -0.30f, 4.87f), 1.0f, Vector3(0.0f, 0.0f, 0.0f));
+		InstantiateNewColumn(pNewNode, Vector3(11.36f, -1.9f, 1.57f), 1.0f, Vector3(0.0f, 0.0f, 0.0f));
+        InstantiateNewColumn(pNewNode, Vector3(-10.84f, -1.90f, 4.87f), 1.0f, Vector3(0.0f, 0.0f, 0.0f));
         InstantiateColumn3(pNewNode, Vector3(11.16f, -0.30f, -19.33f), 1.0f, Vector3(0.0f, 1.57f, 0.0f));
 		InstantiateWall2(pNewNode, Vector3(8.50f, -0.30f, 32.00f), 1.0f, Vector3(0.00f, 1.66f, 0.00f));
 		InstantiateRuin3(pNewNode, Vector3(-13.40f, -0.20f, 23.10f), 1.5f, Vector3(0.00f, 1.68f, 0.00f));
@@ -5249,7 +5249,7 @@ public:
         InstantiateThrowable(pNewNode, Vector3(18.2f, 3.0f, 3.2f), 0.4f);
         InstantiateThrowable(pNewNode, Vector3(15.29f, 1.04f, 17.81f), 0.4f);
         InstantiateThrowable(pNewNode, Vector3(-13.2f, 3.0f, -2.2f), 0.4f);
-        InstantiateNewColumn(pNewNode, Vector3(12.0f, -0.70f, -5.0f), 1.0f);
+        InstantiateNewColumn(pNewNode, Vector3(12.0f, -1.90f, -5.0f), 1.0f);
 
         auto spawnPoint1 = std::make_unique<Node>("SpawnPoint 1", pNewNodeOwner.get());
 		auto spawnPoint2 = std::make_unique<Node>("SpawnPoint 2", pNewNodeOwner.get());
@@ -6264,7 +6264,7 @@ public:
         pNewNodeOwner->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enviro\\rock_hit5.wav");
 
         pNewNodeOwner->AddComponent(
-            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\objects\\kolumna_1_top.obj")
+            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\ruiny\\kolumna_top.obj")
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
@@ -6311,7 +6311,7 @@ public:
         pNewNodeOwner->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enviro\\rock_hit5.wav");
 
         pNewNodeOwner->AddComponent(
-            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\objects\\kolumna_1_srodek.obj")
+            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\ruiny\\kolumna_srodek.obj")
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
@@ -6343,7 +6343,7 @@ public:
         auto pNewNodeOwner = std::make_unique<Node>("Base", nullptr, "WALL");
 
         pNewNodeOwner->AddComponent(
-            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\objects\\kolumna_1_podstawa.obj")
+            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\ruiny\\kolumna_podstawa.obj")
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
@@ -6895,12 +6895,12 @@ public:
         pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic_attack1.ogg");
         pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic_attack2.ogg");
         pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic_attack3.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footstep1.wav");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footstep2.wav");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footstep3.wav");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footstep4.wav");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footstep5.wav");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footstep6.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footsteps1.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footsteps2.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footsteps3.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footsteps4.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footsteps5.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footsteps6.wav");
 
         pNewNode->AddComponent(
             std::make_unique<ModelComponent>(pNewNode, wind->Gfx(), "Models\\basic\\basic.gltf", 1.0f, true)
@@ -7192,9 +7192,9 @@ public:
 
         // ATTACK
         pNewNode->AddComponent(
-            std::make_unique<ShootAttack>(pNewNode, player)
+            std::make_unique<FireBallAttack>(pNewNode, player)
         );
-        ShootAttack* shootAttack = pNewNode->GetComponent<ShootAttack>();
+        FireBallAttack* shootAttack = pNewNode->GetComponent<FireBallAttack>();
         shootAttack->bulletSpeed = 50.0f;
         shootAttack->attackRange = 60.0f;
 
@@ -7757,6 +7757,83 @@ public:
 
         return pNewNode;
     }
+    static Node* InstantiateFireBall(Vector3 position, float scale)
+    {
+        auto pNewNodeOwner = std::make_unique<Node>("FireBall", nullptr, "FIREBALL");
+        Node* pNewNode = pNewNodeOwner.get();
+
+
+        pNewNode->AddComponent(
+            std::make_unique<ModelComponent>(pNewNode, wind->Gfx(), "Models\\box.glb", 1.0f)
+        );
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+
+        root->AddChild(std::move(pNewNodeOwner));
+
+
+        BodyCreationSettings BodySettings(new JPH::SphereShape(0.1f), RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+        BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
+        BodySettings.mMassPropertiesOverride.mMass = 0.1f;
+        BodySettings.mFriction = 0.0f;
+        BodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
+        pNewNode->AddComponent(
+            std::make_unique<Rigidbody>(pNewNode, BodySettings)
+        );
+        PhysicsCommon::physicsSystem->GetBodyInterface().SetGravityFactor(pNewNode->GetComponent<Rigidbody>()->GetBodyID(), 0);
+
+        BodyCreationSettings trBodySettings(new JPH::SphereShape(0.7f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::TRIGGER);
+        pNewNode->AddComponent(
+            std::make_unique<Trigger>(pNewNode, trBodySettings, false)
+        );
+
+        pNewNode->AddComponent(
+            std::make_unique<FireBall>(pNewNode)
+        );
+
+        pNewNode->SetLocalPosition(position);
+        pNewNode->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+
+        return pNewNode;
+    }
+    static Node* InstantiateFireBoom(Vector3 position, float scale)
+    {
+        auto pNewNodeOwner = std::make_unique<Node>("FireBoom", nullptr, "TRIGGER");
+        Node* pNewNode = pNewNodeOwner.get();
+
+
+        pNewNode->AddComponent(
+            std::make_unique<ModelComponent>(pNewNode, wind->Gfx(), "Models\\box.glb", 1.0f)
+        );
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+
+        root->AddChild(std::move(pNewNodeOwner));
+
+
+        BodyCreationSettings BodySettings(new JPH::SphereShape(0.1f), RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+        BodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
+        BodySettings.mMassPropertiesOverride.mMass = 0.1f;
+        BodySettings.mFriction = 0.0f;
+        BodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
+        pNewNode->AddComponent(
+            std::make_unique<Rigidbody>(pNewNode, BodySettings)
+        );
+        PhysicsCommon::physicsSystem->GetBodyInterface().SetGravityFactor(pNewNode->GetComponent<Rigidbody>()->GetBodyID(), 0);
+
+        BodyCreationSettings trBodySettings(new JPH::BoxShape(Vec3(3.0f, 10.0f, 3.0f)), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::TRIGGER);
+        pNewNode->AddComponent(
+            std::make_unique<Trigger>(pNewNode, trBodySettings, false)
+        );
+
+        pNewNode->AddComponent(
+            std::make_unique<FireBoom>(pNewNode)
+        );
+
+        pNewNode->SetLocalPosition({ position.x, position.y -= 5.0f, position.z });
+        pNewNode->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+
+        return pNewNode;
+    }
+
 
 #pragma endregion
 

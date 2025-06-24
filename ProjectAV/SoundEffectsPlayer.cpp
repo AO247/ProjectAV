@@ -48,6 +48,7 @@ ALuint SoundEffectsPlayer::Play(int soundIndex, float gain, bool isPositional, b
 		StaticSoundPlayer::Get().rolloff, // rolloff
 		StaticSoundPlayer::Get().refDistance, // refDistance
 		StaticSoundPlayer::Get().m_maxAudibleDistance, // maxDistance
+        StaticSoundPlayer::Get().cullingDistanceModifier, // cullingDistanceModifier
 		StaticSoundPlayer::Get().cullingMode // cullingMode
     );
 
@@ -60,12 +61,12 @@ ALuint SoundEffectsPlayer::Play(int soundIndex, float gain, bool isPositional, b
 }
 
 ALuint SoundEffectsPlayer::PlayAdvanced(int soundIndex, float gain, bool loop,
-    float rolloff, float refDistance, float maxDistance, bool cullingMode)
+    float rolloff, float refDistance, float maxDistance, float cullingDistanceModifier, bool cullingMode)
 {
     if (soundIndex < 0 || soundIndex >= m_soundPlaylist.size()) return 0;
     const std::string& filename = m_soundPlaylist[soundIndex];
     StaticSoundPlayer::Get().Play(filename, pOwner->GetWorldPosition(), gain, loop,
-        rolloff, refDistance, maxDistance, cullingMode);
+        rolloff, refDistance, maxDistance, cullingDistanceModifier, cullingMode);
 }
 
 void SoundEffectsPlayer::Stop(int soundIndex)

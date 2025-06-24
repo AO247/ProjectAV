@@ -13,12 +13,14 @@ namespace Rgph
 		BindingPass(std::move(name))
 	{
 
-		std::vector<std::string> facePaths = {
+		/*std::vector<std::string> facePaths = {
 			"Models\\skybox2\\right.png", "Models\\skybox2\\left.png",
 			"Models\\skybox2\\up.png",   "Models\\skybox2\\down.png",
 			"Models\\skybox2\\front.png", "Models\\skybox2\\back.png",
 		};
-		pSkybox = std::make_unique<Skybox>(gfx, facePaths);
+		pSkybox = std::make_unique<Skybox>(gfx, facePaths);*/
+
+		pSkybox = std::make_unique<Skybox>(gfx, "Models\\Skybox\\skybox.png");
 
 		RegisterSink(DirectBufferSink<Bind::RenderTarget>::Make("renderTarget", renderTarget));
 		RegisterSink(DirectBufferSink<Bind::DepthStencil>::Make("depthStencil", depthStencil));

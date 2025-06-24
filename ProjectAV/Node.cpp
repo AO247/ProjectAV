@@ -6,7 +6,7 @@
 #include <cmath> 
 #include "Rigidbody.h"
 #include "ParticleSystemComponent.h"
-
+#include <algorithm>
 
 namespace dx = DirectX;
 
@@ -748,4 +748,19 @@ void Node::ClearComponents()
         }
     }
     components.clear();
+}
+void Node::RemoveComponent(Component* componentToRemove)
+{
+    if (componentToRemove == nullptr) return;
+
+    // U¿yj std::remove_if, aby przesun¹æ komponent do usuniêcia na koniec wektora
+    // a nastêpnie std::vector::erase, aby go fizycznie usun¹æ.
+    components.erase(
+        std::remove_if(components.begin(), components.end(),
+            [&](const std::unique_ptr<Component>& pComponent) {
+                // Porównujemy wskaŸniki. Jeœli pasuj¹, zwracamy true.
+                return pComponent.get() == componentToRemove;
+            }),
+        components.end()
+    );
 }

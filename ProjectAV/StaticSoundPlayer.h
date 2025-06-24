@@ -17,12 +17,13 @@ public:
 
     void Play(const std::string& filename, DirectX::XMFLOAT3 position, float gain = 1.0f, bool loop = false);
     ALuint Play(const std::string& filename, DirectX::XMFLOAT3 position, float gain, bool loop,
-        float rolloff, float refDistance, float maxDistance, bool cullingMode);
+        float rolloff, float refDistance, float maxDistance, float cullingDistanceModifier, bool cullingMode);
     void Stop(ALuint sourceID);
 
     float m_maxAudibleDistance = 400.0f;
     float rolloff = 1.0f;
     float refDistance = 15.0f;
+	float cullingDistanceModifier = 1.0f;
     bool cullingMode = true;
 
 private:
