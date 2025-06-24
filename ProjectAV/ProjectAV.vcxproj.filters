@@ -513,6 +513,12 @@
     <ClCompile Include="LaunchAttack.cpp">
       <Filter>Source Files\Components\Enemies</Filter>
     </ClCompile>
+    <ClCompile Include="ModelCache.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SphereVolumeEmitterLogic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="FireBall.cpp">
       <Filter>Source Files\Components\Enemies</Filter>
     </ClCompile>
@@ -1054,6 +1060,12 @@
     </ClInclude>
     <ClInclude Include="SlashAttack.h">
       <Filter>Header Files\Components\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelCache.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SphereVolumeEmitterLogic.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FireBallAttack.h">
       <Filter>Header Files\Components\Enemies</Filter>

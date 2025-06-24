@@ -82,6 +82,15 @@ void Ability6::Pulling(float dt)
         {
             holdParticles->SetWorldPosition(Vector3(selectedNode->GetWorldPosition().x, selectedNode->GetWorldPosition().y, selectedNode->GetWorldPosition().z));
         }
+
+        if (holdSmokeParticles == nullptr)
+        {
+            holdSmokeParticles = PrefabManager::InstantiateAbility6HoldSmokeParticles(pOwner->GetParent(), Vector3(selectedNode->GetWorldPosition().x, selectedNode->GetWorldPosition().y, selectedNode->GetWorldPosition().z), 1.0);
+        }
+        else
+        {
+            holdSmokeParticles->SetWorldPosition(Vector3(selectedNode->GetWorldPosition().x, selectedNode->GetWorldPosition().y, selectedNode->GetWorldPosition().z));
+        }
         PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rb->GetBodyID(), Vec3::sZero());
         PhysicsCommon::physicsSystem->GetBodyInterface().SetPosition(rb->GetBodyID(), Vec3(targetPosition.x, targetPosition.y, targetPosition.z), EActivation::Activate);
 
@@ -114,7 +123,7 @@ void Ability6::PullingParticlesPositioning()
     {
         Vector3 target = Vector3(camera->GetWorldPosition().x, camera->GetWorldPosition().y, camera->GetWorldPosition().z);
 
-        DirectX::XMVECTOR viewerPosition = DirectX::XMVectorSet(selectedNodeLastPosition.x, selectedNodeLastPosition.y, selectedNodeLastPosition.z, 0.0f);
+        DirectX::XMVECTOR viewerPosition = DirectX::XMVectorSet(selectedNode->GetWorldPosition().x, selectedNode->GetWorldPosition().y, selectedNode->GetWorldPosition().z, 0.0f);
         DirectX::XMVECTOR targetPosition = DirectX::XMVectorSet(target.x, target.y, target.z, 0.0f);
         DirectX::XMVECTOR up = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
@@ -126,6 +135,7 @@ void Ability6::PullingParticlesPositioning()
         DirectX::XMFLOAT4 quatFloat4;
         DirectX::XMStoreFloat4(&quatFloat4, lookAtQuaternion);
 
+        pullingParticles->SetWorldPosition(selectedNode->GetWorldPosition());
         pullingParticles->SetWorldRotation(quatFloat4);
     }
 }
@@ -159,9 +169,6 @@ bool Ability6::Pressed()
     DirectX::XMFLOAT4 quatFloat4;
     DirectX::XMStoreFloat4(&quatFloat4, lookAtQuaternion);
 
-    selectedNodeLastPosition = Vector3(selectedNode->GetWorldPosition().x, 
-                                        selectedNode->GetWorldPosition().y,
-                                        selectedNode->GetWorldPosition().z);
     if (pullingParticles == nullptr)
     {
         pullingParticles = PrefabManager::InstantiateAbility6PullingParticles(pOwner->GetParent(), Vector3(selectedNode->GetWorldPosition().x, selectedNode->GetWorldPosition().y, selectedNode->GetWorldPosition().z), 1.0, quatFloat4);
@@ -191,6 +198,12 @@ void Ability6::Released()
     {
         holdParticles->GetComponent<ParticleSystemComponent>()->Stop();
         holdParticles = nullptr;
+    }
+
+    if (holdSmokeParticles != nullptr)
+    {
+        holdSmokeParticles->GetComponent<ParticleSystemComponent>()->Stop();
+        holdSmokeParticles = nullptr;
     }
 
     cooldownTimer = cooldown;

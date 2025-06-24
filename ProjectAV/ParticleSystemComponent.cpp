@@ -26,6 +26,8 @@ ParticleSystemComponent::ParticleSystemComponent(Node* owner, Graphics& gfx, con
     gfx(gfx),
     pEmitterLogic(std::move(pEmitterLogic_in)),
     rng(std::random_device{}()),
+    unit_dist(0.0f, 1.0f),
+    bilateral_dist(-1.0f, 1.0f),
     m_playbackMode(PlaybackMode::Loop),
     m_isEmitting(true),
     m_emissionTimer(0.0f)
@@ -118,8 +120,48 @@ void ParticleSystemComponent::Update(float dt)
 
         InstanceData& idata = instanceData[activeParticleCount];
         idata.instancePos = p.position;
-        dx::XMStoreFloat4(&idata.instanceColor, dx::XMVectorLerp(dx::XMLoadFloat4(&p.startColor), dx::XMLoadFloat4(&p.endColor), t));
-        idata.instanceSize.x = std::lerp(p.startSize, p.endSize, t);
+
+        // +++ NEW TWO-STAGE COLOR INTERPOLATION LOGIC +++
+        dx::XMVECTOR finalColor;
+        if (bUseMidColor)
+        {
+            // --- THREE-COLOR LOGIC (WHEN ENABLED) ---
+            if (t < ColorMidpoint)
+            {
+                // First half of life: Interpolate from StartColor to MidColor
+                float stage_t = t / ColorMidpoint;
+                dx::XMVECTOR start = dx::XMLoadFloat4(&StartColor);
+                dx::XMVECTOR mid = dx::XMLoadFloat4(&MidColor);
+                finalColor = dx::XMVectorLerp(start, mid, stage_t);
+            }
+            else
+            {
+                // Second half of life: Interpolate from MidColor to EndColor
+                float stage_t = (t - ColorMidpoint) / (1.0f - ColorMidpoint);
+                dx::XMVECTOR mid = dx::XMLoadFloat4(&MidColor);
+                dx::XMVECTOR end = dx::XMLoadFloat4(&EndColor);
+                finalColor = dx::XMVectorLerp(mid, end, stage_t);
+            }
+        }
+        else
+        {
+            // --- ORIGINAL TWO-COLOR LOGIC (DEFAULT) ---
+            dx::XMVECTOR start = dx::XMLoadFloat4(&StartColor);
+            dx::XMVECTOR end = dx::XMLoadFloat4(&EndColor);
+            finalColor = dx::XMVectorLerp(start, end, t);
+        }
+        dx::XMStoreFloat4(&idata.instanceColor, finalColor);
+        // +++ END OF NEW LOGIC +++
+        if (bAnimateSize)
+        {
+            // If animation is enabled, interpolate from start to end size.
+            idata.instanceSize.x = std::lerp(p.startSize, p.endSize, t);
+        }
+        else
+        {
+            // If animation is disabled, just use the particle's unique start size.
+            idata.instanceSize.x = p.startSize;
+        }
         idata.instanceSize.y = idata.instanceSize.x;
         idata.instanceRot = std::lerp(p.startRotation, p.endRotation, t);
         idata.atlasOffset = p.atlasOffset;
@@ -158,68 +200,53 @@ void ParticleSystemComponent::EmitParticle(const DirectX::XMFLOAT3& position)
     {
         if (!p.active)
         {
-            // +++ NEW: Get the owner node's world transformation matrix +++
-            // This matrix contains the final world position, rotation, and scale of the node.
             const auto ownerWorldTransform = GetOwner()->GetWorldTransform();
-
             p.active = true;
             p.age = 0.0f;
-            p.lifetime = ParticleLifetime;
-
+            // +++ NEW LIFETIME LOGIC +++
+            if (bUseLifetimeRange)
+            {
+                // Create a distribution for the random lifetime
+                std::uniform_real_distribution<float> lifetime_dist(MinLifetime, MaxLifetime);
+                // Assign a random lifetime to the particle, ensuring it's not negative.
+                p.lifetime = std::max(0.0f, lifetime_dist(rng));
+            }
+            else
+            {
+                // Use the fixed, single lifetime value.
+                p.lifetime = ParticleLifetime;
+            }
             p.startColor = StartColor;
             p.endColor = EndColor;
 
-
-            // +++ THIS IS THE KEY CHANGE +++
-            // Calculate a random variance amount.
-            // dist(rng) returns a value from -1.0 to 1.0.
-            std::uniform_real_distribution<float> distt(0.0f, 1.0f);
-            const float randomVariance = StartSizeVariance * distt(rng);
-
-            // Assign the final start size, ensuring it doesn't go below zero.
-            p.startSize = std::max(0.0f, StartSize + randomVariance);
+            // --- Size ---
+            // Use the [0, 1] member distribution
+            p.startSize = StartSize + (StartSizeVariance * unit_dist(rng));
             p.endSize = EndSize;
+
             p.startRotation = StartRotation;
             p.endRotation = EndRotation;
 
-            // Handle atlas randomization (from previous step)
+            // --- Atlas ---
             std::uniform_int_distribution<UINT> row_dist(0, textureAtlasRows - 1);
             std::uniform_int_distribution<UINT> col_dist(0, textureAtlasColumns - 1);
-            UINT randomRow = row_dist(rng);
-            UINT randomCol = col_dist(rng);
-            p.atlasOffset.x = (float)randomCol / textureAtlasColumns;
-            p.atlasOffset.y = (float)randomRow / textureAtlasRows;
+            p.atlasOffset.x = (float)col_dist(rng) / textureAtlasColumns;
+            p.atlasOffset.y = (float)row_dist(rng) / textureAtlasRows;
 
+            // --- Position ---
+            dx::XMVECTOR worldOffsetVec = dx::XMVector3TransformNormal(dx::XMLoadFloat3(&EmitterPositionOffset), ownerWorldTransform);
+            dx::XMStoreFloat3(&p.position, dx::XMVectorAdd(dx::XMLoadFloat3(&position), worldOffsetVec));
 
-            // --- POSITION LOGIC ---
-            // The 'position' parameter is the node's world-space origin.
-            // We now transform the local-space EmitterPositionOffset into a world-space offset
-            // and add it to the origin.
-            dx::XMVECTOR localOffsetVec = dx::XMLoadFloat3(&EmitterPositionOffset);
-
-            // Use XMVector3TransformNormal to apply only rotation and scale to the offset vector.
-            dx::XMVECTOR worldOffsetVec = dx::XMVector3TransformNormal(localOffsetVec, ownerWorldTransform);
-
-            dx::XMVECTOR basePos = dx::XMLoadFloat3(&position);
-            dx::XMStoreFloat3(&p.position, dx::XMVectorAdd(basePos, worldOffsetVec));
-
-
-            // --- VELOCITY LOGIC ---
-            // Create a randomized velocity vector in LOCAL space first.
-            std::uniform_real_distribution<float> dist(0.0f, 1.0f);
+            // --- Velocity ---
+            // Use the [0, 1] member distribution
             dx::XMFLOAT3 localRandomizedVel = {
-                ParticleVelocity.x + ParticleVelocityVariance.x * dist(rng),
-                ParticleVelocity.y + ParticleVelocityVariance.y * dist(rng),
-                ParticleVelocity.z + ParticleVelocityVariance.z * dist(rng)
+                ParticleVelocity.x + ParticleVelocityVariance.x * unit_dist(rng),
+                ParticleVelocity.y + ParticleVelocityVariance.y * unit_dist(rng),
+                ParticleVelocity.z + ParticleVelocityVariance.z * unit_dist(rng)
             };
+            dx::XMStoreFloat3(&p.velocity, dx::XMVector3TransformNormal(dx::XMLoadFloat3(&localRandomizedVel), ownerWorldTransform));
 
-            // Now, transform this local-space velocity into a world-space velocity.
-            // Again, XMVector3TransformNormal is correct because it applies rotation
-            // but ignores the translation component of the matrix.
-            dx::XMVECTOR localVelVec = dx::XMLoadFloat3(&localRandomizedVel);
-            dx::XMVECTOR worldVelVec = dx::XMVector3TransformNormal(localVelVec, ownerWorldTransform);
-            dx::XMStoreFloat3(&p.velocity, worldVelVec);
-
+            // This is the most important part for preventing multiple emissions per call
             return;
         }
     }
@@ -270,14 +297,14 @@ void ParticleSystemComponent::Draw(Graphics& gfx) const
 void ParticleSystemComponent::SetPlaybackMode(PlaybackMode mode)
 {
     m_playbackMode = mode;
+    m_emissionTimer = 0.0f;
     if (m_playbackMode == PlaybackMode::Loop)
     {
         m_isEmitting = true;
     }
     else // OneShot
     {
-        m_isEmitting = false;
-        m_emissionTimer = 0.0f;
+        m_isEmitting = false; // A one-shot always starts in a non-emitting state.
     }
 }
 
@@ -288,10 +315,28 @@ ParticleSystemComponent::PlaybackMode ParticleSystemComponent::GetPlaybackMode()
 
 void ParticleSystemComponent::Play()
 {
-    m_isEmitting = true;
-    if (m_playbackMode == PlaybackMode::OneShot)
+    if (m_playbackMode == PlaybackMode::OneShot && bOneShotIsBurst)
     {
-        m_emissionTimer = 0.0f;
+        // --- A. Handle a BURST one-shot ---
+        // We are not "emitting" over time, so m_isEmitting stays false.
+        m_isEmitting = false;
+        m_emissionTimer = 0.0f; // Reset timer for consistency
+
+        if (pEmitterLogic)
+        {
+            // Call the new burst function on the emitter.
+            pEmitterLogic->EmitBurst(BurstAmount, *this);
+        }
+    }
+    else
+    {
+        // --- B. Handle a LOOP or TIMED one-shot ---
+        // This is the original logic.
+        m_isEmitting = true;
+        if (m_playbackMode == PlaybackMode::OneShot)
+        {
+            m_emissionTimer = 0.0f;
+        }
     }
 }
 

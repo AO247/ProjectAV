@@ -324,6 +324,7 @@
     <ClCompile Include="SpawnAttack.cpp" />
     <ClCompile Include="SpawnJump.cpp" />
     <ClCompile Include="SphereToCenterEmitterLogic.cpp" />
+    <ClCompile Include="SphereVolumeEmitterLogic.cpp" />
     <ClCompile Include="Spikes.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Source.cpp" />
@@ -457,6 +458,7 @@
     <ClInclude Include="Source.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="SphereToCenterEmitterLogic.h" />
+    <ClInclude Include="SphereVolumeEmitterLogic.h" />
     <ClInclude Include="Spikes.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="State.h" />
