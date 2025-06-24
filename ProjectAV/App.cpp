@@ -655,7 +655,10 @@ void App::HandleInput(float dt)
             }
             cursorEnabled = !cursorEnabled;
         }
-
+        if (wnd.kbd.IsJustPressed('B'))
+        {
+            PrefabManager::InstantiateNewColumn(temporary, pFreeViewCamera->GetWorldPosition(), 1.0f);
+        }
         if (wnd.kbd.IsJustPressed('H'))
         {
             showControlWindow = !showControlWindow;
