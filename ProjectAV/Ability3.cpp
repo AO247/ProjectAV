@@ -118,7 +118,7 @@ void Ability3::Positioning()
     {
         Vector3 cameraPos = camera->GetWorldPosition();
         Vector3 targetPosition = cameraPos + camera->Forward() * 6.0f;
-        //pOwner->SetWorldPosition(targetPosition);
+        targetPosition += camera->Down() * 1.0f;
         PhysicsCommon::physicsSystem->GetBodyInterface().SetPosition(pOwner->GetComponent<Rigidbody>()->GetBodyID(),
             Vec3(targetPosition.x, targetPosition.y, targetPosition.z), EActivation::Activate);
     }
@@ -143,6 +143,7 @@ bool Ability3::Pressed()
     
     Vector3 cameraPos = camera->GetWorldPosition();
     Vector3 targetPosition = cameraPos + camera->Forward() * 6.0f;
+    targetPosition += camera->Down() * 1.0f;
     pOwner->SetWorldPosition(targetPosition);
 	
     // animacja tworzenia czarnej dziury

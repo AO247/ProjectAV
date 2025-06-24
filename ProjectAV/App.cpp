@@ -668,6 +668,11 @@ void App::HandleInput(float dt)
         {
             ResetGame();
         }
+        if (wnd.kbd.IsJustPressed('N'))
+        {
+            tutorialNode->GetComponent<Tutorial>()->completed = true;
+            pPlayer->SetWorldPosition({ 0.0f, 20.0f, 10.0f });
+        }
         if (wnd.kbd.IsJustPressed('P'))
         {
             paused = !paused;
