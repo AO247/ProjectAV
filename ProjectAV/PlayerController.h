@@ -26,7 +26,7 @@ public:
 	float jumpForce = 30.0f;
 	float secondJumpForce = 20.0f;
 	float dashForce = 70.0f;
-	float height = 4.0f;
+	float height = 6.0f;
 	float dashCooldown = 1.5f;
 
 	float stepSoundInterval = 0.5f;
