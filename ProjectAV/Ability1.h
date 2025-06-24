@@ -7,6 +7,8 @@
 #include <DirectXMath.h>
 #include "Rigidbody.h"
 #include "SoundEffectsPlayer.h"
+#include "AnimationComponent.h"
+
 
 class Node;
 
@@ -27,8 +29,10 @@ public:
 	float force = 600.0f;
 	bool abilityReady = true;
 	bool stop = true;
-	Node* leftHandNormal = nullptr;
+	AnimationComponent* leftHand = nullptr;
 	Node* leftHandAbility = nullptr;
+
+
 private:
 	void KeyboardInput();
 	void Cooldowns(float dt);

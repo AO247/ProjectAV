@@ -60,14 +60,18 @@ void Ability5::Positioning()
 bool Ability5::Pressed()
 {
     if (!abilityReady) return false;
+    // animacja 
+    // dŸwiêk aktywacji
+
+    rightHand->PlayAnimation(5, 0.2, false);
 
     if (pOwner->GetComponent<SoundEffectsPlayer>()) {
         float randSound = (rand() % 4);
         pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f, false);
     }
 
-    rightHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
-    rightHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
+    //rightHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
+    //rightHand->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
     timeToChange = 0.3f;
     PrefabManager::InstantiateAbility5Extend(pOwner->GetParent(), pOwner->GetWorldPosition(), 1.0f, force, duration);
     PrefabManager::InstantiateAbility5Particles(pOwner->GetParent(), pOwner->GetWorldPosition(), 1.0f, { 0,0,0 }, duration);
@@ -86,12 +90,15 @@ void Ability5::Cooldowns(float dt)
     if (cooldownTimer > 0.0f)
     {
         cooldownTimer -= dt;
+        if (rightHand->GetCurrentPlayingAnimationRaw() == nullptr) {
+            rightHand->PlayAnimation(6);
+        }
     }
     else
     {
         if (!abilityReady)
         {
-            rightHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
+            rightHand->PlayAnimation(11);
         }
         abilityReady = true;
     }
@@ -100,8 +107,8 @@ void Ability5::Cooldowns(float dt)
         timeToChange -= dt;
         if (timeToChange <= 0.0f)
         {
-            rightHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
-            rightHandNormal->SetLocalPosition({ 0.0f, -2.7f, 1.0f });
+            //rightHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
+           //rightHand->SetLocalPosition({ 0.0f, -2.7f, 1.0f });
         }
     }
 

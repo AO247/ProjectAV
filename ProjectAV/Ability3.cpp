@@ -24,7 +24,7 @@ void Ability3::Update(float dt)
     if (!wnd.CursorEnabled())
     {
 		holdSoundTimer -= dt;
-        //DŸwiêk trzymania  trochê nie wiem gdzie powinien byæ i brakuje warunku isPressed
+        //Dï¿½wiï¿½k trzymania  trochï¿½ nie wiem gdzie powinien byï¿½ i brakuje warunku isPressed
         /*if (pOwner->GetComponent<SoundEffectsPlayer>()) {
             if (holdSoundTimer <= 0.0f)
             {
@@ -35,74 +35,116 @@ void Ability3::Update(float dt)
         }*/
         if (timer > 0.0f)
         {
-            Activated();
-            timer -= dt;
-            if (timer <= 0.0f)
-            {
-                timer = 0.0f;
-            }
+            PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(pOwner->GetComponent<Rigidbody>()->GetBodyID(),
+                Vec3(0.0f, 0.0f, 0.0f));
+            PhysicsCommon::physicsSystem->GetBodyInterface().SetPosition(pOwner->GetComponent<Rigidbody>()->GetBodyID(),
+                pos, EActivation::DontActivate);
+            
 
+            if (duration - timer > 0.3f)
+            {
+                // particle juï¿½ aktywowanej
+                // dï¿½wiï¿½k juï¿½ aktywowanej
+                Activated();
+            }
+            else if (timer == duration)
+            {
+                // particle po wylï¿½dowaniu
+                // dï¿½wiï¿½k po wylï¿½dowaniu
+            }
+            timer -= dt;
+
+        }
+        else if (activated)
+        {
+            activated = false;
+            PhysicsCommon::physicsSystem->GetBodyInterface().SetPosition(pOwner->GetComponent<Rigidbody>()->GetBodyID(),
+                Vec3(0.0f, 0.0f, 0.0f), EActivation::DontActivate);
         }
         else {
             Positioning();
         }
-        Cooldowns(dt);
+    }
+    if (animTimer > 0.0f)
+    {
+        animTimer -= dt;
+    }
+    else if (readyToActive)
+    {
+        // animacja rzucenia czarnej dziury
+        // particle rzucenia czarnej dziury
+        // dï¿½wiï¿½k rzucenia czarnej dziury
+
+
+        if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+            pOwner->GetComponent<SoundEffectsPlayer>()->Play(1, 1.0f, false);
+        }
+        released = true;
+        PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(pOwner->GetComponent<Rigidbody>()->GetBodyID(),
+            Vec3(camera->Forward().x, camera->Forward().y, camera->Forward().z) * 60.0f);
+        if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+            pOwner->GetComponent<SoundEffectsPlayer>()->Play(1, 1.0f, false);
+        }
+    }
+    else
+    {
+        // animacja trzymania czarnej dziury
+        // particle trzymania czarnej dziury
+        // dï¿½wiï¿½k trzymania czarnej dziury
     }
 }
 void Ability3::Positioning()
 {
-    Vec3 position = Vec3(camera->GetWorldPosition().x, camera->GetWorldPosition().y, camera->GetWorldPosition().z);
-    Vec3 direction = Vec3(camera->Forward().x, camera->Forward().y, camera->Forward().z);
-    RRayCast ray = RRayCast(position, direction * 100.0f);
-    RayCastResult result;
-    if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(ray, result,
-        IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::PLAYER, BroadPhaseLayers::TRIGGER }),
-        IgnoreMultipleObjectLayerFilter({ Layers::PLAYER, Layers::TRIGGER })))
+    if (isPressed)
     {
-        if (PhysicsCommon::physicsSystem->GetBodyInterface().GetObjectLayer(result.mBodyID) != Layers::GROUND)
-        {
-            Node* body = reinterpret_cast<Node*>(PhysicsCommon::physicsSystem->GetBodyInterface().GetUserData(result.mBodyID));
-            if (body != nullptr)
-            {
-                RRayCast ray2 = RRayCast(Vec3(body->GetWorldPosition().x, body->GetWorldPosition().y, body->GetWorldPosition().z), Vec3(0.0f, -100.0f, 0.0f));
-                RayCastResult result2;
-                if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(ray2, result2, SpecifiedBroadPhaseLayerFilter(BroadPhaseLayers::GROUND), SpecifiedObjectLayerFilter(Layers::GROUND)))
-                {
-                    position = ray2.mOrigin + ray2.mDirection * result2.mFraction;
-                    pOwner->SetLocalPosition(DirectX::XMFLOAT3(position.GetX(), position.GetY(), position.GetZ()));
-                }
-            }
-        }
-        else
-        {
-            position = ray.mOrigin + ray.mDirection * result.mFraction;
-            pOwner->SetLocalPosition(DirectX::XMFLOAT3(position.GetX(), position.GetY(), position.GetZ()));
-        }
+        Vector3 cameraPos = camera->GetWorldPosition();
+        Vector3 targetPosition = cameraPos + camera->Forward() * 6.0f;
+        //pOwner->SetWorldPosition(targetPosition);
+        PhysicsCommon::physicsSystem->GetBodyInterface().SetPosition(pOwner->GetComponent<Rigidbody>()->GetBodyID(),
+            Vec3(targetPosition.x, targetPosition.y, targetPosition.z), EActivation::Activate);
     }
+}
+void Ability3::OnCollisionEnter(Node* object)
+{
+    if (!released) return;
+    if (object->tag == "ENEMY" || object->tag == "GROUND" || object->tag == "WALL" || object->tag == "STONE")
+    {
+        PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(pOwner->GetComponent<Rigidbody>()->GetBodyID(),
+            Vec3(0.0f, 0.0f, 0.0f));
+        timer = duration;
+        released = false;
+        activated = true;
+        pos = PhysicsCommon::physicsSystem->GetBodyInterface().GetPosition(pOwner->GetComponent<Rigidbody>()->GetBodyID());
+    }
+
 }
 bool Ability3::Pressed()
 {
     if (killsCount < 3) return false;
-
+    // animacja tworzenia czarnej dziury
+    // particle tworzenia czarnej dziury
+    // dï¿½wiï¿½k tworzenia czarnej dziury
+    animTimer = 0.3f; //czas zakonczenia tworzenia czarnej dziury i przejscie do trzymania
+    isPressed = true;
+    released = false;
 	if (pOwner->GetComponent<SoundEffectsPlayer>()) {
 		pOwner->GetComponent<SoundEffectsPlayer>()->Play(0, 1.0f, false);
 	}
-
-    killsCount = 0;
-    timer = duration;
-    cooldownTimer = cooldown;
-    abilityReady = false;
     PrefabManager::InstantiateAbility3Particles(pOwner->GetParent(), Vector3(pOwner->GetLocalPosition().x, pOwner->GetLocalPosition().y, pOwner->GetLocalPosition().z), 1.0);
     PrefabManager::InstantiateAbility3CoreParticles(pOwner->GetParent(), Vector3(pOwner->GetLocalPosition().x, pOwner->GetLocalPosition().y, pOwner->GetLocalPosition().z), 1.0);
     return true;
 }
 void Ability3::Released()
 {
-    //DŸwiêk rzutu
-    if (pOwner->GetComponent<SoundEffectsPlayer>()) {
-        pOwner->GetComponent<SoundEffectsPlayer>()->Stop(3);
-        pOwner->GetComponent<SoundEffectsPlayer>()->Play(1, 1.0f, false);
-    }
+    //Dï¿½wiï¿½k rzutu
+    // if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+    //     pOwner->GetComponent<SoundEffectsPlayer>()->Stop(3);
+    //     pOwner->GetComponent<SoundEffectsPlayer>()->Play(1, 1.0f, false);
+    // }
+    if (!isPressed || released) return;
+    isPressed = false;
+    killsCount = 0;
+    readyToActive = true;
 }
 void Ability3::Activated()
 {
@@ -128,7 +170,6 @@ void Ability3::Activated()
 
                 PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), Vec3(0.0f, 0.0f, 0.0f));
                 PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), Vec3(direction.x, direction.y, direction.z) * scaledForce);
-                //OutputDebugStringA(("Ability3 hit: " + objects[i]->GetName() + "\n").c_str());
             }
             else if (objects[i]->tag == "BULLET")
             {
@@ -140,26 +181,15 @@ void Ability3::Activated()
             }
         }
     }
-    //DŸwiêk koñczoñcy czarn¹ dziurê, ma byæ zagrany raz i nie jest zabezpieczony przed
-    // wielokrotnym uruchomieniem wiêc musi byæ w miejscu które wywo³uje siê tylko raz
+    //Dï¿½wiï¿½k koï¿½czoï¿½cy czarnï¿½ dziurï¿½, ma byï¿½ zagrany raz i nie jest zabezpieczony przed
+    // wielokrotnym uruchomieniem wiï¿½c musi byï¿½ w miejscu ktï¿½re wywoï¿½uje siï¿½ tylko raz
 
     /*if (pOwner->GetComponent<SoundEffectsPlayer>()) {
         pOwner->GetComponent<SoundEffectsPlayer>()->Play(2, 1.0f, false);
     }*/
 }
 
-void Ability3::Cooldowns(float dt)
-{
-    if (cooldownTimer > 0.0f)
-    {
-        cooldownTimer -= dt;
-    }
-    else
-    {
-        abilityReady = true;
-    }
 
-}
 
 void Ability3::OnTriggerStay(const std::vector<Node*> others) {
     objects.clear();
@@ -169,7 +199,6 @@ void Ability3::OnTriggerStay(const std::vector<Node*> others) {
 
 void Ability3::DrawImGuiControls()
 {
-    ImGui::InputFloat("Cooldown", &cooldown);
 	ImGui::InputFloat("Duration", &duration);
     ImGui::InputFloat("Max Force", &maxForce);
     ImGui::InputFloat("Min Force", &minForce);

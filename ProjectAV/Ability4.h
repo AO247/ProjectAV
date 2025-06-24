@@ -9,6 +9,7 @@
 #include <DirectXMath.h>
 #include "Rigidbody.h"
 #include "SoundEffectsPlayer.h"
+#include "AnimationComponent.h"
 
 class Node;
 
@@ -32,8 +33,8 @@ public:
 	Vector3	cameraRotation = Vector3::Zero;
 	bool isPressed = false;
 	bool abilityReady = true;
-
-	Node* leftHandNormal = nullptr;
+	bool activated = false;
+	AnimationComponent* leftHand = nullptr;
 	Node* leftHandAbility = nullptr;
 	Node* selectedNode = nullptr;
 	Ability* baseAbility = nullptr;

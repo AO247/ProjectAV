@@ -6293,6 +6293,7 @@ public:
         BodyCreationSettings BodySettings(islandShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
         BodySettings.mMassPropertiesOverride.mMass = 10.0f;
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
+        BodySettings.mAllowDynamicOrKinematic = true;
         BodySettings.mFriction = 0.5f;
         BodySettings.mMotionQuality = EMotionQuality::LinearCast;
         pNewNodeOwner->AddComponent(
@@ -6936,7 +6937,7 @@ public:
         eBodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
 
         //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
-        eBodySettings.mMassPropertiesOverride.mMass = 10.0f;
+        eBodySettings.mMassPropertiesOverride.mMass = 15.0f;
         eBodySettings.mFriction = 0.2f;
         eBodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
         eBodySettings.mMotionQuality = EMotionQuality::LinearCast;
@@ -6966,7 +6967,7 @@ public:
         );
         Walking* walking = pNewNode->GetComponent<Walking>();
         walking->radius = 1.5f;
-        walking->maxSpeed = 90.0f;
+        walking->maxSpeed = 30.0f;
         walking->height = 7.2f;
 
 
@@ -7018,7 +7019,7 @@ public:
         eBodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
 
         //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
-        eBodySettings.mMassPropertiesOverride.mMass = 15.0f;
+        eBodySettings.mMassPropertiesOverride.mMass = 20.0f;
         eBodySettings.mFriction = 0.2f;
         eBodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
         eBodySettings.mMotionQuality = EMotionQuality::LinearCast;
@@ -7048,7 +7049,7 @@ public:
         );
         Walking* walking = pNewNode->GetComponent<Walking>();
         walking->radius = 1.5f;
-        walking->maxSpeed = 90.0f;
+        walking->maxSpeed = 40.0f;
 
 
         //STATE MACHINE
@@ -7108,7 +7109,7 @@ public:
         eBodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
 
         //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
-        eBodySettings.mMassPropertiesOverride.mMass = 10.0f;
+        eBodySettings.mMassPropertiesOverride.mMass = 14.0f;
         eBodySettings.mFriction = 0.2f;
         eBodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
         eBodySettings.mMotionQuality = EMotionQuality::LinearCast;
@@ -7130,7 +7131,7 @@ public:
             std::make_unique<Flying>(pNewNode)
         );
         Flying* flying = pNewNode->GetComponent<Flying>();
-        flying->maxSpeed = 38.0f;
+        flying->maxSpeed = 30.0f;
         flying->height = 2.0f;
 
         //STATE MACHINE
@@ -7186,7 +7187,7 @@ public:
         eBodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
 
         //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
-        eBodySettings.mMassPropertiesOverride.mMass = 7.0f;
+        eBodySettings.mMassPropertiesOverride.mMass = 14.0f;
         eBodySettings.mFriction = 0.2f;
         eBodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
         eBodySettings.mMotionQuality = EMotionQuality::LinearCast;
@@ -7214,7 +7215,7 @@ public:
         );
         Walking* walking = pNewNode->GetComponent<Walking>();
         walking->radius = 1.5f;
-        walking->maxSpeed = 80.0f;
+        walking->maxSpeed = 30.0f;
         walking->height = 5.4f;
         //walking->voidNode = voidOwner.get();
         root->AddChild(std::move(voidOwner));
@@ -7356,11 +7357,11 @@ public:
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         parentNode->AddChild(std::move(pNewNodeOwner));
 
-        BodyCreationSettings eBodySettings(new JPH::CapsuleShape(0.5f, 1.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::ENEMY);
+        BodyCreationSettings eBodySettings(new JPH::CapsuleShape(0.4f, 1.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::ENEMY);
         eBodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
 
         //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
-        eBodySettings.mMassPropertiesOverride.mMass = 5.0f;
+        eBodySettings.mMassPropertiesOverride.mMass = 11.0f;
         eBodySettings.mFriction = 0.2f;
         eBodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
         eBodySettings.mMotionQuality = EMotionQuality::LinearCast;
@@ -7393,8 +7394,8 @@ public:
         );
         Walking* walking = pNewNode->GetComponent<Walking>();
         walking->radius = 1.0f;
-        walking->maxSpeed = 40.0f;
-        walking->height = 4.0f;
+        walking->maxSpeed = 30.0f;
+        walking->height = 2.8f;
 
 
         //STATE MACHINE
@@ -7408,6 +7409,7 @@ public:
         stateMachine->attackComponents.push_back(boomAttack);
         stateMachine->pMovementComponent = walking;
         stateMachine->canDropPills = false;
+        stateMachine->Stop(3.0f);
         pNewNode->AddComponent(
             std::make_unique<Health>(pNewNode, 1.0f)
         );

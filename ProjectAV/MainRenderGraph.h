@@ -3,12 +3,13 @@
 #include <memory>
 #include "ConstantBuffersEx.h"
 
+// Forward-declare Graphics, bo jest potrzebny w konstruktorze
 class Graphics;
-namespace Bind
-{
-	class Bindable;
-	class RenderTarget;
-}
+
+// ZMIANA: Zamiast niekompletnych deklaracji wyprzedzaj¹cych,
+// do³¹czamy pe³ne definicje potrzebnych klas.
+#include "RenderTarget.h"
+#include "DepthStencil.h" // Ten plik zawiera definicjê BufferResource
 
 namespace Rgph
 {
@@ -30,6 +31,9 @@ namespace Rgph
 		float sigma = 2.0f;
 		std::shared_ptr<Bind::CachingPixelConstantBufferEx> blurKernel;
 		std::shared_ptr<Bind::CachingPixelConstantBufferEx> blurDirection;
+
+		// To pole jest teraz poprawne, bo kompilator wie, czym jest BufferResource
+		std::shared_ptr<Bind::BufferResource> shadowMap;
 		Rgph::ParticlePass* pParticlePass = nullptr;
 	};
 }

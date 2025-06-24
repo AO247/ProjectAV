@@ -16,7 +16,6 @@ public:
 
 	virtual void Update(float dt) override;
 	virtual void DrawImGuiControls() override;
-	void OnTriggerStay(const std::vector<Node*> others) override;
 
 	float acceleration = 8.0f;
 	float deceleration = 25.0f;
@@ -35,19 +34,17 @@ public:
 	bool alive = true;
 	bool grounded = false;
 	bool evolvedDash = false;
-	bool enableFallPush = false;
-	float minFallForce = 3.0f;
-	float maxFallForce = 800.0f;
-	float maxDistance = 6.0f;
-	float fallPushCooldown = 1.0f;
-	Vec3 lastVelocity = Vec3(0.0f, 0.0f, 0.0f);
-	std::vector<Node*> objects;
+	bool enableFallPush = true;
 
+	std::vector<Node*> objects;
+	//std::optional<Keyboard::Event> e;
+	Keyboard::Event key;
 	Node* abilitySlot1;
 	Node* abilitySlot2;
 	Node* abilitySlot3;
 	Node* camera;
 	Rigidbody* rigidbody;
+	Vector3 moveDirection;
 
 private:
 	Window& wnd;
@@ -56,7 +53,6 @@ private:
 	bool canDash = true;
 	float airMultiplier = 1.1f;
 
-	Vector3 moveDirection;
 	Vector3 dashDirection;
 	float dashCooldownTimer = 0.0f;
 	float dashTimer = 0.0f;

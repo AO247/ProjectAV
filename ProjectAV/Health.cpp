@@ -16,6 +16,11 @@ void Health::DrawImGuiControls()
 void Health::TakeDamage(float damage, bool heavy, bool isFire)
 {
 	bool hitted = false;
+	if (damage == 0) // bullet
+	{
+		hitted = true;
+		pOwner->GetComponent<StateMachine>()->Stun(1.6f);
+	}
 	if (tank)
 	{
 		if (heavy)

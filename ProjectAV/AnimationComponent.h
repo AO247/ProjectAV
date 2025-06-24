@@ -50,6 +50,8 @@ public:
 		}
 		return nullptr;
 	}
+
+
 	Animation* GetAnimationByIndex(int index) const {
 		if (index >= 0 && static_cast<size_t>(index) < animations.size()) {
 			return animations[index];

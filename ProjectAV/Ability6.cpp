@@ -66,6 +66,7 @@ void Ability6::Positioning()
 void Ability6::Pulling(float dt)
 {
 	if (selectedNode == nullptr) return;
+
     Vector3 cameraPos = camera->GetWorldPosition();
     Vector3 targetPosition = cameraPos + camera->Forward() * 8.0f;
     Rigidbody* rb = selectedNode->GetComponent<Rigidbody>();
@@ -92,6 +93,10 @@ void Ability6::Pulling(float dt)
     }
     else
     {
+        // dzwiek trzymania obiektu
+        // animacja trzymania obiektu
+
+        leftHand->PlayAnimation(2);
         Vector3 dir = targetPosition - selectedNode->GetWorldPosition();
         dir.y *= 10.0f;
         dir.Normalize();
@@ -122,11 +127,15 @@ void Ability6::PullingParticlesPositioning()
 bool Ability6::Pressed()
 {
     if (!abilityReady) return false;
-    isPressed = true;
     if (selectedNode == nullptr) return false;
-    leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
-    leftHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
+    isPressed = true;
+    // animacja przyciagniecia
+    // particle dodanie do obiektu
+    // dzwiek wyboru node
+    //leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
+    //leftHand->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
 
+    leftHand->PlayAnimation(1, 0.2f, false);
     Vector3 target = Vector3(camera->GetWorldPosition().x, camera->GetWorldPosition().y, camera->GetWorldPosition().z);
 
     DirectX::XMVECTOR viewerPosition = DirectX::XMVectorSet(selectedNode->GetWorldPosition().x, selectedNode->GetWorldPosition().y, selectedNode->GetWorldPosition().z, 0.0f);
@@ -160,7 +169,8 @@ void Ability6::Released()
     if (!isPressed) return;
     isPressed = false;
     if (!abilityReady) return;
-    leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 4.0f });
+    // particle wylaczenie 
+    //leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 4.0f });
     timeToChange = 0.3f;
    
 	pOwner->GetComponent<SoundEffectsPlayer>()->Stop(2);
@@ -188,12 +198,17 @@ void Ability6::Cooldowns(float dt)
     if (cooldownTimer > 0.0f)
     {
         cooldownTimer -= dt;
+        if (leftHand->GetCurrentPlayingAnimationRaw() == nullptr) {
+            leftHand->PlayAnimation(6);
+        }
     }
     else
     {
         if (!abilityReady)
         {
-            leftHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
+            leftHand->PlayAnimation(11);
+
+            //leftHand->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
         }
         abilityReady = true;
     }
@@ -202,8 +217,8 @@ void Ability6::Cooldowns(float dt)
         timeToChange -= dt;
         if (timeToChange <= 0.0f)
         {
-            leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
-            leftHandNormal->SetLocalPosition({ 0.0f, -2.7f, 1.0f });
+            //leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
+            //leftHand->SetLocalPosition({ 0.0f, -2.7f, 1.0f });
         }
     }
 

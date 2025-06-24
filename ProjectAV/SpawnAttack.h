@@ -19,6 +19,8 @@ public:
 
 	float attackSoundTimer = 0.0f;
 	float attackSoundInterval = 5.0f;
+	float soundTimer = 0.0f;
+	bool soundPlayed = true;
 
 private:
 	bool attacked = false;

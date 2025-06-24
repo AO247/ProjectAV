@@ -652,6 +652,7 @@ void Node::Destroy()
     {
         if (GetComponent<Rigidbody>() != nullptr)
         {
+            GetComponent<Rigidbody>()->DisconnectConnectedBody();
             //dynamic_cast<MyContactListener*>(PhysicsCommon::physicsSystem->GetContactListener())->RemoveRigidbodyData(GetComponent<Rigidbody>()->GetBodyID());
             PhysicsCommon::physicsSystem->GetBodyInterface().SetUserData(GetComponent<Rigidbody>()->GetBodyID(), reinterpret_cast<uint64>(nullptr));
         }

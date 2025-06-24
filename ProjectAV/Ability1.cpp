@@ -35,20 +35,30 @@ bool Ability1::Pressed()
 {
     if (!abilityReady) return false;
 
+    // animacja popchniêcia 
+    // particle
+    // dŸwiêk popchniêcia
+
+    leftHand->PlayAnimation(4, 0.2, false);
+    
     if (pOwner->GetComponent<SoundEffectsPlayer>()) {
         float randSound = (rand() % 4);
         pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f, false);
     }
 
-	timeToChange = 0.3f;
-	leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
-	leftHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
+	timeToChange = 0.64f;
+	//leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
+	//leftHand->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
     for (int i = 0; i < objects.size(); i++)
     {
         if (objects[i]->tag == "ENEMY" || objects[i]->tag == "STONE")
         {
 			Vec3 direction = Vec3(pOwner->Forward().x, pOwner->Forward().y, pOwner->Forward().z);
             PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(objects[i]->GetComponent<Rigidbody>()->GetBodyID(), direction * force);
+            if (objects[i]->tag == "ENEMY")
+            {
+                objects[i]->GetComponent<StateMachine>()->Stop(0.1f);
+            }
           /*  if (objects[i]->tag == "ENEMY")
             {
                 objects[i]->AddComponent(
@@ -79,12 +89,17 @@ void Ability1::Cooldowns(float dt)
     if (cooldownTimer > 0.0f)
     {
         cooldownTimer -= dt;
+        if (leftHand->GetCurrentPlayingAnimationRaw() == nullptr) {
+            leftHand->PlayAnimation(6);
+        }
+        
+
     }
     else
     {
         if (!abilityReady)
         {
-            leftHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
+            leftHand->PlayAnimation(11);
         }
         abilityReady = true;
     }
@@ -93,8 +108,6 @@ void Ability1::Cooldowns(float dt)
         timeToChange -= dt;
         if (timeToChange <= 0.0f)
         {
-            leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
-            leftHandNormal->SetLocalPosition({ 0.0f, -2.7f, 1.0f });
         }
     }
 

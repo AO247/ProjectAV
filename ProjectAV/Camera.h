@@ -15,6 +15,7 @@ public:
 	virtual void Update(float dt) override;
 
 	DirectX::XMMATRIX GetViewMatrix() const noexcept;
+	DirectX::XMFLOAT3 GetPos() const noexcept;
 
 	void SetSensitivity(float xSens, float ySens) { sensX = xSens; sensY = ySens; }
 	float active = false;

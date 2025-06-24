@@ -14,7 +14,6 @@ public:
 	virtual ~Flying() = default;
 	float maxSpeed = 18.0f;
 	float maxForce = 200.0f;
-	float flyingHeight = 12.0f;
 	float height = 3.0f;
 	float rotationLerpFactor = 0.08f;
 

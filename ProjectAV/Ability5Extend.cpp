@@ -7,6 +7,8 @@ Ability5Extend::Ability5Extend(Node* owner, float force, float duration)
 }
 void Ability5Extend::Update(float dt)
 {
+    // particle dzia³ania 
+    // dŸwiêk dzia³ania
 	timer += dt;
     holdSoundTimer -= dt;
 

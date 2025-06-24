@@ -1,7 +1,13 @@
 #include "TransformCbuf.h"
+#include "DirectionalLight.h" // Pe³na definicja
+#include "Drawable.h"       // Pe³na definicja
 
 namespace Bind
 {
+	// --- DODAJ INICJALIZACJÊ ---
+	std::unique_ptr<VertexConstantBuffer<TransformCbuf::Transforms>> TransformCbuf::pVcbuf;
+	const DirectionalLight* TransformCbuf::pLight = nullptr;
+
 	TransformCbuf::TransformCbuf(Graphics& gfx, UINT slot)
 	{
 		if (!pVcbuf)
@@ -12,8 +18,7 @@ namespace Bind
 
 	void TransformCbuf::Bind(Graphics& gfx) noxnd
 	{
-		INFOMAN_NOHR(gfx);
-		GFX_THROW_INFO_ONLY(UpdateBindImpl(gfx, GetTransforms(gfx)));
+		UpdateBindImpl(gfx, GetTransforms(gfx));
 	}
 
 	void TransformCbuf::InitializeParentReference(const Drawable& parent) noexcept
@@ -33,18 +38,28 @@ namespace Bind
 		pVcbuf->Bind(gfx);
 	}
 
+	// --- ZMIEÑ TÊ FUNKCJÊ ---
 	TransformCbuf::Transforms TransformCbuf::GetTransforms(Graphics& gfx) noxnd
 	{
 		assert(pParent != nullptr);
-		const auto modelView = pParent->GetTransformXM() * gfx.GetCamera();
+		assert(pLight != nullptr && "Light pointer in TransformCbuf has not been set!");
+		const auto model = pParent->GetTransformXM();
+		const auto modelView = model * gfx.GetCamera();
 		return {
 			DirectX::XMMatrixTranspose(modelView),
 			DirectX::XMMatrixTranspose(
-				modelView *
-				gfx.GetProjection()
+				modelView * gfx.GetProjection()
+			),
+			// --- DODAJ OBLICZENIE ---
+			DirectX::XMMatrixTranspose(
+				model * pLight->GetViewMatrix() * pLight->GetProjectionMatrix()
 			)
 		};
 	}
 
-	std::unique_ptr<VertexConstantBuffer<TransformCbuf::Transforms>> TransformCbuf::pVcbuf;
+	// --- DODAJ TÊ FUNKCJÊ ---
+	void TransformCbuf::SetLight(const DirectionalLight* pLight_in)
+	{
+		pLight = pLight_in;
+	}
 }

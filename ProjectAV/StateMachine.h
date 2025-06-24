@@ -33,13 +33,13 @@ public:
 	float attackRange = 8.0f;
 	float stunTime = 1.0f;
 	float stopTime = 1.0f;
+	float groundDamping = 0.035f;
+	float flyingDamping = 0.01f;
 
-	float hitted = true;
 	bool isFlying = false;
 	bool isDead = false;
 	bool canDropPills = true;
 	bool eatedPills = false;
-
 	Component* pMovementComponent = nullptr;
 	Component* pAttackComponent = nullptr;
 	std::vector<Component*> attackComponents;

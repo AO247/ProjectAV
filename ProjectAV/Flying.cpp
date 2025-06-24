@@ -14,6 +14,7 @@ Flying::Flying(Node* owner, std::string tag)
 	rigidbody = owner->GetComponent<Rigidbody>();
 	PhysicsCommon::physicsSystem->GetBodyInterface().SetGravityFactor(rigidbody->GetBodyID(), 0.0f);
 	PhysicsCommon::physicsSystem->GetBodyInterface().SetFriction(rigidbody->GetBodyID(), 0.0f);
+	flyingHeight = 12.0f;
 }
 void Flying::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 {
@@ -22,7 +23,7 @@ void Flying::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 	}
 
 	// tutaj dŸwiêk
-
+	
 	targetPosition = targetPos;
 	if (sp > 1.0f)
 	{
@@ -211,11 +212,9 @@ Vector3 Flying::HeightCalculate()
 		Vec3 tymPos = PhysicsCommon::physicsSystem->GetBodyInterface().GetPosition(result.mBodyID);
 		lastIslandPos = { tymPos.GetX(), tymPos.GetY(), tymPos.GetZ() };
 		grounded = true;
-		canAttack = true;
 	}
 	else 
 	{
-		canAttack = false;
 		grounded = false;
 	}
 

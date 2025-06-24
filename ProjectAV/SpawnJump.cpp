@@ -19,7 +19,7 @@ void SpawnJump::Update(float dt)
 			
 			jumpSoundTimer -= dt;
 
-			if (!upgraded && !playerReady && (pOwner->GetWorldPosition() - playerNode->GetWorldPosition()).Length() < 7.0f && jumpCooldown < 0.1)
+			if (!upgraded && !playerReady && (pOwner->GetWorldPosition() - playerNode->GetWorldPosition()).Length() < 10.0f && jumpCooldown < 0.1)
 			{
 				PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(playerNode->GetComponent<Rigidbody>()->GetBodyID(), Vec3(0.0f, 0.0f, 0.0f));
 				pOwner->GetRoot()->GetComponent<Global>()->NextStage();
@@ -27,8 +27,7 @@ void SpawnJump::Update(float dt)
 			}
 			if (upgraded)
 			{	
-				//pOwner->GetComponent<SoundEffectsPlayer>()->Stop(0);
-				if ((pOwner->GetWorldPosition() - playerNode->GetWorldPosition()).Length() < 7.0f && jumpCooldown < 0.1)
+				if ((pOwner->GetWorldPosition() - playerNode->GetWorldPosition()).Length() < 10.0f && jumpCooldown < 0.1)
 				{
 					if (playerNode->GetComponent<SoundEffectsPlayer>())
 					{

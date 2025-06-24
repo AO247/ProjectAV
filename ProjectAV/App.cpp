@@ -19,7 +19,8 @@
 #include <Jolt/ConfigurationString.h>
 #include <Jolt/Physics/Collision/Shape/CapsuleShape.h>
 #include "imgui/imgui_impl_dx11.h"
-
+#include "TransformCbuf.h"
+#include "ShadowCbuf.h"
 namespace dx = DirectX;
 
 App::App(const std::string& commandLine)
@@ -92,18 +93,21 @@ App::App(const std::string& commandLine)
     Node* pAbility6 = pAbility6Owner.get();
     auto pPrefabsOwner = std::make_unique<Node>("Temporary", nullptr, "PREFABS");
     Node* pPrefabs = pPrefabsOwner.get();
-    auto pLeftHandNormalOwner = std::make_unique<Node>("L Normal", nullptr, "HANDS");
-    pLeftHandNormal = pLeftHandNormalOwner.get();
+    auto pLeftHandOwner = std::make_unique<Node>("L Normal", nullptr, "HANDS");
+    pLeftHand = pLeftHandOwner.get();
     auto pLeftHandAbilityOwner = std::make_unique<Node>("L Ability", nullptr, "HANDS");
     pLeftHandAbility = pLeftHandAbilityOwner.get();
-    auto pRightHandNormalOwner = std::make_unique<Node>("R Normal", nullptr, "HANDS");
-    pRightHandNormal = pRightHandNormalOwner.get();
+    auto pRightHandOwner = std::make_unique<Node>("R Normal", nullptr, "HANDS");
+    pRightHand = pRightHandOwner.get();
     auto pRightHandAbilityOwner = std::make_unique<Node>("R Ability", nullptr, "HANDS");
     pRightHandAbility = pRightHandAbilityOwner.get();
+	auto handsOwner = std::make_unique<Node>("Hands", nullptr, "HANDS");
+
 
 	Node* pPlayerThings = playerThings.get();
 	Node* pAbilities = abilities.get();
 	Node* pBase = base.get();
+	Node* pHands = handsOwner.get();
     pSceneRoot->AddChild(std::move(pPrefabsOwner));
 	pSceneRoot->AddChild(std::move(base));
     pSceneRoot->AddChild(std::move(playerThings));
@@ -117,10 +121,11 @@ App::App(const std::string& commandLine)
     pAbilities->AddChild(std::move(pAbility4Owner));
     pAbilities->AddChild(std::move(pAbility5Owner));
     pAbilities->AddChild(std::move(pAbility6Owner));
-    pCamera->AddChild(std::move(pLeftHandNormalOwner));
-    pCamera->AddChild(std::move(pLeftHandAbilityOwner));
-    pCamera->AddChild(std::move(pRightHandNormalOwner));
-    pCamera->AddChild(std::move(pRightHandAbilityOwner));
+	pCamera->AddChild(std::move(handsOwner));
+    pHands->AddChild(std::move(pLeftHandOwner));
+    pHands->AddChild(std::move(pLeftHandAbilityOwner));
+    pHands->AddChild(std::move(pRightHandOwner));
+    pHands->AddChild(std::move(pRightHandAbilityOwner));
 
     //PrefabManager::InstantiateStone1(pSceneRoot.get(), Vector3(0.0f, 100.0f, 0.0f), 1.0f);
 
@@ -143,10 +148,27 @@ App::App(const std::string& commandLine)
         std::make_unique<PlayerController>(pPlayer, wnd)
     );
 
+
+    auto legsOwner = std::make_unique<Node>("Legs", nullptr, "TRIGGER");
     BodyCreationSettings p1TBodySettings(new JPH::SphereShape(12.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
-    pPlayer->AddComponent(
-        std::make_unique<Trigger>(pPlayer, p1TBodySettings, false)
+    legsOwner->AddComponent(
+        std::make_unique<Trigger>(legsOwner.get(), p1TBodySettings, false)
     );
+    legsOwner->AddComponent(
+        std::make_unique<FallDamage>(legsOwner.get(), pPlayer)
+    );
+    legsOwner->SetLocalPosition({ 0.0f, -pPlayer->GetComponent<PlayerController>()->height / 2, 0.0f });
+    pPlayer->AddChild(std::move(legsOwner));
+
+
+    pHands->AddComponent(
+        std::make_unique<Hands>(pHands)
+    );
+    pHands->GetComponent<Hands>()->playerController = pPlayer->GetComponent<PlayerController>();
+	pHands->GetComponent<Hands>()->rigidbody = pPlayer->GetComponent<Rigidbody>();
+    pHands->GetComponent<Hands>()->leftHand = pLeftHand;
+    pHands->GetComponent<Hands>()->rightHand = pRightHand;
+    pHands->GetComponent<Hands>()->cameraNode = pCamera;
 
     BodyCreationSettings a1BodySettings(new JPH::CapsuleShape(6.0f, 5.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
     pAbility1->AddComponent(
@@ -183,6 +205,25 @@ App::App(const std::string& commandLine)
     //pPlayer->GetComponent<PlayerController>()->abilitySlot2 = pAbility2;
 
 
+
+    BodyCreationSettings a3RbodySettings(new JPH::SphereShape(1.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::TRIGGER);
+    a3RbodySettings.mGravityFactor = 0.0f;
+    a3RbodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
+
+    a3RbodySettings.mMassPropertiesOverride.mMass = 1.0f;
+    a3RbodySettings.mFriction = 0.0f;
+    a3RbodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
+    a3RbodySettings.mMotionQuality = EMotionQuality::LinearCast;
+
+    pAbility3->AddComponent(
+        std::make_unique<Rigidbody>(pAbility3, a3RbodySettings)
+    );
+
+    pAbility3->AddComponent(
+        std::make_unique<ModelComponent>(pAbility3, wnd.Gfx(), "Models\\box.glb")
+    );
+    pAbility3->GetComponent<ModelComponent>()->LinkTechniques(rg);
+
     BodyCreationSettings a3odySettings(new JPH::SphereShape(40.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
     pAbility3->AddComponent(
         std::make_unique<Trigger>(pAbility3, a3odySettings, false)
@@ -215,7 +256,7 @@ App::App(const std::string& commandLine)
     pAbility4->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\sznurek2.wav");
     pAbility4->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\hold.wav");
     pAbility4->GetComponent<Ability4>()->baseAbility = pAbility1->GetComponent<Ability1>();
-    //pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility4;
+    pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility4;
 
 
     pAbility5->AddComponent(
@@ -286,47 +327,64 @@ App::App(const std::string& commandLine)
         std::make_unique<Global>(pSceneRoot.get(), wnd, pPlayer, pBase)
     );
 
-    pLeftHandNormal->AddComponent(
-        std::make_unique<ModelComponent>(pLeftHandNormal, wnd.Gfx(), "Models\\hands\\left.obj")
+    pLeftHand->AddComponent(
+        std::make_unique<ModelComponent>(pLeftHand, wnd.Gfx(), "Models\\left\\left.gltf", 1.0f, true, false)
     );
-    pLeftHandNormal->GetComponent<ModelComponent>()->LinkTechniques(rg);
-    pLeftHandNormal->SetLocalScale({ 0.1f, 0.1f, 0.1f });
-    pLeftHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
+    pLeftHand->GetComponent<ModelComponent>()->LinkTechniques(rg);
+    pLeftHand->SetLocalScale({ 0.1f, 0.1f, 0.1f });
+    pLeftHand->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
+
+    pLeftHand->AddComponent(
+        std::make_unique<AnimationComponent>(pLeftHand, "", "Models\\left\\left.gltf")
+    );
+    AnimationComponent* animCompLeft = pLeftHand->GetComponent<AnimationComponent>();
+    animCompLeft->PlayAnimation(11);
+
 
     pLeftHandAbility->AddComponent(
-        std::make_unique<ModelComponent>(pLeftHandAbility, wnd.Gfx(), "Models\\hands\\push.obj")
+        std::make_unique<ModelComponent>(pLeftHandAbility, wnd.Gfx(), "Models\\hands\\push.obj", 1.0f, false, false)
     );
     pLeftHandAbility->GetComponent<ModelComponent>()->LinkTechniques(rg);
     pLeftHandAbility->SetLocalScale({ 0.1f, 0.1f, 0.1f });
     pLeftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
 
-    pRightHandNormal->AddComponent(
-        std::make_unique<ModelComponent>(pRightHandNormal, wnd.Gfx(), "Models\\hands\\right.obj")
+    pRightHand->AddComponent(
+        std::make_unique<ModelComponent>(pRightHand, wnd.Gfx(), "Models\\right\\right.gltf", 1.0f, true, false)
     );
-    pRightHandNormal->GetComponent<ModelComponent>()->LinkTechniques(rg);
-    pRightHandNormal->SetLocalScale({ 0.1f, 0.1f, 0.1f });
-    pRightHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
+    pRightHand->GetComponent<ModelComponent>()->LinkTechniques(rg);
+    pRightHand->SetLocalScale({ 0.1f, 0.1f, 0.1f });
+    pRightHand->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
+
+    pRightHand->AddComponent(
+        std::make_unique<AnimationComponent>(pRightHand, "", "Models\\right\\right.gltf")
+    );
+    AnimationComponent* animCompRight = pRightHand->GetComponent<AnimationComponent>();
+    animCompRight->PlayAnimation(11);
+
 
     pRightHandAbility->AddComponent(
-        std::make_unique<ModelComponent>(pRightHandAbility, wnd.Gfx(), "Models\\hands\\toss.obj")
+        std::make_unique<ModelComponent>(pRightHandAbility, wnd.Gfx(), "Models\\hands\\toss.obj", 1.0f, false, false)
     );
     pRightHandAbility->GetComponent<ModelComponent>()->LinkTechniques(rg);
     pRightHandAbility->SetLocalScale({ 0.1f, 0.1f, 0.1f });
     pRightHandAbility->SetLocalPosition({ 0.0f, -2.7f, -3000.0f });
 
-    pAbility1->GetComponent<Ability1>()->leftHandNormal = pLeftHandNormal;
+    pAbility1->GetComponent<Ability1>()->leftHand = pLeftHand->GetComponent<AnimationComponent>();
     pAbility1->GetComponent<Ability1>()->leftHandAbility = pLeftHandAbility;
 
-    pAbility2->GetComponent<Ability2>()->rightHandNormal = pRightHandNormal;
+    pAbility2->GetComponent<Ability2>()->rightHand = pRightHand->GetComponent<AnimationComponent>();
     pAbility2->GetComponent<Ability2>()->rightHandAbility = pRightHandAbility;
 
-    pAbility4->GetComponent<Ability4>()->leftHandNormal = pLeftHandNormal;
+    pAbility3->GetComponent<Ability3>()->leftHand = pLeftHand->GetComponent<AnimationComponent>();
+    pAbility3->GetComponent<Ability3>()->rightHand = pRightHand->GetComponent<AnimationComponent>();
+
+    pAbility4->GetComponent<Ability4>()->leftHand = pLeftHand->GetComponent<AnimationComponent>();
     pAbility4->GetComponent<Ability4>()->leftHandAbility = pLeftHandAbility;
 
-	pAbility5->GetComponent<Ability5>()->rightHandNormal = pRightHandNormal;
+	pAbility5->GetComponent<Ability5>()->rightHand = pRightHand->GetComponent<AnimationComponent>();
 	pAbility5->GetComponent<Ability5>()->rightHandAbility = pRightHandAbility;
 
-    pAbility6->GetComponent<Ability6>()->leftHandNormal = pLeftHandNormal;
+    pAbility6->GetComponent<Ability6>()->leftHand = pLeftHand->GetComponent<AnimationComponent>();
     pAbility6->GetComponent<Ability6>()->leftHandAbility = pLeftHandAbility;
 
     pSceneRoot->AddComponent(
@@ -479,78 +537,68 @@ void App::HandleInput(float dt)
 {
 
 
-    while (const auto e = wnd.kbd.PollKeyEvent())
+    if (wnd.kbd.IsJustPressed('P'))
     {
-        if (!e->IsPress()) continue;
+        PrefabManager::InstantiateIslandBig1(pSceneRoot.get(), pFreeViewCamera->GetWorldPosition(), 1.0f);
+        PrefabManager::InstantiateNormalEnemy(pSceneRoot.get(), pFreeViewCamera->GetWorldPosition(), 1.0f);
+    }
 
-        switch (e->GetCode())
+    if (wnd.kbd.IsJustPressed('M'))
+    {
+        if (myMusic->isPlaying())
         {
-        case 'P':
-        {
-            PrefabManager::InstantiateIslandBig1(pSceneRoot.get(), pFreeViewCamera->GetWorldPosition(), 1.0f);
-			PrefabManager::InstantiateNormalEnemy(pSceneRoot.get(), pFreeViewCamera->GetWorldPosition(), 1.0f);
-            break;
+            myMusic->Stop();
         }
+        else
+        {
+            myMusic->Play();
+        }
+    }
 
-		case 'M':
-			if (myMusic->isPlaying())
-			{
-				myMusic->Stop();
-			}
-			else
-			{
-				myMusic->Play();
-			}
-			break;
-        case 'C':
-            if (cursorEnabled) {
-                wnd.DisableCursor();
-                wnd.mouse.EnableRawInput();
-            }
-            else {
-                wnd.EnableCursor();
-                wnd.mouse.DisableRawInput();
-            }
-            cursorEnabled = !cursorEnabled;
-            break;
-        case 'H': 
-            showControlWindow = !showControlWindow;
-            break;
-        case 'X':
-            tutorialNode = PrefabManager::InstantiateTutorialIslands(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
-            break;
-        /*case 'Q':
-			tutorialNode->GetComponent<Tutorial>()->qPressed= true;
-			break;*/
-        /*case 'B':
-            if (pPlayer->GetComponent<PlayerController>()->abilitySlot1 == pAbility1)
-            {
-                pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility4;
-            }
-            else
-            {
-                pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility1;
-            }
-            break;*/
-        case VK_ESCAPE:
-            PostQuitMessage(0);
-            return;
-        case VK_F1:
-            showDemoWindow = !showDemoWindow;
-            break;
-        case 'V':
-        {
-            freeViewCamera = !freeViewCamera;
-            if (freeViewCamera) {
-                pCamera->GetComponent<Camera>()->active = false;
-                pFreeViewCamera->GetComponent<Camera>()->active = true;
-            }
-            else {
-                pCamera->GetComponent<Camera>()->active = true;
-                pFreeViewCamera->GetComponent<Camera>()->active = false;
-            }
-            break;
+    if (wnd.kbd.IsJustPressed('C'))
+    {
+        if (cursorEnabled) {
+            wnd.DisableCursor();
+            wnd.mouse.EnableRawInput();
         }
+        else {
+            wnd.EnableCursor();
+            wnd.mouse.DisableRawInput();
+        }
+        cursorEnabled = !cursorEnabled;
+    }
+
+    if (wnd.kbd.IsJustPressed('H'))
+    {
+        showControlWindow = !showControlWindow;
+    }
+
+    if (wnd.kbd.IsJustPressed('X'))
+    {
+        tutorialNode = PrefabManager::InstantiateTutorialIslands(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
+    }
+
+    if (wnd.kbd.IsJustPressed(VK_ESCAPE))
+    {
+        PostQuitMessage(0);
+        return; // Zwróć od razu, aby uniknąć dalszego przetwarzania
+    }
+
+    if (wnd.kbd.IsJustPressed(VK_F1))
+    {
+        showDemoWindow = !showDemoWindow;
+    }
+
+    if (wnd.kbd.IsJustPressed('V'))
+    {
+        freeViewCamera = !freeViewCamera;
+        if (freeViewCamera) {
+            pCamera->GetComponent<Camera>()->active = false;
+            pFreeViewCamera->GetComponent<Camera>()->active = true;
+        }
+        else {
+            pCamera->GetComponent<Camera>()->active = true;
+            pFreeViewCamera->GetComponent<Camera>()->active = false;
         }
     }
 
@@ -585,7 +633,18 @@ void App::DoFrame(float dt)
     CleanupDestroyedNodes(pSceneRoot.get());    //data removed
     pSceneRoot->Update(dt);
     RemoveRigidbody(pSceneRoot.get());//rigidbody remove if destruction
-
+    JPH::BodyIDVector bodyIDs;
+    PhysicsCommon::physicsSystem->GetBodies(bodyIDs);
+    for (JPH::BodyID bodyID : bodyIDs)
+    {
+        JPH::uint64 data = PhysicsCommon::physicsSystem->GetBodyInterface().GetUserData(bodyID);
+        if (data == 0)
+        {
+            PhysicsCommon::physicsSystem->GetBodyInterface().DeactivateBody(bodyID);
+            PhysicsCommon::physicsSystem->GetBodyInterface().RemoveBody(bodyID);
+            PhysicsCommon::physicsSystem->GetBodyInterface().DestroyBody(bodyID);
+        }
+    }
     wnd.Gfx().BeginFrame(0.5f, 0.5f, 1.0f);
 
     dx::XMMATRIX viewMatrix = pCamera->GetComponent<Camera>()->GetViewMatrix();
@@ -594,8 +653,25 @@ void App::DoFrame(float dt)
         viewMatrix = pFreeViewCamera->GetComponent<Camera>()->GetViewMatrix();
     }
     wnd.Gfx().SetCamera(viewMatrix);
+    //fc.ShowWindows(wnd.Gfx());
+	/*DebugLine line(wnd.Gfx(), pEnemy->GetComponent<StateMachine>()->pos, pEnemy->GetComponent<StateMachine>()->cen, { 0.0f, 0.0f, 1.0f, 1.0f });
+    line.Submit(fc);*/ // for idle
+    // --- Bind Lights ---
+    Bind::TransformCbuf::SetLight(&dirLight);
+    Bind::ShadowCbuf::SetLight(&dirLight);
+    DirectX::XMFLOAT3 focusPos = pPlayer->GetWorldPosition();
+    Camera* activePlayerCamera = pCamera->GetComponent<Camera>();
+   /* if (freeViewCamera) {
+        activePlayerCamera = pFreeViewCamera->GetComponent<Camera>();
+    }
+    else {
+        activePlayerCamera = pCamera->GetComponent<Camera>();
+    }*/
+    dirLight.Update(wnd.Gfx(), focusPos, *activePlayerCamera);
 
-    dirLight.Bind(wnd.Gfx(), viewMatrix);
+    // --- Bind Lights ---
+    // pointLight.Bind(wnd.Gfx(), viewMatrix);
+    dirLight.Bind(wnd.Gfx());
 
     FrustumCalculating();
 
@@ -674,6 +750,7 @@ void App::DoFrame(float dt)
             loadingScreen1->Draw(wnd.Gfx().GetContext());
         }
     }
+    wnd.kbd.UpdateFrameState();
 
     wnd.Gfx().EndFrame();
     rg.Reset();
@@ -705,7 +782,6 @@ void App::RemoveRigidbody(Node* currentNode)
             PhysicsCommon::physicsSystem->GetBodyInterface().DeactivateBody(currentNode->GetComponent<Rigidbody>()->GetBodyID());
             PhysicsCommon::physicsSystem->GetBodyInterface().RemoveBody(currentNode->GetComponent<Rigidbody>()->GetBodyID());
             PhysicsCommon::physicsSystem->GetBodyInterface().DestroyBody(currentNode->GetComponent<Rigidbody>()->GetBodyID());
-
         }
     }
 }

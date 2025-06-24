@@ -34,6 +34,7 @@ public:
     std::string tag;
     bool isRigidbody = false;
     float attackRange;
+    float flyingHeight;
     bool endAttack;
 
 protected:

@@ -27,7 +27,6 @@ void PlayerController::Update(float dt)
 		KeyboardInput();
         MovePlayer(dt);
 		SpeedControl(dt);
-        lastVelocity = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
     }
 }
 
@@ -200,46 +199,6 @@ void PlayerController::PlayerGroundCheck()
     {
          grounded = true;
     }*/
-
-
-    if (grounded && lastVelocity.GetY() < -20.0f)
-    {
-        if (enableFallPush && fallPushCooldown <= 0.0f)
-        {
-
-            for (int i = 0; i < objects.size(); i++)
-            {
-                if (objects[i]->tag == "ENEMY" || objects[i]->tag == "STONE" || objects[i]->tag == "BULLET")
-                {
-                    Vector3 direction = objects[i]->GetWorldPosition() - pOwner->GetWorldPosition();
-                    float length = direction.Length();
-
-                    maxDistance = -lastVelocity.GetY() / 4.0f;
-                    if (maxDistance < 10.0f) maxDistance = 10.0f;
-
-                    if(length < maxDistance && direction.y < 7.0f && direction.y > -7.0f)
-                    direction.Normalize();
-                    direction.y = 0.5f;
-                    direction.Normalize();
-                    float force = maxDistance - length;
-                    force *= minFallForce * -lastVelocity.GetY();
-                    if (force < minFallForce)
-                        force = minFallForce;
-                    else if (force > maxFallForce)
-                        force = maxFallForce;
-
-                    PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(objects[i]->GetComponent<Rigidbody>()->GetBodyID(),
-                        Vec3(direction.x, direction.y, direction.z) * force);
-                }
-            }
-            fallPushCooldown = 1.0f;
-        }
-        else
-        {
-
-        }
-        //spad³ na ziemie
-    }
 
 
 
@@ -467,8 +426,6 @@ void PlayerController::Cooldowns(float dt)
     {
         canDash = true;
     }
-    if (fallPushCooldown > 0.0f)
-        fallPushCooldown -= dt;
 }
 
 void PlayerController::Positioning()
@@ -515,19 +472,34 @@ void PlayerController::KeyboardInput()
         }
 
     }
-
-    if (wnd.kbd.IsKeyPressed('Q'))
+    while (const auto e = wnd.kbd.PollKeyEvent())
     {
-		//DŸwiêk cooldownu dla czarnej dziury, ale przez IsKeyPressed odtwarza siê w ka¿dej klatke kiedy jest wcisniête,
-        // a nie tylko w momencie wcisniêcia a¿ do momentu zwolnienia
-
-        /*abilitySlot3->GetComponent<Ability>()->Pressed();
-        if (!abilitySlot3->GetComponent<Ability>()->Pressed())
+        if (e->IsPress())
         {
-            int randSound = rand() % 2 + 12;
-            pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f, false);
-        }*/
-	}
+            switch (e->GetCode())
+            {
+            case 'Q':
+                abilitySlot3->GetComponent<Ability>()->Pressed();
+                break;
+            }
+        }
+        else if (e->IsRelease())
+        {
+            switch (e->GetCode())
+            {
+            case 'Q':
+        //     abilitySlot3->GetComponent<Ability>()->Pressed();
+        // if (!abilitySlot3->GetComponent<Ability>()->Pressed())
+        // {
+        //     int randSound = rand() % 2 + 12;
+        //     pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f, false);
+        // }
+                abilitySlot3->GetComponent<Ability>()->Released();
+                break;
+            }
+        }
+    }
+
 
 
 
@@ -565,10 +537,7 @@ void PlayerController::KeyboardInput()
     }
 }
 
-void PlayerController::OnTriggerStay(const std::vector<Node*> others)
-{
-    objects = others;
-}
+
 void PlayerController::DrawImGuiControls()
 {
     ImGui::InputFloat("Move Speed", &maxSpeed);

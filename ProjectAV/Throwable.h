@@ -23,4 +23,5 @@ public:
 	float maxSoundSpeed = 60.0f;
 private:
 	Rigidbody* rigidbody;
+	
 };

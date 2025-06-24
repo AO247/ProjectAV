@@ -68,6 +68,24 @@ bool Keyboard::IsAutorepeatEnabled() const noexcept
 	return autorepeatEnabled;
 }
 
+bool Keyboard::IsJustPressed(unsigned char keycode) const noexcept
+{
+	// Jest wciœniêty teraz, ale nie by³ w poprzedniej klatce
+	return keyStates[keycode] && !lastKeyStates[keycode];
+}
+
+bool Keyboard::IsJustReleased(unsigned char keycode) const noexcept
+{
+	// Nie jest wciœniêty teraz, ale by³ w poprzedniej klatce
+	return !keyStates[keycode] && lastKeyStates[keycode];
+}
+
+void Keyboard::UpdateFrameState() noexcept
+{
+	// Na koniec klatki, obecny stan staje siê starym stanem
+	lastKeyStates = keyStates;
+}
+
 void Keyboard::OnKeyPressed(unsigned char keycode) noexcept
 {
 	keyStates[keycode] = true;

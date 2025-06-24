@@ -716,6 +716,7 @@ void LevelGenerator::SpawnEnemies()
             {
                 enemy = PrefabManager::InstantiateFlyingEnemy(pOwner, Vector3(0.0f, 0.0f, 0.0f), 1.6f);
                 enemy->SetWorldPosition(pos);
+                enemy->GetComponent<StateMachine>()->basePos = pos;
             }
 
             numberOfHardEnemies--;
@@ -728,6 +729,7 @@ void LevelGenerator::SpawnEnemies()
             {
                 enemy = PrefabManager::InstantiateShootingEnemy(pOwner, Vector3(0.0f, 0.0f, 0.0f), 1.6f);
                 enemy->SetWorldPosition(pos);
+                enemy->GetComponent<StateMachine>()->basePos = pos;
             }
 
 
@@ -741,11 +743,11 @@ void LevelGenerator::SpawnEnemies()
             {
                 enemy = PrefabManager::InstantiateNormalEnemy(pOwner, Vector3(0.0f, 0.0f, 0.0f), 1.6f);
                 enemy->SetWorldPosition(pos);
+                enemy->GetComponent<StateMachine>()->basePos = pos;
             }
-
-
             numberOfEasyEnemies--;
         }
+
     }
 }
 

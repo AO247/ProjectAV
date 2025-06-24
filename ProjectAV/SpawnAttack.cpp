@@ -46,11 +46,7 @@ void SpawnAttack::Attack(float dt)
 			animComp->PlayAnimation(EnemyAnimationIndices::MAGE_ATTACK4, 0.5f, false);
 		}
 
-		if (pOwner->GetComponent<SoundEffectsPlayer>())
-		{
-			float randSound = (rand() % 4 + 4);
-			pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound);
-		}
+
 
 		timer = 0.0f;
 		endAttack = false;
@@ -58,8 +54,22 @@ void SpawnAttack::Attack(float dt)
 		pos += pOwner->Forward() * 5.0f;
 		Node* enemy = PrefabManager::InstantiateExplosiveEnemy(pOwner->GetParent(), Vector3(pos.x, pos.y, pos.z), 1.0f);
 		enemy->MoveToTop();
+		soundTimer = 0.6f;
+		soundPlayed = false;
 	}
-
+	if (soundTimer > 0.0f)
+	{
+		soundTimer -= dt;
+	}
+	else if (!soundPlayed)
+	{
+		if (pOwner->GetComponent<SoundEffectsPlayer>())
+		{
+			float randSound = (rand() % 4 + 4);
+			pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound);
+		}
+		soundPlayed = true;
+	}
 }
 
 

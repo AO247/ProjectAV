@@ -20,7 +20,7 @@ namespace dx = DirectX;
 
 // Usuniêto klasy ModelControlWindow i ModelInternalNode oraz ich implementacje
 
-ModelComponent::ModelComponent(Node* owner, Graphics& gfx, const std::string& modelFile, float scale, bool isSkinned)
+ModelComponent::ModelComponent(Node* owner, Graphics& gfx, const std::string& modelFile, float scale, bool isSkinned, bool castsShadowByDefault)
 	: Component(owner),
 	skinnedCharacter(isSkinned)
 {
@@ -52,7 +52,7 @@ ModelComponent::ModelComponent(Node* owner, Graphics& gfx, const std::string& mo
 	meshPtrs.reserve(pScene->mNumMeshes);
 	for (unsigned int i = 0; i < pScene->mNumMeshes; ++i) {
 		const auto& assimpMesh = *pScene->mMeshes[i];
-		meshPtrs.push_back(std::make_unique<Mesh>(gfx, materials[assimpMesh.mMaterialIndex], assimpMesh, scale));
+		meshPtrs.push_back(std::make_unique<Mesh>(gfx, materials[assimpMesh.mMaterialIndex], assimpMesh, scale, castsShadowByDefault));
 	}
 }
 
