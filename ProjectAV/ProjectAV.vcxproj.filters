@@ -483,6 +483,9 @@
     <ClCompile Include="Fireplace.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
+	<ClCompile Include="Hands.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
     <ClCompile Include="StaticSoundPlayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -921,6 +924,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Tutorial.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+	<ClInclude Include="Hands.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
     <ClInclude Include="InstanceBuffer.h">

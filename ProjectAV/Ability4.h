@@ -33,7 +33,7 @@ public:
 	bool isPressed = false;
 	bool abilityReady = true;
 	bool activated = false;
-	Node* leftHandNormal = nullptr;
+	Node* leftHand = nullptr;
 	Node* leftHandAbility = nullptr;
 	Node* selectedNode = nullptr;
 	Ability* baseAbility = nullptr;

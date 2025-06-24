@@ -67,7 +67,7 @@ bool Ability2::Pressed()
     // particle
     // dŸwiêk 
     rightHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
-    rightHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
+    rightHand->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
     timeToChange = 0.3f;
     for (int i = 0; i < objects.size(); i++)
     {
@@ -117,7 +117,7 @@ void Ability2::Cooldowns(float dt)
     {
         if (!abilityReady)
         {
-            rightHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
+            rightHand->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
         }
         abilityReady = true;
     }
@@ -127,7 +127,7 @@ void Ability2::Cooldowns(float dt)
         if (timeToChange <= 0.0f)
         {
             rightHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
-            rightHandNormal->SetLocalPosition({ 0.0f, -2.7f, 1.0f });
+            rightHand->SetLocalPosition({ 0.0f, -2.7f, 1.0f });
         }
     }
 

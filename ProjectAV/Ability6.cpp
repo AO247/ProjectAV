@@ -131,7 +131,7 @@ bool Ability6::Pressed()
     // particle dodanie do obiektu
     // dzwiek wyboru node
     leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
-    leftHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
+    leftHand->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
 
     Vector3 target = Vector3(camera->GetWorldPosition().x, camera->GetWorldPosition().y, camera->GetWorldPosition().z);
 
@@ -199,7 +199,7 @@ void Ability6::Cooldowns(float dt)
     {
         if (!abilityReady)
         {
-            leftHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
+            leftHand->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
         }
         abilityReady = true;
     }
@@ -209,7 +209,7 @@ void Ability6::Cooldowns(float dt)
         if (timeToChange <= 0.0f)
         {
             leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
-            leftHandNormal->SetLocalPosition({ 0.0f, -2.7f, 1.0f });
+            leftHand->SetLocalPosition({ 0.0f, -2.7f, 1.0f });
         }
     }
 

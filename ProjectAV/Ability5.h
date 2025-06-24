@@ -30,7 +30,7 @@ public:
 	float force = 900.0f;
 	bool abilityReady = true;
 
-	Node* rightHandNormal = nullptr;
+	Node* rightHand = nullptr;
 	Node* rightHandAbility = nullptr;
 private:
 	void KeyboardInput();

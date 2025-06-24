@@ -37,6 +37,8 @@ public:
 	bool activated = false;
 	bool readyToActive = false;
 	Vec3 pos = Vec3(0.0f, 0.0f, 0.0f);
+	Node* leftHand = nullptr;
+	Node* rightHand = nullptr;
 private:
 	void KeyboardInput();
 	void Positioning();

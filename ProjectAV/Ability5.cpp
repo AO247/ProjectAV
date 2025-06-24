@@ -61,7 +61,6 @@ bool Ability5::Pressed()
 {
     if (!abilityReady) return false;
     // animacja 
-    // particle
     // dŸwiêk aktywacji
     if (pOwner->GetComponent<SoundEffectsPlayer>()) {
         float randSound = (rand() % 4);
@@ -69,7 +68,7 @@ bool Ability5::Pressed()
     }
 
     rightHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
-    rightHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
+    rightHand->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
     timeToChange = 0.3f;
     PrefabManager::InstantiateAbility5Extend(pOwner->GetParent(), pOwner->GetWorldPosition(), 1.0f, force, duration);
     PrefabManager::InstantiateAbility5Particles(pOwner->GetParent(), pOwner->GetWorldPosition(), 1.0f, { 0,0,0 }, duration);
@@ -93,7 +92,7 @@ void Ability5::Cooldowns(float dt)
     {
         if (!abilityReady)
         {
-            rightHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
+            rightHand->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
         }
         abilityReady = true;
     }
@@ -103,7 +102,7 @@ void Ability5::Cooldowns(float dt)
         if (timeToChange <= 0.0f)
         {
             rightHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
-            rightHandNormal->SetLocalPosition({ 0.0f, -2.7f, 1.0f });
+            rightHand->SetLocalPosition({ 0.0f, -2.7f, 1.0f });
         }
     }
 

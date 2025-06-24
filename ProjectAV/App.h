@@ -63,9 +63,9 @@ private:
     Node* pPlayer = nullptr; 
 	Node* pSelectedSceneNode = nullptr; 
 	Node* pSoundEffectsPlayer = nullptr;
-	Node* pLeftHandNormal = nullptr;
+	Node* pLeftHand = nullptr;
 	Node* pLeftHandAbility = nullptr;
-	Node* pRightHandNormal = nullptr;
+	Node* pRightHand = nullptr;
 	Node* pRightHandAbility = nullptr;
 	Node* tutorialNode = nullptr;
     UpgradeHandler* pUpgradeHandler = nullptr;

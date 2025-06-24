@@ -42,7 +42,7 @@ void Ability4::Update(float dt)
                 // dŸwiêk wyboru obiektu
                 // particle wyboru obiektu
                 leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3.0f }); 
-                leftHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
+                leftHand->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
             }
             else if (pressedTime > 0.13f)
             {
@@ -197,7 +197,7 @@ void Ability4::Cooldowns(float dt)
     {
         if (!abilityReady)
         {
-            leftHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
+            leftHand->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
         }
         abilityReady = true;
     }
@@ -207,7 +207,7 @@ void Ability4::Cooldowns(float dt)
         if (timeToChange <= 0.0f)
         {
             leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
-            leftHandNormal->SetLocalPosition({ 0.0f, -2.7f, 1.0f });
+            leftHand->SetLocalPosition({ 0.0f, -2.7f, 1.0f });
         }
     }
 

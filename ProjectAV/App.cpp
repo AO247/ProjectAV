@@ -93,12 +93,12 @@ App::App(const std::string& commandLine)
     Node* pAbility6 = pAbility6Owner.get();
     auto pPrefabsOwner = std::make_unique<Node>("Temporary", nullptr, "PREFABS");
     Node* pPrefabs = pPrefabsOwner.get();
-    auto pLeftHandNormalOwner = std::make_unique<Node>("L Normal", nullptr, "HANDS");
-    pLeftHandNormal = pLeftHandNormalOwner.get();
+    auto pLeftHandOwner = std::make_unique<Node>("L Normal", nullptr, "HANDS");
+    pLeftHand = pLeftHandOwner.get();
     auto pLeftHandAbilityOwner = std::make_unique<Node>("L Ability", nullptr, "HANDS");
     pLeftHandAbility = pLeftHandAbilityOwner.get();
-    auto pRightHandNormalOwner = std::make_unique<Node>("R Normal", nullptr, "HANDS");
-    pRightHandNormal = pRightHandNormalOwner.get();
+    auto pRightHandOwner = std::make_unique<Node>("R Normal", nullptr, "HANDS");
+    pRightHand = pRightHandOwner.get();
     auto pRightHandAbilityOwner = std::make_unique<Node>("R Ability", nullptr, "HANDS");
     pRightHandAbility = pRightHandAbilityOwner.get();
 
@@ -118,9 +118,9 @@ App::App(const std::string& commandLine)
     pAbilities->AddChild(std::move(pAbility4Owner));
     pAbilities->AddChild(std::move(pAbility5Owner));
     pAbilities->AddChild(std::move(pAbility6Owner));
-    pCamera->AddChild(std::move(pLeftHandNormalOwner));
+    pCamera->AddChild(std::move(pLeftHandOwner));
     pCamera->AddChild(std::move(pLeftHandAbilityOwner));
-    pCamera->AddChild(std::move(pRightHandNormalOwner));
+    pCamera->AddChild(std::move(pRightHandOwner));
     pCamera->AddChild(std::move(pRightHandAbilityOwner));
 
     //PrefabManager::InstantiateStone1(pSceneRoot.get(), Vector3(0.0f, 100.0f, 0.0f), 1.0f);
@@ -245,7 +245,7 @@ App::App(const std::string& commandLine)
     pAbility4->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\sznurek2.wav");
     pAbility4->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\hold.wav");
     pAbility4->GetComponent<Ability4>()->baseAbility = pAbility1->GetComponent<Ability1>();
-    pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility4;
+    //pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility4;
 
 
     pAbility5->AddComponent(
@@ -318,12 +318,12 @@ App::App(const std::string& commandLine)
         std::make_unique<Global>(pSceneRoot.get(), wnd, pPlayer, pBase)
     );
 
-    pLeftHandNormal->AddComponent(
-        std::make_unique<ModelComponent>(pLeftHandNormal, wnd.Gfx(), "Models\\hands\\left.obj", 1.0f, false, false)
+    pLeftHand->AddComponent(
+        std::make_unique<ModelComponent>(pLeftHand, wnd.Gfx(), "Models\\hands\\left.obj", 1.0f, false, false)
     );
-    pLeftHandNormal->GetComponent<ModelComponent>()->LinkTechniques(rg);
-    pLeftHandNormal->SetLocalScale({ 0.1f, 0.1f, 0.1f });
-    pLeftHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
+    pLeftHand->GetComponent<ModelComponent>()->LinkTechniques(rg);
+    pLeftHand->SetLocalScale({ 0.1f, 0.1f, 0.1f });
+    pLeftHand->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
 
     pLeftHandAbility->AddComponent(
         std::make_unique<ModelComponent>(pLeftHandAbility, wnd.Gfx(), "Models\\hands\\push.obj", 1.0f, false, false)
@@ -332,12 +332,12 @@ App::App(const std::string& commandLine)
     pLeftHandAbility->SetLocalScale({ 0.1f, 0.1f, 0.1f });
     pLeftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
 
-    pRightHandNormal->AddComponent(
-        std::make_unique<ModelComponent>(pRightHandNormal, wnd.Gfx(), "Models\\hands\\right.obj", 1.0f, false, false)
+    pRightHand->AddComponent(
+        std::make_unique<ModelComponent>(pRightHand, wnd.Gfx(), "Models\\hands\\right.obj", 1.0f, false, false)
     );
-    pRightHandNormal->GetComponent<ModelComponent>()->LinkTechniques(rg);
-    pRightHandNormal->SetLocalScale({ 0.1f, 0.1f, 0.1f });
-    pRightHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
+    pRightHand->GetComponent<ModelComponent>()->LinkTechniques(rg);
+    pRightHand->SetLocalScale({ 0.1f, 0.1f, 0.1f });
+    pRightHand->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
 
     pRightHandAbility->AddComponent(
         std::make_unique<ModelComponent>(pRightHandAbility, wnd.Gfx(), "Models\\hands\\toss.obj", 1.0f, false, false)
@@ -346,19 +346,22 @@ App::App(const std::string& commandLine)
     pRightHandAbility->SetLocalScale({ 0.1f, 0.1f, 0.1f });
     pRightHandAbility->SetLocalPosition({ 0.0f, -2.7f, -3000.0f });
 
-    pAbility1->GetComponent<Ability1>()->leftHandNormal = pLeftHandNormal;
+    pAbility1->GetComponent<Ability1>()->leftHand = pLeftHand;
     pAbility1->GetComponent<Ability1>()->leftHandAbility = pLeftHandAbility;
 
-    pAbility2->GetComponent<Ability2>()->rightHandNormal = pRightHandNormal;
+    pAbility2->GetComponent<Ability2>()->rightHand = pRightHand;
     pAbility2->GetComponent<Ability2>()->rightHandAbility = pRightHandAbility;
 
-    pAbility4->GetComponent<Ability4>()->leftHandNormal = pLeftHandNormal;
+    pAbility3->GetComponent<Ability3>()->leftHand = pLeftHand;
+    pAbility3->GetComponent<Ability3>()->rightHand = pRightHand;
+
+    pAbility4->GetComponent<Ability4>()->leftHand = pLeftHand;
     pAbility4->GetComponent<Ability4>()->leftHandAbility = pLeftHandAbility;
 
-	pAbility5->GetComponent<Ability5>()->rightHandNormal = pRightHandNormal;
+	pAbility5->GetComponent<Ability5>()->rightHand = pRightHand;
 	pAbility5->GetComponent<Ability5>()->rightHandAbility = pRightHandAbility;
 
-    pAbility6->GetComponent<Ability6>()->leftHandNormal = pLeftHandNormal;
+    pAbility6->GetComponent<Ability6>()->leftHand = pLeftHand;
     pAbility6->GetComponent<Ability6>()->leftHandAbility = pLeftHandAbility;
 
     pSceneRoot->AddComponent(

@@ -45,7 +45,7 @@ bool Ability1::Pressed()
 
 	timeToChange = 0.3f;
 	leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
-	leftHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
+	leftHand->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
     for (int i = 0; i < objects.size(); i++)
     {
         if (objects[i]->tag == "ENEMY" || objects[i]->tag == "STONE")
@@ -91,7 +91,7 @@ void Ability1::Cooldowns(float dt)
     {
         if (!abilityReady)
         {
-            leftHandNormal->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
+            leftHand->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
         }
         abilityReady = true;
     }
@@ -101,7 +101,7 @@ void Ability1::Cooldowns(float dt)
         if (timeToChange <= 0.0f)
         {
             leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
-            leftHandNormal->SetLocalPosition({ 0.0f, -2.7f, 1.0f });
+            leftHand->SetLocalPosition({ 0.0f, -2.7f, 1.0f });
         }
     }
 
