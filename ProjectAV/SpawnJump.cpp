@@ -1,5 +1,6 @@
 #include "SpawnJump.h"
 #include "Global.h"
+#include "PrefabManager.h"
 namespace dx = DirectX;
 SpawnJump::SpawnJump(Node* owner, Window& window, Node* player)
 	: Component(owner), wnd(window), playerNode(player)
@@ -36,6 +37,9 @@ void SpawnJump::Update(float dt)
 void SpawnJump::Activate()
 {
 	activated = true;
+	PrefabManager::InstantiateJumpPadParticles(pOwner, Vector3(0, 0, 0), 1.0f);
+	PrefabManager::InstantiateJumpPadSmokeParticles(pOwner, Vector3(0, 0, 0), 1.0f);
+	PrefabManager::InstantiateJumpPadActivationParticles(pOwner, Vector3(0, 0, 0), 1.0f);
 }
 
 void SpawnJump::DrawImGuiControls()

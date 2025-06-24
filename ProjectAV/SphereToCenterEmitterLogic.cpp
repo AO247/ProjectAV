@@ -43,7 +43,7 @@ void EmitSingleParticle(SphereToCenterEmitterLogic* emitter, ParticleSystemCompo
     dx::XMVECTOR localVelocityDir = dx::XMVectorScale(dx::XMVector3Normalize(localPosVec), -1.0f);
 
     // Calculate a random speed variance. Since dist(rng) is [0, 1], this is always positive.
-    const float speedVariance = emitter->TravelSpeed * emitter->SpeedRandomness * emitter->dist(emitter->rng);
+    const float speedVariance = emitter->SpeedRandomness * emitter->dist(emitter->rng);
     const float finalSpeed = emitter->TravelSpeed + speedVariance;
 
     // Transform direction to world space and apply final speed.
