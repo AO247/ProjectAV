@@ -29,7 +29,7 @@ public:
 	bool upgraded = false;
 	float jumpCooldown = 0.0f;
 	float jumpSoundTimer = 0.0f;
-	float jumpSoundInterval = 5.0f;
+	float jumpSoundInterval = 3.6f;
 private:
 	Window& wnd;
 };

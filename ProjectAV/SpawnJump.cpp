@@ -10,22 +10,15 @@ SpawnJump::SpawnJump(Node* owner, Window& window, Node* player)
 void SpawnJump::Update(float dt)
 {
 	if (activated)
-	{//player y - this y.length() < 100.0f
+	{
 		if (playerNode != nullptr)
 		{
-			//if((playerNode->GetWorldPosition() - Vector3(1.0f, 1.0f, 1.0f).Length())
+			Vector3 dir = playerNode->GetWorldPosition() - pOwner->GetWorldPosition();
+			dir.x = 0.0f;
+			dir.z = 0.0f;
+			
 			jumpSoundTimer -= dt;
-			if (!upgraded) {
-				if (playerNode->GetComponent<SoundEffectsPlayer>())
-				{
-					if (jumpSoundTimer <= 0.0f)
-					{
-						pOwner->GetComponent<SoundEffectsPlayer>()->Play(0, 0.7f);
 
-						jumpSoundTimer = jumpSoundInterval;
-					}
-				}
-			}
 			if (!upgraded && !playerReady && (pOwner->GetWorldPosition() - playerNode->GetWorldPosition()).Length() < 7.0f && jumpCooldown < 0.1)
 			{
 				PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(playerNode->GetComponent<Rigidbody>()->GetBodyID(), Vec3(0.0f, 0.0f, 0.0f));
@@ -46,6 +39,21 @@ void SpawnJump::Update(float dt)
 					jumpCooldown = 0.5f;
 				}
 			}
+			if (playerNode->GetComponent<SoundEffectsPlayer>())
+			{
+				if (jumpSoundTimer <= 0.0f)
+				{
+					if (dir.Length() < 200.0f) {
+						pOwner->GetComponent<SoundEffectsPlayer>()->PlayAdvanced(0, 1.2f, false, 0.4f, 30.0f, 1000.0f);
+					}
+					else
+					{
+						pOwner->GetComponent<SoundEffectsPlayer>()->Stop(0);
+					}
+
+					jumpSoundTimer = jumpSoundInterval;
+				}
+			}
 		}
 	}
 	if (jumpCooldown > 0.0f) jumpCooldown -= dt;
@@ -53,7 +61,7 @@ void SpawnJump::Update(float dt)
 
 void SpawnJump::Activate()
 {
-	pOwner->GetComponent<SoundEffectsPlayer>()->Play(1, 1.5f, false);
+	pOwner->GetComponent<SoundEffectsPlayer>()->PlayAdvanced(1, 2.0f, false, 0.2f, 30.0f, 1000.0f);
 	activated = true;
 }
 

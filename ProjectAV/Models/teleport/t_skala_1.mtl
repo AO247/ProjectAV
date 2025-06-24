@@ -13,10 +13,10 @@ map_Kd t_skaly_2_Base_color.png
 map_Kn t_skaly_2_Normal_DirectX.png
 
 newmtl t_zawijasy
-Ns 261.028107
+Ns 188.829758
 Ka 1.000000 1.000000 1.000000
-Ks 0.485455 0.485455 0.485455
-Ke 0.009621 0.041056 0.100000
+Ks 0.169091 0.169091 0.169091
+Ke 0.019241 0.082113 0.200000
 Ni 1.500000
 d 1.000000
 illum 2

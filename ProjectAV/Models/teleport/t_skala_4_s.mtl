@@ -12,13 +12,13 @@ illum 2
 map_Kd t_skaly_2_Base_color.png
 map_Kn t_skaly_2_Normal_DirectX.png
 
-newmtl t_zawijasy
-Ns 188.829758
+newmtl t_zawijasy_szare
+Ns 250.000000
 Ka 1.000000 1.000000 1.000000
-Ks 0.169091 0.169091 0.169091
+Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
-map_Kd t_zawijasy_Base_color.png
-map_Kn t_zawijasy_Normal_DirectX.png
+map_Kd t_zawijasy_s_Base_color.png
+map_Kn t_zawijasy_s_Normal_DirectX.png

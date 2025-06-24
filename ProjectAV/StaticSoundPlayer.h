@@ -16,6 +16,8 @@ public:
     void Shutdown();
 
     ALuint Play(const std::string& filename, DirectX::XMFLOAT3 position, float gain = 1.0f, bool loop = false);
+    ALuint Play(const std::string& filename, DirectX::XMFLOAT3 position, float gain, bool loop,
+        float rolloff, float refDistance, float maxDistance);
     void Stop(ALuint sourceID);
 
 private:

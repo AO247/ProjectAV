@@ -55,6 +55,15 @@ ALuint SoundEffectsPlayer::Play(int soundIndex, float gain, bool isPositional, b
     return sourceID;
 }
 
+ALuint SoundEffectsPlayer::PlayAdvanced(int soundIndex, float gain, bool loop,
+    float rolloff, float refDistance, float maxDistance)
+{
+    if (soundIndex < 0 || soundIndex >= m_soundPlaylist.size()) return 0;
+    const std::string& filename = m_soundPlaylist[soundIndex];
+    StaticSoundPlayer::Get().Play(filename, pOwner->GetWorldPosition(), gain, loop,
+        rolloff, refDistance, maxDistance);
+}
+
 void SoundEffectsPlayer::Stop(int soundIndex)
 {
     if (m_activeSounds.count(soundIndex))

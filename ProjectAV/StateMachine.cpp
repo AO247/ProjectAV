@@ -230,7 +230,22 @@ void StateMachine::Die()
 			}
 		}
 		pOwner->GetComponent<SoundEffectsPlayer>()->StopAll();
-		StaticSoundPlayer::Get().Play("Sounds\\player\\damage1.wav", pOwner->GetWorldPosition(), 1.0f);
+		int randSound = rand() & 4;
+		switch (randSound) {
+		case 0:
+			StaticSoundPlayer::Get().Play("Sounds\\enemies\\death1.wav", pOwner->GetWorldPosition(), 0.8f);
+			break;
+		case 1:
+			StaticSoundPlayer::Get().Play("Sounds\\enemies\\death2.wav", pOwner->GetWorldPosition(), 0.8f);
+			break;
+		case 2:
+			StaticSoundPlayer::Get().Play("Sounds\\enemies\\death3.wav", pOwner->GetWorldPosition(), 0.8f);
+			break;
+		case 3:
+			StaticSoundPlayer::Get().Play("Sounds\\enemies\\death4.wav", pOwner->GetWorldPosition(), 0.8f);
+			break;
+		}
+		
 		pOwner->Destroy();
 	}
 }

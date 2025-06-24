@@ -14,9 +14,9 @@ namespace Rgph
 	{
 
 		std::vector<std::string> facePaths = {
-			"Models\\Skybox\\right.bmp", "Models\\Skybox\\left.bmp",
-			"Models\\Skybox\\up.bmp",   "Models\\Skybox\\down.bmp",
-			"Models\\Skybox\\front.bmp", "Models\\Skybox\\back.bmp",
+			"Models\\skybox2\\right.png", "Models\\skybox2\\left.png",
+			"Models\\skybox2\\up.png",   "Models\\skybox2\\down.png",
+			"Models\\skybox2\\front.png", "Models\\skybox2\\back.png",
 		};
 		pSkybox = std::make_unique<Skybox>(gfx, facePaths);
 
