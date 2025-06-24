@@ -9,6 +9,7 @@
 #include <DirectXMath.h>
 #include "Rigidbody.h"
 #include "SoundEffectsPlayer.h"
+#include "AnimationComponent.h"
 
 class Node;
 
@@ -30,7 +31,7 @@ public:
 	float force = 900.0f;
 	bool abilityReady = true;
 
-	Node* rightHand = nullptr;
+	AnimationComponent* rightHand = nullptr;
 	Node* rightHandAbility = nullptr;
 private:
 	void KeyboardInput();

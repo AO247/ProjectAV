@@ -66,8 +66,10 @@ bool Ability2::Pressed()
     // animacja
     // particle
     // dŸwiêk 
-    rightHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
-    rightHand->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
+    //rightHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
+    //rightHand->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
+
+    rightHand->PlayAnimation(5, 0.2, false);
     timeToChange = 0.3f;
     for (int i = 0; i < objects.size(); i++)
     {
@@ -112,12 +114,15 @@ void Ability2::Cooldowns(float dt)
     if (cooldownTimer > 0.0f)
     {
         cooldownTimer -= dt;
+        if (rightHand->GetCurrentPlayingAnimationRaw() == nullptr) {
+            rightHand->PlayAnimation(6);
+        }
     }
     else
     {
         if (!abilityReady)
         {
-            rightHand->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
+            rightHand->PlayAnimation(11);
         }
         abilityReady = true;
     }
@@ -126,8 +131,8 @@ void Ability2::Cooldowns(float dt)
         timeToChange -= dt;
         if (timeToChange <= 0.0f)
         {
-            rightHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
-            rightHand->SetLocalPosition({ 0.0f, -2.7f, 1.0f });
+            //rightHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
+            //rightHand->SetLocalPosition({ 0.0f, -2.7f, 1.0f });
         }
     }
 

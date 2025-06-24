@@ -65,6 +65,8 @@ void Ability3::Update(float dt)
         // animacja rzucenia czarnej dziury
         // particle rzucenia czarnej dziury
         // dŸwiêk rzucenia czarnej dziury
+
+
         if (pOwner->GetComponent<SoundEffectsPlayer>()) {
             pOwner->GetComponent<SoundEffectsPlayer>()->Play(1, 1.0f, false);
         }

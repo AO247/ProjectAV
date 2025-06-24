@@ -41,11 +41,14 @@ void Ability4::Update(float dt)
                 // animacja wyboru obiektu
                 // dŸwiêk wyboru obiektu
                 // particle wyboru obiektu
-                leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3.0f }); 
-                leftHand->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
+                //  
+                leftHand->PlayAnimation(2); //na razie loop trzymania
+
             }
             else if (pressedTime > 0.13f)
             {
+
+                leftHand->PlayAnimation(2);
                 // animacja trzymania 
                 // dŸwiêk trzymania 
             }
@@ -103,8 +106,7 @@ void Ability4::Released()
     if (!abilityReady) return;
 
 
-
-    leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 4.0f });
+ 
     timeToChange = 0.3f;
 
     if (pressedTime < 0.13f || selectedNode == nullptr)
@@ -118,6 +120,7 @@ void Ability4::Released()
         // animacja rzutu
         // dŸwiêk rzutu
 
+        leftHand->PlayAnimation(3, 0.2f, false);
         if (selectionParticles != nullptr)
         {
             selectionParticles->GetComponent<ParticleSystemComponent>()->Stop();
@@ -192,12 +195,15 @@ void Ability4::Cooldowns(float dt)
     if (cooldownTimer > 0.0f)
     {
         cooldownTimer -= dt;
+        if (leftHand->GetCurrentPlayingAnimationRaw() == nullptr) {
+            leftHand->PlayAnimation(6);
+        }
     }
     else
     {
         if (!abilityReady)
         {
-            leftHand->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
+            leftHand->PlayAnimation(11);
         }
         abilityReady = true;
     }
@@ -206,8 +212,8 @@ void Ability4::Cooldowns(float dt)
         timeToChange -= dt;
         if (timeToChange <= 0.0f)
         {
-            leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
-            leftHand->SetLocalPosition({ 0.0f, -2.7f, 1.0f });
+            //leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
+            //leftHand->SetLocalPosition({ 0.0f, -2.7f, 1.0f });
         }
     }
 

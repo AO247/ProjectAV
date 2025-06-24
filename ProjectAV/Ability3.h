@@ -9,6 +9,7 @@
 #include <DirectXMath.h>
 #include "Rigidbody.h"
 #include "SoundEffectsPlayer.h"
+#include "AnimationComponent.h"
 
 class Node;
 
@@ -37,8 +38,8 @@ public:
 	bool activated = false;
 	bool readyToActive = false;
 	Vec3 pos = Vec3(0.0f, 0.0f, 0.0f);
-	Node* leftHand = nullptr;
-	Node* rightHand = nullptr;
+	AnimationComponent* leftHand = nullptr;
+	AnimationComponent* rightHand = nullptr;
 private:
 	void KeyboardInput();
 	void Positioning();

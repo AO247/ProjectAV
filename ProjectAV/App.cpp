@@ -245,7 +245,7 @@ App::App(const std::string& commandLine)
     pAbility4->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\sznurek2.wav");
     pAbility4->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\hold.wav");
     pAbility4->GetComponent<Ability4>()->baseAbility = pAbility1->GetComponent<Ability1>();
-    //pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility4;
+    pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility4;
 
 
     pAbility5->AddComponent(
@@ -319,11 +319,18 @@ App::App(const std::string& commandLine)
     );
 
     pLeftHand->AddComponent(
-        std::make_unique<ModelComponent>(pLeftHand, wnd.Gfx(), "Models\\hands\\left.obj", 1.0f, false, false)
+        std::make_unique<ModelComponent>(pLeftHand, wnd.Gfx(), "Models\\left\\left.gltf", 1.0f, true, false)
     );
     pLeftHand->GetComponent<ModelComponent>()->LinkTechniques(rg);
     pLeftHand->SetLocalScale({ 0.1f, 0.1f, 0.1f });
     pLeftHand->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
+
+    pLeftHand->AddComponent(
+        std::make_unique<AnimationComponent>(pLeftHand, "", "Models\\left\\left.gltf")
+    );
+    AnimationComponent* animCompLeft = pLeftHand->GetComponent<AnimationComponent>();
+    animCompLeft->PlayAnimation(11);
+
 
     pLeftHandAbility->AddComponent(
         std::make_unique<ModelComponent>(pLeftHandAbility, wnd.Gfx(), "Models\\hands\\push.obj", 1.0f, false, false)
@@ -333,11 +340,18 @@ App::App(const std::string& commandLine)
     pLeftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
 
     pRightHand->AddComponent(
-        std::make_unique<ModelComponent>(pRightHand, wnd.Gfx(), "Models\\hands\\right.obj", 1.0f, false, false)
+        std::make_unique<ModelComponent>(pRightHand, wnd.Gfx(), "Models\\right\\right.gltf", 1.0f, true, false)
     );
     pRightHand->GetComponent<ModelComponent>()->LinkTechniques(rg);
     pRightHand->SetLocalScale({ 0.1f, 0.1f, 0.1f });
     pRightHand->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
+
+    pRightHand->AddComponent(
+        std::make_unique<AnimationComponent>(pRightHand, "", "Models\\right\\right.gltf")
+    );
+    AnimationComponent* animCompRight = pRightHand->GetComponent<AnimationComponent>();
+    animCompRight->PlayAnimation(11);
+
 
     pRightHandAbility->AddComponent(
         std::make_unique<ModelComponent>(pRightHandAbility, wnd.Gfx(), "Models\\hands\\toss.obj", 1.0f, false, false)
@@ -346,22 +360,22 @@ App::App(const std::string& commandLine)
     pRightHandAbility->SetLocalScale({ 0.1f, 0.1f, 0.1f });
     pRightHandAbility->SetLocalPosition({ 0.0f, -2.7f, -3000.0f });
 
-    pAbility1->GetComponent<Ability1>()->leftHand = pLeftHand;
+    pAbility1->GetComponent<Ability1>()->leftHand = pLeftHand->GetComponent<AnimationComponent>();
     pAbility1->GetComponent<Ability1>()->leftHandAbility = pLeftHandAbility;
 
-    pAbility2->GetComponent<Ability2>()->rightHand = pRightHand;
+    pAbility2->GetComponent<Ability2>()->rightHand = pRightHand->GetComponent<AnimationComponent>();
     pAbility2->GetComponent<Ability2>()->rightHandAbility = pRightHandAbility;
 
-    pAbility3->GetComponent<Ability3>()->leftHand = pLeftHand;
-    pAbility3->GetComponent<Ability3>()->rightHand = pRightHand;
+    pAbility3->GetComponent<Ability3>()->leftHand = pLeftHand->GetComponent<AnimationComponent>();
+    pAbility3->GetComponent<Ability3>()->rightHand = pRightHand->GetComponent<AnimationComponent>();
 
-    pAbility4->GetComponent<Ability4>()->leftHand = pLeftHand;
+    pAbility4->GetComponent<Ability4>()->leftHand = pLeftHand->GetComponent<AnimationComponent>();
     pAbility4->GetComponent<Ability4>()->leftHandAbility = pLeftHandAbility;
 
-	pAbility5->GetComponent<Ability5>()->rightHand = pRightHand;
+	pAbility5->GetComponent<Ability5>()->rightHand = pRightHand->GetComponent<AnimationComponent>();
 	pAbility5->GetComponent<Ability5>()->rightHandAbility = pRightHandAbility;
 
-    pAbility6->GetComponent<Ability6>()->leftHand = pLeftHand;
+    pAbility6->GetComponent<Ability6>()->leftHand = pLeftHand->GetComponent<AnimationComponent>();
     pAbility6->GetComponent<Ability6>()->leftHandAbility = pLeftHandAbility;
 
     pSceneRoot->AddComponent(
