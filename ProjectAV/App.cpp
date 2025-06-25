@@ -26,7 +26,7 @@ namespace dx = DirectX;
 App::App(const std::string& commandLine)
     :
     commandLine(commandLine),
-    wnd(1920, 1080, "Project AV"), 
+    wnd(1920, 1080, "Winderer"), 
     pointLight(wnd.Gfx(), 2u), 
     dirLight(wnd.Gfx(), 0u),
     pSceneRoot(std::make_unique<Node>("Root"))
@@ -253,7 +253,7 @@ App::App(const std::string& commandLine)
     pAbility4->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\sznurek2.wav");
     pAbility4->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\hold.wav");
     pAbility4->GetComponent<Ability4>()->baseAbility = pAbility1->GetComponent<Ability1>();
-    pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility4;
+    //pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility4;
 
 
     pAbility5->AddComponent(
@@ -279,7 +279,7 @@ App::App(const std::string& commandLine)
     pAbility6->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\gravity2.wav");
     pAbility6->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\hold.wav");
     pAbility6->GetComponent<Ability6>()->baseAbility = pAbility1->GetComponent<Ability1>();
-    //pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility6;
+    pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility6;
 
     pFreeViewCamera->AddComponent(
         std::make_unique<Camera>(pFreeViewCamera, wnd)
@@ -334,7 +334,7 @@ App::App(const std::string& commandLine)
     );
     pLeftHand->GetComponent<ModelComponent>()->LinkTechniques(rg);
     pLeftHand->SetLocalScale({ 0.035f, 0.035f, 0.035f });
-    pLeftHand->SetLocalPosition({ -0.0f, -0.9f, 0.6f });
+    pLeftHand->SetLocalPosition({ -0.0f, -1.0f, 0.5f });
 
     pLeftHand->AddComponent(
         std::make_unique<AnimationComponent>(pLeftHand, "", "Models\\hands\\left.gltf")
@@ -348,7 +348,7 @@ App::App(const std::string& commandLine)
     );
     pRightHand->GetComponent<ModelComponent>()->LinkTechniques(rg);
     pRightHand->SetLocalScale({ 0.035f, 0.035f, 0.035f });
-    pRightHand->SetLocalPosition({ -0.0f, -0.9f, 0.6f });
+    pRightHand->SetLocalPosition({ -0.0f, -1.0f, 0.5f });
 
     pRightHand->AddComponent(
         std::make_unique<AnimationComponent>(pRightHand, "", "Models\\hands\\right.gltf")
@@ -572,7 +572,10 @@ int App::Go()
 
 void App::HandleInput(float dt)
 {
-
+    if (wnd.kbd.IsJustPressed('B'))
+    {
+        PrefabManager::InstantiateBossEnemy(temporary, pFreeViewCamera->GetWorldPosition());
+    }
     if (wnd.kbd.IsJustPressed('M'))
     {
         if (myMusic->isPlaying())
@@ -582,7 +585,7 @@ void App::HandleInput(float dt)
         else
         {
             myMusic->Play();
-        }
+        } 
     }
 
     if (wnd.kbd.IsJustPressed('C'))
@@ -864,8 +867,8 @@ void App::FrustumCalculating() {
 
     constexpr float fovAngleY = DirectX::XMConvertToRadians(70.0f);
     const float aspectRatio = 16.0f / 9.0f; 
-    const float nearDist = 0.5f;        
-    const float farDist = 800.0f;      
+    const float nearDist = 0.3f;        
+    const float farDist = 2000.0f;      
 
     float halfHeightNear = nearDist * tanf(fovAngleY * 0.5f);
     float halfWidthNear = halfHeightNear * aspectRatio;
@@ -884,9 +887,9 @@ void App::FrustumCalculating() {
     dx::XMVECTOR farBottomLeft = dx::XMVectorAdd(farCenter, dx::XMVectorSubtract(dx::XMVectorScale(camWorldUp, -halfHeightFar), dx::XMVectorScale(camWorldRight, halfWidthFar)));
     dx::XMVECTOR farBottomRight = dx::XMVectorAdd(farCenter, dx::XMVectorAdd(dx::XMVectorScale(camWorldUp, -halfHeightFar), dx::XMVectorScale(camWorldRight, halfWidthFar)));
 
-    cameraFrustum.Near = 0.5f;
+    cameraFrustum.Near = 0.3f;
 
-    cameraFrustum.Far = 800.0f;
+    cameraFrustum.Far = 2000.0f;
 
     float tanHalfFovY = tanf(fovAngleY * 0.5f);
     cameraFrustum.TopSlope = tanHalfFovY;

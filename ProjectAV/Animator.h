@@ -23,8 +23,8 @@ public:
         m_TransitionDuration(0.0f),
         m_DeltaTime(0.0f)  
     {
-        m_FinalBoneMatrices.reserve(100);
-        for (int i = 0; i < 100; i++)
+        m_FinalBoneMatrices.reserve(150);
+        for (int i = 0; i < 150; i++)
             m_FinalBoneMatrices.push_back(DirectX::XMMatrixIdentity());
     }
 

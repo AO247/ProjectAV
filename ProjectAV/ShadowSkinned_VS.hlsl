@@ -11,7 +11,7 @@ cbuffer ShadowCbuf : register(b0)
 // Jest identyczny jak w Skinned_VS.hlsl
 cbuffer BoneTransforms : register(b3)
 {
-    matrix finalBoneMatrices[100];
+    matrix finalBoneMatrices[150];
 };
 
 // Struktura wejœciowa musi pasowaæ do Vertex Layoutu animowanego modelu
