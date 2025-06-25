@@ -528,6 +528,9 @@
     <ClCompile Include="FireBoom.cpp">
       <Filter>Source Files\Components\Enemies</Filter>
     </ClCompile>
+    <ClCompile Include="MainMenu.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Win.h">
@@ -1075,6 +1078,9 @@
     </ClInclude>
     <ClInclude Include="FireBoom.h">
       <Filter>Header Files\Components\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="MainMenu.h">
+      <Filter>Header Files\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

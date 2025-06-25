@@ -21,6 +21,7 @@
 #include "Button.h"
 #include "DirectionalLight.h"
 #include <fstream>
+#include "MainMenu.h"
 
 class PlayerController;
 
@@ -79,6 +80,7 @@ private:
 	Node* pRightHandAbility = nullptr;
 	Node* tutorialNode = nullptr;
     Node* temporary = nullptr;
+	Node* mainMenuNode = nullptr;
     UpgradeHandler* pUpgradeHandler = nullptr;
 
     TestCube cube{ wnd.Gfx(),4.0f };

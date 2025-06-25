@@ -103,11 +103,15 @@ App::App(const std::string& commandLine)
     pRightHandAbility = pRightHandAbilityOwner.get();
 	auto handsOwner = std::make_unique<Node>("Hands", nullptr, "HANDS");
     auto tutorialOwner = std::make_unique<Node>("Tutorial", nullptr, "TUTORIAL");
+	auto mainMenuOwner = std::make_unique<Node>("Main Menu", nullptr, "MAIN_MENU");
+	mainMenuNode = mainMenuOwner.get();
+
     tutorialNode = tutorialOwner.get();
 	Node* pPlayerThings = playerThings.get();
 	Node* pAbilities = abilities.get();
 	Node* pBase = base.get();
 	Node* pHands = handsOwner.get();
+    pSceneRoot->AddChild(std::move(mainMenuOwner));
     pSceneRoot->AddChild(std::move(pTemporaryOwner));
 	pSceneRoot->AddChild(std::move(base));
     pSceneRoot->AddChild(std::move(playerThings));
@@ -132,6 +136,12 @@ App::App(const std::string& commandLine)
 
     PrefabManager::root = temporary;
     PrefabManager::player = pPlayer;
+
+    mainMenuNode->AddComponent(
+        std::make_unique<MainMenu>(mainMenuNode, wnd)
+	);
+
+
 
     BodyCreationSettings bodySettings(new JPH::CapsuleShape(1.4f, 1.6f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::PLAYER);
     bodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
@@ -417,8 +427,8 @@ App::App(const std::string& commandLine)
     //pSceneRoot->GetComponent<Global>()->tut = tutorialNode->GetComponent<Tutorial>();
 
 
-    const int screenWidth = 1920;
-    const int screenHeight = 1080;
+    const int screenWidth = wnd.GetWidth();
+    const int screenHeight = wnd.GetHeight();
     const int plusSpriteWidth = 32;
     const int plusSpriteHeight = 32;
     const int plusSpriteX = (screenWidth / 2) - (plusSpriteWidth / 2);
@@ -865,7 +875,7 @@ void App::DoFrame(float dt)
     }
 
     }
-    
+    //mainMenuNode->GetComponent<MainMenu>()->DrawMainMenu(dt);
     wnd.kbd.UpdateFrameState();
 
     wnd.Gfx().EndFrame();

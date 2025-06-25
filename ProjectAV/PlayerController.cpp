@@ -62,8 +62,8 @@ void PlayerController::SpeedControl(float dt)
 		Vec3 vel = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
         if (grounded) {
             float dampingFactor = powf(groundDamping, dt);
-            vel.SetX(vel.GetX() * dampingFactor); // 0.92
-            vel.SetZ(vel.GetZ() * dampingFactor);
+            vel.SetX(vel.GetX() * dampingFactor * dampingFactor); // 0.92
+            vel.SetZ(vel.GetZ() * dampingFactor * dampingFactor);
         }
         else {
             float dampingFactor = powf(airDamping, dt);
@@ -225,8 +225,12 @@ void PlayerController::MovePlayer(float dt)
 
         if ((desiredVel - currentVel).Length() > 1.9f)
         {
-            copy.SetX(copy.GetX() * 0.92f);
-            copy.SetZ(copy.GetZ() * 0.92f);
+            //Vec3 vel = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
+            float dampingFactor = powf(groundDamping, dt);
+            copy.SetX(copy.GetX() * dampingFactor); // 0.92
+            copy.SetZ(copy.GetZ() * dampingFactor);
+            //copy.SetX(copy.GetX() * 0.92f);
+            //copy.SetZ(copy.GetZ() * 0.92f);
             PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rigidbody->GetBodyID(), copy);
 
         }
