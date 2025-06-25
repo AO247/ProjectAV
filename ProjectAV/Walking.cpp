@@ -66,23 +66,23 @@ void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 			//tutaj animacja stania
 
 			if (statemachine->enemyType == EnemyType::BASIC) {
-				pOwner->GetComponent<AnimationComponent>()->PlayAnimation(3);
+				pOwner->GetComponent<AnimationComponent>()->PlayAnimation(2);		//stand basic
 
 			}
 			if (statemachine->enemyType == EnemyType::RANGED) {
-				pOwner->GetComponent<AnimationComponent>()->PlayAnimation(3);
+				pOwner->GetComponent<AnimationComponent>()->PlayAnimation(3);		//stand  ranged/shooting
 
 			}
 			if (statemachine->enemyType == EnemyType::TANK) {
-				pOwner->GetComponent<AnimationComponent>()->PlayAnimation(2);
+				pOwner->GetComponent<AnimationComponent>()->PlayAnimation(2);		//stand  tank
 
 			}
 			if (statemachine->enemyType == EnemyType::EXPLOSIVE) {
-				pOwner->GetComponent<AnimationComponent>()->PlayAnimation(10);
+				pOwner->GetComponent<AnimationComponent>()->PlayAnimation(10);		//stand boomboom
 
 			}
 			if (statemachine->enemyType == EnemyType::FRENZY) {
-				pOwner->GetComponent<AnimationComponent>()->PlayAnimation(10);
+				pOwner->GetComponent<AnimationComponent>()->PlayAnimation(10);		//stand fast
 
 			}
 			if (statemachine->enemyType == EnemyType::BOSS) {
@@ -96,23 +96,23 @@ void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 
 
 	if (statemachine->enemyType == EnemyType::BASIC) {
-		pOwner->GetComponent<AnimationComponent>()->PlayAnimation(4);
+		pOwner->GetComponent<AnimationComponent>()->PlayAnimation(4);		//walk basic
 
 	}
 	if (statemachine->enemyType == EnemyType::RANGED) {
-		pOwner->GetComponent<AnimationComponent>()->PlayAnimation(3);
+		pOwner->GetComponent<AnimationComponent>()->PlayAnimation(3);		//walk ranged
 
 	} 
 	if (statemachine->enemyType == EnemyType::TANK) {
-		pOwner->GetComponent<AnimationComponent>()->PlayAnimation(4);
+		pOwner->GetComponent<AnimationComponent>()->PlayAnimation(4);		//walk tank
 
 	}
 	if (statemachine->enemyType == EnemyType::EXPLOSIVE) {
-		pOwner->GetComponent<AnimationComponent>()->PlayAnimation(10);
+		pOwner->GetComponent<AnimationComponent>()->PlayAnimation(10);		//walk  boomboom
 
 	} 
 	if (statemachine->enemyType == EnemyType::FRENZY) {
-		pOwner->GetComponent<AnimationComponent>()->PlayAnimation(6);
+		pOwner->GetComponent<AnimationComponent>()->PlayAnimation(8);		//walk fast
 	}
 
 

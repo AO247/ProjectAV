@@ -8250,7 +8250,7 @@ public:
             std::make_unique<AnimationComponent>(pNewNode, "", "Models\\basic\\basic.gltf")
         );
         AnimationComponent* animComp = pNewNode->GetComponent<AnimationComponent>();
-        animComp->PlayAnimation(4);
+        animComp->PlayAnimation(4); //basic start
        
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         parentNode->AddChild(std::move(pNewNodeOwner));
@@ -8344,7 +8344,7 @@ public:
             std::make_unique<AnimationComponent>(pNewNode, "", "Models\\tank\\tank.gltf")
         );
         AnimationComponent* animComp = pNewNode->GetComponent<AnimationComponent>();
-        animComp->PlayAnimation(3);
+        animComp->PlayAnimation(3);     //tank start
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         parentNode->AddChild(std::move(pNewNodeOwner));
 
@@ -8433,7 +8433,7 @@ public:
         );
         
         AnimationComponent* animComp = pNewNode->GetComponent<AnimationComponent>();
-        animComp->PlayAnimation(4);
+        //animComp->PlayAnimation(4);
 
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         parentNode->AddChild(std::move(pNewNodeOwner));
@@ -8513,7 +8513,7 @@ public:
             std::make_unique<AnimationComponent>(pNewNode, "", "Models\\ranged\\ranged.gltf")
         );
         AnimationComponent* animComp = pNewNode->GetComponent<AnimationComponent>();
-        animComp->PlayAnimation(3);
+        animComp->PlayAnimation(3); //ranged start
 
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         parentNode->AddChild(std::move(pNewNodeOwner));
@@ -8603,7 +8603,7 @@ public:
             std::make_unique<AnimationComponent>(pNewNode, "", "Models\\mage\\mage.gltf")
         );
         AnimationComponent* animComp = pNewNode->GetComponent<AnimationComponent>();
-        animComp->PlayAnimation(7);
+        animComp->PlayAnimation(6);
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         parentNode->AddChild(std::move(pNewNodeOwner));
 
@@ -8683,7 +8683,7 @@ public:
             std::make_unique<AnimationComponent>(pNewNode, "", "Models\\explosive\\explosive.gltf")
         );
         AnimationComponent* animComp = pNewNode->GetComponent<AnimationComponent>();
-        animComp->PlayAnimation(7);
+        animComp->PlayAnimation(7); //explosive start
 
 
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
@@ -8788,7 +8788,7 @@ public:
             std::make_unique<AnimationComponent>(pNewNode, "", "Models\\frenzy\\frenzy.gltf")
         );
         AnimationComponent* animComp = pNewNode->GetComponent<AnimationComponent>();
-        animComp->PlayAnimation(3);
+        animComp->PlayAnimation(3); //fast start
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         parentNode->AddChild(std::move(pNewNodeOwner));
 
@@ -8903,7 +8903,7 @@ public:
             std::make_unique<AnimationComponent>(pNewNode, "", "Models\\boss\\boss.gltf")
         );
         AnimationComponent* animComp = pNewNode->GetComponent<AnimationComponent>();
-        animComp->PlayAnimation(3);
+        animComp->PlayAnimation(3); // boss start
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         parentNode->AddChild(std::move(pNewNodeOwner));
 

@@ -45,6 +45,9 @@ void Ability3::Update(float dt)
                     pOwner->GetComponent<SoundEffectsPlayer>()->Play(2, 1.0f, false);
                     activeSoundTimer = activeSoundInterval;
                 }
+
+                rightHand->PlayAnimation(13);
+                leftHand->PlayAnimation(13);
                 // particle po wyl�dowaniu
                 // d�wi�k po wyl�dowaniu
                 /*if (pOwner->GetComponent<SoundEffectsPlayer>()) {
@@ -188,6 +191,8 @@ void Ability3::Released()
     isPressed = false;
     killsCount = 0;
     readyToActive = true;
+
+
 }
 void Ability3::Activated()
 {

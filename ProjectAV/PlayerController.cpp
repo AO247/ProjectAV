@@ -96,6 +96,12 @@ void PlayerController::Jump()
         else {
             PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(rigidbody->GetBodyID(), Vec3(0.0f, secondJumpForce, 0.0f));
 			doubleJumped = true;
+
+            //doublejump
+            leftHand->GetComponent<AnimationComponent>()->PlayAnimation(10, 0.3f, false);
+            rightHand->GetComponent<AnimationComponent>()->PlayAnimation(10, 0.3f, false);
+
+
             if (pOwner->GetComponent<SoundEffectsPlayer>()) {
 				int randSound = rand() % 2 + 2;
                 pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f, false);
@@ -108,6 +114,12 @@ void PlayerController::Jump()
 void PlayerController::Dash()
 {
     if (!canDash) return;
+
+    //dash
+    leftHand->GetComponent<AnimationComponent>()->PlayAnimation(9, 0.3f, false);
+    rightHand->GetComponent<AnimationComponent>()->PlayAnimation(9, 0.3f, false);
+
+
     dashed = true;
 	canDash = false;
     if (pOwner->GetComponent<SoundEffectsPlayer>()) {

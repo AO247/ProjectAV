@@ -6,6 +6,7 @@
 #include <algorithm>
 #include "SoundEffectsPlayer.h"
 #include "DebugLine.h"
+#include "AnimationComponent.h"
 
 namespace dx = DirectX;
 Flying::Flying(Node* owner, std::string tag)
@@ -38,7 +39,8 @@ void Flying::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 			flyingIdleSoundTimer = flyingSoundInterval * 2.5f;
 		}
 	}
-	
+	pOwner->GetComponent<AnimationComponent>()->PlayAnimation(3);		//flying
+
 	targetPosition = targetPos;
 	if (sp > 1.0f)
 	{
