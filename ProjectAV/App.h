@@ -108,15 +108,20 @@ private:
     std::unique_ptr<Sprite> mainMenuBackground;
     std::unique_ptr<Button> startButton;
     std::unique_ptr<Button> quitButton;
+    std::unique_ptr<Sprite> quitHover;
+    std::unique_ptr<Sprite> startHover;
+
     void UpdateMainMenu();
     void DrawMainMenu();
     bool wasMouseLeftPressedLastFrame = false;
 
 
     //========== pauza
-    std::unique_ptr<Sprite> pauseMenuOverlay; // Pó³przezroczyste t³o
+    std::unique_ptr<Sprite> pauseMenuOverlay;  
     std::unique_ptr<Button> resumeButton;
     std::unique_ptr<Button> quitToMenuButton;
+    std::unique_ptr<Sprite> resumeHover;
+    std::unique_ptr<Sprite> quitToMenuHover;
     void UpdatePauseMenu();
     void DrawPauseMenu();
 };

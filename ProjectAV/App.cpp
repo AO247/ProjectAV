@@ -501,17 +501,28 @@ App::App(const std::string& commandLine)
     mainMenuBackground = std::make_unique<Sprite>(
         wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
         0, 0, screenWidth, screenHeight,
-        L"Images\\MainMenu.gif" 
+        L"Images\\menu_9.gif" 
     );
 
-    const DirectX::XMFLOAT4 buttonIdleColor = { 0.82f, 0.63f, 0.35f, 0.9f };
-    const DirectX::XMFLOAT4 buttonHoverColor = { 1.0f, 0.8f, 0.5f, 1.0f };
+    quitHover = std::make_unique<Sprite>(
+        wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
+        100, 720, 460, 110,
+        L"Images\\quit_2.png"
+    );
+    startHover = std::make_unique<Sprite>(
+        wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
+        100, 580, 460, 110,
+        L"Images\\start_2.png"
+    );
+
+    const DirectX::XMFLOAT4 buttonIdleColor = { 0.82f, 0.63f, 0.35f, 0.1f };
+    const DirectX::XMFLOAT4 buttonHoverColor = { 1.0f, 0.8f, 0.5f, 0.3f };
     const DirectX::XMFLOAT4 textColor = { 0.1f, 0.1f, 0.1f, 1.0f };
 
     startButton = std::make_unique<Button>(
         wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
-        120, 450, 250, 70,  
-        L"START",
+        100, 580, 500, 120,  
+        L" ",
         L"myfile.spritefont"  
     );
     startButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
@@ -519,8 +530,8 @@ App::App(const std::string& commandLine)
  
     quitButton = std::make_unique<Button>(
         wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
-        120, 550, 250, 70,  
-        L"QUIT",
+        100, 720, 500, 120,
+        L" ",
         L"myfile.spritefont"  
     );
     quitButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
@@ -531,8 +542,19 @@ App::App(const std::string& commandLine)
     pauseMenuOverlay = std::make_unique<Sprite>(
         wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
         0, 0, screenWidth, screenHeight,
-        L"Images\\MainMenu.gif"  
+        L"Images\\pause_menu.png"  
     );
+
+    resumeHover = std::make_unique<Sprite>(
+        wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
+        (screenWidth / 2 - 250)  , 350, 500, 130,
+        L"Images\\resume.png"
+    ); 
+     quitToMenuHover = std::make_unique<Sprite>(
+         wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
+         (screenWidth / 2 - 250)  , 490, 500, 130,
+         L"Images\\back_to_menu.png"
+     ); 
    
     int buttonWidth = 350;
     int buttonHeight = 70;
@@ -542,7 +564,7 @@ App::App(const std::string& commandLine)
     resumeButton = std::make_unique<Button>(
         wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
         buttonCenterX, 400, buttonWidth, buttonHeight,
-        L"RESUME",
+        L" ",
         L"myfile.spritefont"
     );
     resumeButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
@@ -551,7 +573,7 @@ App::App(const std::string& commandLine)
     quitToMenuButton = std::make_unique<Button>(
         wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
         buttonCenterX, 500, buttonWidth, buttonHeight,
-        L"QUIT TO MAIN MENU",
+        L" ",
         L"myfile.spritefont"
     );
     quitToMenuButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
@@ -756,9 +778,31 @@ void App::DoFrame(float dt)
          auto& gfx = wnd.Gfx();
         gfx.GetTarget()->BindAsBuffer(gfx);
         mainMenuBackground->Update(dt);
+        mainMenuBackground->Draw(gfx.GetContext());
+
+        int mouseX = wnd.mouse.GetPosX();
+        int mouseY = wnd.mouse.GetPosY();
+         
+
+        const int startX = 100, startY = 580, btnWidth = 500, btnHeight = 120;
+        const int quitX = 100, quitY = 720;
+
+        if (mouseX >= startX && mouseX <= startX + btnWidth &&
+            mouseY >= startY && mouseY <= startY + btnHeight)
+        {
+            // Mysz jest nad przyciskiem START, więc dorysuj wersję HOVER NA WIERZCHU tła.
+            if (startHover) startHover->Draw(gfx.GetContext());
+        }
+
+        if (mouseX >= quitX && mouseX <= quitX + btnWidth &&
+            mouseY >= quitY && mouseY <= quitY + btnHeight)
+        {
+            // Mysz jest nad przyciskiem QUIT, więc dorysuj wersję HOVER NA WIERZCHU tła.
+            if (quitHover) quitHover->Draw(gfx.GetContext());
+        }
 
         UpdateMainMenu();
-        DrawMainMenu();
+        //DrawMainMenu();
         break;
     }
 
@@ -857,8 +901,34 @@ void App::DoFrame(float dt)
         {
             pauseMenuOverlay->Update(dt);
 
+
+            pauseMenuOverlay->Draw(wnd.Gfx().GetContext());
+
+            int mouseX = wnd.mouse.GetPosX();
+            int mouseY = wnd.mouse.GetPosY();
+
+
+
+             
+
+
+            const int startX = (wnd.Gfx().GetWidth() / 2 - 250), startY = 580, btnWidth = 500, btnHeight = 120;
+            const int quitX = (wnd.Gfx().GetWidth() / 2 - 250), quitY = 720;
+
+            if (mouseX >= startX && mouseX <= startX + btnWidth &&
+                mouseY >= startY && mouseY <= startY + btnHeight)
+            { 
+                if (startHover) resumeHover->Draw(wnd.Gfx().GetContext());
+            }
+
+            if (mouseX >= quitX && mouseX <= quitX + btnWidth &&
+                mouseY >= quitY && mouseY <= quitY + btnHeight)
+            {
+                // Mysz jest nad przyciskiem QUIT, więc dorysuj wersję HOVER NA WIERZCHU tła.
+                if (quitHover) quitToMenuHover->Draw(wnd.Gfx().GetContext());
+            }
             UpdatePauseMenu();
-            DrawPauseMenu();
+            //DrawPauseMenu();
         }
         break;
     }
@@ -1289,15 +1359,16 @@ void App::UpdateMainMenu()
     int mouseX = wnd.mouse.GetPosX();
     int mouseY = wnd.mouse.GetPosY();
 
-    const DirectX::XMFLOAT4 buttonIdleColor = { 0.82f, 0.63f, 0.35f, 0.9f };
-    const DirectX::XMFLOAT4 buttonHoverColor = { 1.0f, 0.8f, 0.5f, 1.0f };
+    const DirectX::XMFLOAT4 buttonIdleColor = { 0.82f, 0.63f, 0.35f, 0.1f };
+    const DirectX::XMFLOAT4 buttonHoverColor = { 1.0f, 0.8f, 0.5f, 0.0f };
      
     bool isMouseLeftPressedThisFrame = wnd.mouse.IsLeftPressed();
      
     bool isLeftClick = isMouseLeftPressedThisFrame && !wasMouseLeftPressedLastFrame;
      
     if (startButton->IsHovered(mouseX, mouseY)) {
-        startButton->SetColor(buttonHoverColor.x, buttonHoverColor.y, buttonHoverColor.z, buttonHoverColor.w);
+        //startHover->Draw(wnd.Gfx().GetContext());
+        //startButton->SetColor(buttonHoverColor.x, buttonHoverColor.y, buttonHoverColor.z, buttonHoverColor.w);
          
         if (isLeftClick) {
             gameState = GameState::Gameplay;
@@ -1309,18 +1380,18 @@ void App::UpdateMainMenu()
         }
     }
     else {
-        startButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
+        //startButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
     }
      
     if (quitButton->IsHovered(mouseX, mouseY)) {
-        quitButton->SetColor(buttonHoverColor.x, buttonHoverColor.y, buttonHoverColor.z, buttonHoverColor.w);
+        //quitButton->SetColor(buttonHoverColor.x, buttonHoverColor.y, buttonHoverColor.z, buttonHoverColor.w);
          
         if (isLeftClick) {
             PostQuitMessage(0);
         }
     }
     else {
-        quitButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
+        //quitButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
     }
      
     wasMouseLeftPressedLastFrame = isMouseLeftPressedThisFrame;
@@ -1356,7 +1427,7 @@ void App::UpdatePauseMenu()
     bool isLeftClick = isMouseLeftPressedThisFrame && !wasMouseLeftPressedLastFrame;
      
     if (resumeButton->IsHovered(mouseX, mouseY)) {
-        resumeButton->SetColor(buttonHoverColor.x, buttonHoverColor.y, buttonHoverColor.z, buttonHoverColor.w);
+        //resumeButton->SetColor(buttonHoverColor.x, buttonHoverColor.y, buttonHoverColor.z, buttonHoverColor.w);
         if (isLeftClick) {
             gameState = GameState::Gameplay;
             paused = false;
@@ -1366,18 +1437,18 @@ void App::UpdatePauseMenu()
         }
     }
     else {
-        resumeButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
+        //resumeButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
     }
 
      if (quitToMenuButton->IsHovered(mouseX, mouseY)) {
-        quitToMenuButton->SetColor(buttonHoverColor.x, buttonHoverColor.y, buttonHoverColor.z, buttonHoverColor.w);
+       //quitToMenuButton->SetColor(buttonHoverColor.x, buttonHoverColor.y, buttonHoverColor.z, buttonHoverColor.w);
         if (isLeftClick) {
             ResetGame();
             gameState = GameState::MainMenu; 
         }
     }
     else {
-        quitToMenuButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
+        //quitToMenuButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
     }
 
     wasMouseLeftPressedLastFrame = isMouseLeftPressedThisFrame;
