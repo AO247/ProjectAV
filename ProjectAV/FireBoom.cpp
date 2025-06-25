@@ -6,6 +6,7 @@ namespace dx = DirectX;
 FireBoom::FireBoom(Node* owner, std::string tag)
 	: Component(owner, std::move(tag))
 {
+	// particle
 }
 
 void FireBoom::Update(float dt)
