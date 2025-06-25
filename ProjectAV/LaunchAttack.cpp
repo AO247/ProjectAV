@@ -17,13 +17,13 @@ void LaunchAttack::Attack(float dt)
 			pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound);
 		}
 		//miejsce na animacje !!!
-	}
-	timer += dt;
-	if (timer < stopMovingTime)
-	{
+		pOwner->GetParent()->GetComponent<AnimationComponent>()->PlayAnimation((rand() % 2 == 0) ? 2 : 4, 0.2f, false);
+
 		Vec3 direction = Vec3(pOwner->Forward().x, 0.0f, pOwner->Forward().z);
 		PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(pOwner->GetParent()->GetComponent<Rigidbody>()->GetBodyID(), direction * moveForce * dt);
 	}
+	timer += dt;
+
 	if (timer >= wholeAttackTime) {
 		attacked = false;
 		timer = 0.0f;

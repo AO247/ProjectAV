@@ -28,7 +28,7 @@ public:
 
 	float jumpForce = 1000.0f;
 	float jumpRange = 40.0f;
-
+	int anim = 0;
 	bool grounded = false;
 	bool voidNear = false;
 	bool canJump = false;

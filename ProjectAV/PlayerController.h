@@ -17,13 +17,13 @@ public:
 	virtual void Update(float dt) override;
 	virtual void DrawImGuiControls() override;
 
-	float acceleration = 8.0f;
+	float acceleration = 7.0f;
 	float deceleration = 25.0f;
 	float airControl = 0.5f;
-	float groundDamping = 0.001;
+	float groundDamping = 0.0001;
 	float airDamping = 0.04f;
 
-	float maxSpeed = 35.0f;
+	float maxSpeed = 32.0f;
 
 	float jumpForce = 30.0f;
 	float secondJumpForce = 20.0f;

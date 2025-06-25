@@ -68,6 +68,18 @@ void StateMachine::Stop(float time)
 }
 void StateMachine::Update(float dt)
 {
+	if (attackComponents.size() > 1)
+	{
+		if (attackCooldownTimer <= 0.0f)
+		{
+			attackCooldownTimer = 4.0f;
+			int randIndex = rand() % attackComponents.size();
+			pAttackComponent = attackComponents[randIndex];
+			attackRange = pAttackComponent->attackRange;
+		}
+		attackCooldownTimer -= dt;
+	}
+
 	if (timer < 2.0f && canDropPills)
 	{
 		timer += dt;
@@ -77,6 +89,10 @@ void StateMachine::Update(float dt)
 			Vec3(0.0f, 0.0f, 0.0f));
 		eatedPills = false;
 		pOwner->GetComponent<Health>()->currentHealth = pOwner->GetComponent<Health>()->maxHealth;
+	}
+	if (attackCooldownTimer > 0.0f)
+	{
+		attackCooldownTimer -= dt;
 	}
 
 	if (currentState)

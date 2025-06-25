@@ -49,7 +49,7 @@ void IdleState::Update(StateMachine* pOwner, float dt)
 
     sm::Vector3 wanderTarget = circleCenter + worldDisplacement;
 
-    pOwner->pMovementComponent->Follow(dt, wanderTarget, 1.4f);
+    pOwner->pMovementComponent->Follow(dt, wanderTarget, pOwner->sp);
     pOwner->pos = wanderTarget;
     pOwner->cen = circleCenter;
 
