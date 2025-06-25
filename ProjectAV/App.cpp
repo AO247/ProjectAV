@@ -32,7 +32,7 @@ App::App(const std::string& commandLine)
     pSceneRoot(std::make_unique<Node>("Root"))
 {
 
-    wnd.Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 2000.0f));
+    wnd.Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, -0.5f, 2000.0f));
 
 
     std::srand(static_cast<unsigned>(std::time(nullptr)));
@@ -95,19 +95,23 @@ App::App(const std::string& commandLine)
     temporary = pTemporaryOwner.get();
     auto pLeftHandOwner = std::make_unique<Node>("L Normal", nullptr, "HANDS");
     pLeftHand = pLeftHandOwner.get();
-    auto pLeftHandAbilityOwner = std::make_unique<Node>("L Ability", nullptr, "HANDS");
-    pLeftHandAbility = pLeftHandAbilityOwner.get();
     auto pRightHandOwner = std::make_unique<Node>("R Normal", nullptr, "HANDS");
     pRightHand = pRightHandOwner.get();
-    auto pRightHandAbilityOwner = std::make_unique<Node>("R Ability", nullptr, "HANDS");
-    pRightHandAbility = pRightHandAbilityOwner.get();
 	auto handsOwner = std::make_unique<Node>("Hands", nullptr, "HANDS");
     auto tutorialOwner = std::make_unique<Node>("Tutorial", nullptr, "TUTORIAL");
+	auto mainMenuOwner = std::make_unique<Node>("Main Menu", nullptr, "MAIN_MENU");
+	mainMenuNode = mainMenuOwner.get();
+
+    auto pauseMenuOwner = std::make_unique<Node>("Pause Menu", nullptr, "PAUSE_MENU");
+    pauseMenuNode = pauseMenuOwner.get();
+
     tutorialNode = tutorialOwner.get();
 	Node* pPlayerThings = playerThings.get();
 	Node* pAbilities = abilities.get();
 	Node* pBase = base.get();
 	Node* pHands = handsOwner.get();
+    pSceneRoot->AddChild(std::move(mainMenuOwner));
+    pSceneRoot->AddChild(std::move(pauseMenuOwner));
     pSceneRoot->AddChild(std::move(pTemporaryOwner));
 	pSceneRoot->AddChild(std::move(base));
     pSceneRoot->AddChild(std::move(playerThings));
@@ -123,15 +127,20 @@ App::App(const std::string& commandLine)
     pAbilities->AddChild(std::move(pAbility6Owner));
 	pCamera->AddChild(std::move(handsOwner));
     pHands->AddChild(std::move(pLeftHandOwner));
-    pHands->AddChild(std::move(pLeftHandAbilityOwner));
     pHands->AddChild(std::move(pRightHandOwner));
-    pHands->AddChild(std::move(pRightHandAbilityOwner));
     pSceneRoot->AddChild(std::move(tutorialOwner));
 
     PrefabManager::InstantiateStone1(pSceneRoot.get(), Vector3(0.0f, 100.0f, 0.0f), 1.0f);
 
     PrefabManager::root = temporary;
     PrefabManager::player = pPlayer;
+
+    mainMenuNode->AddComponent(
+        std::make_unique<MainMenu>(mainMenuNode, wnd)
+	);
+
+    pauseMenuNode->AddComponent(std::make_unique<PauseMenu>(pauseMenuNode, wnd));
+
 
     BodyCreationSettings bodySettings(new JPH::CapsuleShape(1.4f, 1.6f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::PLAYER);
     bodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
@@ -207,18 +216,18 @@ App::App(const std::string& commandLine)
 
 
 
-    BodyCreationSettings a3RbodySettings(new JPH::SphereShape(1.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::TRIGGER);
-    a3RbodySettings.mGravityFactor = 0.0f;
-    a3RbodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
+    //BodyCreationSettings a3RbodySettings(new JPH::SphereShape(1.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::TRIGGER);
+    //a3RbodySettings.mGravityFactor = 0.0f;
+    //a3RbodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
 
-    a3RbodySettings.mMassPropertiesOverride.mMass = 1.0f;
-    a3RbodySettings.mFriction = 0.0f;
-    a3RbodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
-    a3RbodySettings.mMotionQuality = EMotionQuality::LinearCast;
+    //a3RbodySettings.mMassPropertiesOverride.mMass = 1.0f;
+    //a3RbodySettings.mFriction = 0.0f;
+    //a3RbodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
+    //a3RbodySettings.mMotionQuality = EMotionQuality::LinearCast;
 
-    pAbility3->AddComponent(
-        std::make_unique<Rigidbody>(pAbility3, a3RbodySettings)
-    );
+    //pAbility3->AddComponent(
+    //    std::make_unique<Rigidbody>(pAbility3, a3RbodySettings)
+    //);
 
     pAbility3->AddComponent(
         std::make_unique<ModelComponent>(pAbility3, wnd.Gfx(), "Models\\box.glb")
@@ -337,8 +346,8 @@ App::App(const std::string& commandLine)
         std::make_unique<ModelComponent>(pLeftHand, wnd.Gfx(), "Models\\hands\\left.gltf", 1.0f, true, false)
     );
     pLeftHand->GetComponent<ModelComponent>()->LinkTechniques(rg);
-    pLeftHand->SetLocalScale({ 0.1f, 0.1f, 0.1f });
-    pLeftHand->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
+    pLeftHand->SetLocalScale({ 0.035f, 0.035f, 0.035f });
+    pLeftHand->SetLocalPosition({ 0.0f, -0.9f, 1.0f });
 
     pLeftHand->AddComponent(
         std::make_unique<AnimationComponent>(pLeftHand, "", "Models\\hands\\left.gltf")
@@ -347,19 +356,12 @@ App::App(const std::string& commandLine)
     animCompLeft->PlayAnimation(13); //POCZĄTKOWE IDLE_RUN
 
 
-    pLeftHandAbility->AddComponent(
-        std::make_unique<ModelComponent>(pLeftHandAbility, wnd.Gfx(), "Models\\hands\\left.gltf", 1.0f, false, false)
-    );
-    pLeftHandAbility->GetComponent<ModelComponent>()->LinkTechniques(rg);
-    pLeftHandAbility->SetLocalScale({ 0.1f, 0.1f, 0.1f });
-    pLeftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
-
     pRightHand->AddComponent(
         std::make_unique<ModelComponent>(pRightHand, wnd.Gfx(), "Models\\hands\\right.gltf", 1.0f, true, false)
     );
     pRightHand->GetComponent<ModelComponent>()->LinkTechniques(rg);
-    pRightHand->SetLocalScale({ 0.1f, 0.1f, 0.1f });
-    pRightHand->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
+    pRightHand->SetLocalScale({ 0.035f, 0.035f, 0.035f });
+    pRightHand->SetLocalPosition({ 0.0f, -0.9f, 1.0f });
 
     pRightHand->AddComponent(
         std::make_unique<AnimationComponent>(pRightHand, "", "Models\\hands\\right.gltf")
@@ -368,30 +370,18 @@ App::App(const std::string& commandLine)
     animCompRight->PlayAnimation(13); //POCZĄTKOWE IDLE_RUN
 
 
-    pRightHandAbility->AddComponent(
-        std::make_unique<ModelComponent>(pRightHandAbility, wnd.Gfx(), "Models\\hands\\right.gltf", 1.0f, false, false)
-    );
-    pRightHandAbility->GetComponent<ModelComponent>()->LinkTechniques(rg);
-    pRightHandAbility->SetLocalScale({ 0.1f, 0.1f, 0.1f });
-    pRightHandAbility->SetLocalPosition({ 0.0f, -2.7f, -3000.0f });
-
     pAbility1->GetComponent<Ability1>()->leftHand = pLeftHand->GetComponent<AnimationComponent>();
-    pAbility1->GetComponent<Ability1>()->leftHandAbility = pLeftHandAbility;
 
     pAbility2->GetComponent<Ability2>()->rightHand = pRightHand->GetComponent<AnimationComponent>();
-    pAbility2->GetComponent<Ability2>()->rightHandAbility = pRightHandAbility;
 
     pAbility3->GetComponent<Ability3>()->leftHand = pLeftHand->GetComponent<AnimationComponent>();
     pAbility3->GetComponent<Ability3>()->rightHand = pRightHand->GetComponent<AnimationComponent>();
 
     pAbility4->GetComponent<Ability4>()->leftHand = pLeftHand->GetComponent<AnimationComponent>();
-    pAbility4->GetComponent<Ability4>()->leftHandAbility = pLeftHandAbility;
 
 	pAbility5->GetComponent<Ability5>()->rightHand = pRightHand->GetComponent<AnimationComponent>();
-	pAbility5->GetComponent<Ability5>()->rightHandAbility = pRightHandAbility;
 
     pAbility6->GetComponent<Ability6>()->leftHand = pLeftHand->GetComponent<AnimationComponent>();
-    pAbility6->GetComponent<Ability6>()->leftHandAbility = pLeftHandAbility;
 
     pSceneRoot->AddComponent(
         std::make_unique<UpgradeHandler>(pSceneRoot.get(), wnd)
@@ -418,8 +408,8 @@ App::App(const std::string& commandLine)
     //pSceneRoot->GetComponent<Global>()->tut = tutorialNode->GetComponent<Tutorial>();
 
 
-    const int screenWidth = 1920;
-    const int screenHeight = 1080;
+    const int screenWidth = wnd.GetWidth();
+    const int screenHeight = wnd.GetHeight();
     const int plusSpriteWidth = 32;
     const int plusSpriteHeight = 32;
     const int plusSpriteX = (screenWidth / 2) - (plusSpriteWidth / 2);
@@ -502,38 +492,33 @@ App::App(const std::string& commandLine)
     mainMenuBackground = std::make_unique<Sprite>(
         wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
         0, 0, screenWidth, screenHeight,
-        L"Images\\MainMenu.gif" 
+        L"Images\\menu_9.gif" 
     );
 
-    const DirectX::XMFLOAT4 buttonIdleColor = { 0.82f, 0.63f, 0.35f, 0.9f };
-    const DirectX::XMFLOAT4 buttonHoverColor = { 1.0f, 0.8f, 0.5f, 1.0f };
+ 
+    const DirectX::XMFLOAT4 buttonIdleColor = { 0.82f, 0.63f, 0.35f, 0.1f };
+    const DirectX::XMFLOAT4 buttonHoverColor = { 1.0f, 0.8f, 0.5f, 0.3f };
     const DirectX::XMFLOAT4 textColor = { 0.1f, 0.1f, 0.1f, 1.0f };
 
-    startButton = std::make_unique<Button>(
-        wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
-        120, 450, 250, 70,  
-        L"START",
-        L"myfile.spritefont"  
-    );
-    startButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
-    startButton->SetTextColor(textColor);
- 
-    quitButton = std::make_unique<Button>(
-        wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
-        120, 550, 250, 70,  
-        L"QUIT",
-        L"myfile.spritefont"  
-    );
-    quitButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
-    quitButton->SetTextColor(textColor);
  
 
     // --------------- INICJALIZACJA MENU PAUZY --------------- 
     pauseMenuOverlay = std::make_unique<Sprite>(
         wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
         0, 0, screenWidth, screenHeight,
-        L"Images\\MainMenu.gif"  
+        L"Images\\pause_menu.png"  
     );
+
+    resumeHover = std::make_unique<Sprite>(
+        wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
+        (screenWidth / 2 - 250)  , 350, 500, 130,
+        L"Images\\resume.png"
+    ); 
+     quitToMenuHover = std::make_unique<Sprite>(
+         wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
+         (screenWidth / 2 - 250)  , 490, 500, 130,
+         L"Images\\back_to_menu.png"
+     ); 
    
     int buttonWidth = 350;
     int buttonHeight = 70;
@@ -543,7 +528,7 @@ App::App(const std::string& commandLine)
     resumeButton = std::make_unique<Button>(
         wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
         buttonCenterX, 400, buttonWidth, buttonHeight,
-        L"RESUME",
+        L" ",
         L"myfile.spritefont"
     );
     resumeButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
@@ -552,12 +537,41 @@ App::App(const std::string& commandLine)
     quitToMenuButton = std::make_unique<Button>(
         wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
         buttonCenterX, 500, buttonWidth, buttonHeight,
-        L"QUIT TO MAIN MENU",
+        L" ",
         L"myfile.spritefont"
     );
     quitToMenuButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
     quitToMenuButton->SetTextColor(textColor);
  
+    auto mainMenuComp = mainMenuNode->GetComponent<MainMenu>();
+    mainMenuComp->SetOnStartClick([this]() {
+        gameState = GameState::Gameplay;
+        paused = true;
+        wnd.DisableCursor();
+        wnd.mouse.EnableRawInput();
+        cursorEnabled = false;
+        StartGame();
+        });
+    mainMenuComp->SetOnQuitClick([this]() {
+        PostQuitMessage(0);
+        });
+
+    auto pauseMenuComp = pauseMenuNode->GetComponent<PauseMenu>();
+    pauseMenuComp->SetOnResumeClick([this]() {
+        gameState = GameState::Gameplay;
+        paused = false;
+        wnd.DisableCursor();
+        wnd.mouse.EnableRawInput();
+        cursorEnabled = false;
+        });
+    pauseMenuComp->SetOnQuitToMenuClick([this]() {
+        ResetGame();
+        gameState = GameState::MainMenu;
+        // Pamiętaj, żeby znowu włączyć kursor, gdy wracasz do menu!
+        wnd.EnableCursor();
+        wnd.mouse.DisableRawInput();
+        cursorEnabled = true;
+        });
 
 }
 
@@ -627,6 +641,10 @@ void App::HandleInput(float dt)
             PostQuitMessage(0);
             return;
         }
+        if (wnd.kbd.IsJustPressed('H'))
+        {
+            showControlWindow = !showControlWindow;
+        }
         break;
     
 
@@ -658,7 +676,7 @@ void App::HandleInput(float dt)
         }
         if (wnd.kbd.IsJustPressed('B'))
         {
-            PrefabManager::InstantiateNewColumn(temporary, pFreeViewCamera->GetWorldPosition(), 1.0f);
+            PrefabManager::InstantiateTankEnemy(temporary, pFreeViewCamera->GetWorldPosition());
         }
         if (wnd.kbd.IsJustPressed('H'))
         {
@@ -740,6 +758,10 @@ void App::HandleInput(float dt)
             wnd.mouse.EnableRawInput();
             cursorEnabled = false;
         }
+        if (wnd.kbd.IsJustPressed('H'))
+        {
+            showControlWindow = !showControlWindow;
+        }
         break;
     }
 
@@ -757,9 +779,15 @@ void App::DoFrame(float dt)
          auto& gfx = wnd.Gfx();
         gfx.GetTarget()->BindAsBuffer(gfx);
         mainMenuBackground->Update(dt);
+        mainMenuBackground->Draw(gfx.GetContext());
+         
+        mainMenuNode->GetComponent<MainMenu>()->DrawMainMenu(dt);
+        mainMenuNode->GetComponent<MainMenu>()->Update(dt); 
 
-        UpdateMainMenu();
-        DrawMainMenu();
+        if (showControlWindow) {
+            ShowControlWindows();
+        }
+         
         break;
     }
 
@@ -856,17 +884,48 @@ void App::DoFrame(float dt)
          
         if (gameState == GameState::Paused)
         {
-            pauseMenuOverlay->Update(dt);
 
-            UpdatePauseMenu();
-            DrawPauseMenu();
+            pauseMenuNode->GetComponent<PauseMenu>()->DrawPauseMenu(dt);
+            pauseMenuNode->GetComponent<PauseMenu>()->Update(dt);
+
+            //pauseMenuOverlay->Update(dt);
+
+
+            //pauseMenuOverlay->Draw(wnd.Gfx().GetContext());
+
+            //int mouseX = wnd.mouse.GetPosX();
+            //int mouseY = wnd.mouse.GetPosY();
+
+
+
+            // 
+
+
+            //const int startX = (wnd.Gfx().GetWidth() / 2 - 250), startY = 580, btnWidth = 500, btnHeight = 120;
+            //const int quitX = (wnd.Gfx().GetWidth() / 2 - 250), quitY = 720;
+
+            //if (mouseX >= startX && mouseX <= startX + btnWidth &&
+            //    mouseY >= startY && mouseY <= startY + btnHeight)
+            //{ 
+            //    if (resumeHover) resumeHover->Draw(wnd.Gfx().GetContext());
+            //}
+
+            //if (mouseX >= quitX && mouseX <= quitX + btnWidth &&
+            //    mouseY >= quitY && mouseY <= quitY + btnHeight)
+            //{
+            //    // Mysz jest nad przyciskiem QUIT, więc dorysuj wersję HOVER NA WIERZCHU tła.
+            //    if (quitToMenuHover) quitToMenuHover->Draw(wnd.Gfx().GetContext());
+            //}
+            //UpdatePauseMenu();
+            //DrawPauseMenu();
+ 
+
         }
         break;
     }
     }
 
-    }
-    
+    } 
     wnd.kbd.UpdateFrameState();
 
     wnd.Gfx().EndFrame();
@@ -1131,9 +1190,6 @@ void App::ShowControlWindows()
     ImGui::End(); 
 }
 
-
-
-
 void App::CleanupDestroyedNodes(Node* currentNode)
 {
     if (!currentNode) return;
@@ -1284,66 +1340,8 @@ void App::SaveNodeTransformsRecursive(Node& node, std::ofstream& file)
     }
 }
  
-
-void App::UpdateMainMenu()
-{
-    int mouseX = wnd.mouse.GetPosX();
-    int mouseY = wnd.mouse.GetPosY();
-
-    const DirectX::XMFLOAT4 buttonIdleColor = { 0.82f, 0.63f, 0.35f, 0.9f };
-    const DirectX::XMFLOAT4 buttonHoverColor = { 1.0f, 0.8f, 0.5f, 1.0f };
-     
-    bool isMouseLeftPressedThisFrame = wnd.mouse.IsLeftPressed();
-     
-    bool isLeftClick = isMouseLeftPressedThisFrame && !wasMouseLeftPressedLastFrame;
-     
-    if (startButton->IsHovered(mouseX, mouseY)) {
-        startButton->SetColor(buttonHoverColor.x, buttonHoverColor.y, buttonHoverColor.z, buttonHoverColor.w);
-         
-        if (isLeftClick) {
-            gameState = GameState::Gameplay;
-            paused = true;
-            wnd.DisableCursor();
-            wnd.mouse.EnableRawInput();
-            cursorEnabled = false;
-            StartGame();
-        }
-    }
-    else {
-        startButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
-    }
-     
-    if (quitButton->IsHovered(mouseX, mouseY)) {
-        quitButton->SetColor(buttonHoverColor.x, buttonHoverColor.y, buttonHoverColor.z, buttonHoverColor.w);
-         
-        if (isLeftClick) {
-            PostQuitMessage(0);
-        }
-    }
-    else {
-        quitButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
-    }
-     
-    wasMouseLeftPressedLastFrame = isMouseLeftPressedThisFrame;
-}
-
-void App::DrawMainMenu()
-{
-    auto* context = wnd.Gfx().GetContext();
-    const float screenWidth = 1920.0f;
-    const float screenHeight = 1080.0f;
-
-    if (mainMenuBackground) {
-        mainMenuBackground->Draw(context);
-    } 
-    if (startButton) {
-        startButton->Draw(context, screenWidth, screenHeight);
-    }
-    if (quitButton) {
-        quitButton->Draw(context, screenWidth, screenHeight);
-    }
-}
-
+ 
+ 
 
 void App::UpdatePauseMenu()
 {
@@ -1357,7 +1355,7 @@ void App::UpdatePauseMenu()
     bool isLeftClick = isMouseLeftPressedThisFrame && !wasMouseLeftPressedLastFrame;
      
     if (resumeButton->IsHovered(mouseX, mouseY)) {
-        resumeButton->SetColor(buttonHoverColor.x, buttonHoverColor.y, buttonHoverColor.z, buttonHoverColor.w);
+        //resumeButton->SetColor(buttonHoverColor.x, buttonHoverColor.y, buttonHoverColor.z, buttonHoverColor.w);
         if (isLeftClick) {
             gameState = GameState::Gameplay;
             paused = false;
@@ -1367,18 +1365,18 @@ void App::UpdatePauseMenu()
         }
     }
     else {
-        resumeButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
+        //resumeButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
     }
 
      if (quitToMenuButton->IsHovered(mouseX, mouseY)) {
-        quitToMenuButton->SetColor(buttonHoverColor.x, buttonHoverColor.y, buttonHoverColor.z, buttonHoverColor.w);
+       //quitToMenuButton->SetColor(buttonHoverColor.x, buttonHoverColor.y, buttonHoverColor.z, buttonHoverColor.w);
         if (isLeftClick) {
             ResetGame();
             gameState = GameState::MainMenu; 
         }
     }
     else {
-        quitToMenuButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
+        //quitToMenuButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
     }
 
     wasMouseLeftPressedLastFrame = isMouseLeftPressedThisFrame;

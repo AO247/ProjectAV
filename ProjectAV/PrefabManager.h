@@ -8679,7 +8679,7 @@ public:
         );
 
         // ATTACK
-        auto launchAttackNodeOwner = std::make_unique<Node>("Rush Attack", nullptr, "TRIGGER");
+        auto launchAttackNodeOwner = std::make_unique<Node>("Launch Attack", nullptr, "TRIGGER");
         Node* plaunchAttackNode = launchAttackNodeOwner.get();
 
         BodyCreationSettings a1BodySettings(new JPH::CapsuleShape(5.0f, 3.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
@@ -8691,12 +8691,12 @@ public:
         );
 
         LaunchAttack* launchAttack = plaunchAttackNode->GetComponent<LaunchAttack>();
-        launchAttack->attackRange = 7.0f;
+        launchAttack->attackRange = 24.0f;
         pNewNode->SetLocalPosition({ 0.0f, 0.0f, 0.0f });
         pNewNode->AddChild(std::move(launchAttackNodeOwner));
 
 
-        auto slashAttackNodeOwner = std::make_unique<Node>("Rush Attack", nullptr, "TRIGGER");
+        auto slashAttackNodeOwner = std::make_unique<Node>("Slash Attack", nullptr, "TRIGGER");
         Node* pslashAttackNode = slashAttackNodeOwner.get();
 
         BodyCreationSettings a2BodySettings(new JPH::CapsuleShape(5.0f, 3.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
@@ -8708,7 +8708,7 @@ public:
         );
 
         SlashAttack* slashAttack = pslashAttackNode->GetComponent<SlashAttack>();
-        slashAttack->attackRange = 7.0f;
+        slashAttack->attackRange = 35.0f;
         pNewNode->SetLocalPosition({ 0.0f, 0.0f, 0.0f });
         pNewNode->AddChild(std::move(slashAttackNodeOwner));
 
@@ -8719,7 +8719,7 @@ public:
         );
         Walking* walking = pNewNode->GetComponent<Walking>();
         walking->radius = 1.6f;
-        walking->maxSpeed = 30.0f;
+        walking->maxSpeed = 80.0f;
         walking->height = 7.2f;
 
 
@@ -8729,11 +8729,13 @@ public:
         );
         StateMachine* stateMachine = pNewNode->GetComponent<StateMachine>();
         stateMachine->enemyType = EnemyType::FRENZY;
-        stateMachine->followDistance = 60.0f;
+        stateMachine->followDistance = 400.0f;
         stateMachine->pPlayer = player;
         stateMachine->attackComponents.push_back(slashAttack);
         stateMachine->attackComponents.push_back(launchAttack);
         stateMachine->pMovementComponent = walking;
+        stateMachine->attackCooldown = 2.0f;
+        stateMachine->sp = 2.0f;
         pNewNode->AddComponent(
             std::make_unique<Health>(pNewNode, 1.0f)
         );

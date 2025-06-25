@@ -26,6 +26,7 @@ public:
 	bool Pressed() override;
 	void Released() override;
 	void Activated();
+	float timerToActive = 0.0f;
 	float timer = 0.0f;
 	
 	bool isPressed = false;

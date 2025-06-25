@@ -729,8 +729,8 @@ void LevelGenerator::SpawnEnemies()
         }
         if (randEnemy == 2 && numberOfEasyEnemies > 0)
         {
-            int randEnemy = rand() % 1;
-
+            int randEnemy = rand() % 3;
+            randEnemy = 1;
             if (randEnemy == 0)
             {
                 enemy = PrefabManager::InstantiateNormalEnemy(pOwner, Vector3(0.0f, 0.0f, 0.0f));

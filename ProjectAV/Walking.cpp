@@ -82,7 +82,7 @@ void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 
 			}
 			if (statemachine->enemyType == EnemyType::FRENZY) {
-				pOwner->GetComponent<AnimationComponent>()->PlayAnimation(9);
+				pOwner->GetComponent<AnimationComponent>()->PlayAnimation(10);
 
 			}
 			return;
@@ -108,8 +108,7 @@ void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 
 	} 
 	if (statemachine->enemyType == EnemyType::FRENZY) {
-		pOwner->GetComponent<AnimationComponent>()->PlayAnimation(9);
-
+		pOwner->GetComponent<AnimationComponent>()->PlayAnimation(6);
 	}
 
 
@@ -171,7 +170,7 @@ void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 
 	float steeringMagnitude = steeringForce.Length();
 	//if (steeringMagnitude > maxSpeed) {
-		steeringForce = (steeringForce / steeringMagnitude) * maxSpeed;
+		steeringForce = (steeringForce / steeringMagnitude) * maxSpeed / sp;
 	//}
 
 	PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(steeringForce.x, 0.0f, steeringForce.z) * 1000.0f * dt);
@@ -635,6 +634,8 @@ void Walking::DrawImGuiControls()
 	ImGui::Checkbox("More Left", &moreLeft);
 	ImGui::Checkbox("More Right", &moreRight);
 	ImGui::InputFloat("Velocity", &vel);
+	ImGui::InputInt("Anim", &anim);
+
 	ImGui::Checkbox("Void", &voidNear);
 	ImGui::InputFloat("Time", &timerForChangedDirection);
 

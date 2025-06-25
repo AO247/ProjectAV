@@ -12,12 +12,12 @@ public:
 	SlashAttack(Node* owner, std::string tag = "ATTACK");
 	virtual ~SlashAttack() = default;
 	float damage = 1.0f;
-	float wholeAttackTime = 1.5f;
-	float startDmgTime = 0.5f;
-	float stopDmgTime = 1.0f;
+	float wholeAttackTime = 0.95f;
+	float startDmgTime = 0.36f;
+	float stopDmgTime = 0.84f;
 	float knockbackForce = 1500.0f;
-	float moveForce = 400.0f;
-	float stopMovingTime = 0.9f;
+	float moveForce = 1800.0f;
+	float stopMovingTime = 0.95f;
 	void OnTriggerEnter(Node* object) override;
 	void OnTriggerExit(Node* object) override;
 

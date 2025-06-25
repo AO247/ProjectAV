@@ -32,7 +32,6 @@ public:
 	bool abilityReady = true;
 
 	AnimationComponent* rightHand = nullptr;
-	Node* rightHandAbility = nullptr;
 private:
 	void KeyboardInput();
 	void Cooldowns(float dt);

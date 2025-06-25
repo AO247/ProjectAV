@@ -12,9 +12,9 @@ public:
 	BasicAttack(Node* owner, std::string tag = "ATTACK");
 	virtual ~BasicAttack() = default;
 	float damage = 1.0f;
-	float wholeAttackTime = 1.5f;
-	float startDmgTime = 0.5f;
-	float stopDmgTime = 1.0f;
+	float wholeAttackTime = 1.04f;
+	float startDmgTime = 0.30f;
+	float stopDmgTime = 0.65f;
 	float knockbackForce = 1500.0f;
 	float moveForce = 400.0f;
 	float stopMovingTime = 0.9f;
