@@ -16,6 +16,7 @@
 #include <filesystem> // <-- Do³¹cz ten nag³ówek
 #include <iostream>
 #include "SphereVolumeEmitterLogic.h"
+#include "VortexEmitterLogic.h"
 
 //class PhysicsEngine;
 class ShootAttack;
@@ -7236,38 +7237,40 @@ public:
             std::make_unique<AnimationComponent>(pNewNode, "", "Models\\char_basic2.glb")
         );*/
 
-        auto volumeEmitter = std::make_unique<SphereVolumeEmitterLogic>();
-
-        volumeEmitter->SpawnRadius = 3.0f;
+        auto vortexEmitter = std::make_unique<VortexEmitterLogic>();
+        vortexEmitter->Radius = 2.5f;
+        vortexEmitter->BaseOrbitalSpeed = 4.0f;
+        vortexEmitter->OrbitalSpeedVariance = 2.0f;
+        vortexEmitter->bRandomizePlane = true; // Keep it aligned with the player
 
         pNewNode->AddComponent(
-            std::make_unique<ParticleSystemComponent>(pNewNode, wind->Gfx(), "Models\\fat.png", 10000, std::move(volumeEmitter))
+            std::make_unique<ParticleSystemComponent>(pNewNode, wind->Gfx(), "Models\\fat.png", 10000, std::move(vortexEmitter))
         );
         ParticleSystemComponent* pParticleSystem = pNewNode->GetComponent<ParticleSystemComponent>();
         pParticleSystem->SetPlaybackMode(ParticleSystemComponent::PlaybackMode::OneShot);
-        pParticleSystem->ParticleLifetime = 3.0f;      
+        pParticleSystem->ParticleLifetime = 5.0f;      
         pParticleSystem->BurstAmount = 25;
-        pParticleSystem->EmissionDuration = 5.0f;
-        pParticleSystem->bUseLifetimeRange = true;
-        pParticleSystem->MinLifetime = 0.1f;
-        pParticleSystem->MaxLifetime = 1.0f;
+        //pParticleSystem->EmissionDuration = 5.0f;
+        pParticleSystem->bUseLifetimeRange = false;
+        //pParticleSystem->MinLifetime = 2.0f;
+        //pParticleSystem->MaxLifetime = 1.0f;
         pParticleSystem->bOneShotIsBurst = true;
         pParticleSystem->destroyAfterEmission = true;
         pParticleSystem->EmitterPositionOffset = { 0.0f, 0.0f, 0.0f }; 
-        pParticleSystem->ParticleVelocity = { -2.0f, -2.0f, -2.0f };
-        pParticleSystem->ParticleVelocityVariance = { 4.0f, 4.0f, 4.0f };
+        pParticleSystem->ParticleVelocity = { 0.0f, 0.0f, 0.0f };
+        pParticleSystem->ParticleVelocityVariance = { 0.0f, 0.0f, 0.0f };
         pParticleSystem->bUseMidColor = true;
-        pParticleSystem->StartColor = { 1.0f, 1.0f, 1.0f, 1.0f };
-        //pParticleSystem->ColorMidpoint = 0.1f;
-        pParticleSystem->bUseMidColor = false;
-        //pParticleSystem->MidColor = { 1.0f, 1.0f, 1.0f, 0.1f };
+        pParticleSystem->StartColor = { 1.0f, 1.0f, 1.0f, 0.0f };
+        pParticleSystem->ColorMidpoint = 0.1f;
+        pParticleSystem->bUseMidColor = true;
+        pParticleSystem->MidColor = { 1.0f, 1.0f, 1.0f, 1.0f };
         pParticleSystem->EndColor = { 1.0f, 1.0f, 1.0f, 0.0f };
         pParticleSystem->StartSize = 1.0f;
         pParticleSystem->StartSizeVariance = 2.0f;
         pParticleSystem->bAnimateSize = false;
         pParticleSystem->StartRotation = 0.0f;
-        pParticleSystem->EndRotation = 6.28f;
-        pParticleSystem->EndRotationVariance = 6.28f;
+        pParticleSystem->EndRotation = 3.14f;
+        pParticleSystem->EndRotationVariance = 3.14f;
         pParticleSystem->textureAtlasRows = 2;
         pParticleSystem->textureAtlasColumns = 2;
 
