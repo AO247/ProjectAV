@@ -48,6 +48,10 @@ void Ability6::Positioning()
         if (PhysicsCommon::physicsSystem->GetBodyInterface().GetMotionType(result.mBodyID) == EMotionType::Dynamic)
         {
             selectedNode = reinterpret_cast<Node*>(PhysicsCommon::physicsSystem->GetBodyInterface().GetUserData(result.mBodyID));
+            if (selectedNode->GetComponent<Throwable>()->extraHeavy)
+            {
+                selectedNode = nullptr;
+            }
         }
     }
     else
@@ -60,7 +64,7 @@ void Ability6::Pulling(float dt)
 	if (selectedNode == nullptr) return;
 
     Vector3 cameraPos = camera->GetWorldPosition();
-    Vector3 targetPosition = cameraPos + camera->Forward() * 8.0f;
+    Vector3 targetPosition = cameraPos + camera->Forward() * 13.0f;
     Rigidbody* rb = selectedNode->GetComponent<Rigidbody>();
 
     holdSoundTimer -= dt;
@@ -110,7 +114,7 @@ void Ability6::Pulling(float dt)
     }
     else
     {
-        leftHand->PlayAnimation(4); //PULL LOOP
+       // leftHand->PlayAnimation(4); //PULL LOOP
         Vector3 dir = targetPosition - selectedNode->GetWorldPosition();
         dir.y *= 10.0f;
         dir.Normalize();
@@ -226,19 +230,10 @@ void Ability6::Cooldowns(float dt)
         {
             leftHand->PlayAnimation(13);
 
-            //leftHand->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
         }
         abilityReady = true;
     }
-    if (timeToChange > 0.0f)
-    {
-        timeToChange -= dt;
-        if (timeToChange <= 0.0f)
-        {
-            //leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
-            //leftHand->SetLocalPosition({ 0.0f, -2.7f, 1.0f });
-        }
-    }
+  
 
 }
 
