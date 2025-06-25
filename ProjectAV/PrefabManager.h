@@ -6952,7 +6952,7 @@ public:
             std::make_unique<ParticleSystemComponent>(pNewNode, wind->Gfx(), "Models\\fat.png", 2000, std::move(pCircleLogic))
         );
         ParticleSystemComponent* particles = pNewNode->GetComponent<ParticleSystemComponent>();
-        particles->SetPlaybackMode(ParticleSystemComponent::PlaybackMode::Loop);
+        particles->SetPlaybackMode(ParticleSystemComponent::PlaybackMode::OneShot);
         particles->destroyAfterEmission = true;
         particles->ParticleLifetime = 0.2f;
         particles->EmissionDuration = 0.1f;
