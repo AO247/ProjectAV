@@ -133,9 +133,13 @@ public:
         modelMeshShape = modelScaling.Create().Get();
         BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
+        BodyCreationSettings a4odySettings(new JPH::SphereShape(2.5f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
         pNewNodeOwner->AddComponent(
-            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
+            std::make_unique<Trigger>(pNewNodeOwner, a4odySettings, false)
         );
+		pNewNodeOwner->AddComponent(
+			std::make_unique<MushroomBoom>(pNewNodeOwner.get(), bodySettings)
+		);
 
         pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
@@ -162,8 +166,12 @@ public:
         modelMeshShape = modelScaling.Create().Get();
         BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
+        BodyCreationSettings a4odySettings(new JPH::SphereShape(2.5f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
         pNewNodeOwner->AddComponent(
-            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
+            std::make_unique<Trigger>(pNewNodeOwner, a4odySettings, false)
+        );
+        pNewNodeOwner->AddComponent(
+            std::make_unique<MushroomBoom>(pNewNodeOwner.get(), bodySettings)
         );
 
         pNewNodeOwner->SetLocalPosition(position);
@@ -191,8 +199,12 @@ public:
         modelMeshShape = modelScaling.Create().Get();
         BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
+        BodyCreationSettings a4odySettings(new JPH::SphereShape(2.5f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
         pNewNodeOwner->AddComponent(
-            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
+            std::make_unique<Trigger>(pNewNodeOwner, a4odySettings, false)
+        );
+        pNewNodeOwner->AddComponent(
+            std::make_unique<MushroomBoom>(pNewNodeOwner.get(), bodySettings)
         );
 
         pNewNodeOwner->SetLocalPosition(position);
@@ -222,6 +234,9 @@ public:
         bodySettings.mFriction = 1.0f;
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
+        );
+        pNewNodeOwner->AddComponent(
+			std::make_unique<Spikes>(pNewNodeOwner.get(), 1.0)
         );
 
         pNewNodeOwner->SetLocalPosition(position);
@@ -283,6 +298,9 @@ public:
         pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
+		pNewNodeOwner->AddComponent(
+			std::make_unique<Fireplace>(pNewNodeOwner.get(), 1.0)
+		);
 
         pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
