@@ -113,7 +113,6 @@ void FourFireBallAttack::DrawImGuiControls()
 	ImGui::Text("Tag: %s", tag.c_str());
 	ImGui::InputFloat("Damage", &damage);
 	ImGui::InputFloat("Whole Attack Time", &wholeAttackTime);
-	ImGui::InputFloat("Shoot Time", &shootTime);
 	ImGui::InputFloat("Knockback Force", &knockbackForce);
 	ImGui::InputFloat("Attack Timer", &timer);
 	ImGui::Checkbox("Attacked", &attacked);

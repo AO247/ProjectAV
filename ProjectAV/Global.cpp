@@ -34,6 +34,7 @@ void Global::Update(float dt)
 		if (playerNode->GetLocalPosition().y > 30.0f)
 		{
 			levels[2]->GetComponent<LevelGenerator>()->startEnemyGenerating = true;
+			levels[2]->GetComponent<StoneGenerator>()->active = true;
 			currentLevel = 1;
 			started = true;
 			drawLoadingScreen = false;
@@ -85,6 +86,9 @@ void Global::NextStage()
 	levels.erase(it);
 	AddSpecialLevel();
 	levels[2]->GetComponent<LevelGenerator>()->startEnemyGenerating = true;
+	levels[2]->GetComponent<StoneGenerator>()->active = true;
+	levels[1]->GetComponent<StoneGenerator>()->active = false;
+
 	currentLevel++;
 }
 
@@ -111,6 +115,9 @@ void Global::AddSpecialLevel()
 			std::make_unique<LevelGenerator>(level, playerNode, false)
 		);
 	}
+	level->AddComponent(
+		std::make_unique<StoneGenerator>(level)
+	);
 	completed = false;
 	levelCount++;
 }

@@ -44,6 +44,7 @@
 #include "Ability6.h"
 #include "Ability5Extend.h"
 #include "Tutorial.h"
+#include "StoneGenerator.h"
 
 
 
