@@ -214,6 +214,7 @@ void PlayerController::PlayerGroundCheck()
 
 void PlayerController::MovePlayer(float dt)
 {
+
     if (grounded && moveDirection.Length() > 0.0f)
     { 
         Vec3 desiredVel = Vec3(moveDirection.x, 0.0f, moveDirection.z);
@@ -254,8 +255,17 @@ void PlayerController::MovePlayer(float dt)
             newVelocity.SetY(copy.GetY());
             PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rigidbody->GetBodyID(), newVelocity);
         }
-        PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * acceleration * 1000.0f * dt);
+        if (slowTime > 0.0f)
+        {
+            PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), 
+                Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * acceleration * slowPower * 1000.0f * dt);
+        }
+        else
+        {
+            PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), 
+                Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * acceleration * 1000.0f * dt);
 
+        }
 		stepSoundTimer -= dt;
 		if (stepSoundTimer <= 0.0f)
 		{
@@ -444,6 +454,10 @@ void PlayerController::Cooldowns(float dt)
     else
     {
         canDash = true;
+    }
+    if (slowTime > 0.0f)
+    {
+        slowTime -= dt;
     }
 }
 

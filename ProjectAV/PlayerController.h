@@ -22,6 +22,8 @@ public:
 	float airControl = 0.5f;
 	float groundDamping = 0.0001;
 	float airDamping = 0.04f;
+	float slowTime = 0.0f;
+	float slowPower = 0.5f;
 
 	float maxSpeed = 32.0f;
 

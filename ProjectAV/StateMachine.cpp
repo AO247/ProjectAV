@@ -79,6 +79,10 @@ void StateMachine::Update(float dt)
 		}
 		attackCooldownTimer -= dt;
 	}
+	else
+	{
+		pAttackComponent = attackComponents[0];
+	}
 
 	if (timer < 2.0f && canDropPills)
 	{

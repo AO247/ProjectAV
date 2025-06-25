@@ -16,7 +16,7 @@ public:
 	float startDmgTime = 0.36f;
 	float stopDmgTime = 0.68f;
 	float knockbackForce = 1500.0f;
-	float moveForce = 200.0f;
+	float moveForce = 600.0f;
 	float stopMovingTime = 0.9f;
 	void OnTriggerEnter(Node* object) override;
 	void OnTriggerExit(Node* object) override;
