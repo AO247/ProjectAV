@@ -413,34 +413,45 @@ App::App(const std::string& commandLine)
         L"Images\\plus.png"
     );
 
+
+    heart0Sprite = std::make_unique<Sprite>(
+        wnd.Gfx().GetDevice(),
+        wnd.Gfx().GetContext(),
+        wnd.Gfx().GetWidth() / 2 - (wnd.Gfx().GetWidth() * 0.35f) / 2,
+        wnd.Gfx().GetHeight() * 0.93f,
+        wnd.Gfx().GetWidth() * 0.35f,
+        wnd.Gfx().GetHeight() * 0.05f,
+        L"Images\\health\\hp_0.png"
+    );
+
     heart1Sprite = std::make_unique<Sprite>(
         wnd.Gfx().GetDevice(),
         wnd.Gfx().GetContext(),
-        (screenWidth / 2) - 35 - 80,             
-        950,        
-        70,         
-        70,         
-        L"Images\\heart.png"
+        wnd.Gfx().GetWidth() / 2 - (wnd.Gfx().GetWidth() * 0.35f) / 2,
+        wnd.Gfx().GetHeight() * 0.93f,
+        wnd.Gfx().GetWidth() * 0.35f,
+        wnd.Gfx().GetHeight() * 0.05f,
+        L"Images\\health\\hp_1.png"
     );
 
     heart2Sprite = std::make_unique<Sprite>(
         wnd.Gfx().GetDevice(),
         wnd.Gfx().GetContext(),
-        (screenWidth / 2) - 35,              
-        950,        
-        70,         
-        70,         
-        L"Images\\heart.png"
+        wnd.Gfx().GetWidth() / 2 - (wnd.Gfx().GetWidth() * 0.35f) / 2,
+        wnd.Gfx().GetHeight() * 0.93f,
+        wnd.Gfx().GetWidth() * 0.35f,
+        wnd.Gfx().GetHeight() * 0.05f,
+        L"Images\\health\\hp_2.png"
     );
 
     heart3Sprite = std::make_unique<Sprite>(
         wnd.Gfx().GetDevice(),    
         wnd.Gfx().GetContext(),
-        (screenWidth / 2) - 35 + 80,               
-        950,         
-        70,          
-        70,          
-        L"Images\\heart.png"
+        wnd.Gfx().GetWidth() / 2 - (wnd.Gfx().GetWidth() * 0.35f) / 2,
+        wnd.Gfx().GetHeight() * 0.93f,
+        wnd.Gfx().GetWidth() * 0.35f,
+        wnd.Gfx().GetHeight() * 0.05f,
+        L"Images\\health\\hp_3.png"
     );
     loadingScreen1 = std::make_unique<Sprite>(
         wnd.Gfx().GetDevice(),
@@ -768,16 +779,19 @@ void App::DoFrame(float dt)
     }
 
     if (pPlayer->GetComponent<Health>()->currentHealth == 3.0f) {
-        heart1Sprite->Draw(wnd.Gfx().GetContext());
-        heart2Sprite->Draw(wnd.Gfx().GetContext());
+        //heart1Sprite->Draw(wnd.Gfx().GetContext());
+        //heart2Sprite->Draw(wnd.Gfx().GetContext());
         heart3Sprite->Draw(wnd.Gfx().GetContext());
     }
     if (pPlayer->GetComponent<Health>()->currentHealth == 2.0f) {
-        heart1Sprite->Draw(wnd.Gfx().GetContext());
+        //heart1Sprite->Draw(wnd.Gfx().GetContext());
         heart2Sprite->Draw(wnd.Gfx().GetContext());
     }
     if (pPlayer->GetComponent<Health>()->currentHealth == 1.0f) {
         heart1Sprite->Draw(wnd.Gfx().GetContext());
+    }
+    if (pPlayer->GetComponent<Health>()->currentHealth == 0.0f) {
+        heart0Sprite->Draw(wnd.Gfx().GetContext());
     }
 
     pUpgradeHandler->DrawUpgradeMenu();
