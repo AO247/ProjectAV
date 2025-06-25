@@ -32,7 +32,7 @@ App::App(const std::string& commandLine)
     pSceneRoot(std::make_unique<Node>("Root"))
 {
 
-    wnd.Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.1f, 2000.0f));
+    wnd.Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.3f, 2000.0f));
 
 
     std::srand(static_cast<unsigned>(std::time(nullptr)));
@@ -266,7 +266,7 @@ App::App(const std::string& commandLine)
     pAbility4->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\sznurek2.wav");
     pAbility4->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\hold.wav");
     pAbility4->GetComponent<Ability4>()->baseAbility = pAbility1->GetComponent<Ability1>();
-    //pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility4;
+    pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility4;
 
 
     pAbility5->AddComponent(
@@ -347,7 +347,7 @@ App::App(const std::string& commandLine)
     );
     pLeftHand->GetComponent<ModelComponent>()->LinkTechniques(rg);
     pLeftHand->SetLocalScale({ 0.035f, 0.035f, 0.035f });
-    pLeftHand->SetLocalPosition({ 0.0f, -0.9f, 1.0f });
+    pLeftHand->SetLocalPosition({ -0.0f, -0.9f, 0.6f });
 
     pLeftHand->AddComponent(
         std::make_unique<AnimationComponent>(pLeftHand, "", "Models\\hands\\left.gltf")
@@ -361,7 +361,7 @@ App::App(const std::string& commandLine)
     );
     pRightHand->GetComponent<ModelComponent>()->LinkTechniques(rg);
     pRightHand->SetLocalScale({ 0.035f, 0.035f, 0.035f });
-    pRightHand->SetLocalPosition({ 0.0f, -0.9f, 1.0f });
+    pRightHand->SetLocalPosition({ -0.0f, -0.9f, 0.6f });
 
     pRightHand->AddComponent(
         std::make_unique<AnimationComponent>(pRightHand, "", "Models\\hands\\right.gltf")
@@ -819,7 +819,7 @@ void App::DoFrame(float dt)
             }
         }
          
-        wnd.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 2000.0f));
+        //wnd.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 2000.0f));
          
         dx::XMMATRIX viewMatrix = pCamera->GetComponent<Camera>()->GetViewMatrix();
         if (freeViewCamera)

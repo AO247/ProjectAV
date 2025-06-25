@@ -96,9 +96,9 @@ void Ability4::Positioning()
 }
 bool Ability4::Pressed()
 {
-    if (!abilityReady && isPressed) return false;
+    if (!abilityReady || isPressed) return false;
 
-    activated = true;
+     activated = true;
     isPressed = true;
     pressedTime = 0.0f;
 

@@ -131,8 +131,8 @@ void Ability3::Positioning()
     if (isPressed)
     {
         Vector3 cameraPos = camera->GetWorldPosition();
-        Vector3 targetPosition = cameraPos + camera->Forward() * 10.0f;
-        targetPosition += camera->Down() * 1.0f;
+        Vector3 targetPosition = cameraPos + camera->Forward() * 8.0f;
+        targetPosition += camera->Down() * 2.0f;
         PhysicsCommon::physicsSystem->GetBodyInterface().SetPosition(pOwner->GetComponent<Rigidbody>()->GetBodyID(),
             Vec3(targetPosition.x, targetPosition.y, targetPosition.z), EActivation::Activate);
     }
@@ -157,8 +157,8 @@ bool Ability3::Pressed()
     if (killsCount < 3 || isPressed) return false;
     
     Vector3 cameraPos = camera->GetWorldPosition();
-    Vector3 targetPosition = cameraPos + camera->Forward() * 10.0f;
-    targetPosition += camera->Down() * 1.0f;
+    Vector3 targetPosition = cameraPos + camera->Forward() * 8.0f;
+    targetPosition += camera->Down() * 2.0f;
     pOwner->SetWorldPosition(targetPosition);
 	
     // animacja tworzenia czarnej dziury
