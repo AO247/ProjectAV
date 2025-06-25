@@ -102,7 +102,6 @@ bool Ability4::Pressed()
     activated = true;
     isPressed = true;
     pressedTime = 0.0f;
-
     cameraRotation = camera->GetLocalRotationEuler();
     if (selectedNode != nullptr)
     {
@@ -118,7 +117,17 @@ void Ability4::Released()
     isPressed = false;
     if (!abilityReady) return;
 
+    if (selectionParticles != nullptr)
+    {
+        selectionParticles->GetComponent<ParticleSystemComponent>()->Stop();
+        selectionParticles = nullptr;
+    }
 
+    if (selectionParticlesSmoke != nullptr)
+    {
+        selectionParticlesSmoke->GetComponent<ParticleSystemComponent>()->Stop();
+        selectionParticlesSmoke = nullptr;
+    }
  
     timeToChange = 0.3f;
 
@@ -150,17 +159,6 @@ void Ability4::Released()
         
 
         leftHand->PlayAnimation(3, 0.2f, false);
-        if (selectionParticles != nullptr)
-        {
-            selectionParticles->GetComponent<ParticleSystemComponent>()->Stop();
-            selectionParticles = nullptr;
-        }
-
-        if (selectionParticlesSmoke != nullptr)
-        {
-            selectionParticlesSmoke->GetComponent<ParticleSystemComponent>()->Stop();
-            selectionParticlesSmoke = nullptr;
-        }
         pressedTime = 0.0f;
         Vector3 direction = Vector3::Zero;
         Vec3 position = Vec3(camera->GetWorldPosition().x, camera->GetWorldPosition().y, camera->GetWorldPosition().z);

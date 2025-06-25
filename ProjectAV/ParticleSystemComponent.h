@@ -94,6 +94,7 @@ public:
     float StartSizeVariance = 0.0f;
     float StartRotation = 0.0f;
     float EndRotation = 0.0f;
+    float EndRotationVariance = 0.0f;
     bool destroyAfterEmission = false;
     bool lockRotationOnYAxis = false;
     bool bAnimateSize = true;
