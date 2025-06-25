@@ -53,7 +53,7 @@ public:
 
     // This method is now public so that emitter strategies can call it
     void EmitParticle(const DirectX::XMFLOAT3& position);
-
+    void EmitParticle(const DirectX::XMFLOAT3& position, const DirectX::XMFLOAT3& worldVelocity);
     // --- NEW: Playback Control ---
     void SetPlaybackMode(PlaybackMode mode);
     PlaybackMode GetPlaybackMode() const;

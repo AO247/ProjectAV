@@ -32,7 +32,7 @@ void Ability4::Update(float dt)
             {
                 activated = false;
                 // animacja wyboru obiektu
-                // dŸwiêk wyboru obiektu
+                // dï¿½wiï¿½k wyboru obiektu
                 if (pOwner->GetComponent<SoundEffectsPlayer>()) {
                     float randSound = (rand() % 2);
                     pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f, false);
@@ -48,7 +48,7 @@ void Ability4::Update(float dt)
 
                 leftHand->PlayAnimation(4); //ATTACK_PULL_LOOP
                 // animacja trzymania 
-                // dŸwiêk trzymania 
+                // dï¿½wiï¿½k trzymania 
                 if (pOwner->GetComponent<SoundEffectsPlayer>()) {
                     if (holdSoundTimer <= 0.0f)
                     {
@@ -70,12 +70,10 @@ void Ability4::Positioning()
     Vec3 direction = Vec3(camera->Forward().x, camera->Forward().y, camera->Forward().z);
     RRayCast ray = RRayCast(position, direction * 100.0f);
     RayCastResult result;
-    if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(ray, result,
-        MultipleBroadPhaseLayerFilter({ BroadPhaseLayers::WALL }),
-        MultipleObjectLayerFilter({ Layers::WALL })))
+    if (PhysicsCommon::physicsSystem->GetBodyInterface().GetMotionType(result.mBodyID) == EMotionType::Dynamic)
     {
-        position = ray.mOrigin + ray.mDirection * result.mFraction;
-        if (PhysicsCommon::physicsSystem->GetBodyInterface().GetMotionType(result.mBodyID) == EMotionType::Dynamic)
+        selectedNode = reinterpret_cast<Node*>(PhysicsCommon::physicsSystem->GetBodyInterface().GetUserData(result.mBodyID));
+        if (selectedNode->GetComponent<Throwable>() == nullptr)
         {
             selectedNode = reinterpret_cast<Node*>(PhysicsCommon::physicsSystem->GetBodyInterface().GetUserData(result.mBodyID));
             if (selectedNode->GetComponent<Throwable>() == nullptr)
@@ -83,6 +81,11 @@ void Ability4::Positioning()
                 selectedNode = nullptr;
             }
         }
+        else if (selectedNode->GetComponent<Throwable>()->extraHeavy == true)
+        {
+            selectedNode = nullptr;
+        }
+
     }
     else
     {
@@ -150,7 +153,7 @@ void Ability4::Released()
 
         // particle rzutu
         // animacja rzutu
-        // dŸwiêk rzutu
+        // dï¿½wiï¿½k rzutu
         if (baseAbility->GetOwner()->GetComponent<SoundEffectsPlayer>()) {
             pOwner->GetComponent<SoundEffectsPlayer>()->Stop(2);
             float randSound = rand() % 4;
@@ -212,7 +215,7 @@ void Ability4::Released()
         DirectX::XMFLOAT4 quatFloat4;
         DirectX::XMStoreFloat4(&quatFloat4, lookAtQuaternion);
 
-        PrefabManager::InstantiateAbility4ReleaseParticles(pOwner->GetParent(), Vector3(selectedNode->GetWorldPosition().x, selectedNode->GetWorldPosition().y, selectedNode->GetWorldPosition().z), 1.0, quatFloat4);
+        //PrefabManager::InstantiateAbility4ReleaseParticles(pOwner->GetParent(), Vector3(selectedNode->GetWorldPosition().x, selectedNode->GetWorldPosition().y, selectedNode->GetWorldPosition().z), 1.0, quatFloat4);
         PrefabManager::InstantiateAbility4ReleaseSmokeParticles(pOwner->GetParent(), Vector3(selectedNode->GetWorldPosition().x, selectedNode->GetWorldPosition().y, selectedNode->GetWorldPosition().z), 1.0, quatFloat4);
 
         PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(selectedNode->GetComponent<Rigidbody>()->GetBodyID(), Vec3(0.0f, 0.0f, 0.0f));
