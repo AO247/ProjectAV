@@ -7152,6 +7152,7 @@ public:
         sphereEmitter->SpeedRandomness = 10.0f;
         sphereEmitter->SpawnRadius = 20.0f;
         sphereEmitter->TravelSpeed = 20.0f;
+        sphereEmitter->ParticlesPerSecond = 2000.0f;
 
         pNewNode->AddComponent(
             std::make_unique<ParticleSystemComponent>(pNewNode, wind->Gfx(), "Models\\fat.png", 2000, std::move(sphereEmitter))
@@ -7164,9 +7165,9 @@ public:
         particles->EmissionRate = 300.0f;
         //particles->ParticleVelocity = { 10.0f, 10.0f, 10.0f };
         //particles->ParticleVelocityVariance = { -20.0f, -20.0f, -20.0f };
-        particles->StartSize = 1.0f;
+        particles->StartSize = 6.0f;
         particles->bAnimateSize = false;
-        particles->StartSizeVariance = 9.0f;
+        particles->StartSizeVariance = 4.0f;
         particles->EndRotation = 0.0f;
         particles->lockRotationOnYAxis = false;
         particles->textureAtlasColumns = 2;
@@ -7174,7 +7175,7 @@ public:
         particles->bUseMidColor = true;
         particles->StartColor = { 1.0f, 1.0f, 1.0f, 0.0f };
         particles->ColorMidpoint = 0.1f;
-        particles->MidColor = { 1.0f, 1.0f, 1.0f, 0.4f };
+        particles->MidColor = { 1.0f, 1.0f, 1.0f, 0.05f };
         particles->EndColor = { 1.0f, 1.0f, 1.0f, 0.0f };
 
         particles->Play();
@@ -7628,6 +7629,7 @@ public:
         sphereEmitter->SpeedRandomness = 10.0f;
         sphereEmitter->SpawnRadius = 10.0f;
         sphereEmitter->TravelSpeed = 40.0f;
+        sphereEmitter->ParticlesPerSecond = 200.0f;
 
         pNewNode->AddComponent(
             std::make_unique<ParticleSystemComponent>(pNewNode, wind->Gfx(), "Models\\fat.png", 2000, std::move(sphereEmitter))
@@ -7637,10 +7639,10 @@ public:
         particles->destroyAfterEmission = true;
         particles->ParticleLifetime = 0.2f;
         particles->EmissionDuration = 0.4f;
-        particles->EmissionRate = 400.0f;
+        //particles->EmissionRate = 400.0f;
         //particles->ParticleVelocity = { 0.0f, 20.0f, 0.0f };
         //particles->ParticleVelocityVariance = { 0.0f, 10.0f, 0.0f };
-        particles->StartSize = 2.0f;
+        particles->StartSize = 6.0f;
         particles->bAnimateSize = false;
         particles->StartSizeVariance = 4.0f;
         //particles->EndSize = 1.0f;
@@ -7652,7 +7654,7 @@ public:
         particles->bUseMidColor = true;
         particles->StartColor = { 1.0f, 1.0f, 1.0f, 0.0f };
         particles->ColorMidpoint = 0.1f;
-        particles->MidColor = { 1.0f, 1.0f, 1.0f, 0.5f };
+        particles->MidColor = { 1.0f, 1.0f, 1.0f, 0.2f };
         particles->EndColor = { 1.0f, 1.0f, 1.0f, 0.0f };
 
         particles->Play();

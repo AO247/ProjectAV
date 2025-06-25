@@ -217,11 +217,6 @@ App::App(const std::string& commandLine)
         std::make_unique<Rigidbody>(pAbility3, a3RbodySettings)
     );
 
-    pAbility3->AddComponent(
-        std::make_unique<ModelComponent>(pAbility3, wnd.Gfx(), "Models\\box.glb")
-    );
-    pAbility3->GetComponent<ModelComponent>()->LinkTechniques(rg);
-
     BodyCreationSettings a3odySettings(new JPH::SphereShape(40.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
     pAbility3->AddComponent(
         std::make_unique<Trigger>(pAbility3, a3odySettings, false)
