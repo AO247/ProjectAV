@@ -82,7 +82,7 @@ void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 
 			}
 			if (statemachine->enemyType == EnemyType::FRENZY) {
-				pOwner->GetComponent<AnimationComponent>()->PlayAnimation(0);
+				pOwner->GetComponent<AnimationComponent>()->PlayAnimation(10);
 
 			}
 			return;
@@ -108,15 +108,7 @@ void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 
 	} 
 	if (statemachine->enemyType == EnemyType::FRENZY) {
-		if (sp > 1.0f)
-		{
-			pOwner->GetComponent<AnimationComponent>()->PlayAnimation(9);
-		}
-		else
-		{
-			pOwner->GetComponent<AnimationComponent>()->PlayAnimation(7);
-		}
-
+		pOwner->GetComponent<AnimationComponent>()->PlayAnimation(6);
 	}
 
 

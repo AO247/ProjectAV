@@ -8414,7 +8414,7 @@ public:
         );
         Walking* walking = pNewNode->GetComponent<Walking>();
         walking->radius = 1.6f;
-        walking->maxSpeed = 75.0f;
+        walking->maxSpeed = 80.0f;
         walking->height = 7.2f;
 
 
@@ -8424,7 +8424,7 @@ public:
         );
         StateMachine* stateMachine = pNewNode->GetComponent<StateMachine>();
         stateMachine->enemyType = EnemyType::FRENZY;
-        stateMachine->followDistance = 60.0f;
+        stateMachine->followDistance = 400.0f;
         stateMachine->pPlayer = player;
         stateMachine->attackComponents.push_back(slashAttack);
         stateMachine->attackComponents.push_back(launchAttack);
