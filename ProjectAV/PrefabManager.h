@@ -133,8 +133,8 @@ public:
         modelMeshShape = modelScaling.Create().Get();
         BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
-        BodyCreationSettings a4odySettings(new JPH::SphereShape(2.5f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
-        /*pNewNodeOwner->AddComponent(
+        /*BodyCreationSettings a4odySettings(new JPH::SphereShape(2.5f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
+        pNewNodeOwner->AddComponent(
             std::make_unique<Trigger>(pNewNodeOwner, a4odySettings, false)
         );
 		pNewNodeOwner->AddComponent(
@@ -232,10 +232,10 @@ public:
         modelMeshShape = modelScaling.Create().Get();
         BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
-        pNewNodeOwner->AddComponent(
+        /*pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
-        /*pNewNodeOwner->AddComponent(
+        pNewNodeOwner->AddComponent(
 			std::make_unique<Spikes>(pNewNodeOwner.get(), 1.0)
         );*/
 
@@ -295,10 +295,10 @@ public:
         modelMeshShape = modelScaling.Create().Get();
         BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
-        pNewNodeOwner->AddComponent(
+        /*pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
-		/*pNewNodeOwner->AddComponent(
+		pNewNodeOwner->AddComponent(
 			std::make_unique<Fireplace>(pNewNodeOwner.get(), 1.0)
 		);*/
 
@@ -2228,6 +2228,54 @@ public:
 
         return pNewNode;
     }
+    static Node* InstantiateTopColumnDouble(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 })
+    {
+        auto pNewNodeOwner = std::make_unique<Node>("Top", nullptr, "STONE");
+
+        pNewNodeOwner->AddComponent(
+            std::make_unique<SoundEffectsPlayer>(pNewNodeOwner.get())
+        );
+        pNewNodeOwner->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enviro\\rock_hit1.wav");
+        pNewNodeOwner->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enviro\\rock_hit2.wav");
+        pNewNodeOwner->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enviro\\rock_hit3.wav");
+        pNewNodeOwner->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enviro\\rock_hit4.wav");
+        pNewNodeOwner->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enviro\\rock_hit5.wav");
+
+        pNewNodeOwner->AddComponent(
+            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\ruiny\\kolumna_2_czesc_top.obj")
+        );
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
+        ConvexHullShapeSettings shapeSettings(PhysicsCommon::MakeVertexArray(islandModel->GetAllUniqueVertices()));
+        ShapeRefC islandShape = shapeSettings.Create().Get();
+        BodyCreationSettings BodySettings(islandShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
+        BodySettings.mMassPropertiesOverride.mMass = 10.0f;
+        BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
+        BodySettings.mAllowDynamicOrKinematic = true;
+        BodySettings.mFriction = 0.5f;
+        BodySettings.mMotionQuality = EMotionQuality::LinearCast;
+        pNewNodeOwner->AddComponent(
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), BodySettings)
+        );
+
+        pNewNodeOwner->AddComponent(
+            std::make_unique<BrokenPart>(pNewNodeOwner.get())
+        );
+        pNewNodeOwner->AddComponent(
+            std::make_unique<Throwable>(pNewNodeOwner.get())
+        );
+
+
+        pNewNodeOwner->SetLocalPosition(position);
+        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+        pNewNodeOwner->SetLocalRotation(rotation);
+
+        Node* pNewNode = pNewNodeOwner.get();
+        parentNode->AddChild(std::move(pNewNodeOwner));
+
+        return pNewNode;
+    }
+
 
     static Node* InstantiateTopColumn2(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 })
     {
@@ -2514,6 +2562,31 @@ public:
         Node* middle = InstantiateMiddleColumnRuin(pNewNode, Vector3(0.0f, 1.52f, 0.0f), 1.0f);
         Node* top = InstantiateTopColumnRuin(middle, Vector3(0.0f, 9.4f, 0.4f), 1.0f);
         top->GetComponent<Rigidbody>()->ConnectWithOtherBody(middle->GetComponent<Rigidbody>()->GetBodyID(), Vec3(0.0f, 9.4f, 0.4f));
+
+        pNewNodeOwner->SetLocalPosition(position);
+        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+        pNewNodeOwner->SetLocalRotation(rotation);
+
+        parentNode->AddChild(std::move(pNewNodeOwner));
+
+        return pNewNode;
+    }
+    static Node* InstantiateNewColumnDouble(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 })
+    {
+        auto pNewNodeOwner = std::make_unique<Node>("New Double Column", nullptr, "WALL");
+        Node* pNewNode = pNewNodeOwner.get();
+
+        InstantiateBaseColumn(pNewNode, Vector3(0.0f, 0.1f, 0.0f), 1.0f, 1.0f);
+        InstantiateBaseColumn(pNewNode, Vector3(0.0f, 0.1f, 5.0f), 1.0f, 1.0f);
+        Node* middle2 = InstantiateMiddleColumn(pNewNode, Vector3(0.0f, 5.5f, 0.0f), 1.0f);
+        Node* middle1 = InstantiateMiddleColumn(pNewNode, Vector3(0.0f, 5.5f, 5.0f), 1.0f);
+        Node* top = InstantiateTopColumnDouble(pNewNode, Vector3(0.0f, 12.4f, 0.0f), 1.0f);
+        
+
+        //top->GetComponent<Rigidbody>()->ConnectWithOtherBody(middle1->GetComponent<Rigidbody>()->GetBodyID(), Vec3(0.0f, 13.6f, 0.0f));
+        //top->GetComponent<Rigidbody>()->ConnectWithOtherBody(middle2->GetComponent<Rigidbody>()->GetBodyID(), Vec3(0.0f, 13.6f, 0.0f));
+        //pNewNode->GetChild(1)->GetChild(0)->GetChild(0)->GetComponent<Rigidbody>()->ConnectWithOtherBody(top->GetComponent<Rigidbody>()->GetBodyID(), Vec3(0.0f, 13.6f, 0.0f));
+		//top->GetComponent<Rigidbody>()->ConnectWithOtherBody(secondColumn->GetChild(1)->GetChild(0)->GetComponent<Rigidbody>()->GetBodyID(), Vec3(-5.0f, -13.6f, 0.0f));
 
         pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
@@ -3580,7 +3653,7 @@ public:
         InstantiateNewColumn(pNewNode, Vector3(52.40f, 0.00f, 18.61f), 1.0f);
         InstantiatePot4(pNewNode, Vector3(30.05f, 0.64f, -31.02f), 1.0f);
         InstantiateMushroom1(pNewNode, Vector3(30.90f, 0.00f, 25.20f), 0.18f, Vector3(-0.00f, 1.15f, 0.00f));
-        InstantiateMushroom2(pNewNode, Vector3(-39.10f, 17.70f, -15.10f), 0.2f, Vector3(0.00f, -1.05f, 0.00f));
+        InstantiateMushroom2(pNewNode, Vector3(-39.10f, 16.90f, -15.10f), 0.2f, Vector3(0.00f, -1.05f, 0.00f));
         InstantiateMushroom2(pNewNode, Vector3(-10.10f, 0.00f, -18.20f), 0.2f);
         InstantiateMushroom3(pNewNode, Vector3(-12.70f, 0.00f, -22.40f), 0.15f);
         InstantiatePlatform3(pNewNode, Vector3(-30.53f, 0.40f, -4.30f), 1.0f, Vector3(0.00f, -0.10f, 0.00f));
@@ -3863,7 +3936,7 @@ public:
         InstantiatePlatform5(pNewNode, Vector3(-36.73f, 1.20f, 8.80f), 1.0f, Vector3(0.00f, 0.32f, 0.00f));
         InstantiateFire1(pNewNode, Vector3(25.70f, 0.50f, 2.20f), 1.0f, Vector3(-0.00f, 3.14f, 0.00f));
         InstantiateColumn2(pNewNode, Vector3(-39.50f, 20.70f, -6.80f), 1.0f, Vector3(0.00f, -1.05f, 0.00f));
-        InstantiateSpike1(pNewNode, Vector3(-18.90f, 0.10f, 1.40f), 1.0f, Vector3(0.00f, 0.02f, 0.14f));
+        InstantiateSpike1(pNewNode, Vector3(-16.80f, 0.10f, -0.80f), 1.0f, Vector3(0.00f, -0.12f, 0.22f));
         InstantiateWall1(pNewNode, Vector3(14.40f, 0.00f, 42.80f), 1.0f, Vector3(0.00f, -1.48f, 0.0f));
 
         auto spawnPoint1 = std::make_unique<Node>("SpawnPoint 1", pNewNodeOwner.get());
@@ -5307,8 +5380,8 @@ public:
         InstantiateStoneStack1(pNewNode, Vector3(21.56f, 8.46f, 20.77f), 1.0f);
         InstantiateBrick(pNewNode, Vector3(-7.75f, 2.11f, -20.27f), 0.5f, Vector3(-0.22f, 1.38f, 1.77f));
         InstantiateBrick(pNewNode, Vector3(27.39f, 0.01f, 5.09f), 0.5f, Vector3(-0.00f, 0.61f, 0.03f));
-        InstantiateSpike1(pNewNode, Vector3(6.30f, -3.70f, -15.20f), 1.0f, Vector3(0.00f, -3.14f, 0.00f));
-        InstantiateSpike1(pNewNode, Vector3(20.50f, -3.90f, -26.80f), 1.0f, Vector3(0.00f, -1.57f, 0.00f));
+        InstantiateSpike1(pNewNode, Vector3(5.6f, -3.7f, -15.9f), 1.0f, Vector3(0.00f, -3.14f, 0.00f));
+        InstantiateSpike1(pNewNode, Vector3(20.5f, -3.9f, -25.7f), 1.0f, Vector3(0.00f, -1.57f, 0.00f));
         InstantiateWall4(pNewNode, Vector3(19.00f, -0.30f, -18.20f), 0.7f, Vector3(0.00f, 1.57f, 0.00f));
         InstantiateNewColumn2(pNewNode, Vector3(9.53f, -1.40f, 11.61f), 1.0f, Vector3(0.0f, -1.57f, 0.0f));
         InstantiateNewColumnRuin(pNewNode, Vector3(-12.90f, -0.26f, -4.90f), 1.0f, Vector3(0.00f, 1.57f, 0.00f));
@@ -6470,7 +6543,7 @@ public:
         InstantiateThrowable(pNewNode, Vector3(13.22f, 2.21f, 16.74f), 0.4f);
         InstantiatePot3(pNewNode, Vector3(3.78f, 0.66f, 4.93f), 0.5f);
         InstantiateFire1(pNewNode, Vector3(-5.80f, 0.30f, -8.76f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
-        InstantiatePlatform2(pNewNode, Vector3(10.60f, -2.60f, 14.20f), 0.5f, Vector3(0.00f, 0.00f, 0.00f));
+        InstantiatePlatform2(pNewNode, Vector3(5.4f, -2.6f, 14.7f), 0.5f, Vector3(0.00f, 0.00f, 0.00f));
 
         auto spawnPoint1 = std::make_unique<Node>("SpawnPoint 1", pNewNodeOwner.get());
         auto spawnPoint2 = std::make_unique<Node>("SpawnPoint 2", pNewNodeOwner.get());
