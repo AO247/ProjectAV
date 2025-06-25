@@ -32,7 +32,7 @@ void Ability4::Update(float dt)
             {
                 activated = false;
                 // animacja wyboru obiektu
-                // dŸwiêk wyboru obiektu
+                // dï¿½wiï¿½k wyboru obiektu
                 if (pOwner->GetComponent<SoundEffectsPlayer>()) {
                     float randSound = (rand() % 2);
                     pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f, false);
@@ -48,7 +48,7 @@ void Ability4::Update(float dt)
 
                 leftHand->PlayAnimation(4); //ATTACK_PULL_LOOP
                 // animacja trzymania 
-                // dŸwiêk trzymania 
+                // dï¿½wiï¿½k trzymania 
                 if (pOwner->GetComponent<SoundEffectsPlayer>()) {
                     if (holdSoundTimer <= 0.0f)
                     {
@@ -75,7 +75,11 @@ void Ability4::Positioning()
         selectedNode = reinterpret_cast<Node*>(PhysicsCommon::physicsSystem->GetBodyInterface().GetUserData(result.mBodyID));
         if (selectedNode->GetComponent<Throwable>() == nullptr)
         {
-            selectedNode = nullptr;
+            selectedNode = reinterpret_cast<Node*>(PhysicsCommon::physicsSystem->GetBodyInterface().GetUserData(result.mBodyID));
+            if (selectedNode->GetComponent<Throwable>() == nullptr)
+            {
+                selectedNode = nullptr;
+            }
         }
         else if (selectedNode->GetComponent<Throwable>()->extraHeavy == true)
         {
@@ -90,12 +94,17 @@ void Ability4::Positioning()
 }
 bool Ability4::Pressed()
 {
-    if (!abilityReady && isPressed) return false;
-
+    if (!abilityReady || isPressed) return false;
+    if (selectedNode == nullptr)
+    {
+        baseAbility->Pressed();
+        cooldownTimer = cooldown;
+        abilityReady = false;
+        return true;
+    }
     activated = true;
     isPressed = true;
     pressedTime = 0.0f;
-
     cameraRotation = camera->GetLocalRotationEuler();
     if (selectedNode != nullptr)
     {
@@ -111,21 +120,40 @@ void Ability4::Released()
     isPressed = false;
     if (!abilityReady) return;
 
+    if (selectionParticles != nullptr)
+    {
+        selectionParticles->GetComponent<ParticleSystemComponent>()->Stop();
+        selectionParticles = nullptr;
+    }
 
+    if (selectionParticlesSmoke != nullptr)
+    {
+        selectionParticlesSmoke->GetComponent<ParticleSystemComponent>()->Stop();
+        selectionParticlesSmoke = nullptr;
+    }
  
     timeToChange = 0.3f;
 
     if (pressedTime < 0.13f || selectedNode == nullptr)
     {
+        pOwner->GetComponent<SoundEffectsPlayer>()->Stop(2);
         pressedTime = 0.0f;
-		pOwner->GetComponent<SoundEffectsPlayer>()->Stop(2);
         baseAbility->Pressed();
     }
     else
     {
+        if (selectedNode->GetComponent<Throwable>()->extraHeavy == true)
+        {
+            activated = false;
+            abilityReady = false;
+            //dzwiek faila 
+            return;
+        }
+
+
         // particle rzutu
         // animacja rzutu
-        // dŸwiêk rzutu
+        // dï¿½wiï¿½k rzutu
         if (baseAbility->GetOwner()->GetComponent<SoundEffectsPlayer>()) {
             pOwner->GetComponent<SoundEffectsPlayer>()->Stop(2);
             float randSound = rand() % 4;
@@ -134,17 +162,6 @@ void Ability4::Released()
         
 
         leftHand->PlayAnimation(3, 0.2f, false);
-        if (selectionParticles != nullptr)
-        {
-            selectionParticles->GetComponent<ParticleSystemComponent>()->Stop();
-            selectionParticles = nullptr;
-        }
-
-        if (selectionParticlesSmoke != nullptr)
-        {
-            selectionParticlesSmoke->GetComponent<ParticleSystemComponent>()->Stop();
-            selectionParticlesSmoke = nullptr;
-        }
         pressedTime = 0.0f;
         Vector3 direction = Vector3::Zero;
         Vec3 position = Vec3(camera->GetWorldPosition().x, camera->GetWorldPosition().y, camera->GetWorldPosition().z);
@@ -198,7 +215,7 @@ void Ability4::Released()
         DirectX::XMFLOAT4 quatFloat4;
         DirectX::XMStoreFloat4(&quatFloat4, lookAtQuaternion);
 
-        PrefabManager::InstantiateAbility4ReleaseParticles(pOwner->GetParent(), Vector3(selectedNode->GetWorldPosition().x, selectedNode->GetWorldPosition().y, selectedNode->GetWorldPosition().z), 1.0, quatFloat4);
+        //PrefabManager::InstantiateAbility4ReleaseParticles(pOwner->GetParent(), Vector3(selectedNode->GetWorldPosition().x, selectedNode->GetWorldPosition().y, selectedNode->GetWorldPosition().z), 1.0, quatFloat4);
         PrefabManager::InstantiateAbility4ReleaseSmokeParticles(pOwner->GetParent(), Vector3(selectedNode->GetWorldPosition().x, selectedNode->GetWorldPosition().y, selectedNode->GetWorldPosition().z), 1.0, quatFloat4);
 
         PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(selectedNode->GetComponent<Rigidbody>()->GetBodyID(), Vec3(0.0f, 0.0f, 0.0f));

@@ -26,13 +26,13 @@ namespace dx = DirectX;
 App::App(const std::string& commandLine)
     :
     commandLine(commandLine),
-    wnd(1920, 1080, "Project AV"), 
+    wnd(1920, 1080, "Winderer"), 
     pointLight(wnd.Gfx(), 2u), 
     dirLight(wnd.Gfx(), 0u),
     pSceneRoot(std::make_unique<Node>("Root"))
 {
 
-    wnd.Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.1f, 2000.0f));
+    wnd.Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.3f, 2000.0f));
 
 
     std::srand(static_cast<unsigned>(std::time(nullptr)));
@@ -99,19 +99,12 @@ App::App(const std::string& commandLine)
     pRightHand = pRightHandOwner.get();
 	auto handsOwner = std::make_unique<Node>("Hands", nullptr, "HANDS");
     auto tutorialOwner = std::make_unique<Node>("Tutorial", nullptr, "TUTORIAL");
-	auto mainMenuOwner = std::make_unique<Node>("Main Menu", nullptr, "MAIN_MENU");
-	mainMenuNode = mainMenuOwner.get();
-
-    auto pauseMenuOwner = std::make_unique<Node>("Pause Menu", nullptr, "PAUSE_MENU");
-    pauseMenuNode = pauseMenuOwner.get();
-
+ 
     tutorialNode = tutorialOwner.get();
 	Node* pPlayerThings = playerThings.get();
 	Node* pAbilities = abilities.get();
 	Node* pBase = base.get();
-	Node* pHands = handsOwner.get();
-    pSceneRoot->AddChild(std::move(mainMenuOwner));
-    pSceneRoot->AddChild(std::move(pauseMenuOwner));
+	Node* pHands = handsOwner.get(); 
     pSceneRoot->AddChild(std::move(pTemporaryOwner));
 	pSceneRoot->AddChild(std::move(base));
     pSceneRoot->AddChild(std::move(playerThings));
@@ -134,13 +127,7 @@ App::App(const std::string& commandLine)
 
     PrefabManager::root = temporary;
     PrefabManager::player = pPlayer;
-
-    mainMenuNode->AddComponent(
-        std::make_unique<MainMenu>(mainMenuNode, wnd)
-	);
-
-    pauseMenuNode->AddComponent(std::make_unique<PauseMenu>(pauseMenuNode, wnd));
-
+     
 
     BodyCreationSettings bodySettings(new JPH::CapsuleShape(1.4f, 1.6f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::PLAYER);
     bodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
@@ -157,7 +144,8 @@ App::App(const std::string& commandLine)
     pPlayer->AddComponent(
         std::make_unique<PlayerController>(pPlayer, wnd)
     );
-
+    pPlayer->GetComponent<PlayerController>()->leftHand = pLeftHand;
+    pPlayer->GetComponent<PlayerController>()->rightHand = pRightHand;
 
     auto legsOwner = std::make_unique<Node>("Legs", nullptr, "TRIGGER");
     BodyCreationSettings p1TBodySettings(new JPH::SphereShape(12.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
@@ -292,7 +280,7 @@ App::App(const std::string& commandLine)
     pAbility6->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\gravity2.wav");
     pAbility6->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\hold.wav");
     pAbility6->GetComponent<Ability6>()->baseAbility = pAbility1->GetComponent<Ability1>();
-    //pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility6;
+    pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility6;
 
     pFreeViewCamera->AddComponent(
         std::make_unique<Camera>(pFreeViewCamera, wnd)
@@ -347,7 +335,7 @@ App::App(const std::string& commandLine)
     );
     pLeftHand->GetComponent<ModelComponent>()->LinkTechniques(rg);
     pLeftHand->SetLocalScale({ 0.035f, 0.035f, 0.035f });
-    pLeftHand->SetLocalPosition({ 0.0f, -0.9f, 1.0f });
+    pLeftHand->SetLocalPosition({ -0.0f, -1.0f, 0.5f });
 
     pLeftHand->AddComponent(
         std::make_unique<AnimationComponent>(pLeftHand, "", "Models\\hands\\left.gltf")
@@ -361,7 +349,7 @@ App::App(const std::string& commandLine)
     );
     pRightHand->GetComponent<ModelComponent>()->LinkTechniques(rg);
     pRightHand->SetLocalScale({ 0.035f, 0.035f, 0.035f });
-    pRightHand->SetLocalPosition({ 0.0f, -0.9f, 1.0f });
+    pRightHand->SetLocalPosition({ -0.0f, -1.0f, 0.5f });
 
     pRightHand->AddComponent(
         std::make_unique<AnimationComponent>(pRightHand, "", "Models\\hands\\right.gltf")
@@ -425,34 +413,45 @@ App::App(const std::string& commandLine)
         L"Images\\plus.png"
     );
 
+
+    heart0Sprite = std::make_unique<Sprite>(
+        wnd.Gfx().GetDevice(),
+        wnd.Gfx().GetContext(),
+        wnd.Gfx().GetWidth() / 2 - (wnd.Gfx().GetWidth() * 0.35f) / 2,
+        wnd.Gfx().GetHeight() * 0.93f,
+        wnd.Gfx().GetWidth() * 0.35f,
+        wnd.Gfx().GetHeight() * 0.05f,
+        L"Images\\health\\hp_0.png"
+    );
+
     heart1Sprite = std::make_unique<Sprite>(
         wnd.Gfx().GetDevice(),
         wnd.Gfx().GetContext(),
-        (screenWidth / 2) - 35 - 80,             
-        950,        
-        70,         
-        70,         
-        L"Images\\heart.png"
+        wnd.Gfx().GetWidth() / 2 - (wnd.Gfx().GetWidth() * 0.35f) / 2,
+        wnd.Gfx().GetHeight() * 0.93f,
+        wnd.Gfx().GetWidth() * 0.35f,
+        wnd.Gfx().GetHeight() * 0.05f,
+        L"Images\\health\\hp_1.png"
     );
 
     heart2Sprite = std::make_unique<Sprite>(
         wnd.Gfx().GetDevice(),
         wnd.Gfx().GetContext(),
-        (screenWidth / 2) - 35,              
-        950,        
-        70,         
-        70,         
-        L"Images\\heart.png"
+        wnd.Gfx().GetWidth() / 2 - (wnd.Gfx().GetWidth() * 0.35f) / 2,
+        wnd.Gfx().GetHeight() * 0.93f,
+        wnd.Gfx().GetWidth() * 0.35f,
+        wnd.Gfx().GetHeight() * 0.05f,
+        L"Images\\health\\hp_2.png"
     );
 
     heart3Sprite = std::make_unique<Sprite>(
         wnd.Gfx().GetDevice(),    
         wnd.Gfx().GetContext(),
-        (screenWidth / 2) - 35 + 80,               
-        950,         
-        70,          
-        70,          
-        L"Images\\heart.png"
+        wnd.Gfx().GetWidth() / 2 - (wnd.Gfx().GetWidth() * 0.35f) / 2,
+        wnd.Gfx().GetHeight() * 0.93f,
+        wnd.Gfx().GetWidth() * 0.35f,
+        wnd.Gfx().GetHeight() * 0.05f,
+        L"Images\\health\\hp_3.png"
     );
     loadingScreen1 = std::make_unique<Sprite>(
         wnd.Gfx().GetDevice(),
@@ -486,93 +485,47 @@ App::App(const std::string& commandLine)
     cursorEnabled = true;
     wnd.EnableCursor();  
     wnd.mouse.DisableRawInput();
+    
+    
+    LoadMainMenuResources();
 
-    // --------------- INICJALIZACJA MENU GŁÓWNEGO ---------------
-
-    mainMenuBackground = std::make_unique<Sprite>(
-        wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
-        0, 0, screenWidth, screenHeight,
-        L"Images\\menu_9.gif" 
-    );
-
+    //resumeBttn = std::make_unique<Sprite>(
+    //    wnd.Gfx().GetDevice(),
+    //    wnd.Gfx().GetContext(),
+    //    (wnd.GetWidth() * 0.354f), (wnd.GetHeight() * 0.339f), (wnd.GetWidth() * 0.296f), (wnd.GetHeight() * 0.110f),
+    //    L"Images\\resume.png"
+    //); 
+    //backBttn = std::make_unique<Sprite>(
+    //    wnd.Gfx().GetDevice(),
+    //    wnd.Gfx().GetContext(),
+    //    (wnd.GetWidth() * 0.354f), (wnd.GetHeight() * 0.489f), (wnd.GetWidth() * 0.296f), (wnd.GetHeight() * 0.110f),
+    //    L"Images\\back_to_menu.png"
+    //); 
+    //pauseMenuBackground = std::make_unique<Sprite>(
+    //    wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
+    //    0, 0, wnd.GetWidth(), wnd.GetHeight(),
+    //    L"Images\\pause_menu.png"
+    //); 
+    //startBttn = std::make_unique<Sprite>(
+    //    wnd.Gfx().GetDevice(),
+    //    wnd.Gfx().GetContext(),
+    //    (wnd.GetWidth() * 0.055f), (wnd.GetHeight() * 0.543f), (wnd.GetWidth() * 0.229f), (wnd.GetHeight() * 0.098f),
+    //    L"Images\\start_2.png"
+    //); 
+    //quitBttn = std::make_unique<Sprite>(
+    //    wnd.Gfx().GetDevice(),
+    //    wnd.Gfx().GetContext(),
+    //    (wnd.GetWidth() * 0.055f), (wnd.GetHeight() * 0.673f), (wnd.GetWidth() * 0.229f), (wnd.GetHeight() * 0.098f),
+    //    L"Images\\quit_2.png"
+    //);
+    // 
+    //mainMenuBackground = std::make_unique<Sprite>(
+    //    wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
+    //    0, 0, wnd.GetWidth(), wnd.GetHeight(),
+    //    L"Images\\menu_compressed_6.gif"
+    //);
  
-    const DirectX::XMFLOAT4 buttonIdleColor = { 0.82f, 0.63f, 0.35f, 0.1f };
-    const DirectX::XMFLOAT4 buttonHoverColor = { 1.0f, 0.8f, 0.5f, 0.3f };
-    const DirectX::XMFLOAT4 textColor = { 0.1f, 0.1f, 0.1f, 1.0f };
-
- 
-
-    // --------------- INICJALIZACJA MENU PAUZY --------------- 
-    pauseMenuOverlay = std::make_unique<Sprite>(
-        wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
-        0, 0, screenWidth, screenHeight,
-        L"Images\\pause_menu.png"  
-    );
-
-    resumeHover = std::make_unique<Sprite>(
-        wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
-        (screenWidth / 2 - 250)  , 350, 500, 130,
-        L"Images\\resume.png"
-    ); 
-     quitToMenuHover = std::make_unique<Sprite>(
-         wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
-         (screenWidth / 2 - 250)  , 490, 500, 130,
-         L"Images\\back_to_menu.png"
-     ); 
-   
-    int buttonWidth = 350;
-    int buttonHeight = 70;
-    int buttonCenterX = (screenWidth - buttonWidth) / 2;
-     
-
-    resumeButton = std::make_unique<Button>(
-        wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
-        buttonCenterX, 400, buttonWidth, buttonHeight,
-        L" ",
-        L"myfile.spritefont"
-    );
-    resumeButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
-    resumeButton->SetTextColor(textColor);
- 
-    quitToMenuButton = std::make_unique<Button>(
-        wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
-        buttonCenterX, 500, buttonWidth, buttonHeight,
-        L" ",
-        L"myfile.spritefont"
-    );
-    quitToMenuButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
-    quitToMenuButton->SetTextColor(textColor);
- 
-    auto mainMenuComp = mainMenuNode->GetComponent<MainMenu>();
-    mainMenuComp->SetOnStartClick([this]() {
-        gameState = GameState::Gameplay;
-        paused = true;
-        wnd.DisableCursor();
-        wnd.mouse.EnableRawInput();
-        cursorEnabled = false;
-        StartGame();
-        });
-    mainMenuComp->SetOnQuitClick([this]() {
-        PostQuitMessage(0);
-        });
-
-    auto pauseMenuComp = pauseMenuNode->GetComponent<PauseMenu>();
-    pauseMenuComp->SetOnResumeClick([this]() {
-        gameState = GameState::Gameplay;
-        paused = false;
-        wnd.DisableCursor();
-        wnd.mouse.EnableRawInput();
-        cursorEnabled = false;
-        });
-    pauseMenuComp->SetOnQuitToMenuClick([this]() {
-        ResetGame();
-        gameState = GameState::MainMenu;
-        // Pamiętaj, żeby znowu włączyć kursor, gdy wracasz do menu!
-        wnd.EnableCursor();
-        wnd.mouse.DisableRawInput();
-        cursorEnabled = true;
-        });
-
+  
 }
 
 App::~App()
@@ -631,301 +584,260 @@ int App::Go()
 
 void App::HandleInput(float dt)
 {
-
-
-    switch (gameState)
+    if (wnd.kbd.IsJustPressed('B'))
     {
-    case GameState::MainMenu:
-        if (wnd.kbd.IsJustPressed(VK_ESCAPE))
-        {
-            PostQuitMessage(0);
-            return;
-        }
-        if (wnd.kbd.IsJustPressed('H'))
-        {
-            showControlWindow = !showControlWindow;
-        }
-        break;
-    
-
-    case GameState::Gameplay:
-    {
-        if (wnd.kbd.IsJustPressed('M'))
-        {
-            if (myMusic->isPlaying())
-            {
-                myMusic->Stop();
-            }
-            else
-            {
-                myMusic->Play();
-            }
-        }
-
-        if (wnd.kbd.IsJustPressed('C'))
-        {
-            if (cursorEnabled) {
-                wnd.DisableCursor();
-                wnd.mouse.EnableRawInput();
-            }
-            else {
-                wnd.EnableCursor();
-                wnd.mouse.DisableRawInput();
-            }
-            cursorEnabled = !cursorEnabled;
-        }
-        if (wnd.kbd.IsJustPressed('B'))
-        {
-            PrefabManager::InstantiateTankEnemy(temporary, pFreeViewCamera->GetWorldPosition());
-        }
-        if (wnd.kbd.IsJustPressed('H'))
-        {
-            showControlWindow = !showControlWindow;
-        }
-        if (wnd.kbd.IsJustPressed('Z'))
-        {
-            StartGame();
-        }
-        if (wnd.kbd.IsJustPressed('X'))
-        {
-            ResetGame();
-        }
-        if (wnd.kbd.IsJustPressed('N'))
-        {
-            tutorialNode->GetComponent<Tutorial>()->completed = true;
-            pPlayer->SetWorldPosition({ 0.0f, 20.0f, 10.0f });
-        }
-        if (wnd.kbd.IsJustPressed('P'))
-        {
-            paused = !paused;
-        }
-        if (wnd.kbd.IsJustPressed(VK_ESCAPE))
-        {
-            gameState = GameState::Paused;
-            paused = true;  
-            wnd.EnableCursor();
-            wnd.mouse.DisableRawInput();
-            cursorEnabled = true;
-            return;
-        }
-
-        if (wnd.kbd.IsJustPressed(VK_F1))
-        {
-            showDemoWindow = !showDemoWindow;
-        }
-
-        if (wnd.kbd.IsJustPressed('V'))
-        {
-            freeViewCamera = !freeViewCamera;
-            if (freeViewCamera) {
-                pCamera->GetComponent<Camera>()->active = false;
-                pFreeViewCamera->GetComponent<Camera>()->active = true;
-            }
-            else {
-                pCamera->GetComponent<Camera>()->active = true;
-                pFreeViewCamera->GetComponent<Camera>()->active = false;
-            }
-        }
-
-        if (freeViewCamera) {
-            if (wnd.kbd.IsKeyPressed('I')) {
-                pFreeViewCamera->TranslateLocal({ 0.0f, 0.0f, 0.4f });
-            }
-            if (wnd.kbd.IsKeyPressed('K')) {
-                pFreeViewCamera->TranslateLocal({ 0.0f, 0.0f, -0.4f });
-            }
-            if (wnd.kbd.IsKeyPressed('J')) {
-                pFreeViewCamera->TranslateLocal({ -0.4f, 0.0f, 0.0f });
-            }
-            if (wnd.kbd.IsKeyPressed('L')) {
-                pFreeViewCamera->TranslateLocal({ 0.4f, 0.0f, 0.0f });
-            }
-            if (wnd.kbd.IsKeyPressed('U')) {
-                pFreeViewCamera->TranslateLocal({ 0.0f, -0.4f, 0.0f });
-            }
-            if (wnd.kbd.IsKeyPressed('O')) {
-                pFreeViewCamera->TranslateLocal({ 0.0f, 0.4f, 0.0f });
-            }
-        }
-        break;
+        PrefabManager::InstantiateBossEnemy(temporary, pFreeViewCamera->GetWorldPosition());
     }
-    case GameState::Paused: 
-        if (wnd.kbd.IsJustPressed(VK_ESCAPE))
-        { 
-            gameState = GameState::Gameplay;
-            paused = false;
+    if (wnd.kbd.IsJustPressed('M'))
+    {
+        if (myMusic->isPlaying())
+        {
+            myMusic->Stop();
+        }
+        else
+        {
+            myMusic->Play();
+        } 
+    }
+
+    if (wnd.kbd.IsJustPressed('C'))
+    {
+        if (cursorEnabled) {
             wnd.DisableCursor();
             wnd.mouse.EnableRawInput();
-            cursorEnabled = false;
         }
-        if (wnd.kbd.IsJustPressed('H'))
-        {
-            showControlWindow = !showControlWindow;
+        else {
+            wnd.EnableCursor();
+            wnd.mouse.DisableRawInput();
         }
-        break;
+        cursorEnabled = !cursorEnabled;
     }
 
-}
+    if (wnd.kbd.IsJustPressed('H'))
+    {
+        showControlWindow = !showControlWindow;
+    }
+    if (wnd.kbd.IsJustPressed('N'))
+    {
+        tutorialNode->GetComponent<Tutorial>()->completed = true;
+        pPlayer->SetWorldPosition({ 0.0f, 20.0f, 10.0f });
+    }
+    if (wnd.kbd.IsJustPressed('Z'))
+    {
+        StartGame();
+    }
+    if (wnd.kbd.IsJustPressed('X'))
+    {
+        ResetGame();
+    }
+    if (wnd.kbd.IsJustPressed('P'))
+    {
+        paused = !paused;
+    }
+    if (wnd.kbd.IsJustPressed(VK_ESCAPE) && startedGame)
+    {
+        paused = !paused;
 
+        if (paused) {
+            LoadPauseMenuResources();
+            cursorEnabled = true;
+            wnd.EnableCursor();
+            wnd.mouse.DisableRawInput();
+        } else 
+        {
+            UnloadPauseMenuResources();
+            cursorEnabled = false;
+            wnd.DisableCursor();
+            wnd.mouse.EnableRawInput();
+        }
+        //PostQuitMessage(0);
+        //return; // Zwróć od razu, aby uniknąć dalszego przetwarzania
+    }
+
+    if (wnd.kbd.IsJustPressed(VK_F1))
+    {
+        showDemoWindow = !showDemoWindow;
+    }
+
+    if (wnd.kbd.IsJustPressed('V'))
+    {
+        freeViewCamera = !freeViewCamera;
+        if (freeViewCamera) {
+            pCamera->GetComponent<Camera>()->active = false;
+            pFreeViewCamera->GetComponent<Camera>()->active = true;
+        }
+        else {
+            pCamera->GetComponent<Camera>()->active = true;
+            pFreeViewCamera->GetComponent<Camera>()->active = false;
+        }
+    }
+
+    if (freeViewCamera) {
+        if (wnd.kbd.IsKeyPressed('I')) {
+            pFreeViewCamera->TranslateLocal({ 0.0f, 0.0f, 0.4f });
+        }
+        if (wnd.kbd.IsKeyPressed('K')) {
+            pFreeViewCamera->TranslateLocal({ 0.0f, 0.0f, -0.4f });
+        }
+        if (wnd.kbd.IsKeyPressed('J')) {
+            pFreeViewCamera->TranslateLocal({ -0.4f, 0.0f, 0.0f });
+        }
+        if (wnd.kbd.IsKeyPressed('L')) {
+            pFreeViewCamera->TranslateLocal({ 0.4f, 0.0f, 0.0f });
+        }
+        if (wnd.kbd.IsKeyPressed('U')) {
+            pFreeViewCamera->TranslateLocal({ 0.0f, -0.4f, 0.0f });
+        }
+        if (wnd.kbd.IsKeyPressed('O')) {
+            pFreeViewCamera->TranslateLocal({ 0.0f, 0.4f, 0.0f });
+        }
+    }
+}
 void App::DoFrame(float dt)
 {
-
-    wnd.Gfx().BeginFrame(1.0f, 0.0f, 0.0f);
-    switch (gameState)
+    wnd.Gfx().BeginFrame(0.5f, 0.5f, 1.0f);
+    //fizyka
+    if (!paused || gameReset > 0)
     {
-
-    case GameState::MainMenu:
-    {
-         auto& gfx = wnd.Gfx();
-        gfx.GetTarget()->BindAsBuffer(gfx);
-        mainMenuBackground->Update(dt);
-        mainMenuBackground->Draw(gfx.GetContext());
-         
-        mainMenuNode->GetComponent<MainMenu>()->DrawMainMenu(dt);
-        mainMenuNode->GetComponent<MainMenu>()->Update(dt); 
-
-        if (showControlWindow) {
-            ShowControlWindows();
-        }
-         
-        break;
-    }
-
-    case GameState::Gameplay:
-    {
-  
-    case GameState::Paused:  
-    { 
-        if (gameState == GameState::Gameplay && (!paused || gameReset > 0))
+        gameReset--;
+        auto* contact = dynamic_cast<MyContactListener*>(physicsSystem->GetContactListener());
+        contact->ExecuteTriggerActivationQueue();
+        contact->ExecuteCollisionActivationQueue();
+        CleanupDestroyedNodes(pSceneRoot.get());    //data removed
+        pSceneRoot->Update(dt);
+        RemoveRigidbody(pSceneRoot.get());//rigidbody remove if destruction
+        JPH::BodyIDVector bodyIDs;
+        PhysicsCommon::physicsSystem->GetBodies(bodyIDs);
+        for (JPH::BodyID bodyID : bodyIDs)
         {
-            gameReset--;
-            auto* contact = dynamic_cast<MyContactListener*>(physicsSystem->GetContactListener());
-            contact->ExecuteTriggerActivationQueue();
-            contact->ExecuteCollisionActivationQueue();
-            CleanupDestroyedNodes(pSceneRoot.get());
-            pSceneRoot->Update(dt);
-            RemoveRigidbody(pSceneRoot.get());
-            JPH::BodyIDVector bodyIDs;
-            PhysicsCommon::physicsSystem->GetBodies(bodyIDs);
-            for (JPH::BodyID bodyID : bodyIDs)
+            JPH::uint64 data = PhysicsCommon::physicsSystem->GetBodyInterface().GetUserData(bodyID);
+            if (data == 0)
             {
-                JPH::uint64 data = PhysicsCommon::physicsSystem->GetBodyInterface().GetUserData(bodyID);
-                if (data == 0)
-                {
-                    PhysicsCommon::physicsSystem->GetBodyInterface().DeactivateBody(bodyID);
-                    PhysicsCommon::physicsSystem->GetBodyInterface().RemoveBody(bodyID);
-                    PhysicsCommon::physicsSystem->GetBodyInterface().DestroyBody(bodyID);
-                }
+                PhysicsCommon::physicsSystem->GetBodyInterface().DeactivateBody(bodyID);
+                PhysicsCommon::physicsSystem->GetBodyInterface().RemoveBody(bodyID);
+                PhysicsCommon::physicsSystem->GetBodyInterface().DestroyBody(bodyID);
             }
         }
-         
-        wnd.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 2000.0f));
-         
-        dx::XMMATRIX viewMatrix = pCamera->GetComponent<Camera>()->GetViewMatrix();
-        if (freeViewCamera)
-        {
-            viewMatrix = pFreeViewCamera->GetComponent<Camera>()->GetViewMatrix();
-        }
-        wnd.Gfx().SetCamera(viewMatrix);
-         
-        Bind::TransformCbuf::SetLight(&dirLight);
-        Bind::ShadowCbuf::SetLight(&dirLight);
-        DirectX::XMFLOAT3 focusPos = pPlayer->GetWorldPosition();
-        Camera* activePlayerCamera = pCamera->GetComponent<Camera>();
-        dirLight.Update(wnd.Gfx(), focusPos, *activePlayerCamera);
-        dirLight.Bind(wnd.Gfx());
-         
-        FrustumCalculating();
-         
-        if (pPlayer != nullptr) {
-            soundDevice->SetLocation(
-                pPlayer->GetWorldPosition().x,
-                pPlayer->GetWorldPosition().y,
-                pPlayer->GetWorldPosition().z
-            );
-            soundDevice->SetOrientation(
-                pCamera->Back().x, pCamera->Back().y, pCamera->Back().z,
-                pCamera->Up().x, pCamera->Up().y, pCamera->Up().z
-            );
-        }
-         
-        rg.Execute(wnd.Gfx());
-         
-        if (showControlWindow) {
-            ShowControlWindows();
-        }
-         
-        if (targetSprite) {
-            targetSprite->Draw(wnd.Gfx().GetContext());
-        }
-        if (pPlayer->GetComponent<Health>()->currentHealth == 3.0f) {
-            heart1Sprite->Draw(wnd.Gfx().GetContext());
-            heart2Sprite->Draw(wnd.Gfx().GetContext());
-            heart3Sprite->Draw(wnd.Gfx().GetContext());
-        }
-        else if (pPlayer->GetComponent<Health>()->currentHealth == 2.0f) {
-            heart1Sprite->Draw(wnd.Gfx().GetContext());
-            heart2Sprite->Draw(wnd.Gfx().GetContext());
-        }
-        else if (pPlayer->GetComponent<Health>()->currentHealth == 1.0f) {
-            heart1Sprite->Draw(wnd.Gfx().GetContext());
-        }
-        pUpgradeHandler->DrawUpgradeMenu();
-         
-        if (pSceneRoot->GetComponent<Global>()->drawLoadingScreen || bonusTime > 0.0f)
-        {
-            if (!pSceneRoot->GetComponent<Global>()->drawLoadingScreen) { bonusTime -= dt; }
-            else { bonusTime = 5.0f; }
-            countLoding++;
-            if (countLoding > 2.0f) { if (countLoding > 2.9f) { countLoding = 0.0f; } loadingScreen3->Draw(wnd.Gfx().GetContext()); }
-            else if (countLoding > 1.0f) { loadingScreen2->Draw(wnd.Gfx().GetContext()); }
-            else { loadingScreen1->Draw(wnd.Gfx().GetContext()); }
-        }
-         
-        if (gameState == GameState::Paused)
-        {
-
-            pauseMenuNode->GetComponent<PauseMenu>()->DrawPauseMenu(dt);
-            pauseMenuNode->GetComponent<PauseMenu>()->Update(dt);
-
-            //pauseMenuOverlay->Update(dt);
-
-
-            //pauseMenuOverlay->Draw(wnd.Gfx().GetContext());
-
-            //int mouseX = wnd.mouse.GetPosX();
-            //int mouseY = wnd.mouse.GetPosY();
-
-
-
-            // 
-
-
-            //const int startX = (wnd.Gfx().GetWidth() / 2 - 250), startY = 580, btnWidth = 500, btnHeight = 120;
-            //const int quitX = (wnd.Gfx().GetWidth() / 2 - 250), quitY = 720;
-
-            //if (mouseX >= startX && mouseX <= startX + btnWidth &&
-            //    mouseY >= startY && mouseY <= startY + btnHeight)
-            //{ 
-            //    if (resumeHover) resumeHover->Draw(wnd.Gfx().GetContext());
-            //}
-
-            //if (mouseX >= quitX && mouseX <= quitX + btnWidth &&
-            //    mouseY >= quitY && mouseY <= quitY + btnHeight)
-            //{
-            //    // Mysz jest nad przyciskiem QUIT, więc dorysuj wersję HOVER NA WIERZCHU tła.
-            //    if (quitToMenuHover) quitToMenuHover->Draw(wnd.Gfx().GetContext());
-            //}
-            //UpdatePauseMenu();
-            //DrawPauseMenu();
- 
-
-        }
-        break;
     }
+    
+
+    dx::XMMATRIX viewMatrix = pCamera->GetComponent<Camera>()->GetViewMatrix();
+    if (freeViewCamera)
+    {
+        viewMatrix = pFreeViewCamera->GetComponent<Camera>()->GetViewMatrix();
+    }
+    wnd.Gfx().SetCamera(viewMatrix);
+    //fc.ShowWindows(wnd.Gfx());
+    /*DebugLine line(wnd.Gfx(), pEnemy->GetComponent<StateMachine>()->pos, pEnemy->GetComponent<StateMachine>()->cen, { 0.0f, 0.0f, 1.0f, 1.0f });
+    line.Submit(fc);*/ // for idle
+    // --- Bind Lights ---
+    Bind::TransformCbuf::SetLight(&dirLight);
+    Bind::ShadowCbuf::SetLight(&dirLight);
+    DirectX::XMFLOAT3 focusPos = pPlayer->GetWorldPosition();
+    Camera* activePlayerCamera = pCamera->GetComponent<Camera>();
+    /* if (freeViewCamera) {
+         activePlayerCamera = pFreeViewCamera->GetComponent<Camera>();
+     }
+     else {
+         activePlayerCamera = pCamera->GetComponent<Camera>();
+     }*/
+    dirLight.Update(wnd.Gfx(), focusPos, *activePlayerCamera);
+
+    // --- Bind Lights ---
+    // pointLight.Bind(wnd.Gfx(), viewMatrix);
+    dirLight.Bind(wnd.Gfx());
+
+    FrustumCalculating();
+
+    if (pPlayer != nullptr) {
+        soundDevice->SetLocation(
+            pPlayer->GetWorldPosition().x,
+            pPlayer->GetWorldPosition().y,
+            pPlayer->GetWorldPosition().z
+        );
+
+        soundDevice->SetOrientation(
+            pCamera->Back().x,
+            pCamera->Back().y,
+            pCamera->Back().z,
+            pCamera->Up().x,
+            pCamera->Up().y,
+            pCamera->Up().z
+        );
     }
 
-    } 
+    rg.Execute(wnd.Gfx());
+
+    if (showControlWindow) {
+        ShowControlWindows();
+    }
+
+
+
+    if (targetSprite) {
+        targetSprite->Draw(wnd.Gfx().GetContext());
+    }
+
+    if (pPlayer->GetComponent<Health>()->currentHealth == 3.0f) {
+        //heart1Sprite->Draw(wnd.Gfx().GetContext());
+        //heart2Sprite->Draw(wnd.Gfx().GetContext());
+        heart3Sprite->Draw(wnd.Gfx().GetContext());
+    }
+    if (pPlayer->GetComponent<Health>()->currentHealth == 2.0f) {
+        //heart1Sprite->Draw(wnd.Gfx().GetContext());
+        heart2Sprite->Draw(wnd.Gfx().GetContext());
+    }
+    if (pPlayer->GetComponent<Health>()->currentHealth == 1.0f) {
+        heart1Sprite->Draw(wnd.Gfx().GetContext());
+    }
+    if (pPlayer->GetComponent<Health>()->currentHealth == 0.0f) {
+        heart0Sprite->Draw(wnd.Gfx().GetContext());
+    }
+
+    pUpgradeHandler->DrawUpgradeMenu();
+
+     
+
+    if (pSceneRoot->GetComponent<Global>()->drawLoadingScreen || bonusTime > 0.0f)
+    {
+        if (!pSceneRoot->GetComponent<Global>()->drawLoadingScreen)
+        {
+            bonusTime -= dt;
+        }
+        else {
+            bonusTime = 5.0f;
+        }
+        countLoding++;
+
+        if (countLoding > 2.0f)
+        {
+            if (countLoding > 2.9f)
+            {
+                countLoding = 0.0f;
+            }
+            loadingScreen3->Draw(wnd.Gfx().GetContext());
+        }
+        else if (countLoding > 1.0f)
+        {
+            loadingScreen2->Draw(wnd.Gfx().GetContext());
+        }
+        else
+        {
+            loadingScreen1->Draw(wnd.Gfx().GetContext());
+        }
+    }
+
+    if (paused && startedGame)
+    {
+        DrawPauseMenu(dt);
+    }
+    if (paused && !startedGame)
+    {
+        DrawMainMenu(dt);
+
+    }
+
+
     wnd.kbd.UpdateFrameState();
 
     wnd.Gfx().EndFrame();
@@ -942,7 +854,6 @@ void App::DoFrame(float dt)
         }
     }
 }
-
 void App::RemoveRigidbody(Node* currentNode)
 {
     if (!currentNode) return;
@@ -971,8 +882,8 @@ void App::FrustumCalculating() {
 
     constexpr float fovAngleY = DirectX::XMConvertToRadians(70.0f);
     const float aspectRatio = 16.0f / 9.0f; 
-    const float nearDist = 0.5f;        
-    const float farDist = 800.0f;      
+    const float nearDist = 0.3f;        
+    const float farDist = 2000.0f;      
 
     float halfHeightNear = nearDist * tanf(fovAngleY * 0.5f);
     float halfWidthNear = halfHeightNear * aspectRatio;
@@ -991,9 +902,9 @@ void App::FrustumCalculating() {
     dx::XMVECTOR farBottomLeft = dx::XMVectorAdd(farCenter, dx::XMVectorSubtract(dx::XMVectorScale(camWorldUp, -halfHeightFar), dx::XMVectorScale(camWorldRight, halfWidthFar)));
     dx::XMVECTOR farBottomRight = dx::XMVectorAdd(farCenter, dx::XMVectorAdd(dx::XMVectorScale(camWorldUp, -halfHeightFar), dx::XMVectorScale(camWorldRight, halfWidthFar)));
 
-    cameraFrustum.Near = 0.5f;
+    cameraFrustum.Near = 0.3f;
 
-    cameraFrustum.Far = 800.0f;
+    cameraFrustum.Far = 2000.0f;
 
     float tanHalfFovY = tanf(fovAngleY * 0.5f);
     cameraFrustum.TopSlope = tanHalfFovY;
@@ -1290,6 +1201,8 @@ void App::StartGame()
     if (startedGame || !paused) return;
     startedGame = true;
     paused = false;
+    UnloadMainMenuResources();
+
     PrefabManager::InstantiateTutorialIslands(tutorialNode, tutorialNode->GetComponent<Tutorial>() , Vector3(0.0f, 0.0f, 0.0f), 1.0f);
     tutorialNode->GetComponent<Tutorial>()->Start();
     pSceneRoot->GetComponent<Global>()->Start();
@@ -1299,6 +1212,11 @@ void App::StartGame()
 void App::ResetGame()
 {
     if (!startedGame || !paused) return;
+
+    UnloadPauseMenuResources();
+    LoadMainMenuResources();
+
+
     startedGame = false;
     gameReset = 2;
     pSceneRoot->GetComponent<Global>()->Reset();
@@ -1342,59 +1260,142 @@ void App::SaveNodeTransformsRecursive(Node& node, std::ofstream& file)
  
  
  
+ 
 
-void App::UpdatePauseMenu()
+
+void App::DrawPauseMenu(float dt)
 {
+
+    //mainMenuBackground->Update(dt);
+    //mainMenuBackground->Draw(wnd.Gfx().GetContext());
+    pauseMenuBackground->Draw(wnd.Gfx().GetContext());
     int mouseX = wnd.mouse.GetPosX();
     int mouseY = wnd.mouse.GetPosY();
-
-    const DirectX::XMFLOAT4 buttonIdleColor = { 0.82f, 0.63f, 0.35f, 0.9f };
-    const DirectX::XMFLOAT4 buttonHoverColor = { 1.0f, 0.8f, 0.5f, 1.0f };
-
     bool isMouseLeftPressedThisFrame = wnd.mouse.IsLeftPressed();
-    bool isLeftClick = isMouseLeftPressedThisFrame && !wasMouseLeftPressedLastFrame;
-     
-    if (resumeButton->IsHovered(mouseX, mouseY)) {
-        //resumeButton->SetColor(buttonHoverColor.x, buttonHoverColor.y, buttonHoverColor.z, buttonHoverColor.w);
-        if (isLeftClick) {
-            gameState = GameState::Gameplay;
+
+ 
+    if (mouseX >= (wnd.GetWidth() * 0.354f) && mouseX <= ((wnd.GetWidth() * 0.354f) + (wnd.GetWidth() * 0.296f)) &&
+        mouseY >= (wnd.GetHeight() * 0.339f) && mouseY <= ((wnd.GetHeight() * 0.339f) + (wnd.GetHeight() * 0.110f))) {
+        resumeBttn->Draw(wnd.Gfx().GetContext());
+        if (isMouseLeftPressedThisFrame) {
             paused = false;
             wnd.DisableCursor();
             wnd.mouse.EnableRawInput();
             cursorEnabled = false;
         }
     }
-    else {
-        //resumeButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
-    }
 
-     if (quitToMenuButton->IsHovered(mouseX, mouseY)) {
-       //quitToMenuButton->SetColor(buttonHoverColor.x, buttonHoverColor.y, buttonHoverColor.z, buttonHoverColor.w);
-        if (isLeftClick) {
-            ResetGame();
-            gameState = GameState::MainMenu; 
+    if (mouseX >= (wnd.GetWidth() * 0.354f) && mouseX <= ((wnd.GetWidth() * 0.354f) + (wnd.GetWidth() * 0.296f)) &&
+        mouseY >= (wnd.GetHeight() * 0.489f) && mouseY <= ((wnd.GetHeight() * 0.489f) + (wnd.GetHeight() * 0.110f))) {
+        backBttn->Draw(wnd.Gfx().GetContext());
+        if (isMouseLeftPressedThisFrame) {
+            ResetGame();  
+
         }
-    }
-    else {
-        //quitToMenuButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
-    }
+    } 
 
-    wasMouseLeftPressedLastFrame = isMouseLeftPressedThisFrame;
+ 
 }
 
-void App::DrawPauseMenu()
+
+void App::DrawMainMenu(float dt)
 {
-    auto* context = wnd.Gfx().GetContext();
-    const float screenWidth = 1920.0f;
-    const float screenHeight = 1080.0f;
-     
-    if (pauseMenuOverlay) {
-        pauseMenuOverlay->Draw(context);
+
+    int mouseX = wnd.mouse.GetPosX();
+    int mouseY = wnd.mouse.GetPosY();
+    bool isMouseLeftPressedThisFrame = wnd.mouse.IsLeftPressed();
+    mainMenuBackground->Update(dt);
+    mainMenuBackground->Draw(wnd.Gfx().GetContext());
+ 
+    if (mouseX >= (wnd.GetWidth() * 0.055f) && mouseX <= ((wnd.GetWidth() * 0.055f) + (wnd.GetWidth() * 0.229f)) &&
+        mouseY >= (wnd.GetHeight() * 0.543f) && mouseY <= ((wnd.GetHeight() * 0.543f) + (wnd.GetHeight() * 0.098f))) {
+        startBttn->Draw(wnd.Gfx().GetContext());
+        if (isMouseLeftPressedThisFrame) {
+            paused = true;
+            wnd.DisableCursor();
+            wnd.mouse.EnableRawInput();
+            cursorEnabled = false;
+            StartGame();
+        }
+    }
+
+    if (mouseX >= (wnd.GetWidth() * 0.055f) && mouseX <= ((wnd.GetWidth() * 0.055f) + (wnd.GetWidth() * 0.229f)) &&
+        mouseY >= (wnd.GetHeight() * 0.673f) && mouseY <= ((wnd.GetHeight() * 0.673f) + (wnd.GetHeight() * 0.098f))) {
+        quitBttn->Draw(wnd.Gfx().GetContext());
+        if (isMouseLeftPressedThisFrame) {
+            PostQuitMessage(0);
+        }
     } 
-    if (resumeButton) {
-        resumeButton->Draw(context, screenWidth, screenHeight);
-    }
-    if (quitToMenuButton) {
-        quitToMenuButton->Draw(context, screenWidth, screenHeight);
-    }
+ }
+
+void App::LoadMainMenuResources()
+{
+    // Jeśli zasoby już istnieją, nie rób nic
+    if (mainMenuBackground) return;
+
+    OutputDebugStringA("Loading Main Menu Resources...\n");
+    const int screenWidth = wnd.GetWidth();
+    const int screenHeight = wnd.GetHeight();
+
+    mainMenuBackground = std::make_unique<Sprite>(
+        wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
+        0, 0, screenWidth, screenHeight,
+        L"Images\\menu_compressed_6.gif"
+    );
+    startBttn = std::make_unique<Sprite>(
+        wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
+        (screenWidth * 0.055f), (screenHeight * 0.543f), (screenWidth * 0.229f), (screenHeight * 0.098f),
+        L"Images\\start_2.png"
+    );
+    quitBttn = std::make_unique<Sprite>(
+        wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
+        (screenWidth * 0.055f), (screenHeight * 0.673f), (screenWidth * 0.229f), (screenHeight * 0.098f),
+        L"Images\\quit_2.png"
+    );
+}
+
+void App::UnloadMainMenuResources()
+{
+    // Jeśli zasoby nie istnieją, nie rób nic
+    if (!mainMenuBackground) return;
+
+    OutputDebugStringA("Unloading Main Menu Resources...\n");
+    mainMenuBackground.reset();
+    startBttn.reset();
+    quitBttn.reset();
+}
+
+void App::LoadPauseMenuResources()
+{
+    if (pauseMenuBackground) return;
+
+    OutputDebugStringA("Loading Pause Menu Resources...\n");
+    const int screenWidth = wnd.GetWidth();
+    const int screenHeight = wnd.GetHeight();
+
+    pauseMenuBackground = std::make_unique<Sprite>(
+        wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
+        0, 0, screenWidth, screenHeight,
+        L"Images\\pause_menu.png"
+    );
+    resumeBttn = std::make_unique<Sprite>(
+        wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
+        (screenWidth * 0.354f), (screenHeight * 0.339f), (screenWidth * 0.296f), (screenHeight * 0.110f),
+        L"Images\\resume.png"
+    );
+    backBttn = std::make_unique<Sprite>(
+        wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
+        (screenWidth * 0.354f), (screenHeight * 0.489f), (screenWidth * 0.296f), (screenHeight * 0.110f),
+        L"Images\\back_to_menu.png"
+    );
+}
+
+void App::UnloadPauseMenuResources()
+{
+    if (!pauseMenuBackground) return;
+
+    OutputDebugStringA("Unloading Pause Menu Resources...\n");
+    pauseMenuBackground.reset();
+    resumeBttn.reset();
+    backBttn.reset();
 }

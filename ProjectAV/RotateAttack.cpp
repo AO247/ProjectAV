@@ -18,7 +18,7 @@ void RotateAttack::Attack(float dt)
 		}
 		//miejsce na animacje !!!
 
-		pOwner->GetParent()->GetComponent<AnimationComponent>()->PlayAnimation(rand() % 2, 0.2f, false);
+		//pOwner->GetParent()->GetComponent<AnimationComponent>()->PlayAnimation(rand() % 2, 0.2f, false);
 
 
 	}

@@ -45,7 +45,11 @@ void Ability3::Update(float dt)
                     pOwner->GetComponent<SoundEffectsPlayer>()->Play(2, 1.0f, false);
                     activeSoundTimer = activeSoundInterval;
                 }
+
+                rightHand->PlayAnimation(13);
+                leftHand->PlayAnimation(13);
                 // particle po wyl�dowaniu
+                PrefabManager::InstantiateAbility3CoreSmokeParticles(pOwner, Vector3(0, 0, 0), 1.0, { 0,0,0 }, duration);
                 // d�wi�k po wyl�dowaniu
                 /*if (pOwner->GetComponent<SoundEffectsPlayer>()) {
 					pOwner->GetComponent<SoundEffectsPlayer>()->Stop(1);
@@ -131,8 +135,8 @@ void Ability3::Positioning()
     if (isPressed)
     {
         Vector3 cameraPos = camera->GetWorldPosition();
-        Vector3 targetPosition = cameraPos + camera->Forward() * 10.0f;
-        targetPosition += camera->Down() * 1.0f;
+        Vector3 targetPosition = cameraPos + camera->Forward() * 8.0f;
+        targetPosition += camera->Down() * 2.0f;
         PhysicsCommon::physicsSystem->GetBodyInterface().SetPosition(pOwner->GetComponent<Rigidbody>()->GetBodyID(),
             Vec3(targetPosition.x, targetPosition.y, targetPosition.z), EActivation::Activate);
     }
@@ -157,8 +161,8 @@ bool Ability3::Pressed()
     if (killsCount < 3 || isPressed) return false;
     
     Vector3 cameraPos = camera->GetWorldPosition();
-    Vector3 targetPosition = cameraPos + camera->Forward() * 10.0f;
-    targetPosition += camera->Down() * 1.0f;
+    Vector3 targetPosition = cameraPos + camera->Forward() * 8.0f;
+    targetPosition += camera->Down() * 2.0f;
     pOwner->SetWorldPosition(targetPosition);
 	
     // animacja tworzenia czarnej dziury
@@ -177,10 +181,9 @@ bool Ability3::Pressed()
     released = false;
 	
     PrefabManager::InstantiateAbility3Particles(pOwner->GetParent(), Vector3(pOwner->GetLocalPosition().x, pOwner->GetLocalPosition().y, pOwner->GetLocalPosition().z), 1.0);
-    PrefabManager::InstantiateAbility3CoreParticles(pOwner->GetParent(), Vector3(pOwner->GetLocalPosition().x, pOwner->GetLocalPosition().y, pOwner->GetLocalPosition().z), 1.0);
+    PrefabManager::InstantiateAbility3CoreParticles(pOwner, Vector3(0, 0, 0), 1.0);
     return true;
     //PrefabManager::InstantiateAbility3CoreParticles(pOwner->GetParent(), Vector3(pOwner->GetLocalPosition().x, pOwner->GetLocalPosition().y, pOwner->GetLocalPosition().z), 1.0);
-    PrefabManager::InstantiateAbility3CoreSmokeParticles(pOwner->GetParent(), Vector3(pOwner->GetLocalPosition().x, pOwner->GetLocalPosition().y, pOwner->GetLocalPosition().z), 1.0);
 }
 void Ability3::Released()
 {
@@ -188,6 +191,8 @@ void Ability3::Released()
     isPressed = false;
     killsCount = 0;
     readyToActive = true;
+
+
 }
 void Ability3::Activated()
 {

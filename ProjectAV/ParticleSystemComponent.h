@@ -53,7 +53,7 @@ public:
 
     // This method is now public so that emitter strategies can call it
     void EmitParticle(const DirectX::XMFLOAT3& position);
-
+    void EmitParticle(const DirectX::XMFLOAT3& position, const DirectX::XMFLOAT3& worldVelocity);
     // --- NEW: Playback Control ---
     void SetPlaybackMode(PlaybackMode mode);
     PlaybackMode GetPlaybackMode() const;
@@ -94,6 +94,7 @@ public:
     float StartSizeVariance = 0.0f;
     float StartRotation = 0.0f;
     float EndRotation = 0.0f;
+    float EndRotationVariance = 0.0f;
     bool destroyAfterEmission = false;
     bool lockRotationOnYAxis = false;
     bool bAnimateSize = true;

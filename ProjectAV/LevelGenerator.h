@@ -17,9 +17,9 @@ public:
 	int mediumIslandCount = 2;
 	int smallIslandCount = 2;
 
-	int numberOfHardEnemies = 4;
-	int numberOfMediumEnemies = 3;
-	int numberOfEasyEnemies = 4;
+	int numberOfHardEnemies = 5;
+	int numberOfMediumEnemies = 5;
+	int numberOfEasyEnemies = 5;
 
 
 	virtual void Update(float dt) override;
