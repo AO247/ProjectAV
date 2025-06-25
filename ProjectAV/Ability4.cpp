@@ -202,7 +202,7 @@ void Ability4::Released()
         DirectX::XMFLOAT4 quatFloat4;
         DirectX::XMStoreFloat4(&quatFloat4, lookAtQuaternion);
 
-        PrefabManager::InstantiateAbility4ReleaseParticles(pOwner->GetParent(), Vector3(selectedNode->GetWorldPosition().x, selectedNode->GetWorldPosition().y, selectedNode->GetWorldPosition().z), 1.0, quatFloat4);
+        //PrefabManager::InstantiateAbility4ReleaseParticles(pOwner->GetParent(), Vector3(selectedNode->GetWorldPosition().x, selectedNode->GetWorldPosition().y, selectedNode->GetWorldPosition().z), 1.0, quatFloat4);
         PrefabManager::InstantiateAbility4ReleaseSmokeParticles(pOwner->GetParent(), Vector3(selectedNode->GetWorldPosition().x, selectedNode->GetWorldPosition().y, selectedNode->GetWorldPosition().z), 1.0, quatFloat4);
 
         PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(selectedNode->GetComponent<Rigidbody>()->GetBodyID(), Vec3(0.0f, 0.0f, 0.0f));
