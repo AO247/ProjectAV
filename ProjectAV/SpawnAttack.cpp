@@ -34,16 +34,16 @@ void SpawnAttack::Attack(float dt)
 
 		int randomAttack = std::rand() % 4;
 		if (randomAttack == 0) {
-			animComp->PlayAnimation(EnemyAnimationIndices::MAGE_ATTACK1, 0.5f, false);
+			animComp->PlayAnimation(EnemyAnimationIndices::MAGE_ATTACK1, 0.5f, false);			//mage attack 1
 		}
 		else if (randomAttack == 1) {
-			animComp->PlayAnimation(EnemyAnimationIndices::MAGE_ATTACK2, 0.5f, false);
+			animComp->PlayAnimation(EnemyAnimationIndices::MAGE_ATTACK2, 0.5f, false);			//mage attack 2
 		}
 		else if (randomAttack == 2) {
-			animComp->PlayAnimation(EnemyAnimationIndices::MAGE_ATTACK3, 0.5f, false);
+			animComp->PlayAnimation(EnemyAnimationIndices::MAGE_ATTACK3, 0.5f, false);			//mage attack 3
 		}
 		else {
-			animComp->PlayAnimation(EnemyAnimationIndices::MAGE_ATTACK4, 0.5f, false);
+			animComp->PlayAnimation(EnemyAnimationIndices::MAGE_ATTACK4, 0.5f, false);			//mage attack 4
 		}
 
 

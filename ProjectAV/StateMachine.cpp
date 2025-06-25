@@ -56,16 +56,62 @@ StateMachine::~StateMachine()
 }
 void StateMachine::Stun(float time)
 {
+	StateMachine* statemachine = pOwner->GetComponent <StateMachine>();
+
 	// dŸwiêk stuna 
 	// zatrzymanie w miejscu
+
+
+	if (statemachine->enemyType == EnemyType::BASIC) {
+		pOwner->GetComponent<AnimationComponent>()->PlayAnimation(2);		//stun basic
+
+	}/*
+	if (statemachine->enemyType == EnemyType::RANGED) {
+		pOwner->GetComponent<AnimationComponent>()->PlayAnimation(2); 
+	}*/
+	if (statemachine->enemyType == EnemyType::TANK) {
+		pOwner->GetComponent<AnimationComponent>()->PlayAnimation(2);	//stun tank
+	}
+	/*if (statemachine->enemyType == EnemyType::EXPLOSIVE) {
+		pOwner->GetComponent<AnimationComponent>()->PlayAnimation(8); 
+	}*/
+	if (statemachine->enemyType == EnemyType::FRENZY) {
+		pOwner->GetComponent<AnimationComponent>()->PlayAnimation(10);		//stun fast
+	}
+	/*if (statemachine->enemyType == EnemyType::FLYING) {
+		pOwner->GetComponent<AnimationComponent>()->PlayAnimation(4);
+	}*/
+	if (statemachine->enemyType == EnemyType::MAGE) {
+		pOwner->GetComponent<AnimationComponent>()->PlayAnimation(6);		//stun mage
+	}
+
 	stunTime = time;
 	RequestStateChange(StateType::STUN);
+
+
 }
+
 void StateMachine::Stop(float time)
 {
+	StateMachine* statemachine = pOwner->GetComponent <StateMachine>();
+
+	if (statemachine->enemyType == EnemyType::FRENZY) {
+		pOwner->GetComponent<AnimationComponent>()->PlayAnimation(10);	//stop fast
+	}
+	if (statemachine->enemyType == EnemyType::TANK) {
+		pOwner->GetComponent<AnimationComponent>()->PlayAnimation(2);	//stop tank
+	}
+	if (statemachine->enemyType == EnemyType::BASIC) {
+		pOwner->GetComponent<AnimationComponent>()->PlayAnimation(2);	//stop basic
+
+	}
+	if (statemachine->enemyType == EnemyType::MAGE) {
+		pOwner->GetComponent<AnimationComponent>()->PlayAnimation(6);	//stop mage
+	}
 	stopTime = time;
 	RequestStateChange(StateType::STOP);
 }
+
 void StateMachine::Update(float dt)
 {
 	if (attackComponents.size() > 1)
