@@ -6819,7 +6819,7 @@ public:
         auto pCircleLogic = std::make_unique<CircleEmitterLogic>();
         pCircleLogic->Radius = 5.0f;
         pCircleLogic->Orientation = CircleEmitterLogic::Plane::XZ;
-        pCircleLogic->ParticlesPerSecond = 70.0f;
+        pCircleLogic->ParticlesPerSecond = 170.0f;
         pCircleLogic->bFill = true;
 
         pNewNode->AddComponent(
@@ -6833,9 +6833,9 @@ public:
         particles->EmissionRate = 40.0f;
         particles->ParticleVelocity = { 0.0f, 1.0f, 0.0f };
         particles->ParticleVelocityVariance = { 0.0f, 70.0f, 0.0f };
-        particles->StartSize = 3.0f;
+        particles->StartSize = 6.0f;
         particles->bAnimateSize = false;
-        particles->StartSizeVariance = 3.0f;
+        particles->StartSizeVariance = 4.0f;
         particles->EndRotation = 0.0f;
         particles->lockRotationOnYAxis = false;
         particles->textureAtlasColumns = 2;
@@ -6843,7 +6843,7 @@ public:
         particles->bUseMidColor = true;
         particles->StartColor = { 1.0f, 1.0f, 1.0f, 0.0f };
         particles->ColorMidpoint = 0.1f;
-        particles->MidColor = { 1.0f, 1.0f, 1.0f, 0.3f };
+        particles->MidColor = { 1.0f, 1.0f, 1.0f, 0.2f };
         particles->EndColor = { 1.0f, 1.0f, 1.0f, 0.0f };
 
         particles->Play();
@@ -6866,7 +6866,7 @@ public:
         auto pCircleLogic = std::make_unique<CircleEmitterLogic>();
         pCircleLogic->Radius = 5.0f;
         pCircleLogic->Orientation = CircleEmitterLogic::Plane::XY;
-        pCircleLogic->ParticlesPerSecond = 70.0f;
+        pCircleLogic->ParticlesPerSecond = 170.0f;
         pCircleLogic->bFill = true;
 
         pNewNode->AddComponent(
@@ -6880,9 +6880,9 @@ public:
         particles->EmissionRate = 40.0f;
         particles->ParticleVelocity = { 0.0f, 0.0f, 1.0f };
         particles->ParticleVelocityVariance = { 0.0f, 0.0f, 70.0f };
-        particles->StartSize = 3.0f;
+        particles->StartSize = 6.0f;
         particles->bAnimateSize = false;
-        particles->StartSizeVariance = 3.0f;
+        particles->StartSizeVariance = 4.0f;
         particles->EndRotation = 0.0f;
         particles->lockRotationOnYAxis = false;
         particles->textureAtlasColumns = 2;
@@ -6890,7 +6890,7 @@ public:
         particles->bUseMidColor = true;
         particles->StartColor = { 1.0f, 1.0f, 1.0f, 0.0f };
         particles->ColorMidpoint = 0.1f;
-        particles->MidColor = { 1.0f, 1.0f, 1.0f, 0.3f };
+        particles->MidColor = { 1.0f, 1.0f, 1.0f, 0.2f };
         particles->EndColor = { 1.0f, 1.0f, 1.0f, 0.0f };
 
         particles->Play();
@@ -7000,7 +7000,7 @@ public:
         auto pCircleLogic = std::make_unique<CircleEmitterLogic>();
         pCircleLogic->Radius = 2.0f;
         pCircleLogic->Orientation = CircleEmitterLogic::Plane::XZ;
-        pCircleLogic->ParticlesPerSecond = 5.0f;
+        pCircleLogic->ParticlesPerSecond = 25.0f;
         pCircleLogic->bFill = true;
 
         pNewNode->AddComponent(
@@ -7009,11 +7009,11 @@ public:
         ParticleSystemComponent* particles = pNewNode->GetComponent<ParticleSystemComponent>();
         particles->SetPlaybackMode(ParticleSystemComponent::PlaybackMode::Loop);
         particles->destroyAfterEmission = true;
-        particles->ParticleLifetime = 0.7f;
+        particles->ParticleLifetime = 0.2f;
         particles->EmissionDuration = 0.1f;
         particles->EmissionRate = 40.0f;
-        particles->ParticleVelocity = { 0.0f, 5.0f, 0.0f };
-        particles->ParticleVelocityVariance = { 0.0f, 3.0f, 0.0f };
+        particles->ParticleVelocity = { 0.0f, 1.0f, 0.0f };
+        particles->ParticleVelocityVariance = { 0.0f, 15.0f, 0.0f };
         particles->bAnimateSize = false;
         particles->StartSize = 2.0f;
         particles->StartSizeVariance = 4.0f;
@@ -7048,7 +7048,7 @@ public:
         auto pCircleLogic = std::make_unique<CircleEmitterLogic>();
         pCircleLogic->Radius = 2.0f;
         pCircleLogic->Orientation = CircleEmitterLogic::Plane::XZ;
-        pCircleLogic->ParticlesPerSecond = 3.0f;
+        pCircleLogic->ParticlesPerSecond = 100.0f;
         pCircleLogic->bFill = true;
 
         pNewNode->AddComponent(
@@ -7057,11 +7057,11 @@ public:
         ParticleSystemComponent* particles = pNewNode->GetComponent<ParticleSystemComponent>();
         particles->SetPlaybackMode(ParticleSystemComponent::PlaybackMode::Loop);
         particles->destroyAfterEmission = true;
-        particles->ParticleLifetime = 0.7f;
+        particles->ParticleLifetime = 0.2f;
         particles->EmissionDuration = 0.1f;
         particles->EmissionRate = 40.0f;
-        particles->ParticleVelocity = { 0.0f, 5.0f, 0.0f };
-        particles->ParticleVelocityVariance = { 0.0f, 3.0f, 0.0f };
+        particles->ParticleVelocity = { 0.0f, 1.0f, 0.0f };
+        particles->ParticleVelocityVariance = { 0.0f, 15.0f, 0.0f };
         particles->bAnimateSize = false;
         particles->StartSize = 4.0f;
         particles->StartSizeVariance = 3.0f;
@@ -7073,7 +7073,7 @@ public:
         particles->bUseMidColor = true;
         particles->StartColor = { 1.0f, 1.0f, 1.0f, 0.0f };
         particles->ColorMidpoint = 0.1f;
-        particles->MidColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+        particles->MidColor = { 1.0f, 1.0f, 1.0f, 0.2f };
         particles->EndColor = { 1.0f, 1.0f, 1.0f, 0.0f };
 
         particles->Play();
@@ -7144,7 +7144,7 @@ public:
         auto pCircleLogic = std::make_unique<CircleEmitterLogic>();
         pCircleLogic->Radius = 2.0f;
         pCircleLogic->Orientation = CircleEmitterLogic::Plane::XZ;
-        pCircleLogic->ParticlesPerSecond = 3.0f;
+        pCircleLogic->ParticlesPerSecond = 7.0f;
         pCircleLogic->bFill = true;
 
         pNewNode->AddComponent(
@@ -7984,7 +7984,7 @@ public:
         auto pCircleLogic = std::make_unique<CircleEmitterLogic>();
         pCircleLogic->Radius = 10.0f;
         pCircleLogic->Orientation = CircleEmitterLogic::Plane::XZ;
-        pCircleLogic->ParticlesPerSecond = 10.0f;
+        pCircleLogic->ParticlesPerSecond = 30.0f;
         pCircleLogic->bFill = true;
 
         pNewNode->AddComponent(
