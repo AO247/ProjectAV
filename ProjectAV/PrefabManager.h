@@ -7791,9 +7791,9 @@ public:
         auto sphereEmitter = std::make_unique<SphereToCenterEmitterLogic>();
 
         // Make the implosion very chaotic
-        sphereEmitter->SpeedRandomness = 40.0f;
+        sphereEmitter->SpeedRandomness = 100.0f;
         sphereEmitter->SpawnRadius = 250.0f;
-        sphereEmitter->TravelSpeed = 40.0f;
+        sphereEmitter->TravelSpeed = 150.0f;
         sphereEmitter->ParticlesPerSecond = 100;
 
         pNewNode->AddComponent(
@@ -7801,8 +7801,9 @@ public:
         );
         ParticleSystemComponent* pParticleSystem = pNewNode->GetComponent<ParticleSystemComponent>();
         pParticleSystem->SetPlaybackMode(ParticleSystemComponent::PlaybackMode::OneShot);
-        pParticleSystem->ParticleLifetime = 3.0f;
+        pParticleSystem->ParticleLifetime = 0.85f;
         pParticleSystem->EmissionRate = 10.0f;
+        pParticleSystem->EmissionDuration = 5.0f;
         //pParticleSystem->BurstAmount = 200;
         //pParticleSystem->EmissionDuration = 5.0f;
         //pParticleSystem->bUseLifetimeRange = true;
