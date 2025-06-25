@@ -22,6 +22,7 @@
 #include "DirectionalLight.h"
 #include <fstream>
 #include "MainMenu.h"
+#include "PauseMenu.h"
 
 class PlayerController;
 
@@ -79,6 +80,7 @@ private:
 	Node* tutorialNode = nullptr;
     Node* temporary = nullptr;
 	Node* mainMenuNode = nullptr;
+    Node* pauseMenuNode = nullptr;
     UpgradeHandler* pUpgradeHandler = nullptr;
 
     TestCube cube{ wnd.Gfx(),4.0f };
@@ -105,14 +107,8 @@ private:
     float bonusTime = 5.0f;
 
 
-    std::unique_ptr<Sprite> mainMenuBackground;
-    std::unique_ptr<Button> startButton;
-    std::unique_ptr<Button> quitButton;
-    std::unique_ptr<Sprite> quitHover;
-    std::unique_ptr<Sprite> startHover;
-
-    void UpdateMainMenu();
-    void DrawMainMenu();
+    std::unique_ptr<Sprite> mainMenuBackground; 
+     
     bool wasMouseLeftPressedLastFrame = false;
 
 

@@ -1,14 +1,18 @@
+Object: Main Menu            Position: {0.00f, 0.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Pause Menu           Position: {0.00f, 0.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
 Object: Temporary            Position: {0.00f, 0.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Fast                 Position: {187.39f, -18.88f, -267.61f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Fast                 Position: {187.40f, -18.88f, -267.60f} Rotation: {0.00f, 0.00f, 0.00f}
 Object: Launch Attack        Position: {0.00f, 0.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
 Object: Slash Attack         Position: {0.00f, 0.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
 Object: Basic                Position: {105.00f, -16.08f, -236.40f} Rotation: {0.00f, 0.00f, 0.00f}
 Object: Basic Attack         Position: {0.00f, 0.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Basic                Position: {44.10f, -15.88f, -198.91f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Basic                Position: {44.09f, -15.88f, -198.92f} Rotation: {0.00f, 0.00f, 0.00f}
 Object: Basic Attack         Position: {0.00f, 0.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Shooting             Position: {32.13f, -17.58f, -203.62f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Shooting             Position: {30.96f, -17.62f, -202.65f} Rotation: {0.00f, 0.00f, 0.00f}
 Object: VoidCheck            Position: {0.00f, 0.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
 Object: VoidCheck            Position: {0.00f, 0.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Health               Position: {30.56f, -16.80f, -188.44f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Exp                  Position: {31.07f, -16.72f, -190.09f} Rotation: {0.00f, 0.00f, 0.00f}
 Object: Base                 Position: {0.00f, 0.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
 Object: BASE                 Position: {0.00f, 0.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
 Object: Spawn                Position: {0.00f, 5.00f, -20.00f} Rotation: {0.00f, 0.00f, 0.00f}
@@ -27,18 +31,18 @@ Object: Player Things        Position: {0.00f, 0.00f, 0.00f} Rotation: {0.00f, 0
 Object: Hands                Position: {-0.00f, -0.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
 Object: Legs                 Position: {0.00f, -3.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
 Object: Abilities            Position: {0.00f, 0.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Ability1             Position: {186.41f, -15.74f, -257.91f} Rotation: {-0.16f, -0.40f, 0.00f}
-Object: Ability2             Position: {166.85f, -20.75f, -228.58f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Ability1             Position: {13.25f, -14.20f, -416.27f} Rotation: {0.03f, 0.64f, 0.00f}
+Object: Ability2             Position: {0.00f, 0.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
 Object: Ability3             Position: {1.96f, -0.00f, 2.03f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Ability4             Position: {189.48f, -19.28f, -265.18f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Ability5             Position: {189.48f, -17.03f, -265.18f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Ability6             Position: {189.48f, -19.28f, -265.18f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Ability4             Position: {8.50f, -16.19f, -422.70f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Ability5             Position: {8.50f, -13.94f, -422.70f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Ability6             Position: {8.50f, -16.19f, -422.70f} Rotation: {0.00f, 0.00f, 0.00f}
 Object: Tutorial             Position: {185.10f, -19.50f, -448.20f} Rotation: {0.00f, 1.54f, 0.00f}
 Object: JumpIsland           Position: {-15.00f, 0.00f, -169.00f} Rotation: {0.00f, 1.57f, 0.00f}
 Object: StoneStack1          Position: {-7.22f, 2.22f, 2.98f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: StoneStackBase1      Position: {-0.05f, -1.83f, -5.73f} Rotation: {0.00f, -0.02f, -0.00f}
-Object: StoneStackMid1       Position: {3.36f, 1.37f, -9.22f} Rotation: {0.62f, 0.53f, -1.90f}
-Object: StoneStackTop1       Position: {-27.20f, -38832.12f, -901.90f} Rotation: {0.00f, -0.00f, 0.00f}
+Object: StoneStackBase1      Position: {0.79f, -1.83f, -4.80f} Rotation: {-0.01f, -0.11f, -0.00f}
+Object: StoneStackMid1       Position: {3.91f, 2.49f, -10.57f} Rotation: {0.20f, -0.32f, -2.70f}
+Object: StoneStackTop1       Position: {-17.28f, -2464.84f, -588.04f} Rotation: {0.00f, -0.00f, 0.00f}
 Object: Rock2                Position: {21.70f, -0.10f, -17.70f} Rotation: {0.00f, -0.00f, 0.00f}
 Object: Rock3                Position: {6.40f, 0.20f, 22.50f} Rotation: {0.00f, -0.00f, 0.00f}
 Object: Rock3                Position: {22.30f, 0.00f, -10.90f} Rotation: {0.00f, -0.00f, 0.00f}
@@ -50,9 +54,9 @@ Object: RockDouble           Position: {-12.90f, -0.30f, -13.10f} Rotation: {0.0
 Object: RockDouble           Position: {19.50f, 0.00f, 16.10f} Rotation: {0.00f, 1.75f, -3.14f}
 Object: DoubleJumpIsland     Position: {3.00f, -2.00f, -68.00f} Rotation: {0.00f, 1.01f, 0.00f}
 Object: StoneStack1          Position: {-18.12f, 1.72f, 25.88f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: StoneStackBase1      Position: {-0.19f, -1.13f, -3.58f} Rotation: {0.00f, 1.54f, -0.01f}
+Object: StoneStackBase1      Position: {0.28f, 3.15f, -15.39f} Rotation: {0.17f, -2.86f, -1.40f}
 Object: StoneStackMid1       Position: {-11.01f, -1.09f, -19.14f} Rotation: {0.00f, -0.01f, -0.01f}
-Object: StoneStackTop1       Position: {-144.43f, -38407.38f, -448.70f} Rotation: {-0.57f, -0.04f, 0.16f}
+Object: StoneStackTop1       Position: {-97.86f, -2031.98f, -288.94f} Rotation: {0.11f, -2.53f, -0.13f}
 Object: Rock1                Position: {27.40f, 3.00f, -3.80f} Rotation: {-0.00f, 0.00f, 3.14f}
 Object: Rock1                Position: {8.60f, 8.90f, 12.60f} Rotation: {0.00f, -1.22f, 3.14f}
 Object: Rock1                Position: {-13.90f, 13.30f, -2.90f} Rotation: {0.00f, 1.45f, 3.13f}
@@ -78,17 +82,17 @@ Object: Rock1                Position: {-6.06f, 16.70f, 35.21f} Rotation: {-0.00
 Object: Base                 Position: {66.90f, -1.40f, -31.90f} Rotation: {0.00f, 0.00f, 0.00f}
 Object: Platform3            Position: {0.00f, 0.00f, 8.30f} Rotation: {0.00f, 1.75f, -3.14f}
 Object: UltIsland            Position: {-250.91f, -0.01f, -137.29f} Rotation: {0.00f, -1.66f, 2.72f}
-Object: Stone5               Position: {6.22f, 0.95f, 18.40f} Rotation: {0.14f, -3.05f, 1.37f}
-Object: Stone1               Position: {-16.19f, 2.25f, 5.38f} Rotation: {-0.38f, -0.11f, 2.69f}
-Object: Stone1               Position: {-5.97f, 1.23f, 1.55f} Rotation: {1.28f, 1.32f, -2.80f}
+Object: Stone4               Position: {-0.48f, -0.08f, 17.40f} Rotation: {0.08f, 0.79f, -0.12f}
+Object: Stone1               Position: {-17.27f, 2.25f, 5.39f} Rotation: {-0.38f, 1.06f, 2.51f}
+Object: Stone1               Position: {-7.26f, 0.46f, 1.57f} Rotation: {0.36f, -3.12f, 2.17f}
 Object: StoneStack1          Position: {-7.92f, 1.72f, -11.22f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: StoneStackBase1      Position: {-0.05f, -1.58f, 4.01f} Rotation: {0.00f, 0.13f, -0.00f}
-Object: StoneStackMid1       Position: {2.25f, 0.08f, 26.51f} Rotation: {-1.10f, -1.15f, 0.35f}
-Object: StoneStackTop1       Position: {11.62f, -0.14f, 26.75f} Rotation: {0.45f, -2.23f, 1.51f}
+Object: StoneStackBase1      Position: {0.40f, -1.59f, 5.23f} Rotation: {0.00f, 0.03f, 0.00f}
+Object: StoneStackMid1       Position: {3.30f, -1.54f, 19.78f} Rotation: {0.01f, 0.08f, -0.01f}
+Object: StoneStackTop1       Position: {-47.07f, -2164.20f, 356.47f} Rotation: {0.97f, -1.63f, -0.58f}
 Object: New Column           Position: {-13.62f, 0.00f, 9.78f} Rotation: {0.00f, 0.00f, 0.00f}
 Object: Base                 Position: {-0.00f, 2.00f, -0.00f} Rotation: {0.00f, 0.00f, -0.00f}
-Object: Middle               Position: {-2.18f, 2.28f, 8.65f} Rotation: {1.37f, -1.18f, 2.93f}
-Object: Top                  Position: {-6123.24f, 52.76f, 38309.76f} Rotation: {-1.33f, 1.06f, 2.90f}
+Object: Middle               Position: {-3.27f, 1.53f, 5.23f} Rotation: {-0.70f, 2.19f, 2.53f}
+Object: Top                  Position: {-1400.95f, -1057.39f, -1739.65f} Rotation: {-0.39f, -2.56f, 2.91f}
 Object: Rock1                Position: {-6.90f, 5.20f, 28.00f} Rotation: {0.00f, 0.63f, 3.14f}
 Object: Rock1                Position: {-7.40f, 13.60f, 50.30f} Rotation: {0.00f, 1.38f, 3.13f}
 Object: Rock1                Position: {-12.80f, 21.30f, 78.10f} Rotation: {0.00f, 0.63f, 3.14f}
@@ -96,15 +100,15 @@ Object: Rock3                Position: {32.70f, -0.30f, -9.80f} Rotation: {0.00f
 Object: Rock4                Position: {-26.00f, -0.30f, 23.70f} Rotation: {0.00f, 0.00f, -0.00f}
 Object: Rock5                Position: {30.40f, -0.40f, 0.60f} Rotation: {0.00f, 0.00f, -0.00f}
 Object: RockDouble           Position: {24.10f, -0.40f, 19.40f} Rotation: {0.00f, 1.10f, 0.00f}
-Object: Stone1               Position: {-166.84f, 2.52f, 25.89f} Rotation: {-0.25f, 0.31f, -3.08f}
-Object: Stone1               Position: {-209.44f, 1.53f, -39.50f} Rotation: {0.30f, 0.08f, -1.64f}
-Object: Stone1               Position: {99.21f, -38057.70f, 746.33f} Rotation: {-0.21f, -2.27f, 1.20f}
+Object: Stone1               Position: {-163.35f, 2.42f, 25.25f} Rotation: {-0.33f, 2.38f, 0.29f}
+Object: Stone1               Position: {-210.22f, 0.59f, -40.06f} Rotation: {0.35f, 0.06f, 0.96f}
+Object: Stone1               Position: {-14.41f, -2413.05f, 636.13f} Rotation: {0.23f, 2.57f, 0.06f}
 Object: Levels               Position: {0.00f, 0.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
 Object: Level 0-1            Position: {0.00f, 0.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
 Object: Level 0-2            Position: {0.00f, 0.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
 Object: Level 1              Position: {0.00f, 400.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
 Object: Prefabs              Position: {0.00f, 0.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Spawn                Position: {0.00f, 0.78f, 30.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Spawn                Position: {0.00f, -0.28f, 30.00f} Rotation: {0.00f, 0.00f, 0.00f}
 Object: SpawnRock1           Position: {20.20f, 7.00f, 21.40f} Rotation: {0.00f, -0.42f, 0.00f}
 Object: SpawnRock2           Position: {21.80f, 6.00f, -18.40f} Rotation: {0.00f, 0.21f, 0.00f}
 Object: SpawnRock4           Position: {-15.30f, 6.00f, -17.40f} Rotation: {0.00f, -0.99f, 0.00f}
@@ -114,196 +118,9 @@ Object: Left Point           Position: {-35.00f, 0.00f, 5.00f} Rotation: {0.00f,
 Object: Right Point          Position: {35.00f, 0.00f, -4.00f} Rotation: {0.00f, 0.00f, 0.00f}
 Object: Up Point             Position: {3.00f, 0.00f, 36.00f} Rotation: {0.00f, 0.00f, 0.00f}
 Object: Down Point           Position: {0.00f, 0.00f, -30.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Island M9            Position: {71.00f, 2.27f, 27.70f} Rotation: {0.00f, 1.57f, 0.00f}
-Object: Stone1               Position: {-27.69f, 0.46f, 9.27f} Rotation: {0.36f, 0.21f, 0.94f}
-Object: Stone1               Position: {-5.65f, 0.46f, -20.84f} Rotation: {0.35f, 0.29f, 0.93f}
-Object: Stone1               Position: {28.90f, 0.46f, -12.99f} Rotation: {0.36f, 0.29f, 0.93f}
-Object: Mushroom1            Position: {-13.10f, -0.30f, -7.20f} Rotation: {0.00f, 0.99f, 0.00f}
-Object: Mushroom2            Position: {11.20f, -0.30f, -4.70f} Rotation: {0.00f, 2.02f, 3.14f}
-Object: Mushroom3            Position: {-16.40f, -0.30f, -7.10f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Mushroom3            Position: {14.40f, -0.30f, -5.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: New Column           Position: {11.36f, -1.90f, 1.57f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Base                 Position: {-0.00f, 2.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Middle               Position: {4.09f, 4.11f, 11.61f} Rotation: {0.52f, -0.06f, 1.61f}
-Object: Top                  Position: {0.15f, 7.99f, -0.79f} Rotation: {-0.06f, 0.03f, 0.00f}
-Object: New Column           Position: {-10.84f, -1.90f, 4.87f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Base                 Position: {-0.00f, 2.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Middle               Position: {-3.20f, 4.27f, 0.55f} Rotation: {0.21f, 1.69f, 1.37f}
-Object: Top                  Position: {-1.84f, 2.54f, -4.76f} Rotation: {0.17f, -1.51f, 1.72f}
-Object: Column3              Position: {11.16f, -0.30f, -19.33f} Rotation: {0.00f, 1.57f, 0.00f}
-Object: Wall2                Position: {8.50f, -0.30f, 32.00f} Rotation: {0.00f, 1.66f, 3.14f}
-Object: Ruin3                Position: {-13.40f, -0.20f, 23.10f} Rotation: {0.00f, 1.68f, 3.14f}
-Object: Rock4                Position: {-30.80f, -1.16f, -14.50f} Rotation: {0.00f, 1.01f, 0.00f}
-Object: SpawnPoint 1         Position: {11.00f, 3.00f, 13.30f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: SpawnPoint 2         Position: {-1.60f, 2.90f, -11.20f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: SpawnPoint 3         Position: {-18.90f, 2.00f, 5.80f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: SpawnPoint 4         Position: {23.50f, 3.40f, -6.70f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Left Point           Position: {-36.00f, 0.00f, -1.70f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Right Point          Position: {40.50f, 2.90f, -9.40f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Up Point             Position: {6.50f, 0.00f, 42.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Down Point           Position: {-6.60f, 0.00f, -45.50f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Island B3            Position: {16.70f, 0.26f, -65.80f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Stone1               Position: {7.85f, 0.91f, -15.12f} Rotation: {0.35f, 0.28f, 0.93f}
-Object: Stone4               Position: {-28.78f, 16.90f, -4.26f} Rotation: {0.06f, 0.00f, -0.07f}
-Object: Stone4               Position: {29.15f, 0.37f, 14.46f} Rotation: {0.08f, -0.02f, -0.08f}
-Object: Stone1               Position: {44.29f, 0.91f, -17.75f} Rotation: {0.36f, 0.18f, 0.94f}
-Object: Stone4               Position: {-1.94f, 0.37f, 15.35f} Rotation: {0.08f, 0.00f, -0.08f}
-Object: Rock3                Position: {-28.00f, 0.00f, -32.10f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Rock3                Position: {-42.70f, 0.00f, 24.60f} Rotation: {-0.00f, -1.66f, 3.14f}
-Object: New Column           Position: {52.40f, 0.00f, 18.61f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Base                 Position: {0.00f, 2.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Middle               Position: {-0.09f, 4.54f, 2.03f} Rotation: {1.27f, 2.13f, 0.24f}
-Object: Top                  Position: {1.04f, 9.08f, -2.49f} Rotation: {0.29f, -0.55f, -0.21f}
-Object: Pot4                 Position: {30.19f, 0.50f, -30.05f} Rotation: {0.00f, -2.76f, 3.14f}
-Object: Mushroom1            Position: {30.90f, 0.00f, 25.20f} Rotation: {0.00f, 1.15f, 0.00f}
-Object: Mushroom2            Position: {-39.10f, 17.70f, -15.10f} Rotation: {0.00f, -1.05f, 0.00f}
-Object: Mushroom2            Position: {-10.10f, 0.00f, -18.20f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Mushroom3            Position: {-12.70f, 0.00f, -22.40f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Platform3            Position: {-30.53f, 0.40f, -4.30f} Rotation: {0.00f, -0.10f, 0.00f}
-Object: Wall1                Position: {19.10f, 0.00f, -34.20f} Rotation: {0.00f, 1.68f, 3.14f}
-Object: Wall2                Position: {8.90f, 0.00f, 43.30f} Rotation: {0.00f, 1.64f, 3.14f}
-Object: SpawnPoint 1         Position: {30.40f, 2.00f, -14.20f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: SpawnPoint 2         Position: {-33.40f, 22.50f, 4.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: SpawnPoint 3         Position: {11.80f, 2.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: SpawnPoint 4         Position: {9.50f, 2.00f, 26.20f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: SpawnPoint 5         Position: {43.10f, 2.00f, 3.60f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: SpawnPoint 6         Position: {-13.00f, 2.00f, 29.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Left Point           Position: {-58.50f, 18.00f, 4.30f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Right Point          Position: {81.00f, 0.00f, -4.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Up Point             Position: {47.70f, 0.00f, 48.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Down Point           Position: {0.00f, 0.00f, -42.60f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Island M5            Position: {-82.80f, 22.65f, -48.10f} Rotation: {-0.00f, -3.14f, 3.14f}
-Object: Stone5               Position: {-24.06f, 0.01f, 18.21f} Rotation: {-0.22f, 0.06f, -0.19f}
-Object: Stone4               Position: {-21.26f, -0.09f, -17.50f} Rotation: {0.06f, 0.00f, -0.07f}
-Object: Stone3               Position: {19.39f, 5.25f, 21.65f} Rotation: {-0.04f, 0.00f, -0.10f}
-Object: Brick                Position: {-8.27f, 1.62f, 13.41f} Rotation: {-0.21f, 1.35f, 1.77f}
-Object: Brick                Position: {6.81f, -0.00f, -20.35f} Rotation: {-0.00f, 0.61f, 0.04f}
-Object: Wall1                Position: {-11.37f, -0.20f, 30.41f} Rotation: {0.00f, 1.40f, 0.00f}
-Object: Mushroom1            Position: {-18.10f, 0.00f, -4.70f} Rotation: {0.00f, 0.98f, 0.00f}
-Object: Mushroom2            Position: {8.50f, 5.30f, 17.00f} Rotation: {0.00f, -0.70f, 0.00f}
-Object: Platform2            Position: {14.60f, -0.60f, 17.00f} Rotation: {0.00f, 1.57f, 0.00f}
-Object: Column2              Position: {20.70f, -0.26f, -25.70f} Rotation: {0.00f, 1.57f, 0.00f}
-Object: Rock2                Position: {35.10f, 0.04f, 19.50f} Rotation: {0.00f, 0.40f, 0.00f}
-Object: RockDouble           Position: {-31.20f, -0.16f, -8.90f} Rotation: {0.00f, 3.02f, -3.14f}
-Object: Rock3                Position: {34.20f, 0.94f, 14.60f} Rotation: {1.56f, -3.14f, -3.14f}
-Object: SpawnPoint 1         Position: {19.70f, 9.00f, 5.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: SpawnPoint 2         Position: {-13.40f, 2.90f, 2.40f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: SpawnPoint 3         Position: {21.90f, 2.00f, -16.60f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: SpawnPoint 4         Position: {-7.00f, 3.40f, -19.50f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Left Point           Position: {-45.40f, 4.30f, 15.20f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Right Point          Position: {41.00f, 0.00f, -13.40f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Up Point             Position: {-20.70f, -1.60f, 36.70f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Down Point           Position: {-18.20f, 4.80f, -38.70f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Island S1            Position: {82.50f, 1.88f, 100.20f} Rotation: {-0.00f, -1.57f, 3.14f}
-Object: Brick                Position: {-13.98f, 0.23f, -11.85f} Rotation: {-0.00f, -0.00f, 0.03f}
-Object: Stone2               Position: {15.15f, 0.21f, -17.32f} Rotation: {-0.00f, -0.05f, 0.36f}
-Object: Stone1               Position: {-9.39f, 0.72f, 16.10f} Rotation: {0.35f, 0.56f, 0.92f}
-Object: Stone3               Position: {19.03f, 1.61f, -6.80f} Rotation: {-1.32f, 2.58f, 0.21f}
-Object: Platform2            Position: {-7.20f, -0.40f, 11.50f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: SpawnPoint 1         Position: {10.00f, 4.00f, -5.10f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: SpawnPoint 2         Position: {-10.00f, 10.80f, 3.10f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Left Point           Position: {-33.00f, 4.10f, -10.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Right Point          Position: {26.80f, 0.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Up Point             Position: {10.00f, 0.00f, 34.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Down Point           Position: {-5.00f, 2.10f, -30.50f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Island S2            Position: {-109.50f, 23.49f, -119.80f} Rotation: {-0.00f, -1.57f, 3.14f}
-Object: Stone1               Position: {0.48f, 0.03f, -14.49f} Rotation: {0.36f, 0.23f, 0.93f}
-Object: Stone5               Position: {18.23f, -0.42f, 3.20f} Rotation: {-0.22f, 0.13f, -0.19f}
-Object: Stone5               Position: {15.28f, -0.29f, 17.85f} Rotation: {-0.53f, 0.11f, -0.18f}
-Object: Stone5               Position: {-13.16f, -0.46f, -2.20f} Rotation: {-0.23f, 0.07f, 0.01f}
-Object: New Column           Position: {12.00f, -1.90f, -5.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Base                 Position: {0.00f, 2.00f, -0.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Middle               Position: {3.48f, 3.65f, 9.65f} Rotation: {0.92f, 0.37f, 1.12f}
-Object: Top                  Position: {0.15f, 7.99f, -0.79f} Rotation: {-0.06f, 0.03f, 0.00f}
-Object: SpawnPoint 1         Position: {17.20f, 4.00f, -14.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: SpawnPoint 2         Position: {-10.00f, 4.00f, -8.10f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Left Point           Position: {-31.30f, 0.00f, 18.70f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Right Point          Position: {25.00f, 0.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Up Point             Position: {8.50f, 0.00f, 33.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Down Point           Position: {4.70f, 0.00f, -30.50f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Level 2              Position: {0.00f, 800.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Prefabs              Position: {0.00f, 0.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Spawn                Position: {0.00f, 3.93f, -30.00f} Rotation: {-0.00f, -3.14f, 3.14f}
-Object: SpawnRock1           Position: {20.20f, 7.00f, 21.40f} Rotation: {0.00f, -0.42f, 0.00f}
-Object: SpawnRock2           Position: {21.80f, 6.00f, -18.40f} Rotation: {0.00f, 0.21f, 0.00f}
-Object: SpawnRock4           Position: {-15.30f, 6.00f, -17.40f} Rotation: {0.00f, -0.99f, 0.00f}
-Object: SpawnRock7           Position: {-15.70f, 6.00f, 24.50f} Rotation: {-0.26f, 0.00f, -0.17f}
-Object: SpawnRockBase        Position: {0.00f, 0.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Left Point           Position: {-35.00f, 0.00f, 4.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Right Point          Position: {35.00f, 0.00f, -5.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Up Point             Position: {-0.00f, 0.00f, 30.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Down Point           Position: {-3.00f, 0.00f, -36.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Island M5            Position: {73.70f, -3.72f, -53.20f} Rotation: {-0.00f, -1.57f, 3.14f}
-Object: Stone3               Position: {-24.05f, 0.30f, 18.05f} Rotation: {-0.45f, 0.09f, -0.52f}
-Object: Stone4               Position: {-21.26f, -0.09f, -17.50f} Rotation: {0.06f, 0.00f, -0.07f}
-Object: Stone2               Position: {19.49f, 5.22f, 21.61f} Rotation: {-0.00f, -0.02f, 0.36f}
-Object: Brick                Position: {-8.27f, 1.62f, 13.41f} Rotation: {-0.21f, 1.35f, 1.77f}
-Object: Brick                Position: {6.81f, -0.00f, -20.35f} Rotation: {-0.00f, 0.61f, 0.04f}
-Object: Wall1                Position: {-11.37f, -0.20f, 30.41f} Rotation: {0.00f, 1.40f, -0.00f}
-Object: Mushroom1            Position: {-18.10f, 0.00f, -4.70f} Rotation: {0.00f, 0.98f, -0.00f}
-Object: Mushroom2            Position: {8.50f, 5.30f, 17.00f} Rotation: {0.00f, -0.70f, 0.00f}
-Object: Platform2            Position: {14.60f, -0.60f, 17.00f} Rotation: {0.00f, 1.57f, -0.00f}
-Object: Column2              Position: {20.70f, -0.26f, -25.70f} Rotation: {0.00f, 1.57f, -0.00f}
-Object: Rock2                Position: {35.10f, 0.04f, 19.50f} Rotation: {0.00f, 0.40f, -0.00f}
-Object: RockDouble           Position: {-31.20f, -0.16f, -8.90f} Rotation: {0.00f, 3.02f, -3.14f}
-Object: Rock3                Position: {34.20f, 0.94f, 14.60f} Rotation: {1.56f, -3.14f, 3.14f}
-Object: SpawnPoint 1         Position: {19.70f, 9.00f, 5.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: SpawnPoint 2         Position: {-13.40f, 2.90f, 2.40f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: SpawnPoint 3         Position: {21.90f, 2.00f, -16.60f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: SpawnPoint 4         Position: {-7.00f, 3.40f, -19.50f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Left Point           Position: {-38.70f, 4.80f, 18.20f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Right Point          Position: {36.70f, -1.60f, 20.70f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Up Point             Position: {15.20f, 4.30f, 45.40f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Down Point           Position: {-13.40f, 0.00f, -41.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Island B9            Position: {-97.30f, 5.67f, -33.60f} Rotation: {0.00f, 1.57f, 0.00f}
-Object: Stone3               Position: {-27.70f, 0.53f, -21.98f} Rotation: {-0.05f, -0.00f, -0.11f}
-Object: Stone2               Position: {-6.79f, 0.50f, -38.44f} Rotation: {-0.00f, -0.00f, 0.36f}
-Object: Stone4               Position: {8.35f, 0.46f, -41.63f} Rotation: {0.06f, 0.00f, -0.07f}
-Object: Stone5               Position: {46.31f, 0.68f, -12.47f} Rotation: {-0.52f, 0.13f, -0.18f}
-Object: Stone4               Position: {26.87f, 0.47f, -34.57f} Rotation: {0.08f, 0.19f, -0.08f}
-Object: Stone3               Position: {-41.27f, 0.54f, 5.78f} Rotation: {-0.05f, -0.00f, -0.11f}
-Object: Rock1                Position: {18.05f, -1.56f, 44.48f} Rotation: {0.19f, 1.95f, 1.82f}
-Object: Rock2                Position: {1.75f, -1.56f, 35.58f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Rock3                Position: {19.90f, 0.74f, 42.90f} Rotation: {0.00f, -2.64f, 3.14f}
-Object: Rock3                Position: {26.50f, -1.96f, 28.70f} Rotation: {0.00f, -2.03f, 3.14f}
-Object: Rock4                Position: {27.10f, 0.14f, 47.50f} Rotation: {0.00f, -0.23f, 0.00f}
-Object: Rock5                Position: {16.30f, 0.94f, 36.40f} Rotation: {0.00f, 0.79f, 0.00f}
-Object: RockDouble           Position: {50.50f, 0.34f, 1.70f} Rotation: {0.00f, -0.14f, 0.00f}
-Object: Ruin3                Position: {8.40f, 5.64f, 45.10f} Rotation: {-0.54f, 1.77f, -0.01f}
-Object: Ruin3                Position: {8.80f, 0.44f, 31.10f} Rotation: {0.00f, -1.54f, 0.00f}
-Object: Wall3                Position: {22.95f, 0.04f, 21.28f} Rotation: {0.00f, -0.90f, 0.00f}
-Object: StoneStack1          Position: {-27.33f, 2.10f, 24.20f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: StoneStackBase1      Position: {-0.00f, -1.43f, -0.01f} Rotation: {-0.00f, -0.00f, -0.00f}
-Object: StoneStackMid1       Position: {1.27f, 4.08f, -0.63f} Rotation: {0.01f, 0.00f, -0.01f}
-Object: StoneStackTop1       Position: {1.23f, 7.72f, -0.17f} Rotation: {0.02f, 0.00f, -0.00f}
-Object: New Column           Position: {-15.03f, 0.30f, -34.80f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Base                 Position: {-0.00f, 2.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Middle               Position: {-5.63f, 2.73f, 0.71f} Rotation: {-1.55f, 1.17f, 3.12f}
-Object: Top                  Position: {3.26f, 9.37f, -1.72f} Rotation: {0.32f, 0.12f, 0.39f}
-Object: New Column           Position: {-15.63f, 0.30f, 30.60f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Base                 Position: {0.00f, 2.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Middle               Position: {-0.27f, 4.43f, 2.02f} Rotation: {1.27f, 2.23f, 0.23f}
-Object: Top                  Position: {0.27f, 8.93f, -2.44f} Rotation: {0.30f, -0.02f, 0.04f}
-Object: New Column           Position: {36.47f, 0.30f, -28.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Base                 Position: {-0.00f, 2.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Middle               Position: {4.39f, 4.79f, 11.30f} Rotation: {0.55f, -0.05f, 1.61f}
-Object: Top                  Position: {0.11f, 8.00f, -0.86f} Rotation: {-0.05f, -0.02f, -0.01f}
-Object: Column2              Position: {-32.23f, 0.50f, -2.80f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Base                 Position: {7.67f, -2.50f, -2.50f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Platform3            Position: {38.27f, 0.40f, 29.60f} Rotation: {0.00f, 2.25f, 3.14f}
-Object: SpawnPoint 1         Position: {-1.80f, 2.00f, -18.60f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: SpawnPoint 2         Position: {-12.20f, 2.90f, -4.40f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: SpawnPoint 3         Position: {3.10f, 2.00f, 13.80f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: SpawnPoint 4         Position: {22.00f, 2.00f, 6.20f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: SpawnPoint 5         Position: {20.60f, 2.00f, -14.90f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: SpawnPoint 6         Position: {8.00f, 2.00f, -2.80f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Left Point           Position: {-56.50f, 0.00f, 15.70f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Right Point          Position: {62.30f, -3.00f, 7.60f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Up Point             Position: {-2.10f, 0.00f, 52.10f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Down Point           Position: {-19.90f, 0.00f, -67.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Island S11           Position: {74.10f, -5.49f, -123.50f} Rotation: {0.00f, 1.57f, 0.00f}
-Object: Stone5               Position: {-4.67f, -0.29f, 3.07f} Rotation: {-0.53f, 0.12f, -0.18f}
-Object: Stone5               Position: {18.47f, -0.29f, 21.22f} Rotation: {-0.53f, 0.13f, -0.18f}
+Object: Island S11           Position: {17.10f, 4.58f, 99.20f} Rotation: {0.00f, 1.57f, 0.00f}
+Object: Stone3               Position: {-4.70f, -0.43f, 3.06f} Rotation: {-0.05f, -0.00f, -0.11f}
+Object: Stone4               Position: {18.42f, -0.51f, 21.14f} Rotation: {0.06f, -0.02f, -0.07f}
 Object: Brick                Position: {-0.87f, -0.43f, -16.22f} Rotation: {-0.00f, -0.02f, 0.02f}
 Object: Fire1                Position: {6.10f, -0.40f, -2.06f} Rotation: {0.00f, -0.52f, 0.00f}
 Object: Column2              Position: {15.20f, -0.50f, -9.96f} Rotation: {0.00f, 0.72f, 0.00f}
@@ -314,44 +131,232 @@ Object: Left Point           Position: {-27.50f, 0.00f, -0.00f} Rotation: {0.00f
 Object: Right Point          Position: {31.10f, 0.00f, -13.70f} Rotation: {0.00f, 0.00f, 0.00f}
 Object: Up Point             Position: {-13.80f, 0.00f, 29.30f} Rotation: {0.00f, 0.00f, 0.00f}
 Object: Down Point           Position: {-14.10f, 0.00f, -33.20f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Island M3            Position: {-129.40f, 7.79f, -146.00f} Rotation: {-0.00f, -1.57f, 3.14f}
-Object: Stone5               Position: {-16.38f, 0.13f, 25.14f} Rotation: {-0.53f, 0.12f, -0.18f}
-Object: Stone4               Position: {25.08f, -0.09f, 3.37f} Rotation: {0.06f, -0.00f, -0.07f}
-Object: Stone2               Position: {27.97f, -0.05f, -18.02f} Rotation: {-0.00f, 0.00f, 0.37f}
-Object: Stone4               Position: {-3.34f, -0.09f, -15.48f} Rotation: {0.06f, 0.00f, -0.07f}
-Object: Fire1                Position: {3.20f, 0.00f, 3.60f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Ruin3                Position: {4.60f, 6.10f, 22.80f} Rotation: {0.53f, -1.57f, -1.56f}
-Object: RuinRoof2            Position: {22.80f, -0.10f, 21.30f} Rotation: {0.00f, -1.48f, 0.00f}
-Object: Wall3                Position: {-30.70f, -0.36f, 1.10f} Rotation: {0.00f, 3.00f, -3.14f}
-Object: Wall2                Position: {7.70f, -0.26f, -27.00f} Rotation: {0.00f, 1.57f, -0.00f}
-Object: Rock2                Position: {14.10f, 0.04f, 21.80f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Rock1                Position: {-24.50f, 0.04f, -3.30f} Rotation: {0.00f, -2.90f, 3.14f}
-Object: Rock1                Position: {3.30f, -1.06f, 24.50f} Rotation: {0.00f, -2.90f, 3.14f}
-Object: Rock3                Position: {-24.00f, 0.04f, -23.60f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: SpawnPoint 1         Position: {12.00f, 2.00f, -17.60f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: SpawnPoint 2         Position: {27.00f, 2.90f, 12.90f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: SpawnPoint 3         Position: {-6.90f, 2.00f, 9.30f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: SpawnPoint 4         Position: {25.60f, 2.00f, -10.20f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Left Point           Position: {-39.90f, 20.90f, 25.30f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Right Point          Position: {34.80f, 3.60f, 6.80f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Up Point             Position: {12.20f, 0.00f, 45.40f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Down Point           Position: {3.00f, 13.00f, -40.60f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Island S8            Position: {-62.00f, 2.12f, -142.20f} Rotation: {-0.00f, -1.57f, 3.14f}
-Object: Stone3               Position: {-16.21f, 0.24f, 6.97f} Rotation: {-0.03f, 0.02f, -0.13f}
-Object: Stone2               Position: {19.69f, 0.21f, -13.34f} Rotation: {-0.00f, -0.00f, 0.36f}
-Object: Stone1               Position: {13.07f, 2.03f, 16.69f} Rotation: {0.35f, 0.29f, 0.93f}
-Object: Pot3                 Position: {3.77f, 1.71f, 5.12f} Rotation: {0.00f, -0.01f, 0.00f}
-Object: Fire1                Position: {-5.80f, 0.30f, -8.76f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Platform2            Position: {10.60f, -2.60f, 14.20f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: SpawnPoint 1         Position: {13.90f, 4.00f, -3.40f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: SpawnPoint 2         Position: {-3.10f, 4.00f, 13.30f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Left Point           Position: {-32.60f, 0.00f, 3.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Right Point          Position: {27.50f, 0.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Up Point             Position: {4.40f, 0.00f, 33.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Down Point           Position: {-7.50f, 0.00f, -29.60f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Island M1            Position: {84.20f, 1.01f, 93.50f} Rotation: {0.00f, 1.57f, 0.00f}
+Object: Stone2               Position: {9.38f, -0.05f, 15.53f} Rotation: {-0.00f, -0.00f, 0.36f}
+Object: Stone4               Position: {24.77f, -0.08f, 22.22f} Rotation: {0.10f, -0.01f, -0.08f}
+Object: Stone4               Position: {20.39f, -0.09f, -14.51f} Rotation: {0.06f, 0.00f, -0.07f}
+Object: Stone3               Position: {-10.96f, 0.35f, -6.99f} Rotation: {-0.46f, 0.13f, -0.59f}
+Object: StoneStack1          Position: {25.00f, 1.10f, 3.30f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: StoneStackBase1      Position: {-0.01f, -0.98f, -0.00f} Rotation: {-0.00f, 0.00f, -0.00f}
+Object: StoneStackMid1       Position: {1.26f, 4.53f, -0.64f} Rotation: {0.01f, 0.00f, -0.01f}
+Object: StoneStackTop1       Position: {1.25f, 8.17f, -0.21f} Rotation: {0.01f, 0.00f, -0.01f}
+Object: StoneStack1          Position: {-7.20f, 1.10f, -14.00f} Rotation: {0.00f, 1.71f, 3.14f}
+Object: StoneStackBase1      Position: {-0.01f, -0.98f, -0.00f} Rotation: {-0.00f, 0.00f, -0.00f}
+Object: StoneStackMid1       Position: {1.25f, 4.53f, -0.64f} Rotation: {0.02f, 0.00f, -0.00f}
+Object: StoneStackTop1       Position: {1.23f, 8.17f, -0.20f} Rotation: {0.02f, 0.00f, -0.00f}
+Object: StoneStack1          Position: {-4.90f, 1.10f, 20.40f} Rotation: {0.00f, -0.40f, 0.00f}
+Object: StoneStackBase1      Position: {-0.01f, -0.98f, -0.00f} Rotation: {-0.00f, -0.00f, -0.00f}
+Object: StoneStackMid1       Position: {1.27f, 4.53f, -0.64f} Rotation: {0.01f, 0.00f, -0.01f}
+Object: StoneStackTop1       Position: {1.26f, 8.17f, -0.21f} Rotation: {0.02f, 0.00f, -0.01f}
+Object: Rock1                Position: {-26.70f, 0.04f, -10.60f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Rock2                Position: {-30.50f, 0.04f, 14.50f} Rotation: {0.00f, 2.44f, 3.14f}
+Object: Rock2                Position: {32.00f, 0.04f, -23.10f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Rock3                Position: {-33.70f, 0.04f, 3.50f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: SpawnPoint 1         Position: {4.40f, 2.00f, 1.40f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: SpawnPoint 2         Position: {-13.30f, 2.90f, 6.60f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: SpawnPoint 3         Position: {18.60f, 2.00f, 13.10f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: SpawnPoint 4         Position: {11.20f, 2.00f, -13.30f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Left Point           Position: {-36.00f, 0.00f, -8.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Right Point          Position: {42.00f, 0.00f, 6.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Up Point             Position: {21.10f, 0.00f, 44.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Down Point           Position: {18.00f, 0.00f, -46.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Island B8            Position: {109.20f, 0.69f, -14.20f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Stone2               Position: {-15.60f, 0.50f, -0.27f} Rotation: {-0.00f, -0.00f, 0.36f}
+Object: Stone3               Position: {-29.35f, 0.54f, 15.05f} Rotation: {-0.05f, -0.01f, -0.11f}
+Object: Stone2               Position: {27.11f, 0.50f, -1.58f} Rotation: {-0.00f, -0.08f, 0.36f}
+Object: Stone5               Position: {42.51f, 0.68f, -7.17f} Rotation: {-0.53f, 0.13f, -0.18f}
+Object: Stone3               Position: {35.78f, 0.53f, 27.19f} Rotation: {-0.05f, -0.02f, -0.11f}
+Object: Stone1               Position: {10.46f, 4.77f, 7.44f} Rotation: {0.36f, 0.24f, 0.93f}
+Object: Wall1                Position: {-42.05f, 0.24f, 18.88f} Rotation: {0.00f, 0.28f, 0.00f}
+Object: Wall2                Position: {10.65f, 0.04f, -47.82f} Rotation: {-0.00f, -1.64f, 3.14f}
+Object: Rock3                Position: {51.65f, -0.26f, 25.68f} Rotation: {0.00f, 0.19f, 0.00f}
+Object: Rock3                Position: {-41.15f, -0.26f, -24.22f} Rotation: {0.00f, 0.68f, 0.00f}
+Object: Rock1                Position: {50.65f, 0.54f, 13.18f} Rotation: {0.00f, 1.06f, 0.00f}
+Object: Ruin3                Position: {7.75f, 0.44f, 9.18f} Rotation: {-0.00f, -1.64f, 3.14f}
+Object: StoneStack1          Position: {1.97f, 2.10f, 31.30f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: StoneStackBase1      Position: {-0.00f, -1.43f, -0.00f} Rotation: {-0.00f, -0.00f, -0.00f}
+Object: StoneStackMid1       Position: {1.27f, 4.08f, -0.63f} Rotation: {0.01f, -0.00f, -0.01f}
+Object: StoneStackTop1       Position: {1.24f, 7.72f, -0.17f} Rotation: {0.02f, 0.00f, -0.00f}
+Object: StoneStack1          Position: {31.37f, 1.20f, -33.20f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: StoneStackBase1      Position: {0.00f, -0.53f, 0.00f} Rotation: {-0.00f, -0.00f, -0.00f}
+Object: StoneStackMid1       Position: {1.28f, 4.98f, -0.64f} Rotation: {0.01f, -0.00f, -0.01f}
+Object: StoneStackTop1       Position: {1.27f, 8.62f, -0.21f} Rotation: {0.01f, 0.00f, -0.01f}
+Object: Mushroom1            Position: {23.57f, 0.40f, -20.70f} Rotation: {-0.00f, -2.88f, 3.14f}
+Object: Mushroom2            Position: {-19.73f, 0.40f, -25.00f} Rotation: {0.00f, -1.12f, 0.00f}
+Object: Mushroom2            Position: {25.17f, 0.40f, 28.30f} Rotation: {0.00f, 2.30f, 3.14f}
+Object: Mushroom3            Position: {-12.03f, 0.40f, 21.60f} Rotation: {0.00f, 0.65f, 0.00f}
+Object: SpawnPoint 1         Position: {7.70f, 2.00f, -32.80f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: SpawnPoint 2         Position: {-17.50f, 2.90f, 11.40f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: SpawnPoint 3         Position: {4.70f, 2.00f, -9.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: SpawnPoint 4         Position: {11.60f, 2.00f, 24.40f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: SpawnPoint 5         Position: {28.70f, 2.00f, 14.20f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: SpawnPoint 6         Position: {36.60f, 2.00f, -15.60f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Left Point           Position: {-53.70f, 0.00f, -2.60f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Right Point          Position: {67.00f, 0.00f, -12.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Up Point             Position: {-7.00f, 0.00f, 61.70f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Down Point           Position: {12.00f, 3.40f, -55.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Island M4            Position: {216.80f, 4.17f, -19.90f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Stone4               Position: {11.40f, -0.09f, 1.79f} Rotation: {0.06f, 0.00f, -0.07f}
+Object: Stone5               Position: {32.24f, 6.47f, -7.90f} Rotation: {-0.22f, 0.04f, -0.19f}
+Object: Stone4               Position: {8.91f, -0.09f, -23.37f} Rotation: {0.06f, 0.00f, -0.07f}
+Object: Brick                Position: {17.29f, 1.78f, 18.16f} Rotation: {-0.22f, 1.28f, 1.79f}
+Object: Brick                Position: {-25.09f, -0.02f, -4.26f} Rotation: {0.00f, 0.61f, 0.04f}
+Object: Brick                Position: {-3.39f, 4.66f, 15.89f} Rotation: {-0.20f, 2.16f, 1.77f}
+Object: Mushroom1            Position: {-11.40f, 0.00f, -21.70f} Rotation: {0.00f, -0.63f, 0.00f}
+Object: Mushroom2            Position: {9.80f, 0.00f, 13.00f} Rotation: {0.00f, 1.01f, 0.00f}
+Object: Platform1            Position: {26.40f, -0.60f, -13.40f} Rotation: {-0.00f, -3.14f, 3.14f}
+Object: Ruin2                Position: {-15.70f, -1.16f, 22.00f} Rotation: {-0.00f, -1.90f, 3.14f}
+Object: Rock2                Position: {-30.30f, 0.04f, 10.90f} Rotation: {0.00f, -0.14f, 0.00f}
+Object: Rock1                Position: {-20.70f, 0.04f, -22.80f} Rotation: {0.00f, 2.69f, 3.14f}
+Object: Rock3                Position: {30.80f, -0.16f, 5.90f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: SpawnPoint 1         Position: {-14.60f, 5.60f, 16.90f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: SpawnPoint 2         Position: {0.60f, 2.90f, -14.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: SpawnPoint 3         Position: {29.20f, 2.00f, 19.40f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: SpawnPoint 4         Position: {0.50f, 3.40f, -0.20f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Left Point           Position: {-40.60f, 0.00f, -6.30f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Right Point          Position: {45.40f, 4.30f, -12.20f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Up Point             Position: {18.80f, 0.00f, 38.70f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Down Point           Position: {3.30f, 0.00f, -35.40f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Island S7            Position: {235.60f, 0.13f, 46.30f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Stone3               Position: {-12.11f, 0.24f, -2.73f} Rotation: {-0.05f, 0.00f, -0.11f}
+Object: Stone5               Position: {19.27f, 0.39f, -1.39f} Rotation: {-0.53f, 0.12f, -0.18f}
+Object: Stone4               Position: {0.11f, 0.17f, 21.64f} Rotation: {0.06f, 0.00f, -0.07f}
+Object: Brick                Position: {-0.73f, 0.24f, -10.75f} Rotation: {-0.00f, -2.58f, 3.11f}
+Object: New Column           Position: {-9.10f, -0.10f, 13.60f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Base                 Position: {0.00f, 2.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Middle               Position: {-0.18f, 4.69f, 2.02f} Rotation: {1.24f, 2.17f, 0.25f}
+Object: Top                  Position: {0.43f, 8.92f, -2.40f} Rotation: {0.29f, -0.03f, 0.02f}
+Object: Column3              Position: {12.00f, -0.10f, -9.80f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: SpawnPoint 1         Position: {11.80f, 4.00f, 10.70f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: SpawnPoint 2         Position: {-2.90f, 4.00f, -0.70f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Left Point           Position: {-29.60f, 0.00f, 7.50f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Right Point          Position: {33.00f, 0.00f, -4.40f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Up Point             Position: {3.00f, 0.00f, 32.60f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Down Point           Position: {0.00f, 0.00f, -27.50f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Level 2              Position: {0.00f, 800.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Prefabs              Position: {0.00f, 0.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Spawn                Position: {0.00f, -3.90f, -30.00f} Rotation: {-0.00f, -3.14f, 3.14f}
+Object: SpawnRock1           Position: {20.20f, 7.00f, 21.40f} Rotation: {0.00f, -0.42f, 0.00f}
+Object: SpawnRock2           Position: {21.80f, 6.00f, -18.40f} Rotation: {0.00f, 0.21f, 0.00f}
+Object: SpawnRock4           Position: {-15.30f, 6.00f, -17.40f} Rotation: {0.00f, -0.99f, 0.00f}
+Object: SpawnRock7           Position: {-15.70f, 6.00f, 24.50f} Rotation: {-0.26f, 0.00f, -0.17f}
+Object: SpawnRockBase        Position: {0.00f, 0.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Left Point           Position: {-35.00f, 0.00f, 4.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Right Point          Position: {35.00f, 0.00f, -5.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Up Point             Position: {-0.00f, 0.00f, 30.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Down Point           Position: {-3.00f, 0.00f, -36.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Island M9            Position: {80.50f, 3.95f, -41.60f} Rotation: {-0.00f, -3.14f, 3.14f}
+Object: Stone1               Position: {-27.70f, 0.46f, 9.27f} Rotation: {0.36f, 0.22f, 0.93f}
+Object: Stone4               Position: {-5.55f, -0.09f, -20.84f} Rotation: {0.06f, 0.00f, -0.07f}
+Object: Stone5               Position: {29.06f, 0.13f, -12.91f} Rotation: {-0.53f, 0.12f, -0.18f}
+Object: Mushroom1            Position: {-13.10f, -0.30f, -7.20f} Rotation: {0.00f, 0.99f, 0.00f}
+Object: Mushroom2            Position: {11.20f, -0.30f, -4.70f} Rotation: {0.00f, 2.02f, -3.14f}
+Object: Mushroom3            Position: {-16.40f, -0.30f, -7.10f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Mushroom3            Position: {14.40f, -0.30f, -5.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: New Column           Position: {11.36f, -1.90f, 1.57f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Base                 Position: {-0.00f, 2.00f, -0.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Middle               Position: {-0.11f, 5.77f, 2.14f} Rotation: {0.92f, -1.61f, -0.64f}
+Object: Top                  Position: {0.09f, 7.98f, -0.67f} Rotation: {-0.03f, -0.01f, -0.01f}
+Object: New Column           Position: {-10.84f, -1.90f, 4.87f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Base                 Position: {0.00f, 2.00f, -0.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Middle               Position: {-3.11f, 4.26f, 0.59f} Rotation: {0.20f, 1.69f, 1.37f}
+Object: Top                  Position: {-1.35f, 7.70f, -3.44f} Rotation: {0.89f, 1.89f, -2.62f}
+Object: Column3              Position: {11.16f, -0.30f, -19.33f} Rotation: {0.00f, 1.57f, 0.00f}
+Object: Wall2                Position: {8.50f, -0.30f, 32.00f} Rotation: {0.00f, 1.66f, -3.14f}
+Object: Ruin3                Position: {-13.40f, -0.20f, 23.10f} Rotation: {0.00f, 1.68f, -3.14f}
+Object: Rock4                Position: {-30.80f, -1.16f, -14.50f} Rotation: {0.00f, 1.01f, 0.00f}
+Object: SpawnPoint 1         Position: {11.00f, 3.00f, 13.30f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: SpawnPoint 2         Position: {-1.60f, 2.90f, -11.20f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: SpawnPoint 3         Position: {-18.90f, 2.00f, 5.80f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: SpawnPoint 4         Position: {23.50f, 3.40f, -6.70f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Left Point           Position: {-45.50f, 0.00f, 6.60f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Right Point          Position: {42.00f, 0.00f, -6.50f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Up Point             Position: {-1.70f, 0.00f, 36.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Down Point           Position: {-9.40f, 2.90f, -40.50f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Island M5            Position: {52.90f, -4.98f, -120.80f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Stone1               Position: {-24.14f, 0.46f, 18.17f} Rotation: {0.35f, 0.13f, 0.95f}
+Object: Stone4               Position: {-21.26f, -0.09f, -17.50f} Rotation: {0.06f, 0.00f, -0.07f}
+Object: Stone2               Position: {19.48f, 5.22f, 21.61f} Rotation: {-0.00f, -0.02f, 0.36f}
+Object: Brick                Position: {-8.27f, 1.62f, 13.42f} Rotation: {-0.21f, 1.35f, 1.77f}
+Object: Brick                Position: {6.81f, -0.00f, -20.35f} Rotation: {-0.00f, 0.61f, 0.04f}
+Object: Wall1                Position: {-11.37f, -0.20f, 30.41f} Rotation: {0.00f, 1.40f, 0.00f}
+Object: Mushroom1            Position: {-18.10f, 0.00f, -4.70f} Rotation: {0.00f, 0.98f, 0.00f}
+Object: Mushroom2            Position: {8.50f, 5.30f, 17.00f} Rotation: {0.00f, -0.70f, 0.00f}
+Object: Platform2            Position: {14.60f, -0.60f, 17.00f} Rotation: {0.00f, 1.57f, 0.00f}
+Object: Column2              Position: {20.70f, -0.26f, -25.70f} Rotation: {0.00f, 1.57f, 0.00f}
+Object: Rock2                Position: {35.10f, 0.04f, 19.50f} Rotation: {0.00f, 0.40f, 0.00f}
+Object: RockDouble           Position: {-31.20f, -0.16f, -8.90f} Rotation: {0.00f, 3.02f, 3.14f}
+Object: Rock3                Position: {34.20f, 0.94f, 14.60f} Rotation: {1.56f, -3.14f, -3.14f}
+Object: SpawnPoint 1         Position: {19.70f, 9.00f, 5.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: SpawnPoint 2         Position: {-13.40f, 2.90f, 2.40f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: SpawnPoint 3         Position: {21.90f, 2.00f, -16.60f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: SpawnPoint 4         Position: {-7.00f, 3.40f, -19.50f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Left Point           Position: {-41.00f, 0.00f, 13.40f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Right Point          Position: {45.40f, 4.30f, -15.20f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Up Point             Position: {18.20f, 4.80f, 38.70f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Down Point           Position: {20.70f, -1.60f, -36.70f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Island B1            Position: {-88.90f, -2.43f, -27.30f} Rotation: {-0.00f, -3.14f, 3.14f}
+Object: Rock1                Position: {-12.00f, 0.00f, 31.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Rock2                Position: {32.50f, 0.00f, -44.10f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Stone3               Position: {-30.03f, 1.92f, 18.58f} Rotation: {-1.32f, 2.64f, 0.16f}
+Object: Stone4               Position: {-10.05f, 0.46f, -21.06f} Rotation: {0.06f, -0.00f, -0.07f}
+Object: Stone3               Position: {15.98f, 0.54f, 30.01f} Rotation: {-0.05f, -0.01f, -0.11f}
+Object: Stone4               Position: {36.74f, 0.46f, 33.28f} Rotation: {0.06f, 0.00f, -0.07f}
+Object: Stone2               Position: {-7.86f, 0.50f, 12.04f} Rotation: {-0.00f, -0.01f, 0.36f}
+Object: Stone3               Position: {-24.03f, 1.92f, -32.42f} Rotation: {-1.32f, 2.64f, 0.16f}
+Object: New Column           Position: {0.00f, 0.00f, 7.40f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Base                 Position: {0.00f, 2.00f, -0.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Middle               Position: {-0.19f, 5.29f, 2.03f} Rotation: {1.22f, 2.27f, 0.25f}
+Object: Top                  Position: {0.49f, 8.74f, -2.49f} Rotation: {0.28f, -0.05f, 0.02f}
+Object: New Column           Position: {0.00f, 0.00f, -25.60f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Base                 Position: {0.00f, 2.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Middle               Position: {-0.24f, 4.60f, 2.02f} Rotation: {1.29f, 2.21f, 0.22f}
+Object: Top                  Position: {0.24f, 8.95f, -2.47f} Rotation: {0.32f, 0.02f, 0.07f}
+Object: Ruin1                Position: {39.90f, -1.00f, -5.90f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Platform1            Position: {-34.90f, -0.60f, -4.40f} Rotation: {0.00f, -0.17f, 0.00f}
+Object: SpawnPoint 1         Position: {-19.00f, 3.00f, 2.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: SpawnPoint 2         Position: {11.90f, 3.00f, 8.50f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: SpawnPoint 3         Position: {7.10f, 3.00f, 26.30f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: SpawnPoint 4         Position: {32.90f, 3.00f, 19.20f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: SpawnPoint 5         Position: {-1.50f, 3.00f, -10.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: SpawnPoint 6         Position: {15.40f, 3.00f, -29.60f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Left Point           Position: {-66.00f, 0.00f, -15.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Right Point          Position: {53.90f, 5.20f, 1.30f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Up Point             Position: {2.20f, 0.00f, 55.30f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Down Point           Position: {10.00f, 0.00f, -60.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Island S12           Position: {-78.90f, -2.13f, -114.80f} Rotation: {-0.00f, -3.14f, 3.14f}
+Object: Stone5               Position: {-6.37f, -0.30f, 0.68f} Rotation: {-0.52f, 0.13f, -0.17f}
+Object: Stone1               Position: {17.01f, 0.04f, 13.83f} Rotation: {0.36f, 0.30f, 0.93f}
+Object: StoneStack1          Position: {2.41f, 2.84f, -13.59f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: StoneStackBase1      Position: {-0.02f, -3.13f, -0.02f} Rotation: {-0.00f, -0.01f, -0.00f}
+Object: StoneStackMid1       Position: {1.49f, 2.37f, -0.47f} Rotation: {0.01f, -0.02f, -0.01f}
+Object: StoneStackTop1       Position: {2.25f, 6.02f, 0.41f} Rotation: {0.03f, -0.22f, -0.01f}
+Object: Rock3                Position: {20.70f, -0.50f, -0.86f} Rotation: {0.00f, 0.51f, 0.00f}
+Object: Platform3            Position: {-17.70f, -2.20f, -1.40f} Rotation: {0.00f, -0.23f, 0.00f}
+Object: SpawnPoint 1         Position: {-7.40f, 4.00f, -15.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: SpawnPoint 2         Position: {10.40f, 4.00f, -4.20f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Left Point           Position: {-33.20f, 0.00f, 14.10f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Right Point          Position: {27.70f, 0.00f, 0.40f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Up Point             Position: {-0.00f, 0.00f, 27.50f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Down Point           Position: {-13.70f, 0.00f, -31.10f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Island S4            Position: {131.30f, 5.84f, -140.40f} Rotation: {-0.00f, -3.14f, 3.14f}
+Object: Stone5               Position: {-12.91f, 0.39f, 1.43f} Rotation: {-0.53f, 0.13f, -0.18f}
+Object: Stone2               Position: {16.47f, 0.21f, -13.50f} Rotation: {-0.00f, -0.00f, 0.36f}
+Object: Stone3               Position: {13.65f, 0.24f, 17.49f} Rotation: {-0.05f, -0.00f, -0.11f}
+Object: StoneStack1          Position: {8.70f, 15.00f, -7.60f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: StoneStackBase1      Position: {0.01f, -14.62f, -0.12f} Rotation: {0.00f, -0.00f, 0.00f}
+Object: StoneStackMid1       Position: {1.36f, -9.11f, -0.68f} Rotation: {0.01f, -0.00f, -0.01f}
+Object: StoneStackTop1       Position: {-5.82f, -14.75f, 10.92f} Rotation: {0.00f, -0.33f, -0.00f}
+Object: Rock1                Position: {-12.70f, 0.00f, 18.30f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: SpawnPoint 1         Position: {3.90f, 4.00f, 11.50f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: SpawnPoint 2         Position: {-4.30f, 4.00f, -9.10f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Left Point           Position: {-33.00f, 0.00f, 4.40f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Right Point          Position: {29.60f, 0.00f, -7.50f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Up Point             Position: {-0.00f, 0.00f, 27.50f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Down Point           Position: {-3.00f, 0.00f, -32.60f} Rotation: {0.00f, 0.00f, 0.00f}
 Object: Level 3              Position: {0.00f, 1200.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
 Object: Prefabs              Position: {0.00f, 0.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Spawn                Position: {0.00f, 3.63f, 30.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Spawn                Position: {0.00f, 4.35f, 30.00f} Rotation: {0.00f, 0.00f, 0.00f}
 Object: SpawnRock1           Position: {20.20f, 7.00f, 21.40f} Rotation: {0.00f, -0.42f, 0.00f}
 Object: SpawnRock2           Position: {21.80f, 6.00f, -18.40f} Rotation: {0.00f, 0.21f, 0.00f}
 Object: SpawnRock4           Position: {-15.30f, 6.00f, -17.40f} Rotation: {0.00f, -0.99f, 0.00f}
@@ -361,71 +366,39 @@ Object: Left Point           Position: {-35.00f, 0.00f, 5.00f} Rotation: {0.00f,
 Object: Right Point          Position: {35.00f, 0.00f, -4.00f} Rotation: {0.00f, 0.00f, 0.00f}
 Object: Up Point             Position: {3.00f, 0.00f, 36.00f} Rotation: {0.00f, 0.00f, 0.00f}
 Object: Down Point           Position: {0.00f, 0.00f, -30.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Island S12           Position: {62.50f, -1.13f, 26.00f} Rotation: {0.00f, 1.57f, 0.00f}
-Object: Stone5               Position: {-6.38f, -0.29f, 0.67f} Rotation: {-0.53f, 0.13f, -0.18f}
-Object: Stone3               Position: {17.15f, -0.43f, 13.90f} Rotation: {-0.05f, -0.01f, -0.11f}
-Object: StoneStack1          Position: {2.41f, 2.84f, -13.59f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: StoneStackBase1      Position: {-0.02f, -3.13f, -0.02f} Rotation: {-0.00f, -0.01f, -0.00f}
-Object: StoneStackMid1       Position: {1.49f, 2.37f, -0.47f} Rotation: {0.01f, -0.02f, -0.01f}
-Object: StoneStackTop1       Position: {2.25f, 6.02f, 0.41f} Rotation: {0.03f, -0.22f, -0.01f}
-Object: Rock3                Position: {20.70f, -0.50f, -0.86f} Rotation: {0.00f, 0.51f, 0.00f}
-Object: Platform3            Position: {-17.70f, -2.20f, -1.40f} Rotation: {0.00f, -0.23f, 0.00f}
-Object: SpawnPoint 1         Position: {-7.40f, 4.00f, -15.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: SpawnPoint 2         Position: {10.40f, 4.00f, -4.20f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Left Point           Position: {-27.50f, 0.00f, -0.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Right Point          Position: {31.10f, 0.00f, -13.70f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Up Point             Position: {-0.40f, 0.00f, 27.70f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Down Point           Position: {-14.10f, 0.00f, -33.20f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Island B2            Position: {-3.00f, -3.64f, 133.00f} Rotation: {0.00f, 1.57f, 0.00f}
-Object: Rock1                Position: {-12.30f, 0.10f, 48.80f} Rotation: {0.00f, 1.40f, 1.37f}
-Object: Rock2                Position: {-30.20f, 0.00f, 33.40f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Rock2                Position: {-33.50f, 0.60f, 23.00f} Rotation: {0.00f, 0.38f, 0.00f}
-Object: Rock3                Position: {27.30f, 0.00f, -30.70f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Rock5                Position: {-35.80f, -0.70f, 14.10f} Rotation: {0.00f, -0.26f, 0.00f}
-Object: Stone1               Position: {16.63f, 1.00f, 13.86f} Rotation: {0.35f, 0.23f, 0.93f}
-Object: Stone4               Position: {-10.22f, 0.47f, -5.17f} Rotation: {0.09f, -0.00f, -0.09f}
-Object: Stone4               Position: {-9.85f, 8.32f, 38.42f} Rotation: {0.09f, -0.00f, -0.06f}
-Object: Stone3               Position: {38.38f, 0.54f, -20.99f} Rotation: {-0.05f, -0.01f, -0.11f}
-Object: Stone2               Position: {47.62f, 0.50f, 23.97f} Rotation: {-0.00f, -0.00f, 0.36f}
-Object: Stone4               Position: {-24.53f, 8.32f, 17.23f} Rotation: {0.06f, 0.00f, -0.07f}
-Object: New Column           Position: {33.00f, 0.00f, 16.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Base                 Position: {0.00f, 2.00f, -0.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Middle               Position: {-0.09f, 4.82f, 2.02f} Rotation: {1.25f, 2.15f, 0.25f}
-Object: Top                  Position: {0.42f, 8.95f, -2.39f} Rotation: {0.30f, -0.01f, 0.03f}
-Object: New Column           Position: {-7.00f, 0.00f, -26.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Base                 Position: {-0.00f, 2.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Middle               Position: {-0.25f, 5.03f, 2.00f} Rotation: {1.21f, 2.13f, 0.29f}
-Object: Top                  Position: {0.51f, 8.84f, -2.46f} Rotation: {0.30f, -0.09f, -0.00f}
-Object: Ruin3                Position: {47.00f, 0.00f, -4.00f} Rotation: {0.00f, 0.59f, 0.00f}
-Object: Ruin3                Position: {-16.00f, 0.00f, -21.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Platform2            Position: {-8.40f, 0.00f, 28.80f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: SpawnPoint 1         Position: {31.10f, 3.50f, -3.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: SpawnPoint 2         Position: {11.80f, 3.50f, -4.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: SpawnPoint 2         Position: {11.40f, 3.50f, -28.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: SpawnPoint 4         Position: {-26.30f, 3.50f, -14.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: SpawnPoint 5         Position: {-6.50f, 8.00f, 20.10f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: SpawnPoint 6         Position: {-20.50f, 8.00f, 35.60f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Left Point           Position: {-58.00f, 0.00f, -4.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Right Point          Position: {60.70f, 10.50f, 7.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Up Point             Position: {-9.90f, 3.00f, 56.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Down Point           Position: {6.00f, 0.00f, -67.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Island S11           Position: {87.00f, 11.79f, 153.80f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Stone5               Position: {-4.68f, -0.29f, 3.08f} Rotation: {-0.53f, 0.12f, -0.18f}
-Object: Stone2               Position: {18.57f, -0.47f, 21.22f} Rotation: {-0.00f, -0.00f, 0.36f}
-Object: Brick                Position: {-0.87f, -0.43f, -16.22f} Rotation: {-0.00f, -0.02f, 0.02f}
-Object: Fire1                Position: {6.10f, -0.40f, -2.06f} Rotation: {0.00f, -0.52f, 0.00f}
-Object: Column2              Position: {15.20f, -0.50f, -9.96f} Rotation: {0.00f, 0.72f, 0.00f}
-Object: Rock5                Position: {-17.50f, -1.00f, 0.50f} Rotation: {0.00f, -1.43f, 0.00f}
-Object: SpawnPoint 1         Position: {-8.80f, 4.00f, -13.70f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: SpawnPoint 2         Position: {11.40f, 4.00f, 8.90f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Left Point           Position: {-29.30f, 0.00f, -13.80f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Right Point          Position: {33.20f, 0.00f, -14.10f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Up Point             Position: {13.70f, 0.00f, 31.10f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Down Point           Position: {0.00f, 0.00f, -27.50f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Island M5            Position: {118.90f, 8.61f, 223.60f} Rotation: {-0.00f, -3.14f, 3.14f}
+Object: Island M1            Position: {-71.00f, 1.99f, 27.00f} Rotation: {-0.00f, -1.57f, 3.14f}
+Object: Stone3               Position: {9.26f, -0.01f, 15.51f} Rotation: {-0.06f, -0.00f, -0.11f}
+Object: Stone5               Position: {24.70f, 0.13f, 22.23f} Rotation: {-0.52f, 0.13f, -0.18f}
+Object: Stone2               Position: {20.52f, -0.05f, -14.47f} Rotation: {-0.00f, 0.01f, 0.36f}
+Object: Stone4               Position: {-11.05f, -0.09f, -6.99f} Rotation: {0.06f, 0.00f, -0.07f}
+Object: StoneStack1          Position: {25.00f, 1.10f, 3.30f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: StoneStackBase1      Position: {-0.01f, -0.98f, -0.00f} Rotation: {-0.00f, 0.00f, -0.00f}
+Object: StoneStackMid1       Position: {1.26f, 4.53f, -0.64f} Rotation: {0.01f, 0.00f, -0.01f}
+Object: StoneStackTop1       Position: {1.25f, 8.17f, -0.21f} Rotation: {0.01f, 0.00f, -0.01f}
+Object: StoneStack1          Position: {-7.20f, 1.10f, -14.00f} Rotation: {0.00f, 1.71f, 3.14f}
+Object: StoneStackBase1      Position: {-0.01f, -0.98f, -0.00f} Rotation: {-0.00f, -0.00f, -0.00f}
+Object: StoneStackMid1       Position: {1.27f, 4.53f, -0.64f} Rotation: {0.01f, 0.00f, -0.01f}
+Object: StoneStackTop1       Position: {1.26f, 8.17f, -0.21f} Rotation: {0.02f, 0.00f, -0.01f}
+Object: StoneStack1          Position: {-4.90f, 1.10f, 20.40f} Rotation: {0.00f, -0.40f, 0.00f}
+Object: StoneStackBase1      Position: {-0.01f, -0.98f, -0.00f} Rotation: {-0.00f, -0.00f, -0.00f}
+Object: StoneStackMid1       Position: {1.27f, 4.53f, -0.64f} Rotation: {0.02f, 0.00f, -0.01f}
+Object: StoneStackTop1       Position: {1.26f, 8.17f, -0.21f} Rotation: {0.02f, 0.00f, -0.01f}
+Object: Rock1                Position: {-26.70f, 0.04f, -10.60f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Rock2                Position: {-30.50f, 0.04f, 14.50f} Rotation: {0.00f, 2.44f, -3.14f}
+Object: Rock2                Position: {32.00f, 0.04f, -23.10f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Rock3                Position: {-33.70f, 0.04f, 3.50f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: SpawnPoint 1         Position: {4.40f, 2.00f, 1.40f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: SpawnPoint 2         Position: {-13.30f, 2.90f, 6.60f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: SpawnPoint 3         Position: {18.60f, 2.00f, 13.10f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: SpawnPoint 4         Position: {11.20f, 2.00f, -13.30f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Left Point           Position: {-42.00f, 0.00f, -6.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Right Point          Position: {36.00f, 0.00f, 8.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Up Point             Position: {-18.00f, 0.00f, 46.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Down Point           Position: {-21.10f, 0.00f, -44.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Island M5            Position: {80.40f, -2.09f, 10.80f} Rotation: {-0.00f, -3.14f, 3.14f}
 Object: Stone3               Position: {-24.03f, 0.35f, 18.05f} Rotation: {-0.46f, 0.12f, -0.59f}
-Object: Stone2               Position: {-21.13f, -0.05f, -17.44f} Rotation: {-0.00f, -0.00f, 0.36f}
-Object: Stone5               Position: {19.44f, 5.22f, 21.70f} Rotation: {-0.22f, -0.00f, 0.01f}
+Object: Stone4               Position: {-21.26f, -0.09f, -17.50f} Rotation: {0.06f, 0.00f, -0.07f}
+Object: Stone3               Position: {19.38f, 5.25f, 21.64f} Rotation: {-0.04f, 0.00f, -0.10f}
 Object: Brick                Position: {-8.27f, 1.62f, 13.41f} Rotation: {-0.21f, 1.35f, 1.77f}
 Object: Brick                Position: {6.81f, -0.00f, -20.35f} Rotation: {-0.00f, 0.61f, 0.04f}
 Object: Wall1                Position: {-11.37f, -0.20f, 30.41f} Rotation: {0.00f, 1.40f, 0.00f}
@@ -444,25 +417,62 @@ Object: Left Point           Position: {-45.40f, 4.30f, 15.20f} Rotation: {0.00f
 Object: Right Point          Position: {41.00f, 0.00f, -13.40f} Rotation: {0.00f, 0.00f, 0.00f}
 Object: Up Point             Position: {-20.70f, -1.60f, 36.70f} Rotation: {0.00f, 0.00f, 0.00f}
 Object: Down Point           Position: {-18.20f, 4.80f, -38.70f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Island M5            Position: {198.60f, -1.26f, 192.00f} Rotation: {-0.00f, -1.57f, 3.14f}
-Object: Stone2               Position: {-23.95f, -0.05f, 18.13f} Rotation: {-0.00f, -0.00f, 0.37f}
-Object: Stone3               Position: {-21.32f, -0.02f, -17.39f} Rotation: {-0.04f, 0.00f, -0.10f}
-Object: Stone4               Position: {19.41f, 5.18f, 21.52f} Rotation: {0.06f, 0.01f, -0.07f}
-Object: Brick                Position: {-8.27f, 1.62f, 13.41f} Rotation: {-0.21f, 1.35f, 1.77f}
-Object: Brick                Position: {6.81f, -0.00f, -20.35f} Rotation: {-0.00f, 0.61f, 0.04f}
-Object: Wall1                Position: {-11.37f, -0.20f, 30.41f} Rotation: {0.00f, 1.40f, -0.00f}
-Object: Mushroom1            Position: {-18.10f, 0.00f, -4.70f} Rotation: {0.00f, 0.98f, -0.00f}
-Object: Mushroom2            Position: {8.50f, 5.30f, 17.00f} Rotation: {0.00f, -0.70f, 0.00f}
-Object: Platform2            Position: {14.60f, -0.60f, 17.00f} Rotation: {0.00f, 1.57f, -0.00f}
-Object: Column2              Position: {20.70f, -0.26f, -25.70f} Rotation: {0.00f, 1.57f, -0.00f}
-Object: Rock2                Position: {35.10f, 0.04f, 19.50f} Rotation: {0.00f, 0.40f, -0.00f}
-Object: RockDouble           Position: {-31.20f, -0.16f, -8.90f} Rotation: {0.00f, 3.02f, -3.14f}
-Object: Rock3                Position: {34.20f, 0.94f, 14.60f} Rotation: {1.56f, -3.14f, 3.14f}
-Object: SpawnPoint 1         Position: {19.70f, 9.00f, 5.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: SpawnPoint 2         Position: {-13.40f, 2.90f, 2.40f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: SpawnPoint 3         Position: {21.90f, 2.00f, -16.60f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: SpawnPoint 4         Position: {-7.00f, 3.40f, -19.50f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Left Point           Position: {-38.70f, 4.80f, 18.20f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Right Point          Position: {36.70f, -1.60f, 20.70f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Up Point             Position: {15.20f, 4.30f, 45.40f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Down Point           Position: {-13.40f, 0.00f, -41.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Island B10           Position: {62.60f, -14.57f, -85.90f} Rotation: {-0.00f, -3.14f, 3.14f}
+Object: Stone2               Position: {43.44f, 0.50f, -24.69f} Rotation: {-0.00f, -0.00f, 0.36f}
+Object: Stone5               Position: {-7.59f, 14.97f, -36.88f} Rotation: {-0.68f, 0.91f, -1.16f}
+Object: Stone4               Position: {8.52f, 0.46f, -15.67f} Rotation: {0.08f, 0.00f, -0.06f}
+Object: Stone4               Position: {30.95f, 0.46f, 33.25f} Rotation: {0.06f, 0.00f, -0.07f}
+Object: Brick                Position: {-0.59f, 8.19f, 27.43f} Rotation: {-0.00f, -0.00f, 0.04f}
+Object: Brick                Position: {43.36f, 2.27f, 3.60f} Rotation: {-0.22f, 1.45f, 1.79f}
+Object: Rock1                Position: {-11.70f, 0.64f, 1.50f} Rotation: {0.00f, -0.86f, 0.00f}
+Object: Rock2                Position: {32.00f, 0.64f, -44.40f} Rotation: {0.00f, -0.86f, 0.00f}
+Object: Rock2                Position: {-11.40f, 0.64f, 51.50f} Rotation: {0.00f, -0.86f, 0.00f}
+Object: Rock3                Position: {-30.90f, 8.04f, 27.70f} Rotation: {-0.00f, -1.87f, -1.57f}
+Object: Rock3                Position: {-16.60f, 5.64f, 15.70f} Rotation: {-0.00f, 1.38f, -1.57f}
+Object: Rock4                Position: {-15.20f, 0.34f, -17.00f} Rotation: {0.00f, -0.53f, 0.00f}
+Object: Rock5                Position: {-11.10f, 0.34f, -8.40f} Rotation: {0.00f, 0.35f, 0.00f}
+Object: RockDouble           Position: {-29.50f, 0.34f, 43.10f} Rotation: {0.00f, -2.29f, 0.00f}
+Object: Wall4                Position: {0.97f, -0.60f, 34.20f} Rotation: {0.00f, -1.57f, 0.00f}
+Object: Spike1               Position: {15.97f, -2.50f, -26.70f} Rotation: {0.00f, -1.57f, 0.00f}
+Object: Platform2            Position: {-5.73f, -0.20f, 26.30f} Rotation: {0.00f, 1.57f, 0.00f}
+Object: Platform4            Position: {-18.23f, -5.40f, -25.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: SpawnPoint 1         Position: {20.60f, 2.00f, -15.70f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: SpawnPoint 2         Position: {39.20f, 2.90f, 20.60f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: SpawnPoint 3         Position: {-1.10f, 10.20f, 29.80f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: SpawnPoint 4         Position: {40.60f, 2.00f, -8.20f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: SpawnPoint 5         Position: {-10.10f, 2.00f, -16.10f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: SpawnPoint 6         Position: {25.20f, 2.00f, 34.40f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Left Point           Position: {-67.00f, 0.00f, 12.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Right Point          Position: {56.10f, 6.10f, -27.60f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Up Point             Position: {-0.40f, 18.00f, 58.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Down Point           Position: {-5.70f, 5.00f, -64.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Island S9            Position: {-99.60f, -2.65f, -46.60f} Rotation: {0.00f, 1.57f, 0.00f}
+Object: Stone2               Position: {-14.59f, 0.21f, -3.01f} Rotation: {-0.00f, -0.00f, 0.36f}
+Object: Stone4               Position: {15.54f, 0.17f, 5.49f} Rotation: {0.06f, 0.00f, -0.07f}
+Object: Pot3                 Position: {10.43f, 0.38f, -15.37f} Rotation: {0.00f, -0.00f, -0.01f}
+Object: Pot4                 Position: {-1.95f, 0.32f, 12.35f} Rotation: {-0.00f, -0.42f, 0.00f}
+Object: Mushroom2            Position: {-7.80f, 0.20f, 9.34f} Rotation: {0.00f, 0.72f, 0.00f}
+Object: Rock2                Position: {-14.80f, 0.00f, -17.40f} Rotation: {0.00f, 0.77f, 0.00f}
+Object: Rock5                Position: {18.50f, -0.60f, 20.10f} Rotation: {0.00f, -0.45f, 0.00f}
+Object: Column4              Position: {15.40f, -0.10f, -10.50f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: SpawnPoint 1         Position: {10.60f, 4.00f, -3.40f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: SpawnPoint 2         Position: {-13.60f, 4.00f, 7.90f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Left Point           Position: {-27.50f, 0.00f, -0.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Right Point          Position: {32.60f, 0.00f, -3.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Up Point             Position: {7.50f, 0.00f, 29.60f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Down Point           Position: {-4.40f, 0.00f, -33.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Island S2            Position: {149.20f, -13.81f, -108.80f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Stone2               Position: {0.67f, -0.47f, -14.47f} Rotation: {-0.00f, 0.00f, 0.37f}
+Object: Stone1               Position: {18.13f, 0.04f, 3.28f} Rotation: {0.36f, 0.12f, 0.95f}
+Object: Stone4               Position: {15.22f, -0.51f, 17.76f} Rotation: {0.06f, 0.00f, -0.07f}
+Object: Stone5               Position: {-13.19f, -0.42f, -2.20f} Rotation: {-0.22f, 0.11f, -0.19f}
+Object: New Column           Position: {12.00f, -1.90f, -5.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Base                 Position: {0.00f, 2.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Middle               Position: {-0.28f, 5.17f, 2.01f} Rotation: {1.26f, 1.99f, 0.27f}
+Object: Top                  Position: {0.53f, 8.78f, -2.59f} Rotation: {0.39f, -0.04f, 0.04f}
+Object: SpawnPoint 1         Position: {17.20f, 4.00f, -14.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: SpawnPoint 2         Position: {-10.00f, 4.00f, -8.10f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Left Point           Position: {-30.50f, 0.00f, -4.70f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Right Point          Position: {33.00f, 0.00f, -8.50f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Up Point             Position: {18.70f, 0.00f, 31.30f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Down Point           Position: {0.00f, 0.00f, -25.00f} Rotation: {0.00f, 0.00f, 0.00f}
