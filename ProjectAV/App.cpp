@@ -61,7 +61,7 @@ App::App(const std::string& commandLine)
     PrefabManager::wind = &wnd;
     PrefabManager::rg = &rg;
     physicsSystem->SetGravity(Vec3(0.0f, -80.0f, 0.0f));
-    PrefabManager::PreloadAllModels();
+    //PrefabManager::PreloadAllModels();
 
     soundDevice = LISTENER->Get();
     ALint attentuation = AL_INVERSE_DISTANCE_CLAMPED;
@@ -601,6 +601,11 @@ void App::HandleInput(float dt)
     if (wnd.kbd.IsJustPressed('H'))
     {
         showControlWindow = !showControlWindow;
+    }
+    if (wnd.kbd.IsJustPressed('N'))
+    {
+        tutorialNode->GetComponent<Tutorial>()->completed = true;
+        pPlayer->SetWorldPosition({ 0.0f, 20.0f, 10.0f });
     }
     if (wnd.kbd.IsJustPressed('Z'))
     {
