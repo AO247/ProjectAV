@@ -22,4 +22,6 @@ public:
 	bool isActive = false;
 private:
 	float timer = 0.0f;
+	bool smokeParticlesSpawned = false;
+	bool boomParticleSpawned = false;
 };

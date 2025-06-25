@@ -14,17 +14,28 @@ void MushroomBoom::Update(float dt)
 	{
 		if (timer <= 0.0f)
 		{
+			smokeParticlesSpawned = false;
 			//dŸwiêk wybuchu
-			// particle wybuchu
+			if (!boomParticleSpawned)
+			{
+				PrefabManager::InstantiateMushroomExplosionParticles(pOwner->GetParent(), Vector3(pOwner->GetWorldPosition().x, pOwner->GetWorldPosition().y, pOwner->GetWorldPosition().z), 1.0f);
+				boomParticleSpawned = true;
+			}
 		}
 		else if (timer > 0.1f)
 		{
-			//particle stojace
+			if (!smokeParticlesSpawned)
+			{
+				PrefabManager::InstantiateMushroomSmokeParticles(pOwner->GetParent(), Vector3(pOwner->GetWorldPosition().x, pOwner->GetWorldPosition().y, pOwner->GetWorldPosition().z), 1.0f, activeTime);
+				PrefabManager::InstantiateMushroomParticles(pOwner->GetParent(), Vector3(pOwner->GetWorldPosition().x, pOwner->GetWorldPosition().y, pOwner->GetWorldPosition().z), 1.0f, activeTime);
+				smokeParticlesSpawned = true;
+			}
 		}
 		if (timer >= activeTime)
 		{
 			timer = 0.0f;
 			isActive = false;
+			boomParticleSpawned = false;
 			PhysicsCommon::physicsSystem->GetBodyInterface().SetShape(pOwner->GetComponent<Trigger>()->GetBodyID(),
 				new JPH::SphereShape(5.0f), false, EActivation::Activate);
 			cooldownTimer = cooldownTime;
