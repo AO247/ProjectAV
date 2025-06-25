@@ -19,6 +19,7 @@
 #include "FourFireBallAttack.h"
 #include "RotateAttack.h"
 #include "FireBall.h"
+#include "Eye.h"
 #include "FireBoom.h"
 #include "MushroomBoom.h"
 #include "Spikes.h"

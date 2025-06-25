@@ -587,7 +587,7 @@ void App::HandleInput(float dt)
     if (wnd.kbd.IsJustPressed('B'))
     {
         PrefabManager::InstantiateBossEnemy(temporary, pFreeViewCamera->GetWorldPosition());
-        //PrefabManager::InstantiateMushroom1(temporary, pFreeViewCamera->GetWorldPosition(), 1,0f);
+        PrefabManager::InstantiateMushroom1(temporary, pFreeViewCamera->GetWorldPosition(), 1.0f);
 
     }
     if (wnd.kbd.IsJustPressed('M'))

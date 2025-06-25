@@ -119,19 +119,19 @@ public:
     ///////////////////////////////
     static Node* InstantiateMushroom1(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0}) {
         auto pNewNodeOwner = std::make_unique<Node>("Mushroom1", nullptr, "WALL");
-
+        scale = 0.2f;
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\enviro_male\\grzyb_1.obj")
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
 
-       /* BodyCreationSettings a4odySettings(new JPH::SphereShape(8.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
+        BodyCreationSettings a4odySettings(new JPH::SphereShape(8.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
         pNewNodeOwner->AddComponent(
-            std::make_unique<Trigger>(pNewNodeOwner, a4odySettings, false)
+            std::make_unique<Trigger>(pNewNodeOwner.get(), a4odySettings, false)
         );
 		pNewNodeOwner->AddComponent(
 			std::make_unique<MushroomBoom>(pNewNodeOwner.get())
-		);*/
+		);
 
         pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
@@ -9137,19 +9137,14 @@ public:
         );
 
 
-        auto eyeNodeOwner = std::make_unique<Node>("EYE", nullptr, "ENEMY");
-        BodyCreationSettings eyeBodySettings(new JPH::SphereShape(3.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::ENEMY);
-        eyeBodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
-
-        eyeBodySettings.mMassPropertiesOverride.mMass = 15.0f;
-        eyeBodySettings.mFriction = 0.2f;
-        eyeBodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
-        eyeBodySettings.mMotionQuality = EMotionQuality::LinearCast;
+        auto eyeNodeOwner = std::make_unique<Node>("EYE", nullptr, "TRIGGER");
+        BodyCreationSettings eyeBodySettings(new JPH::SphereShape(4.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
         eyeNodeOwner->AddComponent(
-            std::make_unique<Rigidbody>(eyeNodeOwner.get(), eyeBodySettings)
+            std::make_unique<Trigger>(eyeNodeOwner.get(), eyeBodySettings, false)
         );
-        eyeNodeOwner->GetComponent<Rigidbody>()->ConnectWithOtherBody(pNewNode->GetComponent<Rigidbody>()->GetBodyID(), Vec3(0.0f, 11.5f, 0.0f));
-
+        eyeNodeOwner->AddComponent(
+            std::make_unique<Eye>(eyeNodeOwner.get())
+        );
         pNewNode->AddChild(std::move(eyeNodeOwner));
 
         // ATTACK
@@ -9218,7 +9213,7 @@ public:
         Walking* walking = pNewNode->GetComponent<Walking>();
         walking->radius = 2.5f;
         walking->maxSpeed = 50.0f;
-        walking->height = 7.2f;
+        walking->height = 19.0f;
 
 
         //STATE MACHINE
