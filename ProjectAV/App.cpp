@@ -397,7 +397,8 @@ App::App(const std::string& commandLine)
     pUpgradeHandler->SetBasicValues();
     pSceneRoot->GetComponent<Global>()->upgradeHandler = pUpgradeHandler;
 
-	//PrefabManager::InstantiateIslandMedium5(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
+	//PrefabManager::InstantiateIslandSmall1(pSceneRoot.get(), Vector3(60.0f, 50.0f, 0.0f), 1.0f);
+    PrefabManager::InstantiateBossIsland(pSceneRoot.get(), Vector3(-400.0f, 50.0f, 0.0f), 1.0f);
     tutorialNode->AddComponent(
         std::make_unique<Tutorial>(tutorialNode, wnd, pPlayer)
     );
