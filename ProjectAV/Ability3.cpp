@@ -45,7 +45,7 @@ void Ability3::Update(float dt)
                     pOwner->GetComponent<SoundEffectsPlayer>()->Play(2, 1.0f, false);
                     activeSoundTimer = activeSoundInterval;
                 }
-                // particle po wyl�dowaniu
+                PrefabManager::InstantiateAbility3CoreSmokeParticles(pOwner, Vector3(0, 0, 0), 1.0, { 0,0,0 }, duration);
                 // d�wi�k po wyl�dowaniu
                 /*if (pOwner->GetComponent<SoundEffectsPlayer>()) {
 					pOwner->GetComponent<SoundEffectsPlayer>()->Stop(1);
@@ -177,10 +177,9 @@ bool Ability3::Pressed()
     released = false;
 	
     PrefabManager::InstantiateAbility3Particles(pOwner->GetParent(), Vector3(pOwner->GetLocalPosition().x, pOwner->GetLocalPosition().y, pOwner->GetLocalPosition().z), 1.0);
-    PrefabManager::InstantiateAbility3CoreParticles(pOwner->GetParent(), Vector3(pOwner->GetLocalPosition().x, pOwner->GetLocalPosition().y, pOwner->GetLocalPosition().z), 1.0);
+    PrefabManager::InstantiateAbility3CoreParticles(pOwner, Vector3(0, 0, 0), 1.0);
     return true;
     //PrefabManager::InstantiateAbility3CoreParticles(pOwner->GetParent(), Vector3(pOwner->GetLocalPosition().x, pOwner->GetLocalPosition().y, pOwner->GetLocalPosition().z), 1.0);
-    PrefabManager::InstantiateAbility3CoreSmokeParticles(pOwner->GetParent(), Vector3(pOwner->GetLocalPosition().x, pOwner->GetLocalPosition().y, pOwner->GetLocalPosition().z), 1.0);
 }
 void Ability3::Released()
 {
