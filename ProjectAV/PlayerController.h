@@ -48,6 +48,11 @@ public:
 	Node* abilitySlot2;
 	Node* abilitySlot3;
 	Node* camera;
+
+	Node* leftHand;
+	Node* rightHand;
+
+
 	Rigidbody* rigidbody;
 	Vector3 moveDirection;
 

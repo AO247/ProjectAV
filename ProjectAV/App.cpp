@@ -144,7 +144,8 @@ App::App(const std::string& commandLine)
     pPlayer->AddComponent(
         std::make_unique<PlayerController>(pPlayer, wnd)
     );
-
+    pPlayer->GetComponent<PlayerController>()->leftHand = pLeftHand;
+    pPlayer->GetComponent<PlayerController>()->rightHand = pRightHand;
 
     auto legsOwner = std::make_unique<Node>("Legs", nullptr, "TRIGGER");
     BodyCreationSettings p1TBodySettings(new JPH::SphereShape(12.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
