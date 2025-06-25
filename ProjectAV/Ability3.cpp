@@ -139,7 +139,8 @@ void Ability3::Positioning()
 }
 void Ability3::OnCollisionEnter(Node* object)
 {
-    if (!released) return;
+    if (!released || object->tag == "TRIGGER") return;
+
     if (object->tag == "ENEMY" || object->tag == "GROUND" || object->tag == "WALL" || object->tag == "STONE")
     {
         PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(pOwner->GetComponent<Rigidbody>()->GetBodyID(),

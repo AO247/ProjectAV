@@ -216,18 +216,18 @@ App::App(const std::string& commandLine)
 
 
 
-    //BodyCreationSettings a3RbodySettings(new JPH::SphereShape(1.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::TRIGGER);
-    //a3RbodySettings.mGravityFactor = 0.0f;
-    //a3RbodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
+    BodyCreationSettings a3RbodySettings(new JPH::SphereShape(0.5f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::TRIGGER);
+    a3RbodySettings.mGravityFactor = 0.0f;
+    a3RbodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
 
-    //a3RbodySettings.mMassPropertiesOverride.mMass = 1.0f;
-    //a3RbodySettings.mFriction = 0.0f;
-    //a3RbodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
-    //a3RbodySettings.mMotionQuality = EMotionQuality::LinearCast;
+    a3RbodySettings.mMassPropertiesOverride.mMass = 1.0f;
+    a3RbodySettings.mFriction = 0.0f;
+    a3RbodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
+    a3RbodySettings.mMotionQuality = EMotionQuality::LinearCast;
 
-    //pAbility3->AddComponent(
-    //    std::make_unique<Rigidbody>(pAbility3, a3RbodySettings)
-    //);
+    pAbility3->AddComponent(
+        std::make_unique<Rigidbody>(pAbility3, a3RbodySettings)
+    );
 
     pAbility3->AddComponent(
         std::make_unique<ModelComponent>(pAbility3, wnd.Gfx(), "Models\\box.glb")

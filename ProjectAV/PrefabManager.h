@@ -2872,7 +2872,7 @@ public:
     }
 
     static Node* InstantiateAbilityIsland(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 }) {
-        auto pNewNodeOwner = std::make_unique<Node>("AbilityIsland", nullptr, "ABILITY");
+        auto pNewNodeOwner = std::make_unique<Node>("AbilityIsland", nullptr, "GROUND");
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\wyspy\\wyspa_mala.obj")
         );
@@ -2914,7 +2914,7 @@ public:
         return pNewNode;
     }
     static Node* InstantiateJumpIsland(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 }) {
-        auto pNewNodeOwner = std::make_unique<Node>("JumpIsland", nullptr, "ABILITY");
+        auto pNewNodeOwner = std::make_unique<Node>("JumpIsland", nullptr, "GROUND");
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\wyspy\\wyspa_mala.obj")
         );
@@ -2955,7 +2955,7 @@ public:
         return pNewNode;
     }
     static Node* InstantiateDoubleJumpIsland(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 }) {
-        auto pNewNodeOwner = std::make_unique<Node>("DoubleJumpIsland", nullptr, "ABILITY");
+        auto pNewNodeOwner = std::make_unique<Node>("DoubleJumpIsland", nullptr, "GROUND");
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\wyspy\\wyspa_duza_p.obj")
         );
@@ -3000,7 +3000,7 @@ public:
         return pNewNode;
     }
     static Node* InstantiateUltIsland(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 }) {
-        auto pNewNodeOwner = std::make_unique<Node>("UltIsland", nullptr, "ABILITY");
+        auto pNewNodeOwner = std::make_unique<Node>("UltIsland", nullptr, "GROUND");
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\wyspy\\wyspa_srednia.obj")
         );
