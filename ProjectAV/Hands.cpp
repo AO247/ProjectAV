@@ -46,7 +46,7 @@ void Hands::Update(float dt)
     // Oœ Y to "góra-dó³".
     // Chcemy g³ównie reagowaæ na ruch na boki (strafe).
     Vector3 targetPos;
-    targetPos.x = -moveDirectionLocal.x * radius * 0.90f;
+    targetPos.x = -moveDirectionLocal.x * radius * 0.80f;
     targetPos.y = -moveDirectionLocal.y * radius * 1.10f;
     targetPos.z = -moveDirectionLocal.z * radius * 0.70f; // Zazwyczaj nie chcemy przesuwaæ r¹k w przód/ty³
 

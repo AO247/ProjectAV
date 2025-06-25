@@ -34,7 +34,6 @@ public:
 	bool abilityReady = true;
 
 	AnimationComponent* leftHand = nullptr;
-	Node* leftHandAbility = nullptr;
 	Node* selectedNode = nullptr;
 	Ability* baseAbility = nullptr;
 

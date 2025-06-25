@@ -76,9 +76,7 @@ private:
 	Node* pSelectedSceneNode = nullptr; 
 	Node* pSoundEffectsPlayer = nullptr;
 	Node* pLeftHand = nullptr;
-	Node* pLeftHandAbility = nullptr;
 	Node* pRightHand = nullptr;
-	Node* pRightHandAbility = nullptr;
 	Node* tutorialNode = nullptr;
     Node* temporary = nullptr;
 	Node* mainMenuNode = nullptr;

@@ -32,7 +32,7 @@ App::App(const std::string& commandLine)
     pSceneRoot(std::make_unique<Node>("Root"))
 {
 
-    wnd.Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 2000.0f));
+    wnd.Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, -0.5f, 2000.0f));
 
 
     std::srand(static_cast<unsigned>(std::time(nullptr)));
@@ -95,12 +95,8 @@ App::App(const std::string& commandLine)
     temporary = pTemporaryOwner.get();
     auto pLeftHandOwner = std::make_unique<Node>("L Normal", nullptr, "HANDS");
     pLeftHand = pLeftHandOwner.get();
-    auto pLeftHandAbilityOwner = std::make_unique<Node>("L Ability", nullptr, "HANDS");
-    pLeftHandAbility = pLeftHandAbilityOwner.get();
     auto pRightHandOwner = std::make_unique<Node>("R Normal", nullptr, "HANDS");
     pRightHand = pRightHandOwner.get();
-    auto pRightHandAbilityOwner = std::make_unique<Node>("R Ability", nullptr, "HANDS");
-    pRightHandAbility = pRightHandAbilityOwner.get();
 	auto handsOwner = std::make_unique<Node>("Hands", nullptr, "HANDS");
     auto tutorialOwner = std::make_unique<Node>("Tutorial", nullptr, "TUTORIAL");
 	auto mainMenuOwner = std::make_unique<Node>("Main Menu", nullptr, "MAIN_MENU");
@@ -131,9 +127,7 @@ App::App(const std::string& commandLine)
     pAbilities->AddChild(std::move(pAbility6Owner));
 	pCamera->AddChild(std::move(handsOwner));
     pHands->AddChild(std::move(pLeftHandOwner));
-    pHands->AddChild(std::move(pLeftHandAbilityOwner));
     pHands->AddChild(std::move(pRightHandOwner));
-    pHands->AddChild(std::move(pRightHandAbilityOwner));
     pSceneRoot->AddChild(std::move(tutorialOwner));
 
     PrefabManager::InstantiateStone1(pSceneRoot.get(), Vector3(0.0f, 100.0f, 0.0f), 1.0f);
@@ -352,8 +346,8 @@ App::App(const std::string& commandLine)
         std::make_unique<ModelComponent>(pLeftHand, wnd.Gfx(), "Models\\hands\\left.gltf", 1.0f, true, false)
     );
     pLeftHand->GetComponent<ModelComponent>()->LinkTechniques(rg);
-    pLeftHand->SetLocalScale({ 0.1f, 0.1f, 0.1f });
-    pLeftHand->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
+    pLeftHand->SetLocalScale({ 0.035f, 0.035f, 0.035f });
+    pLeftHand->SetLocalPosition({ 0.0f, -0.9f, 1.0f });
 
     pLeftHand->AddComponent(
         std::make_unique<AnimationComponent>(pLeftHand, "", "Models\\hands\\left.gltf")
@@ -362,19 +356,12 @@ App::App(const std::string& commandLine)
     animCompLeft->PlayAnimation(13); //POCZĄTKOWE IDLE_RUN
 
 
-    pLeftHandAbility->AddComponent(
-        std::make_unique<ModelComponent>(pLeftHandAbility, wnd.Gfx(), "Models\\hands\\left.gltf", 1.0f, false, false)
-    );
-    pLeftHandAbility->GetComponent<ModelComponent>()->LinkTechniques(rg);
-    pLeftHandAbility->SetLocalScale({ 0.1f, 0.1f, 0.1f });
-    pLeftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
-
     pRightHand->AddComponent(
         std::make_unique<ModelComponent>(pRightHand, wnd.Gfx(), "Models\\hands\\right.gltf", 1.0f, true, false)
     );
     pRightHand->GetComponent<ModelComponent>()->LinkTechniques(rg);
-    pRightHand->SetLocalScale({ 0.1f, 0.1f, 0.1f });
-    pRightHand->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
+    pRightHand->SetLocalScale({ 0.035f, 0.035f, 0.035f });
+    pRightHand->SetLocalPosition({ 0.0f, -0.9f, 1.0f });
 
     pRightHand->AddComponent(
         std::make_unique<AnimationComponent>(pRightHand, "", "Models\\hands\\right.gltf")
@@ -383,30 +370,18 @@ App::App(const std::string& commandLine)
     animCompRight->PlayAnimation(13); //POCZĄTKOWE IDLE_RUN
 
 
-    pRightHandAbility->AddComponent(
-        std::make_unique<ModelComponent>(pRightHandAbility, wnd.Gfx(), "Models\\hands\\right.gltf", 1.0f, false, false)
-    );
-    pRightHandAbility->GetComponent<ModelComponent>()->LinkTechniques(rg);
-    pRightHandAbility->SetLocalScale({ 0.1f, 0.1f, 0.1f });
-    pRightHandAbility->SetLocalPosition({ 0.0f, -2.7f, -3000.0f });
-
     pAbility1->GetComponent<Ability1>()->leftHand = pLeftHand->GetComponent<AnimationComponent>();
-    pAbility1->GetComponent<Ability1>()->leftHandAbility = pLeftHandAbility;
 
     pAbility2->GetComponent<Ability2>()->rightHand = pRightHand->GetComponent<AnimationComponent>();
-    pAbility2->GetComponent<Ability2>()->rightHandAbility = pRightHandAbility;
 
     pAbility3->GetComponent<Ability3>()->leftHand = pLeftHand->GetComponent<AnimationComponent>();
     pAbility3->GetComponent<Ability3>()->rightHand = pRightHand->GetComponent<AnimationComponent>();
 
     pAbility4->GetComponent<Ability4>()->leftHand = pLeftHand->GetComponent<AnimationComponent>();
-    pAbility4->GetComponent<Ability4>()->leftHandAbility = pLeftHandAbility;
 
 	pAbility5->GetComponent<Ability5>()->rightHand = pRightHand->GetComponent<AnimationComponent>();
-	pAbility5->GetComponent<Ability5>()->rightHandAbility = pRightHandAbility;
 
     pAbility6->GetComponent<Ability6>()->leftHand = pLeftHand->GetComponent<AnimationComponent>();
-    pAbility6->GetComponent<Ability6>()->leftHandAbility = pLeftHandAbility;
 
     pSceneRoot->AddComponent(
         std::make_unique<UpgradeHandler>(pSceneRoot.get(), wnd)
@@ -700,7 +675,7 @@ void App::HandleInput(float dt)
         }
         if (wnd.kbd.IsJustPressed('B'))
         {
-            PrefabManager::InstantiateNewColumn(temporary, pFreeViewCamera->GetWorldPosition(), 1.0f);
+            PrefabManager::InstantiateFastEnemy(temporary, pFreeViewCamera->GetWorldPosition());
         }
         if (wnd.kbd.IsJustPressed('H'))
         {

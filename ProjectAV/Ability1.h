@@ -30,7 +30,6 @@ public:
 	bool abilityReady = true;
 	bool stop = true;
 	AnimationComponent* leftHand = nullptr;
-	Node* leftHandAbility = nullptr;
 
 
 private:
