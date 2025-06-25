@@ -1943,6 +1943,7 @@ public:
         pNewNodeOwner->AddComponent(
             std::make_unique<Throwable>(pNewNodeOwner.get())
         );
+        pNewNodeOwner->GetComponent<Throwable>()->heavy = true;
 
         pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
@@ -2004,6 +2005,7 @@ public:
         pNewNodeOwner->AddComponent(
             std::make_unique<Throwable>(pNewNodeOwner.get())
         );
+        pNewNodeOwner->GetComponent<Throwable>()->extraHeavy = true;
 
         pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
@@ -2092,6 +2094,7 @@ public:
         pNewNodeOwner->AddComponent(
             std::make_unique<Throwable>(pNewNodeOwner.get())
         );
+        pNewNodeOwner->GetComponent<Throwable>()->heavy = true;
 
         pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
@@ -2146,6 +2149,7 @@ public:
         pNewNodeOwner->AddComponent(
             std::make_unique<Throwable>(pNewNodeOwner.get())
         );
+        pNewNodeOwner->GetComponent<Throwable>()->heavy = true;
 
 
         pNewNodeOwner->SetLocalPosition(position);
@@ -2189,6 +2193,7 @@ public:
             std::make_unique<Throwable>(pNewNodeOwner.get())
         );
         pNewNodeOwner->GetComponent<Throwable>()->speed = 2.0f;
+        pNewNodeOwner->GetComponent<Throwable>()->extraHeavy = true;
         pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
         pNewNodeOwner->SetLocalRotation(rotation);
@@ -2264,6 +2269,7 @@ public:
         pNewNodeOwner->AddComponent(
             std::make_unique<Throwable>(pNewNodeOwner.get())
         );
+        pNewNodeOwner->GetComponent<Throwable>()->extraHeavy = true;
 
 
         pNewNodeOwner->SetLocalPosition(position);
@@ -2313,6 +2319,7 @@ public:
         pNewNodeOwner->AddComponent(
             std::make_unique<Throwable>(pNewNodeOwner.get())
         );
+        pNewNodeOwner->GetComponent<Throwable>()->heavy = true;
 
 
         pNewNodeOwner->SetLocalPosition(position);
@@ -2356,6 +2363,7 @@ public:
             std::make_unique<Throwable>(pNewNodeOwner.get())
         );
         pNewNodeOwner->GetComponent<Throwable>()->speed = 2.0f;
+        pNewNodeOwner->GetComponent<Throwable>()->extraHeavy = true;
         pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
         pNewNodeOwner->SetLocalRotation(rotation);
@@ -2475,6 +2483,7 @@ public:
             std::make_unique<Throwable>(pNewNodeOwner.get())
         );
         pNewNodeOwner->GetComponent<Throwable>()->speed = 2.0f;
+        pNewNodeOwner->GetComponent<Throwable>()->heavy = true;
         pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
         pNewNodeOwner->SetLocalRotation(rotation);
