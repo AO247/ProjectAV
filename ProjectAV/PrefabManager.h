@@ -2850,7 +2850,6 @@ public:
         InstantiatePlatform3(pNewNodeOwner.get(), Vector3(-7.00f, -5.10f, 112.80f), 1.0f, Vector3(0.00f, 1.66f, 0.00f));
         InstantiateWall2(pNewNodeOwner.get(), Vector3(144.80f, 0.90f, 59.80f), 1.0f, Vector3(0.00f, 0.07f, 0.00f));
         InstantiateWall2(pNewNodeOwner.get(), Vector3(87.20f, 0.80f, 127.10f), 1.0f, Vector3(0.00f, -1.50f, 0.00f));
-        InstantiateWall2(pNewNodeOwner.get(), Vector3(27.30f, 1.00f, -123.90f), 1.0f, Vector3(0.00f, 1.52f, 0.00f));
         InstantiateWall2(pNewNodeOwner.get(), Vector3(44.80f, 0.60f, 126.90f), 1.0f, Vector3(0.00f, 1.45f, 0.00f));
         InstantiateWall3(pNewNodeOwner.get(), Vector3(130.70f, 0.90f, 105.70f), 1.0f, Vector3(0.00f, -0.72f, 0.00f));
         InstantiateWall3(pNewNodeOwner.get(), Vector3(-83.20f, 0.00f, 104.90f), 1.0f, Vector3(0.00f, -2.51f, 0.00f));

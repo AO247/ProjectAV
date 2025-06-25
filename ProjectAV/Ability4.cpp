@@ -70,19 +70,18 @@ void Ability4::Positioning()
     Vec3 direction = Vec3(camera->Forward().x, camera->Forward().y, camera->Forward().z);
     RRayCast ray = RRayCast(position, direction * 100.0f);
     RayCastResult result;
-    if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(ray, result,
-        MultipleBroadPhaseLayerFilter({ BroadPhaseLayers::WALL }),
-        MultipleObjectLayerFilter({ Layers::WALL })))
+    if (PhysicsCommon::physicsSystem->GetBodyInterface().GetMotionType(result.mBodyID) == EMotionType::Dynamic)
     {
-        position = ray.mOrigin + ray.mDirection * result.mFraction;
-        if (PhysicsCommon::physicsSystem->GetBodyInterface().GetMotionType(result.mBodyID) == EMotionType::Dynamic)
+        selectedNode = reinterpret_cast<Node*>(PhysicsCommon::physicsSystem->GetBodyInterface().GetUserData(result.mBodyID));
+        if (selectedNode->GetComponent<Throwable>() == nullptr)
         {
-            selectedNode = reinterpret_cast<Node*>(PhysicsCommon::physicsSystem->GetBodyInterface().GetUserData(result.mBodyID));
-            if (selectedNode->GetComponent<Throwable>()->extraHeavy)
-            {
-                selectedNode = nullptr;
-            }
+            selectedNode = nullptr;
         }
+        else if (selectedNode->GetComponent<Throwable>()->extraHeavy == true)
+        {
+            selectedNode = nullptr;
+        }
+
     }
     else
     {
