@@ -117,4 +117,9 @@ private:
     std::unique_ptr<Sprite> mainMenuBackground;
     std::unique_ptr<Sprite> quitBttn;
     std::unique_ptr<Sprite> startBttn;
+
+    void LoadMainMenuResources();
+    void UnloadMainMenuResources();
+    void LoadPauseMenuResources();
+    void UnloadPauseMenuResources();
 };

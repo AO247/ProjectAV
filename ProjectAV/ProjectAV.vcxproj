@@ -510,6 +510,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="AvatarFace.ico" />
+    <Image Include="winderer.ico" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Blur_PS.hlsl">

@@ -1,6 +1,8 @@
 #include "Health.h"
 #include <string>
 #include "Components.h"
+
+
 Health::Health(Node* owner, float maxHelth) 
 	: Component(owner), maxHealth(maxHelth)
 {
@@ -15,6 +17,9 @@ void Health::DrawImGuiControls()
 
 void Health::TakeDamage(float damage, bool heavy, bool isFire)
 {
+	StateMachine* statemachine = pOwner->GetComponent <StateMachine>();
+
+
 	bool hitted = false;
 	if (damage == 0) // bullet
 	{
@@ -70,6 +75,32 @@ void Health::TakeDamage(float damage, bool heavy, bool isFire)
 	{
 		// tutaj dŸwiêk otrzymania obra¿eñ 
 		// animacja otrzymania obra¿eñ
+
+		if (statemachine->enemyType == EnemyType::BASIC) {
+			pOwner->GetComponent<AnimationComponent>()->PlayAnimation(3);	//basic
+
+		}
+		if (statemachine->enemyType == EnemyType::RANGED) {
+			pOwner->GetComponent<AnimationComponent>()->PlayAnimation(2);	//ranged
+
+		}
+		if (statemachine->enemyType == EnemyType::TANK) {
+			pOwner->GetComponent<AnimationComponent>()->PlayAnimation(3);	//tank
+
+		}
+		if (statemachine->enemyType == EnemyType::EXPLOSIVE) {
+			pOwner->GetComponent<AnimationComponent>()->PlayAnimation(8);	//explosive
+
+		}
+		if (statemachine->enemyType == EnemyType::FRENZY) {
+			pOwner->GetComponent<AnimationComponent>()->PlayAnimation(7);	//fast
+		}
+		if (statemachine->enemyType == EnemyType::FLYING) {
+			pOwner->GetComponent<AnimationComponent>()->PlayAnimation(4);	//flying
+		}
+		if (statemachine->enemyType == EnemyType::MAGE) {
+			pOwner->GetComponent<AnimationComponent>()->PlayAnimation(6);	//mage
+		}
 	}
 
 	if (currentHealth > maxHealth)

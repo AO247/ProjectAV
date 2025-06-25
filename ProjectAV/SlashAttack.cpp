@@ -24,7 +24,7 @@ void SlashAttack::Attack(float dt)
 		PhysicsCommon::physicsSystem->GetBodyInterface().SetRotation(pOwner->GetParent()->GetComponent<Rigidbody>()->GetBodyID(), q, EActivation::Activate);
 
 
-		pOwner->GetParent()->GetComponent<AnimationComponent>()->PlayAnimation(5, 0.2f, false);
+		pOwner->GetParent()->GetComponent<AnimationComponent>()->PlayAnimation(5, 0.2f, false);		//slash attack - fast
 
 		//miejsce na animacje !!!
 	}

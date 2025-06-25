@@ -37,10 +37,10 @@ void ShootAttack::Attack(float dt)
 
 		StateMachine* statemachine = pOwner->GetComponent<StateMachine>();
 		if (statemachine->enemyType == EnemyType::RANGED) {
-			pOwner->GetComponent<AnimationComponent>()->PlayAnimation(1, 0.2f, false);
+			pOwner->GetComponent<AnimationComponent>()->PlayAnimation(rand() % 2, 0.2f, false);		//ranged shoot
 		}
 		if (statemachine->enemyType == EnemyType::FLYING) {
-			pOwner->GetComponent<AnimationComponent>()->PlayAnimation(1, 0.2f, false);
+			pOwner->GetComponent<AnimationComponent>()->PlayAnimation(1, 0.2f, false);		// flying shoot
 		}
 	}
 

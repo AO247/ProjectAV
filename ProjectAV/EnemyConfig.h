@@ -8,6 +8,7 @@ enum class EnemyType {
 	TANK,
 	EXPLOSIVE,
 	FRENZY,
+	BOSS,
 	NONE,
 	COUNT
 };

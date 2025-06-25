@@ -82,11 +82,6 @@ void Ability4::Positioning()
             {
                 selectedNode = nullptr;
             }
-            else if (selectedNode->GetComponent<Throwable>()->extraHeavy == true)
-            {
-                selectedNode = nullptr;
-            }
-
         }
     }
     else
@@ -97,8 +92,14 @@ void Ability4::Positioning()
 bool Ability4::Pressed()
 {
     if (!abilityReady || isPressed) return false;
-
-     activated = true;
+    if (selectedNode == nullptr)
+    {
+        baseAbility->Pressed();
+        cooldownTimer = cooldown;
+        abilityReady = false;
+        return true;
+    }
+    activated = true;
     isPressed = true;
     pressedTime = 0.0f;
     cameraRotation = camera->GetLocalRotationEuler();
@@ -132,12 +133,21 @@ void Ability4::Released()
 
     if (pressedTime < 0.13f || selectedNode == nullptr)
     {
+        pOwner->GetComponent<SoundEffectsPlayer>()->Stop(2);
         pressedTime = 0.0f;
-		pOwner->GetComponent<SoundEffectsPlayer>()->Stop(2);
         baseAbility->Pressed();
     }
     else
     {
+        if (selectedNode->GetComponent<Throwable>()->extraHeavy == true)
+        {
+            activated = false;
+            abilityReady = false;
+            //dzwiek faila 
+            return;
+        }
+
+
         // particle rzutu
         // animacja rzutu
         // dŸwiêk rzutu

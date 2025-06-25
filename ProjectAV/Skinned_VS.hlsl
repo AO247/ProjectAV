@@ -2,7 +2,7 @@
 
 cbuffer BoneTransforms : register(b3)
 {
-    matrix finalBoneMatrices[100];
+    matrix finalBoneMatrices[150];
 };
 
 struct VS_INPUT
@@ -44,7 +44,7 @@ PS_INPUT main(VS_INPUT input)
         {
             continue;
         }
-        if (input.boneIDs[i] >= 100)
+        if (input.boneIDs[i] >= 150)
         {
             totalLocalPos = float4(input.position, 1.0f);
             totalLocalNormal = float4(input.normal, 0.0f);

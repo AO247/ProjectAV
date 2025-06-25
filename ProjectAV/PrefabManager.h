@@ -8271,7 +8271,7 @@ public:
             std::make_unique<AnimationComponent>(pNewNode, "", "Models\\basic\\basic.gltf")
         );
         AnimationComponent* animComp = pNewNode->GetComponent<AnimationComponent>();
-        animComp->PlayAnimation(4);
+        animComp->PlayAnimation(4); //basic start
        
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         parentNode->AddChild(std::move(pNewNodeOwner));
@@ -8331,7 +8331,7 @@ public:
         pNewNode->SetLocalPosition(position);
         pNewNode->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
-        pNewNode->radius = 7.0f;
+        pNewNode->radius = 40.0f;
 
         return pNewNode;
     }
@@ -8365,7 +8365,7 @@ public:
             std::make_unique<AnimationComponent>(pNewNode, "", "Models\\tank\\tank.gltf")
         );
         AnimationComponent* animComp = pNewNode->GetComponent<AnimationComponent>();
-        animComp->PlayAnimation(3);
+        animComp->PlayAnimation(3);     //tank start
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         parentNode->AddChild(std::move(pNewNodeOwner));
 
@@ -8424,7 +8424,7 @@ public:
         pNewNode->SetLocalPosition(position);
         pNewNode->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
-        pNewNode->radius = 7.0f;
+        pNewNode->radius = 40.0f;
 
         return pNewNode;
     }
@@ -8454,7 +8454,7 @@ public:
         );
         
         AnimationComponent* animComp = pNewNode->GetComponent<AnimationComponent>();
-        animComp->PlayAnimation(4);
+        //animComp->PlayAnimation(4);
 
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         parentNode->AddChild(std::move(pNewNodeOwner));
@@ -8507,7 +8507,7 @@ public:
         pNewNode->SetLocalPosition(position);
         pNewNode->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
-        pNewNode->radius = 7.0f;
+        pNewNode->radius = 40.0f;
 
         return pNewNode;
     }
@@ -8534,7 +8534,7 @@ public:
             std::make_unique<AnimationComponent>(pNewNode, "", "Models\\ranged\\ranged.gltf")
         );
         AnimationComponent* animComp = pNewNode->GetComponent<AnimationComponent>();
-        animComp->PlayAnimation(3);
+        animComp->PlayAnimation(3); //ranged start
 
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         parentNode->AddChild(std::move(pNewNodeOwner));
@@ -8595,7 +8595,7 @@ public:
         pNewNode->SetLocalPosition(position);
         pNewNode->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
-        pNewNode->radius = 7.0f;
+        pNewNode->radius = 40.0f;
 
         return pNewNode;
     }
@@ -8624,7 +8624,7 @@ public:
             std::make_unique<AnimationComponent>(pNewNode, "", "Models\\mage\\mage.gltf")
         );
         AnimationComponent* animComp = pNewNode->GetComponent<AnimationComponent>();
-        animComp->PlayAnimation(7);
+        animComp->PlayAnimation(6);
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         parentNode->AddChild(std::move(pNewNodeOwner));
 
@@ -8681,7 +8681,7 @@ public:
         pNewNode->SetLocalPosition(position);
         pNewNode->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
-        pNewNode->radius = 7.0f;
+        pNewNode->radius = 40.0f;
 
         return pNewNode;
     }
@@ -8704,7 +8704,7 @@ public:
             std::make_unique<AnimationComponent>(pNewNode, "", "Models\\explosive\\explosive.gltf")
         );
         AnimationComponent* animComp = pNewNode->GetComponent<AnimationComponent>();
-        animComp->PlayAnimation(7);
+        animComp->PlayAnimation(7); //explosive start
 
 
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
@@ -8775,7 +8775,7 @@ public:
         pNewNode->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
 
-        pNewNode->radius = 7.0f;
+        pNewNode->radius = 40.0f;
 
         return pNewNode;
     }
@@ -8809,7 +8809,7 @@ public:
             std::make_unique<AnimationComponent>(pNewNode, "", "Models\\frenzy\\frenzy.gltf")
         );
         AnimationComponent* animComp = pNewNode->GetComponent<AnimationComponent>();
-        animComp->PlayAnimation(3);
+        animComp->PlayAnimation(3); //fast start
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         parentNode->AddChild(std::move(pNewNodeOwner));
 
@@ -8890,7 +8890,7 @@ public:
         pNewNode->SetLocalPosition(position);
         pNewNode->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
-        pNewNode->radius = 7.0f;
+        pNewNode->radius = 40.0f;
 
         return pNewNode;
     }
@@ -8917,14 +8917,14 @@ public:
         pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footstep6.wav");
 
         pNewNode->AddComponent(
-            std::make_unique<ModelComponent>(pNewNode, wind->Gfx(), "Models\\frenzy\\frenzy.gltf", 1.0f, true)
+            std::make_unique<ModelComponent>(pNewNode, wind->Gfx(), "Models\\boss\\boss.gltf", 1.0f, true)
         );
 
         pNewNode->AddComponent(
-            std::make_unique<AnimationComponent>(pNewNode, "", "Models\\frenzy\\frenzy.gltf")
+            std::make_unique<AnimationComponent>(pNewNode, "", "Models\\boss\\boss.gltf")
         );
         AnimationComponent* animComp = pNewNode->GetComponent<AnimationComponent>();
-        animComp->PlayAnimation(3);
+        animComp->PlayAnimation(3); // boss start
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         parentNode->AddChild(std::move(pNewNodeOwner));
 
@@ -8940,38 +8940,62 @@ public:
         );
 
         // ATTACK
-        auto launchAttackNodeOwner = std::make_unique<Node>("Launch Attack", nullptr, "TRIGGER");
-        Node* plaunchAttackNode = launchAttackNodeOwner.get();
+
+        auto attackNodeOwner = std::make_unique<Node>("Basic Attack", nullptr, "TRIGGER");
+        Node* pattackNode = attackNodeOwner.get();
 
         BodyCreationSettings a1BodySettings(new JPH::CapsuleShape(5.0f, 3.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
-        plaunchAttackNode->AddComponent(
-            std::make_unique<Trigger>(plaunchAttackNode, a1BodySettings, false)
+        pattackNode->AddComponent(
+            std::make_unique<Trigger>(pattackNode, a1BodySettings, false)
         );
-        plaunchAttackNode->AddComponent(
-            std::make_unique<LaunchAttack>(plaunchAttackNode)
+        pattackNode->AddComponent(
+            std::make_unique<BasicAttack>(pattackNode)
         );
-
-        LaunchAttack* launchAttack = plaunchAttackNode->GetComponent<LaunchAttack>();
-        launchAttack->attackRange = 24.0f;
+        BasicAttack* basicAttack = pattackNode->GetComponent<BasicAttack>();
+        basicAttack->attackRange = 7.0f;
         pNewNode->SetLocalPosition({ 0.0f, 0.0f, 0.0f });
-        pNewNode->AddChild(std::move(launchAttackNodeOwner));
+        pNewNode->AddChild(std::move(attackNodeOwner));
 
 
-        auto slashAttackNodeOwner = std::make_unique<Node>("Slash Attack", nullptr, "TRIGGER");
-        Node* pslashAttackNode = slashAttackNodeOwner.get();
+       // auto rotateAttackNodeOwner = std::make_unique<Node>("Rotate Attack", nullptr, "TRIGGER");
+       // Node* pRotateAttackNode = rotateAttackNodeOwner.get();
 
-        BodyCreationSettings a2BodySettings(new JPH::CapsuleShape(5.0f, 3.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
-        pslashAttackNode->AddComponent(
-            std::make_unique<Trigger>(pslashAttackNode, a2BodySettings, false)
-        );
-        pslashAttackNode->AddComponent(
-            std::make_unique<SlashAttack>(pslashAttackNode)
-        );
+       // BodyCreationSettings a1BodySettings(new JPH::CapsuleShape(5.0f, 3.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
+       // pRotateAttackNode->AddComponent(
+       //     std::make_unique<Trigger>(pRotateAttackNode, a1BodySettings, false)
+       // );
+       // pRotateAttackNode->AddComponent(
+       //     std::make_unique<RotateAttack>(pRotateAttackNode)
+       // );
+       // RotateAttack* rotateAttack = pRotateAttackNode->GetComponent<RotateAttack>();
 
-        SlashAttack* slashAttack = pslashAttackNode->GetComponent<SlashAttack>();
-        slashAttack->attackRange = 35.0f;
-        pNewNode->SetLocalPosition({ 0.0f, 0.0f, 0.0f });
-        pNewNode->AddChild(std::move(slashAttackNodeOwner));
+       ///* LaunchAttack* launchAttack = plaunchAttackNode->GetComponent<LaunchAttack>();
+       // launchAttack->attackRange = 24.0f;
+       // pNewNode->SetLocalPosition({ 0.0f, 0.0f, 0.0f });
+       // pNewNode->AddChild(std::move(launchAttackNodeOwner));
+
+
+       // auto slashAttackNodeOwner = std::make_unique<Node>("FourFireBall Attack", nullptr, "TRIGGER");
+       // Node* pslashAttackNode = slashAttackNodeOwner.get();
+
+       // BodyCreationSettings a2BodySettings(new JPH::CapsuleShape(5.0f, 3.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
+       // pslashAttackNode->AddComponent(
+       //     std::make_unique<Trigger>(pslashAttackNode, a2BodySettings, false)
+       // );
+       // pslashAttackNode->AddComponent(
+       //     std::make_unique<SlashAttack>(pslashAttackNode)
+       // );*/
+       // pNewNode->AddComponent(
+       //     std::make_unique<FireBallAttack>(pNewNode)
+       // );
+       // FireBallAttack* fireBallAttack = pNewNode->GetComponent<FireBallAttack>();
+
+       // pNewNode->AddComponent(
+       //     std::make_unique<FourFireBallAttack>(pNewNode)
+       // );
+       // FourFireBallAttack* fourFireBallAttack = pNewNode->GetComponent<FourFireBallAttack>();
+
+       // //fireBallAttack->attackRange = 100.0f;
 
 
         //MOVEMENT
@@ -8980,7 +9004,7 @@ public:
         );
         Walking* walking = pNewNode->GetComponent<Walking>();
         walking->radius = 1.6f;
-        walking->maxSpeed = 80.0f;
+        walking->maxSpeed = 50.0f;
         walking->height = 7.2f;
 
 
@@ -8989,11 +9013,12 @@ public:
             std::make_unique<StateMachine>(pNewNode, StateType::IDLE)
         );
         StateMachine* stateMachine = pNewNode->GetComponent<StateMachine>();
-        stateMachine->enemyType = EnemyType::FRENZY;
+        stateMachine->enemyType = EnemyType::BOSS;
         stateMachine->followDistance = 400.0f;
         stateMachine->pPlayer = player;
-        stateMachine->attackComponents.push_back(slashAttack);
-        stateMachine->attackComponents.push_back(launchAttack);
+        stateMachine->attackComponents.push_back(basicAttack);
+        //stateMachine->attackComponents.push_back(fireBallAttack);
+        //stateMachine->attackComponents.push_back(fourFireBallAttack);
         stateMachine->pMovementComponent = walking;
         stateMachine->attackCooldown = 2.0f;
         stateMachine->sp = 2.0f;
@@ -9005,7 +9030,7 @@ public:
         pNewNode->SetLocalPosition(position);
         pNewNode->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
 
-        pNewNode->radius = 7.0f;
+        pNewNode->radius = 40.0f;
 
         return pNewNode;
     }

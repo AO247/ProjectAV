@@ -15,7 +15,7 @@ namespace Bind
 		// We will transpose the matrices in C++ before updating the buffer.
 		struct BoneTransforms
 		{
-			static constexpr size_t MAX_BONES = 100;
+			static constexpr size_t MAX_BONES = 150;
 			DirectX::XMMATRIX boneTransform[MAX_BONES];
 		};
 
