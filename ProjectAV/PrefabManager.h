@@ -3048,7 +3048,7 @@ public:
 
     static Node* InstantiateBossIsland(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 })
     {
-        auto pNewNodeOwner = std::make_unique<Node>("BASE", nullptr, "GROUND");
+        auto pNewNodeOwner = std::make_unique<Node>("BOSS", nullptr, "GROUND");
 
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\teleport\\wyspa_wielka.obj")
@@ -3075,33 +3075,137 @@ public:
         pNewNodeOwner->SetLocalRotation(rotation);
         pNewNodeOwner->radius = 1000.0f;
 
-		InstantiatePlatform1(pNewNodeOwner.get(), Vector3(0.00f, 0.00f, 0.00f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
-        InstantiatePlatform1(pNewNodeOwner.get(), Vector3(0.00f, 0.00f, 0.00f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
-        InstantiatePlatform1(pNewNodeOwner.get(), Vector3(0.00f, 0.00f, 0.00f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
-        InstantiatePlatform1(pNewNodeOwner.get(), Vector3(0.00f, 0.00f, 0.00f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
-        InstantiatePlatform1(pNewNodeOwner.get(), Vector3(0.00f, 0.00f, 0.00f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
-        InstantiatePlatform1(pNewNodeOwner.get(), Vector3(0.00f, 0.00f, 0.00f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
-        InstantiatePlatform1(pNewNodeOwner.get(), Vector3(0.00f, 0.00f, 0.00f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
-        InstantiateWall2(pNewNodeOwner.get(), Vector3(0.00f, 0.00f, 0.00f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
-        InstantiateWall2(pNewNodeOwner.get(), Vector3(0.00f, 0.00f, 0.00f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
-        InstantiateWall2(pNewNodeOwner.get(), Vector3(0.00f, 0.00f, 0.00f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
-        InstantiateWall2(pNewNodeOwner.get(), Vector3(0.00f, 0.00f, 0.00f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
-        InstantiateWall3(pNewNodeOwner.get(), Vector3(0.00f, 0.00f, 0.00f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
-        InstantiateWall3(pNewNodeOwner.get(), Vector3(0.00f, 0.00f, 0.00f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
-        InstantiateRock5(pNewNodeOwner.get(), Vector3(0.00f, 0.00f, 0.00f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
-        InstantiateRock5(pNewNodeOwner.get(), Vector3(0.00f, 0.00f, 0.00f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
-        InstantiateRock5(pNewNodeOwner.get(), Vector3(0.00f, 0.00f, 0.00f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
-        InstantiateRockDouble(pNewNodeOwner.get(), Vector3(0.00f, 0.00f, 0.00f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
-        InstantiateRockDouble(pNewNodeOwner.get(), Vector3(0.00f, 0.00f, 0.00f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
-        InstantiateRockDouble(pNewNodeOwner.get(), Vector3(0.00f, 0.00f, 0.00f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
-        InstantiateRockDouble(pNewNodeOwner.get(), Vector3(0.00f, 0.00f, 0.00f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
-        InstantiateRockDouble(pNewNodeOwner.get(), Vector3(0.00f, 0.00f, 0.00f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
+		InstantiatePlatform3(pNewNodeOwner.get(), Vector3(125.00f, -3.30f, -21.40f), 1.0f, Vector3(0.00f, 2.90f, 0.00f));
+        InstantiatePlatform3(pNewNodeOwner.get(), Vector3(123.50f, 0.00f, 17.50f), 1.0f, Vector3(0.00f, 3.11f, 0.00f));
+        InstantiatePlatform3(pNewNodeOwner.get(), Vector3(120.00f, 0.00f, -62.20f), 1.0f, Vector3(0.00f, -2.86f, 0.00f));
+        InstantiatePlatform3(pNewNodeOwner.get(), Vector3(-19.00f, 0.00f, -102.90f), 1.0f, Vector3(0.00f, -1.38f, 0.00f));
+        InstantiatePlatform3(pNewNodeOwner.get(), Vector3(-80.90f, -6.60f, -71.60f), 1.0f, Vector3(0.00f, -0.70f, 0.00f));
+        InstantiatePlatform3(pNewNodeOwner.get(), Vector3(-94.40f, 0.00f, -33.10f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
+        InstantiatePlatform3(pNewNodeOwner.get(), Vector3(-92.30f, 0.00f, 31.20f), 1.0f, Vector3(0.00f, 0.28f, 0.00f));
+        InstantiateWall2(pNewNodeOwner.get(), Vector3(144.80f, 0.90f, 59.80f), 1.0f, Vector3(0.00f, 0.07f, 0.00f));
+        InstantiateWall2(pNewNodeOwner.get(), Vector3(87.20f, 0.80f, 127.10f), 1.0f, Vector3(0.00f, -1.50f, 0.00f));
+        InstantiateWall2(pNewNodeOwner.get(), Vector3(27.30f, 1.00f, -123.90f), 1.0f, Vector3(0.00f, 1.52f, 0.00f));
+        InstantiateWall2(pNewNodeOwner.get(), Vector3(44.80f, 0.60f, 126.90f), 1.0f, Vector3(0.00f, 1.45f, 0.00f));
+        InstantiateWall3(pNewNodeOwner.get(), Vector3(130.70f, 0.90f, 105.70f), 1.0f, Vector3(0.00f, -0.72f, 0.00f));
+        InstantiateWall3(pNewNodeOwner.get(), Vector3(-83.20f, 0.00f, 104.90f), 1.0f, Vector3(0.00f, -2.51f, 0.00f));
+        InstantiateWall3(pNewNodeOwner.get(), Vector3(-83.20f, 0.00f, 104.90f), 1.0f, Vector3(0.00f, -2.51f, 0.00f));
+        InstantiateWall3(pNewNodeOwner.get(), Vector3(-83.20f, 0.00f, 104.90f), 1.0f, Vector3(0.00f, -2.51f, 0.00f));
+        InstantiateRock5(pNewNodeOwner.get(), Vector3(-52.00f, 0.00f, 124.70f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
+        InstantiateRock5(pNewNodeOwner.get(), Vector3(113.90f, 0.00f, -95.30f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
+        InstantiateRock5(pNewNodeOwner.get(), Vector3(139.10f, 0.00f, 28.80f), 1.5f, Vector3(0.00f, 0.00f, 0.00f));
+        InstantiateRockDouble(pNewNodeOwner.get(), Vector3(91.40f, 0.50f, -103.50f), 1.0f, Vector3(0.00f, 0.96f, 0.00f));
+        InstantiateRockDouble(pNewNodeOwner.get(), Vector3(58.00f, 0.00f, -112.80f), 1.0f, Vector3(0.00f, -1.52f, 0.00f));
+        InstantiateRockDouble(pNewNodeOwner.get(), Vector3(-35.70f, 0.00f, 125.00f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
+        InstantiateRockDouble(pNewNodeOwner.get(), Vector3(-63.40f, 0.00f, -101.90f), 1.0f, Vector3(0.00f, 2.41f, 0.00f));
+        InstantiateRockDouble(pNewNodeOwner.get(), Vector3(-112.60f, 0.40f, 2.70f), 1.0f, Vector3(0.00f, 0.40f, 0.00f));
+		InstantiateNewColumn(pNewNodeOwner.get(), Vector3(65.00f, 1.30f, 69.20f), 1.0f);
+        InstantiateNewColumn(pNewNodeOwner.get(), Vector3(77.00f, 1.30f, -12.50f), 1.0f);
+        InstantiateNewColumn(pNewNodeOwner.get(), Vector3(33.70f, 1.30f, -87.40f), 1.0f);
+        InstantiateNewColumn(pNewNodeOwner.get(), Vector3(-39.10f, 1.30f, -66.60f), 1.0f);
+        InstantiateNewColumn(pNewNodeOwner.get(), Vector3(-48.50f, 1.30f, -18.80f), 1.0f);
+        InstantiateNewColumn(pNewNodeOwner.get(), Vector3(-40.70f, 1.30f, 34.10f), 1.0f);
+        InstantiateNewColumn(pNewNodeOwner.get(), Vector3(-15.90f, 1.30f, 68.60f), 1.0f);
+        InstantiateNewColumn(pNewNodeOwner.get(), Vector3(26.50f, 1.30f, 49.80f), 1.0f);
+		InstantiateStoneStack1(pNewNodeOwner.get(), Vector3(67.60f, 2.72f, -65.30f), 1.1f);
+        InstantiateStoneStack1(pNewNodeOwner.get(), Vector3(35.20f, 2.72f, 65.50f), 1.1f);
+        InstantiateStoneStack1(pNewNodeOwner.get(), Vector3(-7.00f, 2.72f, -75.00f), 1.0f);
+        InstantiateStoneStack1(pNewNodeOwner.get(), Vector3(-24.60f, 2.72f, -2.30f), 1.0f);
+        InstantiateStoneStack1(pNewNodeOwner.get(), Vector3(73.00f, 2.72f, 34.80f), 0.9f);
+        InstantiateStoneStack1(pNewNodeOwner.get(), Vector3(-4.30f, 10.02f, 39.50f), 0.9f);
 
         Node* pNewNode = pNewNodeOwner.get();
         parentNode->AddChild(std::move(pNewNodeOwner));
         return pNewNode;
 
     }
+    static Node* InstantiateMiniBossIsland(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 })
+    {
+        auto pNewNodeOwner = std::make_unique<Node>("miniBOSS", nullptr, "GROUND");
+
+        pNewNodeOwner->AddComponent(
+            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\teleport\\wyspa_wielka.obj")
+        );
+        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
+        ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
+        TriangleList islandTriangles = PhysicsCommon::MakeTriangleList(islandModel->GetAllTriangles());
+        MeshShapeSettings islandMeshSettings(islandTriangles);
+        Shape::ShapeResult islandMeshCreationResult = islandMeshSettings.Create();
+        ShapeRefC islandMeshShape = islandMeshCreationResult.Get();
+        ScaledShapeSettings islandScaling(islandMeshShape, Vec3Arg(scale, scale, scale));
+        islandMeshShape = islandScaling.Create().Get();
+        BodyCreationSettings bodySettings(islandMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
+        bodySettings.mFriction = 1.0f;
+        pNewNodeOwner->AddComponent(
+            std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
+        );
+        pNewNodeOwner->AddComponent(
+            std::make_unique<Island>(pNewNodeOwner.get())
+        );
+
+        pNewNodeOwner->SetLocalPosition(position);
+        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+        pNewNodeOwner->SetLocalRotation(rotation);
+        pNewNodeOwner->radius = 1000.0f;
+
+        //WALL BORDERS
+        InstantiatePlatform3(pNewNodeOwner.get(), Vector3(125.00f, -3.30f, -21.40f), 1.0f, Vector3(0.00f, 2.90f, 0.00f));
+        InstantiatePlatform3(pNewNodeOwner.get(), Vector3(123.50f, 0.00f, 17.50f), 1.0f, Vector3(0.00f, 3.11f, 0.00f));
+        InstantiatePlatform3(pNewNodeOwner.get(), Vector3(120.00f, 0.00f, -62.20f), 1.0f, Vector3(0.00f, -2.86f, 0.00f));
+        InstantiatePlatform3(pNewNodeOwner.get(), Vector3(-19.00f, 0.00f, -102.90f), 1.0f, Vector3(0.00f, -1.38f, 0.00f));
+        InstantiatePlatform3(pNewNodeOwner.get(), Vector3(-80.90f, -6.60f, -71.60f), 1.0f, Vector3(0.00f, -0.70f, 0.00f));
+        InstantiatePlatform3(pNewNodeOwner.get(), Vector3(-94.40f, 0.00f, -33.10f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
+        InstantiatePlatform3(pNewNodeOwner.get(), Vector3(-92.30f, 0.00f, 31.20f), 1.0f, Vector3(0.00f, 0.28f, 0.00f));
+        InstantiateWall2(pNewNodeOwner.get(), Vector3(144.80f, 0.90f, 59.80f), 1.0f, Vector3(0.00f, 0.07f, 0.00f));
+        InstantiateWall2(pNewNodeOwner.get(), Vector3(87.20f, 0.80f, 127.10f), 1.0f, Vector3(0.00f, -1.50f, 0.00f));
+        InstantiateWall2(pNewNodeOwner.get(), Vector3(27.30f, 1.00f, -123.90f), 1.0f, Vector3(0.00f, 1.52f, 0.00f));
+        InstantiateWall2(pNewNodeOwner.get(), Vector3(44.80f, 0.60f, 126.90f), 1.0f, Vector3(0.00f, 1.45f, 0.00f));
+        InstantiateWall3(pNewNodeOwner.get(), Vector3(130.70f, 0.90f, 105.70f), 1.0f, Vector3(0.00f, -0.72f, 0.00f));
+        InstantiateWall3(pNewNodeOwner.get(), Vector3(-83.20f, 0.00f, 104.90f), 1.0f, Vector3(0.00f, -2.51f, 0.00f));
+        InstantiateWall3(pNewNodeOwner.get(), Vector3(-83.20f, 0.00f, 104.90f), 1.0f, Vector3(0.00f, -2.51f, 0.00f));
+        InstantiateWall3(pNewNodeOwner.get(), Vector3(-83.20f, 0.00f, 104.90f), 1.0f, Vector3(0.00f, -2.51f, 0.00f));
+        InstantiateRock5(pNewNodeOwner.get(), Vector3(-52.00f, 0.00f, 124.70f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
+        InstantiateRock5(pNewNodeOwner.get(), Vector3(113.90f, 0.00f, -95.30f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
+        InstantiateRock5(pNewNodeOwner.get(), Vector3(139.10f, 0.00f, 28.80f), 1.5f, Vector3(0.00f, 0.00f, 0.00f));
+        InstantiateRockDouble(pNewNodeOwner.get(), Vector3(91.40f, 0.50f, -103.50f), 1.0f, Vector3(0.00f, 0.96f, 0.00f));
+        InstantiateRockDouble(pNewNodeOwner.get(), Vector3(58.00f, 0.00f, -112.80f), 1.0f, Vector3(0.00f, -1.52f, 0.00f));
+        InstantiateRockDouble(pNewNodeOwner.get(), Vector3(-35.70f, 0.00f, 125.00f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
+        InstantiateRockDouble(pNewNodeOwner.get(), Vector3(-63.40f, 0.00f, -101.90f), 1.0f, Vector3(0.00f, 2.41f, 0.00f));
+        InstantiateRockDouble(pNewNodeOwner.get(), Vector3(-112.60f, 0.40f, 2.70f), 1.0f, Vector3(0.00f, 0.40f, 0.00f));
+
+        //LEVEL DESIGN
+        InstantiatePlatform1(pNewNodeOwner.get(), Vector3(-92.30f, 0.00f, 31.20f), 1.0f, Vector3(0.00f, 0.28f, 0.00f));
+        InstantiatePlatform1(pNewNodeOwner.get(), Vector3(-92.30f, 0.00f, 31.20f), 1.0f, Vector3(0.00f, 0.28f, 0.00f));
+        InstantiatePlatform1(pNewNodeOwner.get(), Vector3(-92.30f, 0.00f, 31.20f), 1.0f, Vector3(0.00f, 0.28f, 0.00f));
+        InstantiatePlatform1(pNewNodeOwner.get(), Vector3(-92.30f, 0.00f, 31.20f), 1.0f, Vector3(0.00f, 0.28f, 0.00f));
+        InstantiatePlatform3(pNewNodeOwner.get(), Vector3(-92.30f, 0.00f, 31.20f), 0.6f, Vector3(0.00f, 0.28f, 0.00f));
+        InstantiatePlatform3(pNewNodeOwner.get(), Vector3(-92.30f, 0.00f, 31.20f), 0.6f, Vector3(0.00f, 0.28f, 0.00f));
+        InstantiatePlatform3(pNewNodeOwner.get(), Vector3(-92.30f, 0.00f, 31.20f), 0.6f, Vector3(0.00f, 0.28f, 0.00f));
+        InstantiatePlatform3(pNewNodeOwner.get(), Vector3(-92.30f, 0.00f, 31.20f), 0.6f, Vector3(0.00f, 0.28f, 0.00f));
+		InstantiateFire1(pNewNodeOwner.get(), Vector3(125.00f, -3.30f, -21.40f), 1.0f, Vector3(0.00f, 2.90f, 0.00f));
+        InstantiateFire1(pNewNodeOwner.get(), Vector3(125.00f, -3.30f, -21.40f), 1.0f, Vector3(0.00f, 2.90f, 0.00f)); 
+        InstantiateFire1(pNewNodeOwner.get(), Vector3(125.00f, -3.30f, -21.40f), 1.0f, Vector3(0.00f, 2.90f, 0.00f));
+        InstantiateFire1(pNewNodeOwner.get(), Vector3(125.00f, -3.30f, -21.40f), 1.0f, Vector3(0.00f, 2.90f, 0.00f));
+        /*InstantiateNewColumn(pNewNodeOwner.get(), Vector3(65.00f, 1.30f, 69.20f), 1.0f);
+        InstantiateNewColumn(pNewNodeOwner.get(), Vector3(77.00f, 1.30f, -12.50f), 1.0f);
+        InstantiateNewColumn(pNewNodeOwner.get(), Vector3(33.70f, 1.30f, -87.40f), 1.0f);
+        InstantiateNewColumn(pNewNodeOwner.get(), Vector3(-39.10f, 1.30f, -66.60f), 1.0f);
+        InstantiateNewColumn(pNewNodeOwner.get(), Vector3(-48.50f, 1.30f, -18.80f), 1.0f);
+        InstantiateNewColumn(pNewNodeOwner.get(), Vector3(-40.70f, 1.30f, 34.10f), 1.0f);
+        InstantiateNewColumn(pNewNodeOwner.get(), Vector3(-15.90f, 1.30f, 68.60f), 1.0f);
+        InstantiateNewColumn(pNewNodeOwner.get(), Vector3(26.50f, 1.30f, 49.80f), 1.0f);
+        InstantiateStoneStack1(pNewNodeOwner.get(), Vector3(67.60f, 2.72f, -65.30f), 1.1f);
+        InstantiateStoneStack1(pNewNodeOwner.get(), Vector3(35.20f, 2.72f, 65.50f), 1.1f);
+        InstantiateStoneStack1(pNewNodeOwner.get(), Vector3(-7.00f, 2.72f, -75.00f), 1.0f);
+        InstantiateStoneStack1(pNewNodeOwner.get(), Vector3(-24.60f, 2.72f, -2.30f), 1.0f);
+        InstantiateStoneStack1(pNewNodeOwner.get(), Vector3(73.00f, 2.72f, 34.80f), 0.9f);
+        InstantiateStoneStack1(pNewNodeOwner.get(), Vector3(-4.30f, 10.02f, 39.50f), 0.9f);*/
+
+        Node* pNewNode = pNewNodeOwner.get();
+        parentNode->AddChild(std::move(pNewNodeOwner));
+        return pNewNode;
+
+    }
+
 
     static Node* InstantiateIslandBig1(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {

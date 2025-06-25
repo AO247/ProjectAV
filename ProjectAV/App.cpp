@@ -130,7 +130,7 @@ App::App(const std::string& commandLine)
     pHands->AddChild(std::move(pRightHandOwner));
     pSceneRoot->AddChild(std::move(tutorialOwner));
 
-    PrefabManager::InstantiateStone1(pSceneRoot.get(), Vector3(0.0f, 100.0f, 0.0f), 1.0f);
+    //PrefabManager::InstantiateStone1(pSceneRoot.get(), Vector3(0.0f, 100.0f, 0.0f), 1.0f);
 
     PrefabManager::root = temporary;
     PrefabManager::player = pPlayer;
@@ -398,7 +398,7 @@ App::App(const std::string& commandLine)
     pSceneRoot->GetComponent<Global>()->upgradeHandler = pUpgradeHandler;
 
 	//PrefabManager::InstantiateIslandSmall1(pSceneRoot.get(), Vector3(60.0f, 50.0f, 0.0f), 1.0f);
-    PrefabManager::InstantiateBossIsland(pSceneRoot.get(), Vector3(-400.0f, 50.0f, 0.0f), 1.0f);
+    PrefabManager::InstantiateMiniBossIsland(pSceneRoot.get(), Vector3(-400.0f, 50.0f, 0.0f), 1.0f);
     tutorialNode->AddComponent(
         std::make_unique<Tutorial>(tutorialNode, wnd, pPlayer)
     );
