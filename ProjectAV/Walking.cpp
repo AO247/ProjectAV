@@ -66,7 +66,7 @@ void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 			//tutaj animacja stania
 
 			if (statemachine->enemyType == EnemyType::BASIC) {
-				pOwner->GetComponent<AnimationComponent>()->PlayAnimation(3);		//stand basic
+				pOwner->GetComponent<AnimationComponent>()->PlayAnimation(2);		//stand basic
 
 			}
 			if (statemachine->enemyType == EnemyType::RANGED) {
