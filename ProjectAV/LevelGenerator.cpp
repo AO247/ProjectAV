@@ -80,10 +80,6 @@ void LevelGenerator::GenerateIslands()
 			{
 				islandPrefab = PrefabManager::InstantiateIslandBig9(pOwner, Vector3(islandsInfo[i].pos.x, islandsInfo[i].pos.y, islandsInfo[i].pos.z), 1.0f);
 			}
-            else if (islandsInfo[i].name == "BIG10")
-            {
-                islandPrefab = PrefabManager::InstantiateIslandBig10(pOwner, Vector3(islandsInfo[i].pos.x, islandsInfo[i].pos.y, islandsInfo[i].pos.z), 1.0f);
-			}
 			else if (islandsInfo[i].name == "MEDIUM1")
 			{
 				islandPrefab = PrefabManager::InstantiateIslandMedium1(pOwner, Vector3(islandsInfo[i].pos.x, islandsInfo[i].pos.y, islandsInfo[i].pos.z), 1.0f);
@@ -194,8 +190,7 @@ void LevelGenerator::GenerateIslands()
                 if (randIsland == 0 && bigIslandCount > 0)
                 {
                     spawned = false;
-                    int randLarge = rand() % 10;
-                    //randLarge = 1;
+                    int randLarge = rand() % 9;
                     if (randLarge == 0) {
                         islandInfo.name = "BIG1";
                         islandInfo.pos = { 0.0f, 0.0f, 0.0f };
@@ -268,14 +263,6 @@ void LevelGenerator::GenerateIslands()
                         islandInfo.rightPoint = { 67.00f, 0.00f, -19.90f };
                         islandInfo.downPoint = { -15.70f, 0.00f, -56.50f };
                     } 
-                    else {
-						islandInfo.name = "BIG10";
-						islandInfo.pos = { 0.0f, 0.0f, 0.0f };
-						islandInfo.leftPoint = { -56.10f, 6.10f, 27.60f };
-						islandInfo.upPoint = { 5.70f, 5.00f, 64.00f };
-						islandInfo.rightPoint = { 67.00f, 0.00f, -12.00f };
-						islandInfo.downPoint = { 0.40f, 18.00f, -58.00f };
-                    }
                     bigIslandCount--;
                     break;
                 }
@@ -742,22 +729,14 @@ void LevelGenerator::SpawnEnemies()
         }
         if (randEnemy == 2 && numberOfEasyEnemies > 0)
         {
-            int randEnemy = rand() % 3;
-
+            int randEnemy = rand() % 2;
             if (randEnemy == 0)
             {
-                randEnemy = 1;
                 enemy = PrefabManager::InstantiateNormalEnemy(pOwner, Vector3(0.0f, 0.0f, 0.0f));
                 enemy->SetWorldPosition(pos);
                 enemy->GetComponent<StateMachine>()->basePos = pos;
             }
             if (randEnemy == 1)
-            {
-                enemy = PrefabManager::InstantiateFastEnemy(pOwner, Vector3(0.0f, 0.0f, 0.0f));
-                enemy->SetWorldPosition(pos);
-                enemy->GetComponent<StateMachine>()->basePos = pos;
-            }
-            if (randEnemy == 2)
             {
                 enemy = PrefabManager::InstantiateTankEnemy(pOwner, Vector3(0.0f, 0.0f, 0.0f));
                 enemy->SetWorldPosition(pos);

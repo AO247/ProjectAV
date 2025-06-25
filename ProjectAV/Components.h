@@ -15,6 +15,12 @@
 #include "TankAttack.h"
 #include "LaunchAttack.h"
 #include "SlashAttack.h"
+#include "FireBallAttack.h"
+#include "FourFireBallAttack.h"
+#include "RotateAttack.h"
+#include "FireBall.h"
+#include "FireBoom.h"
+#include "MushroomBoom.h"
 #include "Spikes.h"
 #include "OnFire.h"
 #include "FireStatue.h"
@@ -38,6 +44,7 @@
 #include "Ability6.h"
 #include "Ability5Extend.h"
 #include "Tutorial.h"
+#include "StoneGenerator.h"
 
 
 

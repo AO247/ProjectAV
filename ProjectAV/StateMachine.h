@@ -35,6 +35,10 @@ public:
 	float stopTime = 1.0f;
 	float groundDamping = 0.035f;
 	float flyingDamping = 0.01f;
+	float attackCooldown = 0.0f;
+	float timeToChangeAttack = 0.0f;
+	float attackCooldownTimer = 0.0f;
+	float sp = 1.4f;
 
 	bool isFlying = false;
 	bool isDead = false;

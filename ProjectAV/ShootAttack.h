@@ -13,7 +13,7 @@ public:
 	ShootAttack(Node* owner, Node* player = nullptr, std::string tag = "ATTACK");
 	virtual ~ShootAttack() = default;
 	float damage = 1.0f;
-	float wholeAttackTime = 1.5f;
+	float wholeAttackTime = 1.24f;
 	float shootTime = 0.5f;
 	float knockbackForce = 1500.0f;
 	float bulletSpeed = 20.0f;

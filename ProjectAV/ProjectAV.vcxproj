@@ -171,6 +171,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="FourFireBallAttack.cpp" />
     <ClCompile Include="Ability1.cpp" />
     <ClCompile Include="Ability2.cpp" />
     <ClCompile Include="Ability3.cpp" />
@@ -188,6 +189,9 @@
     <ClCompile Include="BoomAttack.cpp" />
     <ClCompile Include="Collectable.cpp" />
     <ClCompile Include="FallDamage.cpp" />
+    <ClCompile Include="FireBall.cpp" />
+    <ClCompile Include="FireBallAttack.cpp" />
+    <ClCompile Include="FireBoom.cpp" />
     <ClCompile Include="Hands.cpp" />
     <ClCompile Include="IEmitterLogic.cpp" />
     <ClCompile Include="InstanceBuffer.cpp" />
@@ -201,6 +205,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="ModelCache.cpp" />
+    <ClCompile Include="MushroomBoom.cpp" />
     <ClCompile Include="OnFire.cpp" />
     <ClCompile Include="FireStatue.cpp" />
     <ClCompile Include="FullscreenPass.cpp" />
@@ -242,6 +247,7 @@
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="MusicBuffer.cpp" />
     <ClCompile Include="MyContactListener.cpp" />
+    <ClInclude Include="FourFireBallAttack.h" />
     <ClInclude Include="Ability.h" />
     <ClInclude Include="Ability1.h" />
     <ClInclude Include="Ability2.h" />
@@ -262,6 +268,11 @@
     <ClInclude Include="CircleEmitterLogic.h" />
     <ClInclude Include="Collectable.h" />
     <ClInclude Include="EnemyConfig.h" />
+    <ClInclude Include="FireBall.h" />
+    <ClInclude Include="FireBallAttack.h" />
+    <ClInclude Include="FireBoom.h" />
+    <ClInclude Include="MushroomBoom.h" />
+    <ClInclude Include="RotateAttack.h" />
     <ClInclude Include="SlashAttack.h" />
     <ClInclude Include="Hands.h" />
     <ClInclude Include="IEmitterLogic.h" />
@@ -300,6 +311,7 @@
     <ClCompile Include="RenderQueuePass.cpp" />
     <ClCompile Include="RenderTarget.cpp" />
     <ClCompile Include="Rigidbody.cpp" />
+    <ClCompile Include="RotateAttack.cpp" />
     <ClCompile Include="Sampler.cpp" />
     <ClCompile Include="ShadowCbuf.cpp" />
     <ClCompile Include="ShadowMappingPass.cpp" />
@@ -326,6 +338,7 @@
     <ClCompile Include="StaticSoundPlayer.cpp" />
     <ClCompile Include="Step.cpp" />
     <ClCompile Include="StepLinkingProbe.cpp" />
+    <ClCompile Include="StoneGenerator.cpp" />
     <ClCompile Include="StopState.cpp" />
     <ClCompile Include="StunState.cpp" />
     <ClCompile Include="Surface.cpp" />
@@ -462,6 +475,7 @@
     <ClInclude Include="Stencil.h" />
     <ClInclude Include="Step.h" />
     <ClInclude Include="StepLinkingProbe.h" />
+    <ClInclude Include="StoneGenerator.h" />
     <ClInclude Include="StopState.h" />
     <ClInclude Include="StunState.h" />
     <ClInclude Include="Surface.h" />
@@ -849,12 +863,14 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)%(Filename).cso</ObjectFileOutput>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="Skybox_VS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)%(Filename).cso</ObjectFileOutput>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="Solid_PS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>

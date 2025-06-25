@@ -20,14 +20,7 @@ FollowState::FollowState(StateMachine* pOwner) : State()
 void FollowState::Enter(StateMachine* pOwner)
 {
 	//OutputDebugStringA("Entering FOLLOW State\n");
-	time = 0.0f;
-    if (pOwner->attackComponents.size() > 0) {
-        int randI = rand() % pOwner->attackComponents.size();
-        pOwner->pAttackComponent = pOwner->attackComponents[randI];
-        pOwner->attackRange = pOwner->pAttackComponent->attackRange;
-    }
-
-
+    time = 0.0f;
 
 }
 
@@ -42,7 +35,7 @@ void FollowState::Update(StateMachine* pOwner, float dt)
         pOwner->RequestStateChange(StateType::IDLE);
         return;
     }
-    if (ownerPos.Distance(ownerPos, playerPos) < pOwner->attackRange && pOwner->pMovementComponent->canAttack)
+    if (ownerPos.Distance(ownerPos, playerPos) < pOwner->attackRange && pOwner->pMovementComponent->canAttack && pOwner->attackCooldownTimer <= 0.0f)
     {
         sm::Vector3 temporaryDirection = playerPos - ownerPos;
 		float length = temporaryDirection.Length();
@@ -56,33 +49,32 @@ void FollowState::Update(StateMachine* pOwner, float dt)
         if (!PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(ray1, result1, IgnoreMultipleBroadPhaseLayerFilter({ BroadPhaseLayers::ENEMY, BroadPhaseLayers::TRIGGER }),
             IgnoreMultipleObjectLayerFilter({ Layers::ENEMY, Layers::TRIGGER })))
         {
+			pOwner->attackCooldownTimer = pOwner->attackCooldown;
             pOwner->RequestStateChange(StateType::ATTACK);
             return;
         }
     }
-    AnimationComponent* animComp = pOwner->GetOwnerNode()->GetComponent<AnimationComponent>();
-    if (animComp) {
-        switch (pOwner->enemyType)
-        {
-        case EnemyType::FLYING:
-            animComp->PlayAnimation(EnemyAnimationIndices::FLYING_FLYING);
-            break;
+    //AnimationComponent* animComp = pOwner->GetOwnerNode()->GetComponent<AnimationComponent>();
+    //if (animComp) {
+    //    switch (pOwner->enemyType)
+    //    {
+    //    case EnemyType::FLYING:
+    //        animComp->PlayAnimation(EnemyAnimationIndices::FLYING_FLYING);
+    //        break;
 
-        case EnemyType::BASIC:
-            animComp->PlayAnimation(EnemyAnimationIndices::BASIC_WALK);
-            break;
+    //    case EnemyType::BASIC:
+    //        animComp->PlayAnimation(EnemyAnimationIndices::BASIC_WALK);
+    //        break;
 
-        case EnemyType::RANGED:
-            animComp->PlayAnimation(EnemyAnimationIndices::RANGED_WALK);
-            break;
-       
-        case EnemyType::EXPLOSIVE:
-            animComp->PlayAnimation(EnemyAnimationIndices::EXPLOSIVE_WALK);
-            break;
-        }
-
-
-    }
+    //    case EnemyType::RANGED:
+    //        animComp->PlayAnimation(EnemyAnimationIndices::RANGED_WALK);
+    //        break;
+    //   
+    //    case EnemyType::EXPLOSIVE:
+    //        animComp->PlayAnimation(EnemyAnimationIndices::EXPLOSIVE_WALK);
+    //        break;
+    //    }
+    //}
     if (pOwner->pMovementComponent != nullptr) {
         pOwner->pMovementComponent->Follow(dt, playerPos);
     }

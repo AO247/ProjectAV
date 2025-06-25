@@ -10,7 +10,7 @@ class Node;
 class Spikes : public Component
 {
 public:
-	Spikes(Node* owner, std::string tag = "ATTACK");
+	Spikes(Node* owner);
 	virtual ~Spikes() = default;
 	void OnCollisionEnter(Node* other) override;
 	virtual void DrawImGuiControls() override;

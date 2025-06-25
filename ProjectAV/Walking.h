@@ -28,7 +28,7 @@ public:
 
 	float jumpForce = 1000.0f;
 	float jumpRange = 40.0f;
-
+	int anim = 0;
 	bool grounded = false;
 	bool voidNear = false;
 	bool canJump = false;
@@ -40,8 +40,9 @@ public:
 	float avoidObjectDistance = 2.0f;
 	Vector3 lastIslandPos = { 0.0f, 0.0f, 0.0f };
 
-	float stepSoundInterval = 4.0f; 
+	float stepSoundInterval = 0.7f; 
 	float stepSoundTimer = 0.0f;
+	float IdleSoundInterval = 4.0f;
 	float IdleSoundTimer = 0.0f;
 
 private:

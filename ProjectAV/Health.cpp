@@ -55,11 +55,15 @@ void Health::TakeDamage(float damage, bool heavy, bool isFire)
 
 	}
 
-	if (isFire && !fireType)
+	if (isFire && !fireType && pOwner->tag == "ENEMY")
 	{
 		currentHealth -= damage;
 		hitted = true;
 		pOwner->GetComponent<StateMachine>()->Stop(0.1f);
+	}
+	else if(isFire && pOwner->tag == "PLAYER")
+	{
+		currentHealth -= damage;
 	}
 
 	if (hitted && pOwner->tag == "ENEMY")

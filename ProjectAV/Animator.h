@@ -45,10 +45,25 @@ public:
                 m_CurrentTime = fmod(m_CurrentTime, m_CurrentAnimation->GetDuration());
             }
             else
-            { 
+            {
                 if (m_CurrentTime >= m_CurrentAnimation->GetDuration())
                 {
+                    // ZMIANA START: Logika ustawiania animacji na nullptr po zakoñczeniu
+
+                    // Ustaw czas na sam koniec, aby model pozosta³ w ostatniej klatce
                     m_CurrentTime = m_CurrentAnimation->GetDuration();
+
+                    // Jeœli nie ma przejœcia do innej animacji, mo¿emy bezpiecznie "wy³¹czyæ" bie¿¹c¹
+                    if (m_TargetAnimation == nullptr)
+                    {
+                        m_CurrentAnimation = nullptr;
+                        // Opcjonalnie zresetuj czas, dla czystoœci kodu
+                        m_CurrentTime = 0.0f;
+                        // WyjdŸ z funkcji, nie ma potrzeby dalszego przetwarzania w tej klatce
+                        return;
+                    }
+
+                    // ZMIANA KONIEC
                 }
             }
         }

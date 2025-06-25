@@ -18,6 +18,8 @@ Walking::Walking(Node* owner, std::string tag)
 }
 void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 {
+	StateMachine* statemachine = pOwner->GetComponent <StateMachine>();
+
 	if (!rigidbody) {
 		return;
 	}
@@ -63,13 +65,59 @@ void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 			PhysicsCommon::physicsSystem->GetBodyInterface().SetRotation(rigidbody->GetBodyID(), q, EActivation::Activate);
 			//tutaj animacja stania
 
+			if (statemachine->enemyType == EnemyType::BASIC) {
+				pOwner->GetComponent<AnimationComponent>()->PlayAnimation(3);
+
+			}
+			if (statemachine->enemyType == EnemyType::RANGED) {
+				pOwner->GetComponent<AnimationComponent>()->PlayAnimation(3);
+
+			}
+			if (statemachine->enemyType == EnemyType::TANK) {
+				pOwner->GetComponent<AnimationComponent>()->PlayAnimation(2);
+
+			}
+			if (statemachine->enemyType == EnemyType::EXPLOSIVE) {
+				pOwner->GetComponent<AnimationComponent>()->PlayAnimation(10);
+
+			}
+			if (statemachine->enemyType == EnemyType::FRENZY) {
+				pOwner->GetComponent<AnimationComponent>()->PlayAnimation(10);
+
+			}
 			return;
 		}
 
 	}
 
+
+	if (statemachine->enemyType == EnemyType::BASIC) {
+		pOwner->GetComponent<AnimationComponent>()->PlayAnimation(4);
+
+	}
+	if (statemachine->enemyType == EnemyType::RANGED) {
+		pOwner->GetComponent<AnimationComponent>()->PlayAnimation(3);
+
+	} 
+	if (statemachine->enemyType == EnemyType::TANK) {
+		pOwner->GetComponent<AnimationComponent>()->PlayAnimation(4);
+
+	}
+	if (statemachine->enemyType == EnemyType::EXPLOSIVE) {
+		pOwner->GetComponent<AnimationComponent>()->PlayAnimation(10);
+
+	} 
+	if (statemachine->enemyType == EnemyType::FRENZY) {
+		pOwner->GetComponent<AnimationComponent>()->PlayAnimation(6);
+	}
+
+
+	stepSoundTimer -= dt;
+	IdleSoundTimer -= dt;
+
 	// tutaj dŸwiêk i animacja chodzenia
-	
+
+
 	//AutoJump();
 	if (timerForChangedDirection > 0.0f)
 	{
@@ -78,6 +126,25 @@ void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 	}
 
 	Vector3 currentVelocity = { currentVelocityJPH.GetX(), currentVelocityJPH.GetY(), currentVelocityJPH.GetZ() };
+
+	if (pOwner->GetComponent<SoundEffectsPlayer>() && currentVelocity.LengthSquared() > 0.1f && grounded)
+	{
+		if (IdleSoundTimer <= 0.0f)
+		{
+			//Idle sounds
+			float randSound = (rand() % 4);
+			pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f);
+
+			IdleSoundTimer = IdleSoundInterval;
+		}
+		if (stepSoundTimer <= 0.0f) {
+			//Steps sounds
+			int randSound = rand() % 6 + 7;
+			pOwner->GetComponent<SoundEffectsPlayer>()->PlayAdvanced(randSound, 0.4, false, 1.0f, 5.0f, 40.0f, 2.0f, true);
+			stepSoundTimer = stepSoundInterval;
+		}
+	}
+
 	Vector3 desiredDirection = targetPosition - currentPos;
 	desiredDirection.Normalize();
 	Vector3 desiredVelocity;
@@ -103,7 +170,7 @@ void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 
 	float steeringMagnitude = steeringForce.Length();
 	//if (steeringMagnitude > maxSpeed) {
-		steeringForce = (steeringForce / steeringMagnitude) * maxSpeed;
+		steeringForce = (steeringForce / steeringMagnitude) * maxSpeed / sp;
 	//}
 
 	PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(steeringForce.x, 0.0f, steeringForce.z) * 1000.0f * dt);
@@ -134,24 +201,6 @@ void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 	}
 
 	//PhysicsCommon::physicsSystem->GetBodyInterface().SetFriction(rigidbody->GetBodyID(), 0.5f);
-
-	stepSoundTimer -= dt;
-	IdleSoundTimer -= dt;
-	if (pOwner->GetComponent<SoundEffectsPlayer>() && currentVelocity.LengthSquared() > 0.1f && grounded)
-	{
-		if (stepSoundTimer <= 0.0f)
-		{
-			float randSound = (rand() % 4);
-			pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound);
-
-			stepSoundTimer = stepSoundInterval;
-		}
-		if (IdleSoundTimer <= 0.0f) {
-			int randSound = rand() % 6 + 6;
-			pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound);
-			IdleSoundTimer = stepSoundInterval/2;
-		}
-	}
 }
 bool Walking::GroundCheck()
 {
@@ -585,6 +634,8 @@ void Walking::DrawImGuiControls()
 	ImGui::Checkbox("More Left", &moreLeft);
 	ImGui::Checkbox("More Right", &moreRight);
 	ImGui::InputFloat("Velocity", &vel);
+	ImGui::InputInt("Anim", &anim);
+
 	ImGui::Checkbox("Void", &voidNear);
 	ImGui::InputFloat("Time", &timerForChangedDirection);
 

@@ -12,18 +12,26 @@ void LaunchAttack::Attack(float dt)
 {
 	if (timer == 0.0f)
 	{
-		if (pOwner->GetComponent<SoundEffectsPlayer>()) {
-			float randSound = (rand() % 3) + 4;
-			pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound);
-		}
+		Vector3 playerPos = pOwner->GetParent()->GetComponent<StateMachine>()->pPlayer->GetWorldPosition();
+
+		sm::Vector3 facingDirection = sm::Vector3(playerPos)
+			- sm::Vector3(pOwner->GetParent()->GetWorldPosition());
+		facingDirection.Normalize();
+
+		float targetYaw = atan2f(facingDirection.x, facingDirection.z);
+
+		Quat q = Quat::sEulerAngles(Vec3(0.0f, targetYaw, 0.0f));
+		PhysicsCommon::physicsSystem->GetBodyInterface().SetRotation(pOwner->GetParent()->GetComponent<Rigidbody>()->GetBodyID(), q, EActivation::Activate);
+
+
 		//miejsce na animacje !!!
-	}
-	timer += dt;
-	if (timer < stopMovingTime)
-	{
+		pOwner->GetParent()->GetComponent<AnimationComponent>()->PlayAnimation((rand() % 2 == 0) ? 1 : 3, 0.2f, false);
+
 		Vec3 direction = Vec3(pOwner->Forward().x, 0.0f, pOwner->Forward().z);
 		PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(pOwner->GetParent()->GetComponent<Rigidbody>()->GetBodyID(), direction * moveForce * dt);
 	}
+	timer += dt;
+
 	if (timer >= wholeAttackTime) {
 		attacked = false;
 		timer = 0.0f;

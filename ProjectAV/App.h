@@ -20,7 +20,7 @@
 #include "Sprite.h"
 #include "Button.h"
 #include "DirectionalLight.h"
-#include <fstream>
+#include <fstream> 
 
 class PlayerController;
 
@@ -74,11 +74,9 @@ private:
 	Node* pSelectedSceneNode = nullptr; 
 	Node* pSoundEffectsPlayer = nullptr;
 	Node* pLeftHand = nullptr;
-	Node* pLeftHandAbility = nullptr;
 	Node* pRightHand = nullptr;
-	Node* pRightHandAbility = nullptr;
 	Node* tutorialNode = nullptr;
-    Node* temporary = nullptr;
+    Node* temporary = nullptr; 
     UpgradeHandler* pUpgradeHandler = nullptr;
 
     TestCube cube{ wnd.Gfx(),4.0f };
@@ -104,19 +102,19 @@ private:
     float countLoding = 0.0f;
     float bonusTime = 5.0f;
 
-
-    std::unique_ptr<Sprite> mainMenuBackground;
-    std::unique_ptr<Button> startButton;
-    std::unique_ptr<Button> quitButton;
-    void UpdateMainMenu();
-    void DrawMainMenu();
+     
     bool wasMouseLeftPressedLastFrame = false;
 
 
     //========== pauza
-    std::unique_ptr<Sprite> pauseMenuOverlay; // Pó³przezroczyste t³o
-    std::unique_ptr<Button> resumeButton;
-    std::unique_ptr<Button> quitToMenuButton;
+    std::unique_ptr<Sprite> resumeBttn;  
+    std::unique_ptr<Sprite> backBttn;
+    std::unique_ptr<Sprite> pauseMenuBackground;
     void UpdatePauseMenu();
-    void DrawPauseMenu();
+    void DrawPauseMenu(float dt);
+
+    void DrawMainMenu(float dt);
+    std::unique_ptr<Sprite> mainMenuBackground;
+    std::unique_ptr<Sprite> quitBttn;
+    std::unique_ptr<Sprite> startBttn;
 };

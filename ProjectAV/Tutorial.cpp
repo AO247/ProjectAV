@@ -99,7 +99,7 @@ void Tutorial::Update(float dt)
 	if (timer > 3.0f && !enemySpawned)
 	{
 		enemySpawned = true;
-		enemy1 = PrefabManager::InstantiateNormalEnemy(temporary, { 187.4f, -18.3f, -267.6f })->GetComponent<StateMachine>();
+		enemy1 = PrefabManager::InstantiateFastEnemy(temporary, { 187.4f, -18.3f, -267.6f })->GetComponent<StateMachine>();
 		enemy2 = PrefabManager::InstantiateNormalEnemy(temporary, { 105.0f, -15.5f, -236.4f })->GetComponent<StateMachine>();
 		enemy3 = PrefabManager::InstantiateNormalEnemy(temporary, { 44.1f, -15.3f, -198.9f })->GetComponent<StateMachine>();
 		enemy4 = PrefabManager::InstantiateShootingEnemy(temporary, { 32.2f, -15.8f, -203.6f })->GetComponent<StateMachine>();

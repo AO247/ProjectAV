@@ -32,7 +32,7 @@ App::App(const std::string& commandLine)
     pSceneRoot(std::make_unique<Node>("Root"))
 {
 
-    wnd.Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 2000.0f));
+    wnd.Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.3f, 2000.0f));
 
 
     std::srand(static_cast<unsigned>(std::time(nullptr)));
@@ -95,19 +95,16 @@ App::App(const std::string& commandLine)
     temporary = pTemporaryOwner.get();
     auto pLeftHandOwner = std::make_unique<Node>("L Normal", nullptr, "HANDS");
     pLeftHand = pLeftHandOwner.get();
-    auto pLeftHandAbilityOwner = std::make_unique<Node>("L Ability", nullptr, "HANDS");
-    pLeftHandAbility = pLeftHandAbilityOwner.get();
     auto pRightHandOwner = std::make_unique<Node>("R Normal", nullptr, "HANDS");
     pRightHand = pRightHandOwner.get();
-    auto pRightHandAbilityOwner = std::make_unique<Node>("R Ability", nullptr, "HANDS");
-    pRightHandAbility = pRightHandAbilityOwner.get();
 	auto handsOwner = std::make_unique<Node>("Hands", nullptr, "HANDS");
     auto tutorialOwner = std::make_unique<Node>("Tutorial", nullptr, "TUTORIAL");
+ 
     tutorialNode = tutorialOwner.get();
 	Node* pPlayerThings = playerThings.get();
 	Node* pAbilities = abilities.get();
 	Node* pBase = base.get();
-	Node* pHands = handsOwner.get();
+	Node* pHands = handsOwner.get(); 
     pSceneRoot->AddChild(std::move(pTemporaryOwner));
 	pSceneRoot->AddChild(std::move(base));
     pSceneRoot->AddChild(std::move(playerThings));
@@ -123,15 +120,14 @@ App::App(const std::string& commandLine)
     pAbilities->AddChild(std::move(pAbility6Owner));
 	pCamera->AddChild(std::move(handsOwner));
     pHands->AddChild(std::move(pLeftHandOwner));
-    pHands->AddChild(std::move(pLeftHandAbilityOwner));
     pHands->AddChild(std::move(pRightHandOwner));
-    pHands->AddChild(std::move(pRightHandAbilityOwner));
     pSceneRoot->AddChild(std::move(tutorialOwner));
 
     PrefabManager::InstantiateStone1(pSceneRoot.get(), Vector3(0.0f, 100.0f, 0.0f), 1.0f);
 
     PrefabManager::root = temporary;
     PrefabManager::player = pPlayer;
+     
 
     BodyCreationSettings bodySettings(new JPH::CapsuleShape(1.4f, 1.6f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::PLAYER);
     bodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
@@ -207,7 +203,7 @@ App::App(const std::string& commandLine)
 
 
 
-    BodyCreationSettings a3RbodySettings(new JPH::SphereShape(1.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::TRIGGER);
+    BodyCreationSettings a3RbodySettings(new JPH::SphereShape(0.5f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::TRIGGER);
     a3RbodySettings.mGravityFactor = 0.0f;
     a3RbodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
 
@@ -257,7 +253,7 @@ App::App(const std::string& commandLine)
     pAbility4->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\sznurek2.wav");
     pAbility4->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\hold.wav");
     pAbility4->GetComponent<Ability4>()->baseAbility = pAbility1->GetComponent<Ability1>();
-    //pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility4;
+    pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility4;
 
 
     pAbility5->AddComponent(
@@ -337,8 +333,8 @@ App::App(const std::string& commandLine)
         std::make_unique<ModelComponent>(pLeftHand, wnd.Gfx(), "Models\\hands\\left.gltf", 1.0f, true, false)
     );
     pLeftHand->GetComponent<ModelComponent>()->LinkTechniques(rg);
-    pLeftHand->SetLocalScale({ 0.1f, 0.1f, 0.1f });
-    pLeftHand->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
+    pLeftHand->SetLocalScale({ 0.035f, 0.035f, 0.035f });
+    pLeftHand->SetLocalPosition({ -0.0f, -0.9f, 0.6f });
 
     pLeftHand->AddComponent(
         std::make_unique<AnimationComponent>(pLeftHand, "", "Models\\hands\\left.gltf")
@@ -347,19 +343,12 @@ App::App(const std::string& commandLine)
     animCompLeft->PlayAnimation(13); //POCZĄTKOWE IDLE_RUN
 
 
-    pLeftHandAbility->AddComponent(
-        std::make_unique<ModelComponent>(pLeftHandAbility, wnd.Gfx(), "Models\\hands\\left.gltf", 1.0f, false, false)
-    );
-    pLeftHandAbility->GetComponent<ModelComponent>()->LinkTechniques(rg);
-    pLeftHandAbility->SetLocalScale({ 0.1f, 0.1f, 0.1f });
-    pLeftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 3000.0f });
-
     pRightHand->AddComponent(
         std::make_unique<ModelComponent>(pRightHand, wnd.Gfx(), "Models\\hands\\right.gltf", 1.0f, true, false)
     );
     pRightHand->GetComponent<ModelComponent>()->LinkTechniques(rg);
-    pRightHand->SetLocalScale({ 0.1f, 0.1f, 0.1f });
-    pRightHand->SetLocalPosition({ 0.0f, -2.7f, 3.0f });
+    pRightHand->SetLocalScale({ 0.035f, 0.035f, 0.035f });
+    pRightHand->SetLocalPosition({ -0.0f, -0.9f, 0.6f });
 
     pRightHand->AddComponent(
         std::make_unique<AnimationComponent>(pRightHand, "", "Models\\hands\\right.gltf")
@@ -368,30 +357,18 @@ App::App(const std::string& commandLine)
     animCompRight->PlayAnimation(13); //POCZĄTKOWE IDLE_RUN
 
 
-    pRightHandAbility->AddComponent(
-        std::make_unique<ModelComponent>(pRightHandAbility, wnd.Gfx(), "Models\\hands\\right.gltf", 1.0f, false, false)
-    );
-    pRightHandAbility->GetComponent<ModelComponent>()->LinkTechniques(rg);
-    pRightHandAbility->SetLocalScale({ 0.1f, 0.1f, 0.1f });
-    pRightHandAbility->SetLocalPosition({ 0.0f, -2.7f, -3000.0f });
-
     pAbility1->GetComponent<Ability1>()->leftHand = pLeftHand->GetComponent<AnimationComponent>();
-    pAbility1->GetComponent<Ability1>()->leftHandAbility = pLeftHandAbility;
 
     pAbility2->GetComponent<Ability2>()->rightHand = pRightHand->GetComponent<AnimationComponent>();
-    pAbility2->GetComponent<Ability2>()->rightHandAbility = pRightHandAbility;
 
     pAbility3->GetComponent<Ability3>()->leftHand = pLeftHand->GetComponent<AnimationComponent>();
     pAbility3->GetComponent<Ability3>()->rightHand = pRightHand->GetComponent<AnimationComponent>();
 
     pAbility4->GetComponent<Ability4>()->leftHand = pLeftHand->GetComponent<AnimationComponent>();
-    pAbility4->GetComponent<Ability4>()->leftHandAbility = pLeftHandAbility;
 
 	pAbility5->GetComponent<Ability5>()->rightHand = pRightHand->GetComponent<AnimationComponent>();
-	pAbility5->GetComponent<Ability5>()->rightHandAbility = pRightHandAbility;
 
     pAbility6->GetComponent<Ability6>()->leftHand = pLeftHand->GetComponent<AnimationComponent>();
-    pAbility6->GetComponent<Ability6>()->leftHandAbility = pLeftHandAbility;
 
     pSceneRoot->AddComponent(
         std::make_unique<UpgradeHandler>(pSceneRoot.get(), wnd)
@@ -407,7 +384,8 @@ App::App(const std::string& commandLine)
     pUpgradeHandler->SetBasicValues();
     pSceneRoot->GetComponent<Global>()->upgradeHandler = pUpgradeHandler;
 
-	//PrefabManager::InstantiateIslandMedium5(pSceneRoot.get(), Vector3(0.0f, 0.0f, 0.0f), 1.0f);
+	//PrefabManager::InstantiateIslandSmall1(pSceneRoot.get(), Vector3(60.0f, 50.0f, 0.0f), 1.0f);
+    PrefabManager::InstantiateBossIsland(pSceneRoot.get(), Vector3(-400.0f, 50.0f, 0.0f), 1.0f);
     tutorialNode->AddComponent(
         std::make_unique<Tutorial>(tutorialNode, wnd, pPlayer)
     );
@@ -417,8 +395,8 @@ App::App(const std::string& commandLine)
     //pSceneRoot->GetComponent<Global>()->tut = tutorialNode->GetComponent<Tutorial>();
 
 
-    const int screenWidth = 1920;
-    const int screenHeight = 1080;
+    const int screenWidth = wnd.GetWidth();
+    const int screenHeight = wnd.GetHeight();
     const int plusSpriteWidth = 32;
     const int plusSpriteHeight = 32;
     const int plusSpriteX = (screenWidth / 2) - (plusSpriteWidth / 2);
@@ -495,69 +473,44 @@ App::App(const std::string& commandLine)
     cursorEnabled = true;
     wnd.EnableCursor();  
     wnd.mouse.DisableRawInput();
-
-    // --------------- INICJALIZACJA MENU GŁÓWNEGO ---------------
-
+      
+    resumeBttn = std::make_unique<Sprite>(
+        wnd.Gfx().GetDevice(),
+        wnd.Gfx().GetContext(),
+        (wnd.GetWidth() * 0.354f), (wnd.GetHeight() * 0.339f), (wnd.GetWidth() * 0.296f), (wnd.GetHeight() * 0.110f),
+        L"Images\\resume.png"
+    ); 
+    backBttn = std::make_unique<Sprite>(
+        wnd.Gfx().GetDevice(),
+        wnd.Gfx().GetContext(),
+        (wnd.GetWidth() * 0.354f), (wnd.GetHeight() * 0.489f), (wnd.GetWidth() * 0.296f), (wnd.GetHeight() * 0.110f),
+        L"Images\\back_to_menu.png"
+    ); 
+    pauseMenuBackground = std::make_unique<Sprite>(
+        wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
+        0, 0, wnd.GetWidth(), wnd.GetHeight(),
+        L"Images\\pause_menu.png"
+    ); 
+    startBttn = std::make_unique<Sprite>(
+        wnd.Gfx().GetDevice(),
+        wnd.Gfx().GetContext(),
+        (wnd.GetWidth() * 0.055f), (wnd.GetHeight() * 0.543f), (wnd.GetWidth() * 0.229f), (wnd.GetHeight() * 0.098f),
+        L"Images\\start_2.png"
+    ); 
+    quitBttn = std::make_unique<Sprite>(
+        wnd.Gfx().GetDevice(),
+        wnd.Gfx().GetContext(),
+        (wnd.GetWidth() * 0.055f), (wnd.GetHeight() * 0.673f), (wnd.GetWidth() * 0.229f), (wnd.GetHeight() * 0.098f),
+        L"Images\\quit_2.png"
+    );
+     
     mainMenuBackground = std::make_unique<Sprite>(
         wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
-        0, 0, screenWidth, screenHeight,
-        L"Images\\MainMenu.gif" 
+        0, 0, wnd.GetWidth(), wnd.GetHeight(),
+        L"Images\\menu_compressed_6.gif"
     );
-
-    const DirectX::XMFLOAT4 buttonIdleColor = { 0.82f, 0.63f, 0.35f, 0.9f };
-    const DirectX::XMFLOAT4 buttonHoverColor = { 1.0f, 0.8f, 0.5f, 1.0f };
-    const DirectX::XMFLOAT4 textColor = { 0.1f, 0.1f, 0.1f, 1.0f };
-
-    startButton = std::make_unique<Button>(
-        wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
-        120, 450, 250, 70,  
-        L"START",
-        L"myfile.spritefont"  
-    );
-    startButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
-    startButton->SetTextColor(textColor);
  
-    quitButton = std::make_unique<Button>(
-        wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
-        120, 550, 250, 70,  
-        L"QUIT",
-        L"myfile.spritefont"  
-    );
-    quitButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
-    quitButton->SetTextColor(textColor);
- 
-
-    // --------------- INICJALIZACJA MENU PAUZY --------------- 
-    pauseMenuOverlay = std::make_unique<Sprite>(
-        wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
-        0, 0, screenWidth, screenHeight,
-        L"Images\\MainMenu.gif"  
-    );
-   
-    int buttonWidth = 350;
-    int buttonHeight = 70;
-    int buttonCenterX = (screenWidth - buttonWidth) / 2;
-     
-
-    resumeButton = std::make_unique<Button>(
-        wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
-        buttonCenterX, 400, buttonWidth, buttonHeight,
-        L"RESUME",
-        L"myfile.spritefont"
-    );
-    resumeButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
-    resumeButton->SetTextColor(textColor);
- 
-    quitToMenuButton = std::make_unique<Button>(
-        wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
-        buttonCenterX, 500, buttonWidth, buttonHeight,
-        L"QUIT TO MAIN MENU",
-        L"myfile.spritefont"
-    );
-    quitToMenuButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
-    quitToMenuButton->SetTextColor(textColor);
- 
-
+  
 }
 
 App::~App()
@@ -617,247 +570,246 @@ int App::Go()
 void App::HandleInput(float dt)
 {
 
-
-    switch (gameState)
+    if (wnd.kbd.IsJustPressed('M'))
     {
-    case GameState::MainMenu:
-        if (wnd.kbd.IsJustPressed(VK_ESCAPE))
+        if (myMusic->isPlaying())
         {
-            PostQuitMessage(0);
-            return;
+            myMusic->Stop();
         }
-        break;
-    
-
-    case GameState::Gameplay:
-    {
-        if (wnd.kbd.IsJustPressed('M'))
+        else
         {
-            if (myMusic->isPlaying())
-            {
-                myMusic->Stop();
-            }
-            else
-            {
-                myMusic->Play();
-            }
+            myMusic->Play();
         }
-
-        if (wnd.kbd.IsJustPressed('C'))
-        {
-            if (cursorEnabled) {
-                wnd.DisableCursor();
-                wnd.mouse.EnableRawInput();
-            }
-            else {
-                wnd.EnableCursor();
-                wnd.mouse.DisableRawInput();
-            }
-            cursorEnabled = !cursorEnabled;
-        }
-
-        if (wnd.kbd.IsJustPressed('H'))
-        {
-            showControlWindow = !showControlWindow;
-        }
-        if (wnd.kbd.IsJustPressed('Z'))
-        {
-            StartGame();
-        }
-        if (wnd.kbd.IsJustPressed('X'))
-        {
-            ResetGame();
-        }
-        if (wnd.kbd.IsJustPressed('P'))
-        {
-            paused = !paused;
-        }
-        if (wnd.kbd.IsJustPressed(VK_ESCAPE))
-        {
-            gameState = GameState::Paused;
-            paused = true;  
-            wnd.EnableCursor();
-            wnd.mouse.DisableRawInput();
-            cursorEnabled = true;
-            return;
-        }
-
-        if (wnd.kbd.IsJustPressed(VK_F1))
-        {
-            showDemoWindow = !showDemoWindow;
-        }
-
-        if (wnd.kbd.IsJustPressed('V'))
-        {
-            freeViewCamera = !freeViewCamera;
-            if (freeViewCamera) {
-                pCamera->GetComponent<Camera>()->active = false;
-                pFreeViewCamera->GetComponent<Camera>()->active = true;
-            }
-            else {
-                pCamera->GetComponent<Camera>()->active = true;
-                pFreeViewCamera->GetComponent<Camera>()->active = false;
-            }
-        }
-
-        if (freeViewCamera) {
-            if (wnd.kbd.IsKeyPressed('I')) {
-                pFreeViewCamera->TranslateLocal({ 0.0f, 0.0f, 0.4f });
-            }
-            if (wnd.kbd.IsKeyPressed('K')) {
-                pFreeViewCamera->TranslateLocal({ 0.0f, 0.0f, -0.4f });
-            }
-            if (wnd.kbd.IsKeyPressed('J')) {
-                pFreeViewCamera->TranslateLocal({ -0.4f, 0.0f, 0.0f });
-            }
-            if (wnd.kbd.IsKeyPressed('L')) {
-                pFreeViewCamera->TranslateLocal({ 0.4f, 0.0f, 0.0f });
-            }
-            if (wnd.kbd.IsKeyPressed('U')) {
-                pFreeViewCamera->TranslateLocal({ 0.0f, -0.4f, 0.0f });
-            }
-            if (wnd.kbd.IsKeyPressed('O')) {
-                pFreeViewCamera->TranslateLocal({ 0.0f, 0.4f, 0.0f });
-            }
-        }
-        break;
     }
-    case GameState::Paused: 
-        if (wnd.kbd.IsJustPressed(VK_ESCAPE))
-        { 
-            gameState = GameState::Gameplay;
-            paused = false;
+
+    if (wnd.kbd.IsJustPressed('C'))
+    {
+        if (cursorEnabled) {
             wnd.DisableCursor();
             wnd.mouse.EnableRawInput();
-            cursorEnabled = false;
         }
-        break;
+        else {
+            wnd.EnableCursor();
+            wnd.mouse.DisableRawInput();
+        }
+        cursorEnabled = !cursorEnabled;
     }
 
-}
+    if (wnd.kbd.IsJustPressed('H'))
+    {
+        showControlWindow = !showControlWindow;
+    }
+    if (wnd.kbd.IsJustPressed('Z'))
+    {
+        StartGame();
+    }
+    if (wnd.kbd.IsJustPressed('X'))
+    {
+        ResetGame();
+    }
+    if (wnd.kbd.IsJustPressed('P'))
+    {
+        paused = !paused;
+    }
+    if (wnd.kbd.IsJustPressed(VK_ESCAPE) && startedGame)
+    {
+        paused = !paused;
 
+        if (paused) {
+            cursorEnabled = true;
+            wnd.EnableCursor();
+            wnd.mouse.DisableRawInput();
+        } else 
+        {
+            cursorEnabled = false;
+            wnd.DisableCursor();
+            wnd.mouse.EnableRawInput();
+        }
+        //PostQuitMessage(0);
+        //return; // Zwróć od razu, aby uniknąć dalszego przetwarzania
+    }
+
+    if (wnd.kbd.IsJustPressed(VK_F1))
+    {
+        showDemoWindow = !showDemoWindow;
+    }
+
+    if (wnd.kbd.IsJustPressed('V'))
+    {
+        freeViewCamera = !freeViewCamera;
+        if (freeViewCamera) {
+            pCamera->GetComponent<Camera>()->active = false;
+            pFreeViewCamera->GetComponent<Camera>()->active = true;
+        }
+        else {
+            pCamera->GetComponent<Camera>()->active = true;
+            pFreeViewCamera->GetComponent<Camera>()->active = false;
+        }
+    }
+
+    if (freeViewCamera) {
+        if (wnd.kbd.IsKeyPressed('I')) {
+            pFreeViewCamera->TranslateLocal({ 0.0f, 0.0f, 0.4f });
+        }
+        if (wnd.kbd.IsKeyPressed('K')) {
+            pFreeViewCamera->TranslateLocal({ 0.0f, 0.0f, -0.4f });
+        }
+        if (wnd.kbd.IsKeyPressed('J')) {
+            pFreeViewCamera->TranslateLocal({ -0.4f, 0.0f, 0.0f });
+        }
+        if (wnd.kbd.IsKeyPressed('L')) {
+            pFreeViewCamera->TranslateLocal({ 0.4f, 0.0f, 0.0f });
+        }
+        if (wnd.kbd.IsKeyPressed('U')) {
+            pFreeViewCamera->TranslateLocal({ 0.0f, -0.4f, 0.0f });
+        }
+        if (wnd.kbd.IsKeyPressed('O')) {
+            pFreeViewCamera->TranslateLocal({ 0.0f, 0.4f, 0.0f });
+        }
+    }
+}
 void App::DoFrame(float dt)
 {
-
-    wnd.Gfx().BeginFrame(1.0f, 0.0f, 0.0f);
-    switch (gameState)
+    wnd.Gfx().BeginFrame(0.5f, 0.5f, 1.0f);
+    //fizyka
+    if (!paused || gameReset > 0)
     {
-
-    case GameState::MainMenu:
-    {
-         auto& gfx = wnd.Gfx();
-        gfx.GetTarget()->BindAsBuffer(gfx);
-        mainMenuBackground->Update(dt);
-
-        UpdateMainMenu();
-        DrawMainMenu();
-        break;
-    }
-
-    case GameState::Gameplay:
-    {
-  
-    case GameState::Paused:  
-    { 
-        if (gameState == GameState::Gameplay && (!paused || gameReset > 0))
+        gameReset--;
+        auto* contact = dynamic_cast<MyContactListener*>(physicsSystem->GetContactListener());
+        contact->ExecuteTriggerActivationQueue();
+        contact->ExecuteCollisionActivationQueue();
+        CleanupDestroyedNodes(pSceneRoot.get());    //data removed
+        pSceneRoot->Update(dt);
+        RemoveRigidbody(pSceneRoot.get());//rigidbody remove if destruction
+        JPH::BodyIDVector bodyIDs;
+        PhysicsCommon::physicsSystem->GetBodies(bodyIDs);
+        for (JPH::BodyID bodyID : bodyIDs)
         {
-            gameReset--;
-            auto* contact = dynamic_cast<MyContactListener*>(physicsSystem->GetContactListener());
-            contact->ExecuteTriggerActivationQueue();
-            contact->ExecuteCollisionActivationQueue();
-            CleanupDestroyedNodes(pSceneRoot.get());
-            pSceneRoot->Update(dt);
-            RemoveRigidbody(pSceneRoot.get());
-            JPH::BodyIDVector bodyIDs;
-            PhysicsCommon::physicsSystem->GetBodies(bodyIDs);
-            for (JPH::BodyID bodyID : bodyIDs)
+            JPH::uint64 data = PhysicsCommon::physicsSystem->GetBodyInterface().GetUserData(bodyID);
+            if (data == 0)
             {
-                JPH::uint64 data = PhysicsCommon::physicsSystem->GetBodyInterface().GetUserData(bodyID);
-                if (data == 0)
-                {
-                    PhysicsCommon::physicsSystem->GetBodyInterface().DeactivateBody(bodyID);
-                    PhysicsCommon::physicsSystem->GetBodyInterface().RemoveBody(bodyID);
-                    PhysicsCommon::physicsSystem->GetBodyInterface().DestroyBody(bodyID);
-                }
+                PhysicsCommon::physicsSystem->GetBodyInterface().DeactivateBody(bodyID);
+                PhysicsCommon::physicsSystem->GetBodyInterface().RemoveBody(bodyID);
+                PhysicsCommon::physicsSystem->GetBodyInterface().DestroyBody(bodyID);
             }
         }
-         
-        wnd.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 2000.0f));
-         
-        dx::XMMATRIX viewMatrix = pCamera->GetComponent<Camera>()->GetViewMatrix();
-        if (freeViewCamera)
-        {
-            viewMatrix = pFreeViewCamera->GetComponent<Camera>()->GetViewMatrix();
-        }
-        wnd.Gfx().SetCamera(viewMatrix);
-         
-        Bind::TransformCbuf::SetLight(&dirLight);
-        Bind::ShadowCbuf::SetLight(&dirLight);
-        DirectX::XMFLOAT3 focusPos = pPlayer->GetWorldPosition();
-        Camera* activePlayerCamera = pCamera->GetComponent<Camera>();
-        dirLight.Update(wnd.Gfx(), focusPos, *activePlayerCamera);
-        dirLight.Bind(wnd.Gfx());
-         
-        FrustumCalculating();
-         
-        if (pPlayer != nullptr) {
-            soundDevice->SetLocation(
-                pPlayer->GetWorldPosition().x,
-                pPlayer->GetWorldPosition().y,
-                pPlayer->GetWorldPosition().z
-            );
-            soundDevice->SetOrientation(
-                pCamera->Back().x, pCamera->Back().y, pCamera->Back().z,
-                pCamera->Up().x, pCamera->Up().y, pCamera->Up().z
-            );
-        }
-         
-        rg.Execute(wnd.Gfx());
-         
-        if (showControlWindow) {
-            ShowControlWindows();
-        }
-         
-        if (targetSprite) {
-            targetSprite->Draw(wnd.Gfx().GetContext());
-        }
-        if (pPlayer->GetComponent<Health>()->currentHealth == 3.0f) {
-            heart1Sprite->Draw(wnd.Gfx().GetContext());
-            heart2Sprite->Draw(wnd.Gfx().GetContext());
-            heart3Sprite->Draw(wnd.Gfx().GetContext());
-        }
-        else if (pPlayer->GetComponent<Health>()->currentHealth == 2.0f) {
-            heart1Sprite->Draw(wnd.Gfx().GetContext());
-            heart2Sprite->Draw(wnd.Gfx().GetContext());
-        }
-        else if (pPlayer->GetComponent<Health>()->currentHealth == 1.0f) {
-            heart1Sprite->Draw(wnd.Gfx().GetContext());
-        }
-        pUpgradeHandler->DrawUpgradeMenu();
-         
-        if (pSceneRoot->GetComponent<Global>()->drawLoadingScreen || bonusTime > 0.0f)
-        {
-            if (!pSceneRoot->GetComponent<Global>()->drawLoadingScreen) { bonusTime -= dt; }
-            else { bonusTime = 5.0f; }
-            countLoding++;
-            if (countLoding > 2.0f) { if (countLoding > 2.9f) { countLoding = 0.0f; } loadingScreen3->Draw(wnd.Gfx().GetContext()); }
-            else if (countLoding > 1.0f) { loadingScreen2->Draw(wnd.Gfx().GetContext()); }
-            else { loadingScreen1->Draw(wnd.Gfx().GetContext()); }
-        }
-         
-        if (gameState == GameState::Paused)
-        {
-            pauseMenuOverlay->Update(dt);
-
-            UpdatePauseMenu();
-            DrawPauseMenu();
-        }
-        break;
-    }
-    }
-
     }
     
+
+    dx::XMMATRIX viewMatrix = pCamera->GetComponent<Camera>()->GetViewMatrix();
+    if (freeViewCamera)
+    {
+        viewMatrix = pFreeViewCamera->GetComponent<Camera>()->GetViewMatrix();
+    }
+    wnd.Gfx().SetCamera(viewMatrix);
+    //fc.ShowWindows(wnd.Gfx());
+    /*DebugLine line(wnd.Gfx(), pEnemy->GetComponent<StateMachine>()->pos, pEnemy->GetComponent<StateMachine>()->cen, { 0.0f, 0.0f, 1.0f, 1.0f });
+    line.Submit(fc);*/ // for idle
+    // --- Bind Lights ---
+    Bind::TransformCbuf::SetLight(&dirLight);
+    Bind::ShadowCbuf::SetLight(&dirLight);
+    DirectX::XMFLOAT3 focusPos = pPlayer->GetWorldPosition();
+    Camera* activePlayerCamera = pCamera->GetComponent<Camera>();
+    /* if (freeViewCamera) {
+         activePlayerCamera = pFreeViewCamera->GetComponent<Camera>();
+     }
+     else {
+         activePlayerCamera = pCamera->GetComponent<Camera>();
+     }*/
+    dirLight.Update(wnd.Gfx(), focusPos, *activePlayerCamera);
+
+    // --- Bind Lights ---
+    // pointLight.Bind(wnd.Gfx(), viewMatrix);
+    dirLight.Bind(wnd.Gfx());
+
+    FrustumCalculating();
+
+    if (pPlayer != nullptr) {
+        soundDevice->SetLocation(
+            pPlayer->GetWorldPosition().x,
+            pPlayer->GetWorldPosition().y,
+            pPlayer->GetWorldPosition().z
+        );
+
+        soundDevice->SetOrientation(
+            pCamera->Back().x,
+            pCamera->Back().y,
+            pCamera->Back().z,
+            pCamera->Up().x,
+            pCamera->Up().y,
+            pCamera->Up().z
+        );
+    }
+
+    rg.Execute(wnd.Gfx());
+
+    if (showControlWindow) {
+        ShowControlWindows();
+    }
+
+
+
+    if (targetSprite) {
+        targetSprite->Draw(wnd.Gfx().GetContext());
+    }
+
+    if (pPlayer->GetComponent<Health>()->currentHealth == 3.0f) {
+        heart1Sprite->Draw(wnd.Gfx().GetContext());
+        heart2Sprite->Draw(wnd.Gfx().GetContext());
+        heart3Sprite->Draw(wnd.Gfx().GetContext());
+    }
+    if (pPlayer->GetComponent<Health>()->currentHealth == 2.0f) {
+        heart1Sprite->Draw(wnd.Gfx().GetContext());
+        heart2Sprite->Draw(wnd.Gfx().GetContext());
+    }
+    if (pPlayer->GetComponent<Health>()->currentHealth == 1.0f) {
+        heart1Sprite->Draw(wnd.Gfx().GetContext());
+    }
+
+    pUpgradeHandler->DrawUpgradeMenu();
+
+     
+
+    if (pSceneRoot->GetComponent<Global>()->drawLoadingScreen || bonusTime > 0.0f)
+    {
+        if (!pSceneRoot->GetComponent<Global>()->drawLoadingScreen)
+        {
+            bonusTime -= dt;
+        }
+        else {
+            bonusTime = 5.0f;
+        }
+        countLoding++;
+
+        if (countLoding > 2.0f)
+        {
+            if (countLoding > 2.9f)
+            {
+                countLoding = 0.0f;
+            }
+            loadingScreen3->Draw(wnd.Gfx().GetContext());
+        }
+        else if (countLoding > 1.0f)
+        {
+            loadingScreen2->Draw(wnd.Gfx().GetContext());
+        }
+        else
+        {
+            loadingScreen1->Draw(wnd.Gfx().GetContext());
+        }
+    }
+
+    if (paused && startedGame)
+    {
+        DrawPauseMenu(dt);
+    }
+    if (paused && !startedGame)
+    {
+        DrawMainMenu(dt);
+
+    }
+
+
     wnd.kbd.UpdateFrameState();
 
     wnd.Gfx().EndFrame();
@@ -874,7 +826,6 @@ void App::DoFrame(float dt)
         }
     }
 }
-
 void App::RemoveRigidbody(Node* currentNode)
 {
     if (!currentNode) return;
@@ -1122,9 +1073,6 @@ void App::ShowControlWindows()
     ImGui::End(); 
 }
 
-
-
-
 void App::CleanupDestroyedNodes(Node* currentNode)
 {
     if (!currentNode) return;
@@ -1275,24 +1223,59 @@ void App::SaveNodeTransformsRecursive(Node& node, std::ofstream& file)
     }
 }
  
+ 
+ 
+ 
 
-void App::UpdateMainMenu()
+
+void App::DrawPauseMenu(float dt)
 {
+
+    //mainMenuBackground->Update(dt);
+    //mainMenuBackground->Draw(wnd.Gfx().GetContext());
+    pauseMenuBackground->Draw(wnd.Gfx().GetContext());
     int mouseX = wnd.mouse.GetPosX();
     int mouseY = wnd.mouse.GetPosY();
-
-    const DirectX::XMFLOAT4 buttonIdleColor = { 0.82f, 0.63f, 0.35f, 0.9f };
-    const DirectX::XMFLOAT4 buttonHoverColor = { 1.0f, 0.8f, 0.5f, 1.0f };
-     
     bool isMouseLeftPressedThisFrame = wnd.mouse.IsLeftPressed();
-     
-    bool isLeftClick = isMouseLeftPressedThisFrame && !wasMouseLeftPressedLastFrame;
-     
-    if (startButton->IsHovered(mouseX, mouseY)) {
-        startButton->SetColor(buttonHoverColor.x, buttonHoverColor.y, buttonHoverColor.z, buttonHoverColor.w);
-         
-        if (isLeftClick) {
-            gameState = GameState::Gameplay;
+
+ 
+    if (mouseX >= (wnd.GetWidth() * 0.354f) && mouseX <= ((wnd.GetWidth() * 0.354f) + (wnd.GetWidth() * 0.296f)) &&
+        mouseY >= (wnd.GetHeight() * 0.339f) && mouseY <= ((wnd.GetHeight() * 0.339f) + (wnd.GetHeight() * 0.110f))) {
+        resumeBttn->Draw(wnd.Gfx().GetContext());
+        if (isMouseLeftPressedThisFrame) {
+            paused = false;
+            wnd.DisableCursor();
+            wnd.mouse.EnableRawInput();
+            cursorEnabled = false;
+        }
+    }
+
+    if (mouseX >= (wnd.GetWidth() * 0.354f) && mouseX <= ((wnd.GetWidth() * 0.354f) + (wnd.GetWidth() * 0.296f)) &&
+        mouseY >= (wnd.GetHeight() * 0.489f) && mouseY <= ((wnd.GetHeight() * 0.489f) + (wnd.GetHeight() * 0.110f))) {
+        backBttn->Draw(wnd.Gfx().GetContext());
+        if (isMouseLeftPressedThisFrame) {
+            ResetGame();  
+
+        }
+    } 
+
+ 
+}
+
+
+void App::DrawMainMenu(float dt)
+{
+
+    int mouseX = wnd.mouse.GetPosX();
+    int mouseY = wnd.mouse.GetPosY();
+    bool isMouseLeftPressedThisFrame = wnd.mouse.IsLeftPressed();
+    mainMenuBackground->Update(dt);
+    mainMenuBackground->Draw(wnd.Gfx().GetContext());
+ 
+    if (mouseX >= (wnd.GetWidth() * 0.055f) && mouseX <= ((wnd.GetWidth() * 0.055f) + (wnd.GetWidth() * 0.229f)) &&
+        mouseY >= (wnd.GetHeight() * 0.543f) && mouseY <= ((wnd.GetHeight() * 0.543f) + (wnd.GetHeight() * 0.098f))) {
+        startBttn->Draw(wnd.Gfx().GetContext());
+        if (isMouseLeftPressedThisFrame) {
             paused = true;
             wnd.DisableCursor();
             wnd.mouse.EnableRawInput();
@@ -1300,94 +1283,13 @@ void App::UpdateMainMenu()
             StartGame();
         }
     }
-    else {
-        startButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
-    }
-     
-    if (quitButton->IsHovered(mouseX, mouseY)) {
-        quitButton->SetColor(buttonHoverColor.x, buttonHoverColor.y, buttonHoverColor.z, buttonHoverColor.w);
-         
-        if (isLeftClick) {
+
+    if (mouseX >= (wnd.GetWidth() * 0.055f) && mouseX <= ((wnd.GetWidth() * 0.055f) + (wnd.GetWidth() * 0.229f)) &&
+        mouseY >= (wnd.GetHeight() * 0.673f) && mouseY <= ((wnd.GetHeight() * 0.673f) + (wnd.GetHeight() * 0.098f))) {
+        quitBttn->Draw(wnd.Gfx().GetContext());
+        if (isMouseLeftPressedThisFrame) {
             PostQuitMessage(0);
         }
-    }
-    else {
-        quitButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
-    }
-     
-    wasMouseLeftPressedLastFrame = isMouseLeftPressedThisFrame;
-}
-
-void App::DrawMainMenu()
-{
-    auto* context = wnd.Gfx().GetContext();
-    const float screenWidth = 1920.0f;
-    const float screenHeight = 1080.0f;
-
-    if (mainMenuBackground) {
-        mainMenuBackground->Draw(context);
     } 
-    if (startButton) {
-        startButton->Draw(context, screenWidth, screenHeight);
-    }
-    if (quitButton) {
-        quitButton->Draw(context, screenWidth, screenHeight);
-    }
-}
+ }
 
-
-void App::UpdatePauseMenu()
-{
-    int mouseX = wnd.mouse.GetPosX();
-    int mouseY = wnd.mouse.GetPosY();
-
-    const DirectX::XMFLOAT4 buttonIdleColor = { 0.82f, 0.63f, 0.35f, 0.9f };
-    const DirectX::XMFLOAT4 buttonHoverColor = { 1.0f, 0.8f, 0.5f, 1.0f };
-
-    bool isMouseLeftPressedThisFrame = wnd.mouse.IsLeftPressed();
-    bool isLeftClick = isMouseLeftPressedThisFrame && !wasMouseLeftPressedLastFrame;
-     
-    if (resumeButton->IsHovered(mouseX, mouseY)) {
-        resumeButton->SetColor(buttonHoverColor.x, buttonHoverColor.y, buttonHoverColor.z, buttonHoverColor.w);
-        if (isLeftClick) {
-            gameState = GameState::Gameplay;
-            paused = false;
-            wnd.DisableCursor();
-            wnd.mouse.EnableRawInput();
-            cursorEnabled = false;
-        }
-    }
-    else {
-        resumeButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
-    }
-
-     if (quitToMenuButton->IsHovered(mouseX, mouseY)) {
-        quitToMenuButton->SetColor(buttonHoverColor.x, buttonHoverColor.y, buttonHoverColor.z, buttonHoverColor.w);
-        if (isLeftClick) {
-            ResetGame();
-            gameState = GameState::MainMenu; 
-        }
-    }
-    else {
-        quitToMenuButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
-    }
-
-    wasMouseLeftPressedLastFrame = isMouseLeftPressedThisFrame;
-}
-
-void App::DrawPauseMenu()
-{
-    auto* context = wnd.Gfx().GetContext();
-    const float screenWidth = 1920.0f;
-    const float screenHeight = 1080.0f;
-     
-    if (pauseMenuOverlay) {
-        pauseMenuOverlay->Draw(context);
-    } 
-    if (resumeButton) {
-        resumeButton->Draw(context, screenWidth, screenHeight);
-    }
-    if (quitToMenuButton) {
-        quitToMenuButton->Draw(context, screenWidth, screenHeight);
-    }
-}

@@ -61,14 +61,18 @@ void PlayerController::SpeedControl(float dt)
 	{
 		Vec3 vel = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
         if (grounded) {
-            vel.SetX(vel.GetX() * 0.92f);
-            vel.SetZ(vel.GetZ() * 0.92f);
+            float dampingFactor = powf(groundDamping, dt);
+            vel.SetX(vel.GetX() * dampingFactor * dampingFactor); // 0.92
+            vel.SetZ(vel.GetZ() * dampingFactor * dampingFactor);
         }
         else {
-            vel.SetX(vel.GetX() * 0.98f);
-            vel.SetZ(vel.GetZ() * 0.98f);
+            float dampingFactor = powf(airDamping, dt);
+            vel.SetX(vel.GetX() * dampingFactor);
+            vel.SetZ(vel.GetZ() * dampingFactor);
         }
 		PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rigidbody->GetBodyID(), vel);
+
+
 	}
 }
 
@@ -172,7 +176,7 @@ void PlayerController::PlayerGroundCheck()
         grounded = true;
     }
 
-    pos = playerPos + -moveDirection;
+    pos = playerPos + -moveDirection * 1.6f;
 
     RRayCast rayBack = RRayCast(
         RVec3(pos.x, pos.y, pos.z),
@@ -186,7 +190,7 @@ void PlayerController::PlayerGroundCheck()
         grounded = true;
     }
 
-    /* pos = playerPos + moveDirection;
+    pos = playerPos + moveDirection * 1.6;
 
     RRayCast rayForward = RRayCast(
          RVec3(pos.x, pos.y, pos.z),
@@ -198,7 +202,7 @@ void PlayerController::PlayerGroundCheck()
          IgnoreMultipleObjectLayerFilter({ Layers::PLAYER, Layers::TRIGGER })))
     {
          grounded = true;
-    }*/
+    }
 
 
 
@@ -210,6 +214,7 @@ void PlayerController::PlayerGroundCheck()
 
 void PlayerController::MovePlayer(float dt)
 {
+
     if (grounded && moveDirection.Length() > 0.0f)
     { 
         Vec3 desiredVel = Vec3(moveDirection.x, 0.0f, moveDirection.z);
@@ -221,8 +226,12 @@ void PlayerController::MovePlayer(float dt)
 
         if ((desiredVel - currentVel).Length() > 1.9f)
         {
-            copy.SetX(copy.GetX() * 0.92f);
-            copy.SetZ(copy.GetZ() * 0.92f);
+            //Vec3 vel = PhysicsCommon::physicsSystem->GetBodyInterface().GetLinearVelocity(rigidbody->GetBodyID());
+            float dampingFactor = powf(groundDamping, dt);
+            copy.SetX(copy.GetX() * dampingFactor); // 0.92
+            copy.SetZ(copy.GetZ() * dampingFactor);
+            //copy.SetX(copy.GetX() * 0.92f);
+            //copy.SetZ(copy.GetZ() * 0.92f);
             PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rigidbody->GetBodyID(), copy);
 
         }
@@ -246,8 +255,17 @@ void PlayerController::MovePlayer(float dt)
             newVelocity.SetY(copy.GetY());
             PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(rigidbody->GetBodyID(), newVelocity);
         }
-        PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * acceleration * 1000.0f * dt);
+        if (slowTime > 0.0f)
+        {
+            PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), 
+                Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * acceleration * slowPower * 1000.0f * dt);
+        }
+        else
+        {
+            PhysicsCommon::physicsSystem->GetBodyInterface().AddForce(rigidbody->GetBodyID(), 
+                Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * acceleration * 1000.0f * dt);
 
+        }
 		stepSoundTimer -= dt;
 		if (stepSoundTimer <= 0.0f)
 		{
@@ -437,6 +455,10 @@ void PlayerController::Cooldowns(float dt)
     {
         canDash = true;
     }
+    if (slowTime > 0.0f)
+    {
+        slowTime -= dt;
+    }
 }
 
 void PlayerController::Positioning()
@@ -565,6 +587,7 @@ void PlayerController::DrawImGuiControls()
 	ImGui::Checkbox("Alive", &alive);
     ImGui::InputFloat("Auto Jump Range", &autoJumpRange);
 	ImGui::InputFloat("Auto Jump Height", &autoJumpHeight);
-
+    ImGui::SliderFloat("Air Damping", &airDamping, 0.0f, 0.3f);
+    ImGui::SliderFloat("Ground Damping", &groundDamping, 0.0f, 0.3f);
 
 }

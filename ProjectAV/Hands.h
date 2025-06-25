@@ -14,7 +14,7 @@ public:
 	virtual void Update(float dt) override;
 	virtual void DrawImGuiControls() override;
 
-	float radius = 0.5f;
+	float radius = 0.2f;
 	Rigidbody* rigidbody = nullptr;
 	PlayerController* playerController = nullptr;
 	Node* leftHand = nullptr;

@@ -12,10 +12,20 @@ void SlashAttack::Attack(float dt)
 {
 	if (timer == 0.0f)
 	{
-		if (pOwner->GetComponent<SoundEffectsPlayer>()) {
-			float randSound = (rand() % 3) + 4;
-			pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound);
-		}
+		Vector3 playerPos = pOwner->GetParent()->GetComponent<StateMachine>()->pPlayer->GetWorldPosition();
+
+		sm::Vector3 facingDirection = sm::Vector3(playerPos)
+			- sm::Vector3(pOwner->GetParent()->GetWorldPosition());
+		facingDirection.Normalize();
+
+		float targetYaw = atan2f(facingDirection.x, facingDirection.z);
+
+		Quat q = Quat::sEulerAngles(Vec3(0.0f, targetYaw, 0.0f));
+		PhysicsCommon::physicsSystem->GetBodyInterface().SetRotation(pOwner->GetParent()->GetComponent<Rigidbody>()->GetBodyID(), q, EActivation::Activate);
+
+
+		pOwner->GetParent()->GetComponent<AnimationComponent>()->PlayAnimation(5, 0.2f, false);
+
 		//miejsce na animacje !!!
 	}
 	timer += dt;

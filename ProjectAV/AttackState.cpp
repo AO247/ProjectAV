@@ -23,38 +23,8 @@ void AttackState::Enter(StateMachine* pOwner)
 		float targetYaw = atan2f(facingDirection.x, facingDirection.z);
 
 		pOwner->GetOwner()->SetLocalRotation({ 0.0f, targetYaw, 0.0f });
-
 	}
-
-	AnimationComponent* animComp = pOwner->GetOwnerNode()->GetComponent<AnimationComponent>();
-	if (animComp) {
-		switch (pOwner->enemyType)
-		{
-		case EnemyType::FLYING:
-			animComp->PlayAnimation(EnemyAnimationIndices::FLYING_ATTACK);
-			break;
-
-		case EnemyType::BASIC:
-		{
-			int randomAttack = std::rand() % 2;
-			if (randomAttack == 0)
-				animComp->PlayAnimation(EnemyAnimationIndices::BASIC_ATTACK1);
-			else
-				animComp->PlayAnimation(EnemyAnimationIndices::BASIC_ATTACK2);
-			break;
-		}
-		case EnemyType::RANGED:
-		{
-			int randomAttack = std::rand() % 2;
-			if (randomAttack == 0)
-				animComp->PlayAnimation(EnemyAnimationIndices::RANGED_ATTACK1);
-			else
-				animComp->PlayAnimation(EnemyAnimationIndices::RANGED_ATTACK2);
-			break;
-		}
-		}
-
-	}
+	pOwner->attackCooldownTimer = 0.0f;
 
 }
 

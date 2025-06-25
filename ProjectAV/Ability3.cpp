@@ -89,6 +89,7 @@ void Ability3::Update(float dt)
 			}
 		}
 
+        timerToActive = 3.0f;
         released = true;
         PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(pOwner->GetComponent<Rigidbody>()->GetBodyID(),
             Vec3(camera->Forward().x, camera->Forward().y, camera->Forward().z) * 60.0f);
@@ -111,21 +112,35 @@ void Ability3::Update(float dt)
             }
         }
     }
+    if(released && timerToActive > 0.0f)
+    {
+        timerToActive -= dt;
+        if (timerToActive <= 0.0f)
+        {
+            PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(pOwner->GetComponent<Rigidbody>()->GetBodyID(),
+                Vec3(0.0f, 0.0f, 0.0f));
+            timer = duration;
+            released = false;
+            activated = true;
+            pos = PhysicsCommon::physicsSystem->GetBodyInterface().GetPosition(pOwner->GetComponent<Rigidbody>()->GetBodyID());
+        }
+	}
 }
 void Ability3::Positioning()
 {
     if (isPressed)
     {
         Vector3 cameraPos = camera->GetWorldPosition();
-        Vector3 targetPosition = cameraPos + camera->Forward() * 6.0f;
-        //pOwner->SetWorldPosition(targetPosition);
+        Vector3 targetPosition = cameraPos + camera->Forward() * 8.0f;
+        targetPosition += camera->Down() * 2.0f;
         PhysicsCommon::physicsSystem->GetBodyInterface().SetPosition(pOwner->GetComponent<Rigidbody>()->GetBodyID(),
             Vec3(targetPosition.x, targetPosition.y, targetPosition.z), EActivation::Activate);
     }
 }
 void Ability3::OnCollisionEnter(Node* object)
 {
-    if (!released) return;
+    if (!released || object->tag == "TRIGGER") return;
+
     if (object->tag == "ENEMY" || object->tag == "GROUND" || object->tag == "WALL" || object->tag == "STONE")
     {
         PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(pOwner->GetComponent<Rigidbody>()->GetBodyID(),
@@ -142,7 +157,8 @@ bool Ability3::Pressed()
     if (killsCount < 3 || isPressed) return false;
     
     Vector3 cameraPos = camera->GetWorldPosition();
-    Vector3 targetPosition = cameraPos + camera->Forward() * 6.0f;
+    Vector3 targetPosition = cameraPos + camera->Forward() * 8.0f;
+    targetPosition += camera->Down() * 2.0f;
     pOwner->SetWorldPosition(targetPosition);
 	
     // animacja tworzenia czarnej dziury

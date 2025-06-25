@@ -78,6 +78,15 @@ void Ability4::Positioning()
         if (PhysicsCommon::physicsSystem->GetBodyInterface().GetMotionType(result.mBodyID) == EMotionType::Dynamic)
         {
             selectedNode = reinterpret_cast<Node*>(PhysicsCommon::physicsSystem->GetBodyInterface().GetUserData(result.mBodyID));
+            if (selectedNode->GetComponent<Throwable>() == nullptr)
+            {
+                selectedNode = nullptr;
+            }
+            else if (selectedNode->GetComponent<Throwable>()->extraHeavy == true)
+            {
+                selectedNode = nullptr;
+            }
+
         }
     }
     else
@@ -89,7 +98,7 @@ bool Ability4::Pressed()
 {
     if (!abilityReady || isPressed) return false;
 
-    activated = true;
+     activated = true;
     isPressed = true;
     pressedTime = 0.0f;
     cameraRotation = camera->GetLocalRotationEuler();
