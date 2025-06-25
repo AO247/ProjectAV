@@ -197,7 +197,6 @@
     <ClCompile Include="InstanceBuffer.cpp" />
     <ClCompile Include="Fireplace.cpp" />
     <ClCompile Include="LaunchAttack.cpp" />
-    <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="MainRenderGraph.cpp" />
     <ClCompile Include="BufferClearPass.cpp" />
     <ClCompile Include="BrokenPart.cpp" />
@@ -272,9 +271,7 @@
     <ClInclude Include="FireBall.h" />
     <ClInclude Include="FireBallAttack.h" />
     <ClInclude Include="FireBoom.h" />
-    <ClInclude Include="MainMenu.h" />
     <ClInclude Include="MushroomBoom.h" />
-    <ClInclude Include="PauseMenu.h" />
     <ClInclude Include="RotateAttack.h" />
     <ClInclude Include="SlashAttack.h" />
     <ClInclude Include="Hands.h" />
@@ -302,7 +299,6 @@
     <ClCompile Include="ParticlePass.cpp" />
     <ClCompile Include="ParticleSystemComponent.cpp" />
     <ClCompile Include="Pass.cpp" />
-    <ClCompile Include="PauseMenu.cpp" />
     <ClCompile Include="PhysicsCommon.cpp" />
     <ClCompile Include="PixelShader.cpp" />
     <ClCompile Include="PlayerController.cpp" />
