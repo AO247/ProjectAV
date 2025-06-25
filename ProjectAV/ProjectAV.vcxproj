@@ -171,6 +171,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="FourFireBallAttack.cpp" />
     <ClCompile Include="Ability1.cpp" />
     <ClCompile Include="Ability2.cpp" />
     <ClCompile Include="Ability3.cpp" />
@@ -247,6 +248,7 @@
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="MusicBuffer.cpp" />
     <ClCompile Include="MyContactListener.cpp" />
+    <ClInclude Include="FourFireBallAttack.h" />
     <ClInclude Include="Ability.h" />
     <ClInclude Include="Ability1.h" />
     <ClInclude Include="Ability2.h" />
@@ -273,6 +275,7 @@
     <ClInclude Include="MainMenu.h" />
     <ClInclude Include="MushroomBoom.h" />
     <ClInclude Include="PauseMenu.h" />
+    <ClInclude Include="RotateAttack.h" />
     <ClInclude Include="SlashAttack.h" />
     <ClInclude Include="Hands.h" />
     <ClInclude Include="IEmitterLogic.h" />
@@ -312,6 +315,7 @@
     <ClCompile Include="RenderQueuePass.cpp" />
     <ClCompile Include="RenderTarget.cpp" />
     <ClCompile Include="Rigidbody.cpp" />
+    <ClCompile Include="RotateAttack.cpp" />
     <ClCompile Include="Sampler.cpp" />
     <ClCompile Include="ShadowCbuf.cpp" />
     <ClCompile Include="ShadowMappingPass.cpp" />
@@ -338,6 +342,7 @@
     <ClCompile Include="StaticSoundPlayer.cpp" />
     <ClCompile Include="Step.cpp" />
     <ClCompile Include="StepLinkingProbe.cpp" />
+    <ClCompile Include="StoneGenerator.cpp" />
     <ClCompile Include="StopState.cpp" />
     <ClCompile Include="StunState.cpp" />
     <ClCompile Include="Surface.cpp" />
@@ -474,6 +479,7 @@
     <ClInclude Include="Stencil.h" />
     <ClInclude Include="Step.h" />
     <ClInclude Include="StepLinkingProbe.h" />
+    <ClInclude Include="StoneGenerator.h" />
     <ClInclude Include="StopState.h" />
     <ClInclude Include="StunState.h" />
     <ClInclude Include="Surface.h" />

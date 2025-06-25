@@ -5862,7 +5862,6 @@ public:
     }
     static Node* InstantiateIslandSmall9(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 }) {
         auto pNewNodeOwner = std::make_unique<Node>("Island S9", nullptr, "GROUND");
-
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\wyspy\\wyspa_mala.obj")
         );
