@@ -81,6 +81,72 @@ void ParticleSystemComponent::Link(Rgph::RenderGraph& rg)
     pTargetPass = &rg.GetParticlePass();
 }
 
+void ParticleSystemComponent::EmitParticle(const DirectX::XMFLOAT3& position, const DirectX::XMFLOAT3& worldVelocity)
+{
+    for (auto& p : particles)
+    {
+        if (!p.active)
+        {
+            const auto ownerWorldTransform = GetOwner()->GetWorldTransform();
+            p.active = true;
+            p.age = 0.0f;
+
+            if (bUseLifetimeRange)
+            {
+                std::uniform_real_distribution<float> lifetime_dist(MinLifetime, MaxLifetime);
+                p.lifetime = std::max(0.0f, lifetime_dist(rng));
+            }
+            else
+            {
+                p.lifetime = ParticleLifetime;
+            }
+
+            // --- Position ---
+            // The emitter provides a final world-space spawn position. We just add the component's offset to it.
+            dx::XMVECTOR worldOffsetVec = dx::XMVector3TransformNormal(dx::XMLoadFloat3(&EmitterPositionOffset), ownerWorldTransform);
+            dx::XMStoreFloat3(&p.position, dx::XMVectorAdd(dx::XMLoadFloat3(&position), worldOffsetVec));
+
+            // --- Velocity ---
+            // We directly use the world-space velocity provided by the emitter.
+            p.velocity = worldVelocity;
+
+            // --- Other Properties (remain the same) ---
+            p.startColor = StartColor;
+            p.endColor = EndColor;
+            p.startSize = StartSize + (StartSizeVariance * unit_dist(rng));
+            p.endSize = EndSize;
+            p.startRotation = StartRotation;
+            const float randomVariance = EndRotationVariance * unit_dist(rng);
+            p.endRotation = EndRotation + randomVariance;
+            std::uniform_int_distribution<UINT> row_dist(0, textureAtlasRows - 1);
+            std::uniform_int_distribution<UINT> col_dist(0, textureAtlasColumns - 1);
+            p.atlasOffset.x = (float)col_dist(rng) / textureAtlasColumns;
+            p.atlasOffset.y = (float)row_dist(rng) / textureAtlasRows;
+
+            return; // Found a free slot, we're done.
+        }
+    }
+}
+
+void ParticleSystemComponent::EmitParticle(const DirectX::XMFLOAT3& position)
+{
+    const auto ownerWorldTransform = GetOwner()->GetWorldTransform();
+
+    // --- Velocity Calculation (as it was before, but now self-contained) ---
+    dx::XMFLOAT3 localRandomizedVel = {
+        ParticleVelocity.x + ParticleVelocityVariance.x * unit_dist(rng),
+        ParticleVelocity.y + ParticleVelocityVariance.y * unit_dist(rng),
+        ParticleVelocity.z + ParticleVelocityVariance.z * unit_dist(rng)
+    };
+
+    // Transform the local-space velocity into world-space.
+    dx::XMFLOAT3 finalWorldVelocity;
+    dx::XMStoreFloat3(&finalWorldVelocity, dx::XMVector3TransformNormal(dx::XMLoadFloat3(&localRandomizedVel), ownerWorldTransform));
+
+    // Call the new master function with the calculated world velocity.
+    EmitParticle(position, finalWorldVelocity);
+}
+
 void ParticleSystemComponent::Update(float dt)
 {
     // --- 1. Emitter Logic ---
@@ -191,72 +257,6 @@ void ParticleSystemComponent::Update(float dt)
         // We return immediately to prevent any further processing on this component,
         // as its owner is now queued for destruction.
         return;
-    }
-}
-
-void ParticleSystemComponent::EmitParticle(const DirectX::XMFLOAT3& position)
-{
-    for (auto& p : particles)
-    {
-        if (!p.active)
-        {
-            const auto ownerWorldTransform = GetOwner()->GetWorldTransform();
-            p.active = true;
-            p.age = 0.0f;
-            // +++ NEW LIFETIME LOGIC +++
-            if (bUseLifetimeRange)
-            {
-                // Create a distribution for the random lifetime
-                std::uniform_real_distribution<float> lifetime_dist(MinLifetime, MaxLifetime);
-                // Assign a random lifetime to the particle, ensuring it's not negative.
-                p.lifetime = std::max(0.0f, lifetime_dist(rng));
-            }
-            else
-            {
-                // Use the fixed, single lifetime value.
-                p.lifetime = ParticleLifetime;
-            }
-            p.startColor = StartColor;
-            p.endColor = EndColor;
-
-            // --- Size ---
-            // Use the [0, 1] member distribution
-            p.startSize = StartSize + (StartSizeVariance * unit_dist(rng));
-            p.endSize = EndSize;
-
-            // +++ NEW ROTATION LOGIC +++
-            // Start rotation is the same for all particles in this emission.
-            p.startRotation = StartRotation;
-
-            // Calculate a random variance for the end rotation.
-            // bilateral_dist gives a value from -1.0 to 1.0.
-            const float randomVariance = EndRotationVariance * unit_dist(rng);
-
-            // Assign the unique, randomized end rotation to this particle.
-            p.endRotation = EndRotation + randomVariance;
-
-            // --- Atlas ---
-            std::uniform_int_distribution<UINT> row_dist(0, textureAtlasRows - 1);
-            std::uniform_int_distribution<UINT> col_dist(0, textureAtlasColumns - 1);
-            p.atlasOffset.x = (float)col_dist(rng) / textureAtlasColumns;
-            p.atlasOffset.y = (float)row_dist(rng) / textureAtlasRows;
-
-            // --- Position ---
-            dx::XMVECTOR worldOffsetVec = dx::XMVector3TransformNormal(dx::XMLoadFloat3(&EmitterPositionOffset), ownerWorldTransform);
-            dx::XMStoreFloat3(&p.position, dx::XMVectorAdd(dx::XMLoadFloat3(&position), worldOffsetVec));
-
-            // --- Velocity ---
-            // Use the [0, 1] member distribution
-            dx::XMFLOAT3 localRandomizedVel = {
-                ParticleVelocity.x + ParticleVelocityVariance.x * unit_dist(rng),
-                ParticleVelocity.y + ParticleVelocityVariance.y * unit_dist(rng),
-                ParticleVelocity.z + ParticleVelocityVariance.z * unit_dist(rng)
-            };
-            dx::XMStoreFloat3(&p.velocity, dx::XMVector3TransformNormal(dx::XMLoadFloat3(&localRandomizedVel), ownerWorldTransform));
-
-            // This is the most important part for preventing multiple emissions per call
-            return;
-        }
     }
 }
 
