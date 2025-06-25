@@ -3,8 +3,8 @@
 
 
 namespace dx = DirectX;
-Spikes::Spikes(Node* owner, std::string tag)
-	: Component(owner, std::move(tag))
+Spikes::Spikes(Node* owner)
+	: Component(owner)
 {
 }
 

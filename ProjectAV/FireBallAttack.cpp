@@ -45,17 +45,21 @@ void FireBallAttack::Attack(float dt)
 	if (attacked) {
 		return;
 	}
+	if (timer > spawnTime)
+	{
+		Vector3 pos = pOwner->GetWorldPosition();
+		pos += pOwner->Forward() * 5.0f;
+		fireBall = PrefabManager::InstantiateFireBall(Vector3(pos.x, pos.y, pos.z), 0.2f);
+	}
 	if (timer < shootTime) {
 		return;
 	}
-	attacked = true;
 
-	Vector3 pos = pOwner->GetWorldPosition();
-	pos += pOwner->Forward() * 5.0f;
-	Node* fireBall = PrefabManager::InstantiateFireBall(Vector3(pos.x, pos.y, pos.z), 0.2f);
+
+	attacked = true;
 	fireBall->GetComponent<FireBall>()->ignore = pOwner;
 	playerPos.y += 2.0f;
-	Vector3 dir = playerPos - pos;
+	Vector3 dir = playerPos - pOwner->GetWorldPosition();
 	dir.Normalize();
 	dir *= bulletSpeed;
 	PhysicsCommon::physicsSystem->GetBodyInterface().SetLinearVelocity(fireBall->GetComponent<Rigidbody>()->GetBodyID(), Vec3(dir.x, dir.y, dir.z));

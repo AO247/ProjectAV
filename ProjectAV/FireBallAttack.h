@@ -13,15 +13,17 @@ public:
 	FireBallAttack(Node* owner, Node* player = nullptr, std::string tag = "ATTACK");
 	virtual ~FireBallAttack() = default;
 	float damage = 1.0f;
-	float wholeAttackTime = 1.5f;
-	float shootTime = 0.5f;
+	float wholeAttackTime = 2.04f;
 	float knockbackForce = 1500.0f;
 	float bulletSpeed = 20.0f;
+	float spawnTime = 0.4f;
+	float shootTime = 1.0f;
 	virtual void Attack(float dt);
 	virtual void DrawImGuiControls() override;
 
 	float shootSoundTimer = 0.0f;
 	float shootSoundInterval = wholeAttackTime;
+	Node* fireBall = nullptr;
 private:
 	bool attacked = false;
 	float timer = 0.0f;
