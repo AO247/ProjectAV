@@ -270,6 +270,7 @@
     <ClInclude Include="FireBallAttack.h" />
     <ClInclude Include="FireBoom.h" />
     <ClInclude Include="MainMenu.h" />
+    <ClInclude Include="PauseMenu.h" />
     <ClInclude Include="SlashAttack.h" />
     <ClInclude Include="Hands.h" />
     <ClInclude Include="IEmitterLogic.h" />
@@ -296,6 +297,7 @@
     <ClCompile Include="ParticlePass.cpp" />
     <ClCompile Include="ParticleSystemComponent.cpp" />
     <ClCompile Include="Pass.cpp" />
+    <ClCompile Include="PauseMenu.cpp" />
     <ClCompile Include="PhysicsCommon.cpp" />
     <ClCompile Include="PixelShader.cpp" />
     <ClCompile Include="PlayerController.cpp" />

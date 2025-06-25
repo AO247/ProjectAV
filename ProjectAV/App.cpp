@@ -106,12 +106,16 @@ App::App(const std::string& commandLine)
 	auto mainMenuOwner = std::make_unique<Node>("Main Menu", nullptr, "MAIN_MENU");
 	mainMenuNode = mainMenuOwner.get();
 
+    auto pauseMenuOwner = std::make_unique<Node>("Pause Menu", nullptr, "PAUSE_MENU");
+    pauseMenuNode = pauseMenuOwner.get();
+
     tutorialNode = tutorialOwner.get();
 	Node* pPlayerThings = playerThings.get();
 	Node* pAbilities = abilities.get();
 	Node* pBase = base.get();
 	Node* pHands = handsOwner.get();
     pSceneRoot->AddChild(std::move(mainMenuOwner));
+    pSceneRoot->AddChild(std::move(pauseMenuOwner));
     pSceneRoot->AddChild(std::move(pTemporaryOwner));
 	pSceneRoot->AddChild(std::move(base));
     pSceneRoot->AddChild(std::move(playerThings));
@@ -141,6 +145,7 @@ App::App(const std::string& commandLine)
         std::make_unique<MainMenu>(mainMenuNode, wnd)
 	);
 
+    pauseMenuNode->AddComponent(std::make_unique<PauseMenu>(pauseMenuNode, wnd));
 
 
     BodyCreationSettings bodySettings(new JPH::CapsuleShape(1.4f, 1.6f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::PLAYER);
@@ -514,38 +519,11 @@ App::App(const std::string& commandLine)
         L"Images\\menu_9.gif" 
     );
 
-    quitHover = std::make_unique<Sprite>(
-        wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
-        100, 720, 460, 110,
-        L"Images\\quit_2.png"
-    );
-    startHover = std::make_unique<Sprite>(
-        wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
-        100, 580, 460, 110,
-        L"Images\\start_2.png"
-    );
-
+ 
     const DirectX::XMFLOAT4 buttonIdleColor = { 0.82f, 0.63f, 0.35f, 0.1f };
     const DirectX::XMFLOAT4 buttonHoverColor = { 1.0f, 0.8f, 0.5f, 0.3f };
     const DirectX::XMFLOAT4 textColor = { 0.1f, 0.1f, 0.1f, 1.0f };
 
-    startButton = std::make_unique<Button>(
-        wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
-        100, 580, 500, 120,  
-        L" ",
-        L"myfile.spritefont"  
-    );
-    startButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
-    startButton->SetTextColor(textColor);
- 
-    quitButton = std::make_unique<Button>(
-        wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
-        100, 720, 500, 120,
-        L" ",
-        L"myfile.spritefont"  
-    );
-    quitButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
-    quitButton->SetTextColor(textColor);
  
 
     // --------------- INICJALIZACJA MENU PAUZY --------------- 
@@ -589,6 +567,35 @@ App::App(const std::string& commandLine)
     quitToMenuButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
     quitToMenuButton->SetTextColor(textColor);
  
+    auto mainMenuComp = mainMenuNode->GetComponent<MainMenu>();
+    mainMenuComp->SetOnStartClick([this]() {
+        gameState = GameState::Gameplay;
+        paused = true;
+        wnd.DisableCursor();
+        wnd.mouse.EnableRawInput();
+        cursorEnabled = false;
+        StartGame();
+        });
+    mainMenuComp->SetOnQuitClick([this]() {
+        PostQuitMessage(0);
+        });
+
+    auto pauseMenuComp = pauseMenuNode->GetComponent<PauseMenu>();
+    pauseMenuComp->SetOnResumeClick([this]() {
+        gameState = GameState::Gameplay;
+        paused = false;
+        wnd.DisableCursor();
+        wnd.mouse.EnableRawInput();
+        cursorEnabled = false;
+        });
+    pauseMenuComp->SetOnQuitToMenuClick([this]() {
+        ResetGame();
+        gameState = GameState::MainMenu;
+        // Pamiętaj, żeby znowu włączyć kursor, gdy wracasz do menu!
+        wnd.EnableCursor();
+        wnd.mouse.DisableRawInput();
+        cursorEnabled = true;
+        });
 
 }
 
@@ -657,6 +664,10 @@ void App::HandleInput(float dt)
         {
             PostQuitMessage(0);
             return;
+        }
+        if (wnd.kbd.IsJustPressed('H'))
+        {
+            showControlWindow = !showControlWindow;
         }
         break;
     
@@ -771,6 +782,10 @@ void App::HandleInput(float dt)
             wnd.mouse.EnableRawInput();
             cursorEnabled = false;
         }
+        if (wnd.kbd.IsJustPressed('H'))
+        {
+            showControlWindow = !showControlWindow;
+        }
         break;
     }
 
@@ -789,30 +804,14 @@ void App::DoFrame(float dt)
         gfx.GetTarget()->BindAsBuffer(gfx);
         mainMenuBackground->Update(dt);
         mainMenuBackground->Draw(gfx.GetContext());
-
-        int mouseX = wnd.mouse.GetPosX();
-        int mouseY = wnd.mouse.GetPosY();
          
+        mainMenuNode->GetComponent<MainMenu>()->DrawMainMenu(dt);
+        mainMenuNode->GetComponent<MainMenu>()->Update(dt); 
 
-        const int startX = 100, startY = 580, btnWidth = 500, btnHeight = 120;
-        const int quitX = 100, quitY = 720;
-
-        if (mouseX >= startX && mouseX <= startX + btnWidth &&
-            mouseY >= startY && mouseY <= startY + btnHeight)
-        {
-            // Mysz jest nad przyciskiem START, więc dorysuj wersję HOVER NA WIERZCHU tła.
-            if (startHover) startHover->Draw(gfx.GetContext());
+        if (showControlWindow) {
+            ShowControlWindows();
         }
-
-        if (mouseX >= quitX && mouseX <= quitX + btnWidth &&
-            mouseY >= quitY && mouseY <= quitY + btnHeight)
-        {
-            // Mysz jest nad przyciskiem QUIT, więc dorysuj wersję HOVER NA WIERZCHU tła.
-            if (quitHover) quitHover->Draw(gfx.GetContext());
-        }
-
-        UpdateMainMenu();
-        //DrawMainMenu();
+         
         break;
     }
 
@@ -909,43 +908,48 @@ void App::DoFrame(float dt)
          
         if (gameState == GameState::Paused)
         {
-            pauseMenuOverlay->Update(dt);
+
+            pauseMenuNode->GetComponent<PauseMenu>()->DrawPauseMenu(dt);
+            pauseMenuNode->GetComponent<PauseMenu>()->Update(dt);
+
+            //pauseMenuOverlay->Update(dt);
 
 
-            pauseMenuOverlay->Draw(wnd.Gfx().GetContext());
+            //pauseMenuOverlay->Draw(wnd.Gfx().GetContext());
 
-            int mouseX = wnd.mouse.GetPosX();
-            int mouseY = wnd.mouse.GetPosY();
-
-
-
-             
+            //int mouseX = wnd.mouse.GetPosX();
+            //int mouseY = wnd.mouse.GetPosY();
 
 
-            const int startX = (wnd.Gfx().GetWidth() / 2 - 250), startY = 580, btnWidth = 500, btnHeight = 120;
-            const int quitX = (wnd.Gfx().GetWidth() / 2 - 250), quitY = 720;
 
-            if (mouseX >= startX && mouseX <= startX + btnWidth &&
-                mouseY >= startY && mouseY <= startY + btnHeight)
-            { 
-                if (startHover) resumeHover->Draw(wnd.Gfx().GetContext());
-            }
+            // 
 
-            if (mouseX >= quitX && mouseX <= quitX + btnWidth &&
-                mouseY >= quitY && mouseY <= quitY + btnHeight)
-            {
-                // Mysz jest nad przyciskiem QUIT, więc dorysuj wersję HOVER NA WIERZCHU tła.
-                if (quitHover) quitToMenuHover->Draw(wnd.Gfx().GetContext());
-            }
-            UpdatePauseMenu();
+
+            //const int startX = (wnd.Gfx().GetWidth() / 2 - 250), startY = 580, btnWidth = 500, btnHeight = 120;
+            //const int quitX = (wnd.Gfx().GetWidth() / 2 - 250), quitY = 720;
+
+            //if (mouseX >= startX && mouseX <= startX + btnWidth &&
+            //    mouseY >= startY && mouseY <= startY + btnHeight)
+            //{ 
+            //    if (resumeHover) resumeHover->Draw(wnd.Gfx().GetContext());
+            //}
+
+            //if (mouseX >= quitX && mouseX <= quitX + btnWidth &&
+            //    mouseY >= quitY && mouseY <= quitY + btnHeight)
+            //{
+            //    // Mysz jest nad przyciskiem QUIT, więc dorysuj wersję HOVER NA WIERZCHU tła.
+            //    if (quitToMenuHover) quitToMenuHover->Draw(wnd.Gfx().GetContext());
+            //}
+            //UpdatePauseMenu();
             //DrawPauseMenu();
+ 
+
         }
         break;
     }
     }
 
-    }
-    //mainMenuNode->GetComponent<MainMenu>()->DrawMainMenu(dt);
+    } 
     wnd.kbd.UpdateFrameState();
 
     wnd.Gfx().EndFrame();
@@ -1210,9 +1214,6 @@ void App::ShowControlWindows()
     ImGui::End(); 
 }
 
-
-
-
 void App::CleanupDestroyedNodes(Node* currentNode)
 {
     if (!currentNode) return;
@@ -1363,67 +1364,8 @@ void App::SaveNodeTransformsRecursive(Node& node, std::ofstream& file)
     }
 }
  
-
-void App::UpdateMainMenu()
-{
-    int mouseX = wnd.mouse.GetPosX();
-    int mouseY = wnd.mouse.GetPosY();
-
-    const DirectX::XMFLOAT4 buttonIdleColor = { 0.82f, 0.63f, 0.35f, 0.1f };
-    const DirectX::XMFLOAT4 buttonHoverColor = { 1.0f, 0.8f, 0.5f, 0.0f };
-     
-    bool isMouseLeftPressedThisFrame = wnd.mouse.IsLeftPressed();
-     
-    bool isLeftClick = isMouseLeftPressedThisFrame && !wasMouseLeftPressedLastFrame;
-     
-    if (startButton->IsHovered(mouseX, mouseY)) {
-        //startHover->Draw(wnd.Gfx().GetContext());
-        //startButton->SetColor(buttonHoverColor.x, buttonHoverColor.y, buttonHoverColor.z, buttonHoverColor.w);
-         
-        if (isLeftClick) {
-            gameState = GameState::Gameplay;
-            paused = true;
-            wnd.DisableCursor();
-            wnd.mouse.EnableRawInput();
-            cursorEnabled = false;
-            StartGame();
-        }
-    }
-    else {
-        //startButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
-    }
-     
-    if (quitButton->IsHovered(mouseX, mouseY)) {
-        //quitButton->SetColor(buttonHoverColor.x, buttonHoverColor.y, buttonHoverColor.z, buttonHoverColor.w);
-         
-        if (isLeftClick) {
-            PostQuitMessage(0);
-        }
-    }
-    else {
-        //quitButton->SetColor(buttonIdleColor.x, buttonIdleColor.y, buttonIdleColor.z, buttonIdleColor.w);
-    }
-     
-    wasMouseLeftPressedLastFrame = isMouseLeftPressedThisFrame;
-}
-
-void App::DrawMainMenu()
-{
-    auto* context = wnd.Gfx().GetContext();
-    const float screenWidth = 1920.0f;
-    const float screenHeight = 1080.0f;
-
-    if (mainMenuBackground) {
-        mainMenuBackground->Draw(context);
-    } 
-    if (startButton) {
-        startButton->Draw(context, screenWidth, screenHeight);
-    }
-    if (quitButton) {
-        quitButton->Draw(context, screenWidth, screenHeight);
-    }
-}
-
+ 
+ 
 
 void App::UpdatePauseMenu()
 {
