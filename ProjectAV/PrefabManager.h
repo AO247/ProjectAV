@@ -2839,13 +2839,31 @@ public:
         pNewNodeOwner->SetLocalRotation(rotation);
         pNewNodeOwner->radius = 1000.0f;
 
-        /*InstantiateMushroom1(pNewNodeOwner.get(), 10.0f, 15.0f, 10.0f, 1.0f);
-        InstantiateMushroom2(pNewNodeOwner.get(), 20.0f, 15.0f, 10.0f, 1.0f);
-        InstantiateMushroom3(pNewNodeOwner.get(), 30.0f, 15.0f, 10.0f, 1.0f);
-        InstantiateSpike1(pNewNodeOwner.get(), 40.0f, 15.0f, 10.0f, 1.0f);
-        InstantiateSpike2(pNewNodeOwner.get(), 0.0f, 15.0f, 10.0f, 1.0f);
-        InstantiateFaceColumn1(pNewNodeOwner.get(), -10.0f, 15.0f, 10.0f, 1.0f);
-        InstantiateFire1(pNewNodeOwner.get(), -20.0f, 15.0f, 10.0f, 1.0f);*/
+        //WALL BORDERS
+        InstantiatePlatform3(pNewNodeOwner.get(), Vector3(125.00f, -3.30f, -21.40f), 1.0f, Vector3(0.00f, 2.90f, 0.00f));
+        InstantiatePlatform3(pNewNodeOwner.get(), Vector3(123.50f, 0.00f, 17.50f), 1.0f, Vector3(0.00f, 3.11f, 0.00f));
+        InstantiatePlatform3(pNewNodeOwner.get(), Vector3(120.00f, 0.00f, -62.20f), 1.0f, Vector3(0.00f, -2.86f, 0.00f));
+        InstantiatePlatform3(pNewNodeOwner.get(), Vector3(-19.00f, 0.00f, -102.90f), 1.0f, Vector3(0.00f, -1.38f, 0.00f));
+        InstantiatePlatform3(pNewNodeOwner.get(), Vector3(-80.90f, -6.60f, -71.60f), 1.0f, Vector3(0.00f, -0.70f, 0.00f));
+        InstantiatePlatform3(pNewNodeOwner.get(), Vector3(-94.40f, 0.00f, -33.10f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
+        InstantiatePlatform3(pNewNodeOwner.get(), Vector3(-92.30f, 0.00f, 31.20f), 1.0f, Vector3(0.00f, 0.28f, 0.00f));
+        InstantiatePlatform3(pNewNodeOwner.get(), Vector3(-7.00f, -5.10f, 112.80f), 1.0f, Vector3(0.00f, 1.66f, 0.00f));
+        InstantiateWall2(pNewNodeOwner.get(), Vector3(144.80f, 0.90f, 59.80f), 1.0f, Vector3(0.00f, 0.07f, 0.00f));
+        InstantiateWall2(pNewNodeOwner.get(), Vector3(87.20f, 0.80f, 127.10f), 1.0f, Vector3(0.00f, -1.50f, 0.00f));
+        InstantiateWall2(pNewNodeOwner.get(), Vector3(27.30f, 1.00f, -123.90f), 1.0f, Vector3(0.00f, 1.52f, 0.00f));
+        InstantiateWall2(pNewNodeOwner.get(), Vector3(44.80f, 0.60f, 126.90f), 1.0f, Vector3(0.00f, 1.45f, 0.00f));
+        InstantiateWall3(pNewNodeOwner.get(), Vector3(130.70f, 0.90f, 105.70f), 1.0f, Vector3(0.00f, -0.72f, 0.00f));
+        InstantiateWall3(pNewNodeOwner.get(), Vector3(-83.20f, 0.00f, 104.90f), 1.0f, Vector3(0.00f, -2.51f, 0.00f));
+        InstantiateWall3(pNewNodeOwner.get(), Vector3(-83.20f, 0.00f, 104.90f), 1.0f, Vector3(0.00f, -2.51f, 0.00f));
+        InstantiateWall3(pNewNodeOwner.get(), Vector3(-83.20f, 0.00f, 104.90f), 1.0f, Vector3(0.00f, -2.51f, 0.00f));
+        InstantiateRock5(pNewNodeOwner.get(), Vector3(-52.00f, 0.00f, 124.70f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
+        InstantiateRock5(pNewNodeOwner.get(), Vector3(113.90f, 0.00f, -95.30f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
+        InstantiateRock5(pNewNodeOwner.get(), Vector3(-96.90f, 1.10f, 73.80f), 1.5f, Vector3(0.00f, -1.55f, 0.00f));
+        InstantiateRockDouble(pNewNodeOwner.get(), Vector3(91.40f, 0.50f, -103.50f), 1.0f, Vector3(0.00f, 0.96f, 0.00f));
+        InstantiateRockDouble(pNewNodeOwner.get(), Vector3(58.00f, 0.00f, -112.80f), 1.0f, Vector3(0.00f, -1.52f, 0.00f));
+        InstantiateRockDouble(pNewNodeOwner.get(), Vector3(-35.70f, 0.00f, 125.00f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
+        InstantiateRockDouble(pNewNodeOwner.get(), Vector3(-63.40f, 0.00f, -101.90f), 1.0f, Vector3(0.00f, 2.41f, 0.00f));
+        InstantiateRockDouble(pNewNodeOwner.get(), Vector3(-112.60f, 0.40f, 2.70f), 1.0f, Vector3(0.00f, 0.40f, 0.00f));
 
         Node* pNewNode = pNewNodeOwner.get();
         parentNode->AddChild(std::move(pNewNodeOwner));
@@ -3082,6 +3100,7 @@ public:
         InstantiatePlatform3(pNewNodeOwner.get(), Vector3(-80.90f, -6.60f, -71.60f), 1.0f, Vector3(0.00f, -0.70f, 0.00f));
         InstantiatePlatform3(pNewNodeOwner.get(), Vector3(-94.40f, 0.00f, -33.10f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
         InstantiatePlatform3(pNewNodeOwner.get(), Vector3(-92.30f, 0.00f, 31.20f), 1.0f, Vector3(0.00f, 0.28f, 0.00f));
+        InstantiatePlatform3(pNewNodeOwner.get(), Vector3(-7.00f, -5.10f, 112.80f), 1.0f, Vector3(0.00f, 1.66f, 0.00f));
         InstantiateWall2(pNewNodeOwner.get(), Vector3(144.80f, 0.90f, 59.80f), 1.0f, Vector3(0.00f, 0.07f, 0.00f));
         InstantiateWall2(pNewNodeOwner.get(), Vector3(87.20f, 0.80f, 127.10f), 1.0f, Vector3(0.00f, -1.50f, 0.00f));
         InstantiateWall2(pNewNodeOwner.get(), Vector3(27.30f, 1.00f, -123.90f), 1.0f, Vector3(0.00f, 1.52f, 0.00f));
@@ -3092,7 +3111,7 @@ public:
         InstantiateWall3(pNewNodeOwner.get(), Vector3(-83.20f, 0.00f, 104.90f), 1.0f, Vector3(0.00f, -2.51f, 0.00f));
         InstantiateRock5(pNewNodeOwner.get(), Vector3(-52.00f, 0.00f, 124.70f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
         InstantiateRock5(pNewNodeOwner.get(), Vector3(113.90f, 0.00f, -95.30f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
-        InstantiateRock5(pNewNodeOwner.get(), Vector3(139.10f, 0.00f, 28.80f), 1.5f, Vector3(0.00f, 0.00f, 0.00f));
+        InstantiateRock5(pNewNodeOwner.get(), Vector3(-96.90f, 1.10f, 73.80f), 1.5f, Vector3(0.00f, -1.55f, 0.00f));
         InstantiateRockDouble(pNewNodeOwner.get(), Vector3(91.40f, 0.50f, -103.50f), 1.0f, Vector3(0.00f, 0.96f, 0.00f));
         InstantiateRockDouble(pNewNodeOwner.get(), Vector3(58.00f, 0.00f, -112.80f), 1.0f, Vector3(0.00f, -1.52f, 0.00f));
         InstantiateRockDouble(pNewNodeOwner.get(), Vector3(-35.70f, 0.00f, 125.00f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
@@ -3155,6 +3174,7 @@ public:
         InstantiatePlatform3(pNewNodeOwner.get(), Vector3(-80.90f, -6.60f, -71.60f), 1.0f, Vector3(0.00f, -0.70f, 0.00f));
         InstantiatePlatform3(pNewNodeOwner.get(), Vector3(-94.40f, 0.00f, -33.10f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
         InstantiatePlatform3(pNewNodeOwner.get(), Vector3(-92.30f, 0.00f, 31.20f), 1.0f, Vector3(0.00f, 0.28f, 0.00f));
+        InstantiatePlatform3(pNewNodeOwner.get(), Vector3(-7.00f, -5.10f, 112.80f), 1.0f, Vector3(0.00f, 1.66f, 0.00f));
         InstantiateWall2(pNewNodeOwner.get(), Vector3(144.80f, 0.90f, 59.80f), 1.0f, Vector3(0.00f, 0.07f, 0.00f));
         InstantiateWall2(pNewNodeOwner.get(), Vector3(87.20f, 0.80f, 127.10f), 1.0f, Vector3(0.00f, -1.50f, 0.00f));
         InstantiateWall2(pNewNodeOwner.get(), Vector3(27.30f, 1.00f, -123.90f), 1.0f, Vector3(0.00f, 1.52f, 0.00f));
@@ -3165,7 +3185,7 @@ public:
         InstantiateWall3(pNewNodeOwner.get(), Vector3(-83.20f, 0.00f, 104.90f), 1.0f, Vector3(0.00f, -2.51f, 0.00f));
         InstantiateRock5(pNewNodeOwner.get(), Vector3(-52.00f, 0.00f, 124.70f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
         InstantiateRock5(pNewNodeOwner.get(), Vector3(113.90f, 0.00f, -95.30f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
-        InstantiateRock5(pNewNodeOwner.get(), Vector3(139.10f, 0.00f, 28.80f), 1.5f, Vector3(0.00f, 0.00f, 0.00f));
+        InstantiateRock5(pNewNodeOwner.get(), Vector3(-96.90f, 1.10f, 73.80f), 1.5f, Vector3(0.00f, -1.55f, 0.00f));
         InstantiateRockDouble(pNewNodeOwner.get(), Vector3(91.40f, 0.50f, -103.50f), 1.0f, Vector3(0.00f, 0.96f, 0.00f));
         InstantiateRockDouble(pNewNodeOwner.get(), Vector3(58.00f, 0.00f, -112.80f), 1.0f, Vector3(0.00f, -1.52f, 0.00f));
         InstantiateRockDouble(pNewNodeOwner.get(), Vector3(-35.70f, 0.00f, 125.00f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
@@ -3173,18 +3193,18 @@ public:
         InstantiateRockDouble(pNewNodeOwner.get(), Vector3(-112.60f, 0.40f, 2.70f), 1.0f, Vector3(0.00f, 0.40f, 0.00f));
 
         //LEVEL DESIGN
-        InstantiatePlatform1(pNewNodeOwner.get(), Vector3(-92.30f, 0.00f, 31.20f), 1.0f, Vector3(0.00f, 0.28f, 0.00f));
-        InstantiatePlatform1(pNewNodeOwner.get(), Vector3(-92.30f, 0.00f, 31.20f), 1.0f, Vector3(0.00f, 0.28f, 0.00f));
-        InstantiatePlatform1(pNewNodeOwner.get(), Vector3(-92.30f, 0.00f, 31.20f), 1.0f, Vector3(0.00f, 0.28f, 0.00f));
-        InstantiatePlatform1(pNewNodeOwner.get(), Vector3(-92.30f, 0.00f, 31.20f), 1.0f, Vector3(0.00f, 0.28f, 0.00f));
-        InstantiatePlatform3(pNewNodeOwner.get(), Vector3(-92.30f, 0.00f, 31.20f), 0.6f, Vector3(0.00f, 0.28f, 0.00f));
-        InstantiatePlatform3(pNewNodeOwner.get(), Vector3(-92.30f, 0.00f, 31.20f), 0.6f, Vector3(0.00f, 0.28f, 0.00f));
-        InstantiatePlatform3(pNewNodeOwner.get(), Vector3(-92.30f, 0.00f, 31.20f), 0.6f, Vector3(0.00f, 0.28f, 0.00f));
-        InstantiatePlatform3(pNewNodeOwner.get(), Vector3(-92.30f, 0.00f, 31.20f), 0.6f, Vector3(0.00f, 0.28f, 0.00f));
-		InstantiateFire1(pNewNodeOwner.get(), Vector3(125.00f, -3.30f, -21.40f), 1.0f, Vector3(0.00f, 2.90f, 0.00f));
-        InstantiateFire1(pNewNodeOwner.get(), Vector3(125.00f, -3.30f, -21.40f), 1.0f, Vector3(0.00f, 2.90f, 0.00f)); 
-        InstantiateFire1(pNewNodeOwner.get(), Vector3(125.00f, -3.30f, -21.40f), 1.0f, Vector3(0.00f, 2.90f, 0.00f));
-        InstantiateFire1(pNewNodeOwner.get(), Vector3(125.00f, -3.30f, -21.40f), 1.0f, Vector3(0.00f, 2.90f, 0.00f));
+        InstantiatePlatform1(pNewNodeOwner.get(), Vector3(52.00f, 0.00f, -38.10f), 1.0f, Vector3(0.00f, 0.28f, 0.00f));
+        InstantiatePlatform1(pNewNodeOwner.get(), Vector3(53.70f, 0.00f, 52.90f), 1.0f, Vector3(0.00f, -0.61f, 0.00f));
+        InstantiatePlatform1(pNewNodeOwner.get(), Vector3(-21.60f, 0.00f, -31.60f), 1.0f, Vector3(0.00f, 2.78f, 0.00f));
+        InstantiatePlatform1(pNewNodeOwner.get(), Vector3(-21.10f, 0.00f, 56.00f), 1.0f, Vector3(0.00f, -2.51f, 0.00f));
+        InstantiatePlatform3(pNewNodeOwner.get(), Vector3(21.20f, -0.50f, 9.00f), 0.6f, Vector3(0.00f, 0.28f, 0.00f));
+        InstantiatePlatform3(pNewNodeOwner.get(), Vector3(36.90f, 0.00f, -81.10f), 0.6f, Vector3(0.00f, 1.24f, 0.00f));
+        InstantiatePlatform3(pNewNodeOwner.get(), Vector3(96.60f, 0.00f, 84.70f), 0.6f, Vector3(0.00f, -0.73f, 0.00f));
+        InstantiatePlatform3(pNewNodeOwner.get(), Vector3(-53.80f, 0.00f, 81.70f), 0.6f, Vector3(0.00f, 0.28f, 0.00f));
+		InstantiateFire1(pNewNodeOwner.get(), Vector3(67.20f, 1.30f, 2.80f), 1.0f, Vector3(0.00f, 2.90f, 0.00f));
+        InstantiateFire1(pNewNodeOwner.get(), Vector3(11.90f, 1.30f, -53.50f), 1.0f, Vector3(0.00f, 2.90f, 0.00f));
+        InstantiateFire1(pNewNodeOwner.get(), Vector3(16.50f, 1.30f, 73.90f), 1.0f, Vector3(0.00f, 2.90f, 0.00f));
+        InstantiateFire1(pNewNodeOwner.get(), Vector3(-46.20f, 1.30f, -45.90f), 1.0f, Vector3(0.00f, 2.90f, 0.00f));
         /*InstantiateNewColumn(pNewNodeOwner.get(), Vector3(65.00f, 1.30f, 69.20f), 1.0f);
         InstantiateNewColumn(pNewNodeOwner.get(), Vector3(77.00f, 1.30f, -12.50f), 1.0f);
         InstantiateNewColumn(pNewNodeOwner.get(), Vector3(33.70f, 1.30f, -87.40f), 1.0f);
@@ -3194,11 +3214,11 @@ public:
         InstantiateNewColumn(pNewNodeOwner.get(), Vector3(-15.90f, 1.30f, 68.60f), 1.0f);
         InstantiateNewColumn(pNewNodeOwner.get(), Vector3(26.50f, 1.30f, 49.80f), 1.0f);
         InstantiateStoneStack1(pNewNodeOwner.get(), Vector3(67.60f, 2.72f, -65.30f), 1.1f);
-        InstantiateStoneStack1(pNewNodeOwner.get(), Vector3(35.20f, 2.72f, 65.50f), 1.1f);
-        InstantiateStoneStack1(pNewNodeOwner.get(), Vector3(-7.00f, 2.72f, -75.00f), 1.0f);
-        InstantiateStoneStack1(pNewNodeOwner.get(), Vector3(-24.60f, 2.72f, -2.30f), 1.0f);
-        InstantiateStoneStack1(pNewNodeOwner.get(), Vector3(73.00f, 2.72f, 34.80f), 0.9f);
-        InstantiateStoneStack1(pNewNodeOwner.get(), Vector3(-4.30f, 10.02f, 39.50f), 0.9f);*/
+        InstantiateStoneStack1(pNewNodeOwner.get(), Vector3(35.20f, 2.72f, 65.50f), 1.1f);*/
+        InstantiateStoneStack1(pNewNodeOwner.get(), Vector3(14.60f, 2.72f, -28.60f), 1.0f);
+        InstantiateStoneStack1(pNewNodeOwner.get(), Vector3(-53.40f, 2.72f, -16.90f), 1.0f);
+        InstantiateStoneStack1(pNewNodeOwner.get(), Vector3(82.10f, 2.72f, 29.70f), 0.9f);
+        InstantiateStoneStack1(pNewNodeOwner.get(), Vector3(-0.30f, 10.02f, 87.30f), 0.9f);
 
         Node* pNewNode = pNewNodeOwner.get();
         parentNode->AddChild(std::move(pNewNodeOwner));
