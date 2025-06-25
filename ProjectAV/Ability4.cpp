@@ -78,10 +78,15 @@ void Ability4::Positioning()
         if (PhysicsCommon::physicsSystem->GetBodyInterface().GetMotionType(result.mBodyID) == EMotionType::Dynamic)
         {
             selectedNode = reinterpret_cast<Node*>(PhysicsCommon::physicsSystem->GetBodyInterface().GetUserData(result.mBodyID));
-            if (selectedNode->GetComponent<Throwable>()->extraHeavy)
+            if (selectedNode->GetComponent<Throwable>() == nullptr)
             {
                 selectedNode = nullptr;
             }
+            else if (selectedNode->GetComponent<Throwable>()->extraHeavy == true)
+            {
+                selectedNode = nullptr;
+            }
+
         }
     }
     else
