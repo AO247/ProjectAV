@@ -14,6 +14,7 @@ public:
 	float currentHealth;
 	bool tank = false;
 	bool fireType = false;
+	bool boss = false;
 	virtual void DrawImGuiControls() override;
 	void TakeDamage(float damage, bool heavy = false, bool isFire = false);
 

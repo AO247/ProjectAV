@@ -20,9 +20,9 @@ public:
 
 	void StopAll();
 
-	float volumeGlobal = 0.7f;
+	float volumeGlobal = 1.0f;
 	float volumePos = 0.7f;
-	float volumePlayer = 0.4f;
+	float volumePlayer = 0.3f;
 
 	void Update(float dt) 
 	{

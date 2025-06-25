@@ -93,6 +93,7 @@ private:
     bool startedGame = false;
     float gameReset = 0;
     std::unique_ptr<Sprite> targetSprite;
+    std::unique_ptr<Sprite> heart0Sprite; 
     std::unique_ptr<Sprite> heart1Sprite;
     std::unique_ptr<Sprite> heart2Sprite;
     std::unique_ptr<Sprite> heart3Sprite;

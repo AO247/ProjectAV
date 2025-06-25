@@ -171,6 +171,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Eye.cpp" />
     <ClCompile Include="FourFireBallAttack.cpp" />
     <ClCompile Include="Ability1.cpp" />
     <ClCompile Include="Ability2.cpp" />
@@ -247,6 +248,7 @@
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="MusicBuffer.cpp" />
     <ClCompile Include="MyContactListener.cpp" />
+    <ClInclude Include="Eye.h" />
     <ClInclude Include="FourFireBallAttack.h" />
     <ClInclude Include="Ability.h" />
     <ClInclude Include="Ability1.h" />
