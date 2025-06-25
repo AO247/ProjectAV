@@ -4,6 +4,7 @@
 FireBall::FireBall(Node* owner) : Component(owner)
 {
 	rigidbody = owner->GetComponent<Rigidbody>();
+	// particle
 }
 void FireBall::Update(float dt)
 {

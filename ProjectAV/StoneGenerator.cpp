@@ -11,6 +11,7 @@ void StoneGenerator::Update(float dt)
 {
 	if (!active) return;
 	timer += dt;
+	timerBakground += dt;
 	if (timer >= dropRate)
 	{
 		Vector3 pos = pOwner->GetLocalPosition();
@@ -50,11 +51,66 @@ void StoneGenerator::Update(float dt)
 			PrefabManager::InstantiateThrowable(pOwner, pos, 0.4f);
 		}
 	}
+	if (timerBakground > dropRateBackground)
+	{
+		float xdir = ((rand() % 200) - 100) / 100.0f;
+		float zdir = ((rand() % 200) - 100) / 100.0f;
+
+		Vector3 dir = Vector3(xdir, 0.0f, zdir);
+		float ran = (rand() % 50) - 25;
+		Vector3 pos = dir * (300.0f - ran);
+		pos.y = 450.0f;
+		if (stone1 == nullptr)
+			stone1 = PrefabManager::InstantiateThrowable(pOwner, pos, 0.4f);
+		else if (stone2 == nullptr)
+			stone2 = PrefabManager::InstantiateThrowable(pOwner, pos, 0.4f);
+		else if (stone3 == nullptr)
+			stone3 = PrefabManager::InstantiateThrowable(pOwner, pos, 0.4f);
+		else if (stone4 == nullptr)
+			stone4 = PrefabManager::InstantiateThrowable(pOwner, pos, 0.4f);
+
+
+		timerBakground = 0.0f;
+	}
+	if (stone1 != nullptr)
+	{
+		if(stone1->GetLocalPosition().y < -500.0f)
+		{
+			stone1->Destroy();
+			stone1 = nullptr;
+		}
+	}
+	if (stone2 != nullptr)
+	{
+		if (stone2->GetLocalPosition().y < -500.0f)
+		{
+			stone2->Destroy();
+			stone2 = nullptr;
+		}
+	}
+	if (stone3 != nullptr)
+	{
+		if (stone3->GetLocalPosition().y < -500.0f)
+		{
+			stone3->Destroy();
+			stone3 = nullptr;
+		}
+	}
+	if (stone4 != nullptr)
+	{
+		if (stone4->GetLocalPosition().y < -500.0f)
+		{
+			stone4->Destroy();
+			stone4 = nullptr;
+		}
+	}
 }
 
 void StoneGenerator::DrawImGuiControls()
 {
 	ImGui::InputFloat("DropRate: %f", &dropRate);
+	ImGui::InputFloat("DropRateBackGround: %f", &dropRateBackground);
+
 	ImGui::Checkbox("Active", &active);
 }
 

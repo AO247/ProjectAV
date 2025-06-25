@@ -9237,24 +9237,24 @@ public:
     ////////PREFAB UTILITY/////////
     ///////////////////////////////
 
-    static void InstantiateThrowable(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 }) {
+    static Node* InstantiateThrowable(Node* parentNode, Vector3 position, float scale, Vector3 rotation = { 0,0,0 }) {
         int randomIndex = rand() % 5 + 1;
 
         switch (randomIndex) {
         case 1:
-            InstantiateStone1(parentNode, position, scale, rotation);
+            return InstantiateStone1(parentNode, position, scale, rotation);
             break;
         case 2:
-            InstantiateStone2(parentNode, position, scale, rotation);
+            return InstantiateStone2(parentNode, position, scale, rotation);
             break;
         case 3:
-            InstantiateStone3(parentNode, position, scale, rotation);
+            return InstantiateStone3(parentNode, position, scale, rotation);
             break;
         case 4:
-            InstantiateStone4(parentNode, position, scale, rotation);
+            return InstantiateStone4(parentNode, position, scale, rotation);
             break;
         case 5:
-            InstantiateStone5(parentNode, position, scale, rotation);
+            return InstantiateStone5(parentNode, position, scale, rotation);
             break;
         }
     }
