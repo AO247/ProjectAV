@@ -61,7 +61,7 @@ App::App(const std::string& commandLine)
     PrefabManager::wind = &wnd;
     PrefabManager::rg = &rg;
     physicsSystem->SetGravity(Vec3(0.0f, -80.0f, 0.0f));
-    //PrefabManager::PreloadAllModels();
+    PrefabManager::PreloadAllModels();
 
     soundDevice = LISTENER->Get();
     ALint attentuation = AL_INVERSE_DISTANCE_CLAMPED;
@@ -473,42 +473,45 @@ App::App(const std::string& commandLine)
     cursorEnabled = true;
     wnd.EnableCursor();  
     wnd.mouse.DisableRawInput();
-      
-    resumeBttn = std::make_unique<Sprite>(
-        wnd.Gfx().GetDevice(),
-        wnd.Gfx().GetContext(),
-        (wnd.GetWidth() * 0.354f), (wnd.GetHeight() * 0.339f), (wnd.GetWidth() * 0.296f), (wnd.GetHeight() * 0.110f),
-        L"Images\\resume.png"
-    ); 
-    backBttn = std::make_unique<Sprite>(
-        wnd.Gfx().GetDevice(),
-        wnd.Gfx().GetContext(),
-        (wnd.GetWidth() * 0.354f), (wnd.GetHeight() * 0.489f), (wnd.GetWidth() * 0.296f), (wnd.GetHeight() * 0.110f),
-        L"Images\\back_to_menu.png"
-    ); 
-    pauseMenuBackground = std::make_unique<Sprite>(
-        wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
-        0, 0, wnd.GetWidth(), wnd.GetHeight(),
-        L"Images\\pause_menu.png"
-    ); 
-    startBttn = std::make_unique<Sprite>(
-        wnd.Gfx().GetDevice(),
-        wnd.Gfx().GetContext(),
-        (wnd.GetWidth() * 0.055f), (wnd.GetHeight() * 0.543f), (wnd.GetWidth() * 0.229f), (wnd.GetHeight() * 0.098f),
-        L"Images\\start_2.png"
-    ); 
-    quitBttn = std::make_unique<Sprite>(
-        wnd.Gfx().GetDevice(),
-        wnd.Gfx().GetContext(),
-        (wnd.GetWidth() * 0.055f), (wnd.GetHeight() * 0.673f), (wnd.GetWidth() * 0.229f), (wnd.GetHeight() * 0.098f),
-        L"Images\\quit_2.png"
-    );
-     
-    mainMenuBackground = std::make_unique<Sprite>(
-        wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
-        0, 0, wnd.GetWidth(), wnd.GetHeight(),
-        L"Images\\menu_compressed_6.gif"
-    );
+    
+    
+    LoadMainMenuResources();
+
+    //resumeBttn = std::make_unique<Sprite>(
+    //    wnd.Gfx().GetDevice(),
+    //    wnd.Gfx().GetContext(),
+    //    (wnd.GetWidth() * 0.354f), (wnd.GetHeight() * 0.339f), (wnd.GetWidth() * 0.296f), (wnd.GetHeight() * 0.110f),
+    //    L"Images\\resume.png"
+    //); 
+    //backBttn = std::make_unique<Sprite>(
+    //    wnd.Gfx().GetDevice(),
+    //    wnd.Gfx().GetContext(),
+    //    (wnd.GetWidth() * 0.354f), (wnd.GetHeight() * 0.489f), (wnd.GetWidth() * 0.296f), (wnd.GetHeight() * 0.110f),
+    //    L"Images\\back_to_menu.png"
+    //); 
+    //pauseMenuBackground = std::make_unique<Sprite>(
+    //    wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
+    //    0, 0, wnd.GetWidth(), wnd.GetHeight(),
+    //    L"Images\\pause_menu.png"
+    //); 
+    //startBttn = std::make_unique<Sprite>(
+    //    wnd.Gfx().GetDevice(),
+    //    wnd.Gfx().GetContext(),
+    //    (wnd.GetWidth() * 0.055f), (wnd.GetHeight() * 0.543f), (wnd.GetWidth() * 0.229f), (wnd.GetHeight() * 0.098f),
+    //    L"Images\\start_2.png"
+    //); 
+    //quitBttn = std::make_unique<Sprite>(
+    //    wnd.Gfx().GetDevice(),
+    //    wnd.Gfx().GetContext(),
+    //    (wnd.GetWidth() * 0.055f), (wnd.GetHeight() * 0.673f), (wnd.GetWidth() * 0.229f), (wnd.GetHeight() * 0.098f),
+    //    L"Images\\quit_2.png"
+    //);
+    // 
+    //mainMenuBackground = std::make_unique<Sprite>(
+    //    wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
+    //    0, 0, wnd.GetWidth(), wnd.GetHeight(),
+    //    L"Images\\menu_compressed_6.gif"
+    //);
  
   
 }
@@ -616,11 +619,13 @@ void App::HandleInput(float dt)
         paused = !paused;
 
         if (paused) {
+            LoadPauseMenuResources();
             cursorEnabled = true;
             wnd.EnableCursor();
             wnd.mouse.DisableRawInput();
         } else 
         {
+            UnloadPauseMenuResources();
             cursorEnabled = false;
             wnd.DisableCursor();
             wnd.mouse.EnableRawInput();
@@ -1173,6 +1178,8 @@ void App::StartGame()
     if (startedGame || !paused) return;
     startedGame = true;
     paused = false;
+    UnloadMainMenuResources();
+
     PrefabManager::InstantiateTutorialIslands(tutorialNode, tutorialNode->GetComponent<Tutorial>() , Vector3(0.0f, 0.0f, 0.0f), 1.0f);
     tutorialNode->GetComponent<Tutorial>()->Start();
     pSceneRoot->GetComponent<Global>()->Start();
@@ -1182,6 +1189,11 @@ void App::StartGame()
 void App::ResetGame()
 {
     if (!startedGame || !paused) return;
+
+    UnloadPauseMenuResources();
+    LoadMainMenuResources();
+
+
     startedGame = false;
     gameReset = 2;
     pSceneRoot->GetComponent<Global>()->Reset();
@@ -1293,3 +1305,74 @@ void App::DrawMainMenu(float dt)
     } 
  }
 
+void App::LoadMainMenuResources()
+{
+    // Jeśli zasoby już istnieją, nie rób nic
+    if (mainMenuBackground) return;
+
+    OutputDebugStringA("Loading Main Menu Resources...\n");
+    const int screenWidth = wnd.GetWidth();
+    const int screenHeight = wnd.GetHeight();
+
+    mainMenuBackground = std::make_unique<Sprite>(
+        wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
+        0, 0, screenWidth, screenHeight,
+        L"Images\\menu_compressed_6.gif"
+    );
+    startBttn = std::make_unique<Sprite>(
+        wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
+        (screenWidth * 0.055f), (screenHeight * 0.543f), (screenWidth * 0.229f), (screenHeight * 0.098f),
+        L"Images\\start_2.png"
+    );
+    quitBttn = std::make_unique<Sprite>(
+        wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
+        (screenWidth * 0.055f), (screenHeight * 0.673f), (screenWidth * 0.229f), (screenHeight * 0.098f),
+        L"Images\\quit_2.png"
+    );
+}
+
+void App::UnloadMainMenuResources()
+{
+    // Jeśli zasoby nie istnieją, nie rób nic
+    if (!mainMenuBackground) return;
+
+    OutputDebugStringA("Unloading Main Menu Resources...\n");
+    mainMenuBackground.reset();
+    startBttn.reset();
+    quitBttn.reset();
+}
+
+void App::LoadPauseMenuResources()
+{
+    if (pauseMenuBackground) return;
+
+    OutputDebugStringA("Loading Pause Menu Resources...\n");
+    const int screenWidth = wnd.GetWidth();
+    const int screenHeight = wnd.GetHeight();
+
+    pauseMenuBackground = std::make_unique<Sprite>(
+        wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
+        0, 0, screenWidth, screenHeight,
+        L"Images\\pause_menu.png"
+    );
+    resumeBttn = std::make_unique<Sprite>(
+        wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
+        (screenWidth * 0.354f), (screenHeight * 0.339f), (screenWidth * 0.296f), (screenHeight * 0.110f),
+        L"Images\\resume.png"
+    );
+    backBttn = std::make_unique<Sprite>(
+        wnd.Gfx().GetDevice(), wnd.Gfx().GetContext(),
+        (screenWidth * 0.354f), (screenHeight * 0.489f), (screenWidth * 0.296f), (screenHeight * 0.110f),
+        L"Images\\back_to_menu.png"
+    );
+}
+
+void App::UnloadPauseMenuResources()
+{
+    if (!pauseMenuBackground) return;
+
+    OutputDebugStringA("Unloading Pause Menu Resources...\n");
+    pauseMenuBackground.reset();
+    resumeBttn.reset();
+    backBttn.reset();
+}

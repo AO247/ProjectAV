@@ -25,10 +25,10 @@ public:
 	float slowTime = 0.0f;
 	float slowPower = 0.5f;
 
-	float maxSpeed = 32.0f;
+	float maxSpeed = 25.0f;
 
-	float jumpForce = 30.0f;
-	float secondJumpForce = 20.0f;
+	float jumpForce = 25.0f;
+	float secondJumpForce = 25.0f;
 	float dashForce = 70.0f;
 	float height = 6.0f;
 	float dashCooldown = 1.5f;
