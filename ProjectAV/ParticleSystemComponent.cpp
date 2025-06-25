@@ -224,8 +224,16 @@ void ParticleSystemComponent::EmitParticle(const DirectX::XMFLOAT3& position)
             p.startSize = StartSize + (StartSizeVariance * unit_dist(rng));
             p.endSize = EndSize;
 
+            // +++ NEW ROTATION LOGIC +++
+            // Start rotation is the same for all particles in this emission.
             p.startRotation = StartRotation;
-            p.endRotation = EndRotation;
+
+            // Calculate a random variance for the end rotation.
+            // bilateral_dist gives a value from -1.0 to 1.0.
+            const float randomVariance = EndRotationVariance * unit_dist(rng);
+
+            // Assign the unique, randomized end rotation to this particle.
+            p.endRotation = EndRotation + randomVariance;
 
             // --- Atlas ---
             std::uniform_int_distribution<UINT> row_dist(0, textureAtlasRows - 1);

@@ -348,6 +348,7 @@
     <ClCompile Include="Vertex.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
     <ClCompile Include="VertexShader.cpp" />
+    <ClCompile Include="VortexEmitterLogic.cpp" />
     <ClCompile Include="Walking.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="WinMain.cpp" />
@@ -485,6 +486,7 @@
     <ClInclude Include="Vertex.h" />
     <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="VertexShader.h" />
+    <ClInclude Include="VortexEmitterLogic.h" />
     <ClInclude Include="Walking.h" />
     <ClInclude Include="Win.h" />
     <ClInclude Include="Window.h" />
