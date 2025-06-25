@@ -124,21 +124,13 @@ public:
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\enviro_male\\grzyb_1.obj")
         );
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-        ModelComponent* model = pNewNodeOwner->GetComponent<ModelComponent>();
-        TriangleList modelTriangles = PhysicsCommon::MakeTriangleList(model->GetAllTriangles());
-        MeshShapeSettings modelMeshSettings(modelTriangles);
-        Shape::ShapeResult modelMeshCreationResult = modelMeshSettings.Create();
-        ShapeRefC modelMeshShape = modelMeshCreationResult.Get();
-        ScaledShapeSettings modelScaling(modelMeshShape, Vec3Arg(scale, scale, scale));
-        modelMeshShape = modelScaling.Create().Get();
-        BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
-        bodySettings.mFriction = 1.0f;
-        BodyCreationSettings a4odySettings(new JPH::SphereShape(2.5f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
-        /*pNewNodeOwner->AddComponent(
+
+       /* BodyCreationSettings a4odySettings(new JPH::SphereShape(8.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
+        pNewNodeOwner->AddComponent(
             std::make_unique<Trigger>(pNewNodeOwner, a4odySettings, false)
         );
 		pNewNodeOwner->AddComponent(
-			std::make_unique<MushroomBoom>(pNewNodeOwner.get(), bodySettings)
+			std::make_unique<MushroomBoom>(pNewNodeOwner.get())
 		);*/
 
         pNewNodeOwner->SetLocalPosition(position);
@@ -8907,7 +8899,7 @@ public:
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         parentNode->AddChild(std::move(pNewNodeOwner));
 
-        BodyCreationSettings eBodySettings(new JPH::CapsuleShape(1.8f, 1.6f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::ENEMY);
+        BodyCreationSettings eBodySettings(new JPH::CapsuleShape(7.0f, 2.5f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::ENEMY);
         eBodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
 
         eBodySettings.mMassPropertiesOverride.mMass = 15.0f;
@@ -8918,22 +8910,38 @@ public:
             std::make_unique<Rigidbody>(pNewNode, eBodySettings)
         );
 
+
+        auto eyeNodeOwner = std::make_unique<Node>("EYE", nullptr, "ENEMY");
+        BodyCreationSettings eyeBodySettings(new JPH::SphereShape(3.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::ENEMY);
+        eyeBodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
+
+        eyeBodySettings.mMassPropertiesOverride.mMass = 15.0f;
+        eyeBodySettings.mFriction = 0.2f;
+        eyeBodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
+        eyeBodySettings.mMotionQuality = EMotionQuality::LinearCast;
+        eyeNodeOwner->AddComponent(
+            std::make_unique<Rigidbody>(eyeNodeOwner.get(), eyeBodySettings)
+        );
+        eyeNodeOwner->GetComponent<Rigidbody>()->ConnectWithOtherBody(pNewNode->GetComponent<Rigidbody>()->GetBodyID(), Vec3(0.0f, 11.5f, 0.0f));
+
+        pNewNode->AddChild(std::move(eyeNodeOwner));
+
         // ATTACK
 
-        auto attackNodeOwner = std::make_unique<Node>("Basic Attack", nullptr, "TRIGGER");
-        Node* pattackNode = attackNodeOwner.get();
+        auto rotateAttackNodeOwner = std::make_unique<Node>("Rotate Attack", nullptr, "TRIGGER");
+        Node* pRotateAttackNode = rotateAttackNodeOwner.get();
 
-        BodyCreationSettings a1BodySettings(new JPH::CapsuleShape(5.0f, 3.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
-        pattackNode->AddComponent(
-            std::make_unique<Trigger>(pattackNode, a1BodySettings, false)
+        BodyCreationSettings a1BodySettings(new JPH::CapsuleShape(7.0f, 3.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
+        pRotateAttackNode->AddComponent(
+            std::make_unique<Trigger>(pRotateAttackNode, a1BodySettings, false)
         );
-        pattackNode->AddComponent(
-            std::make_unique<BasicAttack>(pattackNode)
+        pRotateAttackNode->AddComponent(
+            std::make_unique<RotateAttack>(pRotateAttackNode)
         );
-        BasicAttack* basicAttack = pattackNode->GetComponent<BasicAttack>();
-        basicAttack->attackRange = 7.0f;
+        RotateAttack* rotateAttack = pRotateAttackNode->GetComponent<RotateAttack>();
+        rotateAttack->attackRange = 50.0f;
         pNewNode->SetLocalPosition({ 0.0f, 0.0f, 0.0f });
-        pNewNode->AddChild(std::move(attackNodeOwner));
+        pNewNode->AddChild(std::move(rotateAttackNodeOwner));
 
 
        // auto rotateAttackNodeOwner = std::make_unique<Node>("Rotate Attack", nullptr, "TRIGGER");
@@ -8982,7 +8990,7 @@ public:
             std::make_unique<Walking>(pNewNode)
         );
         Walking* walking = pNewNode->GetComponent<Walking>();
-        walking->radius = 1.6f;
+        walking->radius = 2.5f;
         walking->maxSpeed = 50.0f;
         walking->height = 7.2f;
 
@@ -8995,7 +9003,7 @@ public:
         stateMachine->enemyType = EnemyType::BOSS;
         stateMachine->followDistance = 400.0f;
         stateMachine->pPlayer = player;
-        stateMachine->attackComponents.push_back(basicAttack);
+        stateMachine->attackComponents.push_back(rotateAttack);
         //stateMachine->attackComponents.push_back(fireBallAttack);
         //stateMachine->attackComponents.push_back(fourFireBallAttack);
         stateMachine->pMovementComponent = walking;

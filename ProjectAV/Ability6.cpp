@@ -52,10 +52,6 @@ void Ability6::Positioning()
             {
                 selectedNode = nullptr;
             }
-            else if (selectedNode->GetComponent<Throwable>()->extraHeavy == true)
-            {
-                selectedNode = nullptr;
-            }
 
         }
     }
@@ -151,7 +147,13 @@ void Ability6::PullingParticlesPositioning()
 bool Ability6::Pressed()
 {
     if (!abilityReady) return false;
-    if (selectedNode == nullptr) return false;
+    if (selectedNode == nullptr)
+    {
+        baseAbility->Pressed();
+        cooldownTimer = cooldown;
+        abilityReady = false;
+        return true;
+    }
     isPressed = true;
     // animacja przyciagniecia
     // particle dodanie do obiektu
@@ -192,6 +194,12 @@ void Ability6::Released()
     if (!abilityReady) return;
     // particle wylaczenie 
     //leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 4.0f });
+    if (selectedNode->GetComponent<Throwable>()->extraHeavy == true)
+    {
+        abilityReady = false;
+        //dzwiek faila 
+        return;
+    }
     timeToChange = 0.3f;
    
 	pOwner->GetComponent<SoundEffectsPlayer>()->Stop(2);
