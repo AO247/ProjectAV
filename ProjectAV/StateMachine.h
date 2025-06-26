@@ -39,12 +39,11 @@ public:
 	float timeToChangeAttack = 0.0f;
 	float attackCooldownTimer = 0.0f;
 	float sp = 1.4f;
-
+	bool attacking = false;
 	bool isFlying = false;
 	bool isDead = false;
 	bool canDropPills = true;
 	bool eatedPills = false;
-
 	Component* pMovementComponent = nullptr;
 	Component* pAttackComponent = nullptr;
 	std::vector<Component*> attackComponents;

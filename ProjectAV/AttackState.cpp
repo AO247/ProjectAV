@@ -30,8 +30,11 @@ void AttackState::Enter(StateMachine* pOwner)
 
 void AttackState::Update(StateMachine* pOwner, float dt)
 {
+	pOwner->attacking = true;
 	pOwner->pAttackComponent->Attack(dt);
 	if (pOwner->pAttackComponent->endAttack) {
+		pOwner->attacking = false;
+		pOwner->attackCooldownTimer = 0.0f;
 		pOwner->pAttackComponent->endAttack = false;
 		pOwner->EndState();
 		return;

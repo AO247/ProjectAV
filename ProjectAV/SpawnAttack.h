@@ -21,7 +21,8 @@ public:
 	float attackSoundInterval = 5.0f;
 	float soundTimer = 0.0f;
 	bool soundPlayed = true;
-
+	float spawnTimer = 0.6f;
+	bool readyToSpawn = false;
 private:
 	bool attacked = false;
 	float timer = 0.0f;

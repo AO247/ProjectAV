@@ -33,7 +33,7 @@ void FourFireBallAttack::Attack(float dt)
 				shootSoundTimer = shootSoundInterval;
 			}
 		}
-		// miejsce na animacje
+		pOwner->GetComponent<AnimationComponent>()->PlayAnimation(2, false);
 	}
 	timer += dt;
 	if (timer >= wholeAttackTime) {

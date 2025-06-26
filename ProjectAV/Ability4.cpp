@@ -70,22 +70,20 @@ void Ability4::Positioning()
     Vec3 direction = Vec3(camera->Forward().x, camera->Forward().y, camera->Forward().z);
     RRayCast ray = RRayCast(position, direction * 100.0f);
     RayCastResult result;
-    if (PhysicsCommon::physicsSystem->GetBodyInterface().GetMotionType(result.mBodyID) == EMotionType::Dynamic)
+    if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(ray, result,
+        MultipleBroadPhaseLayerFilter({ BroadPhaseLayers::WALL }),
+        MultipleObjectLayerFilter({ Layers::WALL })))
     {
-        selectedNode = reinterpret_cast<Node*>(PhysicsCommon::physicsSystem->GetBodyInterface().GetUserData(result.mBodyID));
-        if (selectedNode->GetComponent<Throwable>() == nullptr)
+        position = ray.mOrigin + ray.mDirection * result.mFraction;
+        if (PhysicsCommon::physicsSystem->GetBodyInterface().GetMotionType(result.mBodyID) == EMotionType::Dynamic)
         {
             selectedNode = reinterpret_cast<Node*>(PhysicsCommon::physicsSystem->GetBodyInterface().GetUserData(result.mBodyID));
             if (selectedNode->GetComponent<Throwable>() == nullptr)
             {
                 selectedNode = nullptr;
             }
-        }
-        else if (selectedNode->GetComponent<Throwable>()->extraHeavy == true)
-        {
-            selectedNode = nullptr;
-        }
 
+        }
     }
     else
     {
@@ -146,7 +144,8 @@ void Ability4::Released()
         {
             activated = false;
             abilityReady = false;
-            //dzwiek faila 
+            int randSound = rand() % 2 + 12;
+            pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f, false);
             return;
         }
 

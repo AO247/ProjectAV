@@ -18,6 +18,7 @@ public:
 	float bulletSpeed = 20.0f;
 	float spawnTime = 0.4f;
 	float shootTime = 1.0f;
+	bool spawned = false;
 	virtual void Attack(float dt);
 	virtual void DrawImGuiControls() override;
 
