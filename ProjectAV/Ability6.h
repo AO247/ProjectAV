@@ -26,6 +26,7 @@ public:
 
 	float cooldown = 1.5f;
 	float timeToChange = 0.0f;
+	float pressedTime = 0.0f;
 	bool stop = true;
 
 	float force = 600.0f;
