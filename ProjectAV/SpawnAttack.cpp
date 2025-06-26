@@ -28,7 +28,10 @@ void SpawnAttack::Attack(float dt)
 		Quat q = Quat::sEulerAngles(Vec3(0.0f, targetYaw, 0.0f));
 		PhysicsCommon::physicsSystem->GetBodyInterface().SetRotation(pOwner->GetComponent<Rigidbody>()->GetBodyID(), q, EActivation::Activate);
 	}
-	timer += dt;
+	if (pOwner->GetChildren().size() < 5)
+	{
+		timer += dt;
+	}
 	if (timer >= cooldownTime)
 	{
 
@@ -47,15 +50,26 @@ void SpawnAttack::Attack(float dt)
 		}
 
 
-
+		readyToSpawn = true;
 		timer = 0.0f;
 		endAttack = false;
-		Vector3 pos = pOwner->GetLocalPosition();
-		pos += pOwner->Forward() * 5.0f;
-		Node* enemy = PrefabManager::InstantiateExplosiveEnemy(pOwner->GetParent(), Vector3(pos.x, pos.y, pos.z));
-		enemy->MoveToTop();
-		soundTimer = 0.6f;
+
 		soundPlayed = false;
+	}
+	if (readyToSpawn)
+	{
+		soundTimer += dt;
+		if (soundTimer > 0.5f)
+		{
+			Vector3 pos = pOwner->GetLocalPosition();
+			pos += pOwner->Forward() * 5.0f;
+			pos.y -= pOwner->GetComponent<Walking>()->height / 2.0f;
+			Node* enemy = PrefabManager::InstantiateExplosiveEnemy(pOwner, Vector3(pos.x, pos.y, pos.z));
+			enemy->MoveToTop();
+			readyToSpawn = false;
+			soundTimer = 0.0f;
+		}
+
 	}
 	if (soundTimer > 0.0f)
 	{

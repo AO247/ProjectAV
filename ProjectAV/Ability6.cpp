@@ -27,6 +27,7 @@ void Ability6::Update(float dt)
         PullingParticlesPositioning();
         Positioning();
         Cooldowns(dt);
+		pressedTime += dt;
     }
     if (isPressed)
     {
@@ -63,7 +64,7 @@ void Ability6::Positioning()
 void Ability6::Pulling(float dt)
 {
 	if (selectedNode == nullptr) return;
-
+    if (selectedNode->GetComponent<Throwable>()->extraHeavy) return;
     Vector3 cameraPos = camera->GetWorldPosition();
     Vector3 targetPosition = cameraPos + camera->Forward() * 13.0f;
     Rigidbody* rb = selectedNode->GetComponent<Rigidbody>();
@@ -155,6 +156,7 @@ bool Ability6::Pressed()
         return true;
     }
     isPressed = true;
+	pressedTime = 0.0f;
     // animacja przyciagniecia
     // particle dodanie do obiektu
     // dzwiek wyboru node
@@ -212,7 +214,26 @@ void Ability6::Released()
     if (selectedNode->GetComponent<Throwable>()->extraHeavy == true)
     {
         abilityReady = false;
-        //dzwiek faila 
+        int randSound = rand() % 2 + 12;
+        pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f, false);
+
+        if (pullingParticles != nullptr)
+        {
+            pullingParticles->GetComponent<ParticleSystemComponent>()->Stop();
+            pullingParticles = nullptr;
+        }
+
+        if (holdParticles != nullptr)
+        {
+            holdParticles->GetComponent<ParticleSystemComponent>()->Stop();
+            holdParticles = nullptr;
+        }
+
+        if (holdSmokeParticles != nullptr)
+        {
+            holdSmokeParticles->GetComponent<ParticleSystemComponent>()->Stop();
+            holdSmokeParticles = nullptr;
+        }
         return;
     }
     timeToChange = 0.3f;

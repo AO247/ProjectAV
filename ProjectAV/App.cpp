@@ -111,7 +111,7 @@ App::App(const std::string& commandLine)
     pPlayerThings->AddChild(std::move(pCameraNodeOwner));
     pPlayerThings->AddChild(std::move(pFreeViewCameraOwner));
     pPlayerThings->AddChild(std::move(pPlayerOwner));
-	pSceneRoot->AddChild(std::move(abilities));
+    pSceneRoot->AddChild(std::move(abilities));
     pAbilities->AddChild(std::move(pAbility1Owner));
     pAbilities->AddChild(std::move(pAbility2Owner));
     pAbilities->AddChild(std::move(pAbility3Owner));
@@ -168,7 +168,7 @@ App::App(const std::string& commandLine)
     pHands->GetComponent<Hands>()->rightHand = pRightHand;
     pHands->GetComponent<Hands>()->cameraNode = pCamera;
 
-    BodyCreationSettings a1BodySettings(new JPH::CapsuleShape(6.0f, 5.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
+    BodyCreationSettings a1BodySettings(new JPH::BoxShape(Vec3(3.5f, 3.5f, 33.0f)), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
     pAbility1->AddComponent(
         std::make_unique<Trigger>(pAbility1, a1BodySettings, false)
     );
@@ -182,7 +182,7 @@ App::App(const std::string& commandLine)
     pAbility1->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\push2.wav");
     pAbility1->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\push3.wav");
     pAbility1->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\push4.wav");
-    pAbility1->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 0.0f, 10.0f));
+    pAbility1->SetLocalPosition(DirectX::XMFLOAT3(0.0f, 0.0f, 15.0f));
     pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility1;
    
 
@@ -249,7 +249,7 @@ App::App(const std::string& commandLine)
     pAbility4->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\sznurek2.wav");
     pAbility4->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\hold.wav");
     pAbility4->GetComponent<Ability4>()->baseAbility = pAbility1->GetComponent<Ability1>();
-    pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility4;
+    //pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility4;
 
 
     pAbility5->AddComponent(
@@ -853,6 +853,12 @@ void App::DoFrame(float dt)
      
     if (pSceneRoot->GetComponent<Global>()->drawLoadingScreen || bonusTime > 0.0f)
     { 
+        if (pLeftHand->GetComponent<AnimationComponent>()->GetCurrentPlayingAnimationRaw() == nullptr) {
+            pLeftHand->GetComponent<AnimationComponent>()->PlayAnimation(13, 0.1f);
+        }
+        if (pRightHand->GetComponent<AnimationComponent>()->GetCurrentPlayingAnimationRaw() == nullptr) {
+            pRightHand->GetComponent<AnimationComponent>()->PlayAnimation(13, 0.1f);
+        }
         static bool wasActive = false;
         static float fadeOutTimer = 0.0f;
         const float fadeOutDuration = 2.5f; // Czas trwania samego fade out
