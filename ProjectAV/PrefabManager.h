@@ -1850,6 +1850,7 @@ public:
             std::make_unique<Throwable>(pNewNodeOwner.get())
         );
         pNewNodeOwner->GetComponent<Throwable>()->pot = true;
+		pNewNodeOwner->GetComponent<Throwable>()->speed = 20.0f; 
 
         pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
@@ -1924,7 +1925,7 @@ public:
         ScaledShapeSettings islandScaling(islandShape, Vec3Arg(scale, scale, scale));
         islandShape = islandScaling.Create().Get();
         BodyCreationSettings BodySettings(islandShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
-        BodySettings.mMassPropertiesOverride.mMass = 7.0f;
+        BodySettings.mMassPropertiesOverride.mMass = 8.0f;
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
         BodySettings.mFriction = 0.5f;
         BodySettings.mMotionQuality = EMotionQuality::LinearCast;
@@ -1936,6 +1937,7 @@ public:
             std::make_unique<Throwable>(pNewNodeOwner.get())
         );
         pNewNodeOwner->GetComponent<Throwable>()->heavy = true;
+        pNewNodeOwner->GetComponent<Throwable>()->speed = 15.0f;
 
         pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
@@ -2087,6 +2089,7 @@ public:
             std::make_unique<Throwable>(pNewNodeOwner.get())
         );
         pNewNodeOwner->GetComponent<Throwable>()->heavy = true;
+        pNewNodeOwner->GetComponent<Throwable>()->speed = 15.0f;
 
         pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));

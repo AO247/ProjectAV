@@ -77,7 +77,7 @@ Tutorial::Tutorial(Node* owner, Window& window, Node* player)
 		182,
 		L"Images\\note7.png"
 	);
-    checkpoints.push_back({ 8.5f, -17.2f, -422.7f });
+    checkpoints.push_back({ 8.5f, -17.2f, -440.7f });
 	checkpoints.push_back({ 31.7f, -17.2f, -447.9f });
     checkpoints.push_back({ 72.5f, -19.0f, -465.1f });
     checkpoints.push_back({ 155.0f, -0.5f, -412.3f });
