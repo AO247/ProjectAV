@@ -106,6 +106,7 @@ void Tutorial::Update(float dt)
 	timer += dt;
 	if (timer > 3.0f && !enemySpawned)
 	{
+		player->GetComponent<Health>()->currentHealth = 2.0f;
 		enemySpawned = true;
 		enemy1 = PrefabManager::InstantiateFastEnemy(temporary, { 222.7f, -19.3f, -265.1f })->GetComponent<StateMachine>();
 		enemy2 = PrefabManager::InstantiateNormalEnemy(temporary, { 95.9f, -15.0f, -240.5f })->GetComponent<StateMachine>();
@@ -163,13 +164,13 @@ void Tutorial::Update(float dt)
 	{
 		currentNote = note2.get();
 	}
+	if (currentCheckpointIndex == 4)
+	{
+		currentNote = note4.get();
+	}
 	if (currentCheckpointIndex == 5)
 	{
 		currentNote = note3.get();
-	}
-	if (currentCheckpointIndex == 6)
-	{
-		currentNote = note4.get();
 	}
 	if (currentCheckpointIndex == 6)
 	{
