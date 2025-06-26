@@ -20,7 +20,7 @@ public:
     }
     std::vector<Node*> objects;
     float force;
-    int killsCount = 3;
+    int killsCount = 0;
     float holdSoundTimer = 0.0f;
     float holdSoundInterval = 2.0f;
 protected:

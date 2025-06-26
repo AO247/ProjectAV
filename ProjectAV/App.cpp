@@ -70,7 +70,7 @@ App::App(const std::string& commandLine)
 	soundDevice->SetAttenuation(attentuation);
 	StaticSoundPlayer::Get().Init(64);
     myMusic = std::make_unique<MusicBuffer>("Music\\windererfull.mp3");
-    myMusic->setGain(0.05f);
+    myMusic->setGain(0.1f);
 
 	auto base = std::make_unique<Node>("Base");
 	auto playerThings = std::make_unique<Node>("Player Things");
