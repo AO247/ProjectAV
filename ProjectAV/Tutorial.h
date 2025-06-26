@@ -43,6 +43,7 @@ public:
 	StateMachine* enemy3 = nullptr;
 	StateMachine* enemy4 = nullptr;
 	StateMachine* enemy5 = nullptr;
+	StateMachine* enemy6 = nullptr;
 
 
 	int currentCheckpointIndex = 0;

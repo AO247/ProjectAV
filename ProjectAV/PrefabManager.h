@@ -2972,15 +2972,20 @@ public:
         Node* pNewNode = pNewNodeOwner.get();
 
 
-        InstantiateRock1(pNewNode, Vector3(92.00f, -2.80f, -31.90f), 0.6f, Vector3(0.00f, 0.00f, 3.14f));
+        InstantiateRock1(pNewNode, Vector3(64.8f, -2.8f, -68.5f), 0.6f, Vector3(0.00f, 0.00f, 3.14f));
         InstantiateRock1(pNewNode, Vector3(13.30f, 0.00f, -44.70f), 1.0f, Vector3(0.00f, 0.00f, 3.14f));
         InstantiateRock1(pNewNode, Vector3(51.10f, -0.10f, -36.00f), 2.0f, Vector3(0.00f, -0.89f, 3.14f));
-        InstantiateRock1(pNewNode, { 173.30f, 0.00f, 2.20f }, 0.6f, Vector3(0.00f, 0.00f, 3.14f));
-        InstantiateRock1(pNewNode, Vector3(138.10f, 0.10f, -31.70f), 2.0f, Vector3(0.00f, -1.45f, 3.14f));
+        InstantiateRock1(pNewNode, Vector3(173.3f, 1.5f, 2.2f), 0.6f, Vector3(0.00f, 0.00f, 3.14f));
+        InstantiateRock1(pNewNode, Vector3(143.6f, 0.1f, -29.1f), 2.0f, Vector3(0.00f, -1.45f, 3.14f));
+        InstantiateRock1(pNewNode, Vector3(128.2f, 0.0f, -50.3f), 0.6f, Vector3(0.00f, 0.00f, 3.14f));
+        InstantiateRock1(pNewNode, Vector3(110.4f, 0.0f, -61.8f), 0.6f, Vector3(0.00f, 0.00f, 3.14f));
+        InstantiateRock1(pNewNode, Vector3(76.7f, 0.1f, -82.2f), 0.6f, Vector3(0.00f, 0.00f, 3.14f));
+        InstantiateRock1(pNewNode, Vector3(76.7f, 0.1f, -82.2f), 0.6f, Vector3(0.00f, 0.00f, 3.14f));
+        InstantiateRock1(pNewNode, Vector3(103.6f, 0.1f, -99.6f), 2.0f, Vector3(0.00f, -1.45f, 3.14f));
         InstantiateRock2(pNewNode, Vector3(22.00f, 0.50f, -15.20f), 1.0f, Vector3(0.0f, -0.19f, 0.0f));
         InstantiateRock4(pNewNode, Vector3(-15.90f, 0.00f, -7.40f), 1.0f, Vector3(0.00f, -1.29f, 0.00f));
-        InstantiateRock1(pNewNode, { -6.06f, 16.70f, 35.21f }, 0.9f, Vector3(0.00f, 0.00f, 3.14f));
-		InstantiateBaseColumn(pNewNode, { 66.9f, -3.3f, -31.9f }, 0.8f, 1.0f);
+        InstantiateRock1(pNewNode, { -6.06f, 16.70f, 34.51f }, 0.9f, Vector3(0.00f, -0.87f, 3.14f));
+		InstantiateBaseColumn(pNewNode, { 58.7f, -3.3f, -48.5f }, 0.8f, 1.0f);
         InstantiatePlatform3(pNewNode, Vector3(0.00f, 0.00f, 8.30f), 1.0f, Vector3(0.00f, 1.75f, 0.00f));
 
         parentNode->AddChild(std::move(pNewNodeOwner));
@@ -3013,7 +3018,7 @@ public:
         pNewNodeOwner->SetLocalRotation(rotation);
         Node* pNewNode = pNewNodeOwner.get();
 
-        InstantiateStoneStack1(pNewNode, Vector3(-7.22f, 2.22f, 2.98f), 1.0f);
+        InstantiateStoneStack1(pNewNode, Vector3(-11.9f, 2.2f, 8.4f), 1.0f);
         InstantiateRock2(pNewNode, Vector3(21.70f, -0.10f, -17.70f), 1.0f);
         InstantiateRock3(pNewNode, Vector3(6.40f, 0.20f, 22.50f), 1.0f);
         InstantiateRock3(pNewNode, Vector3(22.30f, 0.00f, -10.90f), 1.0f);
@@ -3102,8 +3107,7 @@ public:
 		InstantiateThrowable(pNewNode, Vector3(-3.84f, 0.66f, 14.90f), 0.4f);
         InstantiateThrowable(pNewNode, Vector3(-17.13f, 0.64f, -14.36f), 0.4f);
         InstantiateThrowable(pNewNode, Vector3(8.31f, 0.64f, -5.58f), 0.4f);
-        InstantiateStoneStack1(pNewNode, Vector3(-7.92f, 1.72f, -11.22f), 1.0f);
-        InstantiateNewColumn(pNewNode, Vector3(-13.62f, 0.0f, 9.78f), 1.0f);
+        InstantiateNewColumn(pNewNode, Vector3(-12.9f, 0.0f, -10.3f), 1.0f);
         InstantiateRock1(pNewNode, Vector3(-6.90f, 5.20f, 28.00f), 1.0f, Vector3(0.00f, 0.63f, 3.14f));
         InstantiateRock1(pNewNode, Vector3(-7.40f, 13.60f, 50.30f), 1.0f, Vector3(0.00f, 1.38f, 3.14f));
         InstantiateRock1(pNewNode, Vector3(-12.80f, 21.30f, 78.10f), 1.0f, Vector3(0.00f, 0.63f, 3.14f));
@@ -3124,11 +3128,11 @@ public:
 
         Node* JumpIsland = InstantiateJumpIsland(parentNode, { -15.0f, 0.0f, -169.0f }, 1.0f, { 0.00f, 1.57f, 0.0f });
         Node* DoubleJumpIsland = InstantiateDoubleJumpIsland(parentNode, { 3.0f, -2.0f, -68.0f }, 1.0f, { 0.00f, 1.01f, 0.00f });
-		Node* AbilityIsland = InstantiateAbilityIsland(parentNode, { -92.29f, 0.00f, 50.61f }, 1.0f, { 0.0f, 2.36f, 0.0f });
+        Node* AbilityIsland = InstantiateAbilityIsland(parentNode, { -88.0f, 0.0f, 41.1f }, 1.0f, { 0.0f, 2.36f, 0.0f });
 		Node* UltIsland = InstantiateUltIsland(parentNode, { -250.91f, -0.01f, -137.29f }, 1.0f, { 0.0f, -1.66f, 0.00f });
         
-        tut->stone1 = InstantiateStone1(parentNode, { -163.0f, 3.2f, 26.0f }, 0.4f);
-        tut->stone2 = InstantiateStone1(parentNode, { -210.0f, 1.8f, -40.0f }, 0.4f);
+        tut->stone1 = InstantiateStone1(parentNode, { -163.2f, 4.4f, 34.0f }, 0.4f);
+        tut->stone2 = InstantiateStone1(parentNode, { -210.1f, 1.9f, -53.3f }, 0.4f);
         tut->temporary = root;
     
 

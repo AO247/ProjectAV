@@ -324,7 +324,7 @@ App::App(const std::string& commandLine)
     pSoundEffectsPlayer->AddSound("Sounds\\walk\\footstep6.wav"); //22
 
     pFreeViewCamera->SetLocalPosition({ 4.0f, 11.0f, -28.0f });
-    pPlayer->SetLocalPosition({ 0.0f, 80.0f, -24.0f });
+    pPlayer->SetLocalPosition({ 0.0f, 80.0f, -32.0f });
 
     pSceneRoot->AddComponent(
         std::make_unique<Global>(pSceneRoot.get(), wnd, pPlayer, pBase)
