@@ -51,7 +51,7 @@ void StoneGenerator::Update(float dt)
 			PrefabManager::InstantiateThrowable(pOwner, pos, 0.4f);
 		}
 	}
-	if (timerBakground > dropRateBackground)
+	/*if (timerBakground > dropRateBackground)
 	{
 		float xdir = ((rand() % 200) - 100) / 100.0f;
 		float zdir = ((rand() % 200) - 100) / 100.0f;
@@ -103,7 +103,7 @@ void StoneGenerator::Update(float dt)
 			stone4->Destroy();
 			stone4 = nullptr;
 		}
-	}
+	}*/
 }
 
 void StoneGenerator::DrawImGuiControls()

@@ -200,6 +200,7 @@ void StateMachine::Update(float dt)
 			RVec3(pos.x, pos.y, pos.z),
 			RVec3(0.0f, -100, 0.0f)
 		);
+
 		RayCastResult result;
 		if (PhysicsCommon::physicsSystem->GetNarrowPhaseQuery().CastRay(ray, result, SpecifiedBroadPhaseLayerFilter(BroadPhaseLayers::GROUND), SpecifiedObjectLayerFilter(Layers::GROUND)))
 		{
@@ -369,7 +370,7 @@ void StateMachine::Die()
 		}
 		
 		PrefabManager::InstantiateEnemyKillParticles(pOwner->GetParent(), Vector3(pOwner->GetWorldPosition().x, pOwner->GetWorldPosition().y, pOwner->GetWorldPosition().z), 1.0f);
-
+		pAttackComponent = nullptr;
 		pOwner->Destroy();
 	}
 }

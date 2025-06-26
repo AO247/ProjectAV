@@ -12,8 +12,9 @@ class OnFire : public Component
 public:
 	OnFire(Node* owner, std::string tag = "FIRE");
 	virtual ~OnFire() = default;
-	float fireRate = 0.8f;
+	float fireRate = 0.5f;
 	float damage = 0.1f;
+	float bigTimer = 0.0f;
 	virtual void Update(float dt) override;
 
 private:

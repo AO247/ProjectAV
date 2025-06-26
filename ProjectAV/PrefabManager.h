@@ -120,7 +120,7 @@ public:
     ///////////////////////////////
     static Node* InstantiateMushroom1(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0}) {
         auto pNewNodeOwner = std::make_unique<Node>("Mushroom1", nullptr, "WALL");
-        scale = 0.2f;
+        scale = 0.15f;
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\enviro_male\\grzyb_1.obj")
         );
@@ -145,7 +145,7 @@ public:
     }
     static Node* InstantiateMushroom2(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0}) {
         auto pNewNodeOwner = std::make_unique<Node>("Mushroom2", nullptr, "WALL");
-
+        scale = 0.15f;
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\enviro_male\\grzyb_2.obj")
         );
@@ -159,14 +159,13 @@ public:
         modelMeshShape = modelScaling.Create().Get();
         BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
-        /*BodyCreationSettings a4odySettings(new JPH::SphereShape(2.5f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
+        BodyCreationSettings a4odySettings(new JPH::SphereShape(8.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
         pNewNodeOwner->AddComponent(
-            std::make_unique<Trigger>(pNewNodeOwner, a4odySettings, false)
+            std::make_unique<Trigger>(pNewNodeOwner.get(), a4odySettings, false)
         );
         pNewNodeOwner->AddComponent(
-            std::make_unique<MushroomBoom>(pNewNodeOwner.get(), bodySettings)
-        );*/
-
+            std::make_unique<MushroomBoom>(pNewNodeOwner.get())
+        );
         pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
         pNewNodeOwner->SetLocalRotation(rotation);
@@ -178,7 +177,7 @@ public:
     }
     static Node* InstantiateMushroom3(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0}) {
         auto pNewNodeOwner = std::make_unique<Node>("Mushroom3", nullptr, "WALL");
-
+        scale = 0.15f;
         pNewNodeOwner->AddComponent(
             std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\enviro_male\\grzyb_3.obj")
         );
@@ -192,13 +191,13 @@ public:
         modelMeshShape = modelScaling.Create().Get();
         BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
-        /*BodyCreationSettings a4odySettings(new JPH::SphereShape(2.5f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
+        BodyCreationSettings a4odySettings(new JPH::SphereShape(8.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
         pNewNodeOwner->AddComponent(
-            std::make_unique<Trigger>(pNewNodeOwner, a4odySettings, false)
+            std::make_unique<Trigger>(pNewNodeOwner.get(), a4odySettings, false)
         );
         pNewNodeOwner->AddComponent(
-            std::make_unique<MushroomBoom>(pNewNodeOwner.get(), bodySettings)
-        );*/
+            std::make_unique<MushroomBoom>(pNewNodeOwner.get())
+        );
 
         pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
@@ -7917,7 +7916,7 @@ public:
 
     static Node* InstantiateFireballParticles(Node* parentNode, Vector3 position, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("FireballParticles", nullptr, "ENEMY");
+        auto pNewNodeOwner = std::make_unique<Node>("FireballParticles", nullptr, "PARTICLE");
         Node* pNewNode = pNewNodeOwner.get();
 
         pNewNode->AddComponent(
@@ -7965,7 +7964,7 @@ public:
 
     static Node* InstantiateStunParticles(Node* parentNode, Vector3 position, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("StunParticles", nullptr, "ENEMY");
+        auto pNewNodeOwner = std::make_unique<Node>("StunParticles", nullptr, "PARTICLE");
         Node* pNewNode = pNewNodeOwner.get();
 
         auto volumeEmitter = std::make_unique<SphereVolumeEmitterLogic>();
@@ -8018,7 +8017,7 @@ public:
 
     static Node* InstantiateVaseDestroyParticles(Node* parentNode, Vector3 position, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("VaseDestroyParticles", nullptr, "ENEMY");
+        auto pNewNodeOwner = std::make_unique<Node>("VaseDestroyParticles", nullptr, "PARTICLE");
         Node* pNewNode = pNewNodeOwner.get();
 
         auto volumeEmitter = std::make_unique<SphereVolumeEmitterLogic>();
@@ -8069,7 +8068,7 @@ public:
 
     static Node* InstantiateJumpPadActivationParticles(Node* parentNode, Vector3 position, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("JumpPadActivationParticles", nullptr, "ENEMY");
+        auto pNewNodeOwner = std::make_unique<Node>("JumpPadActivationParticles", nullptr, "PARTICLE");
         Node* pNewNode = pNewNodeOwner.get();
 
         auto sphereEmitter = std::make_unique<SphereToCenterEmitterLogic>();
@@ -8126,7 +8125,7 @@ public:
 
     static Node* InstantiateEnemyExplodeParticles(Node* parentNode, Vector3 position, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("EnemyExplodeParticles", nullptr, "ENEMY");
+        auto pNewNodeOwner = std::make_unique<Node>("EnemyExplodeParticles", nullptr, "PARTICLE");
         Node* pNewNode = pNewNodeOwner.get();
 
         pNewNode->AddComponent(
@@ -8170,7 +8169,7 @@ public:
 
     static Node* InstantiateEnemyKillParticles(Node* parentNode, Vector3 position, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("EnemyKillParticles", nullptr, "ENEMY");
+        auto pNewNodeOwner = std::make_unique<Node>("EnemyKillParticles", nullptr, "PARTICLE");
         Node* pNewNode = pNewNodeOwner.get();
 
         pNewNode->AddComponent(
@@ -8214,7 +8213,7 @@ public:
 
     static Node* InstantiateJumpPadParticles(Node* parentNode, Vector3 position, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("JumpPadParticles", nullptr, "ENEMY");
+        auto pNewNodeOwner = std::make_unique<Node>("JumpPadParticles", nullptr, "PARTICLE");
         Node* pNewNode = pNewNodeOwner.get();
 
         auto pCircleLogic = std::make_unique<CircleEmitterLogic>();
@@ -8262,7 +8261,7 @@ public:
 
     static Node* InstantiateJumpPadSmokeParticles(Node* parentNode, Vector3 position, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("JumpPadSmokeParticles", nullptr, "ENEMY");
+        auto pNewNodeOwner = std::make_unique<Node>("JumpPadSmokeParticles", nullptr, "PARTICLE");
         Node* pNewNode = pNewNodeOwner.get();
 
         auto pCircleLogic = std::make_unique<CircleEmitterLogic>();
@@ -8309,7 +8308,7 @@ public:
 
     static Node* InstantiateMushroomExplosionParticles(Node* parentNode, Vector3 position, float scale)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("MushroomExplosionParticles", nullptr, "ENEMY");
+        auto pNewNodeOwner = std::make_unique<Node>("MushroomExplosionParticles", nullptr, "PARTICLE");
         Node* pNewNode = pNewNodeOwner.get();
 
         pNewNode->AddComponent(
@@ -8350,7 +8349,7 @@ public:
 
     static Node* InstantiateMushroomSmokeParticles(Node* parentNode, Vector3 position, float scale, float duration)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("MushroomSmokeParticles", nullptr, "ENEMY");
+        auto pNewNodeOwner = std::make_unique<Node>("MushroomSmokeParticles", nullptr, "PARTICLE");
         Node* pNewNode = pNewNodeOwner.get();
 
         auto volumeEmitter = std::make_unique<SphereVolumeEmitterLogic>();
@@ -8395,7 +8394,7 @@ public:
 
     static Node* InstantiateMushroomParticles(Node* parentNode, Vector3 position, float scale, float duration)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("MushroomParticles", nullptr, "ENEMY");
+        auto pNewNodeOwner = std::make_unique<Node>("MushroomParticles", nullptr, "PARTICLE");
         Node* pNewNode = pNewNodeOwner.get();
 
         /*pNewNode->AddComponent(
@@ -8452,7 +8451,7 @@ public:
     }
     static Node* InstantiateFireplaceParticles(Node* parentNode, Vector3 position, float scale, float duration)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("AnimationTest", nullptr, "ENEMY");
+        auto pNewNodeOwner = std::make_unique<Node>("AnimationTest", nullptr, "PARTICLE");
         Node* pNewNode = pNewNodeOwner.get();
 
         auto pCircleLogic = std::make_unique<CircleEmitterLogic>();
@@ -8494,7 +8493,7 @@ public:
     }
     static Node* InstantiateCharacterOnFireParticles(Node* parentNode, Vector3 position, float scale, float duration)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("AnimationTest", nullptr, "ENEMY");
+        auto pNewNodeOwner = std::make_unique<Node>("AnimationTest", nullptr, "PARTICLE");
         Node* pNewNode = pNewNodeOwner.get();
 
         auto pCircleLogic = std::make_unique<CircleEmitterLogic>();
@@ -8537,7 +8536,7 @@ public:
     }
     static Node* InstantiatePlayerOnFireParticles(Node* parentNode, Vector3 position, float scale, float duration)
     {
-        auto pNewNodeOwner = std::make_unique<Node>("AnimationTest", nullptr, "ENEMY");
+        auto pNewNodeOwner = std::make_unique<Node>("AnimationTest", nullptr, "PARTICLE");
         Node* pNewNode = pNewNodeOwner.get();
 
         auto pCircleLogic = std::make_unique<CircleEmitterLogic>();
@@ -9279,15 +9278,6 @@ public:
         );
 
 
-        auto eyeNodeOwner = std::make_unique<Node>("EYE", nullptr, "TRIGGER");
-        BodyCreationSettings eyeBodySettings(new JPH::SphereShape(4.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
-        eyeNodeOwner->AddComponent(
-            std::make_unique<Trigger>(eyeNodeOwner.get(), eyeBodySettings, false)
-        );
-        eyeNodeOwner->AddComponent(
-            std::make_unique<Eye>(eyeNodeOwner.get())
-        );
-        pNewNode->AddChild(std::move(eyeNodeOwner));
 
         // ATTACK
 
@@ -9312,15 +9302,7 @@ public:
         FireBallAttack* fireBallAttack = pNewNode->GetComponent<FireBallAttack>();
         fireBallAttack->bulletSpeed = 50.0f;
         fireBallAttack->attackRange = 200.0f;
-
-
-        pNewNode->AddComponent(
-            std::make_unique<FourFireBallAttack>(pNewNode, player)
-        );
-        FourFireBallAttack* fourFireBallAttack = pNewNode->GetComponent<FourFireBallAttack>();
-        fourFireBallAttack->bulletSpeed = 50.0f;
-        fourFireBallAttack->attackRange = 60.0f;
-
+     
 
 
 

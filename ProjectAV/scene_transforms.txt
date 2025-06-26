@@ -1,14 +1,15 @@
 Object: Temporary            Position: {0.00f, 0.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
 Object: Base                 Position: {0.00f, 0.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
 Object: Player Things        Position: {0.00f, 0.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Hands                Position: {-0.04f, 0.32f, 0.86f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Hands                Position: {0.00f, -0.01f, 0.15f} Rotation: {0.00f, 0.00f, 0.00f}
 Object: Legs                 Position: {0.00f, -3.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: AnimationTest        Position: {0.00f, 0.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
 Object: Abilities            Position: {0.00f, 0.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Ability1             Position: {35.58f, -15.67f, -193.60f} Rotation: {0.18f, 1.89f, 3.14f}
-Object: Ability2             Position: {33.83f, -19.43f, -194.36f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Ability3             Position: {-0.08f, -0.00f, 0.44f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Ability4             Position: {28.13f, -16.45f, -191.10f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Ability5             Position: {33.83f, -19.43f, -194.36f} Rotation: {0.00f, 0.00f, 0.00f}
-Object: Ability6             Position: {28.13f, -16.45f, -191.10f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Ability1             Position: {21.04f, 412.20f, 202.08f} Rotation: {-0.05f, -3.04f, 3.14f}
+Object: Ability2             Position: {19.67f, 406.56f, 178.93f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Ability3             Position: {15.74f, -1.39f, 0.20f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Ability4             Position: {21.84f, 409.54f, 210.03f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Ability5             Position: {19.67f, 406.56f, 178.93f} Rotation: {0.00f, 0.00f, 0.00f}
+Object: Ability6             Position: {21.84f, 409.54f, 210.03f} Rotation: {0.00f, 0.00f, 0.00f}
 Object: Tutorial             Position: {185.10f, -19.50f, -448.20f} Rotation: {0.00f, 1.54f, 0.00f}
 Object: Levels               Position: {0.00f, 0.00f, 0.00f} Rotation: {0.00f, 0.00f, 0.00f}

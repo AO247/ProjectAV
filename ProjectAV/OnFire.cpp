@@ -20,11 +20,12 @@ OnFire::OnFire(Node* owner, std::string tag)
 void OnFire::Update(float dt)
 {
 	timer += dt;
+	bigTimer += dt;
 	if (pOwner->tag == "PLAYER")
 	{
 		if (timer >= 1.5f && !attacked)
 		{
-			pOwner->GetComponent<Health>()->TakeDamage(1.0f, false, true);
+			pOwner->GetComponent<Health>()->TakeDamage(0.5f, false, true);
 			attacked = true;
 		}
 		else if (timer >= 3.0f)
@@ -47,6 +48,8 @@ void OnFire::Update(float dt)
 			pOwner->GetComponent<Health>()->TakeDamage(damage, false, true);
 			timer = 0.0f;
 		}
+		if(bigTimer > 6.0f)
+			pOwner->RemoveComponent(this);
 
 	}
 }

@@ -61,7 +61,7 @@ void FireBallAttack::Attack(float dt)
 
 	attacked = true;
 	fireBall->GetComponent<FireBall>()->ignore = pOwner;
-	playerPos.y += 2.0f;
+	if (pOwner == nullptr) return;
 	Vector3 dir = playerPos - pOwner->GetWorldPosition();
 	dir.Normalize();
 	dir *= bulletSpeed;
