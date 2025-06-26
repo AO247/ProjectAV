@@ -2972,15 +2972,20 @@ public:
         Node* pNewNode = pNewNodeOwner.get();
 
 
-        InstantiateRock1(pNewNode, Vector3(92.00f, -2.80f, -31.90f), 0.6f, Vector3(0.00f, 0.00f, 3.14f));
+        InstantiateRock1(pNewNode, Vector3(64.8f, -2.8f, -68.5f), 0.6f, Vector3(0.00f, 0.00f, 3.14f));
         InstantiateRock1(pNewNode, Vector3(13.30f, 0.00f, -44.70f), 1.0f, Vector3(0.00f, 0.00f, 3.14f));
         InstantiateRock1(pNewNode, Vector3(51.10f, -0.10f, -36.00f), 2.0f, Vector3(0.00f, -0.89f, 3.14f));
-        InstantiateRock1(pNewNode, { 173.30f, 0.00f, 2.20f }, 0.6f, Vector3(0.00f, 0.00f, 3.14f));
-        InstantiateRock1(pNewNode, Vector3(138.10f, 0.10f, -31.70f), 2.0f, Vector3(0.00f, -1.45f, 3.14f));
+        InstantiateRock1(pNewNode, Vector3(173.3f, 1.5f, 2.2f), 0.6f, Vector3(0.00f, 0.00f, 3.14f));
+        InstantiateRock1(pNewNode, Vector3(143.6f, 0.1f, -29.1f), 2.0f, Vector3(0.00f, -1.45f, 3.14f));
+        InstantiateRock1(pNewNode, Vector3(128.2f, 0.0f, -50.3f), 0.6f, Vector3(0.00f, 0.00f, 3.14f));
+        InstantiateRock1(pNewNode, Vector3(110.4f, 0.0f, -61.8f), 0.6f, Vector3(0.00f, 0.00f, 3.14f));
+        InstantiateRock1(pNewNode, Vector3(76.7f, 0.1f, -82.2f), 0.6f, Vector3(0.00f, 0.00f, 3.14f));
+        InstantiateRock1(pNewNode, Vector3(76.7f, 0.1f, -82.2f), 0.6f, Vector3(0.00f, 0.00f, 3.14f));
+        InstantiateRock1(pNewNode, Vector3(103.6f, 0.1f, -99.6f), 2.0f, Vector3(0.00f, -1.45f, 3.14f));
         InstantiateRock2(pNewNode, Vector3(22.00f, 0.50f, -15.20f), 1.0f, Vector3(0.0f, -0.19f, 0.0f));
         InstantiateRock4(pNewNode, Vector3(-15.90f, 0.00f, -7.40f), 1.0f, Vector3(0.00f, -1.29f, 0.00f));
-        InstantiateRock1(pNewNode, { -6.06f, 16.70f, 35.21f }, 0.9f, Vector3(0.00f, 0.00f, 3.14f));
-		InstantiateBaseColumn(pNewNode, { 66.9f, -3.3f, -31.9f }, 0.8f, 1.0f);
+        InstantiateRock1(pNewNode, { -6.06f, 16.70f, 34.51f }, 0.9f, Vector3(0.00f, -0.87f, 3.14f));
+		InstantiateBaseColumn(pNewNode, { 58.7f, -3.3f, -48.5f }, 0.8f, 1.0f);
         InstantiatePlatform3(pNewNode, Vector3(0.00f, 0.00f, 8.30f), 1.0f, Vector3(0.00f, 1.75f, 0.00f));
 
         parentNode->AddChild(std::move(pNewNodeOwner));
@@ -3013,7 +3018,7 @@ public:
         pNewNodeOwner->SetLocalRotation(rotation);
         Node* pNewNode = pNewNodeOwner.get();
 
-        InstantiateStoneStack1(pNewNode, Vector3(-7.22f, 2.22f, 2.98f), 1.0f);
+        InstantiateStoneStack1(pNewNode, Vector3(-11.9f, 2.2f, 8.4f), 1.0f);
         InstantiateRock2(pNewNode, Vector3(21.70f, -0.10f, -17.70f), 1.0f);
         InstantiateRock3(pNewNode, Vector3(6.40f, 0.20f, 22.50f), 1.0f);
         InstantiateRock3(pNewNode, Vector3(22.30f, 0.00f, -10.90f), 1.0f);
@@ -3102,8 +3107,7 @@ public:
 		InstantiateThrowable(pNewNode, Vector3(-3.84f, 0.66f, 14.90f), 0.4f);
         InstantiateThrowable(pNewNode, Vector3(-17.13f, 0.64f, -14.36f), 0.4f);
         InstantiateThrowable(pNewNode, Vector3(8.31f, 0.64f, -5.58f), 0.4f);
-        InstantiateStoneStack1(pNewNode, Vector3(-7.92f, 1.72f, -11.22f), 1.0f);
-        InstantiateNewColumn(pNewNode, Vector3(-13.62f, 0.0f, 9.78f), 1.0f);
+        InstantiateNewColumn(pNewNode, Vector3(-12.9f, 0.0f, -10.3f), 1.0f);
         InstantiateRock1(pNewNode, Vector3(-6.90f, 5.20f, 28.00f), 1.0f, Vector3(0.00f, 0.63f, 3.14f));
         InstantiateRock1(pNewNode, Vector3(-7.40f, 13.60f, 50.30f), 1.0f, Vector3(0.00f, 1.38f, 3.14f));
         InstantiateRock1(pNewNode, Vector3(-12.80f, 21.30f, 78.10f), 1.0f, Vector3(0.00f, 0.63f, 3.14f));
@@ -3124,11 +3128,11 @@ public:
 
         Node* JumpIsland = InstantiateJumpIsland(parentNode, { -15.0f, 0.0f, -169.0f }, 1.0f, { 0.00f, 1.57f, 0.0f });
         Node* DoubleJumpIsland = InstantiateDoubleJumpIsland(parentNode, { 3.0f, -2.0f, -68.0f }, 1.0f, { 0.00f, 1.01f, 0.00f });
-		Node* AbilityIsland = InstantiateAbilityIsland(parentNode, { -92.29f, 0.00f, 50.61f }, 1.0f, { 0.0f, 2.36f, 0.0f });
+        Node* AbilityIsland = InstantiateAbilityIsland(parentNode, { -88.0f, 0.0f, 41.1f }, 1.0f, { 0.0f, 2.36f, 0.0f });
 		Node* UltIsland = InstantiateUltIsland(parentNode, { -250.91f, -0.01f, -137.29f }, 1.0f, { 0.0f, -1.66f, 0.00f });
         
-        tut->stone1 = InstantiateStone1(parentNode, { -163.0f, 3.2f, 26.0f }, 0.4f);
-        tut->stone2 = InstantiateStone1(parentNode, { -210.0f, 1.8f, -40.0f }, 0.4f);
+        tut->stone1 = InstantiateStone1(parentNode, { -163.2f, 4.4f, 34.0f }, 0.4f);
+        tut->stone2 = InstantiateStone1(parentNode, { -210.1f, 1.9f, -53.3f }, 0.4f);
         tut->temporary = root;
     
 
@@ -7152,6 +7156,7 @@ public:
         sphereEmitter->SpeedRandomness = 10.0f;
         sphereEmitter->SpawnRadius = 20.0f;
         sphereEmitter->TravelSpeed = 20.0f;
+        sphereEmitter->ParticlesPerSecond = 2000.0f;
 
         pNewNode->AddComponent(
             std::make_unique<ParticleSystemComponent>(pNewNode, wind->Gfx(), "Models\\fat.png", 2000, std::move(sphereEmitter))
@@ -7164,9 +7169,9 @@ public:
         particles->EmissionRate = 300.0f;
         //particles->ParticleVelocity = { 10.0f, 10.0f, 10.0f };
         //particles->ParticleVelocityVariance = { -20.0f, -20.0f, -20.0f };
-        particles->StartSize = 1.0f;
+        particles->StartSize = 6.0f;
         particles->bAnimateSize = false;
-        particles->StartSizeVariance = 9.0f;
+        particles->StartSizeVariance = 4.0f;
         particles->EndRotation = 0.0f;
         particles->lockRotationOnYAxis = false;
         particles->textureAtlasColumns = 2;
@@ -7174,7 +7179,7 @@ public:
         particles->bUseMidColor = true;
         particles->StartColor = { 1.0f, 1.0f, 1.0f, 0.0f };
         particles->ColorMidpoint = 0.1f;
-        particles->MidColor = { 1.0f, 1.0f, 1.0f, 0.4f };
+        particles->MidColor = { 1.0f, 1.0f, 1.0f, 0.05f };
         particles->EndColor = { 1.0f, 1.0f, 1.0f, 0.0f };
 
         particles->Play();
@@ -7293,7 +7298,7 @@ public:
         auto pCircleLogic = std::make_unique<CircleEmitterLogic>();
         pCircleLogic->Radius = 2.0f;
         pCircleLogic->Orientation = CircleEmitterLogic::Plane::XZ;
-        pCircleLogic->ParticlesPerSecond = 10.0f;
+        pCircleLogic->ParticlesPerSecond = 15.0f;
         pCircleLogic->bFill = true;
 
         pNewNode->AddComponent(
@@ -7302,14 +7307,14 @@ public:
         ParticleSystemComponent* particles = pNewNode->GetComponent<ParticleSystemComponent>();
         particles->SetPlaybackMode(ParticleSystemComponent::PlaybackMode::Loop);
         particles->destroyAfterEmission = true;
-        particles->ParticleLifetime = 0.3f;
+        particles->ParticleLifetime = 0.2f;
         particles->EmissionDuration = 0.1f;
         particles->EmissionRate = 40.0f;
-        particles->ParticleVelocity = { 0.0f, 5.0f, 0.0f };
-        particles->ParticleVelocityVariance = { 0.0f, 3.0f, 0.0f };
+        particles->ParticleVelocity = { 0.0f, 1.0f, 0.0f };
+        particles->ParticleVelocityVariance = { 0.0f, 15.0f, 0.0f };
         particles->EmitterPositionOffset = {0.0f, -1.5f, 0.0f};
-        particles->StartSize = 2.0f;
-        particles->StartSizeVariance = 4.0f;
+        particles->StartSize = 1.0f;
+        particles->StartSizeVariance = 5.0f;
         particles->bAnimateSize = false;
         particles->EndRotation = 0.0f;
         particles->lockRotationOnYAxis = false;
@@ -7341,7 +7346,7 @@ public:
         auto pCircleLogic = std::make_unique<CircleEmitterLogic>();
         pCircleLogic->Radius = 2.0f;
         pCircleLogic->Orientation = CircleEmitterLogic::Plane::XZ;
-        pCircleLogic->ParticlesPerSecond = 7.0f;
+        pCircleLogic->ParticlesPerSecond = 50.0f;
         pCircleLogic->bFill = true;
 
         pNewNode->AddComponent(
@@ -7353,10 +7358,10 @@ public:
         particles->ParticleLifetime = 0.3f;
         particles->EmissionDuration = 0.1f;
         particles->EmissionRate = 40.0f;
-        particles->ParticleVelocity = { 0.0f, 5.0f, 0.0f };
-        particles->ParticleVelocityVariance = { 0.0f, 3.0f, 0.0f };
+        particles->ParticleVelocity = { 0.0f, 1.0f, 0.0f };
+        particles->ParticleVelocityVariance = { 0.0f, 15.0f, 0.0f };
         particles->EmitterPositionOffset = { 0.0f, -1.5f, 0.0f };
-        particles->StartSize = 4.0f;
+        particles->StartSize = 6.0f;
         particles->StartSizeVariance = 4.0f;
         particles->bAnimateSize = false;
         particles->EndRotation = 0.0f;
@@ -7366,7 +7371,7 @@ public:
         particles->bUseMidColor = true;
         particles->StartColor = { 1.0f, 1.0f, 1.0f, 0.0f };
         particles->ColorMidpoint = 0.1f;
-        particles->MidColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+        particles->MidColor = { 1.0f, 1.0f, 1.0f, 0.2f };
         particles->EndColor = { 1.0f, 1.0f, 1.0f, 0.0f };
 
         particles->Play();
@@ -7389,7 +7394,7 @@ public:
         auto pCircleLogic = std::make_unique<CircleEmitterLogic>();
         pCircleLogic->Radius = 2.0f;
         pCircleLogic->Orientation = CircleEmitterLogic::Plane::XZ;
-        pCircleLogic->ParticlesPerSecond = 5.0f;
+        pCircleLogic->ParticlesPerSecond = 15.0f;
         pCircleLogic->bFill = true;
 
         pNewNode->AddComponent(
@@ -7398,11 +7403,11 @@ public:
         ParticleSystemComponent* particles = pNewNode->GetComponent<ParticleSystemComponent>();
         particles->SetPlaybackMode(ParticleSystemComponent::PlaybackMode::OneShot);
         particles->destroyAfterEmission = true;
-        particles->ParticleLifetime = 0.9f;
+        particles->ParticleLifetime = 0.6f;
         particles->EmissionDuration = duration;
         particles->EmissionRate = 40.0f;
         particles->ParticleVelocity = { 0.0f, 1.0f, 0.0f };
-        particles->ParticleVelocityVariance = { 0.0f, 20.0f, 0.0f };
+        particles->ParticleVelocityVariance = { 0.0f, 30.0f, 0.0f };
         particles->StartSize = 3.0f;
         particles->StartSizeVariance = 8.0f;
         particles->bAnimateSize = false;
@@ -7437,7 +7442,7 @@ public:
         auto pCircleLogic = std::make_unique<CircleEmitterLogic>();
         pCircleLogic->Radius = 2.0f;
         pCircleLogic->Orientation = CircleEmitterLogic::Plane::XZ;
-        pCircleLogic->ParticlesPerSecond = 6.0f;
+        pCircleLogic->ParticlesPerSecond = 70.0f;
         pCircleLogic->bFill = true;
 
         pNewNode->AddComponent(
@@ -7446,12 +7451,12 @@ public:
         ParticleSystemComponent* particles = pNewNode->GetComponent<ParticleSystemComponent>();
         particles->SetPlaybackMode(ParticleSystemComponent::PlaybackMode::OneShot);
         particles->destroyAfterEmission = true;
-        particles->ParticleLifetime = 0.9f;
+        particles->ParticleLifetime = 0.6f;
         particles->EmissionDuration = duration;
         particles->EmissionRate = 40.0f;
         particles->ParticleVelocity = { 0.0f, 1.0f, 0.0f };
-        particles->ParticleVelocityVariance = { 0.0f, 20.0f, 0.0f };
-        particles->StartSize = 4.0f;
+        particles->ParticleVelocityVariance = { 0.0f, 30.0f, 0.0f };
+        particles->StartSize = 6.0f;
         particles->StartSizeVariance = 4.0f;
         particles->bAnimateSize = false;
         particles->EndRotation = 0.0f;
@@ -7461,7 +7466,7 @@ public:
         particles->bUseMidColor = true;
         particles->StartColor = { 1.0f, 1.0f, 1.0f, 0.0f };
         particles->ColorMidpoint = 0.1f;
-        particles->MidColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+        particles->MidColor = { 1.0f, 1.0f, 1.0f, 0.1f };
         particles->EndColor = { 1.0f, 1.0f, 1.0f, 0.0f };
 
         particles->Play();
@@ -7628,6 +7633,7 @@ public:
         sphereEmitter->SpeedRandomness = 10.0f;
         sphereEmitter->SpawnRadius = 10.0f;
         sphereEmitter->TravelSpeed = 40.0f;
+        sphereEmitter->ParticlesPerSecond = 200.0f;
 
         pNewNode->AddComponent(
             std::make_unique<ParticleSystemComponent>(pNewNode, wind->Gfx(), "Models\\fat.png", 2000, std::move(sphereEmitter))
@@ -7637,10 +7643,10 @@ public:
         particles->destroyAfterEmission = true;
         particles->ParticleLifetime = 0.2f;
         particles->EmissionDuration = 0.4f;
-        particles->EmissionRate = 400.0f;
+        //particles->EmissionRate = 400.0f;
         //particles->ParticleVelocity = { 0.0f, 20.0f, 0.0f };
         //particles->ParticleVelocityVariance = { 0.0f, 10.0f, 0.0f };
-        particles->StartSize = 2.0f;
+        particles->StartSize = 6.0f;
         particles->bAnimateSize = false;
         particles->StartSizeVariance = 4.0f;
         //particles->EndSize = 1.0f;
@@ -7652,7 +7658,7 @@ public:
         particles->bUseMidColor = true;
         particles->StartColor = { 1.0f, 1.0f, 1.0f, 0.0f };
         particles->ColorMidpoint = 0.1f;
-        particles->MidColor = { 1.0f, 1.0f, 1.0f, 0.5f };
+        particles->MidColor = { 1.0f, 1.0f, 1.0f, 0.2f };
         particles->EndColor = { 1.0f, 1.0f, 1.0f, 0.0f };
 
         particles->Play();
@@ -7824,40 +7830,36 @@ public:
             std::make_unique<AnimationComponent>(pNewNode, "", "Models\\char_basic2.glb")
         );*/
 
-        auto volumeEmitter = std::make_unique<SphereVolumeEmitterLogic>();
-
-        volumeEmitter->SpawnRadius = 3.0f;
-        volumeEmitter->ParticlesPerSecond = 50.0f;
-
         pNewNode->AddComponent(
-            std::make_unique<ParticleSystemComponent>(pNewNode, wind->Gfx(), "Models\\fat.png", 10000, std::move(volumeEmitter))
+            std::make_unique<ParticleSystemComponent>(pNewNode, wind->Gfx(), "Models\\testFlame.png", 10000, std::make_unique<PointEmitterLogic>())
         );
         ParticleSystemComponent* pParticleSystem = pNewNode->GetComponent<ParticleSystemComponent>();
-        pParticleSystem->SetPlaybackMode(ParticleSystemComponent::PlaybackMode::OneShot);
+        pParticleSystem->SetPlaybackMode(ParticleSystemComponent::PlaybackMode::Loop);
         //pParticleSystem->ParticleLifetime = 5.0f;      
         //pParticleSystem->BurstAmount = 25;
         //pParticleSystem->EmissionDuration = 5.0f;
-        pParticleSystem->EmissionDuration = 5.0f;
+        //pParticleSystem->EmissionDuration = 5.0f;
         pParticleSystem->bUseLifetimeRange = true;
-        pParticleSystem->MinLifetime = 0.2f;
-        pParticleSystem->MaxLifetime = 0.8f;
+        pParticleSystem->MinLifetime = 0.5f;
+        pParticleSystem->MaxLifetime = 1.2f;
+        pParticleSystem->EmissionRate = 200.0f;
         //pParticleSystem->bOneShotIsBurst = true;
         pParticleSystem->destroyAfterEmission = true;
         pParticleSystem->EmitterPositionOffset = { 0.0f, 0.0f, 0.0f }; 
-        pParticleSystem->ParticleVelocity = { 0.0f, 0.0f, 0.0f };
-        pParticleSystem->ParticleVelocityVariance = { 0.0f, 0.0f, 0.0f };
+        pParticleSystem->ParticleVelocity = { -3.0f, -3.0f, -3.0f };
+        pParticleSystem->ParticleVelocityVariance = { 6.0f, 6.0f, 6.0f };
         pParticleSystem->bUseMidColor = true;
-        pParticleSystem->StartColor = { 1.0f, 1.0f, 1.0f, 0.0f };
+        pParticleSystem->StartColor = { 1.0f, 1.0f, 0.0f, 0.0f };
         pParticleSystem->ColorMidpoint = 0.5f;
         pParticleSystem->bUseMidColor = true;
-        pParticleSystem->MidColor = { 1.0f, 1.0f, 1.0f, 1.0f };
-        pParticleSystem->EndColor = { 1.0f, 1.0f, 1.0f, 0.0f };
+        pParticleSystem->MidColor = { 1.0f, 0.0f, 0.0f, 1.0f };
+        pParticleSystem->EndColor = { 0.0f, 0.0f, 0.0f, 0.0f };
         pParticleSystem->StartSize = 1.0f;
-        pParticleSystem->StartSizeVariance = 3.0f;
+        pParticleSystem->StartSizeVariance = 4.0f;
         pParticleSystem->bAnimateSize = false;
         pParticleSystem->StartRotation = 0.0f;
-        pParticleSystem->EndRotation = 0.5f;
-        pParticleSystem->EndRotationVariance = 0.2f;
+        pParticleSystem->EndRotation = 0.0f;
+        pParticleSystem->EndRotationVariance = 0.0f;
         pParticleSystem->textureAtlasRows = 2;
         pParticleSystem->textureAtlasColumns = 2;
 
@@ -7865,6 +7867,55 @@ public:
         /*AnimationComponent* animComp = pNewNode->GetComponent<AnimationComponent>();
         animComp->PlayAnimation(3);
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);*/
+        pParticleSystem->Link(*rg);
+        parentNode->AddChild(std::move(pNewNodeOwner));
+
+        pNewNode->SetLocalPosition(DirectX::XMFLOAT3(position.x, position.y, position.z));
+        pNewNode->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+
+        pParticleSystem->Play();
+
+        return pNewNode;
+    }
+
+    static Node* InstantiateFireballParticles(Node* parentNode, Vector3 position, float scale)
+    {
+        auto pNewNodeOwner = std::make_unique<Node>("AnimationTest", nullptr, "ENEMY");
+        Node* pNewNode = pNewNodeOwner.get();
+
+        pNewNode->AddComponent(
+            std::make_unique<ParticleSystemComponent>(pNewNode, wind->Gfx(), "Models\\testFlame.png", 10000, std::make_unique<PointEmitterLogic>())
+        );
+        ParticleSystemComponent* pParticleSystem = pNewNode->GetComponent<ParticleSystemComponent>();
+        pParticleSystem->SetPlaybackMode(ParticleSystemComponent::PlaybackMode::Loop);
+        //pParticleSystem->ParticleLifetime = 5.0f;      
+        //pParticleSystem->BurstAmount = 25;
+        //pParticleSystem->EmissionDuration = 5.0f;
+        //pParticleSystem->EmissionDuration = 5.0f;
+        pParticleSystem->bUseLifetimeRange = true;
+        pParticleSystem->MinLifetime = 0.5f;
+        pParticleSystem->MaxLifetime = 0.9f;
+        pParticleSystem->EmissionRate = 200.0f;
+        //pParticleSystem->bOneShotIsBurst = true;
+        pParticleSystem->destroyAfterEmission = true;
+        pParticleSystem->EmitterPositionOffset = { 0.0f, 0.0f, 0.0f };
+        pParticleSystem->ParticleVelocity = { -3.0f, -3.0f, -3.0f };
+        pParticleSystem->ParticleVelocityVariance = { 6.0f, 6.0f, 6.0f };
+        pParticleSystem->bUseMidColor = true;
+        pParticleSystem->StartColor = { 1.0f, 1.0f, 0.0f, 0.0f };
+        pParticleSystem->ColorMidpoint = 0.5f;
+        pParticleSystem->bUseMidColor = true;
+        pParticleSystem->MidColor = { 1.0f, 0.0f, 0.0f, 1.0f };
+        pParticleSystem->EndColor = { 0.0f, 0.0f, 0.0f, 0.0f };
+        pParticleSystem->StartSize = 0.5f;
+        pParticleSystem->StartSizeVariance = 1.0f;
+        pParticleSystem->bAnimateSize = false;
+        pParticleSystem->StartRotation = 0.0f;
+        pParticleSystem->EndRotation = 0.0f;
+        pParticleSystem->EndRotationVariance = 0.0f;
+        //pParticleSystem->textureAtlasRows = 2;
+        //pParticleSystem->textureAtlasColumns = 2;
+
         pParticleSystem->Link(*rg);
         parentNode->AddChild(std::move(pNewNodeOwner));
 
@@ -9289,11 +9340,6 @@ public:
 			std::make_unique<SoundEffectsPlayer>(pNewNode)
 		);
 		pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\hold.wav");
-
-        pNewNode->AddComponent(
-            std::make_unique<ModelComponent>(pNewNode, wind->Gfx(), "Models\\box.glb")
-        );
-        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
 
         BodyCreationSettings bodySettings(new JPH::CapsuleShape(30.0f, 5.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
         pNewNode->AddComponent(

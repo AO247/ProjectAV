@@ -195,6 +195,21 @@ void Ability6::Released()
     isPressed = false;
     if (!abilityReady) return;
     // particle wylaczenie 
+    if (pullingParticles != nullptr)
+    {
+        pullingParticles->GetComponent<ParticleSystemComponent>()->Stop();
+        pullingParticles = nullptr;
+    }
+    if (holdParticles != nullptr)
+    {
+        holdParticles->GetComponent<ParticleSystemComponent>()->Stop();
+        holdParticles = nullptr;
+    }
+    if (holdSmokeParticles != nullptr)
+    {
+        holdSmokeParticles->GetComponent<ParticleSystemComponent>()->Stop();
+        holdSmokeParticles = nullptr;
+    }
     //leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 4.0f });
     if (selectedNode->GetComponent<Throwable>()->extraHeavy == true)
     {
@@ -225,24 +240,6 @@ void Ability6::Released()
    
 	pOwner->GetComponent<SoundEffectsPlayer>()->Stop(2);
     baseAbility->Pressed();
-
-    if (pullingParticles != nullptr)
-    {
-        pullingParticles->GetComponent<ParticleSystemComponent>()->Stop();
-        pullingParticles = nullptr;
-    }
-
-    if (holdParticles != nullptr)
-    {
-        holdParticles->GetComponent<ParticleSystemComponent>()->Stop();
-        holdParticles = nullptr;
-    }
-
-    if (holdSmokeParticles != nullptr)
-    {
-        holdSmokeParticles->GetComponent<ParticleSystemComponent>()->Stop();
-        holdSmokeParticles = nullptr;
-    }
 
     cooldownTimer = cooldown;
     abilityReady = false;
