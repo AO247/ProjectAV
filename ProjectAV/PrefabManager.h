@@ -9128,7 +9128,7 @@ public:
         BodyCreationSettings eBodySettings(new JPH::CapsuleShape(7.0f, 2.5f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::ENEMY);
         eBodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
 
-        eBodySettings.mMassPropertiesOverride.mMass = 15.0f;
+        eBodySettings.mMassPropertiesOverride.mMass = 25.0f;
         eBodySettings.mFriction = 0.2f;
         eBodySettings.mAllowedDOFs = EAllowedDOFs::TranslationX | EAllowedDOFs::TranslationY | EAllowedDOFs::TranslationZ;
         eBodySettings.mMotionQuality = EMotionQuality::LinearCast;
@@ -9152,58 +9152,34 @@ public:
         auto rotateAttackNodeOwner = std::make_unique<Node>("Rotate Attack", nullptr, "TRIGGER");
         Node* pRotateAttackNode = rotateAttackNodeOwner.get();
 
-        BodyCreationSettings a1BodySettings(new JPH::CapsuleShape(7.0f, 3.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
+        BodyCreationSettings a1BodySettings(new JPH::SphereShape(10.0f), RVec3(0.0f, 8.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
         pRotateAttackNode->AddComponent(
             std::make_unique<Trigger>(pRotateAttackNode, a1BodySettings, false)
         );
         pRotateAttackNode->AddComponent(
-            std::make_unique<RotateAttack>(pRotateAttackNode)
+            std::make_unique<RotateAttack>(pRotateAttackNode, player)
         );
         RotateAttack* rotateAttack = pRotateAttackNode->GetComponent<RotateAttack>();
-        rotateAttack->attackRange = 50.0f;
+        rotateAttack->attackRange = 100.0f;
         pNewNode->SetLocalPosition({ 0.0f, 0.0f, 0.0f });
         pNewNode->AddChild(std::move(rotateAttackNodeOwner));
 
-
-       // auto rotateAttackNodeOwner = std::make_unique<Node>("Rotate Attack", nullptr, "TRIGGER");
-       // Node* pRotateAttackNode = rotateAttackNodeOwner.get();
-
-       // BodyCreationSettings a1BodySettings(new JPH::CapsuleShape(5.0f, 3.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
-       // pRotateAttackNode->AddComponent(
-       //     std::make_unique<Trigger>(pRotateAttackNode, a1BodySettings, false)
-       // );
-       // pRotateAttackNode->AddComponent(
-       //     std::make_unique<RotateAttack>(pRotateAttackNode)
-       // );
-       // RotateAttack* rotateAttack = pRotateAttackNode->GetComponent<RotateAttack>();
-
-       ///* LaunchAttack* launchAttack = plaunchAttackNode->GetComponent<LaunchAttack>();
-       // launchAttack->attackRange = 24.0f;
-       // pNewNode->SetLocalPosition({ 0.0f, 0.0f, 0.0f });
-       // pNewNode->AddChild(std::move(launchAttackNodeOwner));
+        pNewNode->AddComponent(
+            std::make_unique<FireBallAttack>(pNewNode, player)
+        );
+        FireBallAttack* fireBallAttack = pNewNode->GetComponent<FireBallAttack>();
+        fireBallAttack->bulletSpeed = 50.0f;
+        fireBallAttack->attackRange = 200.0f;
 
 
-       // auto slashAttackNodeOwner = std::make_unique<Node>("FourFireBall Attack", nullptr, "TRIGGER");
-       // Node* pslashAttackNode = slashAttackNodeOwner.get();
+        pNewNode->AddComponent(
+            std::make_unique<FourFireBallAttack>(pNewNode, player)
+        );
+        FourFireBallAttack* fourFireBallAttack = pNewNode->GetComponent<FourFireBallAttack>();
+        fourFireBallAttack->bulletSpeed = 50.0f;
+        fourFireBallAttack->attackRange = 60.0f;
 
-       // BodyCreationSettings a2BodySettings(new JPH::CapsuleShape(5.0f, 3.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
-       // pslashAttackNode->AddComponent(
-       //     std::make_unique<Trigger>(pslashAttackNode, a2BodySettings, false)
-       // );
-       // pslashAttackNode->AddComponent(
-       //     std::make_unique<SlashAttack>(pslashAttackNode)
-       // );*/
-       // pNewNode->AddComponent(
-       //     std::make_unique<FireBallAttack>(pNewNode)
-       // );
-       // FireBallAttack* fireBallAttack = pNewNode->GetComponent<FireBallAttack>();
 
-       // pNewNode->AddComponent(
-       //     std::make_unique<FourFireBallAttack>(pNewNode)
-       // );
-       // FourFireBallAttack* fourFireBallAttack = pNewNode->GetComponent<FourFireBallAttack>();
-
-       // //fireBallAttack->attackRange = 100.0f;
 
 
         //MOVEMENT
@@ -9212,7 +9188,7 @@ public:
         );
         Walking* walking = pNewNode->GetComponent<Walking>();
         walking->radius = 2.5f;
-        walking->maxSpeed = 50.0f;
+        walking->maxSpeed = 90.0f;
         walking->height = 19.0f;
 
 
@@ -9225,15 +9201,14 @@ public:
         stateMachine->followDistance = 400.0f;
         stateMachine->pPlayer = player;
         stateMachine->attackComponents.push_back(rotateAttack);
-        //stateMachine->attackComponents.push_back(fireBallAttack);
+        stateMachine->attackComponents.push_back(fireBallAttack);
         //stateMachine->attackComponents.push_back(fourFireBallAttack);
         stateMachine->pMovementComponent = walking;
-        stateMachine->attackCooldown = 2.0f;
+        stateMachine->attackCooldown = 5.0f;
         stateMachine->sp = 2.0f;
         pNewNode->AddComponent(
-            std::make_unique<Health>(pNewNode, 1.0f)
+            std::make_unique<Health>(pNewNode, 20.0f)
         );
-
 
         pNewNode->SetLocalPosition(position);
         pNewNode->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));

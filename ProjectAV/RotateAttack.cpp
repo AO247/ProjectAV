@@ -3,8 +3,8 @@
 
 
 namespace dx = DirectX;
-RotateAttack::RotateAttack(Node* owner, std::string tag)
-	: Component(owner, std::move(tag))
+RotateAttack::RotateAttack(Node* owner, Node* playerNode, std::string tag)
+	: Component(owner, std::move(tag)), player(playerNode)
 {
 }
 
@@ -18,15 +18,57 @@ void RotateAttack::Attack(float dt)
 		}
 		//miejsce na animacje !!!
 
-		//pOwner->GetParent()->GetComponent<AnimationComponent>()->PlayAnimation(rand() % 2, 0.2f, false);
+		pOwner->GetParent()->GetComponent<AnimationComponent>()->PlayAnimation(0, false);
 
 
 	}
 	timer += dt;
 	if (timer > startMovingTime && timer < stopMovingTime)
 	{
-		Vec3 direction = Vec3(pOwner->Forward().x, 0.0f, pOwner->Forward().z);
-		PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(pOwner->GetParent()->GetComponent<Rigidbody>()->GetBodyID(), direction * moveForce * dt);
+		Node* enemyNode = pOwner->GetParent();
+		Rigidbody* enemyRb = enemyNode->GetComponent<Rigidbody>();
+
+		// 1. Oblicz wektor kierunku do gracza i K¥T DOCELOWY (targetYaw)
+		Vector3 enemyPos = enemyNode->GetWorldPosition();
+		Vector3 playerPos = player->GetWorldPosition();
+		Vector3 directionToPlayer = playerPos - enemyPos;
+		directionToPlayer.y = 0; // Ignorujemy wysokoœæ
+		directionToPlayer.Normalize();
+
+		// atan2f daje nam k¹t w radianach
+		float targetYaw = atan2f(directionToPlayer.x, directionToPlayer.z);
+
+		// 2. Pobierz K¥T OBECNY (currentYaw)
+		// Zak³adam, ¿e masz funkcjê, która zwraca rotacjê jako k¹ty Eulera
+		float currentYaw = enemyNode->GetLocalRotationEuler().y; // Lub GetLocalRotationEuler(), jeœli nie ma rodzica z rotacj¹
+
+		// 3. P³ynnie interpoluj k¹t
+		// Oblicz najkrótsz¹ drogê obrotu (np. z -170 do 170 stopni to -20, a nie 340)
+		float yawDifference = wrap_angle(targetYaw - currentYaw);
+
+		// Zastosuj tylko czêœæ tej ró¿nicy, aby ruch by³ p³ynny
+		// `rotationSpeed` to nowa zmienna, np. 5.0f
+		float yawStep = yawDifference * dt * rotationSpeed;
+
+		// Oblicz nowy k¹t
+		float newYaw = wrap_angle(currentYaw + yawStep);
+
+		// 4. Ustaw now¹ rotacjê na podstawie nowego k¹ta
+		Quat newRotation = Quat::sEulerAngles(Vec3(0.0f, newYaw, 0.0f));
+		PhysicsCommon::physicsSystem->GetBodyInterface().SetRotation(
+			enemyRb->GetBodyID(),
+			newRotation,
+			EActivation::Activate
+		);
+
+		// 5. Dodaj si³ê/impuls w nowym kierunku
+		// Pobierz wektor "do przodu" na podstawie NOWEJ rotacji
+		Vec3 forwardDirection = newRotation * Vec3::sAxisZ();
+
+		PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(
+			enemyRb->GetBodyID(),
+			forwardDirection * moveForce
+		);
 	}
 	if (timer >= wholeAttackTime) {
 		attacked = false;
@@ -87,12 +129,10 @@ void RotateAttack::DrawImGuiControls()
 {
 	ImGui::Text("Tag: %s", tag.c_str());
 	ImGui::InputFloat("Damage", &damage);
-	ImGui::InputFloat("Whole Attack Time", &wholeAttackTime);
-	ImGui::InputFloat("Start Damage Time", &startDmgTime);
-	ImGui::InputFloat("Stop Damage Time", &stopDmgTime);
 	ImGui::InputFloat("Knockback Force", &knockbackForce);
 	ImGui::InputFloat("Attack Timer", &timer);
-	ImGui::InputFloat("Move Force", &moveForce);
+	ImGui::InputFloat("Move Force (Impulse)", &moveForce);
+	ImGui::InputFloat("Rotation Speed", &rotationSpeed);
 	ImGui::Checkbox("Attacked", &attacked);
 
 }

@@ -121,12 +121,17 @@ void Health::TakeDamage(float damage, bool heavy, bool isFire)
 	}
 	else
 	{
+		pOwner->GetComponent<AnimationComponent>()->PlayAnimation(4, false);
 		if (heavy)
 			currentHealth -= damage * 2;
 		else if (isFire)
 			currentHealth -= damage;
 		else {
 			currentHealth -= damage;
+		}
+		if (currentHealth <= maxHealth * 0.6f)
+		{
+
 		}
 	}
 

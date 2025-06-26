@@ -33,23 +33,26 @@ void FireBallAttack::Attack(float dt)
 				shootSoundTimer = shootSoundInterval;
 			}
 		}
-		// miejsce na animacje
+		pOwner->GetComponent<AnimationComponent>()->PlayAnimation(1, false);
 	}
 	timer += dt;
 	if (timer >= wholeAttackTime) {
 		attacked = false;
 		timer = 0.0f;
 		endAttack = true;
+		spawned = false;
 		return;
 	}
 	if (attacked) {
 		return;
 	}
-	if (timer > spawnTime)
+	if (timer > spawnTime && !spawned)
 	{
 		Vector3 pos = pOwner->GetWorldPosition();
-		pos += pOwner->Forward() * 5.0f;
+		pos += pOwner->Forward() * 7.0f;
+		pos.y += 2.0f;
 		fireBall = PrefabManager::InstantiateFireBall(Vector3(pos.x, pos.y, pos.z), 0.2f);
+		spawned = true;
 	}
 	if (timer < shootTime) {
 		return;
