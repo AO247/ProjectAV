@@ -322,13 +322,13 @@ void StateMachine::Die()
 				DirectX::XMStoreFloat3(&localHitPos, localVec);
 
 				float targetY = localHitPos.y + 4.0f;
-				PrefabManager::InstantiateHealthCollectable(pOwner->GetParent(), Vector3(position.x + 0.8f, position.y, position.z + 0.8f), 0.3f, targetY);
-				PrefabManager::InstantiateExpCollectable(pOwner->GetParent(), Vector3(position.x - 0.8f, position.y, position.z - 0.8f), 0.3f, targetY);
+				PrefabManager::InstantiateHealthCollectable(pOwner->GetParent(), Vector3(position.x + 0.8f, position.y, position.z + 0.8f), 0.7f, targetY);
+				PrefabManager::InstantiateExpCollectable(pOwner->GetParent(), Vector3(position.x - 0.8f, position.y, position.z - 0.8f), 0.7f, targetY);
 			}
 			else
 			{
-				PrefabManager::InstantiateHealthCollectable(pOwner->GetParent(), Vector3(position.x + 0.8f, position.y, position.z + 0.8f), 0.3f, position.y);
-				PrefabManager::InstantiateExpCollectable(pOwner->GetParent(), Vector3(position.x - 0.8f, position.y, position.z - 0.8f), 0.3f, position.y);
+				PrefabManager::InstantiateHealthCollectable(pOwner->GetParent(), Vector3(position.x + 0.8f, position.y, position.z + 0.8f), 0.7f, position.y);
+				PrefabManager::InstantiateExpCollectable(pOwner->GetParent(), Vector3(position.x - 0.8f, position.y, position.z - 0.8f), 0.7f, position.y);
 			}
 		}
 		pOwner->GetComponent<SoundEffectsPlayer>()->StopAll();

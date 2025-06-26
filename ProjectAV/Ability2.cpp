@@ -103,6 +103,7 @@ bool Ability2::Pressed()
     abilityReady = false;
     PrefabManager::InstantiateAbility2Particles(pOwner->GetParent(), Vector3(pOwner->GetLocalPosition().x, pOwner->GetLocalPosition().y, pOwner->GetLocalPosition().z), 1.0);
     PrefabManager::InstantiateAbility2ParticlesSmoke(pOwner->GetParent(), Vector3(pOwner->GetLocalPosition().x, pOwner->GetLocalPosition().y, pOwner->GetLocalPosition().z), 1.0);
+    //PrefabManager::InstantiateExpCollectable(pOwner->GetParent(), Vector3(pOwner->GetLocalPosition().x, pOwner->GetLocalPosition().y, pOwner->GetLocalPosition().z), 0.7, pOwner->GetLocalPosition().y);
 
     return true;
 }
