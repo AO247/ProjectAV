@@ -639,36 +639,23 @@ void Sprite::Update(float deltaTime) {
         }
     }
 }
-
-void Sprite::Draw(ID3D11DeviceContext* context) {
+void Sprite::Draw(ID3D11DeviceContext* context, float scale, DirectX::XMFLOAT4 color) {
 
     if (!texture_) {
         OutputDebugStringW(L"Sprite::Draw() Error: texture_ is NULL. Cannot draw sprite: ");
         OutputDebugStringW(debugSpritePath_.c_str());
         OutputDebugStringW(L"\n");
-        return; // Critical resource missing
+        return;
     }
 
-    if (!context || !vertexBuffer_ || !indexBuffer_ || !vertexShader_ || !pixelShader_ || !inputLayout_ || !constantBuffer_ || !texture_ || !sampler_ || !blendState_) {
-        OutputDebugStringA("Sprite::Draw() Error: Missing critical D3D resources (Texture Version). Aborting draw.\n");
-        if (!context) OutputDebugStringA("Context is NULL\n");
-        if (!vertexBuffer_) OutputDebugStringA("vertexBuffer_ is NULL\n");
-        if (!indexBuffer_) OutputDebugStringA("indexBuffer_ is NULL\n");
-        if (!vertexShader_) OutputDebugStringA("vertexShader_ is NULL\n");
-        if (!pixelShader_) OutputDebugStringA("pixelShader_ is NULL\n");
-        if (!inputLayout_) OutputDebugStringA("inputLayout_ is NULL\n");
-        if (!constantBuffer_) OutputDebugStringA("constantBuffer_ is NULL\n");
-        if (!texture_) OutputDebugStringA("texture_ is NULL - Texture likely failed to load or was released!\n");
-        if (!sampler_) OutputDebugStringA("sampler_ is NULL!\n");
-        if (!blendState_) OutputDebugStringA("blendState_ is NULL!\n");
+    if (!context || !vertexBuffer_ || !indexBuffer_ || !vertexShader_ || !pixelShader_ || !inputLayout_ || !constantBuffer_ || !sampler_ || !blendState_) {
+        OutputDebugStringA("Sprite::Draw() Error: Missing critical D3D resources.\n");
         return;
     }
 
     float windowClientWidth = 1280.0f;
     float windowClientHeight = 720.0f;
     HWND activeWindow = GetActiveWindow();
-    bool gotDimensionsFromWindow = false;
-
     if (activeWindow) {
         RECT clientRect;
         if (GetClientRect(activeWindow, &clientRect)) {
@@ -679,22 +666,25 @@ void Sprite::Draw(ID3D11DeviceContext* context) {
         }
     }
 
-
-
-
     DirectX::XMMATRIX projMat = DirectX::XMMatrixOrthographicOffCenterLH(0.0f, windowClientWidth, windowClientHeight, 0.0f, 0.0f, 1.0f);
     DirectX::XMStoreFloat4x4(&this->projectionMatrix_, DirectX::XMMatrixTranspose(projMat));
 
-    DirectX::XMMATRIX worldMat = DirectX::XMMatrixTranslation(static_cast<float>(x_), static_cast<float>(y_), 0.0f);
+    DirectX::XMMATRIX worldMat =
+        DirectX::XMMatrixTranslation(-width_ / 2.0f, -height_ / 2.0f, 0.0f) *
+        DirectX::XMMatrixScaling(scale, scale, 1.0f) *
+        DirectX::XMMatrixTranslation(x_ + width_ / 2.0f, y_ + height_ / 2.0f, 0.0f);
     DirectX::XMStoreFloat4x4(&this->worldMatrix_, DirectX::XMMatrixTranspose(worldMat));
 
-
+    // *** KLUCZOWA ZMIANA TUTAJ ***
+    // Wierzcho³ki s¹ teraz tworzone z przekazanym kolorem (i alf¹)
     Vertex vertices[] = {
-        {{0.0f,            0.0f,           0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}},
-        {{(float)width_,   0.0f,           0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {1.0f, 0.0f}},
-        {{(float)width_,  (float)height_,  0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}},
-        {{0.0f,           (float)height_,  0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}}
+        {{0.0f,           (float)height_, 0.0f}, color, {0.0f, 1.0f}},
+        {{(float)width_,  (float)height_, 0.0f}, color, {1.0f, 1.0f}},
+        {{(float)width_,  0.0f,           0.0f}, color, {1.0f, 0.0f}},
+        {{0.0f,           0.0f,           0.0f}, color, {0.0f, 0.0f}}
     };
+
+    // Aktualizacja bufora wierzcho³ków z nowymi danymi (w tym kolorem)
     D3D11_MAPPED_SUBRESOURCE mappedResourceVB;
     HRESULT hrVB = context->Map(vertexBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResourceVB);
     if (SUCCEEDED(hrVB)) {
@@ -705,7 +695,6 @@ void Sprite::Draw(ID3D11DeviceContext* context) {
         OutputDebugStringA("Sprite::Draw - Failed to map vertex buffer for update!\n");
         return;
     }
-
 
     D3D11_MAPPED_SUBRESOURCE mappedResourceCB;
     HRESULT hrCB = context->Map(constantBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResourceCB);
@@ -719,11 +708,10 @@ void Sprite::Draw(ID3D11DeviceContext* context) {
     cbPtr->world = worldMatrix_;
     context->Unmap(constantBuffer_, 0);
 
-
     UINT stride = sizeof(Vertex);
     UINT offset = 0;
     context->IASetVertexBuffers(0, 1, &vertexBuffer_, &stride, &offset);
-    context->IASetIndexBuffer(indexBuffer_, DXGI_FORMAT_R16_UINT, 0);
+    context->IASetIndexBuffer(indexBuffer_, DXGI_FORMAT_R16_UINT, 0); // Upewnij siê, ¿e masz poprawny bufor indeksów
     context->IASetInputLayout(inputLayout_);
     context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
@@ -737,8 +725,8 @@ void Sprite::Draw(ID3D11DeviceContext* context) {
     float blendFactor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
     context->OMSetBlendState(blendState_, blendFactor, 0xffffffff);
 
+    // Upewnij siê, ¿e rysujesz 6 indeksów dla dwóch trójk¹tów
     context->DrawIndexed(6, 0, 0);
-
 }
 
 void Sprite::SetPosition(int x, int y) {

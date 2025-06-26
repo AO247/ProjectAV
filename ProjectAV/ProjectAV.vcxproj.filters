@@ -528,9 +528,6 @@
     <ClCompile Include="FireBoom.cpp">
       <Filter>Source Files\Components\Enemies</Filter>
     </ClCompile>
-    <ClCompile Include="FourFireBallAttack.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="MushroomBoom.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -539,6 +536,12 @@
     </ClCompile>
     <ClCompile Include="StoneGenerator.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Eye.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FourFireBallAttack.cpp">
+      <Filter>Source Files\Components\Enemies</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1088,9 +1091,6 @@
     <ClInclude Include="FireBoom.h">
       <Filter>Header Files\Components\Enemies</Filter>
     </ClInclude>
-    <ClInclude Include="FourFireBallAttack.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="MushroomBoom.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1100,6 +1100,12 @@
     <ClInclude Include="StoneGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Eye.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FourFireBallAttack.h">
+      <Filter>Header Files\Components\Enemies</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ProjectAV.rc">
@@ -1108,6 +1114,9 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="AvatarFace.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="winderer.ico">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
