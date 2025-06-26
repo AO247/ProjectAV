@@ -31,6 +31,7 @@ public:
 	std::unique_ptr<Sprite> note5;
 	std::unique_ptr<Sprite> note6;
 	std::unique_ptr<Sprite> note7;
+	std::unique_ptr<Sprite> note8;
 	Sprite* currentNote;
 	bool enemySpawned = false;
 	Node* stone1 = nullptr;
@@ -54,6 +55,7 @@ public:
 	float timer = 0.0f;
 	bool qPressed = false;
 	bool started = false;
+	Node* column;
 private:
 	Window& wnd;
 

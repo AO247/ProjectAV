@@ -77,15 +77,25 @@ Tutorial::Tutorial(Node* owner, Window& window, Node* player)
 		200,
 		L"Images\\note8.png"
 	);
-    checkpoints.push_back({ 8.5f, -17.2f, -440.7f });
-	checkpoints.push_back({ 31.7f, -17.2f, -447.9f });
-    checkpoints.push_back({ 72.5f, -19.0f, -465.1f });
-    checkpoints.push_back({ 155.0f, -0.5f, -412.3f });
-    checkpoints.push_back({ 221.3f, -0.8f, -366.0f });
-	checkpoints.push_back({ 217.3f, -17.5f, -296.1f });
-    checkpoints.push_back({ 155.8f, -17.3f, -239.0f });
-    checkpoints.push_back({ 69.3f, -16.4f, -220.7f });
-	checkpoints.push_back({ 20.5f, 3.2f, -105.1f});
+	note8 = std::make_unique<Sprite>(
+		wnd.Gfx().GetDevice(),
+		wnd.Gfx().GetContext(),
+		30,
+		30,
+		400,
+		200,
+		L"Images\\note9.png"
+	);
+	checkpoints.push_back({ 4.0f, -16.2f, -434.4f }); //spawn
+    checkpoints.push_back({ 35.4f, -16.2f, -453.6f }); // info o jump
+	checkpoints.push_back({ 68.1f, -18.0f, -464.2f }); // info o doublejump
+    checkpoints.push_back({ 153.7f, 0.6f, -411.6f }); // info o dash
+    checkpoints.push_back({ 210.5f, 0.2f, -373.9f }); // po dash
+    checkpoints.push_back({ 210.2f, -16.5f, -296.9f }); // enemy 1 popchni item
+	checkpoints.push_back({ 218.2f, -16.3f, -232.2f }); // columna enemy2 
+    checkpoints.push_back({ 135.2f, -16.3f, -238.7f }); // enemy3 toss and throw
+    checkpoints.push_back({ 96.4f, -15.0f, -240.8f }); // pokonany enemy 3 use q
+	checkpoints.push_back({ 15.1f, 4.5f, -111.4f }); // end
 
 }
 
@@ -103,6 +113,7 @@ void Tutorial::Update(float dt)
 		enemy4 = PrefabManager::InstantiateShootingEnemy(temporary, { 32.2f, -15.8f, -203.6f })->GetComponent<StateMachine>();
 		enemy5 = PrefabManager::InstantiateShootingEnemy(temporary, { 35.2f, -15.8f, -190.6f })->GetComponent<StateMachine>();
 		enemy6 = PrefabManager::InstantiateTankEnemy(temporary, { 213.7f, -16.3f, -208.9f })->GetComponent<StateMachine>();
+		column = PrefabManager::InstantiateNewColumn(temporary, { 214.2f, -16.3f, -217.9f }, 1.0f);
 		enemy1->Stop(1000.0f);
 		enemy2->Stop(1000.0f);
 		enemy3->Stop(1000.0f);
@@ -171,6 +182,10 @@ void Tutorial::Update(float dt)
 	if (currentCheckpointIndex == 8)
 	{
 		currentNote = note7.get();
+	}
+	if (currentCheckpointIndex == 9)
+	{
+		currentNote = note8.get();
 	}
 	if (currentCheckpointIndex >= checkpoints.size() - 1 && timer > 5.0f)
 	{
