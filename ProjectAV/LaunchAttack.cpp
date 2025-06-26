@@ -26,6 +26,11 @@ void LaunchAttack::Attack(float dt)
 
 		//miejsce na animacje !!!
 		pOwner->GetParent()->GetComponent<AnimationComponent>()->PlayAnimation((rand() % 2 == 0) ? 1 : 3, 0.2f, false);		//launch attack - fast
+		if (pOwner->GetComponent<SoundEffectsPlayer>())
+		{
+			int randSound = rand() % 2 + 5;
+			pOwner->GetComponent<SoundEffectsPlayer>()->Play(6, 0.4f, false);
+		}
 
 		Vec3 direction = Vec3(pOwner->Forward().x, 0.0f, pOwner->Forward().z);
 		PhysicsCommon::physicsSystem->GetBodyInterface().AddImpulse(pOwner->GetParent()->GetComponent<Rigidbody>()->GetBodyID(), direction * moveForce * dt);

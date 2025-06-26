@@ -10,74 +10,74 @@ Tutorial::Tutorial(Node* owner, Window& window, Node* player)
 		wnd.Gfx().GetContext(),
 		30,
 		30,
-		374,
-		182,
-		L"Images\\note0.png"
+		400,
+		200,
+		L"Images\\note1.png"
 	);
 	note1 = std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
 		wnd.Gfx().GetContext(),
 		30,
 		30,
-		374,
-		182,
-		L"Images\\note1.2.png"
+		400,
+		200,
+		L"Images\\note2.png"
 	);
 	note2 = std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
 		wnd.Gfx().GetContext(),
 		30,
 		30,
-		374,
-		182,
-		L"Images\\note2.png"
+		400,
+		200,
+		L"Images\\note3.png"
 	);
 	note3 = std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
 		wnd.Gfx().GetContext(),
 		30,
 		30,
-		374,
-		182,
-		L"Images\\note3.png"
+		400,
+		200,
+		L"Images\\note4.png"
 	);
 	note4 = std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
 		wnd.Gfx().GetContext(),
 		30,
 		30,
-		374,
-		182,
-		L"Images\\note4.png"
+		400,
+		200,
+		L"Images\\note5.png"
 	);
 	note5 = std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
 		wnd.Gfx().GetContext(),
 		30,
 		30,
-		374,
-		182,
-		L"Images\\note5.png"
+		400,
+		200,
+		L"Images\\note6.png"
 	);
 	note6 = std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
 		wnd.Gfx().GetContext(),
 		30,
 		30,
-		374,
-		182,
-		L"Images\\note6.png"
+		400,
+		200,
+		L"Images\\note7.png"
 	);
 	note7 = std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
 		wnd.Gfx().GetContext(),
 		30,
 		30,
-		374,
-		182,
-		L"Images\\note7.png"
+		400,
+		200,
+		L"Images\\note8.png"
 	);
-    checkpoints.push_back({ 8.5f, -17.2f, -422.7f });
+    checkpoints.push_back({ 8.5f, -17.2f, -440.7f });
 	checkpoints.push_back({ 31.7f, -17.2f, -447.9f });
     checkpoints.push_back({ 72.5f, -19.0f, -465.1f });
     checkpoints.push_back({ 155.0f, -0.5f, -412.3f });

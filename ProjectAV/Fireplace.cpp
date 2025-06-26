@@ -13,11 +13,19 @@ void Fireplace::Update(float dt)
 	timer += dt;
 	if (isActive)
 	{
+		//fireSoundTimer = -dt;
 		if (timer >= activeTime)
 		{
 			timer = 0.0f;
 			isActive = false;
+			//pOwner->GetComponent<SoundEffectsPlayer>()->Stop(0);
 		}
+		/*if (pOwner->GetComponent<SoundEffectsPlayer>()) {
+			if (fireSoundTimer <= 0.0f) {
+				pOwner->GetComponent<SoundEffectsPlayer>()->Play(0, 0.7);
+				fireSoundTimer = fireSoundInterval;
+			}
+		}*/
 	}
 	else
 	{

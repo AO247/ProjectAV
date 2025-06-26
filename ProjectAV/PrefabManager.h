@@ -16,6 +16,7 @@
 #include <filesystem> // <-- Do³¹cz ten nag³ówek
 #include <iostream>
 #include "SphereVolumeEmitterLogic.h"
+#include "SoundEffectsPlayer.h"
 
 //class PhysicsEngine;
 class ShootAttack;
@@ -298,6 +299,11 @@ public:
 		pNewNodeOwner->AddComponent(
 			std::make_unique<Fireplace>(pNewNodeOwner.get())
 		);
+
+        pNewNodeOwner->AddComponent(
+            std::make_unique<SoundEffectsPlayer>(pNewNodeOwner.get())
+        );
+        pNewNodeOwner->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enviro\\fire.wav");
 
         pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
@@ -1855,6 +1861,7 @@ public:
             std::make_unique<Throwable>(pNewNodeOwner.get())
         );
         pNewNodeOwner->GetComponent<Throwable>()->pot = true;
+		pNewNodeOwner->GetComponent<Throwable>()->speed = 20.0f; 
 
         pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
@@ -1929,7 +1936,7 @@ public:
         ScaledShapeSettings islandScaling(islandShape, Vec3Arg(scale, scale, scale));
         islandShape = islandScaling.Create().Get();
         BodyCreationSettings BodySettings(islandShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
-        BodySettings.mMassPropertiesOverride.mMass = 7.0f;
+        BodySettings.mMassPropertiesOverride.mMass = 8.0f;
         BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
         BodySettings.mFriction = 0.5f;
         BodySettings.mMotionQuality = EMotionQuality::LinearCast;
@@ -1941,6 +1948,7 @@ public:
             std::make_unique<Throwable>(pNewNodeOwner.get())
         );
         pNewNodeOwner->GetComponent<Throwable>()->heavy = true;
+        pNewNodeOwner->GetComponent<Throwable>()->speed = 15.0f;
 
         pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
@@ -2092,6 +2100,7 @@ public:
             std::make_unique<Throwable>(pNewNodeOwner.get())
         );
         pNewNodeOwner->GetComponent<Throwable>()->heavy = true;
+        pNewNodeOwner->GetComponent<Throwable>()->speed = 15.0f;
 
         pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
@@ -2990,7 +2999,7 @@ public:
         InstantiateRock2(pNewNode, Vector3(22.00f, 0.50f, -15.20f), 1.0f, Vector3(0.0f, -0.19f, 0.0f));
         InstantiateRock4(pNewNode, Vector3(-15.90f, 0.00f, -7.40f), 1.0f, Vector3(0.00f, -1.29f, 0.00f));
         InstantiateRock1(pNewNode, { -6.06f, 16.70f, 34.51f }, 0.9f, Vector3(0.00f, -0.87f, 3.14f));
-		InstantiateBaseColumn(pNewNode, { 58.7f, -3.3f, -48.5f }, 0.8f, 1.0f);
+		InstantiateBaseColumn(pNewNode, { 58.7f, -3.3f, -48.5f }, 1.0f, 1.0f);
         InstantiatePlatform3(pNewNode, Vector3(0.00f, 0.00f, 8.30f), 1.0f, Vector3(0.00f, 1.75f, 0.00f));
 
         parentNode->AddChild(std::move(pNewNodeOwner));
@@ -3175,6 +3184,7 @@ public:
         pNewNodeOwner->SetLocalRotation(rotation);
         pNewNodeOwner->radius = 1000.0f;
 
+        //WALLS
 		InstantiatePlatform3(pNewNodeOwner.get(), Vector3(125.00f, -3.30f, -21.40f), 1.0f, Vector3(0.00f, 2.90f, 0.00f));
         InstantiatePlatform3(pNewNodeOwner.get(), Vector3(123.50f, 0.00f, 17.50f), 1.0f, Vector3(0.00f, 3.11f, 0.00f));
         InstantiatePlatform3(pNewNodeOwner.get(), Vector3(120.00f, 0.00f, -62.20f), 1.0f, Vector3(0.00f, -2.86f, 0.00f));
@@ -3199,20 +3209,37 @@ public:
         InstantiateRockDouble(pNewNodeOwner.get(), Vector3(-35.70f, 0.00f, 125.00f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
         InstantiateRockDouble(pNewNodeOwner.get(), Vector3(-63.40f, 0.00f, -101.90f), 1.0f, Vector3(0.00f, 2.41f, 0.00f));
         InstantiateRockDouble(pNewNodeOwner.get(), Vector3(-112.60f, 0.40f, 2.70f), 1.0f, Vector3(0.00f, 0.40f, 0.00f));
-		InstantiateNewColumn(pNewNodeOwner.get(), Vector3(65.00f, 1.30f, 69.20f), 1.0f);
+
+        //LEVEL
+		/*InstantiateNewColumn(pNewNodeOwner.get(), Vector3(65.00f, 1.30f, 69.20f), 1.0f);
         InstantiateNewColumn(pNewNodeOwner.get(), Vector3(77.00f, 1.30f, -12.50f), 1.0f);
         InstantiateNewColumn(pNewNodeOwner.get(), Vector3(33.70f, 1.30f, -87.40f), 1.0f);
         InstantiateNewColumn(pNewNodeOwner.get(), Vector3(-39.10f, 1.30f, -66.60f), 1.0f);
         InstantiateNewColumn(pNewNodeOwner.get(), Vector3(-48.50f, 1.30f, -18.80f), 1.0f);
         InstantiateNewColumn(pNewNodeOwner.get(), Vector3(-40.70f, 1.30f, 34.10f), 1.0f);
         InstantiateNewColumn(pNewNodeOwner.get(), Vector3(-15.90f, 1.30f, 68.60f), 1.0f);
-        InstantiateNewColumn(pNewNodeOwner.get(), Vector3(26.50f, 1.30f, 49.80f), 1.0f);
+        InstantiateNewColumn(pNewNodeOwner.get(), Vector3(26.50f, 1.30f, 49.80f), 1.0f);*/
 		InstantiateStoneStack1(pNewNodeOwner.get(), Vector3(67.60f, 2.72f, -65.30f), 1.1f);
         InstantiateStoneStack1(pNewNodeOwner.get(), Vector3(35.20f, 2.72f, 65.50f), 1.1f);
         InstantiateStoneStack1(pNewNodeOwner.get(), Vector3(-7.00f, 2.72f, -75.00f), 1.0f);
         InstantiateStoneStack1(pNewNodeOwner.get(), Vector3(-24.60f, 2.72f, -2.30f), 1.0f);
         InstantiateStoneStack1(pNewNodeOwner.get(), Vector3(73.00f, 2.72f, 34.80f), 0.9f);
         InstantiateStoneStack1(pNewNodeOwner.get(), Vector3(-4.30f, 10.02f, 39.50f), 0.9f);
+        /*InstantiateThrowable(pNewNodeOwner.get(), Vector3(-4.30f, 10.02f, 39.50f), 0.4f);
+        InstantiateThrowable(pNewNodeOwner.get(), Vector3(-4.30f, 10.02f, 39.50f), 0.4f);
+        InstantiateThrowable(pNewNodeOwner.get(), Vector3(-4.30f, 10.02f, 39.50f), 0.4f);
+        InstantiateThrowable(pNewNodeOwner.get(), Vector3(-4.30f, 10.02f, 39.50f), 0.4f);
+        InstantiateThrowable(pNewNodeOwner.get(), Vector3(-4.30f, 10.02f, 39.50f), 0.4f);
+        InstantiateThrowable(pNewNodeOwner.get(), Vector3(-4.30f, 10.02f, 39.50f), 0.4f);
+        InstantiateThrowable(pNewNodeOwner.get(), Vector3(-4.30f, 10.02f, 39.50f), 0.4f);
+        InstantiateThrowable(pNewNodeOwner.get(), Vector3(-4.30f, 10.02f, 39.50f), 0.4f);
+        InstantiateThrowable(pNewNodeOwner.get(), Vector3(-4.30f, 10.02f, 39.50f), 0.4f);
+        InstantiateThrowable(pNewNodeOwner.get(), Vector3(-4.30f, 10.02f, 39.50f), 0.4f);
+        InstantiateThrowable(pNewNodeOwner.get(), Vector3(-4.30f, 10.02f, 39.50f), 0.4f);
+        InstantiateThrowable(pNewNodeOwner.get(), Vector3(-4.30f, 10.02f, 39.50f), 0.4f);
+        InstantiateThrowable(pNewNodeOwner.get(), Vector3(-4.30f, 10.02f, 39.50f), 0.4f);
+        InstantiateThrowable(pNewNodeOwner.get(), Vector3(-4.30f, 10.02f, 39.50f), 0.4f);*/
+        //InstantiateMushroom1();
 
         Node* pNewNode = pNewNodeOwner.get();
         parentNode->AddChild(std::move(pNewNodeOwner));
@@ -8520,12 +8547,12 @@ public:
         pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic_attack1.ogg");
         pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic_attack2.ogg");
         pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic_attack3.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footsteps1.wav");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footsteps2.wav");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footsteps3.wav");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footsteps4.wav");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footsteps5.wav");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footsteps6.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\enemies\\footsteps1.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\enemiesfootsteps2.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\enemiesfootsteps3.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\enemiesfootsteps4.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\enemiesfootsteps5.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\enemiesfootsteps6.wav");
 
         pNewNode->AddComponent(
             std::make_unique<ModelComponent>(pNewNode, wind->Gfx(), "Models\\basic\\basic.gltf", 1.0f, true)
@@ -8607,19 +8634,19 @@ public:
         pNewNode->AddComponent(
             std::make_unique<SoundEffectsPlayer>(pNewNode)
         );
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic1.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic2.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic3.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic4.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic_attack1.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic_attack2.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic_attack3.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footstep1.wav");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footstep2.wav");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footstep3.wav");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footstep4.wav");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footstep5.wav");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footstep6.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\tank\\idle1.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\tank\\idle2.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\tank\\idle3.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\tank\\idle4.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\tank\\attack1.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\tank\\attack2.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\tank\\attack2.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\tank\\step1.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\tank\\step2.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\tank\\step3.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\tank\\step4.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\tank\\step5.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\tank\\step6.wav");
 
         pNewNode->AddComponent(
             std::make_unique<ModelComponent>(pNewNode, wind->Gfx(), "Models\\tank\\tank.gltf", 1.0f, true)
@@ -9053,19 +9080,19 @@ public:
         pNewNode->AddComponent(
             std::make_unique<SoundEffectsPlayer>(pNewNode)
         );
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic1.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic2.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic3.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic4.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic_attack1.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic_attack2.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\basic\\basic_attack3.ogg");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footstep1.wav");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footstep2.wav");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footstep3.wav");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footstep4.wav");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footstep5.wav");
-        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\footstep6.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\frenzy\\idle1.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\frenzy\\idle2.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\frenzy\\idle3.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\frenzy\\lunge1.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\frenzy\\lunge2.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\frenzy\\slash1.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enemies\\frenzy\\slash2.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\enemies\\footsteps1.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\enemies\\footsteps2.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\enemies\\footsteps3.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\enemies\\footsteps4.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\enemies\\footsteps5.wav");
+        pNewNode->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\walk\\enemies\\footsteps6.wav");
 
         pNewNode->AddComponent(
             std::make_unique<ModelComponent>(pNewNode, wind->Gfx(), "Models\\frenzy\\frenzy.gltf", 1.0f, true)
