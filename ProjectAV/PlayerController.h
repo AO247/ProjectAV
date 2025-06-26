@@ -33,7 +33,7 @@ public:
 	float height = 6.0f;
 	float dashCooldown = 1.5f;
 
-	float stepSoundInterval = 0.5f;
+	float stepSoundInterval = 0.38f;
 	float stepSoundTimer = 0.0f;
 
 	bool alive = true;

@@ -93,7 +93,9 @@ void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 		}
 
 	}
-
+	Vector3 currentVelocity = { currentVelocityJPH.GetX(), currentVelocityJPH.GetY(), currentVelocityJPH.GetZ() };
+	stepSoundTimer -= dt;
+	IdleSoundTimer -= dt;
 
 	if (statemachine->enemyType == EnemyType::BASIC) {
 		pOwner->GetComponent<AnimationComponent>()->PlayAnimation(4);		//walk basic
@@ -118,13 +120,6 @@ void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 		pOwner->GetComponent<AnimationComponent>()->PlayAnimation(5);		//walk fast
 	}
 
-
-	stepSoundTimer -= dt;
-	IdleSoundTimer -= dt;
-
-	// tutaj dŸwiêk i animacja chodzenia
-
-
 	//AutoJump();
 	if (timerForChangedDirection > 0.0f)
 	{
@@ -132,14 +127,20 @@ void Walking::Follow(float dt, DirectX::XMFLOAT3 targetPos, float sp)
 		targetPosition = lastIslandPos;
 	}
 
-	Vector3 currentVelocity = { currentVelocityJPH.GetX(), currentVelocityJPH.GetY(), currentVelocityJPH.GetZ() };
-
+	
+	
 	if (pOwner->GetComponent<SoundEffectsPlayer>() && currentVelocity.LengthSquared() > 0.1f && grounded)
 	{
 		if (IdleSoundTimer <= 0.0f)
 		{
 			//Idle sounds
-			float randSound = (rand() % 4);
+			float randSound = 0;
+			if (statemachine->enemyType == EnemyType::FRENZY) {
+				randSound = (rand() % 3); 
+			}
+			else {
+				randSound = (rand() % 4);
+			}
 			pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 1.0f);
 
 			IdleSoundTimer = IdleSoundInterval;

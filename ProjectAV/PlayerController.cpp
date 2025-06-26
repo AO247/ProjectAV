@@ -288,16 +288,6 @@ void PlayerController::MovePlayer(float dt)
                 Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * acceleration * 1000.0f * dt);
 
         }
-		stepSoundTimer -= dt;
-		if (stepSoundTimer <= 0.0f)
-		{
-			if (pOwner->GetComponent<SoundEffectsPlayer>())
-			{
-                int randSound = rand() % 6 + 16;
-				pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound);
-			}
-			stepSoundTimer = stepSoundInterval;
-		}
     }
     else
     {
@@ -306,7 +296,16 @@ void PlayerController::MovePlayer(float dt)
             Vec3Arg(moveDirection.x, moveDirection.y, moveDirection.z) * acceleration * 800.0f * dt
         );
     }
-
+    stepSoundTimer -= dt;
+    if (stepSoundTimer <= 0.0f && moveDirection.Length() > 0.0f && grounded)
+    {
+        if (pOwner->GetComponent<SoundEffectsPlayer>())
+        {
+            int randSound = rand() % 6 + 16;
+            pOwner->GetComponent<SoundEffectsPlayer>()->Play(randSound, 0.6f);
+        }
+        stepSoundTimer = stepSoundInterval;
+    }
 }
 
 void PlayerController::AutoJump()
