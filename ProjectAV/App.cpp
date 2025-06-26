@@ -21,12 +21,14 @@
 #include "imgui/imgui_impl_dx11.h"
 #include "TransformCbuf.h"
 #include "ShadowCbuf.h"
+#include <windows.h>
+#include <WinUser.h>
 namespace dx = DirectX;
 
 App::App(const std::string& commandLine)
     :
     commandLine(commandLine),
-    wnd(1920, 1080, "Winderer"), 
+    wnd(1920, 1080, "Winderer"),
     pointLight(wnd.Gfx(), 2u), 
     dirLight(wnd.Gfx(), 0u),
     pSceneRoot(std::make_unique<Node>("Root"))
