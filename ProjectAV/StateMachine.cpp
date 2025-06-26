@@ -80,7 +80,7 @@ void StateMachine::Stun(float time)
 	// dŸwiêk stuna 
 	// zatrzymanie w miejscu
 
-
+	PrefabManager::InstantiateStunParticles(pOwner, Vector3(0.0f, 1 + pOwner->GetComponent<Walking>()->height / 2, 0.0f), 1.0f);
 	if (statemachine->enemyType == EnemyType::BASIC) {
 		pOwner->GetComponent<AnimationComponent>()->PlayAnimation(2);		//stun basic
 

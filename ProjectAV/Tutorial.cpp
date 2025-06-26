@@ -121,7 +121,6 @@ void Tutorial::Update(float dt)
 		enemy4->Stop(1000.0f);
 		enemy5->Stop(1000.0f);
 		enemy6->Stop(1000.0f);
-
 	}
 	//EnemyHandler();
 

@@ -121,7 +121,7 @@ void Health::TakeDamage(float damage, bool heavy, bool isFire, bool extraHeavy)
 	}
 	else
 	{
-		pOwner->GetComponent<StateMachine>()->Stop(0.3f);
+		pOwner->GetComponent<StateMachine>()->Stop(0.2f);
 		pOwner->GetComponent<AnimationComponent>()->PlayAnimation(4, false);
 		if (heavy)
 			currentHealth -= damage * 2;

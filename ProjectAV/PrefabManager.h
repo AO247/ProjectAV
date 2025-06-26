@@ -7970,7 +7970,7 @@ public:
         auto volumeEmitter = std::make_unique<SphereVolumeEmitterLogic>();
 
         volumeEmitter->SpawnRadius = 3.0f;
-        volumeEmitter->ParticlesPerSecond = 50.0f;
+        volumeEmitter->ParticlesPerSecond = 10.0f;
 
         pNewNode->AddComponent(
             std::make_unique<ParticleSystemComponent>(pNewNode, wind->Gfx(), "Models\\stars.png", 10000, std::move(volumeEmitter))
@@ -7980,7 +7980,7 @@ public:
         //pParticleSystem->ParticleLifetime = 5.0f;      
         //pParticleSystem->BurstAmount = 25;
         //pParticleSystem->EmissionDuration = 5.0f;
-        pParticleSystem->EmissionDuration = 5.0f;
+        pParticleSystem->EmissionDuration = 1.0f;
         pParticleSystem->bUseLifetimeRange = true;
         pParticleSystem->MinLifetime = 0.2f;
         pParticleSystem->MaxLifetime = 0.8f;
