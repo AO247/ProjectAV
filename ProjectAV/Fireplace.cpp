@@ -17,6 +17,11 @@ void Fireplace::Update(float dt)
 		{
 			timer = 0.0f;
 			isActive = false;
+			if (particles != nullptr)
+			{
+				particles->GetComponent<ParticleSystemComponent>()->Stop();
+				particles = nullptr;
+			}
 		}
 	}
 	else
@@ -25,6 +30,7 @@ void Fireplace::Update(float dt)
 		{
 			timer = 0.0f;
 			isActive = true;
+			particles = PrefabManager::InstantiateFireplaceParticles(pOwner, Vector3(0, 0, 0), 1.0f, activeTime);
 		}
 	}
 }

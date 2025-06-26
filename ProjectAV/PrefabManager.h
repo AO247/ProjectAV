@@ -8423,15 +8423,15 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateFireplaceParticles(Node* parentNode, Vector3 position, float scale)
+    static Node* InstantiateFireplaceParticles(Node* parentNode, Vector3 position, float scale, float duration)
     {
         auto pNewNodeOwner = std::make_unique<Node>("AnimationTest", nullptr, "ENEMY");
         Node* pNewNode = pNewNodeOwner.get();
 
         auto pCircleLogic = std::make_unique<CircleEmitterLogic>();
-        pCircleLogic->Radius = 1.0f;
+        pCircleLogic->Radius = 6.5f;
         pCircleLogic->Orientation = CircleEmitterLogic::Plane::XZ;
-        pCircleLogic->ParticlesPerSecond = 150.0f;
+        pCircleLogic->ParticlesPerSecond = 400.0f;
         pCircleLogic->bFill = true;
 
         pNewNode->AddComponent(
@@ -8439,6 +8439,7 @@ public:
         );
         ParticleSystemComponent* pParticleSystem = pNewNode->GetComponent<ParticleSystemComponent>();
         pParticleSystem->EmissionRate = 300.0f;              // Particles per second
+        pParticleSystem->EmissionDuration = duration;
         pParticleSystem->ParticleLifetime = 1.0f;            // How long each particle lives
         pParticleSystem->EmitterPositionOffset = { 0.0f, 1.0f, 0.0f }; // Start slightly above the node's origin
         pParticleSystem->ParticleVelocity = { 0.0f, 1.0f, 0.0f }; // Strong upward velocity
@@ -8464,7 +8465,7 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiateCharacterOnFireParticles(Node* parentNode, Vector3 position, float scale)
+    static Node* InstantiateCharacterOnFireParticles(Node* parentNode, Vector3 position, float scale, float duration)
     {
         auto pNewNodeOwner = std::make_unique<Node>("AnimationTest", nullptr, "ENEMY");
         Node* pNewNode = pNewNodeOwner.get();
@@ -8479,8 +8480,53 @@ public:
             std::make_unique<ParticleSystemComponent>(pNewNode, wind->Gfx(), "Models\\fire.png", 10000, std::move(pCircleLogic))
         );
         ParticleSystemComponent* pParticleSystem = pNewNode->GetComponent<ParticleSystemComponent>();
+        pParticleSystem->SetPlaybackMode(ParticleSystemComponent::PlaybackMode::Loop);
+        pParticleSystem->EmissionDuration = duration;
         pParticleSystem->EmissionRate = 100.0f;              // Particles per second
         pParticleSystem->ParticleLifetime = 1.0f;            // How long each particle lives
+        pParticleSystem->EmitterPositionOffset = { 0.0f, 1.0f, 0.0f }; // Start slightly above the node's origin
+        pParticleSystem->ParticleVelocity = { 0.0f, 5.0f, 0.0f }; // Strong upward velocity
+        pParticleSystem->ParticleVelocityVariance = { 0.0f, 10.0f, 0.0f }; // Spread them out horizontally
+        pParticleSystem->bUseMidColor = true;
+        pParticleSystem->ColorMidpoint = 0.2f;
+        pParticleSystem->StartColor = { 1.0f, 1.0f, 0.0f, 1.0f }; // Bluish water color
+        pParticleSystem->MidColor = { 1.0f, 0.0f, 0.0f, 1.0f };
+        pParticleSystem->EndColor = { 0.0f, 0.0f, 0.0f, 1.0f };   // Fade to a light blue and then disappear
+        pParticleSystem->StartSize = 0.7f;
+        pParticleSystem->EndSize = 0.0f;
+        pParticleSystem->StartRotation = 0.0f;
+        pParticleSystem->EndRotation = 0.0f; // Two full rotations over its lifetime
+        pParticleSystem->StartSizeVariance = 2.0f;
+        pParticleSystem->textureAtlasRows = 2;
+        pParticleSystem->textureAtlasColumns = 2;
+
+        pParticleSystem->Link(*rg);
+        parentNode->AddChild(std::move(pNewNodeOwner));
+
+        pNewNode->SetLocalPosition(DirectX::XMFLOAT3(position.x, position.y, position.z));
+        pNewNode->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
+
+        return pNewNode;
+    }
+    static Node* InstantiatePlayerOnFireParticles(Node* parentNode, Vector3 position, float scale, float duration)
+    {
+        auto pNewNodeOwner = std::make_unique<Node>("AnimationTest", nullptr, "ENEMY");
+        Node* pNewNode = pNewNodeOwner.get();
+
+        auto pCircleLogic = std::make_unique<CircleEmitterLogic>();
+        pCircleLogic->Radius = 1.0f;
+        pCircleLogic->Orientation = CircleEmitterLogic::Plane::XZ;
+        pCircleLogic->ParticlesPerSecond = 150.0f;
+        pCircleLogic->bFill = true;
+
+        pNewNode->AddComponent(
+            std::make_unique<ParticleSystemComponent>(pNewNode, wind->Gfx(), "Models\\fire.png", 10000, std::move(pCircleLogic))
+        );
+        ParticleSystemComponent* pParticleSystem = pNewNode->GetComponent<ParticleSystemComponent>();
+        pParticleSystem->SetPlaybackMode(ParticleSystemComponent::PlaybackMode::Loop);
+        pParticleSystem->EmissionDuration = duration;
+        pParticleSystem->EmissionRate = 100.0f;              // Particles per second
+        pParticleSystem->ParticleLifetime = 0.3f;            // How long each particle lives
         pParticleSystem->EmitterPositionOffset = { 0.0f, 1.0f, 0.0f }; // Start slightly above the node's origin
         pParticleSystem->ParticleVelocity = { 0.0f, 5.0f, 0.0f }; // Strong upward velocity
         pParticleSystem->ParticleVelocityVariance = { 0.0f, 10.0f, 0.0f }; // Spread them out horizontally

@@ -20,4 +20,5 @@ public:
 	bool isActive = false;
 private:
 	float timer = 0.0f;
+	Node* particles = nullptr;
 };
