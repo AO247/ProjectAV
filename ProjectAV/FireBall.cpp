@@ -5,7 +5,7 @@ FireBall::FireBall(Node* owner) : Component(owner)
 {
 	rigidbody = owner->GetComponent<Rigidbody>();
 	// particle
-	PrefabManager::InstantiateAbility3CoreParticles(pOwner, Vector3(0, 0, 0), 1.0f);
+	PrefabManager::InstantiateFireballParticles(pOwner, Vector3(0, 0, 0), 1.0f);
 }
 void FireBall::Update(float dt)
 {

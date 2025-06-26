@@ -19,4 +19,5 @@ public:
 private:
 	bool attacked = false;
 	float timer = 0.0f;
+	Node* particles = nullptr;
 };

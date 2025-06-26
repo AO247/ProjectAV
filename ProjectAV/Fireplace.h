@@ -23,4 +23,5 @@ public:
 	float fireSoundInterval = 1.0f;
 private:
 	float timer = 0.0f;
+	Node* particles = nullptr;
 };
