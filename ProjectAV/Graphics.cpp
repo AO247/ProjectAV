@@ -36,9 +36,11 @@ Graphics::Graphics(HWND hWnd, int width, int height)
 	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	sd.BufferCount = 1;
 	sd.OutputWindow = hWnd;
-	sd.Windowed = TRUE;
+	sd.Windowed = TRUE; // <-- Keep this TRUE
 	sd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-	sd.Flags = 0;
+
+	// +++ ADD THIS FLAG +++
+	sd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
 	UINT swapCreateFlags = 0u;
 #ifndef NDEBUG
