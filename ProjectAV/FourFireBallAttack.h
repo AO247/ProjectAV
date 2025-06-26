@@ -26,6 +26,7 @@ public:
 	float shootTime3 = 1.4f;
 	float shootTime4 = 1.6f;
 
+
 	virtual void Attack(float dt);
 	virtual void DrawImGuiControls() override;
 
