@@ -77,6 +77,7 @@ private:
 	Node* pRightHand = nullptr;
 	Node* tutorialNode = nullptr;
     Node* temporary = nullptr; 
+	Node* pAbility3 = nullptr;
     UpgradeHandler* pUpgradeHandler = nullptr;
 
     TestCube cube{ wnd.Gfx(),4.0f };
@@ -97,6 +98,12 @@ private:
     std::unique_ptr<Sprite> heart1Sprite;
     std::unique_ptr<Sprite> heart2Sprite;
     std::unique_ptr<Sprite> heart3Sprite;
+
+    std::unique_ptr<Sprite> mana0Sprite;
+    std::unique_ptr<Sprite> mana1Sprite;
+    std::unique_ptr<Sprite> mana2Sprite;
+    std::unique_ptr<Sprite> mana3Sprite;
+
     std::unique_ptr<Sprite> hurtSprite;
     std::unique_ptr<Sprite> blackSprite;
     std::unique_ptr<Sprite> loadingScreen1;

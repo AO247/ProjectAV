@@ -86,7 +86,7 @@ App::App(const std::string& commandLine)
     auto pAbility2Owner = std::make_unique<Node>("Ability2", nullptr, "TRIGGER");
     Node* pAbility2 = pAbility2Owner.get();
     auto pAbility3Owner = std::make_unique<Node>("Ability3", nullptr, "TRIGGER");
-    Node* pAbility3 = pAbility3Owner.get();
+    pAbility3 = pAbility3Owner.get();
     auto pAbility4Owner = std::make_unique<Node>("Ability4", nullptr, "TRIGGER");
     Node* pAbility4 = pAbility4Owner.get();
 	auto pAbility5Owner = std::make_unique<Node>("Ability5", nullptr, "TRIGGER");
@@ -425,7 +425,7 @@ App::App(const std::string& commandLine)
         wnd.Gfx().GetDevice(),
         wnd.Gfx().GetContext(),
         wnd.Gfx().GetWidth() / 2 - (wnd.Gfx().GetWidth() * 0.35f) / 2,
-        wnd.Gfx().GetHeight() * 0.93f,
+        wnd.Gfx().GetHeight() * 0.87f,
         wnd.Gfx().GetWidth() * 0.35f,
         wnd.Gfx().GetHeight() * 0.05f,
         L"Images\\health\\hp_0.png"
@@ -435,7 +435,7 @@ App::App(const std::string& commandLine)
         wnd.Gfx().GetDevice(),
         wnd.Gfx().GetContext(),
         wnd.Gfx().GetWidth() / 2 - (wnd.Gfx().GetWidth() * 0.35f) / 2,
-        wnd.Gfx().GetHeight() * 0.93f,
+        wnd.Gfx().GetHeight() * 0.87f,
         wnd.Gfx().GetWidth() * 0.35f,
         wnd.Gfx().GetHeight() * 0.05f,
         L"Images\\health\\hp_1.png"
@@ -445,7 +445,7 @@ App::App(const std::string& commandLine)
         wnd.Gfx().GetDevice(),
         wnd.Gfx().GetContext(),
         wnd.Gfx().GetWidth() / 2 - (wnd.Gfx().GetWidth() * 0.35f) / 2,
-        wnd.Gfx().GetHeight() * 0.93f,
+        wnd.Gfx().GetHeight() * 0.87f,
         wnd.Gfx().GetWidth() * 0.35f,
         wnd.Gfx().GetHeight() * 0.05f,
         L"Images\\health\\hp_2.png"
@@ -455,11 +455,52 @@ App::App(const std::string& commandLine)
         wnd.Gfx().GetDevice(),    
         wnd.Gfx().GetContext(),
         wnd.Gfx().GetWidth() / 2 - (wnd.Gfx().GetWidth() * 0.35f) / 2,
-        wnd.Gfx().GetHeight() * 0.93f,
+        wnd.Gfx().GetHeight() * 0.87f,
         wnd.Gfx().GetWidth() * 0.35f,
         wnd.Gfx().GetHeight() * 0.05f,
         L"Images\\health\\hp_3.png"
     );
+
+    mana0Sprite = std::make_unique<Sprite>(
+        wnd.Gfx().GetDevice(),
+        wnd.Gfx().GetContext(),
+        wnd.Gfx().GetWidth() / 2 - (wnd.Gfx().GetWidth() * 0.35f) / 2,
+        wnd.Gfx().GetHeight() * 0.93f,
+        wnd.Gfx().GetWidth() * 0.35f,
+        wnd.Gfx().GetHeight() * 0.05f,
+        L"Images\\health\\mp0.png"
+    );
+
+    mana1Sprite = std::make_unique<Sprite>(
+        wnd.Gfx().GetDevice(),
+        wnd.Gfx().GetContext(),
+        wnd.Gfx().GetWidth() / 2 - (wnd.Gfx().GetWidth() * 0.35f) / 2,
+        wnd.Gfx().GetHeight() * 0.93f,
+        wnd.Gfx().GetWidth() * 0.35f,
+        wnd.Gfx().GetHeight() * 0.05f,
+        L"Images\\health\\mp1.png"
+    );
+
+    mana2Sprite = std::make_unique<Sprite>(
+        wnd.Gfx().GetDevice(),
+        wnd.Gfx().GetContext(),
+        wnd.Gfx().GetWidth() / 2 - (wnd.Gfx().GetWidth() * 0.35f) / 2,
+        wnd.Gfx().GetHeight() * 0.93f,
+        wnd.Gfx().GetWidth() * 0.35f,
+        wnd.Gfx().GetHeight() * 0.05f,
+        L"Images\\health\\mp2.png"
+    );
+
+    mana3Sprite = std::make_unique<Sprite>(
+        wnd.Gfx().GetDevice(),
+        wnd.Gfx().GetContext(),
+        wnd.Gfx().GetWidth() / 2 - (wnd.Gfx().GetWidth() * 0.35f) / 2,
+        wnd.Gfx().GetHeight() * 0.93f,
+        wnd.Gfx().GetWidth() * 0.35f,
+        wnd.Gfx().GetHeight() * 0.05f,
+        L"Images\\health\\mp3.png"
+    );
+
     loadingScreen1 = std::make_unique<Sprite>(
         wnd.Gfx().GetDevice(),
         wnd.Gfx().GetContext(),
@@ -807,6 +848,7 @@ void App::DoFrame(float dt)
         }
 
         float currentHealth = pPlayer->GetComponent<Health>()->currentHealth;
+        float currentKills = pAbility3->GetComponent<Ability3>()->killsCount;
 
         if (currentHealth < previousHealth) {
             hurtEffectTimer = 0.0f;
@@ -848,6 +890,20 @@ void App::DoFrame(float dt)
         else if (currentHealth <= 0.0f) {
             heart0Sprite->Draw(wnd.Gfx().GetContext());
         }
+
+        if (currentKills == 3.0f) {
+            mana3Sprite->Draw(wnd.Gfx().GetContext());
+        }
+        else if (currentKills == 2.0f) {
+            mana2Sprite->Draw(wnd.Gfx().GetContext());
+        }
+        else if (currentKills == 1.0f) {
+            mana1Sprite->Draw(wnd.Gfx().GetContext());
+        }
+        else if (currentKills <= 0.0f) {
+            mana0Sprite->Draw(wnd.Gfx().GetContext());
+        }
+
     }
 
     pUpgradeHandler->DrawUpgradeMenu();
@@ -1271,7 +1327,7 @@ void App::StartGame()
     startedGame = true;
     paused = false;
     UnloadMainMenuResources();
-
+    pAbility3->GetComponent<Ability3>()->killsCount = 1.0f;
     PrefabManager::InstantiateTutorialIslands(tutorialNode, tutorialNode->GetComponent<Tutorial>() , Vector3(0.0f, 0.0f, 0.0f), 1.0f);
     tutorialNode->GetComponent<Tutorial>()->Start();
     pSceneRoot->GetComponent<Global>()->Start();
