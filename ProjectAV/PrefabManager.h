@@ -287,12 +287,17 @@ public:
         modelMeshShape = modelScaling.Create().Get();
         BodyCreationSettings bodySettings(modelMeshShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Static, Layers::GROUND);
         bodySettings.mFriction = 1.0f;
-        /*pNewNodeOwner->AddComponent(
+        pNewNodeOwner->AddComponent(
             std::make_unique<Rigidbody>(pNewNodeOwner.get(), bodySettings)
         );
+        BodyCreationSettings a2odySettings(new JPH::CapsuleShape(10.0f, 3.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
+        pNewNodeOwner->AddComponent(
+            std::make_unique<Trigger>(pNewNodeOwner.get(), a2odySettings, false)
+        );
+
 		pNewNodeOwner->AddComponent(
-			std::make_unique<Fireplace>(pNewNodeOwner.get(), 1.0)
-		);*/
+			std::make_unique<Fireplace>(pNewNodeOwner.get())
+		);
 
         pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
@@ -8539,7 +8544,7 @@ public:
         auto attackNodeOwner = std::make_unique<Node>("Basic Attack", nullptr, "TRIGGER");
         Node* pattackNode = attackNodeOwner.get();
 
-        BodyCreationSettings a1BodySettings(new JPH::CapsuleShape(5.0f, 3.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
+        BodyCreationSettings a1BodySettings(new JPH::BoxShape(Vec3(1.5, 1.5, 3.0f)), RVec3(0.0f, 0.0f, 2.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
         pattackNode->AddComponent(
             std::make_unique<Trigger>(pattackNode, a1BodySettings, false)
         );
@@ -8617,7 +8622,7 @@ public:
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         parentNode->AddChild(std::move(pNewNodeOwner));
 
-        BodyCreationSettings eBodySettings(new JPH::CapsuleShape(1.8f, 1.6f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::ENEMY);
+        BodyCreationSettings eBodySettings(new JPH::CapsuleShape(2.0f, 3.7f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::ENEMY);
         eBodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
 
         eBodySettings.mMassPropertiesOverride.mMass = 15.0f;
@@ -8632,7 +8637,7 @@ public:
         auto attackNodeOwner = std::make_unique<Node>("Tank Attack", nullptr, "TRIGGER");
         Node* pattackNode = attackNodeOwner.get();
 
-        BodyCreationSettings a1BodySettings(new JPH::CapsuleShape(5.0f, 3.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
+        BodyCreationSettings a1BodySettings(new JPH::BoxShape(Vec3(1.8, 1.8, 5.0f)), RVec3(0.0f, 0.0f, 2.3f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
         pattackNode->AddComponent(
             std::make_unique<Trigger>(pattackNode, a1BodySettings, false)
         );
@@ -8641,7 +8646,6 @@ public:
         );
         TankAttack* tankAttack = pattackNode->GetComponent<TankAttack>();
         tankAttack->attackRange = 7.0f;
-        pNewNode->SetLocalPosition({ 0.0f, 0.0f, 0.0f });
         pNewNode->AddChild(std::move(attackNodeOwner));
 
         //MOVEMENT
@@ -8649,9 +8653,9 @@ public:
             std::make_unique<Walking>(pNewNode)
         );
         Walking* walking = pNewNode->GetComponent<Walking>();
-        walking->radius = 1.6f;
+        walking->radius = 3.7f;
         walking->maxSpeed = 30.0f;
-        walking->height = 7.2f;
+        walking->height = 11.4f;
 
 
         //STATE MACHINE
@@ -8667,6 +8671,7 @@ public:
         pNewNode->AddComponent(
             std::make_unique<Health>(pNewNode, 1.0f)
         );
+		pNewNode->GetComponent<Health>()->tank = true;
 
 
         pNewNode->SetLocalPosition(position);
@@ -8707,7 +8712,7 @@ public:
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         parentNode->AddChild(std::move(pNewNodeOwner));
 
-        BodyCreationSettings eBodySettings(new JPH::CapsuleShape(2.1f, 1.5f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::ENEMY);
+        BodyCreationSettings eBodySettings(new JPH::BoxShape(Vec3(4.0f, 2.0f, 3.0f)), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::ENEMY);
         eBodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
 
         //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
@@ -8876,7 +8881,7 @@ public:
         pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
         parentNode->AddChild(std::move(pNewNodeOwner));
 
-        BodyCreationSettings eBodySettings(new JPH::CapsuleShape(3.8f, 2.5f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::ENEMY);
+        BodyCreationSettings eBodySettings(new JPH::CapsuleShape(3.0f, 2.5f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Dynamic, Layers::ENEMY);
         eBodySettings.mOverrideMassProperties = EOverrideMassProperties::MassAndInertiaProvided;
 
         //bodySettings.mMassPropertiesOverride.SetMassAndInertiaOfSolidBox(Vec3(2.0f, 4.0f, 2.0f), 10.0f);
@@ -8904,7 +8909,7 @@ public:
         Walking* walking = pNewNode->GetComponent<Walking>();
         walking->radius = 2.5f;
         walking->maxSpeed = 1.0f;
-		walking->height = 12.6f;
+		walking->height = 11.0f;
 
 
         //STATE MACHINE

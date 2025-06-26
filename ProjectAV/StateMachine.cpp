@@ -114,7 +114,7 @@ void StateMachine::Stop(float time)
 
 void StateMachine::Update(float dt)
 {
-	if (attackComponents.size() > 1)
+	if (attackComponents.size() > 1 && !attacking)
 	{
 		if (attackCooldownTimer <= 0.0f)
 		{
@@ -125,7 +125,7 @@ void StateMachine::Update(float dt)
 		}
 		attackCooldownTimer -= dt;
 	}
-	else
+	else if (!attacking)
 	{
 		pAttackComponent = attackComponents[0];
 		attackRange = pAttackComponent->attackRange;

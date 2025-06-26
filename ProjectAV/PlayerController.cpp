@@ -171,12 +171,12 @@ void PlayerController::Dash()
 
 void PlayerController::PlayerGroundCheck()
 {
-    if (leftHand->GetComponent<AnimationComponent>()->GetCurrentPlayingAnimationRaw() == nullptr) {
-        leftHand->GetComponent<AnimationComponent>()->PlayAnimation(13);
-    }
-    if (rightHand->GetComponent<AnimationComponent>()->GetCurrentPlayingAnimationRaw() == nullptr) {
-        rightHand->GetComponent<AnimationComponent>()->PlayAnimation(13);
-    }
+    //if (leftHand->GetComponent<AnimationComponent>()->GetCurrentPlayingAnimationRaw() == nullptr) {
+    //    leftHand->GetComponent<AnimationComponent>()->PlayAnimation(13, 0.1f);
+    //}
+    //if (rightHand->GetComponent<AnimationComponent>()->GetCurrentPlayingAnimationRaw() == nullptr) {
+    //    rightHand->GetComponent<AnimationComponent>()->PlayAnimation(13, 0.1f);
+    //}
     grounded = false;
 
 	Vector3 playerPos = GetOwner()->GetWorldPosition();
