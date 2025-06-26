@@ -891,7 +891,7 @@ void App::DoFrame(float dt)
             heart0Sprite->Draw(wnd.Gfx().GetContext());
         }
 
-        if (currentKills == 3.0f) {
+        if (currentKills >= 3.0f) {
             mana3Sprite->Draw(wnd.Gfx().GetContext());
         }
         else if (currentKills == 2.0f) {

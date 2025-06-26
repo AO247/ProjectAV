@@ -1789,129 +1789,6 @@ public:
 
         return pNewNode;
     }
-    static Node* InstantiatePot1(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
-    {
-        auto pNewNodeOwner = std::make_unique<Node>("Pot1", nullptr, "STONE");
-
-        pNewNodeOwner->AddComponent(
-            std::make_unique<SoundEffectsPlayer>(pNewNodeOwner.get())
-        );
-        pNewNodeOwner->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enviro\\vase.ogg");
-
-        pNewNodeOwner->AddComponent(
-            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\enviro_male\\waza_1.obj")
-        );
-        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-        ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
-        ConvexHullShapeSettings shapeSettings(PhysicsCommon::MakeVertexArray(islandModel->GetAllUniqueVertices()));
-        ShapeRefC islandShape = shapeSettings.Create().Get();
-        ScaledShapeSettings islandScaling(islandShape, Vec3Arg(scale, scale, scale));
-        islandShape = islandScaling.Create().Get();
-        BodyCreationSettings BodySettings(islandShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
-        BodySettings.mMassPropertiesOverride.mMass = 7.0f;
-        BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
-        BodySettings.mFriction = 0.5f;
-        BodySettings.mMotionQuality = EMotionQuality::LinearCast;
-        pNewNodeOwner->AddComponent(
-            std::make_unique<Rigidbody>(pNewNodeOwner.get(), BodySettings)
-        );
-        Rigidbody* pRigidbody = pNewNodeOwner->GetComponent<Rigidbody>();
-        pNewNodeOwner->AddComponent(
-            std::make_unique<Throwable>(pNewNodeOwner.get())
-        );
-        pNewNodeOwner->GetComponent<Throwable>()->pot = true;
-        pNewNodeOwner->SetLocalPosition(position);
-        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
-        pNewNodeOwner->SetLocalRotation(rotation);
-
-        Node* pNewNode = pNewNodeOwner.get();
-        parentNode->AddChild(std::move(pNewNodeOwner));
-
-        return pNewNode;
-    }
-    static Node* InstantiatePot3(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
-    {
-        auto pNewNodeOwner = std::make_unique<Node>("Pot3", nullptr, "STONE");
-
-        pNewNodeOwner->AddComponent(
-            std::make_unique<SoundEffectsPlayer>(pNewNodeOwner.get())
-        );
-        pNewNodeOwner->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enviro\\vase.ogg");
-
-        pNewNodeOwner->AddComponent(
-            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\enviro_male\\waza_3.obj")
-        );
-        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-        ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
-        ConvexHullShapeSettings shapeSettings(PhysicsCommon::MakeVertexArray(islandModel->GetAllUniqueVertices()));
-        ShapeRefC islandShape = shapeSettings.Create().Get();
-        ScaledShapeSettings islandScaling(islandShape, Vec3Arg(scale, scale, scale));
-        islandShape = islandScaling.Create().Get();
-        BodyCreationSettings BodySettings(islandShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
-        BodySettings.mMassPropertiesOverride.mMass = 10.0f;
-        BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
-        BodySettings.mFriction = 0.5f;
-        BodySettings.mMotionQuality = EMotionQuality::LinearCast;
-        pNewNodeOwner->AddComponent(
-            std::make_unique<Rigidbody>(pNewNodeOwner.get(), BodySettings)
-        );
-        Rigidbody* pRigidbody = pNewNodeOwner->GetComponent<Rigidbody>();
-        pNewNodeOwner->AddComponent(
-            std::make_unique<Throwable>(pNewNodeOwner.get())
-        );
-        pNewNodeOwner->GetComponent<Throwable>()->pot = true;
-		pNewNodeOwner->GetComponent<Throwable>()->speed = 20.0f; 
-
-        pNewNodeOwner->SetLocalPosition(position);
-        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
-        pNewNodeOwner->SetLocalRotation(rotation);
-
-        Node* pNewNode = pNewNodeOwner.get();
-        parentNode->AddChild(std::move(pNewNodeOwner));
-
-        return pNewNode;
-    }
-    static Node* InstantiatePot4(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
-    {
-        auto pNewNodeOwner = std::make_unique<Node>("Pot4", nullptr, "STONE");
-
-        pNewNodeOwner->AddComponent(
-            std::make_unique<SoundEffectsPlayer>(pNewNodeOwner.get())
-        );
-        pNewNodeOwner->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enviro\\vase.ogg");
-
-        pNewNodeOwner->AddComponent(
-            std::make_unique<ModelComponent>(pNewNodeOwner.get(), wind->Gfx(), "Models\\enviro_male\\waza_4.obj")
-        );
-        pNewNodeOwner->GetComponent<ModelComponent>()->LinkTechniques(*rg);
-        ModelComponent* islandModel = pNewNodeOwner->GetComponent<ModelComponent>();
-        ConvexHullShapeSettings shapeSettings(PhysicsCommon::MakeVertexArray(islandModel->GetAllUniqueVertices()));
-        ShapeRefC islandShape = shapeSettings.Create().Get();
-        ScaledShapeSettings islandScaling(islandShape, Vec3Arg(scale, scale, scale));
-        islandShape = islandScaling.Create().Get();
-        BodyCreationSettings BodySettings(islandShape, RVec3(position.x, position.y, position.z), Quat::sIdentity(), EMotionType::Dynamic, Layers::WALL);
-        BodySettings.mMassPropertiesOverride.mMass = 7.0f;
-        BodySettings.mOverrideMassProperties = EOverrideMassProperties::CalculateInertia;
-        BodySettings.mFriction = 0.5f;
-        BodySettings.mMotionQuality = EMotionQuality::LinearCast;
-        pNewNodeOwner->AddComponent(
-            std::make_unique<Rigidbody>(pNewNodeOwner.get(), BodySettings)
-        );
-        Rigidbody* pRigidbody = pNewNodeOwner->GetComponent<Rigidbody>();
-        pNewNodeOwner->AddComponent(
-            std::make_unique<Throwable>(pNewNodeOwner.get())
-        );
-        pNewNodeOwner->GetComponent<Throwable>()->pot = true;
-
-        pNewNodeOwner->SetLocalPosition(position);
-        pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
-        pNewNodeOwner->SetLocalRotation(rotation);
-
-        Node* pNewNode = pNewNodeOwner.get();
-        parentNode->AddChild(std::move(pNewNodeOwner));
-
-        return pNewNode;
-    }
     static Node* InstantiateBrick(Node* parentNode, Vector3 position, float scale, Vector3 rotation = {0,0,0})
     {
         auto pNewNodeOwner = std::make_unique<Node>("Brick", nullptr, "STONE");
@@ -3687,7 +3564,6 @@ public:
         InstantiateRock3(pNewNode, Vector3(-28.00f, 0.00f, -32.10f), 0.7f);
         InstantiateRock3(pNewNode, Vector3(-42.70f, 0.00f, 24.60f), 0.8f, Vector3(0.00f, -1.66f, 0.00f));
         InstantiateNewColumn(pNewNode, Vector3(52.40f, 0.00f, 18.61f), 1.0f);
-        InstantiatePot4(pNewNode, Vector3(30.05f, 0.64f, -31.02f), 1.0f);
         InstantiateMushroom1(pNewNode, Vector3(30.90f, 0.00f, 25.20f), 0.18f, Vector3(-0.00f, 1.15f, 0.00f));
         InstantiateMushroom2(pNewNode, Vector3(-39.10f, 16.90f, -15.10f), 0.2f, Vector3(0.00f, -1.05f, 0.00f));
         InstantiateMushroom2(pNewNode, Vector3(-10.10f, 0.00f, -18.20f), 0.2f);
@@ -6577,7 +6453,6 @@ public:
         InstantiateThrowable(pNewNode, Vector3(-16.19f, 0.90f, 6.96f), 0.4f);
         InstantiateThrowable(pNewNode, Vector3(19.59f, 0.90f, -13.37f), 0.4f);
         InstantiateThrowable(pNewNode, Vector3(13.22f, 2.21f, 16.74f), 0.4f);
-        InstantiatePot3(pNewNode, Vector3(3.78f, 0.66f, 4.93f), 0.5f);
         InstantiateFire1(pNewNode, Vector3(-5.80f, 0.30f, -8.76f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
         InstantiatePlatform2(pNewNode, Vector3(5.4f, -2.6f, 14.7f), 0.5f, Vector3(0.00f, 0.00f, 0.00f));
 
@@ -6672,8 +6547,6 @@ public:
 
         InstantiateThrowable(pNewNode, Vector3(-14.69f, 0.90f, -3.04f), 0.4f);
         InstantiateThrowable(pNewNode, Vector3(15.59f, 0.90f, 5.53f), 0.4f);
-        InstantiatePot3(pNewNode, Vector3(10.43f, 2.00f, -15.37f), 0.5f);
-        InstantiatePot4(pNewNode, Vector3(-2.05f, 0.66f, 12.33f), 0.5f);
         InstantiateMushroom2(pNewNode, Vector3(-7.80f, 0.20f, 9.34f), 0.18f, Vector3(0.00f, 0.72f, 0.00f));
         InstantiateRock2(pNewNode, Vector3(-14.80f, 0.00f, -17.40f), 1.0f, Vector3(0.00f, 0.77f, 0.00f));
         InstantiateRock5(pNewNode, Vector3(18.50f, -0.60f, 20.10f), 1.0f, Vector3(0.00f, -0.45f, 0.00f));

@@ -154,15 +154,15 @@ void Global::AddSpecialLevel()
 	else if (levelCount == 4)
 	{
 		LevelGenerator* gen = level->GetComponent<LevelGenerator>();
-		gen->bigIslandCount = 0;
+		gen->bigIslandCount = 1;
 		gen->mediumIslandCount = 1;
-		gen->smallIslandCount = 3;
+		gen->smallIslandCount = 1;
 
 		gen->numberOfHardEnemies = 2;
 		gen->numberOfMediumEnemies = 0;
 		gen->numberOfEasyEnemies = 1;
 	}
-	else if (levelCount == 5)
+	else if (levelCount == 6)
 	{
 		LevelGenerator* gen = level->GetComponent<LevelGenerator>();
 		gen->bigIslandCount = 0;
@@ -173,7 +173,7 @@ void Global::AddSpecialLevel()
 		gen->numberOfMediumEnemies = 0;
 		gen->numberOfEasyEnemies = 2;
 	}
-	else if (levelCount == 6)
+	else if (levelCount == 5)
 	{
 		LevelGenerator* gen = level->GetComponent<LevelGenerator>();
 		gen->bigIslandCount = 0;
