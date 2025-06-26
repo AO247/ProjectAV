@@ -11,12 +11,12 @@ void Eye::Update(float dt)
 
 void Eye::OnTriggerEnter(Node* object)
 {
-	if (object == nullptr) return;
-	if (object->tag == "STONE")
-	{
-		pOwner->GetComponent<Health>()->TakeDamage(damage); // 0 - rotateAtak, 1- fireball, 2 - 4fireball, 3 - stanie, 4 - tpose, 5 - walk
-		pOwner->GetComponent<StateMachine>()->Stun(1.5f);
-	}
+	//if (object == nullptr || timer < 5.0f) return;
+	//if (object->tag == "STONE")
+	//{	
+	//	pOwner->GetComponent<Health>()->TakeDamage(damage); // 0 - rotateAtak, 1- fireball, 2 - 4fireball, 3 - stanie, 4 - tpose, 5 - walk
+	//	pOwner->GetComponent<StateMachine>()->Stun(1.5f);
+	//}
 }
 
 

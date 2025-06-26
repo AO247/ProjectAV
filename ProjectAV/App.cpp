@@ -61,7 +61,7 @@ App::App(const std::string& commandLine)
     PrefabManager::wind = &wnd;
     PrefabManager::rg = &rg;
     physicsSystem->SetGravity(Vec3(0.0f, -80.0f, 0.0f));
-    //PrefabManager::PreloadAllModels();
+    PrefabManager::PreloadAllModels();
 
     soundDevice = LISTENER->Get();
     ALint attentuation = AL_INVERSE_DISTANCE_CLAMPED;
@@ -168,7 +168,7 @@ App::App(const std::string& commandLine)
     pHands->GetComponent<Hands>()->rightHand = pRightHand;
     pHands->GetComponent<Hands>()->cameraNode = pCamera;
 
-    BodyCreationSettings a1BodySettings(new JPH::BoxShape(Vec3(3.5f, 3.5f, 33.0f)), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
+    BodyCreationSettings a1BodySettings(new JPH::CapsuleShape(6.0f, 5.0f), RVec3(0.0f, 0.0f, 0.0f), Quat::sIdentity(), EMotionType::Kinematic, Layers::TRIGGER);
     pAbility1->AddComponent(
         std::make_unique<Trigger>(pAbility1, a1BodySettings, false)
     );

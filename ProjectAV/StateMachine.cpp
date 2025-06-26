@@ -32,6 +32,25 @@ StateMachine::StateMachine(Node* owner, StateType initialState)
 		currentStateType = StateType::IDLE;
 		ChangeState(StateType::IDLE); 
 	}
+	
+	//healthBar1 = std::make_unique<Sprite>(
+	//	wnd.Gfx().GetDevice(),
+	//	wnd.Gfx().GetContext(),
+	//	wnd.Gfx().GetWidth() / 2 - (wnd.Gfx().GetWidth() * 0.35f) / 2,
+	//	wnd.Gfx().GetHeight() * 0.93f,
+	//	wnd.Gfx().GetWidth() * 0.35f,
+	//	wnd.Gfx().GetHeight() * 0.05f,
+	//	L"Images\health_boss\\boss_hp.png"
+	//);
+	//healthBar2 = std::make_unique<Sprite>(
+	//	wnd.Gfx().GetDevice(),
+	//	wnd.Gfx().GetContext(),
+	//	wnd.Gfx().GetWidth() / 2 - (wnd.Gfx().GetWidth() * 0.35f) / 2,
+	//	wnd.Gfx().GetHeight() * 0.93f,
+	//	wnd.Gfx().GetWidth() * 0.35f,
+	//	wnd.Gfx().GetHeight() * 0.05f,
+	//	L"Images\health_boss\\boss_hp.png"
+	//);
 	//Stop(3.0f);
 	//for (const auto& component : pOwner->GetComponents())
 	//{

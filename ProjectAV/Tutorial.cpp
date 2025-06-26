@@ -87,8 +87,6 @@ Tutorial::Tutorial(Node* owner, Window& window, Node* player)
     checkpoints.push_back({ 69.3f, -16.4f, -220.7f });
 	checkpoints.push_back({ 20.5f, 3.2f, -105.1f});
 
-
-
 }
 
 

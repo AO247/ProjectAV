@@ -68,7 +68,7 @@ private:
 	float dashTimer = 0.0f;
 	bool dashed = false;
 	bool doubleJumped = false;
-	float autoJumpRange = 1.0f;
+	float autoJumpRange = 1.6f;
 	float autoJumpHeight = 2.0f;
 	void KeyboardInput();
 	void MovePlayer(float dt);

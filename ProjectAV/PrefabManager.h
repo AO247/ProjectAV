@@ -8822,6 +8822,8 @@ public:
         ShootAttack* shootAttack = pNewNode->GetComponent<ShootAttack>();
         shootAttack->bulletSpeed = 50.0f;
         shootAttack->attackRange = 60.0f;
+        shootAttack->shootTime = 0.8f;
+        shootAttack->wholeAttackTime = 1.64;
 
         //MOVEMENT
         auto voidOwner = std::make_unique<Node>("VoidCheck", nullptr, "TRIGGER");

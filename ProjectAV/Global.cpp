@@ -118,6 +118,102 @@ void Global::AddSpecialLevel()
 	level->AddComponent(
 		std::make_unique<StoneGenerator>(level)
 	);
+	if (levelCount == 1)
+	{
+		LevelGenerator* gen = level->GetComponent<LevelGenerator>();
+		gen->bigIslandCount = 0;
+		gen->mediumIslandCount = 1;
+		gen->smallIslandCount = 0;
+
+		gen->numberOfHardEnemies = 0;
+		gen->numberOfMediumEnemies = 0;
+		gen->numberOfEasyEnemies = 2;
+	}
+	else if (levelCount == 2)
+	{
+		LevelGenerator* gen = level->GetComponent<LevelGenerator>();
+		gen->bigIslandCount = 0;
+		gen->mediumIslandCount = 1;
+		gen->smallIslandCount = 1;
+
+		gen->numberOfHardEnemies = 0;
+		gen->numberOfMediumEnemies = 1;
+		gen->numberOfEasyEnemies = 1;
+	}
+	else if (levelCount == 3)
+	{
+		LevelGenerator* gen = level->GetComponent<LevelGenerator>();
+		gen->bigIslandCount = 1;
+		gen->mediumIslandCount = 1;
+		gen->smallIslandCount = 1;
+
+		gen->numberOfHardEnemies = 1;
+		gen->numberOfMediumEnemies = 1;
+		gen->numberOfEasyEnemies = 1;
+	}
+	else if (levelCount == 4)
+	{
+		LevelGenerator* gen = level->GetComponent<LevelGenerator>();
+		gen->bigIslandCount = 0;
+		gen->mediumIslandCount = 1;
+		gen->smallIslandCount = 3;
+
+		gen->numberOfHardEnemies = 2;
+		gen->numberOfMediumEnemies = 0;
+		gen->numberOfEasyEnemies = 1;
+	}
+	else if (levelCount == 7)
+	{
+		LevelGenerator* gen = level->GetComponent<LevelGenerator>();
+		gen->bigIslandCount = 1;
+		gen->mediumIslandCount = 0;
+		gen->smallIslandCount = 1;
+
+		gen->numberOfHardEnemies = 0;
+		gen->numberOfMediumEnemies = 3;
+		gen->numberOfEasyEnemies = 0;
+		/*gen->enemiesSpawned = true;
+		gen->islandGenerated = true;
+		gen->enemiesSpawned = true;
+		PrefabManager::InstantiateFirstIsland(level, Vector3(0.0f, 0.0f, 20.0f), 1.0f);
+		PrefabManager::InstantiateBossIsland(level, Vector3(0.0f, 5.0f, 160.0f), 1.0f);
+		PrefabManager::InstantiateBossEnemy(level, Vector3(0.0f, 15.0f, 80.0f));*/
+
+	}
+	else if (levelCount == 6)
+	{
+		LevelGenerator* gen = level->GetComponent<LevelGenerator>();
+		gen->bigIslandCount = 1;
+		gen->mediumIslandCount = 1;
+		gen->smallIslandCount = 1;
+
+		gen->numberOfHardEnemies = 2;
+		gen->numberOfMediumEnemies = 0;
+		gen->numberOfEasyEnemies = 1;
+	}
+	else if (levelCount == 5)
+	{
+		LevelGenerator* gen = level->GetComponent<LevelGenerator>();
+		gen->bigIslandCount = 0;
+		gen->mediumIslandCount = 1;
+		gen->smallIslandCount = 0;
+
+		gen->numberOfHardEnemies = 0;
+		gen->numberOfMediumEnemies = 0;
+		gen->numberOfEasyEnemies = 2;
+	}
+	else if (levelCount == 8)
+	{
+		LevelGenerator* gen = level->GetComponent<LevelGenerator>();
+		gen->bigIslandCount = 1;
+		gen->mediumIslandCount = 1;
+		gen->smallIslandCount = 3;
+
+		gen->numberOfHardEnemies = 3;
+		gen->numberOfMediumEnemies = 2;
+		gen->numberOfEasyEnemies = 2;
+	}
+	
 	completed = false;
 	levelCount++;
 }

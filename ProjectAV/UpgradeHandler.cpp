@@ -7,26 +7,26 @@ UpgradeHandler::UpgradeHandler(Node* owner, Window& window)
 		wnd.Gfx().GetDevice(),
 		wnd.Gfx().GetContext(),
 		0, 180, 350, 600,             
-		L"Images\\a1Card.png"
+		L"Images\\karty\\push_1.gif"
 	));
 	ability1.cardSprites.push_back(std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
 		wnd.Gfx().GetContext(),
 		0, 180, 350, 600,
-		L"Images\\a1Card.png"
+		L"Images\\karty\\push_2.gif"
 	));
 
 	ability1.cardSprites.push_back(std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
 		wnd.Gfx().GetContext(),
 		0, 180, 350, 600,
-		L"Images\\upgrade1_1.png"
+		L"Images\\karty\\string_evolve.gif"
 	));
 	ability1.cardSprites.push_back(std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
 		wnd.Gfx().GetContext(),
 		0, 180, 350, 600,
-		L"Images\\upgrade1_2.png"
+		L"Images\\karty\\gravitygun_evolve.gif"
 	));
 
 
@@ -36,40 +36,46 @@ UpgradeHandler::UpgradeHandler(Node* owner, Window& window)
 		wnd.Gfx().GetDevice(),
 		wnd.Gfx().GetContext(),
 		0, 180, 350, 600,
-		L"Images\\a2Card.png"
+		L"Images\\karty\\toss_1.gif"
 	));
 	ability2.cardSprites.push_back(std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
 		wnd.Gfx().GetContext(),
 		0, 180, 350, 600,
-		L"Images\\a2Card.png"
+		L"Images\\karty\\toss_2.gif"
 	));
 	ability2.cardSprites.push_back(std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
 		wnd.Gfx().GetContext(),
 		0, 180, 350, 600,
-		L"Images\\upgrade2_1.png"
+		L"Images\\karty\\toss_evolve.gif"
 	));
 
 	dash.cardSprites.push_back(std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
 		wnd.Gfx().GetContext(),
 		0, 180, 350, 600,
-		L"Images\\dashCard.png"
+		L"Images\\karty\\dash_1.gif"
 	));
 	dash.cardSprites.push_back(std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
 		wnd.Gfx().GetContext(),
 		0, 180, 350, 600,
-		L"Images\\dashCard.png"
+		L"Images\\karty\\dash_2.gif"
 	));
 	dash.cardSprites.push_back(std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
 		wnd.Gfx().GetContext(),
 		0, 180, 350, 600,
-		L"Images\\dashCard.png"
+		L"Images\\karty\\dash_evolve.gif"
 	));
 
+	jump.cardSprites.push_back(std::make_unique<Sprite>(
+		wnd.Gfx().GetDevice(),
+		wnd.Gfx().GetContext(),
+		0, 180, 350, 600,
+		L"Images\\karty\\jumpCard.png"
+	));
 	jump.cardSprites.push_back(std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
 		wnd.Gfx().GetContext(),
@@ -80,13 +86,7 @@ UpgradeHandler::UpgradeHandler(Node* owner, Window& window)
 		wnd.Gfx().GetDevice(),
 		wnd.Gfx().GetContext(),
 		0, 180, 350, 600,
-		L"Images\\jumpCard.png"
-	));
-	jump.cardSprites.push_back(std::make_unique<Sprite>(
-		wnd.Gfx().GetDevice(),
-		wnd.Gfx().GetContext(),
-		0, 180, 350, 600,
-		L"Images\\jumpCard.png"
+		L"Images\\karty\\jump_evolve.gif"
 	));
 
 
@@ -127,6 +127,7 @@ void UpgradeHandler::Update(float dt)
 				selectedCardData = cardData1;
 				ApplyUpgrade(0);
 			}
+			card1->Update(dt);
 		}
 		else if (testButton2->IsClicked(mousePos.first, mousePos.second) && card2 != nullptr && cardData2 != nullptr)
 		{
@@ -135,6 +136,8 @@ void UpgradeHandler::Update(float dt)
 				selectedCardData = cardData2;
 				ApplyUpgrade(1);
 			}
+			card2->Update(dt);
+
 		}
 		else if (testButton3->IsClicked(mousePos.first, mousePos.second) && card3 != nullptr && cardData3 != nullptr)
 		{
@@ -143,6 +146,8 @@ void UpgradeHandler::Update(float dt)
 				selectedCardData = cardData3;
 				ApplyUpgrade(2);
 			}
+			card3->Update(dt);
+
 		}
 		if (card1 == nullptr && card2 == nullptr && card3 == nullptr)
 		{
