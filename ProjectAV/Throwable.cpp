@@ -42,7 +42,7 @@ void Throwable::OnCollisionEnter(Node* object)
 	{
 		if (object->GetComponent<Health>())
 		{
-			object->GetComponent<Health>()->TakeDamage(damage, heavy);
+			object->GetComponent<Health>()->TakeDamage(damage, heavy, false, extraHeavy);
 		}
 	}
 	

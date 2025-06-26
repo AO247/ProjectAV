@@ -74,13 +74,13 @@ UpgradeHandler::UpgradeHandler(Node* owner, Window& window)
 		wnd.Gfx().GetDevice(),
 		wnd.Gfx().GetContext(),
 		0, 180, 350, 600,
-		L"Images\\karty\\jumpCard.png"
+		L"Images\\karty\\doublejump_1.gif"
 	));
 	jump.cardSprites.push_back(std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
 		wnd.Gfx().GetContext(),
 		0, 180, 350, 600,
-		L"Images\\jumpCard.png"
+		L"Images\\karty\\doublejump_2.gif"
 	));
 	jump.cardSprites.push_back(std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),

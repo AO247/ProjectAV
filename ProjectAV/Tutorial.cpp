@@ -113,7 +113,7 @@ void Tutorial::Update(float dt)
 		enemy4 = PrefabManager::InstantiateShootingEnemy(temporary, { 32.2f, -15.8f, -203.6f })->GetComponent<StateMachine>();
 		enemy5 = PrefabManager::InstantiateShootingEnemy(temporary, { 35.2f, -15.8f, -190.6f })->GetComponent<StateMachine>();
 		enemy6 = PrefabManager::InstantiateTankEnemy(temporary, { 213.7f, -16.3f, -208.9f })->GetComponent<StateMachine>();
-		column = PrefabManager::InstantiateNewColumn(temporary, { 214.2f, -16.3f, -217.9f }, 1.0f);
+		column = PrefabManager::InstantiateNewColumn(temporary, { 214.2f, -19.5f, -217.9f }, 1.0f);
 		enemy1->Stop(1000.0f);
 		enemy2->Stop(1000.0f);
 		enemy3->Stop(1000.0f);
@@ -171,11 +171,11 @@ void Tutorial::Update(float dt)
 	{
 		currentNote = note4.get();
 	}
-	if (currentCheckpointIndex == 7)
+	if (currentCheckpointIndex == 6)
 	{
 		currentNote = note5.get();
 	}
-	if (currentCheckpointIndex == 7 && qPressed)
+	if (currentCheckpointIndex == 7)
 	{
 		currentNote = note6.get();
 	}

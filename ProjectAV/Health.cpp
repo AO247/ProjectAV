@@ -15,7 +15,7 @@ void Health::DrawImGuiControls()
 	ImGui::Text("Max Health: %f", maxHealth);
 }
 
-void Health::TakeDamage(float damage, bool heavy, bool isFire)
+void Health::TakeDamage(float damage, bool heavy, bool isFire, bool extraHeavy)
 {
 	StateMachine* statemachine = pOwner->GetComponent <StateMachine>();
 
@@ -30,7 +30,7 @@ void Health::TakeDamage(float damage, bool heavy, bool isFire)
 		}
 		if (tank)
 		{
-			if (heavy)
+			if (heavy || extraHeavy)
 			{
 				hitted = true;
 				pOwner->GetComponent<StateMachine>()->Stop(0.1f);

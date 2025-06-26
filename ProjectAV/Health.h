@@ -21,7 +21,7 @@ public:
 	std::unique_ptr<Sprite> healthBar2;
 
 	virtual void DrawImGuiControls() override;
-	void TakeDamage(float damage, bool heavy = false, bool isFire = false);
+	void TakeDamage(float damage, bool heavy = false, bool isFire = false, bool extraHeavy = false);
 
 private:
 };
