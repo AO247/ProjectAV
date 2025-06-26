@@ -9,7 +9,7 @@ StoneGenerator::StoneGenerator(Node* owner)
 
 void StoneGenerator::Update(float dt)
 {
-	if (!active) return;
+	/*if (!active) return;
 	timer += dt;
 	timerBakground += dt;
 	if (timer >= dropRate)
@@ -50,7 +50,7 @@ void StoneGenerator::Update(float dt)
 			timer = 0.0f;
 			PrefabManager::InstantiateThrowable(pOwner, pos, 0.4f);
 		}
-	}
+	}*/
 	/*if (timerBakground > dropRateBackground)
 	{
 		float xdir = ((rand() % 200) - 100) / 100.0f;

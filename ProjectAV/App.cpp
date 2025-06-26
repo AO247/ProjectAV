@@ -63,7 +63,7 @@ App::App(const std::string& commandLine)
     PrefabManager::wind = &wnd;
     PrefabManager::rg = &rg;
     physicsSystem->SetGravity(Vec3(0.0f, -80.0f, 0.0f));
-    //PrefabManager::PreloadAllModels();
+    PrefabManager::PreloadAllModels();
 
     soundDevice = LISTENER->Get();
     ALint attentuation = AL_INVERSE_DISTANCE_CLAMPED;
@@ -599,12 +599,12 @@ int App::Go()
 
 void App::HandleInput(float dt)
 {
-    if (wnd.kbd.IsJustPressed('B'))
-    {
-        PrefabManager::InstantiateBossEnemy(temporary, pFreeViewCamera->GetWorldPosition());
-        //PrefabManager::InstantiateMushroom1(temporary, pFreeViewCamera->GetWorldPosition(), 1.0f);
+    //if (wnd.kbd.IsJustPressed('B'))
+    //{
+    //    PrefabManager::InstantiateBossEnemy(temporary, pFreeViewCamera->GetWorldPosition());
+    //    //PrefabManager::InstantiateMushroom1(temporary, pFreeViewCamera->GetWorldPosition(), 1.0f);
 
-    }
+    //}
     if (wnd.kbd.IsJustPressed('M'))
     {
         if (myMusic->isPlaying())
@@ -630,7 +630,7 @@ void App::HandleInput(float dt)
         cursorEnabled = !cursorEnabled;
     }
 
-    if (wnd.kbd.IsJustPressed('H'))
+    /*if (wnd.kbd.IsJustPressed('H'))
     {
         showControlWindow = !showControlWindow;
     }
@@ -650,7 +650,7 @@ void App::HandleInput(float dt)
     if (wnd.kbd.IsJustPressed('P'))
     {
         paused = !paused;
-    }
+    }*/
     if (wnd.kbd.IsJustPressed(VK_ESCAPE) && startedGame)
     {
         paused = !paused;
@@ -671,7 +671,7 @@ void App::HandleInput(float dt)
         //return; // Zwróć od razu, aby uniknąć dalszego przetwarzania
     }
 
-    if (wnd.kbd.IsJustPressed(VK_F1))
+   /* if (wnd.kbd.IsJustPressed(VK_F1))
     {
         showDemoWindow = !showDemoWindow;
     }
@@ -708,7 +708,7 @@ void App::HandleInput(float dt)
         if (wnd.kbd.IsKeyPressed('O')) {
             pFreeViewCamera->TranslateLocal({ 0.0f, 0.4f, 0.0f });
         }
-    }
+    }*/
 }
 void App::DoFrame(float dt)
 {
