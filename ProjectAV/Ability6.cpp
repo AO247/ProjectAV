@@ -64,7 +64,7 @@ void Ability6::Positioning()
 void Ability6::Pulling(float dt)
 {
 	if (selectedNode == nullptr) return;
-
+    if (selectedNode->GetComponent<Throwable>()->extraHeavy) return;
     Vector3 cameraPos = camera->GetWorldPosition();
     Vector3 targetPosition = cameraPos + camera->Forward() * 13.0f;
     Rigidbody* rb = selectedNode->GetComponent<Rigidbody>();

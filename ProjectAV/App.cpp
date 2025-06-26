@@ -249,7 +249,7 @@ App::App(const std::string& commandLine)
     pAbility4->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\sznurek2.wav");
     pAbility4->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\hold.wav");
     pAbility4->GetComponent<Ability4>()->baseAbility = pAbility1->GetComponent<Ability1>();
-    //pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility4;
+    pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility4;
 
 
     pAbility5->AddComponent(
@@ -275,7 +275,7 @@ App::App(const std::string& commandLine)
     pAbility6->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\gravity2.wav");
     pAbility6->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\player\\hold.wav");
     pAbility6->GetComponent<Ability6>()->baseAbility = pAbility1->GetComponent<Ability1>();
-    pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility6;
+    //pPlayer->GetComponent<PlayerController>()->abilitySlot1 = pAbility6;
 
     pFreeViewCamera->AddComponent(
         std::make_unique<Camera>(pFreeViewCamera, wnd)
