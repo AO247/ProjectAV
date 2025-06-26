@@ -410,7 +410,17 @@ App::App(const std::string& commandLine)
         plusSpriteY,                
         plusSpriteWidth,            
         plusSpriteHeight,           
-        L"Images\\plus.png"
+        L"Images\\zawijas.png"
+    );
+
+    hurtSprite = std::make_unique<Sprite>(
+        wnd.Gfx().GetDevice(),
+        wnd.Gfx().GetContext(),
+        0,
+        0,
+        wnd.Gfx().GetWidth(),
+        wnd.Gfx().GetHeight(),
+        L"Images\\health\\hurt.png"
     );
 
 
@@ -480,7 +490,15 @@ App::App(const std::string& commandLine)
         1080,
         L"Images\\Loading_Screen3.png"
     );
-     
+    blackSprite = std::make_unique<Sprite>(
+        wnd.Gfx().GetDevice(),
+        wnd.Gfx().GetContext(),
+        0,
+        0,
+        wnd.Gfx().GetWidth(),
+        wnd.Gfx().GetHeight(),
+        L"Images\\black.png" // Make sure you have this file
+    );
 
     cursorEnabled = true;
     wnd.EnableCursor();  
@@ -773,62 +791,108 @@ void App::DoFrame(float dt)
     if (showControlWindow) {
         ShowControlWindows();
     }
-
-
-
     if (targetSprite) {
         targetSprite->Draw(wnd.Gfx().GetContext());
     }
 
-    if (pPlayer->GetComponent<Health>()->currentHealth == 3.0f) {
-        //heart1Sprite->Draw(wnd.Gfx().GetContext());
-        //heart2Sprite->Draw(wnd.Gfx().GetContext());
-        heart3Sprite->Draw(wnd.Gfx().GetContext());
-    }
-    if (pPlayer->GetComponent<Health>()->currentHealth == 2.0f) {
-        //heart1Sprite->Draw(wnd.Gfx().GetContext());
-        heart2Sprite->Draw(wnd.Gfx().GetContext());
-    }
-    if (pPlayer->GetComponent<Health>()->currentHealth == 1.0f) {
-        heart1Sprite->Draw(wnd.Gfx().GetContext());
-    }
-    if (pPlayer->GetComponent<Health>()->currentHealth == 0.0f) {
-        heart0Sprite->Draw(wnd.Gfx().GetContext());
+    //hardcode hurt info
+
+    if (pPlayer != nullptr && pPlayer->GetComponent<Health>() != nullptr)
+    {
+
+
+        static float previousHealth = 3.0f;
+        const float hurtEffectDuration = 1.0f;
+        static float hurtEffectTimer = hurtEffectDuration;
+
+        if (pSceneRoot->GetComponent<Global>()->drawLoadingScreen) {
+            hurtEffectTimer = hurtEffectDuration; // Ustaw timer na "zakończony"
+        }
+
+        float currentHealth = pPlayer->GetComponent<Health>()->currentHealth;
+
+        if (currentHealth < previousHealth) {
+            hurtEffectTimer = 0.0f;
+        }
+        previousHealth = currentHealth;
+
+        if (hurtEffectTimer < hurtEffectDuration) {
+            hurtEffectTimer += dt;
+        }
+
+        if (hurtEffectTimer < hurtEffectDuration) {
+            float t = hurtEffectTimer / hurtEffectDuration;
+             
+            float t_eased_scale = 1.0f - (1.0f - t) * (1.0f - t);
+            float scale = 1.5f - 0.5f * t_eased_scale;
+             
+            float alpha = 1.0f; 
+            float fadeOutStartTime = 0.5f;
+            if (t > fadeOutStartTime) { 
+                float fade_t = (t - fadeOutStartTime) / (1.0f - fadeOutStartTime);
+                alpha = 1.0f - fade_t;
+            }
+             
+            DirectX::XMFLOAT4 hurtColor = { 1.0f, 1.0f, 1.0f, alpha };
+             
+            hurtSprite->Draw(wnd.Gfx().GetContext(), std::max(1.0f, scale), hurtColor);
+        }
+
+        // --- Health bar drawing logic ---
+        if (currentHealth == 3.0f) {
+            heart3Sprite->Draw(wnd.Gfx().GetContext());
+        }
+        else if (currentHealth == 2.0f) {
+            heart2Sprite->Draw(wnd.Gfx().GetContext());
+        }
+        else if (currentHealth == 1.0f) {
+            heart1Sprite->Draw(wnd.Gfx().GetContext());
+        }
+        else if (currentHealth <= 0.0f) {
+            heart0Sprite->Draw(wnd.Gfx().GetContext());
+        }
     }
 
     pUpgradeHandler->DrawUpgradeMenu();
 
      
-
     if (pSceneRoot->GetComponent<Global>()->drawLoadingScreen || bonusTime > 0.0f)
-    {
-        if (!pSceneRoot->GetComponent<Global>()->drawLoadingScreen)
-        {
+    { 
+        static bool wasActive = false;
+        static float fadeOutTimer = 0.0f;
+        const float fadeOutDuration = 2.5f; // Czas trwania samego fade out
+         
+        bool isActiveNow = pSceneRoot->GetComponent<Global>()->drawLoadingScreen;
+         
+        if (isActiveNow) {
+            bonusTime = fadeOutDuration;  
+        }
+        else if (bonusTime > 0.0f) {
             bonusTime -= dt;
         }
-        else {
-            bonusTime = 5.0f;
+         
+        float alpha = 0.0f;
+         
+        if (isActiveNow && !wasActive) {
+            fadeOutTimer = 0.0f;
         }
-        countLoding++;
+        wasActive = isActiveNow;
 
-        if (countLoding > 2.0f)
-        {
-            if (countLoding > 2.9f)
-            {
-                countLoding = 0.0f;
+        if (isActiveNow) { 
+            alpha = 1.0f;
+        }
+        else { 
+            if (fadeOutTimer < fadeOutDuration) {
+                fadeOutTimer += dt;
+                alpha = 1.0f - (fadeOutTimer / fadeOutDuration);
             }
-            loadingScreen3->Draw(wnd.Gfx().GetContext());
         }
-        else if (countLoding > 1.0f)
-        {
-            loadingScreen2->Draw(wnd.Gfx().GetContext());
-        }
-        else
-        {
-            loadingScreen1->Draw(wnd.Gfx().GetContext());
+         
+        alpha = std::max(0.0f, std::min(1.0f, alpha));
+        if (alpha > 0.0f) {
+            blackSprite->Draw(wnd.Gfx().GetContext(), 1.0f, { 1.0f, 1.0f, 1.0f, alpha });
         }
     }
-
     if (paused && startedGame)
     {
         DrawPauseMenu(dt);

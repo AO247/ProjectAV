@@ -19,7 +19,7 @@ public:
         const std::wstring& spritePath);
     ~Sprite();
 
-    void Draw(ID3D11DeviceContext* context);
+    void Draw(ID3D11DeviceContext* context, float scale = 1.0f, DirectX::XMFLOAT4 color = { 1.0f, 1.0f, 1.0f, 1.0f });
 
     void Update(float deltaTime);
 

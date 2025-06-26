@@ -171,6 +171,12 @@ void PlayerController::Dash()
 
 void PlayerController::PlayerGroundCheck()
 {
+    if (leftHand->GetComponent<AnimationComponent>()->GetCurrentPlayingAnimationRaw() == nullptr) {
+        leftHand->GetComponent<AnimationComponent>()->PlayAnimation(13);
+    }
+    if (rightHand->GetComponent<AnimationComponent>()->GetCurrentPlayingAnimationRaw() == nullptr) {
+        rightHand->GetComponent<AnimationComponent>()->PlayAnimation(13);
+    }
     grounded = false;
 
 	Vector3 playerPos = GetOwner()->GetWorldPosition();
@@ -222,6 +228,10 @@ void PlayerController::PlayerGroundCheck()
     {
         doubleJumped = false;
     }
+
+
+
+
 }
 
 void PlayerController::MovePlayer(float dt)

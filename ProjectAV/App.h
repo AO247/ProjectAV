@@ -97,6 +97,8 @@ private:
     std::unique_ptr<Sprite> heart1Sprite;
     std::unique_ptr<Sprite> heart2Sprite;
     std::unique_ptr<Sprite> heart3Sprite;
+    std::unique_ptr<Sprite> hurtSprite;
+    std::unique_ptr<Sprite> blackSprite;
     std::unique_ptr<Sprite> loadingScreen1;
     std::unique_ptr<Sprite> loadingScreen2;
     std::unique_ptr<Sprite> loadingScreen3;
@@ -105,6 +107,7 @@ private:
 
      
     bool wasMouseLeftPressedLastFrame = false;
+     
 
 
     //========== pauza
