@@ -18,6 +18,9 @@ public:
 	float activeTime = 5.0f;
 	float cooldownTime = 5.0f;
 	bool isActive = false;
+
+	float fireSoundTimer = 0.0f;
+	float fireSoundInterval = 1.0f;
 private:
 	float timer = 0.0f;
 };

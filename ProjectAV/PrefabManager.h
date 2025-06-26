@@ -16,6 +16,7 @@
 #include <filesystem> // <-- Do³¹cz ten nag³ówek
 #include <iostream>
 #include "SphereVolumeEmitterLogic.h"
+#include "SoundEffectsPlayer.h"
 
 //class PhysicsEngine;
 class ShootAttack;
@@ -298,6 +299,11 @@ public:
 		pNewNodeOwner->AddComponent(
 			std::make_unique<Fireplace>(pNewNodeOwner.get())
 		);
+
+        pNewNodeOwner->AddComponent(
+            std::make_unique<SoundEffectsPlayer>(pNewNodeOwner.get())
+        );
+        pNewNodeOwner->GetComponent<SoundEffectsPlayer>()->AddSound("Sounds\\enviro\\fire.wav");
 
         pNewNodeOwner->SetLocalPosition(position);
         pNewNodeOwner->SetLocalScale(DirectX::XMFLOAT3(scale, scale, scale));
