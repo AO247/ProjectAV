@@ -103,9 +103,7 @@ bool Ability2::Pressed()
     abilityReady = false;
     PrefabManager::InstantiateAbility2Particles(pOwner->GetParent(), Vector3(pOwner->GetLocalPosition().x, pOwner->GetLocalPosition().y, pOwner->GetLocalPosition().z), 1.0);
     PrefabManager::InstantiateAbility2ParticlesSmoke(pOwner->GetParent(), Vector3(pOwner->GetLocalPosition().x, pOwner->GetLocalPosition().y, pOwner->GetLocalPosition().z), 1.0);
-    //PrefabManager::InstantiateAnimationTest(pOwner->GetParent(), Vector3(pOwner->GetLocalPosition().x, pOwner->GetLocalPosition().y, pOwner->GetLocalPosition().z), 1.0);
-    //PrefabManager::InstantiateStunParticles(pOwner->GetParent(), Vector3(pOwner->GetLocalPosition().x, pOwner->GetLocalPosition().y, pOwner->GetLocalPosition().z), 1.0);
-    //PrefabManager::InstantiateJumpPadActivationParticles(pOwner->GetParent(), Vector3(pOwner->GetLocalPosition().x, pOwner->GetLocalPosition().y, pOwner->GetLocalPosition().z), 1.0);
+
     return true;
 }
 void Ability2::Released()
