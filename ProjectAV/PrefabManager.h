@@ -2999,7 +2999,7 @@ public:
         InstantiateRock2(pNewNode, Vector3(22.00f, 0.50f, -15.20f), 1.0f, Vector3(0.0f, -0.19f, 0.0f));
         InstantiateRock4(pNewNode, Vector3(-15.90f, 0.00f, -7.40f), 1.0f, Vector3(0.00f, -1.29f, 0.00f));
         InstantiateRock1(pNewNode, { -6.06f, 16.70f, 34.51f }, 0.9f, Vector3(0.00f, -0.87f, 3.14f));
-		InstantiateBaseColumn(pNewNode, { 58.7f, -3.3f, -48.5f }, 0.8f, 1.0f);
+		InstantiateBaseColumn(pNewNode, { 58.7f, -3.3f, -48.5f }, 1.0f, 1.0f);
         InstantiatePlatform3(pNewNode, Vector3(0.00f, 0.00f, 8.30f), 1.0f, Vector3(0.00f, 1.75f, 0.00f));
 
         parentNode->AddChild(std::move(pNewNodeOwner));
@@ -3184,6 +3184,7 @@ public:
         pNewNodeOwner->SetLocalRotation(rotation);
         pNewNodeOwner->radius = 1000.0f;
 
+        //WALLS
 		InstantiatePlatform3(pNewNodeOwner.get(), Vector3(125.00f, -3.30f, -21.40f), 1.0f, Vector3(0.00f, 2.90f, 0.00f));
         InstantiatePlatform3(pNewNodeOwner.get(), Vector3(123.50f, 0.00f, 17.50f), 1.0f, Vector3(0.00f, 3.11f, 0.00f));
         InstantiatePlatform3(pNewNodeOwner.get(), Vector3(120.00f, 0.00f, -62.20f), 1.0f, Vector3(0.00f, -2.86f, 0.00f));
@@ -3208,20 +3209,37 @@ public:
         InstantiateRockDouble(pNewNodeOwner.get(), Vector3(-35.70f, 0.00f, 125.00f), 1.0f, Vector3(0.00f, 0.00f, 0.00f));
         InstantiateRockDouble(pNewNodeOwner.get(), Vector3(-63.40f, 0.00f, -101.90f), 1.0f, Vector3(0.00f, 2.41f, 0.00f));
         InstantiateRockDouble(pNewNodeOwner.get(), Vector3(-112.60f, 0.40f, 2.70f), 1.0f, Vector3(0.00f, 0.40f, 0.00f));
-		InstantiateNewColumn(pNewNodeOwner.get(), Vector3(65.00f, 1.30f, 69.20f), 1.0f);
+
+        //LEVEL
+		/*InstantiateNewColumn(pNewNodeOwner.get(), Vector3(65.00f, 1.30f, 69.20f), 1.0f);
         InstantiateNewColumn(pNewNodeOwner.get(), Vector3(77.00f, 1.30f, -12.50f), 1.0f);
         InstantiateNewColumn(pNewNodeOwner.get(), Vector3(33.70f, 1.30f, -87.40f), 1.0f);
         InstantiateNewColumn(pNewNodeOwner.get(), Vector3(-39.10f, 1.30f, -66.60f), 1.0f);
         InstantiateNewColumn(pNewNodeOwner.get(), Vector3(-48.50f, 1.30f, -18.80f), 1.0f);
         InstantiateNewColumn(pNewNodeOwner.get(), Vector3(-40.70f, 1.30f, 34.10f), 1.0f);
         InstantiateNewColumn(pNewNodeOwner.get(), Vector3(-15.90f, 1.30f, 68.60f), 1.0f);
-        InstantiateNewColumn(pNewNodeOwner.get(), Vector3(26.50f, 1.30f, 49.80f), 1.0f);
+        InstantiateNewColumn(pNewNodeOwner.get(), Vector3(26.50f, 1.30f, 49.80f), 1.0f);*/
 		InstantiateStoneStack1(pNewNodeOwner.get(), Vector3(67.60f, 2.72f, -65.30f), 1.1f);
         InstantiateStoneStack1(pNewNodeOwner.get(), Vector3(35.20f, 2.72f, 65.50f), 1.1f);
         InstantiateStoneStack1(pNewNodeOwner.get(), Vector3(-7.00f, 2.72f, -75.00f), 1.0f);
         InstantiateStoneStack1(pNewNodeOwner.get(), Vector3(-24.60f, 2.72f, -2.30f), 1.0f);
         InstantiateStoneStack1(pNewNodeOwner.get(), Vector3(73.00f, 2.72f, 34.80f), 0.9f);
         InstantiateStoneStack1(pNewNodeOwner.get(), Vector3(-4.30f, 10.02f, 39.50f), 0.9f);
+        /*InstantiateThrowable(pNewNodeOwner.get(), Vector3(-4.30f, 10.02f, 39.50f), 0.4f);
+        InstantiateThrowable(pNewNodeOwner.get(), Vector3(-4.30f, 10.02f, 39.50f), 0.4f);
+        InstantiateThrowable(pNewNodeOwner.get(), Vector3(-4.30f, 10.02f, 39.50f), 0.4f);
+        InstantiateThrowable(pNewNodeOwner.get(), Vector3(-4.30f, 10.02f, 39.50f), 0.4f);
+        InstantiateThrowable(pNewNodeOwner.get(), Vector3(-4.30f, 10.02f, 39.50f), 0.4f);
+        InstantiateThrowable(pNewNodeOwner.get(), Vector3(-4.30f, 10.02f, 39.50f), 0.4f);
+        InstantiateThrowable(pNewNodeOwner.get(), Vector3(-4.30f, 10.02f, 39.50f), 0.4f);
+        InstantiateThrowable(pNewNodeOwner.get(), Vector3(-4.30f, 10.02f, 39.50f), 0.4f);
+        InstantiateThrowable(pNewNodeOwner.get(), Vector3(-4.30f, 10.02f, 39.50f), 0.4f);
+        InstantiateThrowable(pNewNodeOwner.get(), Vector3(-4.30f, 10.02f, 39.50f), 0.4f);
+        InstantiateThrowable(pNewNodeOwner.get(), Vector3(-4.30f, 10.02f, 39.50f), 0.4f);
+        InstantiateThrowable(pNewNodeOwner.get(), Vector3(-4.30f, 10.02f, 39.50f), 0.4f);
+        InstantiateThrowable(pNewNodeOwner.get(), Vector3(-4.30f, 10.02f, 39.50f), 0.4f);
+        InstantiateThrowable(pNewNodeOwner.get(), Vector3(-4.30f, 10.02f, 39.50f), 0.4f);*/
+        //InstantiateMushroom1();
 
         Node* pNewNode = pNewNodeOwner.get();
         parentNode->AddChild(std::move(pNewNodeOwner));
