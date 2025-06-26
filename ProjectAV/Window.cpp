@@ -53,45 +53,40 @@ HINSTANCE Window::WindowClass::GetInstance() noexcept
 
 
 
-Window::Window( int width,int height,const char* name )
+Window::Window(int width, int height, const char* name)
 	:
-	width( width ),
-	height( height )
+	width(width),
+	height(height)
 {
-	RECT wr;
-	wr.left = 100;
-	wr.right = width + wr.left;
-	wr.top = 100;
-	wr.bottom = height + wr.top;
-	if( AdjustWindowRect( &wr,WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,FALSE ) == 0 )
-	{
-		throw CHWND_LAST_EXCEPT();
-	}
-
+	// Create a borderless window that fills the screen
 	hWnd = CreateWindow(
-		WindowClass::GetName(),name,
-		WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,
-		CW_USEDEFAULT,CW_USEDEFAULT,wr.right - wr.left,wr.bottom - wr.top,
-		nullptr,nullptr,WindowClass::GetInstance(),this
+		WindowClass::GetName(), name,
+		WS_POPUP,
+		0, 0, width, height,
+		nullptr, nullptr, WindowClass::GetInstance(), this
 	);
 
-	if( hWnd == nullptr )
+	if (hWnd == nullptr)
 	{
 		throw CHWND_LAST_EXCEPT();
 	}
 
-	ShowWindow( hWnd,SW_SHOWDEFAULT );
+	// Show the window and maximize it to cover the entire screen area
+	ShowWindow(hWnd, SW_SHOWMAXIMIZED);
 
-	ImGui_ImplWin32_Init( hWnd );
+	// Initialize ImGui for this window
+	ImGui_ImplWin32_Init(hWnd);
 
-	pGfx = std::make_unique<Graphics>( hWnd,width,height );
+	// Create graphics object for this window
+	pGfx = std::make_unique<Graphics>(hWnd, width, height);
 
+	// Register raw mouse input device
 	RAWINPUTDEVICE rid;
-	rid.usUsagePage = 0x01; 
-	rid.usUsage = 0x02; 
+	rid.usUsagePage = 0x01; // Mouse
+	rid.usUsage = 0x02; // Generic Mouse
 	rid.dwFlags = 0;
 	rid.hwndTarget = nullptr;
-	if( RegisterRawInputDevices( &rid,1,sizeof( rid ) ) == FALSE )
+	if (RegisterRawInputDevices(&rid, 1, sizeof(rid)) == FALSE)
 	{
 		throw CHWND_LAST_EXCEPT();
 	}
