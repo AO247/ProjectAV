@@ -48,8 +48,13 @@ void OnFire::Update(float dt)
 			pOwner->GetComponent<Health>()->TakeDamage(damage, false, true);
 			timer = 0.0f;
 		}
-		if(bigTimer > 6.0f)
+		if (bigTimer > 6.0f)
+		{
+			if (particles != nullptr)
+			{
+				particles->GetComponent<ParticleSystemComponent>()->Stop();
+			}
 			pOwner->RemoveComponent(this);
-
+		}
 	}
 }

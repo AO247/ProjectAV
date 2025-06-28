@@ -24,7 +24,13 @@ void Ability6::Update(float dt)
     if (!wnd.CursorEnabled())
     {
         pOwner->SetWorldPosition(player->GetWorldPosition());
-        PullingParticlesPositioning();
+        if (selectedNode != nullptr)
+        {
+            if (!selectedNode->GetComponent<Throwable>()->extraHeavy)
+            {
+                PullingParticlesPositioning();
+            }
+        }
         Positioning();
         Cooldowns(dt);
 		pressedTime += dt;
@@ -49,9 +55,13 @@ void Ability6::Positioning()
         if (PhysicsCommon::physicsSystem->GetBodyInterface().GetMotionType(result.mBodyID) == EMotionType::Dynamic)
         {
             selectedNode = reinterpret_cast<Node*>(PhysicsCommon::physicsSystem->GetBodyInterface().GetUserData(result.mBodyID));
-            if (selectedNode->GetComponent<Throwable>() == nullptr)
+            if (selectedNode != nullptr)
             {
-                selectedNode = nullptr;
+                if (selectedNode->GetComponent<Throwable>() == nullptr)
+                {
+                    selectedNode = nullptr;
+                }
+
             }
 
         }
@@ -211,7 +221,11 @@ void Ability6::Released()
         holdSmokeParticles = nullptr;
     }
     //leftHandAbility->SetLocalPosition({ 0.0f, -2.7f, 4.0f });
-    if (selectedNode->GetComponent<Throwable>()->extraHeavy == true)
+
+
+
+
+    if (selectedNode->GetComponent<Throwable>()->extraHeavy == true && pressedTime > 0.4f)
     {
         abilityReady = false;
         int randSound = rand() % 2 + 12;

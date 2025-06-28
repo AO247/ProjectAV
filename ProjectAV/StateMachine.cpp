@@ -79,8 +79,18 @@ void StateMachine::Stun(float time)
 
 	// dŸwiêk stuna 
 	// zatrzymanie w miejscu
-
-	PrefabManager::InstantiateStunParticles(pOwner, Vector3(0.0f, 1 + pOwner->GetComponent<Walking>()->height / 2, 0.0f), 1.0f);
+	if (stunTimeParticle <= 0.0f)
+	{
+		if (pOwner->GetComponent<Walking>() != nullptr)
+		{
+			PrefabManager::InstantiateStunParticles(pOwner, Vector3(0.0f, 1 + pOwner->GetComponent<Walking>()->height / 2, 0.0f), 1.0f);
+		}
+		else
+		{
+			PrefabManager::InstantiateStunParticles(pOwner, Vector3(0.0f, 1.0f, 0.0f), 1.0f);
+		}
+		stunTimeParticle = 0.8f;
+	}
 	if (statemachine->enemyType == EnemyType::BASIC) {
 		pOwner->GetComponent<AnimationComponent>()->PlayAnimation(2);		//stun basic
 
@@ -133,6 +143,10 @@ void StateMachine::Stop(float time)
 
 void StateMachine::Update(float dt)
 {
+	if (stunTimeParticle > 0.0f)
+	{
+		stunTimeParticle -= dt;
+	}
 	if (attackComponents.size() > 1 && !attacking)
 	{
 		if (attackCooldownTimer <= 0.0f)

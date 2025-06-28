@@ -53,9 +53,9 @@ public:
 	void Stun(float time = 1.0f);
 	void Stop(float time = 1.0f);
 	float timer = 0.0f;
-
+	Node* particleStun = nullptr;
 	EnemyType enemyType = EnemyType::NONE;
-
+	float stunTimeParticle = 0.0f;
 
 private:
 

@@ -21,13 +21,27 @@ void FireBall::OnTriggerEnter(Node* object)
 	if (object->tag == "TRIGGER" || object == pOwner || object == ignore) return;
 	if (object->tag == "PLAYER" || object->tag == "GROUND" || object->tag == "WALL" || object->tag == "STONE")
 	{
-		PrefabManager::InstantiateFireBoom(pOwner->GetWorldPosition(), 1.0f);
+		if (object->tag == "PLAYER" || object->tag == "ENEMY")
+		{
+			if (object->GetComponent<OnFire>() != nullptr) return;
+			object->AddComponent(
+				std::make_unique<OnFire>(object)
+			);
+		}
+		//PrefabManager::InstantiateFireBoom(pOwner->GetWorldPosition(), 1.0f);
 		pOwner->Destroy();
 
 	}
 	if (pushedByPlayer && object->tag == "ENEMY")
 	{
-		PrefabManager::InstantiateFireBoom(pOwner->GetWorldPosition(), 1.0f);
+		if (object->tag == "PLAYER" || object->tag == "ENEMY")
+		{
+			if (object->GetComponent<OnFire>() != nullptr) return;
+			object->AddComponent(
+				std::make_unique<OnFire>(object)
+			);
+		}
+		//PrefabManager::InstantiateFireBoom(pOwner->GetWorldPosition(), 1.0f);
 		object->GetComponent<Health>()->TakeDamage(0.0f);
 		pOwner->Destroy();
 	}
@@ -36,7 +50,14 @@ void FireBall::OnCollisionEnter(Node* object)
 {
 	if (object == nullptr) return;
 	if (object->tag == "TRIGGER" || object == pOwner || object == ignore) return;
-	PrefabManager::InstantiateFireBoom(pOwner->GetWorldPosition(), 1.0f);
+	//PrefabManager::InstantiateFireBoom(pOwner->GetWorldPosition(), 1.0f);
+	if (object->tag == "PLAYER" || object->tag == "ENEMY")
+	{
+		if (object->GetComponent<OnFire>() != nullptr) return;
+		object->AddComponent(
+			std::make_unique<OnFire>(object)
+		);
+	}
 	pOwner->Destroy();
 }
 

@@ -78,9 +78,13 @@ void Ability4::Positioning()
         if (PhysicsCommon::physicsSystem->GetBodyInterface().GetMotionType(result.mBodyID) == EMotionType::Dynamic)
         {
             selectedNode = reinterpret_cast<Node*>(PhysicsCommon::physicsSystem->GetBodyInterface().GetUserData(result.mBodyID));
-            if (selectedNode->GetComponent<Throwable>() == nullptr)
+            if (selectedNode != nullptr)
             {
-                selectedNode = nullptr;
+                if (selectedNode->GetComponent<Throwable>() == nullptr)
+                {
+                    selectedNode = nullptr;
+                }
+
             }
 
         }
@@ -132,7 +136,7 @@ void Ability4::Released()
  
     timeToChange = 0.3f;
 
-    if (pressedTime < 0.13f || selectedNode == nullptr)
+    if (pressedTime < 0.25f || selectedNode == nullptr)
     {
         pOwner->GetComponent<SoundEffectsPlayer>()->Stop(2);
         pressedTime = 0.0f;
