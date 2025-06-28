@@ -692,7 +692,7 @@ void LevelGenerator::SpawnEnemies()
 
         if (randEnemy == 0 && numberOfHardEnemies > 0)
         {
-            int randEnemy = rand() % 3;
+            int randEnemy = rand() % 2;
 
             if (randEnemy == 0)
             {
@@ -705,12 +705,12 @@ void LevelGenerator::SpawnEnemies()
                 enemy->SetWorldPosition(pos);
                 enemy->GetComponent<StateMachine>()->basePos = pos;
             }
-            else if (randEnemy == 2)
-            {
-                enemy = PrefabManager::InstantiateFastEnemy(pOwner, Vector3(0.0f, 0.0f, 0.0f));
-                enemy->SetWorldPosition(pos);
-                enemy->GetComponent<StateMachine>()->basePos = pos;
-            }
+            //else if (randEnemy == 2)
+            //{
+            //    enemy = PrefabManager::InstantiateFastEnemy(pOwner, Vector3(0.0f, 0.0f, 0.0f));
+            //    enemy->SetWorldPosition(pos);
+            //    enemy->GetComponent<StateMachine>()->basePos = pos;
+            //}
             numberOfHardEnemies--;
         }
         if (randEnemy == 1 && numberOfMediumEnemies > 0)
@@ -734,16 +734,10 @@ void LevelGenerator::SpawnEnemies()
         }
         if (randEnemy == 2 && numberOfEasyEnemies > 0)
         {
-            int randEnemy = rand() % 2;
+            int randEnemy = rand() % 1;
             if (randEnemy == 0)
             {
                 enemy = PrefabManager::InstantiateNormalEnemy(pOwner, Vector3(0.0f, 0.0f, 0.0f));
-                enemy->SetWorldPosition(pos);
-                enemy->GetComponent<StateMachine>()->basePos = pos;
-            }
-            if (randEnemy == 1)
-            {
-                enemy = PrefabManager::InstantiateTankEnemy(pOwner, Vector3(0.0f, 0.0f, 0.0f));
                 enemy->SetWorldPosition(pos);
                 enemy->GetComponent<StateMachine>()->basePos = pos;
             }
