@@ -28,7 +28,16 @@ namespace dx = DirectX;
 App::App(const std::string& commandLine)
     :
     commandLine(commandLine),
-    wnd(1920, 1080, "Winderer"),
+    wnd(
+        []() {
+            RECT desktop;
+            const HWND hDesktop = GetDesktopWindow();
+            GetWindowRect(hDesktop, &desktop);
+            int width = desktop.right - desktop.left;
+            int height = desktop.bottom - desktop.top;
+            return Window(width, height, "Winderer");
+        }()
+    ),
     pointLight(wnd.Gfx(), 2u), 
     dirLight(wnd.Gfx(), 0u),
     pSceneRoot(std::make_unique<Node>("Root"))
