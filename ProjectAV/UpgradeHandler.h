@@ -77,9 +77,9 @@ public:
 	Sprite* card1 = nullptr;
 	Sprite* card2 = nullptr;
 	Sprite* card3 = nullptr;
-	int card1Pos = 200;
-	int card2Pos = 800;
-	int card3Pos = 1400;
+	float screenWidth = 0.0f;
+	float screenHeight = 0.0f;
+	Vector2 cardSize = Vector2::Zero;
 
 	std::unique_ptr<Button> testButton1;
 	std::unique_ptr<Button> testButton2;

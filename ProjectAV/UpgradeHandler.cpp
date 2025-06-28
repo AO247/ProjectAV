@@ -3,30 +3,45 @@ namespace dx = DirectX;
 UpgradeHandler::UpgradeHandler(Node* owner, Window& window)
 	: Component(owner), wnd(window)
 {
+	screenWidth = static_cast<float>(wnd.Gfx().GetWidth());
+	screenHeight = static_cast<float>(wnd.Gfx().GetHeight());
+
+
+	const float cardWidth = screenWidth * 0.25f; 
+	const float cardHeight = cardWidth * (1608.0f / 1039.0f);
+	cardSize = Vector2(cardWidth, cardHeight);
+
+
+
 	ability1.cardSprites.push_back(std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
 		wnd.Gfx().GetContext(),
-		0, 180, 350, 600,             
+		0, 0,   
+		static_cast<int>(cardSize.x),
+		static_cast<int>(cardSize.y), 
 		L"Images\\karty\\push_1.gif"
 	));
 	ability1.cardSprites.push_back(std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
 		wnd.Gfx().GetContext(),
-		0, 180, 350, 600,
-		L"Images\\karty\\push_2.gif"
+		0, 0,
+		static_cast<int>(cardSize.x),
+		static_cast<int>(cardSize.y), L"Images\\karty\\push_2.gif"
 	));
 
 	ability1.cardSprites.push_back(std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
 		wnd.Gfx().GetContext(),
-		0, 180, 350, 600,
-		L"Images\\karty\\string_evolve.gif"
+		0, 0,
+		static_cast<int>(cardSize.x),
+		static_cast<int>(cardSize.y), L"Images\\karty\\string_evolve.gif"
 	));
 	ability1.cardSprites.push_back(std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
 		wnd.Gfx().GetContext(),
-		0, 180, 350, 600,
-		L"Images\\karty\\gravitygun_evolve.gif"
+		0, 0,
+		static_cast<int>(cardSize.x),
+		static_cast<int>(cardSize.y), L"Images\\karty\\gravitygun_evolve.gif"
 	));
 
 
@@ -35,80 +50,92 @@ UpgradeHandler::UpgradeHandler(Node* owner, Window& window)
 	ability2.cardSprites.push_back(std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
 		wnd.Gfx().GetContext(),
-		0, 180, 350, 600,
-		L"Images\\karty\\toss_1.gif"
+		0, 0,
+		static_cast<int>(cardSize.x),
+		static_cast<int>(cardSize.y), L"Images\\karty\\toss_1.gif"
 	));
 	ability2.cardSprites.push_back(std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
 		wnd.Gfx().GetContext(),
-		0, 180, 350, 600,
-		L"Images\\karty\\toss_2.gif"
+		0, 0,
+		static_cast<int>(cardSize.x),
+		static_cast<int>(cardSize.y), L"Images\\karty\\toss_2.gif"
 	));
 	ability2.cardSprites.push_back(std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
 		wnd.Gfx().GetContext(),
-		0, 180, 350, 600,
-		L"Images\\karty\\toss_evolve.gif"
+		0, 0,
+		static_cast<int>(cardSize.x),
+		static_cast<int>(cardSize.y), L"Images\\karty\\toss_evolve.gif"
 	));
 
 	dash.cardSprites.push_back(std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
 		wnd.Gfx().GetContext(),
-		0, 180, 350, 600,
-		L"Images\\karty\\dash_1.gif"
+		0, 0,
+		static_cast<int>(cardSize.x),
+		static_cast<int>(cardSize.y), L"Images\\karty\\dash_1.gif"
 	));
 	dash.cardSprites.push_back(std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
 		wnd.Gfx().GetContext(),
-		0, 180, 350, 600,
-		L"Images\\karty\\dash_2.gif"
+		0, 0,
+		static_cast<int>(cardSize.x),
+		static_cast<int>(cardSize.y), L"Images\\karty\\dash_2.gif"
 	));
 	dash.cardSprites.push_back(std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
 		wnd.Gfx().GetContext(),
-		0, 180, 350, 600,
-		L"Images\\karty\\dash_evolve.gif"
+		0, 0,
+		static_cast<int>(cardSize.x),
+		static_cast<int>(cardSize.y), L"Images\\karty\\dash_evolve.gif"
 	));
 
 	jump.cardSprites.push_back(std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
 		wnd.Gfx().GetContext(),
-		0, 180, 350, 600,
-		L"Images\\karty\\doublejump_1.gif"
+		0, 0,
+		static_cast<int>(cardSize.x),
+		static_cast<int>(cardSize.y), L"Images\\karty\\doublejump_1.gif"
 	));
 	jump.cardSprites.push_back(std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
 		wnd.Gfx().GetContext(),
-		0, 180, 350, 600,
-		L"Images\\karty\\doublejump_2.gif"
+		0, 0,
+		static_cast<int>(cardSize.x),
+		static_cast<int>(cardSize.y), L"Images\\karty\\doublejump_2.gif"
 	));
 	jump.cardSprites.push_back(std::make_unique<Sprite>(
 		wnd.Gfx().GetDevice(),
 		wnd.Gfx().GetContext(),
-		0, 180, 350, 600,
-		L"Images\\karty\\jump_evolve.gif"
+		0, 0,
+		static_cast<int>(cardSize.x),
+		static_cast<int>(cardSize.y), L"Images\\karty\\jump_evolve.gif"
 	));
 
 
 	testButton1 = std::make_unique<Button>(
 		wnd.Gfx().GetDevice(),
 		wnd.Gfx().GetContext(),
-		card1Pos, 70, 350, 600,        
-		L" ",         
+		0, 0,
+		static_cast<int>(cardSize.x),
+		static_cast<int>(cardSize.y), L" ",
 		L"myfile.spritefont" 
 	);
 	testButton2 = std::make_unique<Button>(
 		wnd.Gfx().GetDevice(),
 		wnd.Gfx().GetContext(), 
-		card2Pos, 70, 350, 600,        
-		L" ",           
+		0, 0,
+		static_cast<int>(cardSize.x),
+		static_cast<int>(cardSize.y), L" ",
 		L"myfile.spritefont"
 	);
 	testButton3 = std::make_unique<Button>(
 		wnd.Gfx().GetDevice(),
 		wnd.Gfx().GetContext(),
-		card3Pos, 70, 350, 600,       
-		L" ",         
+		0, 0,
+		static_cast<int>(cardSize.x),
+		static_cast<int>(cardSize.y), L" ",
 		L"myfile.spritefont" 
 	);
 }
@@ -116,6 +143,14 @@ UpgradeHandler::UpgradeHandler(Node* owner, Window& window)
 
 void UpgradeHandler::Update(float dt)
 {
+	screenWidth = static_cast<float>(wnd.Gfx().GetWidth());
+	screenHeight = static_cast<float>(wnd.Gfx().GetHeight());
+
+	cardSize = Vector2(
+		screenWidth * 0.25f,
+		screenWidth * 0.25f * (1608.0f / 1039.0f)
+	);
+
 	if (upgradeMenuOpen && !upgraded && missclickTimer < 0.0f)
 	{
 
@@ -169,8 +204,8 @@ void UpgradeHandler::Update(float dt)
 
 			int screenW = wnd.Gfx().GetWidth();
 			int screenH = wnd.Gfx().GetHeight();
-			targetW = 500; 
-			targetH = 800;
+			targetW = static_cast<int>(screenWidth * 0.3f);
+			targetH = static_cast<int>(targetW * (1608.0f / 1039.0f));
 			targetX = (screenW - targetW) / 2;
 			targetY = (screenH - targetH) / 2;
 		}
@@ -436,15 +471,68 @@ void UpgradeHandler::RandomUpgrades()
 			card3 = cardData3->cardSprites[cards[currentUpgrade3]->count].get();
 		}
 	}
-	if(card1 != nullptr)
-		card1->x_ = card1Pos;
+	const float margin = screenWidth * 0.05f; // 5% marginesu
+	const float totalWidth = 3 * cardSize.x + 2 * margin;
+	const float startX = (screenWidth - totalWidth) / 2;
+	const float cardY = screenHeight * 0.15f; // 15% od góry
 
-	if (card2 != nullptr)
-		card2->x_ = card2Pos;
+	if (card1 != nullptr) {
+		card1->x_ = static_cast<int>(startX);
+		card1->y_ = static_cast<int>(cardY);
+		card1->width_ = static_cast<int>(cardSize.x);
+		card1->height_ = static_cast<int>(cardSize.y);
+	}
 
-	if (card3 != nullptr)
-		card3->x_ = card3Pos;
+	if (card2 != nullptr) {
+		card2->x_ = static_cast<int>(startX + cardSize.x + margin);
+		card2->y_ = static_cast<int>(cardY);
+		card2->width_ = static_cast<int>(cardSize.x);
+		card2->height_ = static_cast<int>(cardSize.y);
+	}
+
+	if (card3 != nullptr) {
+		card3->x_ = static_cast<int>(startX + 2 * (cardSize.x + margin));
+		card3->y_ = static_cast<int>(cardY);
+		card3->width_ = static_cast<int>(cardSize.x);
+		card3->height_ = static_cast<int>(cardSize.y);
+	}
+
+	// Ustaw pozycje przycisków (jeœli s¹ u¿ywane do klikniêæ)
+	if (testButton1) {
+		testButton1->SetPosition(
+			static_cast<int>(startX),
+			static_cast<int>(cardY)
+		);
+		testButton1->SetSize(
+			static_cast<int>(cardSize.x),
+			static_cast<int>(cardSize.y)
+		);
+	}
+
+	if (testButton2) {
+		testButton2->SetPosition(
+			static_cast<int>(startX + cardSize.x + margin),
+			static_cast<int>(cardY)
+		);
+		testButton2->SetSize(
+			static_cast<int>(cardSize.x),
+			static_cast<int>(cardSize.y)
+		);
+	}
+
+	if (testButton3) {
+		testButton3->SetPosition(
+			static_cast<int>(startX + 2 * (cardSize.x + margin)),
+			static_cast<int>(cardY)
+		);
+		testButton3->SetSize(
+			static_cast<int>(cardSize.x),
+			static_cast<int>(cardSize.y)
+		);
+	}
 }
+
+
 void UpgradeHandler::ApplyUpgrade(int upgradeIndex)
 {
 	if (upgraded) return;
