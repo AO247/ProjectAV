@@ -24,6 +24,7 @@
     <ProjectGuid>{9d82fcf3-c254-45d3-adf7-ee1511956a32}</ProjectGuid>
     <RootNamespace>ProjectAV</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>Winderer</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
