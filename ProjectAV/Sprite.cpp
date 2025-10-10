@@ -66,7 +66,6 @@ HRESULT Sprite::InitializeWICFactory() {
 
     if (SUCCEEDED(hr)) {
         s_wicFactoryInitialized = true;
-        OutputDebugStringA("Sprite Info: WIC Imaging Factory initialized successfully.\n");
     }
     else {
         OutputDebugStringA("Sprite Error: Failed to create WIC Imaging Factory. GIF loading will fail.\n");
@@ -88,22 +87,16 @@ Sprite::Sprite(ID3D11Device* device, ID3D11DeviceContext* deviceContext, int x, 
     : device_(device), x_(x), y_(y), width_(width), height_(height), debugSpritePath_(spritePath) {
     HRESULT hr;
 
-    OutputDebugStringW(L"Sprite Constructor START for: ");
-    OutputDebugStringW(spritePath.c_str());
-    OutputDebugStringW(L"\n");
-
     DirectX::XMStoreFloat4x4(&projectionMatrix_, DirectX::XMMatrixIdentity());
     DirectX::XMStoreFloat4x4(&worldMatrix_, DirectX::XMMatrixIdentity());
 
     InitializeWICFactory();
 
     if (IsGifExtension(spritePath) && s_wicFactoryInitialized) {
-        OutputDebugStringW(L"Sprite Info: Detected .gif, attempting to load as animation.\n");
         hr = LoadGifAnimation(device, spritePath);
         if (SUCCEEDED(hr) && !gifFrameSRVs_.empty()) {
             isAnimatedGif_ = true;
             texture_ = gifFrameSRVs_[0].Get();
-            OutputDebugStringW(L"Sprite Info: GIF animation loaded successfully.\n");
         }
         else {
             OutputDebugStringW(L"Sprite Warning: Failed to load GIF as animation. Falling back to static image load.\n");
@@ -127,7 +120,6 @@ Sprite::Sprite(ID3D11Device* device, ID3D11DeviceContext* deviceContext, int x, 
         }
     }
     else {
-        OutputDebugStringW(L"Sprite Info: Loading as static texture.\n");
         hr = DirectX::CreateWICTextureFromFileEx(
             device,
             spritePath.c_str(),
@@ -148,7 +140,6 @@ Sprite::Sprite(ID3D11Device* device, ID3D11DeviceContext* deviceContext, int x, 
     }
 
     if (texture_ != nullptr) {
-        OutputDebugStringW(L"Sprite Info: Texture resource view successfully obtained.\n");
     }
     else {
         OutputDebugStringW(L"Sprite Error: Texture resource view is NULL after loading attempts.\n");
@@ -170,7 +161,6 @@ Sprite::Sprite(ID3D11Device* device, ID3D11DeviceContext* deviceContext, int x, 
     initData.pSysMem = vertices;
     hr = device_->CreateBuffer(&bd, &initData, &vertexBuffer_);
     if (FAILED(hr)) { OutputDebugStringA("Sprite Error: Failed to create vertex buffer.\n"); return; }
-    else { OutputDebugStringA("Sprite Info: Vertex buffer created.\n"); }
 
     WORD indices[] = { 0, 1, 2, 0, 2, 3 };
     D3D11_BUFFER_DESC ibd = {};
@@ -234,14 +224,12 @@ Sprite::Sprite(ID3D11Device* device, ID3D11DeviceContext* deviceContext, int x, 
     ID3DBlob* vsBlob = nullptr;
     hr = CompileShaderFromMemory_Sprite(vertexShaderSource, "vs_4_0", "main", &vsBlob);
     if (FAILED(hr)) { OutputDebugStringA("Sprite Error: Failed to compile VS (Texture Version)!\n"); return; }
-    else { OutputDebugStringA("Sprite Info: VS (Texture Version) compiled.\n"); }
 
     hr = device_->CreateVertexShader(vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), nullptr, &vertexShader_);
     if (FAILED(hr)) {
         OutputDebugStringA("Sprite Error: Failed to create VS object (Texture Version)!\n");
         if (vsBlob) vsBlob->Release(); return;
     }
-    else { OutputDebugStringA("Sprite Info: VS object (Texture Version) created.\n"); }
 
     ID3DBlob* psBlob = nullptr;
     hr = CompileShaderFromMemory_Sprite(pixelShaderSource, "ps_4_0", "main", &psBlob);
@@ -249,7 +237,6 @@ Sprite::Sprite(ID3D11Device* device, ID3D11DeviceContext* deviceContext, int x, 
         OutputDebugStringA("Sprite Error: Failed to compile PS (Texture Version)!\n");
         if (vsBlob) vsBlob->Release(); return;
     }
-    else { OutputDebugStringA("Sprite Info: PS (Texture Version) compiled.\n"); }
 
     hr = device_->CreatePixelShader(psBlob->GetBufferPointer(), psBlob->GetBufferSize(), nullptr, &pixelShader_);
     if (FAILED(hr)) {
@@ -258,7 +245,6 @@ Sprite::Sprite(ID3D11Device* device, ID3D11DeviceContext* deviceContext, int x, 
         if (vsBlob) vsBlob->Release();
         return;
     }
-    else { OutputDebugStringA("Sprite Info: PS object (Texture Version) created.\n"); }
 
     D3D11_INPUT_ELEMENT_DESC inputElementDesc[] = {
         {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,    0, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0},
@@ -272,7 +258,6 @@ Sprite::Sprite(ID3D11Device* device, ID3D11DeviceContext* deviceContext, int x, 
         if (vsBlob) vsBlob->Release();
         return;
     }
-    else { OutputDebugStringA("Sprite Info: Input layout (Texture Version) created.\n"); }
 
     if (psBlob) psBlob->Release();
     if (vsBlob) vsBlob->Release();
@@ -285,7 +270,6 @@ Sprite::Sprite(ID3D11Device* device, ID3D11DeviceContext* deviceContext, int x, 
     cbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
     hr = device_->CreateBuffer(&cbd, nullptr, &constantBuffer_);
     if (FAILED(hr)) { OutputDebugStringA("Sprite Error: Failed to create constant buffer!\n"); return; }
-    else { OutputDebugStringA("Sprite Info: Constant buffer created.\n"); }
 
 
     D3D11_SAMPLER_DESC samplerDesc = {};
@@ -298,7 +282,6 @@ Sprite::Sprite(ID3D11Device* device, ID3D11DeviceContext* deviceContext, int x, 
     samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
     hr = device_->CreateSamplerState(&samplerDesc, &sampler_);
     if (FAILED(hr)) { OutputDebugStringA("Sprite Error: Failed to create sampler state!\n"); return; }
-    else { OutputDebugStringA("Sprite Info: Sampler state created.\n"); }
 
 
     D3D11_BLEND_DESC blendDesc = {};
@@ -312,12 +295,8 @@ Sprite::Sprite(ID3D11Device* device, ID3D11DeviceContext* deviceContext, int x, 
     blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
     hr = device_->CreateBlendState(&blendDesc, &blendState_);
     if (FAILED(hr)) { OutputDebugStringA("Sprite Error: Failed to create blend state!\n"); return; }
-    else { OutputDebugStringA("Sprite Info: Blend state created.\n"); }
 
 
-    OutputDebugStringW(L"Sprite Constructor END for: ");
-    OutputDebugStringW(spritePath.c_str());
-    OutputDebugStringW(L"\n");
 }
 Sprite::~Sprite() { 
     gifFrameTextures_.clear();
@@ -336,7 +315,6 @@ Sprite::~Sprite() {
     if (vertexShader_) { vertexShader_->Release(); vertexShader_ = nullptr; }
     if (indexBuffer_) { indexBuffer_->Release(); indexBuffer_ = nullptr; }
     if (vertexBuffer_) { vertexBuffer_->Release(); vertexBuffer_ = nullptr; }
-    OutputDebugStringA("Sprite Destructor called.\n");
 }
  
 
@@ -417,12 +395,7 @@ HRESULT Sprite::LoadGifAnimation(ID3D11Device* device, const std::wstring& fileP
         return FAILED(hr) ? hr : E_FAIL;
     }
 
-    wchar_t w_msg[512];
     char a_msg[256];
-
-    swprintf_s(w_msg, L"Sprite Info: GIF '%s' has %u frames. Initial Logical Size: %ux%u. BG Color (BGRA): %02X %02X %02X %02X\n",
-        filePath.c_str(), frameCount, logicalScreenWidth, logicalScreenHeight, gifBackgroundColor.b, gifBackgroundColor.g, gifBackgroundColor.r, gifBackgroundColor.a);
-    OutputDebugStringW(w_msg);
 
     std::vector<ColorBGRA> canvas;
     if (logicalScreenWidth > 0 && logicalScreenHeight > 0) {
@@ -478,16 +451,12 @@ HRESULT Sprite::LoadGifAnimation(ID3D11Device* device, const std::wstring& fileP
                 if (logicalScreenWidth == 0 || logicalScreenHeight == 0) {
                     OutputDebugStringA("LoadGifAnimation Error: Cannot determine canvas size from first valid frame. Aborting.\n"); return E_FAIL;
                 }
-                swprintf_s(w_msg, L"Canvas size dynamically set from frame %d: %ux%u\n", i, logicalScreenWidth, logicalScreenHeight);
-                OutputDebugStringW(w_msg);
             }
             canvas.resize(static_cast<size_t>(logicalScreenWidth) * logicalScreenHeight, gifBackgroundColor);
         }
 
         if (i > 0) {
             if (prevFrameDisposal == 2) {
-                sprintf_s(a_msg, "Frame %d: Prev frame disposal was 2 (Restore BG). Area: L%u T%u W%u H%u\n", i, prevFrameLeft, prevFrameTop, prevFrameWidth, prevFrameHeight);
-                OutputDebugStringA(a_msg);
                 for (UINT y_disp = 0; y_disp < prevFrameHeight; ++y_disp) {
                     for (UINT x_disp = 0; x_disp < prevFrameWidth; ++x_disp) {
                         UINT canvasX = prevFrameLeft + x_disp;
@@ -565,8 +534,6 @@ HRESULT Sprite::LoadGifAnimation(ID3D11Device* device, const std::wstring& fileP
         if (i == 0 && (width_ == 0 || height_ == 0) && logicalScreenWidth > 0 && logicalScreenHeight > 0) {
             width_ = logicalScreenWidth;
             height_ = logicalScreenHeight;
-            sprintf_s(a_msg, "Sprite dimensions set to logical screen: %d x %d\n", width_, height_);
-            OutputDebugStringA(a_msg);
         }
 
         D3D11_TEXTURE2D_DESC texDesc = {};
@@ -606,14 +573,6 @@ HRESULT Sprite::LoadGifAnimation(ID3D11Device* device, const std::wstring& fileP
         }
         gifFrameSRVs_.push_back(frameSRV);
 
-        if (i == 0 && !canvas.empty() && d3dPixelBuffer.size() >= 8) {
-            if (canvas.size() > 1 && d3dPixelBuffer.size() > 8) {
-                sprintf_s(a_msg, "Canvas Frame 0, Pixel 0 (Final D3D BGRA): %02X %02X %02X %02X || P1: %02X %02X %02X %02X\n",
-                    d3dPixelBuffer[0], d3dPixelBuffer[1], d3dPixelBuffer[2], d3dPixelBuffer[3],
-                    d3dPixelBuffer[4], d3dPixelBuffer[5], d3dPixelBuffer[6], d3dPixelBuffer[7]);
-                OutputDebugStringA(a_msg);
-            }
-        }
 
         prevFrameDisposal = disposalMethod;
         prevFrameLeft = frameLeft;

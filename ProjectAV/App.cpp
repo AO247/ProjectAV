@@ -72,7 +72,6 @@ App::App(const std::string& commandLine)
     PrefabManager::wind = &wnd;
     PrefabManager::rg = &rg;
     physicsSystem->SetGravity(Vec3(0.0f, -80.0f, 0.0f));
-    //PrefabManager::PreloadAllModels();
 
     soundDevice = LISTENER->Get();
     ALint attentuation = AL_INVERSE_DISTANCE_CLAMPED;
