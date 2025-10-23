@@ -87,6 +87,20 @@ void MusicBuffer::UpdateBufferStream()
 				p_Sfinfo.samplerate);
 			alSourceQueueBuffers(p_Source, 1, &bufid);
 		}
+		else
+		{
+			sf_seek(p_SndFile, 0, SEEK_SET);
+
+			// Spróbuj od razu wczytaæ dane od pocz¹tku do tego samego bufora.
+			slen = sf_readf_short(p_SndFile, p_Membuf, BUFFER_SAMPLES);
+			if (slen > 0)
+			{
+				slen *= p_Sfinfo.channels * (sf_count_t)sizeof(short);
+				alBufferData(bufid, p_Format, p_Membuf, (ALsizei)slen,
+					p_Sfinfo.samplerate);
+				alSourceQueueBuffers(p_Source, 1, &bufid);
+			}
+		}
 		if (alGetError() != AL_NO_ERROR)
 		{
 			throw("error buffering music data");

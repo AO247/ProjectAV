@@ -65,6 +65,11 @@ private:
 
     SoundDevice* soundDevice; 
     std::unique_ptr<MusicBuffer> myMusic;
+    std::unique_ptr<MusicBuffer> myMusic_gameplay;
+    enum class ActiveMusic { Menu, Gameplay, None };
+    ActiveMusic m_activeMusic = ActiveMusic::None;
+    void SwitchMusic(ActiveMusic newTrack);
+
     DirectX::BoundingFrustum cameraFrustum; 
 
     std::unique_ptr<Node> pSceneRoot;

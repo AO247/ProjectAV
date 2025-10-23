@@ -78,7 +78,10 @@ App::App(const std::string& commandLine)
 	soundDevice->SetAttenuation(attentuation);
 	StaticSoundPlayer::Get().Init(64);
     myMusic = std::make_unique<MusicBuffer>("Music\\windererfull.mp3");
+	myMusic_gameplay = std::make_unique<MusicBuffer>("Music\\winderer2.mp3");
     myMusic->setGain(0.1f);
+	myMusic_gameplay->setGain(0.1f);
+    SwitchMusic(ActiveMusic::Menu);
 
 	auto base = std::make_unique<Node>("Base");
 	auto playerThings = std::make_unique<Node>("Player Things");
@@ -642,7 +645,6 @@ int App::Go()
 
         HandleInput(dt);
         DoFrame(dt);
-
     }
 }
 
@@ -654,7 +656,7 @@ void App::HandleInput(float dt)
     //    //PrefabManager::InstantiateMushroom1(temporary, pFreeViewCamera->GetWorldPosition(), 1.0f);
 
     //}
-    if (wnd.kbd.IsJustPressed('M'))
+    /*if (wnd.kbd.IsJustPressed('M'))
     {
         if (myMusic->isPlaying())
         {
@@ -664,6 +666,33 @@ void App::HandleInput(float dt)
         {
             myMusic->Play();
         } 
+    }*/
+
+    if (wnd.kbd.IsJustPressed('M'))
+    {
+        // Sprawdź, który utwór jest aktywny i zatrzymaj go
+        if (m_activeMusic == ActiveMusic::Menu && myMusic->isPlaying())
+        {
+            myMusic->Stop();
+            m_activeMusic = ActiveMusic::None; // Oznacz, że nic nie gra
+        }
+        else if (m_activeMusic == ActiveMusic::Gameplay && myMusic_gameplay->isPlaying())
+        {
+            myMusic_gameplay->Stop();
+            m_activeMusic = ActiveMusic::None;
+        }
+        else
+        {
+            // Jeśli nic nie grało, wznów utwór odpowiedni dla stanu gry
+            if (gameState == GameState::Gameplay)
+            {
+                SwitchMusic(ActiveMusic::Gameplay);
+            }
+            else
+            {
+                SwitchMusic(ActiveMusic::Menu);
+            }
+        }
     }
 
     if (wnd.kbd.IsJustPressed('C'))
@@ -976,7 +1005,7 @@ void App::DoFrame(float dt)
     wnd.Gfx().EndFrame();
     rg.Reset();
 
-    if (!pSceneRoot->GetComponent<Global>()->drawLoadingScreen) {
+   /* if (!pSceneRoot->GetComponent<Global>()->drawLoadingScreen) {
         if (myMusic->musicStart) {
             myMusic->Play();
             myMusic->musicStart = false;
@@ -985,6 +1014,14 @@ void App::DoFrame(float dt)
         {
             myMusic->UpdateBufferStream();
         }
+    }*/
+    if (m_activeMusic == ActiveMusic::Menu && myMusic && myMusic->isPlaying())
+    {
+        myMusic->UpdateBufferStream();
+    }
+    else if (m_activeMusic == ActiveMusic::Gameplay && myMusic_gameplay && myMusic_gameplay->isPlaying())
+    {
+        myMusic_gameplay->UpdateBufferStream();
     }
 }
 void App::RemoveRigidbody(Node* currentNode)
@@ -1339,6 +1376,7 @@ void App::StartGame()
     PrefabManager::InstantiateTutorialIslands(tutorialNode, tutorialNode->GetComponent<Tutorial>() , Vector3(0.0f, 0.0f, 0.0f), 1.0f);
     tutorialNode->GetComponent<Tutorial>()->Start();
     pSceneRoot->GetComponent<Global>()->Start();
+    SwitchMusic(ActiveMusic::Gameplay);
     
 }
 
@@ -1363,8 +1401,37 @@ void App::ResetGame()
     {
         tutorialNode->DestroyChilds();
     }
+    SwitchMusic(ActiveMusic::Menu);
 }
 
+void App::SwitchMusic(ActiveMusic newTrack)
+{
+    // Jeśli już odtwarzamy ten utwór, nic nie rób
+    if (m_activeMusic == newTrack) return;
+
+    // Zatrzymaj aktualnie odtwarzany utwór
+    if (m_activeMusic == ActiveMusic::Menu && myMusic_gameplay)
+    {
+        myMusic->Stop();
+    }
+    else if (m_activeMusic == ActiveMusic::Gameplay && myMusic_gameplay)
+    {
+        myMusic_gameplay->Stop();
+    }
+
+    // Uruchom nowy utwór
+    if (newTrack == ActiveMusic::Menu && myMusic)
+    {
+        myMusic->Play();
+    }
+    else if (newTrack == ActiveMusic::Gameplay && myMusic_gameplay)
+    {
+        myMusic_gameplay->Play();
+    }
+
+    // Zaktualizuj stan
+    m_activeMusic = newTrack;
+}
 
 void App::SaveNodeTransformsRecursive(Node& node, std::ofstream& file)
 {
